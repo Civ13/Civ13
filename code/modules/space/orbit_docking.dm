@@ -20,6 +20,19 @@
 //
 // Visitors keep every other party check (thrusters, pods, decks, sectors and
 // consoles stay the owners'). Nothing here is a world.time stamp.
+//
+// Berths for rockets (from 1969, the first orbital flights):
+//
+// - A port fitted on an outer hatch has a berth: the open space beyond the
+//   hatch, where a rocket's capsule docks with its deck against the hatch.
+//   Every station plan has a docking airlock with one (station_plan.dm).
+// - The orbit world tells the other worlds which berths are free
+//   (orbit_docking_advertisements, in its shard status). A launch to orbit
+//   picks a free berth that welcomes the crew's party, or none at all; a
+//   launch is refused at a berth that is no longer free.
+// - Either side may bar the port: the station's crew from inside, so nobody
+//   comes aboard from the berth, or a docked crew from outside, so nobody
+//   from the station comes into their capsule.
 // ============================================================
 
 #define ORBIT_DOCKING_AGE 8
@@ -27,6 +40,8 @@
 #define ORBIT_DOCKING_FORCE_DELAY 300
 #define ORBIT_DOCKING_GUESTS 10
 #define ORBIT_DOCKING_PARCELS 20
+// Ports the orbit world tells other worlds about, at most.
+#define ORBIT_DOCKING_ADVERTISED 24
 
 var/global/list/orbit_docking_ports = list()
 
@@ -43,9 +58,17 @@ var/global/list/orbit_docking_ports = list()
 	var/welcome = "owners"
 	// Parties on the guest list.
 	var/list/guests = list()
+	// Names this port to rockets launched from other worlds; plain text.
+	var/port_id = ""
+	// Barred by the station's crew (nobody comes aboard from the berth) or by
+	// a docked crew (nobody from the station comes into their capsule).
+	var/barred_inside = FALSE
+	var/barred_outside = FALSE
 
 /obj/structure/docking_port/New()
 	..()
+	if (!orbit_docking_valid_id(port_id))
+		port_id = "port-[num2text(world.realtime, 20)]-[rand(100000, 999999)]"
 	orbit_docking_ports |= src
 
 /obj/structure/docking_port/Destroy()
@@ -75,6 +98,7 @@ var/global/list/orbit_docking_ports = list()
 		return
 	var/mode = welcome == "everyone" ? "every party" : (welcome == "guests" ? "[party_train_party_name(owner)] and [length(guests)] guest part[length(guests) == 1 ? "y" : "ies"]" : "only [party_train_party_name(owner)]")
 	to_chat(user, SPAN_NOTICE("Station of [party_train_party_name(owner)]. It welcomes [mode]. Parcels waiting: [length(parcels())]."))
+	to_chat(user, SPAN_NOTICE(berth_text()))
 
 /obj/structure/docking_port/proc/parcels(party = null)
 	var/list/found = list()
@@ -87,13 +111,13 @@ var/global/list/orbit_docking_ports = list()
 /obj/structure/docking_port/proc/use_refusal(mob/living/human/user)
 	if (!orbit_world())
 		return "A docking port only works in orbit."
-	if (!map || map.ordinal_age < ORBIT_DOCKING_AGE)
-		return "Docking ports work from 2013."
 	if (!owner())
 		return "\The [src] stands on no station."
-	if (!party_train_party_of(user))
-		return "You have no party to dock for."
 	return null
+
+// TRUE once ferries, boarding and parcels work (2013); berths work from 1969.
+/proc/orbit_docking_visits_open()
+	return map && map.ordinal_age >= ORBIT_DOCKING_AGE
 
 /obj/structure/docking_port/attack_hand(mob/living/human/user)
 	if (!istype(user) || !user.client)
@@ -103,21 +127,32 @@ var/global/list/orbit_docking_ports = list()
 		to_chat(user, SPAN_WARNING(reason))
 		return
 	var/party = party_train_party_of(user)
-	var/is_owner = party == owner()
-	var/list/options = list("Ferry to another station")
-	if (length(ferry_choices(party, TRUE)))
-		options += "Force a docking"
-	if (welcomes(party))
-		options += "Leave a parcel"
-	if (length(parcels(party)))
-		options += "Collect parcels"
+	var/is_owner = party && party == owner()
+	var/list/options = list()
+	var/side = bar_side(user)
+	if (side == "inside")
+		options += barred_inside ? "Unbar it from inside" : "Bar it from inside"
+	else if (side == "outside")
+		options += barred_outside ? "Unbar it from outside" : "Bar it from outside"
+	if (party && orbit_docking_visits_open())
+		options += "Ferry to another station"
+		if (length(ferry_choices(party, TRUE)))
+			options += "Force a docking"
+		if (welcomes(party))
+			options += "Leave a parcel"
+		if (length(parcels(party)))
+			options += "Collect parcels"
 	if (is_owner)
 		options += list("Who may dock", "Add a guest party", "Remove a guest party")
 	options += "Cancel"
-	var/choice = WWinput(user, "Docking port of [party_train_party_name(owner())].", "Docking port", "Cancel", options)
+	var/choice = WWinput(user, "Docking port of [party_train_party_name(owner())]. [berth_text()]", "Docking port", "Cancel", options)
 	if (QDELETED(src) || !user.client || !in_range(src, user) || user.incapacitated())
 		return
 	switch (choice)
+		if ("Bar it from inside", "Unbar it from inside", "Bar it from outside", "Unbar it from outside")
+			if (bar_side(user) != (findtext(choice, "inside") ? "inside" : "outside"))
+				return
+			set_bar(user, findtext(choice, "inside") ? "inside" : "outside", findtext(choice, "Unbar") != 1)
 		if ("Ferry to another station")
 			ferry_prompt(user)
 		if ("Force a docking")
@@ -162,6 +197,181 @@ var/global/list/orbit_docking_ports = list()
 			var/pick = player_input(user, "Remove which party?", "Docking port", null, "anything", choices, TRUE)
 			if (pick && !QDELETED(src) && party_train_party_of(user) == owner())
 				guests -= choices[pick]
+
+
+// ---------------------------------------------------------------- berths
+
+/proc/orbit_docking_valid_id(id)
+	if (!istext(id) || length(id) < 6 || length(id) > 48)
+		return FALSE
+	for (var/i = 1, i <= length(id), i++)
+		var/c = text2ascii(id, i)
+		if (!((c >= 48 && c <= 57) || (c >= 65 && c <= 90) || (c >= 97 && c <= 122) || c == 45))
+			return FALSE
+	return TRUE
+
+/proc/orbit_docking_port_by_id(id)
+	if (!orbit_docking_valid_id(id))
+		return null
+	for (var/obj/structure/docking_port/P in orbit_docking_ports)
+		if (!QDELETED(P) && P.port_id == id)
+			return P
+	return null
+
+// The way out to the berth: from an outer hatch, the side facing open space
+// (or a docked capsule's deck). 0 when the port is not on an outer hatch.
+/obj/structure/docking_port/proc/outward()
+	var/turf/T = loc
+	if (!isturf(T) || !(locate(/obj/structure/simple_door/habitat_hatch) in T))
+		return 0
+	for (var/d in cardinal)
+		var/turf/N = get_step(T, d)
+		if (istype(N, /turf/floor/space/orbit) || istype(N, /turf/floor/lander_deck))
+			return d
+	return 0
+
+// Where a docked capsule's core stands: two tiles out, so its deck touches
+// the hatch. Null when the port has no berth.
+/obj/structure/docking_port/proc/berth_turf()
+	var/d = outward()
+	if (!d)
+		return null
+	return get_step(get_step(loc, d), d)
+
+// TRUE when a capsule can dock here now.
+/obj/structure/docking_port/proc/berth_free()
+	if (QDELETED(src) || !owner())
+		return FALSE
+	var/turf/B = berth_turf()
+	return B && orbit_capsule_site_clear(B.x, B.y, B.z)
+
+// The capsule docked here, or null.
+/obj/structure/docking_port/proc/docked_capsule()
+	var/turf/B = berth_turf()
+	var/obj/structure/landed_lander/capsule/C = B ? (locate() in B) : null
+	return (C && !QDELETED(C)) ? C : null
+
+/obj/structure/docking_port/proc/berth_text()
+	. = list()
+	if (!outward())
+		. += "It has no berth: fit it on an airlock's outer hatch for rockets to dock."
+	else if (docked_capsule())
+		. += "A capsule is docked at its berth."
+	else if (berth_free())
+		. += "Its berth is free for a rocket."
+	else
+		. += "Something blocks its berth."
+	if (barred_inside)
+		. += "It is barred from inside."
+	if (barred_outside)
+		. += "It is barred from outside."
+	return jointext(., " ")
+
+// "inside" when user stands on the station side, "outside" on the berth side,
+// else null (on the hatch itself, or not beside it).
+/obj/structure/docking_port/proc/bar_side(mob/user)
+	var/d = outward()
+	var/turf/T = get_turf(user)
+	if (!d || !T || T == loc || get_dist(T, loc) != 1 || T.z != z)
+		return null
+	if (T == get_step(loc, d))
+		return "outside"
+	if (T == get_step(loc, turn(d, 180)))
+		return "inside"
+	return null
+
+/obj/structure/docking_port/proc/set_bar(mob/user, side, barred)
+	if (side == "inside")
+		barred_inside = barred
+	else
+		barred_outside = barred
+	if (user)
+		user.visible_message(SPAN_NOTICE("[user] [barred ? "bars" : "unbars"] \the [src] from [side]."))
+		log_game("Docking port: [key_name(user)] [barred ? "barred" : "unbarred"] the port at [x],[y],[z] from [side].")
+
+// A bar stops anyone crossing the hatch from the side it does not guard.
+/obj/structure/docking_port/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)
+	if (air_group || !ismob(mover) || (!barred_inside && !barred_outside))
+		return ..()
+	var/d = outward()
+	if (!d || !isturf(target))
+		return ..()
+	if (barred_inside && target == get_step(loc, d))
+		return FALSE
+	if (barred_outside && target == get_step(loc, turn(d, 180)))
+		return FALSE
+	return ..()
+
+// What the orbit world tells other worlds: every free berth, for launches.
+/proc/orbit_docking_advertisements()
+	. = list()
+	if (!orbit_world())
+		return
+	for (var/obj/structure/docking_port/P in orbit_docking_ports)
+		if (length(.) >= ORBIT_DOCKING_ADVERTISED)
+			break
+		var/owner = P.owner()
+		if (!owner || !orbit_docking_valid_id(P.port_id) || !P.berth_free())
+			continue
+		var/list/guest_list = list()
+		if (P.welcome == "guests")
+			for (var/g in P.guests)
+				if (party_train_valid_party(g))
+					guest_list += g
+		. += list(list("id" = P.port_id, "party" = owner, "name" = copytext("[party_train_party_name(owner)] ([dir2text(P.outward())] port)", 1, 65), "welcome" = P.welcome, "guests" = guest_list))
+
+// A peer's advertised berths, checked field by field.
+/proc/orbit_docking_clean_advertisements(list/records)
+	. = list()
+	if (!islist(records) || records.len > ORBIT_DOCKING_ADVERTISED)
+		return
+	var/list/seen = list()
+	for (var/list/entry in records)
+		var/id = entry["id"]
+		if (!orbit_docking_valid_id(id) || seen[id] || !party_train_valid_party(entry["party"]) || !(entry["welcome"] in list("owners", "guests", "everyone")))
+			continue
+		seen[id] = TRUE
+		var/list/guest_list = list()
+		if (islist(entry["guests"]))
+			for (var/g in entry["guests"])
+				if (party_train_valid_party(g) && guest_list.len < ORBIT_DOCKING_GUESTS)
+					guest_list += g
+		. += list(list("id" = id, "party" = entry["party"], "name" = istext(entry["name"]) ? copytext(entry["name"], 1, 65) : "Space station", "welcome" = entry["welcome"], "guests" = guest_list))
+
+// The free berths of orbit region id that welcome party, as label = port id.
+/proc/orbit_docking_berth_choices(id, party)
+	. = list()
+	var/list/peer = shard_group && shard_group.peers[id]
+	if (!islist(peer) || !islist(peer["docking_ports"]))
+		return
+	for (var/list/entry in peer["docking_ports"])
+		var/ok = entry["welcome"] == "everyone" || (party && (entry["party"] == party || (entry["welcome"] == "guests" && (party in entry["guests"]))))
+		if (!ok)
+			continue
+		var/label = "Dock at [entry["name"]]"
+		var/n = 2
+		while (.[label])
+			label = "Dock at [entry["name"]] #[n++]"
+		.[label] = entry["id"]
+// Fits a docking port on the outer hatch of the airlock centred on centre,
+// facing dir. Returns the port.
+/proc/orbit_station_docking_port(turf/centre, dir)
+	var/turf/T = centre ? get_step(get_step(centre, dir), dir) : null
+	if (!T)
+		return null
+	var/obj/structure/docking_port/P = locate() in T
+	if (!P)
+		P = new(T)
+	P.dir = dir
+	return P
+
+// TRUE while port id is still a free berth of region id that welcomes party.
+/proc/orbit_docking_berth_listed(id, port, party)
+	var/list/choices = orbit_docking_berth_choices(id, party)
+	for (var/label in choices)
+		if (choices[label] == port)
+			return TRUE
+	return FALSE
 
 /obj/structure/docking_port/proc/add_guest(party)
 	if (!party_train_valid_party(party) || party == owner())
@@ -335,3 +545,4 @@ var/global/list/orbit_docking_ports = list()
 #undef ORBIT_DOCKING_FORCE_DELAY
 #undef ORBIT_DOCKING_GUESTS
 #undef ORBIT_DOCKING_PARCELS
+#undef ORBIT_DOCKING_ADVERTISED

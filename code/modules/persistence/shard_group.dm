@@ -278,6 +278,8 @@ var/global/datum/shard_group/shard_group = new
 	// Launch offices ask before founding a station (space/orbit_world.dm).
 	if(kind == "ORBIT")
 		.["free_planes"] = length(orbit_free_planes())
+		// Rockets pick a free berth before they launch (space/orbit_docking.dm).
+		.["docking_ports"] = orbit_docking_advertisements()
 	// The host tool and launcher show what the TDM battle is doing (tdm_barracks).
 	if(kind == "BATTLE" && tdm_battle_active())
 		.["battle_phase"] = tdm_battle.phase()
@@ -323,6 +325,7 @@ var/global/datum/shard_group/shard_group = new
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
+	peer["docking_ports"] = orbit_docking_clean_advertisements(reply["docking_ports"])
 	peer["train_stations"] = train_route_clean_advertisements(reply["train_stations"])
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
 	// The mainland's era is the floor a region's era can fall to (era_loss.dm).

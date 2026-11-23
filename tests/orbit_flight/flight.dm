@@ -8,8 +8,10 @@
 // of two up through the office. The orbit world waits for them, checks that
 // the station was founded from the plan (not the starter), and sends the crew
 // home through the return capsule hatch. The mainland waits for them at the
-// office. Each side writes result-<role>.json and keeps running until native_flight.py
-// stops it.
+// office. Then a third pilot flies a two-stage rocket up from the pad to a
+// free berth the orbit world advertises at the station's docking airlock, and
+// the orbit world checks the capsule docked there. Each side writes
+// result-<role>.json and keeps running until native_flight.py stops it.
 var/global/datum/orbit_flight_test/orbit_flight_test = new
 
 /datum/orbit_flight_test
@@ -17,6 +19,7 @@ var/global/datum/orbit_flight_test/orbit_flight_test = new
 	var/phase = "startup"
 	var/list/checks = list()
 	var/list/crew_keys = list("flightone", "flighttwo")
+	var/rocket_key = "flightthree"
 	var/faction = "Skyward"
 	var/plan_name = "hub station"
 	var/started_at = 0
@@ -76,6 +79,20 @@ var/global/datum/orbit_flight_test/orbit_flight_test = new
 /datum/orbit_flight_test/proc/crew_here()
 	return length(crew()) == length(crew_keys)
 
+/datum/orbit_flight_test/proc/rocket_pilot()
+	for (var/mob/living/human/H in human_mob_list)
+		if (!QDELETED(H) && H.persistence_owner_ckey == rocket_key)
+			return H
+	return null
+
+/datum/orbit_flight_test/proc/rocket_pilot_here()
+	return !!rocket_pilot()
+
+// TRUE once the orbit world advertises a free berth for the faction's party.
+/datum/orbit_flight_test/proc/berth_advertised()
+	shard_group.poll_peer("orbit")
+	return length(orbit_docking_berth_choices("orbit", party_train_faction_party(faction))) > 0
+
 /datum/orbit_flight_test/proc/hub_plan()
 	for (var/datum/station_plan/D in station_plan_examples())
 		if (D.name == plan_name)
@@ -116,7 +133,7 @@ var/global/datum/orbit_flight_test/orbit_flight_test = new
 		else
 			orbit()
 		var/list/last = checks[checks.len]
-		var/expected = role == "gaia" ? "crew_home" : "station_kept"
+		var/expected = role == "gaia" ? "rocket_launched" : "rocket_docked"
 		if (last["check"] != expected)
 			failure = failed_with || "the driver stopped after [last["check"]] in phase [phase]"
 	catch (var/exception/E)
@@ -239,6 +256,32 @@ var/global/datum/orbit_flight_test/orbit_flight_test = new
 		require(H.region_arrival_pending, "[H.persistence_owner_ckey] is not waiting for their player")
 	pass("crew_home", list("at" = "[office.x],[office.y],[office.z]"))
 
+	phase = "rocket"
+	// A third pilot flies a two-stage rocket to the station's docking port.
+	wait_until("berth_advertised", 6000, "the orbit world never advertised a free berth")
+	var/list/berths = orbit_docking_berth_choices("orbit", party)
+	var/label = berths[1]
+	var/port = berths[label]
+	var/mob/living/human/pilot = new(locate(pad.x + 1, pad.y, pad.z))
+	pilot.persistence_owner_ckey = rocket_key
+	pilot.real_name = "Test pilot [rocket_key]"
+	pilot.name = pilot.real_name
+	pilot.civilization = faction
+	// launch_on() builds this flight for a crew who chose the berth; the
+	// pilot sets off through depart() as the other crews did.
+	var/list/flight = list("lander" = "flighttest-[world.realtime]", "orbit" = 1, "port" = port)
+	require(space_flight_payload_ok(flight), "the docking flight is malformed")
+	var/result = null
+	for (var/attempt in 1 to 30)
+		pad.pending_flight = flight
+		result = pad.depart(pilot)
+		pad.pending_flight = null
+		if (result == "departed")
+			break
+		sleep(10)
+	require(result == "departed", "the pilot did not leave: [result]")
+	pass("rocket_launched", list("berth" = label, "port" = port))
+
 // ---------------------------------------------------------------- orbit
 
 /datum/orbit_flight_test/proc/orbit()
@@ -295,3 +338,18 @@ var/global/datum/orbit_flight_test/orbit_flight_test = new
 	// The station stays on its plane for the next flight.
 	require(orbit_station_hatch(party) == hatch, "the station went with the crew")
 	pass("station_kept")
+
+	phase = "rocket"
+	wait_until("rocket_pilot_here", 9000, "the rocket's pilot never arrived")
+	var/mob/living/human/pilot = rocket_pilot()
+	var/obj/structure/docking_port/port = null
+	for (var/obj/structure/docking_port/P in orbit_docking_ports)
+		if (!QDELETED(P) && P.owner() == party && P.docked_capsule())
+			port = P
+	require(port, "no capsule docked at a port of [party]")
+	require(get_turf(pilot) == port.berth_turf(), "the pilot arrived at [pilot.x],[pilot.y],[pilot.z], not the berth")
+	require(pilot.z == hatch.z, "the capsule is not on the station's plane")
+	require(istype(get_step(port.loc, port.outward()), /turf/floor/lander_deck), "the capsule's deck does not touch the hatch")
+	var/obj/structure/habitat_core/lock = locate() in get_step(get_step(port.loc, turn(port.outward(), 180)), turn(port.outward(), 180))
+	require(lock && !lock.breaches(), "the docking airlock is breached")
+	pass("rocket_docked", list("port" = port.port_id, "at" = "[pilot.x],[pilot.y],[pilot.z]"))

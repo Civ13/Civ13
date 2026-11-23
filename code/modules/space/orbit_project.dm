@@ -439,12 +439,13 @@ var/global/list/orbit_station_requirements = list(
 	var/r = HABITAT_MODULE_RADIUS
 	var/turf/centre = locate(cx, cy, z)
 	// Module centres by role; the hub comes first so the others dock to it.
-	var/list/modules = list("hub" = centre, "workshop" = locate(cx + s, cy, z), "airlock" = locate(cx, cy - s, z))
+	// The docking airlock at the end of the east arm, its berth beyond it.
+	var/list/modules = list("hub" = centre, "workshop" = locate(cx + s, cy, z), "airlock" = locate(cx, cy - s, z), "docking" = locate(cx + 2 * s, cy, z))
 	if (modern)
 		modules["greenhouse"] = locate(cx - s, cy, z)
 		modules["quarters"] = locate(cx, cy + s, z)
 	var/low = cy - ORBIT_KEEL_AFT
-	if (low < 2 || cx - ORBIT_KEEL_BOOM_REACH < 2 || cx + s + r > world.maxx - 1)
+	if (low < 2 || cx - ORBIT_KEEL_BOOM_REACH < 2 || !orbit_capsule_site_clear(cx + 3 * s, cy, z))
 		return null
 	for (var/role in modules)
 		var/turf/at = modules[role]
@@ -462,6 +463,8 @@ var/global/list/orbit_station_requirements = list(
 	if (modern)
 		habitat_unfold(modules["greenhouse"], "greenhouse")
 		habitat_unfold(modules["quarters"], "quarters")
+	habitat_unfold(modules["docking"], "airlock", /obj/structure/habitat_core/airlock, EAST)
+	orbit_station_docking_port(modules["docking"], EAST)
 	// The cable spine runs down the hub's middle column, out through the
 	// airlock to the keel, with a short bar along the hub's top row for the
 	// heater and radiator and, from 2013, one along the bottom row for the

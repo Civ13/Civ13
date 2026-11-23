@@ -5,12 +5,14 @@
 // choose to draw a space station: a window shows the plan's grid of slots,
 // north to the top. A module is picked from the palette and clicked or
 // dragged onto a slot; the eraser (or a right-click) clears a slot to open
-// space. Docked modules show the hatch they share, and the keel is drawn
-// out from the keel airlock over the slots it must be left.
+// space. Docked modules show the hatch they share, the keel is drawn out
+// from the keel airlock over the slots it must be left, and each docking
+// airlock's berth is drawn on the slot beyond its outer hatch, where a
+// rocket's capsule docks.
 //
 // Like the airship designer (naval/air_designer.dm), every change goes to
 // the server, which reads it as a design code and answers with the plan's
-// own figures, keel and checks, so the window never disagrees with the
+// own figures, keel, berths and checks, so the window never disagrees with the
 // sheet. Save keeps the drawing on the sheet. The Module panel says what the
 // picked (or pointed at) module is, what it is for and how to get it
 // (DATA.HELP); the Checks panel lists the findings and rings their slots.
@@ -64,6 +66,7 @@
 		"mod_N" = 'icons/station_designer/mod_N.png',
 		"mod_A" = 'icons/station_designer/mod_A.png',
 		"mod_K" = 'icons/station_designer/mod_K.png',
+		"mod_P" = 'icons/station_designer/mod_P.png',
 		"keel_truss" = 'icons/station_designer/keel_truss.png',
 		"keel_wing" = 'icons/station_designer/keel_wing.png',
 		"keel_thruster" = 'icons/station_designer/keel_thruster.png',
@@ -167,7 +170,23 @@
 		if (D.in_grid(col, row))
 			. += list(list(col, row, what[i]))
 
-// What the window is told of a plan: its figures, its keel and its findings.
+// The berths for the window: list(list(col, row, lock col, lock row), ...)
+// for each docking airlock's berth that lies on the grid, with the airlock
+// it belongs to. A berth off the sheet is open space and is not drawn.
+/proc/station_designer_berths(datum/station_plan/D)
+	. = list()
+	var/list/berths = D.berth_slots()
+	for (var/berth in berths)
+		var/list/xy = splittext(berth, ",")
+		var/col = text2num(xy[1])
+		var/row = text2num(xy[2])
+		if (!D.in_grid(col, row))
+			continue
+		var/list/lock = splittext(berths[berth], ",")
+		. += list(list(col, row, text2num(lock[1]), text2num(lock[2])))
+
+// What the window is told of a plan: its figures, its keel, its berths and
+// its findings.
 /proc/station_designer_answer(datum/station_plan/D)
 	var/list/C = D.costs()
 	var/datum/design_report/R = D.check_design()
@@ -179,6 +198,7 @@
 		"steel" = C["steel"],
 		"cost" = D.costs_text(),
 		"keel" = station_designer_keel(D),
+		"berths" = station_designer_berths(D),
 		"checks" = R.data(),
 	)
 	qdel(R)
@@ -275,6 +295,11 @@ img.pic{image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;vertic
 .t.keel{background:#161a12;border:1px dashed #b48c4d}
 .t.keel i{position:absolute;left:0;right:0;bottom:1px;text-align:center;font-style:normal;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#b48c4d}
 .t.keel .p{width:40px;height:40px;margin:-24px 0 0 -20px}
+.t.berth{background:#101a24;border:1px dashed #7fb0d0}
+.t.berth i{position:absolute;left:0;right:0;bottom:1px;text-align:center;font-style:normal;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:#7fb0d0}
+.t.berth .bc{position:absolute;left:50%;top:50%;width:26px;height:26px;margin:-19px 0 0 -13px;box-sizing:border-box;border:3px solid #7fb0d0;border-radius:50%;opacity:0.85}
+.t.berth .bt{position:absolute;background:#7fb0d0;opacity:0.85}
+.t .bw{position:absolute;left:3px;top:3px;right:3px;bottom:3px;border:2px dashed #7fb0d0;pointer-events:none}
 .t .ring{position:absolute;left:0;top:0;right:0;bottom:0;pointer-events:none}
 .t:hover .ring{box-shadow:inset 0 0 0 1px #ffd985}
 .hx{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;pointer-events:none;border:1px solid #ffd985;box-sizing:border-box;background:#3b4046;background-size:100% 100%;image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;z-index:2}
@@ -346,6 +371,7 @@ img.pic{image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;vertic
 <div class='row'><button class='go' onclick='send(1)'>Save to the sheet</button><span id='st'></span></div>
 <div class='row' style='margin-bottom:0'><button class='cd' onclick='exportCode()' title='Save the drawing on the sheet and show its design code to copy'>Export code</button><button class='cd' onclick='importCode()' title='Paste a design code; it replaces what is drawn on this sheet'>Import code</button></div>
 <div class='hint' style='margin-top:7px'>Click or drag over slots to draw with the picked module. Right-click clears a slot. A station has one command module and one keel airlock: drawing either again moves it.</div>
+<div class='hint' style='margin-top:6px'>A station needs at least one docking airlock, docked to one module, with the slot beyond it left empty: that is its berth, where rockets dock.</div>
 <div class='hint' style='margin-top:6px'>The keel runs out from the keel airlock, away from the module it docks to: truss, a solar wing each side and the thruster at its end. Leave the slots it is drawn over empty.</div>
 </div>
 
@@ -357,12 +383,12 @@ img.pic{image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;vertic
 </div><script>
 var DATA=@@DATA@@;
 var REF=DATA.REF,SIDE=DATA.SIDE,MAX=DATA.MAX,PIECES=DATA.PIECES,EXAMPLES=DATA.EXAMPLES||[],PICS=DATA.PICS||[],HELP=DATA.HELP||{};
-var cells={},cur='C',hist=[],fut=[],timer=null,lastSent=0,T=64,KEEL=[];
+var cells={},cur='C',hist=[],fut=[],timer=null,lastSent=0,T=64,KEEL=[],BERTH=[];
 var CHK=[],lit=-1,pin=-1,peek=null,stroke=false,stroked=false;
 var LEVEL={error:['Fix','#ff6f3c'],warning:['Warning','#ffd23f'],note:['Note','#fff6dc']};
 var KEELNAME={truss:'keel truss',wing:'solar wing',thruster:'reboost thruster'};
 // The furniture that tells each module apart, for the palette.
-var HAS={C:'console, way home',Q:'two bunks',G:'two trays',W:'a workbench',S:'two crates',N:'a deck hatch',A:'a way out',K:'the keel hangs here'};
+var HAS={C:'console, way home',Q:'two bunks',G:'two trays',W:'a workbench',S:'two crates',N:'a deck hatch',A:'a way out',K:'the keel hangs here',P:'a docking port'};
 function $(i){return document.getElementById(i);}
 function esc(s){return (s+'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;');}
 function key(c,r){return c+','+r;}
@@ -387,8 +413,8 @@ function nameOf(k){if(k=='x')return 'eraser';var r=row(PIECES,k);return r?r[1]:k
 function load(sheet){var i,t;$('nm').value=sheet[0];cells={};for(i=0;i<sheet[1].length;i++){t=sheet[1][i];if(inGrid(+t[0],+t[1])&&row(PIECES,t[2]))cells[key(t[0],t[1])]=t[2];}}
 function snap(){var o={},k;for(k in cells)o[k]=cells[k];return o;}
 function push(s){hist.push(s||snap());if(hist.length>60)hist.shift();fut=[];}
-function undo(){if(!hist.length){status('Nothing to undo.');return;}fut.push(snap());cells=hist.pop();status('');KEEL=[];draw();changed();}
-function redo(){if(!fut.length){status('Nothing to redo.');return;}hist.push(snap());cells=fut.pop();status('');KEEL=[];draw();changed();}
+function undo(){if(!hist.length){status('Nothing to undo.');return;}fut.push(snap());cells=hist.pop();status('');KEEL=[];BERTH=[];draw();changed();}
+function redo(){if(!fut.length){status('Nothing to redo.');return;}hist.push(snap());cells=fut.pop();status('');KEEL=[];BERTH=[];draw();changed();}
 function count(){var n=0,k;for(k in cells)n++;return n;}
 function tool(t){cur=t;marks();part();}
 // Draws on one slot. A drag is one stroke: Undo takes all of it back.
@@ -401,20 +427,28 @@ before=snap();
 if(k=='C'||k=='K')for(o in cells)if(cells[o]==k)delete cells[o];
 cells[at]=k;}
 if(!(drag&&stroked))push(before);stroked=true;
-KEEL=[];draw();changed();}
+KEEL=[];BERTH=[];draw();changed();}
 function down(c,r,e){e=e||window.event;if(e.button==2)return;stroke=true;stroked=false;apply(c,r,0,0);if(e.preventDefault)e.preventDefault();}
 function over(c,r,e){e=e||window.event;if(!stroke)return;if(e.buttons!==undefined&&!(e.buttons&1)){stroke=false;return;}if(cur=='C'||cur=='K')return;apply(c,r,0,1);}
 document.onmouseup=function(){stroke=false;};
-function loadExample(){var i=$('ex').value;if(i==='')return;push();load(EXAMPLES[+i]);status('');KEEL=[];draw();changed();}
+function loadExample(){var i=$('ex').value;if(i==='')return;push();load(EXAMPLES[+i]);status('');KEEL=[];BERTH=[];draw();changed();}
 
 // ---- Drawing ----
 function keelAt(c,r){for(var i=0;i<KEEL.length;i++)if(KEEL[i][0]==c&&KEEL[i][1]==r)return KEEL[i][2];return null;}
-function tile(c,r){var k=cells[key(c,r)],kw=keelAt(c,r),x=(c-1)*T,y=(r-1)*T,st='left:'+x+'px;top:'+y+'px;width:'+T+'px;height:'+T+'px;',h='',s,cls='t',what;
+function berthAt(c,r){for(var i=0;i<BERTH.length;i++)if(BERTH[i][0]==c&&BERTH[i][1]==r)return BERTH[i];return null;}
+// The tunnel from a berth's collar to the hatch of its docking airlock.
+function tunnel(b){var dc=b[2]-b[0],dr=b[3]-b[1];
+if(dc<0)return 'left:0;top:22px;width:19px;height:6px;';
+if(dc>0)return 'right:0;top:22px;width:19px;height:6px;';
+if(dr<0)return 'left:29px;top:0;width:6px;height:12px;';
+return 'left:29px;top:38px;width:6px;height:12px;';}
+function tile(c,r){var k=cells[key(c,r)],kw=keelAt(c,r),bw=berthAt(c,r),x=(c-1)*T,y=(r-1)*T,st='left:'+x+'px;top:'+y+'px;width:'+T+'px;height:'+T+'px;',h='',s,cls='t',what;
 if(k){s=src('hull');if(s)st+='background-image:url('+s+');';
 h+='<span class="fl" style="'+floorCss()+'"></span>';s=src('mod_'+k);
 h+=s?'<img class="pic p" src="'+s+'" alt="'+esc(k)+'" data-c="chip pl" onerror="noPic(this)">':'<span class="chip pl">'+esc(k)+'</span>';
-h+='<span class="k">'+esc(k)+'</span>';what=nameOf(k)+(kw?', in the way of the keel':'');}
-else if(kw){cls+=' keel';s=src('keel_'+kw);h+=s?'<img class="pic p" src="'+s+'" alt="keel" data-c="chip pl" onerror="noPic(this)">':'';h+='<i>keel</i>';what=KEELNAME[kw]+' on the keel: leave this slot empty';}
+h+='<span class="k">'+esc(k)+'</span>';if(bw)h+='<span class="bw"></span>';what=nameOf(k)+(kw?', in the way of the keel':'')+(bw?', in the way of a docking airlock\'s berth':'');}
+else if(kw){cls+=' keel';s=src('keel_'+kw);h+=s?'<img class="pic p" src="'+s+'" alt="keel" data-c="chip pl" onerror="noPic(this)">':'';h+='<i>keel</i>';what=KEELNAME[kw]+' on the keel: leave this slot empty'+(bw?'; a docking airlock\'s berth lies across it':'');}
+else if(bw){cls+=' berth';h+='<span class="bt" style="'+tunnel(bw)+'"></span><span class="bc"></span><i>berth</i>';what='berth of a docking airlock: leave this slot empty for rockets';}
 else{cls+=' none';what='open space';}
 h+='<span class="ring"></span>';
 return '<div class="'+cls+'" id="c_'+c+'_'+r+'" style="'+st+'" title="'+esc(cap(what))+'" onmousedown="down('+c+','+r+',event)" onmouseover="over('+c+','+r+',event)" oncontextmenu="apply('+c+','+r+',1,0);return false;">'+h+'</div>';}
@@ -449,8 +483,9 @@ function stationStatus(t){status(esc(t));}
 function parse(s){var A=null;try{A=JSON.parse(s);}catch(e){A=null;}
 if(!A){s=(s+'').replace(/\+/g,' ');try{s=decodeURIComponent(s);}catch(e2){}try{A=JSON.parse(s);}catch(e3){A=null;}}
 return A;}
-// The server's answer: the figures, the keel and the findings.
+// The server's answer: the figures, the keel, the berths and the findings.
 function stationPlan(s){var A=parse(s),o,extra,i,k;if(!A)return;
+BERTH=[];if(A.berths)for(i=0;i<A.berths.length;i++){k=A.berths[i];if(inGrid(+k[0],+k[1]))BERTH.push([+k[0],+k[1],+k[2],+k[3]]);}
 KEEL=[];if(A.keel)for(i=0;i<A.keel.length;i++){k=A.keel[i];if(inGrid(+k[0],+k[1])&&KEELNAME[k[2]])KEEL.push([+k[0],+k[1],k[2]]);}
 extra=Math.max(0,A.count-A.allowance);
 o='<div class="fg"><div><b'+(A.count>A.max?' class="bad"':'')+'>'+(+A.count)+'</b><span>modules of '+(+A.max)+'</span></div><div><b>'+(+A.bunks)+'</b><span>bunks</span></div><div><b>'+extra+'</b><span>past the starter&#39;s '+(+A.allowance)+'</span></div><div><b>'+(+A.steel)+'</b><span>steel</span></div></div>';
@@ -462,7 +497,7 @@ draw();checks(A.checks||[]);}
 function finding(){var i=lit>=0?lit:pin;return i>=0&&CHK[i]?CHK[i]:null;}
 function part(){var f=finding(),k,H,R=[['what','What'],['use','Use'],['how','How']],i,why,h;
 if(f&&f.part){k=f.part;why='named by the check';}
-else if(peek){k=peek.substring(1);why=peek.charAt(0)=='t'?(k==cur?'picked to draw with':'click to pick it'):(peek.charAt(0)=='k'?'its keel crosses this slot':'on the plan');}
+else if(peek){k=peek.substring(1);why=peek.charAt(0)=='t'?(k==cur?'picked to draw with':'click to pick it'):(peek.charAt(0)=='k'?'its keel crosses this slot':(peek.charAt(0)=='b'?'its berth is this slot':'on the plan'));}
 else{k=cur;why='picked to draw with';}
 H=HELP[k];
 h='<div class="pn">'+pic(k,34)+'<span class="w">'+esc(cap(nameOf(k)))+'<span class="s">'+why+'</span></span></div>';
@@ -492,7 +527,7 @@ mark();part();light();fit();}
 document.onmouseover=function(e){e=e||window.event;var b=e.target||e.srcElement,k=null,p,v;if(stroke)return;
 while(b&&b!=document.body){if(b.id){
 if(b.id.indexOf('t_')==0){k='t'+b.id.substring(2);break;}
-if(b.id.indexOf('c_')==0){p=b.id.split('_');v=cells[key(p[1],p[2])];k=v?'c'+v:(keelAt(+p[1],+p[2])?'kK':null);break;}}
+if(b.id.indexOf('c_')==0){p=b.id.split('_');v=cells[key(p[1],p[2])];k=v?'c'+v:(keelAt(+p[1],+p[2])?'kK':(berthAt(+p[1],+p[2])?'bP':null));break;}}
 b=b.parentNode;}
 if(k!=peek){peek=k;part();}};
 // The panels fill the window's height, whatever it is.

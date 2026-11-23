@@ -20,6 +20,7 @@ with a hatch in the wall they share.
 | N | node, a deck hatch | node core | node module kit |
 | A | airlock | airlock core | airlock module kit |
 | K | keel airlock: the keel runs out from it | airlock core | airlock module kit |
+| P | docking airlock: a docking port on its outer hatch, a berth beyond it | airlock core | airlock module kit |
 
 A module's research is its kit's recipe node; the office refuses a plan
 whose modules the user's people have not researched.
@@ -30,7 +31,11 @@ Errors: no command module or more than one; more than
 `STATION_PLAN_MAX_MODULES` (12) modules; a module not docked to the rest;
 no keel airlock or more than one; a keel airlock docked to more or fewer
 than one module; a module on the keel (straight out three slots, and the
-two slots beside the second slot out, where the solar boom crosses).
+two slots beside the second slot out, where the solar boom crosses); no
+docking airlock (Val, 2026-11-23: every station needs one); a docking
+airlock docked to more or fewer than one module; its berth (the slot beyond
+its outer hatch, `berth_slot()`) on the keel or shared with another docking
+airlock.
 Warnings: a module more than two hatches from the command module's life
 support; no quarters. Notes: extra modules' steel, no greenhouse, no node.
 
@@ -38,7 +43,8 @@ support; no quarters. Notes: extra modules' steel, no greenhouse, no node.
 
 Every plan costs the starter station's 180 steel, 40 glass, 40 copper and
 60 electronics, plus 60 steel for each module past the starter's count for
-the age (`station_plan_allowance()`: 3 in 1969, 5 from 2013, 8 from 2026).
+the age (`station_plan_allowance()`: 4 in 1969, 6 from 2013, 9 from 2026; each
+starter now includes its docking airlock).
 
 ## Code
 
@@ -56,7 +62,9 @@ modules unfolded nearest the command module first, the cable along the hatches
 from the command module to the keel airlock and out along the keel, and the
 keel as in the starter: the porch 7 tiles out, the solar boom at 9 (7 wide),
 the isotope generator (from 2013) at 10, the fuel cell at 11 and the reboost
-thruster at 12. A plan that does not fit the plane is logged and the starter
+thruster at 12. Each docking airlock gets a docking port on its outer hatch
+(`orbit_station_docking_port()`), and its berth must be clear vacuum. A plan
+that does not fit the plane is logged and the starter
 station is built instead.
 
 ## The drawing window
@@ -66,7 +74,7 @@ on a blank ship's draught, or "Draw on the sheet" on a station plan, opens
 the station designer, by the airship designer's rule (the sheet and a pen or
 pencil in hand). It follows the airship designer
 (`code/modules/naval/air_designer.dm`): the grid of slots with north to the
-top, a palette of the eight modules and the eraser, a Module panel with the
+top, a palette of the nine modules and the eraser, a Module panel with the
 part book's what, use and how, the Figures, the Checks with the slots they
 name ringed, the ready-made plans, undo and redo, a name and "Save to the
 sheet". Drawing the command module or the keel airlock again moves it, and
@@ -82,6 +90,8 @@ off the grid, an unknown key, a slot written twice and more than
 keel. `station_designer_keel()` gives the keel as the plan's own
 `keel_slots()` that lie on the grid: truss on the first and second slot out,
 a solar wing each side of the second and the reboost thruster on the third.
+`station_designer_berths()` gives each docking airlock's berth on the grid
+(`list(col, row, lock col, lock row)`), drawn as a dashed slot to leave empty.
 Save calls `take_station()`.
 
 A slot is drawn as a rim of hull, the floor inside it and the module's
@@ -101,6 +111,7 @@ with `browse_rsc` as `stad_<name>.png`:
 | `mod_S` | `storage.dmi` `crate` |
 | `mod_N` | `stairs.dmi` `ladderdown` |
 | `mod_K` | `structures.dmi` `grille` under `doors/material_doors.dmi` `blastopen` |
+| `mod_P` | `doors/material_doors.dmi` `blast` with a docking collar drawn by the script |
 | `keel_truss` | `structures.dmi` `grille` |
 | `keel_wing` | `renewable_power.dmi` `solar_panel` |
 | `keel_thruster` | `decals_wider.dmi` `rocket`, scaled to one tile |

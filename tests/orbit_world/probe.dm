@@ -195,6 +195,7 @@ var/global/orbit_failures = 0
 		orbit_freight_route_checks()
 		orbit_satellite_checks()
 		orbit_docking_checks()
+		orbit_berth_checks()
 		orbit_lab_checks()
 		orbit_refinery_checks()
 		orbit_artillery_checks()
@@ -532,14 +533,14 @@ var/global/orbit_failures = 0
 	orbit_check("station plane", z, 2)
 	orbit_check("plane owned by the party", orbit_station_party(z), party)
 	orbit_check("hatch leads home", hatch && hatch.home_region, "gaia")
-	orbit_check("station modules", length(orbit_station_modules(z)), 3)
+	orbit_check("station modules", length(orbit_station_modules(z)), 4)
 	var/sealed = 0
 	var/list/kinds = list()
 	for (var/obj/structure/habitat_core/C in orbit_station_modules(z))
 		kinds += C.kind
 		if (!C.breaches())
 			sealed++
-	orbit_check("station sealed", sealed, 3)
+	orbit_check("station sealed", sealed, 4)
 	orbit_check("1969 workshop hub, quarters and airlock", ("station" in kinds) && ("quarters" in kinds) && ("airlock" in kinds) ? 1 : 0, 1)
 	var/obj/structure/habitat_core/hub = locate() in locate(14, 14, z)
 	orbit_check("workshop hub in the middle", hub ? hub.kind : "none", "station")
@@ -940,8 +941,8 @@ var/global/orbit_failures = 0
 		kinds += C.kind
 		if (!C.breaches())
 			sealed++
-	orbit_check("2013 modules", length(kinds), 5)
-	orbit_check("2013 modules sealed", sealed, 5)
+	orbit_check("2013 modules", length(kinds), 6)
+	orbit_check("2013 modules sealed", sealed, 6)
 	orbit_check("2013 node, greenhouse and quarters", ("node" in kinds) && ("greenhouse" in kinds) && ("quarters" in kinds) ? 1 : 0, 1)
 	var/obj/structure/habitat_core/node/hub = locate() in locate(16, 16, 5)
 	orbit_check("node hub in the middle", hub ? 1 : 0, 1)
@@ -1638,6 +1639,80 @@ var/global/orbit_failures = 0
 	map.ordinal_age = 7
 	shard_group.region = "orbit"
 
+// Berths for rockets (orbit_docking.dm): a station's docking airlock port,
+// what the orbit world tells other worlds, choosing a berth, docking a
+// capsule there, sealing, bars from either side and freeing the berth.
+/proc/orbit_berth_checks()
+	var/obj/structure/docking_port/port = null
+	for (var/obj/structure/docking_port/P in orbit_docking_ports)
+		if (!QDELETED(P) && P.owner() && P.outward() && P.berth_free())
+			port = P
+			break
+	orbit_check("a starter station has a docking port with a free berth", port ? 1 : 0, 1)
+	if (!port)
+		return
+	var/owner = port.owner()
+	var/visitor = "civ:gaia:Berthvisitor"
+	orbit_check("its berth lies beyond the outer hatch", port.outward(), EAST)
+	var/list/ads = orbit_docking_advertisements()
+	var/listed = 0
+	for (var/list/A in ads)
+		if (A["id"] == port.port_id)
+			listed = 1
+	orbit_check("the free berth is advertised", listed, 1)
+	var/list/clean = orbit_docking_clean_advertisements(json_decode(json_encode(ads)))
+	orbit_check("advertisements survive the trip", length(clean), length(ads))
+	orbit_check("forged advertisements are dropped", length(orbit_docking_clean_advertisements(list(list("id" = "bad id!", "party" = owner, "welcome" = "everyone")))), 0)
+	var/list/old_peers = shard_group.peers
+	shard_group.peers = list("orbitx" = list("docking_ports" = clean))
+	port.welcome = "owners"
+	shard_group.peers["orbitx"]["docking_ports"] = orbit_docking_clean_advertisements(orbit_docking_advertisements())
+	orbit_check("owners may choose their own berth", orbit_docking_berth_listed("orbitx", port.port_id, owner) ? 1 : 0, 1)
+	orbit_check("strangers are not offered a closed port", orbit_docking_berth_listed("orbitx", port.port_id, visitor) ? 1 : 0, 0)
+	port.welcome = "everyone"
+	shard_group.peers["orbitx"]["docking_ports"] = orbit_docking_clean_advertisements(orbit_docking_advertisements())
+	orbit_check("an open port is offered to anyone", orbit_docking_berth_listed("orbitx", port.port_id, visitor) ? 1 : 0, 1)
+	shard_group.peers = old_peers
+	orbit_check("a docking flight is well formed", space_flight_payload_ok(list("lander" = "dock-1", "orbit" = 1, "port" = port.port_id)) ? 1 : 0, 1)
+	orbit_check("only a flight to orbit docks", space_flight_payload_ok(list("lander" = "dock-1", "return" = 1, "port" = port.port_id)) ? 1 : 0, 0)
+	orbit_check("a bad port id is refused", space_flight_payload_ok(list("lander" = "dock-1", "orbit" = 1, "port" = "../x")) ? 1 : 0, 0)
+	var/plane_owner = orbit_plane_owner(port.z)
+	var/turf/at = orbit_capsule_arrival_turf(list("lander" = "dock-1", "orbit" = 1, "port" = port.port_id))
+	orbit_check("the capsule docks at the berth", at && at == port.berth_turf() ? 1 : 0, 1)
+	var/obj/structure/landed_lander/capsule/C = space_landed_lander("dock-1")
+	orbit_check("the station keeps its plane", orbit_plane_owner(port.z), plane_owner)
+	orbit_check("its deck touches the hatch", istype(get_step(port.loc, port.outward()), /turf/floor/lander_deck) ? 1 : 0, 1)
+	orbit_check("the berth is taken", port.berth_free() ? 1 : 0, 0)
+	orbit_check("a taken berth is not advertised", findtext(json_encode(orbit_docking_advertisements()), port.port_id) ? 1 : 0, 0)
+	var/obj/structure/habitat_core/lock = locate() in get_step(get_step(port.loc, turn(port.outward(), 180)), turn(port.outward(), 180))
+	var/obj/structure/simple_door/habitat_hatch/H = locate() in port.loc
+	orbit_check("the outer hatch onto a docked capsule is sealed", lock && habitat_hatch_on_capsule(port.loc, lock) ? 1 : 0, 1)
+	var/turf/second = orbit_capsule_arrival_turf(list("lander" = "dock-2", "orbit" = 1, "port" = port.port_id))
+	orbit_check("a second rocket for a taken berth flies its own capsule", second && second != port.berth_turf() ? 1 : 0, 1)
+	var/obj/structure/landed_lander/capsule/C2 = space_landed_lander("dock-2")
+	if (C2)
+		C2.spend()
+	// Bars: the station's crew bar it from inside, a docked crew from outside.
+	var/turf/inside = get_step(port.loc, turn(port.outward(), 180))
+	var/turf/outside = get_step(port.loc, port.outward())
+	var/mob/living/human/eva_tester/crew = new(inside)
+	var/mob/living/human/eva_tester/guest = new(outside)
+	orbit_check("each side bars its own way", "[port.bar_side(crew)]|[port.bar_side(guest)]", "inside|outside")
+	orbit_check("an unbarred port lets both through", port.CanPass(crew, inside) && port.CanPass(guest, outside) ? 1 : 0, 1)
+	port.set_bar(null, "inside", TRUE)
+	orbit_check("barred from inside: nobody comes aboard", "[port.CanPass(guest, outside) ? 1 : 0],[port.CanPass(crew, inside) ? 1 : 0]", "0,1")
+	port.set_bar(null, "inside", FALSE)
+	port.set_bar(null, "outside", TRUE)
+	orbit_check("barred from outside: nobody comes into the capsule", "[port.CanPass(guest, outside) ? 1 : 0],[port.CanPass(crew, inside) ? 1 : 0]", "1,0")
+	port.set_bar(null, "outside", FALSE)
+	qdel(crew)
+	qdel(guest)
+	if (H && C)
+		C.spend()
+	orbit_check("a spent capsule frees the berth", port.berth_free() ? 1 : 0, 1)
+	orbit_check("and leaves the station's plane", orbit_plane_owner(port.z), plane_owner)
+	port.welcome = "owners"
+
 // A port whose owners count as online when crew is set.
 /obj/structure/docking_port/probe_crew
 	var/crew = FALSE
@@ -1682,7 +1757,7 @@ var/global/orbit_failures = 0
 	V.m_intent = "stealth"
 	orbit_check("visitor may use their port", "[B.use_refusal(V)]", "")
 	map.ordinal_age = 7
-	orbit_check("no docking before 2013", findtext("[B.use_refusal(V)]", "2013") ? 1 : 0, 1)
+	orbit_check("no ferries before 2013", orbit_docking_visits_open() ? 1 : 0, 0)
 	map.ordinal_age = 8
 	orbit_check("a closed station is not offered", length(B.ferry_choices(visitor)), 0)
 	orbit_check("owners always welcome", A.welcomes(host) ? 1 : 0, 1)
@@ -2138,9 +2213,9 @@ var/global/orbit_failures = 0
 	var/list/C = starter.costs()
 	orbit_check("a plan the size of the starter costs what it does", "[C["steel"]],[C["glass"]],[C["copper"]],[C["electronics"]]", "180,40,40,60")
 	var/datum/station_plan/big = examples[3]
-	orbit_check("a bigger plan pays for its extra modules", big.costs()["steel"], 180 + (big.module_count() - 3) * 60)
+	orbit_check("a bigger plan pays for its extra modules", big.costs()["steel"], 180 + (big.module_count() - 4) * 60)
 	orbit_check("bad codes are refused", isnull(station_plan_from_code("C13STATION/1/x/9,9,C")) && isnull(station_plan_from_code("C13STATION/1/x/4,4,Z")) && isnull(station_plan_from_code("C13STATION/1/x/4,4,C;4,4,Q")) ? 1 : 0, 1)
-	var/datum/station_plan/P = station_plan_from_rows("bad", list("CQ", "K."))
+	var/datum/station_plan/P = station_plan_from_rows("bad", list("CQP", "K.."))
 	orbit_check("a plan with its parts is fine", length(P.problems()), 0)
 	P.set_piece(4, 2, "C")
 	orbit_check("two command modules are refused", findtext(jointext(P.problems(), " "), "command modules") ? 1 : 0, 1)
@@ -2152,8 +2227,19 @@ var/global/orbit_failures = 0
 	P.set_piece(text2num(K[1]), text2num(K[2]) + 2, "S")
 	P.set_piece(text2num(K[1]), text2num(K[2]) + 1, "S")
 	orbit_check("a module on the keel is refused", findtext(jointext(P.problems(), " "), "dock to exactly one") || findtext(jointext(P.problems(), " "), "in its way") ? 1 : 0, 1)
-	var/datum/station_plan/nokeel = station_plan_from_rows("bad", list("CQ"))
+	var/datum/station_plan/nokeel = station_plan_from_rows("bad", list("CQP"))
 	orbit_check("no keel airlock is refused", findtext(jointext(nokeel.problems(), " "), "keel airlock") ? 1 : 0, 1)
+	// Docking airlocks (Val, 2026-11-23): at least one, its berth left clear.
+	var/datum/station_plan/nodock = station_plan_from_rows("bad", list("CQ", "K."))
+	orbit_check("no docking airlock is refused", findtext(jointext(nodock.problems(), " "), "no docking airlock") ? 1 : 0, 1)
+	var/datum/station_plan/dock = station_plan_from_rows("dock", list("CQP.", "K..."))
+	orbit_check("a docking airlock with a clear berth is fine", length(dock.problems()), 0)
+	var/list/PD = splittext(dock.piece_cells("P")[1], ",")
+	orbit_check("its berth is the slot beyond its outer hatch", dock.berth_slot(dock.piece_cells("P")[1]), "[text2num(PD[1]) + 1],[PD[2]]")
+	dock.set_piece(text2num(PD[1]) + 1, text2num(PD[2]), "S")
+	orbit_check("a module in the berth is refused", findtext(jointext(dock.problems(), " "), "berth") ? 1 : 0, 1)
+	qdel(nodock)
+	qdel(dock)
 	var/datum/design_report/R = big.check_design()
 	orbit_check("a big plan notes its extra steel", findtext(jointext(R.texts(DESIGN_NOTE), " "), "60 more steel") ? 1 : 0, 1)
 	qdel(R)
