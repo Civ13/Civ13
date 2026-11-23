@@ -179,6 +179,25 @@ var/list/asay_lines = list()
 	S.revoke(ip_ban, "val", "Host", "lifted")
 	check("ip ban lifted", !length(S.active_bans_matching(null, "play")))
 
+	// SQL/bans.txt for the Discord bot, in the old file's layout.
+	check("bans file expiry", S.bans_file_expiry("0") == "0" && S.bans_file_expiry("946684801") == "10" \
+		&& S.bans_file_expiry("1000000000") == "533152000" && S.bans_file_expiry("2435870080") == "14891852800")
+	S.bans_file_dirty = TRUE
+	check("bans file waits for the old list", !S.write_bans_file() && !fexists("SQL/bans.txt"))
+	text2file("copied", "SQL/bans.migrated")
+	var/list/file_ban = S.add("@nockey", "ban", list("scope" = "game", "type" = "Server", "info" = "nil", "uid" = "917273280",
+		"reason" = "grief; again|||", "banned_by" = "Val", "ban_date" = "today", "expire_info" = "Expires in 1 day(s)",
+		"cid" = "77", "ip" = "10.0.0.9", "until" = "2435870080"), "val", "Host")
+	S.refresh(TRUE)
+	var/bans_file = file2text("SQL/bans.txt")
+	check("bans file written", findtext(bans_file, "Server;nil;917273280;grief  again   ;Val;today;14891852800;Expires in 1 day(s);nil;77;10.0.0.9|||\n"))
+	check("bans file lists every active ban", length(splittext(bans_file, "|||\n")) - 1 == length(S.active_bans_matching(null, "any")))
+	var/list/file_lift = S.revoke(file_ban, "val", "Host", "appealed")
+	S.refresh(TRUE)
+	check("lifted ban leaves the bans file", fexists("SQL/bans.txt") && !findtext(file2text("SQL/bans.txt"), "917273280"))
+	S.journal -= list(file_ban, file_lift) // the checks below count the journal
+	S.save_journal()
+
 	// Watchlist.
 	check("watch added once", watchlist_add("Shady One", "alt of a banned player", admin) && !watchlist_add("shadyone", "again", admin))
 	check("watched", S.watched("shadyone") && length(watchlist_for("shadyone")) == 1)

@@ -1074,10 +1074,12 @@ proc/admin_notice(var/message, var/rights)
 			return
 
 // Bans live in the shared player records (quickBan.dm), which drop expired
-// bans when read. This copies the old SQL/bans.txt in once.
+// bans when read. This copies the old SQL/bans.txt in once; after that every
+// world rewrites SQL/bans.txt from the shared records for the Discord bot.
 /proc/load_bans()
 	var/copied = quickBan_migrate_legacy()
 	world.log << "Bans: [copied] old bans and connections copied to the shared player records."
+	shared_records.refresh(TRUE) // writes SQL/bans.txt
 	return TRUE
 
 //Radiation/Pollution stuff
