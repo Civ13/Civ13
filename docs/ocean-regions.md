@@ -55,7 +55,7 @@ ship edge crossing work.
 `code/modules/naval/ship_edge_crossing.dm`. A commissioned ship within four
 tiles of a map edge that leads somewhere (a sail or `both` link in the world
 links table) gets "Sail over the horizon" at her tiller. She must have a mast
-or a running engine and two crew awake aboard, and pass every check a crossing
+or a running engine and somebody awake aboard, and pass every check a crossing
 already makes (load, landfall rest, no upper deck). She then crosses
 (`cross()` in `ship_crossing.dm`) with the arrival side and the fraction along
 the stretch in the first crew member's payload (`sea_edge`). The far side
