@@ -58,13 +58,20 @@ The lead engine refreshes the train's weight and pull every six tiles
 (`refresh_consist()`); nothing is stored per step, and all the driving state
 is `tmp`, so a saved train comes back standing with the throttle closed.
 
-Acceleration rises with spare pull. Coasting and engine braking each take a
-fixed amount of speed per tile (0.2, or 0.6 against a lower notch), divided by
-the train's weight over six, so a long heavy train rolls a long way.
+Speed changes by the second, not by the tile, so a train creeps away, gathers
+way over many tiles and loses it gradually. A train gains `TRAIN_ACCEL` (0.25
+tiles/s) each second times its pull ratio, up to twice that with pull to spare:
+`train_speed_gain()` solves v' = v + a / v' for the step being taken, so a light
+steam train reaches 5 tiles/s in about ten seconds and 25 tiles, and a train at
+its rated load takes twice as long. Coasting and engine braking take a fixed
+amount of speed each second (0.2, or 0.6 against a lower notch), divided by the
+train's weight over six, so a long heavy train rolls a long way; each step
+counts the seconds it takes (`train_step_seconds()`). Free-rolling cars
+(`train_rolling.dm`) still lose speed per tile.
 
 ## Brakes
 
-A train stops by the weight its brakes hold. Each step the drive loop takes
+A train stops by the weight its brakes hold. Each second the drive loop takes
 `brake_decel()` off the speed on top of the rolling resistance above: 1.2
 tiles per second times the braked share of the train's weight, where the
 braked weight is
