@@ -67,9 +67,21 @@ var/global/list/orbit_docking_ports = list()
 
 /obj/structure/docking_port/New()
 	..()
+	orbit_docking_ports |= src
+
+// A new port takes its id at once; a loaded one keeps its saved id, and one
+// saved before ports had ids gets one after the load (restore_contract.dm).
+/obj/structure/docking_port/on_runtime_spawn()
+	..()
+	give_port_id()
+
+/obj/structure/docking_port/after_load()
+	..()
+	give_port_id()
+
+/obj/structure/docking_port/proc/give_port_id()
 	if (!orbit_docking_valid_id(port_id))
 		port_id = "port-[num2text(world.realtime, 20)]-[rand(100000, 999999)]"
-	orbit_docking_ports |= src
 
 /obj/structure/docking_port/Destroy()
 	orbit_docking_ports -= src
