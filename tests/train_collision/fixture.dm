@@ -57,6 +57,11 @@ var/datum/map_stub/map = new
 	return null
 /atom/movable/proc/persistence_set_loc(atom/destination)
 	return Move(destination)
+// Train glide (train_glide.dm) only changes how a step is drawn.
+/proc/train_glide_before(atom/movable/AM, turf/dest)
+/proc/train_glide_after(atom/movable/AM, turf/from)
+/atom/movable/proc/train_glide_set_loc(turf/dest)
+	return persistence_set_loc(dest)
 /obj/item/proc/update_light()
 /mob/living
 	var/mob_size = 2

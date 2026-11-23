@@ -76,25 +76,34 @@ var/global/train_step_plain = FALSE
 // One step of a train part or a load with its section. plain: the section is
 // unwatched, so the move is the bare change of place persistence_set_loc()
 // makes, without its line-of-sight calls, which reach nobody.
+// While a train drives, the move is drawn at its pace (train_glide.dm).
 /atom/movable/proc/train_shift(turf/dest, plain)
 	if (!plain || !(istype(src, /obj/structure) || istype(src, /obj/item)))
-		return persistence_set_loc(dest)
+		return train_glide_set_loc(dest)
 	var/atom/origin = loc
+	train_glide_before(src, dest)
 	loc = dest
+	train_glide_after(src, origin)
 	paper_authoring_notify(src, "relocated")
 	item_pile_moved(src, origin, dest)
 	return TRUE
 
 /obj/structure/train_part/train_shift(turf/dest, plain)
 	if (!plain)
-		return persistence_set_loc(dest)
+		return train_glide_set_loc(dest)
+	var/turf/origin = loc
+	train_glide_before(src, dest)
 	loc = dest
+	train_glide_after(src, origin)
 	return TRUE
 
 /obj/structure/trains/train_shift(turf/dest, plain)
 	if (!plain)
-		return persistence_set_loc(dest)
+		return train_glide_set_loc(dest)
+	var/turf/origin = loc
+	train_glide_before(src, dest)
 	loc = dest
+	train_glide_after(src, origin)
 	return TRUE
 
 /proc/train_platform_plan_from(obj/structure/trains/platform/first)
