@@ -1190,4 +1190,39 @@ var/global/train_step_plain = FALSE
 			front = P
 		ahead = P
 	qdel(src)
+	train_clear_footprint(turfs, heading)
 	return front
+
+// TRUE when something solid other than a living thing fills T. A car's
+// wall or door only closes one edge of its tile, so it does not count.
+/proc/train_tile_walled(turf/T)
+	if (!T || T.density)
+		return TRUE
+	for (var/atom/movable/AM in T)
+		if (AM.density && !isliving(AM) && !istype(AM, /obj/structure/train_part/edge))
+			return TRUE
+	return FALSE
+
+// People standing where a car was just put together (the builder behind
+// the kit, a bystander on the deck) would be shut inside its boiler, bunker
+// or walls. Anyone on a tile the new car made solid steps out to the nearest
+// clear tile beside it. turfs: the car's rail tiles, front first.
+/proc/train_clear_footprint(list/turfs, heading)
+	var/list/footprint = list()
+	for (var/turf/T in turfs)
+		footprint |= train_platform_tiles(T, heading)
+	for (var/turf/T in footprint)
+		if (!T || !train_tile_walled(T))
+			continue
+		for (var/mob/living/M in T)
+			if (M.loc != T)
+				continue
+			var/turf/out = null
+			for (var/turf/C in range(3, T))
+				if ((C in footprint) || train_tile_walled(C))
+					continue
+				if (!out || get_dist(C, T) < get_dist(out, T))
+					out = C
+			if (out)
+				M.persistence_set_loc(out)
+				to_chat(M, SPAN_WARNING("You step clear as the car goes together around you."))

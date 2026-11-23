@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 356
+	maxx = 362
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -3454,6 +3454,23 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("crane/reach_and_brace_limit_it", !car.braced && !crane.hauler_ready(hand) && get_dist(far_load, crane) > crane.sling_reach())
 	qdel(far_load)
 
+// Building a car around people: nobody is left shut inside a solid section.
+/proc/platform_entomb_run()
+	for (var/ty in 2 to 25)
+		platform_track(358, ty, NORTH)
+	var/mob/living/human/platform_rider/builder = new(platform_turf(358, 19))
+	var/mob/living/human/platform_rider/beside = new(platform_turf(357, 17))
+	var/mob/living/human/platform_rider/in_cab = new(platform_turf(359, 15))
+	var/obj/structure/trains/locomotive/coal/mainline/E = platform_car("loco_mainline", 358, 20, NORTH)
+	var/list/body = istype(E) ? platform_segments(E.connected) : list()
+	var/list/footprint = list()
+	for (var/ty in 15 to 20)
+		for (var/tx in 357 to 359)
+			footprint += platform_turf(tx, ty)
+	var/freed = istype(E) && body.len == 5 && !(builder.loc in footprint) && !(beside.loc in footprint) && !train_tile_walled(builder.loc) && !train_tile_walled(beside.loc) && get_dist(builder, platform_turf(358, 19)) <= 2 && get_dist(beside, platform_turf(357, 17)) <= 2
+	platform_check("assembly/nobody_shut_inside", freed && train_tile_walled(platform_turf(358, 19)) && train_tile_walled(platform_turf(357, 17)))
+	platform_check("assembly/cab_rider_stays", in_cab.loc == platform_turf(359, 15) && !train_tile_walled(in_cab.loc))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -3500,6 +3517,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_goods_run()
 		platform_early_run()
 		platform_electric_run()
+		platform_entomb_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
