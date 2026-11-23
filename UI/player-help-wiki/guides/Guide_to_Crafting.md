@@ -724,7 +724,7 @@ level of the crafting skill before you are able to use them.
 <tr>
 <td width="5%"><img src="../images/gunbench.png"></td>
 <td width="10%"><b>Gunsmithing bench</b></td>
-<td>Made with 13 softwood after <b>Gunsmithing</b>. From WW1 on, design your own gun from a stock, receiver, feeding system and barrel, paid for with wood and steel loaded onto the bench. Designing needs a Crafting skill of 2.5x and coins worth 50 silver, and gives you a <b>blueprint</b>; anyone with 1.5x can then build copies from the blueprint. Click the bench with a gun to rechamber it to another caliber. The parts on offer grow with Cartridge Firearms, Self-Loading Firearms and Automatic Weapons research; see <a href="Guide_to_Gunsmithing.html#the-gunsmithing-bench">the gunsmithing bench</a> for every part and its cost.</td>
+<td>Made with 13 softwood after <b>Gunsmithing</b>. From WW1 on, design your own gun from a stock, receiver, feeding system and barrel, paid for with wood and steel loaded onto the bench. Designing needs a Crafting skill of 2.5x and gives you a <b>blueprint</b>; anyone with 1.5x can then build copies from the blueprint. Click the bench with a gun to rechamber it to another caliber. The parts on offer grow with Cartridge Firearms, Self-Loading Firearms and Automatic Weapons research; see <a href="Guide_to_Gunsmithing.html#the-gunsmithing-bench">the gunsmithing bench</a> for every part and its cost.</td>
 </tr>
 </tbody>
 </table>

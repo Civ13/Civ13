@@ -69,7 +69,7 @@ together.
 right. This is different from WASD(W to go forward, S to go back, you
 know the drill) control, so it may take some time to master. It is
 advised to drive jeeps first to get used to the driving system.
-* Cars, trucks, buses and tanks roll smoothly instead of jumping from tile to tile. Take one out of gear and it coasts on a little, slowing, and stops square on the next tile. A turn squares it on its tiles first.
+* Cars, trucks, buses and tanks roll smoothly instead of jumping from tile to tile. Take one out of gear and it coasts on a little, slowing, and stops square on the next tile. A turn squares it on its tiles first, then the whole vehicle swings round smoothly to its new heading, with everyone aboard carried round with it. The same goes for planes, helicopters, workshop ships and submarines.
 * You can run over trees with your tank and it does not damage your tank.
 * Any vehicle can ram a wall, pillar, door or barricade. The heavier it is and the faster it goes, the harder it hits: a wall that gives way lets it through a gear slower, one that holds stops it. The vehicle's front takes damage and the crew are thrown about. A tank pushes through wood and clay at a crawl; a light car mostly wrecks its own front on stone. Bollards stop vehicles while people walk between them; see [Fences, barricades and barriers](Guide_to_Construction.md#fences-barricades-and-barriers).
 * You can insta gib/kill any infantry if you run over them.

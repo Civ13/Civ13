@@ -814,7 +814,9 @@ To couple the car, right-click its front end and choose **Hitch** to join the ca
 
 ### Taking a car apart
 
-Stop the train, uncouple the car from the cars on both sides and clear everything off its deck, furniture included. Then use a **crowbar** on the car to pack it back into a kit. A kit that was taken apart comes back without furniture, so keep the furniture you removed and put it back aboard.
+Stop the train, uncouple the car from the cars on both sides and clear everything off its deck, furniture included. Then use a **crowbar** on the car to pack it back into a kit. A kit that was taken apart comes back without furniture, so keep the furniture you removed and put it back aboard. A full-size tender packs into its kit the same way, but any coal and water still in it are lost.
+
+The small one-tile wagons and engines, such as the mining cart, coal tender and hand car, don't have kits. A **crowbar** takes one apart and gives back half of what it cost. It must be stopped, uncoupled and empty, with nobody on it or buckled to it and no animal in harness. Shut an engine down first; its fuel and water are lost.
 
 ## Heavy locomotives
 
@@ -835,7 +837,7 @@ Heavy locomotives are full-size engines, three tiles wide and four long. They ar
 - **Keep clear of the line.** A heavy locomotive is as wide as a platform car, and it hits anyone standing beside the rails as well as on them.
 - **Damage.** Explosions wear the engine and its body down. A wrecked engine dies and a wrecked body section stops the train until it is welded. A **welding tool** repairs both.
 
-A heavy locomotive can't be packed back into a kit. A [rail warehouse](#rail-warehouse) takes it whole.
+A **crowbar** packs a stopped, shut-down, uncoupled and empty engine back into its kit.
 
 ### Cab crew
 
@@ -862,7 +864,7 @@ The main-line steam locomotive is the big express engine: six tiles long, faster
 - **Assemble** it like the heavy locomotives, on **six** tiles of straight track. The cab is the last section.
 - **It needs a tender.** It has no coal bunker and almost no water of its own. Build a [tender](#tenders-and-water-stops) behind it and couple the two, so the tender's plate meets the back of the cab. The tender's water runs to the engine, and the fireman at the firebox door shovels from the tender.
 - **Raising steam** from cold takes about six minutes on a good fire, so keep the fire in between runs.
-- It has the same [cab crew](#cab-crew) as the heavy steam engines, takes damage and is repaired the same way, and can't be packed back into a kit. A rail warehouse takes it whole.
+- It has the same [cab crew](#cab-crew) as the heavy steam engines, takes damage and is repaired the same way, and a crowbar packs it back into its kit like them.
 
 ### Main-line diesel locomotive
 
@@ -876,7 +878,7 @@ The main-line diesel is the big engine of the diesel age: six tiles long with a 
 
 - **Assemble** it like the heavy locomotives, on **six** tiles of straight track. Fuel it from a container or from a [tank car](#tank-car).
 - **Two cabs.** Click the locomotive from either cab to drive it. A walkway down each side of the hood joins them. Drive from the cab that leads: with nobody in the leading cab the train keeps to three quarters of its speed, so walk to the other end before you run back.
-- It takes damage and is repaired like the heavy locomotives, and can't be packed back into a kit. A rail warehouse takes it whole.
+- It takes damage and is repaired like the heavy locomotives, and a crowbar packs it back into its kit like them.
 
 ### Diesels in multiple
 

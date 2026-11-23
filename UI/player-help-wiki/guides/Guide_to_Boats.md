@@ -195,7 +195,7 @@ These controls are for the RHIB. An outrigger canoe with an engine is driven fro
 
 A bigger engine moves faster: engines of 300 cc or more are quickest, and engines of 200 cc or more beat the smallest ones. The boat stops when the next tile isn't water.
 
-Boats glide smoothly rather than jumping from tile to tile, the same way you walk. When you turn, the boat keeps its sideways place, so you can line it up anywhere. Out of gear, it drifts on for about half a tile before it stops.
+Boats glide smoothly rather than jumping from tile to tile, the same way you walk. When you turn, the boat swings round to its new heading and keeps its sideways place, so you can line it up anywhere. Out of gear, it drifts on for about half a tile before it stops.
 
 **Cargo:** a RHIB can carry **one** loose structure, such as a crate or a small cannon. Drag it onto the boat to load it. Click the boat to unload it beside you.
 
@@ -665,7 +665,7 @@ Click the tiller to sail:
 | --- | --- |
 | **Weigh anchor / Drop anchor** | A new hull lies stopped until her anchor is weighed. See [Anchors and mooring](#anchors-and-mooring) for what holds her |
 | **Slow ahead**, **Half ahead**, **Full ahead**, **All stop** | Under way she creeps smoothly along her heading with every floor, wall, crate and person aboard, and her crew can keep walking her deck as she goes: a tile every **15 seconds** at slow ahead, every **7.5** at half and every **5** at full. Half ahead needs sails, oars or an engine, full ahead needs engines or oars (below) |
-| **Head north / east / south / west** | She comes about around the tiller five seconds later, half a second more for every tile of her length past ten (at most 30 seconds); everything aboard turns with her |
+| **Head north / east / south / west** | She comes about around the tiller five seconds later, half a second more for every tile of her length past ten (at most 30 seconds); she swings round smoothly and everything aboard turns with her |
 | **Sea chart** | Where she is, the ships her lookout sees and every harbour on this sea (see [Harbours and the sea chart](#harbours-and-the-sea-chart)) |
 | **Make for a berth** | Slides her alongside a mooring post within 20 tiles |
 | **Hail a ship** | Calls across to a ship her lookout sees (see [Hails and running dark](#hails-and-running-dark)) |
