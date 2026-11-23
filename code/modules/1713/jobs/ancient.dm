@@ -338,7 +338,8 @@
 		//shoes
 	equip_loadout(H)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/gaelic/iron(H), slot_l_hand)
-	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_r_store)
+	// A scutum is too big for a pocket and would be deleted there (issue 6988).
+	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_r_hand)
 	H.add_note("Role", "You are a <b>[title]</b>, the chieftain of your tribe. Lead your men to victory!")
 
 	apply_job_stats(H)
@@ -452,7 +453,8 @@
 	else
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/bearpelt/black(H), slot_head)
 		//weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/sarissa/pike(H), slot_belt)
+	// A pike rides on the shoulder; a belt refuses it and deletes it (issue 6989).
+	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/sarissa/pike(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/sarissa/pike(H), slot_l_hand)
 	H.equip_to_slot_or_del(new /obj/item/weapon/shield/scutum(H), slot_back)
 	H.add_note("Role", "You are a <b>[title]</b>, a germanic spearman.")
