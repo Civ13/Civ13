@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '72cd30a2b7e73b939df8644b4ae416254f49d765'
+WIKI_REVIEWED_REVISION = 'a8d6755257da38ed374a86bb4420c173e01c8780'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -128,7 +128,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('75302a5ae7e493ab0104ca23548ca9992a6b817efd3b46c0da9f049588ad4291', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('9bc778ebfcf154ac5b1b9c962a16272cd507e57ad06a052c39759238f6ab9057', 'exercise training strength weights running fatigue'),
-    'guides/Guide_to_Factory_Automation.md': ('d562df9b634e4cad7109d98ef25ad7f801a71dab35483e0fa27ee41780e495a0', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill saw sawmill logs'),
+    'guides/Guide_to_Factory_Automation.md': ('15339c4ec92b80d6d2ef614fc995c2994ea8428f410eb7d277265ad463b84e2c', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill saw sawmill logs'),
     'guides/Guide_to_Farming.md': ('b36adddbb45f2d75c03a3604fd61f3035906069b83449a27d73c5d823edd9c99', 'farming farm plant crops soil water frost mulch cloche'),
     'guides/Guide_to_Fishing.md': ('bf8032bff6af977f89793883b0c4565f2f87f4497d18dee75ea5efe816898375', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
