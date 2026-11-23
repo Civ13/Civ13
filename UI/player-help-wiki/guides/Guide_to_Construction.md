@@ -52,7 +52,7 @@ Hold a blank ship's draught with a pen, pencil or pigment in your other hand, us
 - **Roof this storey** roofs everything inside the walls with the picked roofing and leaves the tile over stairs and ladders open. **Copy the walls below** stands the walls, windows and pillars of the storey below on the one you are looking at. A door is copied as a window.
 - Upstairs, the walls of the storey below show through faintly so you can stand the next walls on them, and the opening over stairs or a ladder is marked.
 - **Start from** loads a ready-made cabin, two-storey house or stone tower house to change as you like.
-- **Save to the sheet** keeps the drawing. Use the sheet again to see its summary, change it, or copy its design code to keep outside the game or give to someone else. Pasting a code onto any ship's draught draws the same house.
+- **Save to the sheet** keeps the drawing. Use the sheet again to see its summary or change it. **Export its design code** (or **Export code** in the window) gives a code you can keep outside the game or give to someone else, and **Import a design code** (or **Import code**) draws a shared house onto any ship's draught. See [Sharing plans as design codes](Guide_to_Boats.md#sharing-plans-as-design-codes).
 
 A wall on the plan stands for every wall of its strength. A timber wall is any wall that carries two storeys, such as a log, plank, bamboo, straw or earth wall. A stone wall is any that carries four, such as stone, brick, clay, sandstone or marble. The **Figures** panel counts the parts and gives rough materials from one usual recipe for each, so treat it as a guide.
 

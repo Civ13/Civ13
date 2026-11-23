@@ -40,6 +40,8 @@ Using a research book in hand opens its window. Alt-click does the same for a bo
 
 **Death clears everything you know**, both chapters and scholarship. For one day a new character can take most of it back by starting near where you died, beside your faction's recruitment station or at a bed you had held for a day (see [If you die](Guide_to_Your_First_Day.md#if-you-die)). Otherwise a new character starts with nothing, so keep your books safe and your scholars alive.
 
+**Can't study a chapter?** Check **Needs groundwork** for missing prerequisites. You'll also need enough light and at least Broken proficiency in the chapter's language. If you can't read a coded copy, look for a readable one. You do not need a scholarship level just to read.
+
 ## Research benches
 
 A **research bench** costs 8 soft wood. Benches belong to nobody: anyone can use any bench, and a bench holds only the work in progress.
@@ -52,6 +54,10 @@ A **research bench** costs 8 soft wood. Benches belong to nobody: anyone can use
 
 The first time anyone finishes a capstone chapter, the whole world moves into the next age. Two ages have a peaceful capstone as well as a military one: the Printing Press opens the same age as Gunpowder, and Powered Flight opens the same age as Mechanized Warfare. Either one is enough.
 
+### Moving or taking down a bench
+
+Use a **wrench on Harm intent** to unfasten the bench, move it, then use the wrench again to fasten it. Use a **hammer on Harm intent** only if you want to dismantle it: this returns one wood and drops any books and writing tools left on it. On maps with faction research, only members of the faction that owns the bench can do this.
+
 ### Learning by doing
 
 You don't have to wait at the bench for the whole time. From the Stone Age on, things you do out in the world also count as research. Do the work, then stand at a bench that is researching the subject, and your experience is written into the book. Each book takes each piece of work once, and the subject's details in the bench window show how far along you are.
@@ -61,11 +67,11 @@ You don't have to wait at the bench for the whole time. From the Stone Age on, t
 - **Butchering** animals advances Stone Arms, Archery and Primitive Armor.
 - **Mining, smelting and firing** advance the Natural Science subjects. Each ore vein you strike while mining counts toward Early Chemical Cells, Gunpowder and Galvanic Cells. Each ore or metal in a bloomery, blast furnace, kiln or tatara that you light counts toward Steelmaking. Each piece of unfired clay or load of glass sand in an oven or fireplace that you light counts toward Glassworking and Optics & Instruments. Each of these is worth a small share of the subject.
 
-- **Prototypes.** Once a book you carry holds a third of a chapter, you can make that subject's things before you know it, as long as you know what it builds on. The first five things you make from a book each write a share of the chapter into it. After that the book is still your reference, and you can keep making the subject's things from it for as long as you like. Working from a book is slow: the first piece takes twice as long as usual. Each piece you make that way makes the next a little quicker, down to one and a half times as long. Once you finish the chapter and read it, you work at full speed. Making something beside a teacher who knows the subject is never slowed. The subject's things stay listed in the crafting window while a book you carry is working on it. If you can't make one yet, you are told what is missing: the subjects it builds on, or how many points the book still needs.
-- **Trial and error.** You don't have to wait for that first third. Hold or carry a book and use **Attempt a Subject** (Object tab) to open it to a subject whose groundwork you know. While you carry the book you can try to make that subject's things from an empty chapter, in the crafting menu, at an anvil or at a workbench.
+- **Prototypes.** Once the unfinished chapter in your book reaches **34%** (rounded up to a whole research point), you can make eligible recipes before learning the chapter, as long as you know its prerequisites. Take the book off the bench and hold it in hand, not inside a bag. Use the recipe's normal materials, tools and workstation. The first five successful builds for that subject in that book each add progress. After that the book is still your reference, and you can keep making the subject's things from it for as long as you like. Working from a book is slow: the first piece takes twice as long as usual. Each piece you make that way makes the next a little quicker, down to one and a half times as long. Once you finish the chapter and read it, you work at full speed. Making something beside a teacher who knows the subject is never slowed. The subject's things stay listed in the crafting window while a book you carry is working on it. If you can't make one yet, you are told what is missing: the subjects it builds on, or how many points the book still needs.
+- **Trial and error.** You don't have to wait for that 34% threshold. Hold or carry a book and use **Attempt a Subject** (Object tab) to open it to a subject whose groundwork you know. While you carry the book you can try to make that subject's things from an empty chapter, in the crafting menu, at an anvil or at a workbench.
   - Most early attempts fail. A failure uses up the materials, leaves a ruined piece and writes a lesson into the book worth a small share of the chapter. A book takes five lessons per subject.
   - An empty chapter gives about 15 chances in 100. Every bit of the chapter already written raises that, each earlier failure on the same thing adds 10, and scholarship above what the subject needs adds up to 15. Too little scholarship takes up to 10 away.
-  - A working piece counts as a prototype, and you keep it. Like any work from a book, it takes longer than usual. You can make five early pieces of a subject this way; after that, get the chapter to a third.
+  - A working piece counts as a prototype, and you keep it. Like any work from a book, it takes longer than usual. You can make five early pieces of a subject this way; after that, get the chapter to the ordinary 34% threshold.
   - From the Industrial Age on, a failed attempt can burn, sicken or cut you a little, so don't try it wounded.
 - **Field study.** Hold paper, parchment or a book with a pen or pencil in your other hand, stand next to a building, machine or tool that a subject makes, and use **Study in the Field** (Object tab). After about half a minute your notes are written into the book, or onto the sheet as field notes to use on a bench researching that subject. It works on anyone's things, not only your own. A book takes three different kinds of thing per subject, each once.
 
@@ -127,7 +133,7 @@ Everything you pick up this way counts toward the same progress as reading the c
 
 ## Late research
 
-From era 5 on (the ages after the Industrial Age), research is more than waiting at a bench. Bench study alone still finishes any subject, and late subjects are studied at the bench 50% faster than their listed time, but the quickest way through is to go out and use what you are studying.
+From era 5 on (the ages after the Industrial Age), research is more than waiting at a bench. Passive bench work can fill the progress bar, but some chapters still need a prototype, a demonstration, a bill of materials or a combination of these. If the bar is full, check the subject details rather than waiting longer.
 
 ### Field work
 

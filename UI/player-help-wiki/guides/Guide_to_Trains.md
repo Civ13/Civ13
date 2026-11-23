@@ -247,7 +247,7 @@ Instead of assembling every car from its own kit, you can draw the whole train o
 
 The train comes out coupled up, with its engines cold and empty: fuel and water them before driving. A drawn car behaves like any other car: it can be taken apart into a kit, stored in a rail warehouse and put back together.
 
-To copy a train, stand it on the track in front of the works, hold a blank sheet of paper and use the works: **Draw the train on the track** draws it onto the sheet. Train sheets also share as design codes, like ship's draughts.
+To copy a train, stand it on the track in front of the works, hold a blank sheet of paper and use the works: **Draw the train on the track** draws it onto the sheet. Train sheets export and import as design codes like every other plan, from the sheet menu or with **Export code** and **Import code** in the window (see [Sharing plans as design codes](Guide_to_Boats.md#sharing-plans-as-design-codes)).
 
 ## Couplings
 
