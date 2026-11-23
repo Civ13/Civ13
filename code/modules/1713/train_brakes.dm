@@ -11,7 +11,7 @@
 //   the train's weight that is braked. Handbrakes left on drag while the
 //   engine pulls (pull_ratio()).
 
-#define TRAIN_BRAKE_DECEL 1.2 // tiles per second lost each step with the whole train braked
+#define TRAIN_BRAKE_DECEL 1.2 // tiles per second lost with the whole train braked: each second while an engine drives it, each tile while it rolls free
 #define TRAIN_BRAKE_DRAG 3 // a braked car pulls like this many times its weight more
 #define TRAIN_HANDBRAKE_TIME 20
 #define TRAIN_BRAKE_WHEEL_DELAY 10

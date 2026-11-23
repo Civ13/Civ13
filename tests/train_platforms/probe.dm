@@ -421,6 +421,16 @@ var/global/platform_probe_runtime_error = FALSE
 	sleep(12)
 	platform_check("drive/throttle_moves", L.driving && L.y > start_y && W1.y == L.y - 1 && W2.y == L.y - 2)
 	platform_check("drive/speed_capped", L.rail_speed > 0 && L.rail_speed <= 10 / L.max_train_speed)
+	// Speed changes by the second: a train creeps away and takes many tiles
+	// to reach full speed, and loses way gradually.
+	var/creep = train_speed_gain(0, TRAIN_ACCEL)
+	var/v = 0
+	var/tiles_to_full = 0
+	while (v < 5 && tiles_to_full < 100)
+		v = train_speed_gain(v, TRAIN_ACCEL * 2)
+		tiles_to_full++
+	platform_check("drive/gathers_way_gradually", creep < 0.6 && tiles_to_full >= 20 && tiles_to_full <= 30 && abs(train_speed_gain(2, 1) - 2 - 1 * train_step_seconds(train_speed_gain(2, 1))) < 0.001)
+	platform_check("drive/loses_way_by_the_second", train_step_seconds(5) == 0.2 && train_step_seconds(1) == 1 && train_step_seconds(0) == 2)
 	L.throttle = 0
 	L.braking = TRUE
 	platform_check("drive/brake_stops", drive_wait(L) && L.rail_speed == 0 && !L.automovement)
@@ -432,11 +442,12 @@ var/global/platform_probe_runtime_error = FALSE
 	var/heavy_cruise = H.cruise_speed()
 	platform_check("load/heavy_slower", H.pull_ratio() < 1 && heavy_cruise < 10 / H.max_train_speed && heavy_cruise > 0)
 
-	// Braking distance grows with the train: both start at the same speed.
+	// Braking distance grows with the train: both start at the same speed,
+	// slow enough for the heavy one to stop on its stretch of track.
 	for (var/obj/structure/trains/locomotive/E in list(L, H))
 		E.throttle = 0
 		E.braking = TRUE
-		E.rail_speed = 2.5
+		E.rail_speed = 1.8
 	var/light_from = L.y
 	var/heavy_from = H.y
 	L.drive()
@@ -1407,6 +1418,9 @@ var/global/platform_probe_runtime_error = FALSE
 	H.fuel = 200
 	H.on = TRUE
 	H.throttle = 3
+	// Already running at speed: a train gathers way over many more tiles
+	// than this stretch has (train_speed_gain()).
+	H.rail_speed = 4.5
 	H.drive()
 	var/top = 0
 	var/limit = 400
