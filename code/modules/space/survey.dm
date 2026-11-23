@@ -490,6 +490,9 @@ var/global/list/space_survey_maps = list()
 	var/dropout_chance = 0
 	var/dust_chance = 0
 	var/dusty = FALSE // dust on the panels halves recharge for this sortie
+	// A probe flown on a modular rocket (rocket_missions.dm) has no ascent
+	// stage: it maps until the mission is abandoned.
+	var/one_way = FALSE
 	var/tmp/last_recharge = null
 
 // Picks the landing cell: anywhere flat with no aim, else a plain within
@@ -605,6 +608,7 @@ var/global/list/space_survey_maps = list()
 // landing_sites) stays for the next probe.
 /obj/structure/survey_console/proc/end_mission()
 	mission = FALSE
+	one_way = FALSE
 	probe_name = ""
 	samples = list()
 	battery = 0
@@ -754,6 +758,8 @@ var/global/list/space_survey_maps = list()
 /obj/structure/survey_console/proc/ascend()
 	if (!mission_map())
 		return "No signal from the probe."
+	if (one_way)
+		return "This probe has no ascent stage. It keeps mapping until you abandon the mission."
 	if (probe_x != land_x || probe_y != land_y)
 		return "Drive back to the landing site ([land_x],[land_y]) where the ascent stage waits."
 	var/count = samples.len
