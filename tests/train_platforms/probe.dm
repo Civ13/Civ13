@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 362
+	maxx = 400
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -454,6 +454,15 @@ var/global/platform_probe_runtime_error = FALSE
 	H.drive()
 	drive_wait(L)
 	drive_wait(H)
+	// Braking is always quicker than gathering way, light train or heavy.
+	var/brakes_beat_accel = TRUE
+	for (var/obj/structure/trains/locomotive/E in list(L, H))
+		E.refresh_consist()
+		E.braking = TRUE
+		if (E.stopping_decel(0, max(1, E.consist_weight / 6)) < 2 * TRAIN_ACCEL * min(2, E.pull_ratio()) - 0.001)
+			brakes_beat_accel = FALSE
+		E.braking = FALSE
+	platform_check("brake/stops_quicker_than_it_starts", brakes_beat_accel)
 	platform_check("brake/heavy_longer", (H.y - heavy_from) > (L.y - light_from) && L.y - light_from >= 1)
 
 	// Double heading: a second running engine in the train adds its pull.
@@ -3500,6 +3509,69 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("assembly/nobody_shut_inside", freed && train_tile_walled(platform_turf(358, 19)) && train_tile_walled(platform_turf(357, 17)))
 	platform_check("assembly/cab_rider_stays", in_cab.loc == platform_turf(359, 15) && !train_tile_walled(in_cab.loc))
 
+// Room to turn (train_bends.dm): bends closer together than a car is long
+// fold it onto itself, so track refuses them and trains stop short.
+/proc/platform_bend_line(x, east)
+	for (var/ty in 2 to 10)
+		platform_track(x, ty, NORTH)
+	for (var/tx in x + 1 to x + east)
+		platform_track(tx, 10, EAST)
+	for (var/ty in 11 to 25)
+		platform_track(x + east, ty, NORTH)
+
+/proc/platform_bends_run()
+	// An S-bend with its bends two tiles apart, and one with them five apart.
+	platform_bend_line(366, 2)
+	platform_bend_line(371, 5)
+	var/tight = rail_bend_at(platform_turf(366, 10)) && rail_bend_at(platform_turf(368, 10)) && rail_bend_gap(platform_turf(366, 10), NORTH, 7) == 2
+	var/wide = rail_bend_at(platform_turf(371, 10)) && rail_bend_at(platform_turf(376, 10)) && rail_bend_gap(platform_turf(371, 10), NORTH, 7) == 5 && !rail_bend_gap(platform_turf(371, 10), NORTH, 4)
+	platform_check("bends/gap_measured", tight && wide && track_bend_spacing(platform_turf(367, 10)) == 2 && track_bend_spacing(platform_turf(372, 10)) == 5)
+	// Laying: two tiles apart is refused, five is allowed with a warning for
+	// long bogie stock, and a lone corner is fine.
+	platform_check("bends/laying_refuses_close_bends", track_bend_problem(platform_turf(367, 10)) && !track_bend_problem(platform_turf(372, 10)) && track_bend_warning(platform_turf(372, 10)) && !track_bend_problem(platform_turf(10, 20)) && !track_bend_warning(platform_turf(10, 20)))
+	// A four-tile car stops short of the tight bends; its engine stays on the rails.
+	var/obj/structure/trains/platform/front = platform_car("flatbed", 366, 6, NORTH)
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(366, 7))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	L.connected = front
+	var/stepped = platform_step(L, 10)
+	platform_check("bends/long_car_stops_short", stepped == 2 && L.loc == platform_turf(366, 9) && train_longest_car(train_consist_list(L)) == 4 && train_bend_problem(train_consist_list(L), platform_turf(366, 10), NORTH) && !L.derailed)
+	// One-tile wagons take the tight bends; the four-tile car takes the wider ones.
+	var/obj/structure/trains/locomotive/coal/S = new(platform_turf(366, 5))
+	S.dir = NORTH
+	S.fuel = 100
+	S.on = TRUE
+	qdel(L)
+	for (var/obj/structure/trains/platform/P in platform_segments(front))
+		qdel(P)
+	var/obj/structure/trains/W = new /obj/structure/trains/transport/flatbed(platform_turf(366, 4))
+	W.dir = NORTH
+	S.connected = W
+	platform_check("bends/short_wagons_take_tight_bends", platform_step(S, 12) == 12 && S.loc == platform_turf(368, 15) && W.loc == platform_turf(368, 14))
+	var/obj/structure/trains/platform/car = platform_car("flatbed", 371, 6, NORTH)
+	var/obj/structure/trains/locomotive/coal/E = new(platform_turf(371, 7))
+	E.dir = NORTH
+	E.fuel = 100
+	E.on = TRUE
+	E.connected = car
+	// Driven at the tight bends faster than a crawl, the train leaves the rails.
+	platform_bend_line(380, 2)
+	var/obj/structure/trains/platform/fast_car = platform_car("flatbed", 380, 6, NORTH)
+	var/obj/structure/trains/locomotive/coal/F = new(platform_turf(380, 7))
+	F.dir = NORTH
+	F.fuel = 100
+	F.on = TRUE
+	F.connected = fast_car
+	F.throttle = 3
+	F.rail_speed = 3.5
+	F.drive()
+	drive_wait(F)
+	// A light engine stalls rather than leave the rails; the car behind it comes off.
+	platform_check("bends/fast_into_tight_bends_derails", !F.driving && fast_car.derailed && F.y <= 9 && F.rail_speed == 0)
+	platform_check("bends/car_takes_wider_bends", platform_step(E, 18) == 18 && E.loc == platform_turf(376, 20) && platform_parts_placed(platform_segments(car)))
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -3547,6 +3619,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_early_run()
 		platform_electric_run()
 		platform_entomb_run()
+		platform_bends_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

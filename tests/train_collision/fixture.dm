@@ -58,6 +58,12 @@ var/datum/map_stub/map = new
 /atom/movable/proc/persistence_set_loc(atom/destination)
 	return Move(destination)
 // Train glide (train_glide.dm) only changes how a step is drawn.
+/proc/train_bend_problem(list/cars, turf/target, heading)
+	return null
+/proc/rail_bend_at(turf/T)
+	return FALSE
+/proc/train_consist_list(obj/structure/trains/head)
+	return list(head)
 /proc/train_glide_before(atom/movable/AM, turf/dest)
 /proc/train_glide_after(atom/movable/AM, turf/from)
 /atom/movable/proc/train_glide_set_loc(turf/dest)

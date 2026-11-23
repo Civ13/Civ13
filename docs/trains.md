@@ -40,6 +40,26 @@ round a curve are drawn back a tile and slid instead. Moves go through
 back when it stops (`train_glide_rest()`). Checks: `glide/` in
 `tests/train_platforms`.
 
+## Bends
+
+A bend is one curved tile that each section of a car takes in turn, so a car
+with sections on two bends at once (an S-bend or a tight U-turn) would fold onto
+itself. `code/modules/1713/train_bends.dm`:
+
+- Laying track, the hammer will not spike rails down when the bend on that tile
+  or one beside it is fewer than `TRAIN_CAR_LENGTH` (4) tiles from the next
+  bend along the line (`track_bend_problem()`); under `TRAIN_LONG_CAR_LENGTH`
+  (8) the layer is warned that long bogie stock and main-line engines need more
+  (`track_bend_warning()`). The gap counts tiles from one curved tile to the next.
+- A train will not step onto a bend whose next bend is closer than its longest
+  car (`train_bend_problem()`, `train_longest_car()` by shared `car_id`), so
+  older or mapped track still stops it short. One-tile wagons take any bend.
+- Driven at such bends faster than 1 tile/s, the leading cars leave the rails
+  (`tight_bend_check()` from the drive loop, as with `overrun_check()`); a light
+  one-tile engine stalls instead, as elsewhere.
+
+Checks: `bends/` in `tests/train_platforms`.
+
 ## Speed and load
 
 Speeds are tiles per second. `max_train_speed` is a locomotive's step delay in
@@ -79,6 +99,12 @@ braked weight is
 - the engine itself with all its sections (`consist_own`) while the driver's
   Brake is on, and
 - every car whose `handbrake` is on (`consist_braked`).
+
+With the driver's Brake on, the train always loses speed at least
+`TRAIN_BRAKE_OVER_ACCEL` (2) times as fast as it can gather it
+(`stopping_decel()`: twice `TRAIN_ACCEL` times its pull ratio), so even a long
+train held only by its engine stops in well under the time it took to get up
+to speed. Handbrakes and a brake van shorten the stop further.
 
 So a lone engine stops as before, while an engine with a long train behind it
 needs many more tiles unless cars are braked too. `refresh_consist()` adds

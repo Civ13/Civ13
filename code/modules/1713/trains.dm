@@ -660,6 +660,13 @@ var/global/train_solo_move = FALSE
 	//push (or hit) wtv is in front...
 	if (rail_hit(tgtt, fdir, impact))
 		return FALSE
+	// Bends too close together for the train's longest car (train_bends.dm).
+	var/tight = rail_bend_at(tgtt) ? train_bend_problem(train_consist_list(src), tgtt, fdir) : null
+	if (tight)
+		visible_message(SPAN_WARNING("\The [src] cannot take the bend. [tight]"))
+		automovement = FALSE
+		set_light(0)
+		return FALSE
 	// Platform cars need room for their decks (train_platforms.dm).
 	var/atom/clearance = train_consist_obstacle(src, tgtt, fdir)
 	if (clearance)
@@ -1274,8 +1281,7 @@ var/global/train_solo_move = FALSE
 				// Rolling resistance by the train's heft, and the brakes by the
 				// share of its weight they hold (train_brakes.dm).
 				// Both are per second, so a train loses way gradually however fast it runs.
-				var/drag = (target > 0 ? 0.6 : 0.2) / heft + brake_decel()
-				rail_speed = max(target, rail_speed - drag * train_step_seconds(rail_speed))
+				rail_speed = max(target, rail_speed - stopping_decel(target, heft) * train_step_seconds(rail_speed))
 			if (rail_speed <= 0.25 && target <= 0)
 				break
 			automovement = TRUE
@@ -1291,8 +1297,10 @@ var/global/train_solo_move = FALSE
 			if (QDELETED(src))
 				return
 			if (!moved)
-				// Off the end of the rails at speed (train_derail.dm).
-				overrun_check()
+				// Off the end of the rails at speed (train_derail.dm), or into
+				// bends too tight for the train (train_bends.dm).
+				if (!overrun_check())
+					tight_bend_check()
 				throttle = 0
 				break
 			// Too fast round a curve or through a switch (train_derail.dm).
@@ -1364,6 +1372,11 @@ var/global/train_solo_move = FALSE
 	// The rear car takes the blow, with the weight of the train behind it.
 	var/impact = collision_impact()
 	if (tail.rail_hit(tgtt, fdir, impact))
+		automovement = FALSE
+		return FALSE
+	var/tight = train_bend_problem(cars, tgtt, fdir)
+	if (tight)
+		tail.visible_message(SPAN_WARNING("\The [tail] cannot take the bend. [tight]"))
 		automovement = FALSE
 		return FALSE
 	var/list/rear_first = list()
