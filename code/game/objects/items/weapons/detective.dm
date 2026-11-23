@@ -38,24 +38,18 @@
 		remove_contents(user)
 
 /obj/item/weapon/reagent_containers/glass/rag/attackby(obj/item/W, mob/user)
-	if (!on_fire)
-		if (istype(W, /obj/item/weapon/flame) || istype(W, /obj/item/clothing/mask/smokable/cigarette) && W:on)
-			var/cont = FALSE
-			var/obj/item/weapon/flame/F = W
-			if (istype(F) && F.lit)
-				cont = TRUE
-			else if (istype(W, /obj/item/flashlight))
-				var/obj/item/flashlight/FL = W
-				if (FL.on)
-					cont = TRUE
-
-			if (cont)
-				ignite()
-				if (on_fire)
-					visible_message("<span class='warning'>\The [user] lights [src] with [W].</span>")
-				else
-					to_chat(user, "<span class='warning'>You manage to singe [src], but fail to light it. Maybe you should wet it.</span>")
+	var/obj/item/clothing/mask/smokable/cigarette/cigarette = W
+	var/ignited_by_cigarette = FALSE
+	if (!on_fire && (isflamesource(W) || (istype(cigarette) && cigarette.lit)))
+		ignite()
+		if (on_fire)
+			ignited_by_cigarette = istype(cigarette)
+			visible_message("<span class='warning'>\The [user] lights [src] with [W].</span>")
+		else
+			to_chat(user, "<span class='warning'>You manage to singe [src], but fail to light it. Maybe you should wet it.</span>")
 	. = ..()
+	if (ignited_by_cigarette)
+		. = TRUE // Do not also dip the lit cigarette and drain the rag's fuel.
 	update_name()
 
 /obj/item/weapon/reagent_containers/glass/rag/proc/update_name()
