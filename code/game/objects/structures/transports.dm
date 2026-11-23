@@ -77,8 +77,10 @@
 
 /obj/structure/vehicle/update_icon()
 	if (driver)
+		var/was = dir
 		dir = driver.dir
 		buckle_dir = dir
+		turn_swing_facing(was) // craft/turn_swing.dm
 	..()
 /obj/structure/vehicle/proc/running_sound()
 	if (engine)

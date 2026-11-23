@@ -109,8 +109,10 @@ coming about. A davit hoist and a submarine's dive or surfacing square her
 first, since those level changes move whole tiles.
 
 Turns of every frame vehicle are drawn by `glide_turn()`: before the moves
-`glide_turn_hold()` sets everything that would glide to move at once, then
-each thing is drawn where it was and slides to its new place.
+`glide_turn_hold()` sets everything that would glide to move at once and keeps
+each thing's facing, then the whole vehicle is drawn swinging round its pivot
+on an arc (`turn_swing_all()`, docs/craft-core.md "Turning swings"). Anything
+not carried round with it is drawn where it was and slides to its new place.
 
 ## Walking on a moving deck
 

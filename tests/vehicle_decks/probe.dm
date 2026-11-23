@@ -136,7 +136,14 @@ var/vehicle_decks_probe_checks = 0
 	vehicle_decks_probe_assert(A.do_move() && get_turf(ann) == get_step(before, NORTH), "rides_along")
 	ann.vehicle_deck_check()
 	vehicle_decks_probe_assert(los_on_vehicle_deck(ann) && vehicle_deck_axis(ann) == A, "still_on_top_after_driving")
+	turn_swing_last = null
 	vehicle_decks_probe_assert(A.do_matrix(A.dir, TURN_LEFT(A.dir), "left"), "turns")
+	// The turn is drawn as the car swinging round its pivot on an arc, its
+	// frames turning as they go and the rider carried round upright.
+	var/list/swing = turn_swing_last
+	vehicle_decks_probe_assert(swing && swing[3] == 90 && swing[4] > swing[5] && swing[5] > 0, "turn_drawn_as_one_swing ([swing ? "[swing[3]] degrees, [swing[4]] swung, [swing[5]] turning" : "none"])")
+	var/matrix/upright = ann.transform
+	vehicle_decks_probe_assert(upright.a == 1 && upright.e == 1 && !upright.b && !upright.d, "rider_swings_round_upright")
 	sleep(20)
 	ann.vehicle_deck_check()
 	vehicle_decks_probe_assert(A.dir == WEST && los_on_vehicle_deck(ann) && vehicle_deck_axis(ann) == A, "still_on_top_after_turning")

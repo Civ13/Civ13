@@ -251,6 +251,7 @@ var/global/list/craft_glide_holder = null
 
 /obj/structure/vehicleparts/axis
 	var/tmp/list/glide_was = null // Things whose glide_size it holds.
+	var/tmp/list/turn_dirs = null // During a turn: each thing carried to the facing it had.
 
 // How long one step of this vehicle lasts on screen, in ticks.
 /obj/structure/vehicleparts/axis/proc/glide_step_time()
@@ -283,18 +284,27 @@ var/global/list/craft_glide_holder = null
 /obj/structure/vehicleparts/axis/proc/glide_turn_hold(list/was_at)
 	if (!glide_was)
 		glide_was = list()
+	// The facings before the turn, so that what turns with it is drawn turning.
+	turn_dirs = list()
 	for (var/atom/movable/M in was_at)
-		if (!QDELETED(M) && craft_glides_natively(M))
+		if (QDELETED(M))
+			continue
+		turn_dirs[M] = M.dir
+		if (craft_glides_natively(M))
 			glide_hold(glide_was, M, world.icon_size)
 
 // After do_matrix(): was_at maps each thing carried to the tile it left. The
-// turn is shown swinging round instead of snapping: each thing is drawn where
-// it was and slides to its new place, easing in and out like a hull swinging.
+// turn is shown swinging round instead of snapping: the whole vehicle is
+// drawn turning round its pivot on an arc (turn_swing.dm). Anything that was
+// not carried round with it is drawn where it was and slides to its new
+// place, easing in and out like a hull swinging.
 /obj/structure/vehicleparts/axis/proc/glide_turn(list/was_at)
 	var/time = glide_turn_time()
 	if (!glide_was)
 		glide_was = list()
-	for (var/atom/movable/M in was_at)
+	var/list/sliding = turn_swing_all(was_at, turn_dirs, null, maxdist)
+	turn_dirs = null
+	for (var/atom/movable/M in sliding)
 		var/turf/from = was_at[M]
 		if (QDELETED(M) || !isturf(M.loc) || !istype(from) || M.z != from.z || M.invisibility >= 101)
 			continue

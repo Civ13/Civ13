@@ -224,20 +224,19 @@ var/naval_runtime_error = FALSE
 	for (var/turf/T in B.cells())
 		total += hull_planks(T)
 	naval_check(total == 11, "every tile of the hull has its one plank ([total])")
+	turn_swing_last = null
 	naval_check(B.turn_to(SOUTH) && B.dir == SOUTH && gun.dir == EAST && tiller.x == 35, "she goes about half a circle in one move")
-	// A turn is shown swinging round (craft/glide.dm): a thing that moved one
-	// tile glides, a thing that moved further is slid and keeps its own glide.
-	var/near_swung = 0
-	var/far_slid = 0
-	var/swing_glide = craft_glide_size(glide_turn_time())
-	for (var/atom/movable/swung in B.glide_was)
-		if (swung.glide_size == swing_glide)
-			near_swung++
+	// The turn is drawn as one swing round the tiller (craft/turn_swing.dm).
+	var/list/swing = turn_swing_last
+	naval_check(swing && swing[1] == 35 && swing[2] == 10 && abs(swing[3]) == 180, "her half circle is drawn swinging round the tiller ([swing ? "[swing[1]],[swing[2]] by [swing[3]]" : "no swing"])")
+	naval_check(swing && swing[4] >= 11 && swing[5] >= 11, "every plank swings round with her, drawn turning as it goes ([swing ? "[swing[4]] swung, [swing[5]] turning" : "none"])")
+	var/rests_square = 0
 	for (var/turf/deck in B.cells())
 		for (var/obj/covers/plank in deck)
-			if (!(plank in B.glide_was) && !plank.pixel_x && !plank.pixel_y)
-				far_slid++
-	naval_check(near_swung + far_slid >= 11 && far_slid > 0, "after her swing every plank either glides a tile or was slid further and ends square on its tile ([near_swung] glide, [far_slid] slid)")
+			var/matrix/T = plank.transform
+			if (!plank.pixel_x && !plank.pixel_y && T.a == 1 && T.e == 1 && !T.b && !T.d && plank.glide_size != world.icon_size)
+				rests_square++
+	naval_check(rests_square == 11, "each plank ends the swing square on its tile with its own glide ([rests_square])")
 	B.glide_rest_now()
 	naval_check(!length(B.glide_was), "after the turn everything has its own glide back")
 	naval_check(B.turn_to(NORTH), "and back")
