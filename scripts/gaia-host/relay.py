@@ -21,11 +21,20 @@ Two listeners:
         ?relay_status=1&token=T               route and connection counts
         ?add_port=1&port=P&token=T            let routes name game port P too (a
                                               region added while the relay runs)
+        ?gate=1&port=P&token=T                the gateway world's own port, where a
+                                              login with no route is sent (the
+                                              gateway says so every minute)
 
 Routes are last-write-wins per address. One that is never used expires after
 ROUTE_UNUSED_SECONDS; a used one sticks for ROUTE_STICKY_SECONDS after its last
 use, so the automatic reconnect after a world reboot lands in the same world.
 A route only ever names one of the group's own game ports.
+
+A BYOND login from an address with no route (a player who rejoined the relay's
+port from BYOND's reconnect or recent servers list, or whose mobile address
+changed after the gateway wrote the route) goes to the gateway's port once the
+gateway has named it; the gateway then links them to its public port, which
+sees their address. Anything else without a route is dropped as before.
 
 Before piping, the relay asks the doorman to wake the region and holds the
 connection up to HOLD_SECONDS until the doorman reports it awake (a frozen
@@ -69,6 +78,13 @@ HEX = re.compile(r'^[0-9a-f]{32,128}$')
 def is_topic(first):
     """True when the first bytes of a connection are a BYOND Topic frame."""
     return first[:2] == b'\x00\x83'
+
+
+def is_login(first):
+    """True when the first bytes are one whole BYOND client login frame: type 0x0001 and a
+    length that matches what follows (26 bytes from the 516 client, 2026-11-23). Web
+    scanners (GET), RDP probes (03 00) and stray bytes never match."""
+    return len(first) >= 4 and first[:2] == b'\x00\x01' and struct.unpack('>H', first[2:4])[0] == len(first) - 4
 
 
 def normal_ip(text):
@@ -214,6 +230,7 @@ class Relay:
         if not loopback(control[0]):
             raise ValueError('the relay control port must bind a loopback address')
         self.routes = Routes(ports, clock)
+        self.gate_port = None  # the gateway's port, once it has named it (?gate=1)
         self.token = token
         self.public = public
         self.control = control
@@ -256,6 +273,16 @@ class Relay:
             if added == 'added':
                 self.log({'ports': sorted(self.routes.ports)})
             return {'ok': bool(added)}
+        if values.get('gate') == '1' and set(values) == {'gate', 'port', 'token'}:
+            port = int(values['port']) if values['port'].isdigit() and len(values['port']) <= 5 else 0
+            with self.routes.lock:
+                known = port in self.routes.ports
+            if not known:
+                return {'ok': False}
+            if port != self.gate_port:
+                self.gate_port = port
+                self.log({'gate': port})
+            return {'ok': True}
         if values.get('relay_status') == '1' and set(values) == {'relay_status', 'token'}:
             self.routes.prune()
             with self.lock:
@@ -330,8 +357,12 @@ class Relay:
                 return
             port = self.routes.take(address)
             if port is None:
-                self.log({'unrouted': normal_ip(address)})
-                return
+                gate = self.gate_port
+                if gate is None or not is_login(first):
+                    self.log({'unrouted': normal_ip(address)})
+                    return
+                self.log({'unrouted_to_gate': normal_ip(address), 'port': gate})
+                port = gate
             upstream = self.open_world(port)
             if upstream is None:
                 self.log({'not_ready': port})

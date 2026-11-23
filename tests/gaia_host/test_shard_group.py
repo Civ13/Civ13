@@ -657,6 +657,41 @@ class ShardGroupTests(unittest.TestCase):
             self.assertEqual({}, shard_group.supervise(group, lambda *a: 1))
             self.assertEqual({}, shard_group.supervise(group, lambda *a: 1))
 
+    def test_a_relay_on_old_code_is_restarted_only_while_idle(self):
+        # 2026-11-23: the relay keeps the code it started with; nothing restarted it.
+        self.group['relay_port'] = 1730
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        root = self.base / 'regions'
+        (root / 'relay.pid').write_text('5151\n')
+        ended, asked = [], []
+        def busy(port, query):
+            asked.append(query)
+            return json.dumps({'ok': True, 'routes': 3, 'connections': 2})
+        def idle(port, query):
+            asked.append(query)
+            return json.dumps({'ok': True, 'routes': 3, 'connections': 0})
+        terminate = lambda pid, expect=None: ended.append(pid)
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: pid == 5151):
+            # No record: started before records were kept, so it is outdated. Players on it: kept.
+            self.assertFalse(shard_group.refresh_relay(group, busy, terminate))
+            self.assertTrue(asked[0].startswith('relay_status=1&token='))
+            self.assertEqual([], ended)
+            # Nobody connected: ended, and the pid file goes so the next start is fresh.
+            self.assertTrue(shard_group.refresh_relay(group, idle, terminate))
+            self.assertEqual([5151], ended)
+            self.assertFalse((root / 'relay.pid').exists())
+            started = []
+            self.assertTrue(shard_group.ensure_relay(group, lambda argv, cwd, log: started.append(argv) or 6262))
+        record = json.loads((root / 'relay.json').read_text())
+        self.assertEqual({'pid': 6262, 'code': shard_group.relay_code()}, record)
+        # Current code: never asked, never ended.
+        asked.clear()
+        with mock.patch.object(shard_group, 'process_alive', lambda pid: pid == 6262):
+            self.assertFalse(shard_group.refresh_relay(group, idle, terminate))
+        self.assertEqual([], asked)
+        self.assertEqual([5151], ended)
+
     def test_a_relay_that_cannot_start_does_not_stop_supervision(self):
         self.group['relay_port'] = 1730
         group = self.write_group()

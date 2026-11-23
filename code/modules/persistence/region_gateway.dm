@@ -206,11 +206,22 @@
 		. += "<b>[label]:</b> [hub_status_text(title)]<br>"
 
 // The peers' player counts change without anyone logging in here.
+// Every minute it also tells the routing relay its own port: a player who joins
+// the relay's port straight away (BYOND's reconnect or recent servers list keep
+// it after a redirect) has no route there, and was dropped with "Connection
+// failed during handshake" (2026-11-23). The relay sends such a login here.
 /proc/region_gateway_status_loop()
 	set waitfor = FALSE
 	while(region_gateway_here())
+		region_gateway_tell_relay()
 		sleep(GATEWAY_STATUS_INTERVAL)
 		world.update_status()
+
+/proc/region_gateway_tell_relay()
+	if(!shard_group.relay_on() || shard_group.gate != shard_group.region)
+		return FALSE
+	var/list/reply = shard_group.ask_relay("gate=1&port=[shard_address_port(shard_group.address)]")
+	return reply && reply["ok"]
 
 /hook/startup/proc/region_gateway_startup()
 	if(region_gateway_here())
