@@ -427,8 +427,7 @@
 
 	// A pasted blueprint code, worked through the steps below (gun_design_code.dm).
 	if (href_list["action"] == "import_code")
-		spawn (0)
-			import_design(H)
+		import_design(H)
 		return
 
 	if (href_list["action"] == "start")
