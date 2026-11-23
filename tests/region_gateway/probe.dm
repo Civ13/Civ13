@@ -120,6 +120,14 @@ var/global/gateway_probe_runtime_error = FALSE
 	var/hub = region_gateway_hub_status()
 	gateway_probe_check("hub/mainland_and_players", findtext(hub, "Mainland:") && findtext(hub, "Gaia") && findtext(hub, "Players across regions:</b> 6<br>"))
 
+	// A TDM front door names the battle map instead of the waiting room.
+	tutorial["kind"] = "BATTLE"
+	shard_group.record("tutorial", list("group" = "earth", "region" = "tutorial", "map" = "Karak", "players" = 1), world.time)
+	hub = region_gateway_hub_status()
+	gateway_probe_check("hub/battle_map", findtext(hub, "<b>Battle:</b> Karak<br>") && !findtext(hub, "Mainland:"))
+	tutorial["kind"] = "TUTORIAL"
+	gateway_probe_check("hub/mainland_again", findtext(region_gateway_hub_status(), "<b>Mainland:</b> Gaia<br>"))
+
 	shard_group.record_sleeping("tutorial", list("state" = "asleep"), world.time)
 	gateway_probe_check("players/sleeping_zero", region_gateway_population()["players"] == 5 && region_gateway_population()["unknown"] == 0)
 	shard_group.record_sleeping("northamerica", list("state" = "stopped"), world.time)

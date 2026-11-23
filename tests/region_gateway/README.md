@@ -13,7 +13,7 @@ python3 tests/region_gateway/run.py --byond-bin <pinned bin> --evidence-dir <fre
 transfer agent: the group config accepts the kind; an account's home, the start
 region for a new one and a guest are each sent on; pending, travelling, silent,
 unknown-home and home-in-the-gateway answers wait with a reason; a laid-up land is
-summoned; Join is refused; the hub text sums active regions, distinguishes confirmed
+summoned; Join is refused; the hub text sums active regions, names the battle map for a TDM group, distinguishes confirmed
 zero from partial counts, omits the line when no region reported, and ignores stale or invalid samples; seen
 from a land, the gateway has no Join link, no trail and refuses admin sends. No
 client joins: the login forward, the relay route and the link are not driven.
