@@ -201,6 +201,7 @@ var/failures = 0
 	check("moved engine removes supply", A.powerflow, 0)
 	check("moved engine detaches cables", G.connections.len, 0)
 	G.Destroy()
+	power_priority_checks()
 	world.log << "POWER_PROBE failures=[failures]"
 	del(world)
 
@@ -232,3 +233,51 @@ var/list/processing_objects = list()
 	return 0
 /obj/structure/civ_generator/proc/stop_generation()
 	return
+
+/proc/power_priority_checks()
+	var/obj/structure/cable/A = new(locate(1, 4, 1))
+	var/obj/structure/engine/E = new(A.loc)
+	var/obj/ordinary = new(A.loc)
+	var/obj/critical = new(A.loc)
+	E.maxpower = 10
+	E.connections = list(A)
+	A.connections = list(E, ordinary, critical)
+	ordinary.powersource = A
+	critical.powersource = A
+	ordinary.powerneeded = 7
+	critical.powerneeded = 6
+	check("ordinary draw reserves capacity", ordinary.draw_cable_power(), TRUE)
+	check("unprioritized draw does not preempt", critical.draw_cable_power(), FALSE)
+	critical.grid_power_priority = TRUE
+	critical.powerneeded = 11
+	check("oversized priority cannot fit", critical.draw_cable_power(), FALSE)
+	check("oversized priority does not shed normal loads", A.power_consumers[ordinary], 7)
+	critical.powerneeded = 6
+	check("priority request can preempt an ordinary load", critical.draw_cable_power(), TRUE)
+	check("priority does not overbook", A.currentflow, 6)
+	check("normal retry cannot steal priority", ordinary.draw_cable_power(), FALSE)
+	check("both loads count as requested long enough to see brownout", A.grid_shortage(world.time), 7)
+	E.maxpower = 3
+	A.rebuild_supply()
+	check("passive supply loss drops even a priority load that no longer fits", A.currentflow, 0)
+	check("expired shortage no longer appears", A.grid_shortage(world.time + 10000), 0)
+	E.maxpower = 10
+	A.rebuild_supply()
+	check("priority automatically works again on next attempt", critical.draw_cable_power(), TRUE)
+
+// Distribution-device lifecycle is exercised by the full power-points probe.
+/obj/proc/power_point_moved()
+	return
+
+// The accounting fixture uses only stationary copper cables and test objects.
+// Full-game fixtures supply the real material registry and craft movement.
+var/global/list/cable_wire_materials = list()
+/obj/structure/cable/var/tmp/grid_wire_loss = 0
+/proc/cable_wire_loss(cable_color)
+	return 0
+/proc/cable_delivered(capacity, loss)
+	return capacity
+/atom/movable/proc/craft_carrying()
+	return FALSE
+/proc/power_text(pu)
+	return "[pu] kW"

@@ -67,7 +67,7 @@ def main():
                                      '-trusted', '-log', 'runtime.log'], cwd=work,
                                     capture_output=True, text=True, timeout=60, creationflags=flags)
             diagnostics = result.stdout + result.stderr
-            for filename in ('runtime.log', 'result.txt', 'meter.html'):
+            for filename in ('runtime.log', 'result.txt', 'meter.json'):
                 path = work / filename
                 if path.exists():
                     shutil.copy2(path, args.output / filename)

@@ -120,6 +120,8 @@
 	return new refund(drop_turf, units)
 
 /obj/covers/Destroy()			
+	if (power_point_barrier(src))
+		power_point_barrier_changed(get_turf(src))
 	unregister_seasonal_construction()
 	var/area/caribbean/CURRENTAREA = get_area(src)
 	if (!istype(CURRENTAREA, /area/caribbean/void/caves))

@@ -372,6 +372,8 @@
 	update_nearby_icons()
 
 /obj/structure/window/Destroy()
+	if (density)
+		power_point_barrier_changed(get_turf(src))
 	density = FALSE
 	loc = null
 	..()

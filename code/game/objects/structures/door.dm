@@ -258,6 +258,7 @@
 		for(var/obj/roof/R in range(1,src))
 			R.update_transparency(1)
 		door_opened()
+		power_point_barrier_changed(get_turf(src))
 
 /obj/structure/simple_door/proc/Close()
 	isSwitchingStates = TRUE
@@ -282,6 +283,7 @@
 		for(var/obj/roof/R in range(1,src))
 			R.update_transparency(0)
 		door_closed()
+		power_point_barrier_changed(get_turf(src))
 /obj/structure/simple_door/Destroy()
 	door_fittings_destroyed()
 	door_list -= src
