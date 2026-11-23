@@ -56,8 +56,8 @@ minutes in it) are saved with the body and carried on trips (`P["accolades"]`).
 | Citizen | 10 hours of play in one faction | 10 |
 | Long Winter | One character spends 2 hours of play outdoors in a tundra or taiga winter | 15 |
 | Copyist | Copy a book, a research chapter or a map by hand | 10 |
-| Maker | One character crafts 25 different things | 10 |
-| Artisan | One character crafts 100 different things | 30 |
+| Maker | One character crafts 100 different things | 10 |
+| Artisan | One character crafts 500 different things | 30 |
 | Smelter | Light a furnace or tatara to smelt | 10 |
 | Farmer | Harvest a ripe crop | 5 |
 | Herder | Tame an animal | 10 |
