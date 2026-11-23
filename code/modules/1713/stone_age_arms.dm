@@ -271,6 +271,7 @@
 // ---------------------------------------------------------------- hand axe
 // The oldest all-purpose tool: chops (slowly), butchers and cuts.
 /obj/item/weapon/material/hatchet/tribal/hand_axe
+	component_wear = FALSE
 	name = "hand axe"
 	desc = "A teardrop of flint knapped sharp on both faces. It chops, cuts and butchers, all a little worse than a proper tool."
 	icon = STONE_AGE_ICON
@@ -415,6 +416,7 @@
 // into one plank; hewing with an adze gets two finished planks from the same
 // two logs, more slowly. On harm intent it cuts logs like any hatchet.
 /obj/item/weapon/material/hatchet/tribal/adze
+	component_wear = FALSE
 	name = "stone adze"
 	desc = "A ground stone blade lashed crosswise to an elbow haft. Use it on logs to hew them into finished planks: two planks from two logs, where a hatchet gets one."
 	icon = STONE_AGE_ICON
