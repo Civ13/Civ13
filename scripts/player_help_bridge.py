@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3d93f70e84371fd80f974608fa9e24ddf0ff66ad'
+WIKI_REVIEWED_REVISION = '4c99914632155a050f156d2ded9bce83dd663040'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -145,7 +145,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Resource_Extraction.md': ('041b3303d0be5737e6ab566e041aa0e28675845cc4a2015964a7e91a33d01332', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('34251d517df8b0cf9e2daad566be261ae690910d23b40dd6c49b468a8b57c589', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fog mist dew frost wind chill humid humidity sun hat robe barometer thermometer hygrometer anemometer rain gauge weather station forecast fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('e2e82451576f0cc5a405b8151caa3dcf27a51c4827782156345a3a1ddf4a9e61', 'tank driving crew ammunition'),
-    'guides/Guide_to_Trains.md': ('f367f81684fba4ee66c6ec8771a5deb5cb75b0782507462029b0f2ddef94a5b5', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Trains.md': ('93abef5b672eaef394fecd470491e8b61225b2a24c4c6aeae1acac5b489b119a', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Weather.md': ('d3ae91b93e0899ebf0c128df972df17ce914d4288a5ad185f827624aad45d18a', 'weather climate forecast predict storm storms pressure hpa low lows high highs front fronts barometer hygrometer anemometer rain gauge weather station beaufort dew point sleet hail freezing rain rain shadow sea breeze land breeze'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('ac2a6dab9b5aac3051a30f35809e9ddf770387219996f75df90aa90d438847a6', 'trench trenches fortification sandbag dig shovel'),
@@ -167,7 +167,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('53404b486ba05f044ddb2597db801f92129aa7b3cd2877e14eb7b4cf81b2d4c9', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('4169cb75c79d298cc30b5067d11fc85cc5a59150c4435a2013d33ce24df0598f', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('0a42bcabcaf3efe8a77e6b0305714b8b0b72675101ab13cb533d4323e32024c5', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -177,7 +177,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Paperwork.md': ('2fd1ea8cc4c7b121e7fd2c6cb288209b139c974e371b427dd5234706dbbbcc53', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('f5c43032ed26fac5c67b066093ee584f00a3bf0046a459c063bcf483cda44e22', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('9015932974df193a9f59fb59c359040e7a38e541ad13e104ae2cacf8f33e08fc', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
+    'Miscellaneous_Crafting.md': ('56cc9a1b46efce403d0d55a7aa769d969d19e6785ffd9e645df02bc21769f165', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
     'maps/The_Americas.md': ('8f926f8eb3d365684968b7e32d7c5de5322d30ad85e166fa7315d5a6db401e5a', 'americas america north south isthmus mainland persistent map world hills tamping grading rammer'),
     'regions/Regions.md': ('bfd6704a336cad7458062de572ccabf9f7f3630e9fd82018b4d173913d56f343', 'regions region lands land worlds world europe africa asia oceania greenland antarctica continents travel climate peoples'),
     'maps/Gaia.md': ('2e973629f07a33edbbad6695d26e01faa9a4e33120763bfd91701ea412349769', 'gaia map world underground'),
@@ -223,7 +223,7 @@ WIKI_REVIEWED_GUIDES = {
     'Paper_Templates.md': ('27495905153f4d0ac91d18dc9daccfa4cc533144234766ee8e800c47adcc9408', 'paper templates template forms document documents'),
     'rules/Rules.md': ('167e92e5b1d2b9f601f73fe29cd4348728fbaa8c4b33da17245dc7918663ff11', 'rules rule allowed banned ban griefing grief metagaming roleplay rp ooc ick ock behaviour conduct'),
     'gamemodes/Football.md': ('6afc0bc0641191bb92ffbcbe0e7e5acb4c656bcad7240e4ce1a6bdc576f9e63f', 'football soccer match goal ball team'),
-    'gamemodes/TDM_Barracks.md': ('eadc66acfe6ed10985ecc92ba3fff4525ec58430fcbe91bc5267e63e4a450a6b', 'tdm barracks loadout class classes kit unlock team deathmatch'),
+    'gamemodes/TDM_Barracks.md': ('8f77879982aac22b08d386b2cc68f2827293addcec140328887b201563de5248', 'tdm barracks loadout class classes kit unlock team deathmatch'),
     'gamemodes/The_Art_of_the_Deal.md': ('bb737680691d936f1ce0aab3c4e19e8e7ccfe352319b8d7096a30482a5844957', 'art of the deal business corporation corporations disks money mode'),
     'gamemodes/subcom.md': ('3392591190a1714b9e2930194c127349382cf1f07ab0146dd08556e88c78aeee', 'subcom subcom13 submarine command mode'),
     'regions/Europe.md': ('3d537cead39927c5de7097c90369c46b98079495cb0fc5aa4554d713357c591b', 'europe european land region continent climate resources coal calamine'),
