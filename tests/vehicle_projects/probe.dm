@@ -284,8 +284,13 @@ var/project_runtime_error = FALSE
 		for (var/atom/movable/part in made.components)
 			locations[part] = part.loc
 		var/turned = TRUE
+		turn_swing_last = null
 		for (var/i = 1, i <= 4, i++)
 			turned = made.do_matrix(made.dir, turn(made.dir, 90), "left") && turned
+		// Each quarter turn is drawn as the whole vehicle swinging round its
+		// pivot, its frames turning as they go (craft/turn_swing.dm).
+		var/list/swing = turn_swing_last
+		project_check(swing && swing[3] == 90 && swing[4] >= frames && swing[5] >= frames, "[model]: a left turn is drawn as one swing anticlockwise, every frame turning as it goes ([swing ? "[swing[3]] degrees, [swing[4]] swung, [swing[5]] turning, [frames] frames" : "no swing"])")
 		var/back_home = TRUE
 		for (var/atom/movable/part in locations)
 			back_home = back_home && part.loc == locations[part]

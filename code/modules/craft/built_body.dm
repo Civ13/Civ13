@@ -533,6 +533,19 @@
 		// The rock ahead of her hold is hollowed before anyone steps into it.
 		var/list/hold_origin = before_hold_move(lower_old, lower_new)
 		carry = craft_rigid_begin(everything)
+		// A turn is drawn swinging round (turn_swing.dm): the engine shows
+		// the moves themselves at once, and the facings before it are kept.
+		var/list/swing_dirs = null
+		if (glides && angle)
+			if (!glide_was)
+				glide_was = list()
+			swing_dirs = list()
+			for (var/atom/movable/M in everything)
+				if (QDELETED(M))
+					continue
+				swing_dirs[M] = M.dir
+				if (craft_glides_natively(M))
+					glide_hold(glide_was, M, world.icon_size)
 		for (var/i = 1, i <= old.len, i++)
 			var/turf/S = old[i]
 			var/turf/D = dest[i]
@@ -598,7 +611,21 @@
 						M.craft_turned(craft, angle)
 		// A turn is shown swinging round, and a slide into a berth is drawn
 		// for as long as its caller asked, instead of snapping (glide.dm).
-		if (glides && !gliding && (angle || slide_time > 0))
+		if (glides && !gliding && angle && slide_time <= 0)
+			var/list/was_at = list()
+			for (var/i = 1, i <= old.len, i++)
+				built_hull_swing_from(was_at, cargo[i], old[i], dest[i])
+			for (var/i = 1, i <= upper_cargo.len, i++)
+				built_hull_swing_from(was_at, upper_cargo[i], upper_old[i], upper_new[i])
+			for (var/i = 1, i <= lower_cargo.len, i++)
+				built_hull_swing_from(was_at, lower_cargo[i], lower_old[i], lower_new[i])
+			var/span = turn_swing_span(was_at)
+			for (var/atom/movable/M in turn_swing_all(was_at, swing_dirs, angle, span))
+				var/turf/S = was_at[M]
+				if (!QDELETED(M) && isturf(M.loc) && S && M.z == S.z)
+					glide_slide(M, M.x - S.x, M.y - S.y, glide_turn_time(), SINE_EASING)
+			glide_rest(turn_swing_time(span))
+		else if (glides && !gliding && (angle || slide_time > 0))
 			var/shown = slide_time > 0 ? slide_time : glide_turn_time()
 			if (!glide_was)
 				glide_was = list()
@@ -638,6 +665,15 @@
 		if (angle)
 			craft.on_turn(angle)
 	return TRUE
+
+// Adds each thing of riders that a turn carried from S to D to was_at (S is
+// D on the tile she turns about).
+/proc/built_hull_swing_from(list/was_at, list/riders, turf/S, turf/D)
+	if (!S || !D)
+		return
+	for (var/atom/movable/M in riders)
+		if (!QDELETED(M) && M.loc == D)
+			was_at[M] = S
 
 // The areas a move carries, taken before it: when a roof rides on one of the
 // tiles in old, list(old tiles, new tiles, each old tile's area, the area of
