@@ -96,3 +96,27 @@ sheet's propellant and seats, shows the launch planner on examine, flies
 only to orbit for now, and refuses to launch until the orbit leg is reached
 with what is actually in its bays. A crew that cannot come home is warned
 before launch.
+
+## Reuse and wear
+
+Reuse belongs to each section (`code/modules/space/rocket_reuse.dm`), never
+to the whole rocket. Every section keeps its condition, its flights and
+whether it was inspected since its last flight. A stand refuses a section
+below `ROCKET_SECTION_MIN_CONDITION` or one not inspected.
+
+- Engines, tanks, decouplers, boosters and bays are spent at launch in 1969.
+- A crew capsule with a heat shield directly under it and parachutes over it
+  carries its record (`capsule` payload field) to orbit and home. A capsule
+  in orbit without them cannot deorbit. Coming home, landing rockets under
+  the shield set it down on dry ground (wear 10); parachutes alone splash it
+  down off the nearest shore, where it is towed in (wear 15), or land it hard
+  with no water near (wear 40). The heat shield burns away, the parachutes
+  come back to be repacked and the landing rockets come back worn.
+- From 2013 (`ROCKET_FLYBACK_AGE`) landing legs in the first segment fly the
+  first stage back beside the stand (wear 20 per section), at the cost of the
+  10% of its propellant it keeps to land (`ROCKET_FLYBACK_RESERVE`).
+
+A wrench inspects a section. Steel sheets restore frames and capsules (4%
+per sheet), an engine overhaul kit (Orbital Flight) restores an engine, and
+10 cloth repack parachutes. Every repair needs a new inspection. Nothing is
+random.

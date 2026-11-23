@@ -30,3 +30,16 @@ rocket takes the sheet's propellant and seats, carries the planner, flies
 only to orbit and takes its storeys and sections with it.
 
     python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/works_probe.dm 300
+
+## `reuse_probe.dm`
+
+Rocket reuse (`rocket_reuse.dm`): a returned section is worn, counts its
+flight and is refused until inspected; a capsule with a heat shield and
+parachutes carries a well-formed record to orbit and home, and a capsule
+without parachutes cannot deorbit; malformed records and records on other
+flights are refused; coming home, the capsule splashes down by the shore,
+lands softly on its landing rockets or comes down hard, once per flight;
+landing legs fly a first stage back only from 2013, and the propellant kept
+to land costs delta-v.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/reuse_probe.dm 300

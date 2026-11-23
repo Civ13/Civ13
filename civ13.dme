@@ -2093,6 +2093,7 @@
 #include "code\modules\space\rocket_designer.dm"
 #include "code\modules\space\rocket_plan.dm"
 #include "code\modules\space\rocket_plan_checks.dm"
+#include "code\modules\space\rocket_reuse.dm"
 #include "code\modules\space\rocket_works.dm"
 #include "code\modules\space\self_sufficiency.dm"
 #include "code\modules\space\methalox.dm"
