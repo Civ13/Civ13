@@ -52,6 +52,8 @@ A probe maps a world from the mission console without anyone leaving home.
 
 The console keeps a separate survey record for each world, and every probe landing site becomes a **surveyed landing site** for crewed flights.
 
+A rocket built with a probe and enough stages to land on the Moon can also fly a one-way probe from a console within 7 tiles of it. That probe maps the Moon and marks its landing site, but it never ascends or brings samples home (see [Rockets](Guide_to_Rockets.md#lunar-probes)).
+
 ## Flying a crew there
 
 1. Build a **launch pad** (40 steel) and use it. Choose **The Moon** (or Mars). The pad is ready at once, and you can use it again to change where it flies.
