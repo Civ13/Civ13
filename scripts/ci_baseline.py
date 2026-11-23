@@ -50,6 +50,8 @@ SUITES = {
     'flour_dough': {'files': ('tests/flour_dough/test_dough.py',),
         'paths': ('tests/flour_dough/', 'code/modules/reagents/reagent_containers/food/condiment.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'airstrike_rearm': {'files': ('tests/airstrike_rearm/test_sources.py',),
+        'paths': ('tests/airstrike_rearm/', 'code/modules/1713/weapons/zoom.dm', 'code/_helpers/global_lists.dm')},
     'getline2_contract': {'files': ('tests/getline2/test_getline2.py',),
         'paths': ('tests/getline2/',),
         'shared_paths': ('code/_helpers/unsorted.dm', 'tests/save_movement/source_adapter.py')},
