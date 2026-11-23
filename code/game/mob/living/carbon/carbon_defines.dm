@@ -15,7 +15,8 @@
 	var/losebreath = FALSE //if we failed to breathe last tick
 	var/mood = 100 //Morale. At a value between 40 and 60, the stat has no positive bonuses or negative penalties.
 	var/coughedtime = FALSE
-	var/lastpuke = FALSE
+	// Vomit cooldown, cleared by a timer that never survives a restart, so it never saves (#6892).
+	var/tmp/lastpuke = FALSE
 	var/cpr_time = TRUE
 	var/list/addictions = list("opioid" = 0, "stimulant" = 0, "nicotine" = 0, "cannabis" = 0, "caffeine" = 0, "alcohol" = 0)
 	var/nutrition = 600.0 // hunger in some units; workload and climate set the drain (human_life.dm)
