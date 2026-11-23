@@ -115,36 +115,53 @@ var/global/datum/currency_list/fiat = new()
 			to_chat(user, "That currency does not exist or the printer is not configured.")
 			return
 
-/** Spawns physical currency (gold, silver, or dollars/rubles) equivalent to the provided value based on map and era. */
+/** Real money types this printer pays out on the current map, largest value first. */
+/obj/structure/money_printer/proc/real_money_denominations()
+	if (map && (map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_KANDAHAR))
+		return list(/obj/item/stack/money/dollar)
+	if (map && (map.ID == MAP_GULAG13 || map.ID == MAP_PEPELSIBIRSK))
+		return list(/obj/item/stack/money/rubles)
+	return list(/obj/item/stack/money/goldcoin, /obj/item/stack/money/silvercoin, /obj/item/stack/money/coppercoin)
+
+/** Splits a value into whole coins or notes, largest first. Returns a list of type = count. */
+/obj/structure/money_printer/proc/real_money_payout(value)
+	var/list/payout = list()
+	if (value <= 0)
+		return payout
+	var/remaining = value
+	for (var/money_type in real_money_denominations())
+		var/obj/item/stack/money/M = money_type
+		var/unit = initial(M.value)
+		if (unit <= 0)
+			continue
+		// The small epsilon keeps 0.1-coin sums from flooring one coin short.
+		var/count = round((remaining + 0.0001) / unit)
+		if (count > 0)
+			payout[money_type] = count
+			remaining = max(0, remaining - count * unit)
+	return payout
+
+/** Total value of a payout list from real_money_payout(). */
+/obj/structure/money_printer/proc/real_money_payout_value(list/payout)
+	var/total = 0
+	for (var/money_type in payout)
+		var/obj/item/stack/money/M = money_type
+		total += payout[money_type] * initial(M.value)
+	return round(total, 0.01)
+
+/** Spawns physical currency (coins, dollars or rubles) worth up to the provided value and
+ * returns the value actually paid out. A remainder no coin or note can represent is not paid,
+ * so callers deduct only the returned value from the printer's backing (issue 6973). */
 /obj/structure/money_printer/proc/dispense_real_money(dispense_value)
-	if (dispense_value <= 0)
-		return
-	if (map.ID == MAP_THE_ART_OF_THE_DEAL || map.ID == MAP_KANDAHAR)
-		var/obj/item/stack/money/dollar/D = new/obj/item/stack/money/dollar(loc)
-		D.amount = round(dispense_value/D.value)
-		if (D.amount <= 0)
-			qdel(D)
-	else if (map.ID == MAP_GULAG13 || map.ID == MAP_PEPELSIBIRSK)
-		var/obj/item/stack/money/rubles/D = new/obj/item/stack/money/rubles(loc)
-		D.amount = round(dispense_value/D.value)
-		if (D.amount <= 0)
-			qdel(D)
-	else
-		if (dispense_value <= 3)
-			var/obj/item/stack/money/coppercoin/NM = new/obj/item/stack/money/coppercoin(loc)
-			NM.amount = round(dispense_value/NM.value)
-			if (NM.amount <= 0)
-				qdel(NM)
-		else if (dispense_value <= 40)
-			var/obj/item/stack/money/silvercoin/NM = new/obj/item/stack/money/silvercoin(loc)
-			NM.amount = round(dispense_value/NM.value)
-			if (NM.amount <= 0)
-				qdel(NM)
-		else
-			var/obj/item/stack/money/goldcoin/NM = new/obj/item/stack/money/goldcoin(loc)
-			NM.amount = round(dispense_value/NM.value)
-			if (NM.amount <= 0)
-				qdel(NM)
+	var/list/payout = real_money_payout(dispense_value)
+	for (var/money_type in payout)
+		var/left = payout[money_type]
+		while (left > 0)
+			var/obj/item/stack/money/NM = new money_type(loc)
+			NM.amount = min(left, max(1, NM.max_amount))
+			left -= NM.amount
+			NM.update_icon()
+	return real_money_payout_value(payout)
 
 /** Renders the management menu for money printers, allowing for printing, withdrawals, and rate adjustment. */
 /obj/structure/money_printer/proc/display_ui(user)
@@ -159,9 +176,15 @@ var/global/datum/currency_list/fiat = new()
 		return
 	else if (choice == "Withdraw real money")
 		if (real_money_inside > 0)
-			dispense_real_money(real_money_inside)
-			real_money_inside = 0
-			to_chat(user, "You withdraw the real money backing this printer.")
+			var/paid = dispense_real_money(real_money_inside)
+			if (paid <= 0)
+				to_chat(user, "The [real_money_inside] real money value left in this printer is too small to pay out in coins or notes.")
+				return
+			real_money_inside = max(0, round(real_money_inside - paid, 0.01))
+			if (real_money_inside > 0)
+				to_chat(user, "You withdraw [paid] in real money. The remaining [real_money_inside] is too small to pay out and stays in the printer.")
+			else
+				to_chat(user, "You withdraw the real money backing this printer.")
 		return
 	else if (choice == "Change Exchange Rate")
 		var/new_rate = player_input(user, "What should the exchange rate be? This determines how much real money value (e.g. silver coins) is dispensed per 1 banknote inserted into this printer.", "Exchange Rate", exchange_rate, "num", null, FALSE)
@@ -249,9 +272,16 @@ var/global/datum/currency_list/fiat = new()
 				return
 			var/fiat_value = F.amount * exchange_rate
 			if (real_money_inside >= fiat_value)
-				real_money_inside -= fiat_value
-				dispense_real_money(fiat_value)
-				to_chat(user, "You insert the fiat money and receive its backing in real money.")
+				var/payable = real_money_payout_value(real_money_payout(fiat_value))
+				if (payable <= 0)
+					to_chat(user, "That is too little fiat to pay out in coins or notes at this exchange rate.")
+					return
+				var/paid = dispense_real_money(fiat_value)
+				real_money_inside = max(0, round(real_money_inside - paid, 0.01))
+				if (paid < fiat_value)
+					to_chat(user, "You insert the fiat money and receive [paid] of its [fiat_value] backing in real money; the rest is too small to pay out and stays in the printer.")
+				else
+					to_chat(user, "You insert the fiat money and receive its backing in real money.")
 				qdel(F)
 				return
 			else
