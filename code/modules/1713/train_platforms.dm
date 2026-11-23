@@ -775,15 +775,19 @@ var/global/train_step_plain = FALSE
 	return segs
 
 /obj/structure/trains/platform/proc/dismantle_problem()
-	var/list/L = layout()
-	if (L && L["body"])
-		return "It is built in one piece and cannot be packed into a kit."
+	var/obj/structure/trains/locomotive/E = car_engine()
+	if (E)
+		return E.pack_problem()
+	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		return "Wait a moment and try again."
 	var/list/segs = car_segments()
 	var/obj/structure/trains/platform/front = null
 	var/obj/structure/trains/platform/back = null
 	for (var/obj/structure/trains/platform/P in segs)
 		if (P.automovement)
 			return "The car is moving."
+		if (P.draft_animal)
+			return "Take the harness off the car first."
 		if (P.seg_index == 1)
 			front = P
 		if (P.seg_index == car_length())
@@ -806,6 +810,10 @@ var/global/train_step_plain = FALSE
 	return null
 
 /obj/structure/trains/platform/proc/dismantle_car(mob/user)
+	// A heavy locomotive comes apart as a whole (train_dismantle.dm).
+	var/obj/structure/trains/locomotive/E = car_engine()
+	if (E)
+		return E.pack_engine(user)
 	var/problem = dismantle_problem()
 	if (problem)
 		to_chat(user, SPAN_WARNING(problem))
