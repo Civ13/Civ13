@@ -237,6 +237,9 @@ SUITES = {
     'noticeboard_remove': {'files': ('tests/noticeboard_remove/test_remove.py',),
         'paths': ('tests/noticeboard_remove/',),
         'shared_paths': ('code/game/objects/structures/noticeboard.dm',)},
+    'faction_banner_load': {'files': ('tests/faction_banner_load/test_source.py',),
+        'paths': ('tests/faction_banner_load/',), 'shared_paths': (
+            'code/game/mob/groups/factions.dm', 'code/game/mob/groups/religions.dm')},
     'moldy_sabotage': {'files': ('tests/moldy_sabotage/test_school_property.py',),
         'paths': ('tests/moldy_sabotage/', 'code/modules/1713/moldy_men/moldy_men_hooks.dm'),
         'shared_paths': ('code/game/objects/structures.dm',

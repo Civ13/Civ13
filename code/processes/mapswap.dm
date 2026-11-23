@@ -148,200 +148,208 @@
 		// An epoch from outside the TDM list (a stale or forced result) falls back to one inside it.
 		if ((config.allowedgamemodes == "TDM" || tdm_battle_active()) && !(epoch in tdm_epochs()))
 			epoch = pick(tdm_epochs())
-		switch(epoch)
-			if ("Stone Age (?-3000 B.C.)")
-				maps = list(
-					MAP_FOUR_KINGDOMS = 0,
-					MAP_TRIBES = 0,
-				)
-			if ("Pre-Firearms (3000 B.C-1650 A.D.)")
-//			1013 - TDM
-				maps = list(
-					MAP_KARAK = 0,
-					MAP_CAMP = 0,
-					MAP_OASIS = 0,
-					MAP_CLASH = 0,
-					MAP_SIEGE = 0,
-					MAP_GLADIATORS = 0,
-					MAP_TEUTOBURG = 8,
-					MAP_HERACLEA = 8,
-					MAP_IDES_OF_MARCH = 0,
-					MAP_SAMMIRHAYEED = 10,
-					MAP_TWOTRIBES = 0,
-				)
-			if ("Early Fire Arms (1650-1930)")
-// 			1903 - TDM
-				maps = list(
-					MAP_HILL_203 = 0,
-					MAP_YPRES = 0,
-					MAP_VERDUN = 8,
-					MAP_SIBERSYN = 6,
-					MAP_TSARITSYN = 6,
-					MAP_PORT_ARTHUR = 10,
-					MAP_SANTO_TOMAS = 8,
-					MAP_CALOOCAN = 0,
-					MAP_LITTLE_CREEK_TDM = 0,
-					MAP_MISSIONARY_RIDGE = 10,
-					MAP_NAVAL = 0,
-					MAP_BROADSIDE = 0,
-//					MAP_SKULLISLAND = 0,
-					MAP_SUPPLY_RAID = 0,
-					MAP_BRIDGE = 0,
-					MAP_RECIFE = 10,
-					MAP_FIELDS = 10,
-					MAP_RUHR_UPRISING = 14,
-					MAP_ROBUSTA = 15,
-					MAP_SEKIGAHARA = 6,
-				)
-			if ("World War II (1931-1948)")
-//	 		1943 - TDM
-				maps = list(
-					MAP_REICHSTAG = 0,
-					MAP_MICROMAHA = 0,
-					MAP_NANKOU = 0,
-					MAP_MARCO_POLO_BRIDGE = 0,
-					MAP_SMALLINGRAD = 0,
-					MAP_REICHFLAKTURM = 0,
-					MAP_PAVLOV_HOUSE = 0,
-					MAP_HOTEL = 0,
-					MAP_KHALKHYN_GOL = 8,
-					MAP_KURSK = 10,
-					MAP_BARBAROSSA = 10,
-					MAP_VITEBSK = 10,
-					MAP_STALINGRAD = 10,
-					MAP_LONG_MARCH = 12,
-					MAP_ARDENNES = 12,
-					MAP_SMALLSIEGEMOSCOW = 12,
-					MAP_INTRAMUROS = 14,
-					MAP_RIZAL_STADIUM = 14,
-					MAP_WAKE_ISLAND = 14,
-					MAP_NANJING = 14,
-					MAP_WARSAW = 14,
-					MAP_OMAHA = 20,
-//					MAP_BIGSIEGEMOSCOW = 20,
-					MAP_FOREST = 20,
-//					MAP_KARELIA = 14,
-					MAP_BERLIN = 20,
-//					MAP_IWO_JIMA = 40,
-				)
-			if ("Modern Fire Arms (1949-2021)")
-// 			2013 - TDM
-				maps = list(
-					MAP_RETREAT = 6,
-					MAP_ROAD_TO_DAK_TO = 0,
-					MAP_COMPOUND = 6,
-					MAP_ONG_THAHN = 12,
-					MAP_HUE = 15,
-					MAP_AFRICAN_WARLORDS = 6,
-					MAP_TADOJSVILLE = 12,
-					MAP_ZHENBAO = 10,
-					MAP_MAGISTRAL = 10,
-					MAP_HILL_3234 = 12,
-					MAP_KANDAHAR = 16,
-					MAP_ALLEYWAY = 0,
-					MAP_WACO = 0,
-					MAP_YELTSIN = 6,
-					MAP_GROZNY = 10,
-					MAP_BANK_ROBBERY = 0,
-					MAP_DRUG_BUST = 0,
-					MAP_ARAB_TOWN = 0,
-					MAP_ARAB_TOWN_2 = 0,
-					MAP_HOSTAGES = 0,
-					MAP_SYRIA = 6,
-					MAP_CAPITOL_HILL = 6,
-				)
-			if ("Fiction")
-				maps = list(
-					MAP_TANTIVEIV = 0,
-					MAP_WHITERUN = 10,
-					MAP_ROTSTADT = 12,
-				)
-			if ("HRP TDM (Gulag, Occupation, AOTD, etc)")
-				maps = list(
-//					MAP_HUNT = 6,
-//					MAP_FOOTBALL = 6,
-					MAP_GULAG13 = 6,
-//					MAP_ABASHIRI = 6,
-//					MAP_RIVER_KWAI = 0,
-					MAP_LITTLE_CREEK = 6,
-					MAP_OCCUPATION = 10,
-					MAP_THE_ART_OF_THE_DEAL = 18,
-				)
-			if ("Battle Royale")
-				maps = list(
-					MAP_BATTLEROYALE_MEDIEVAL = 0,
-					MAP_BATTLEROYALE_IMPERIAL = 0,
-					MAP_BATTLEROYALE_WILDWEST = 0,
-					MAP_BATTLEROYALE_MODERN = 0,
-//					MAP_HUNGERGAMES = 0,
-				)
-			if ("MilSim (BETA TESTING)")
-//			MilSim 2014 to 2023 - TDM
-				maps = list(
-					MAP_OPERATION_FALCON = 0,
-				)
-			if ("Chad Mode")
-				maps = list(
-					MAP_JUNGLE_OF_THE_CHADS = 0,
-				)
-			if ("PvE (Voyage, Antarctica, etc)")
-				maps = list(
-					MAP_ANTARCTICA = 0,
-					MAP_SUBCOM13 = 0,
-					MAP_LIGHTS_OUT = 0,
-					MAP_WIZARD_BOY = 0,
-					MAP_FOOTBALL = 4,
-					//MAP_HUNT = 4,
-					MAP_CURSED_ISLAND = 4,
-					MAP_VOYAGE = 6,
-				)
-
-			if ("Civilization 13 (Nomads)")
-				maps = list(
-//					MAP_CIVILIZATIONS = 0,
-					MAP_NOMADS = 0,
-					MAP_NOMADS_DESERT = 0,
-					MAP_NOMADS_ICE_AGE = 0,
-					MAP_NOMADS_JUNGLE = 0,
-					MAP_NOMADS_DIVIDE = 10,
-					MAP_NOMADS_CONTINENTAL = 10,
-					MAP_NOMADS_PANGEA = 10,
-					MAP_NOMADS_WASTELAND = 0,
-					MAP_NOMADS_WASTELAND_2 = 0,
-					//MAP_NOMADS_WASTELAND_3 = 0,
-					MAP_NOMADS_NEW_WORLD = 5,
-					MAP_NOMADS_MEDITERRANEAN = 0,
-//					MAP_NOMADS_ISLAND = 0,
-					MAP_NOMADS_KARAFUTO = 0,
-					MAP_NOMADS_EUROPE = 10,
-					MAP_NOMADS_ASIA = 10,
-//					MAP_NOMADS_UK = 10,
-//					MAP_NOMADS_OCEANIA = 10,
-				)
-			if ("Civilization 13 (Colony & Pioneers)")
-				maps = list(
-					MAP_COLONY = 0,
-					MAP_JUNGLE_COLONY = 4,
-					MAP_PIONEERS = 5,
-					MAP_PIONEERS_WASTELAND_2 = 0,
-					MAP_BOHEMIA = 10,
-					MAP_FOUR_COLONIES = 20,
-				)
-			if ("Civilization 13 (Others)")
-				maps = list(
-					MAP_TRIBES = 12,
-					MAP_HUNT = 0,
-					MAP_LITTLE_CREEK = 10,
-					MAP_THE_ART_OF_THE_DEAL = 10,
-					MAP_FOUR_KINGDOMS = 0,
-					MAP_GULAG13 = 0,
-//					MAP_ABASHIRI = 6,
-//					MAP_RIVER_KWAI = 0,
-					MAP_OCCUPATION = 10,
-				)
+		var/list/epoch_maps = mapswap_epoch_maps(epoch)
+		if (epoch_maps.len)
+			maps = epoch_maps
 		spawn(10)
 			vote.initiate_vote("map", "MapSwap Process", TRUE, list(src, "swap"))
 			return
+
+// Each epoch's maps and the players each one needs. The battle world's round-end
+// vote and the Barracks battle map vote (tdm_barracks/barracks_map_vote.dm) both read it.
+/proc/mapswap_epoch_maps(epoch)
+	. = list()
+	switch(epoch)
+		if ("Stone Age (?-3000 B.C.)")
+			. = list(
+				MAP_FOUR_KINGDOMS = 0,
+				MAP_TRIBES = 0,
+			)
+		if ("Pre-Firearms (3000 B.C-1650 A.D.)")
+//			1013 - TDM
+			. = list(
+				MAP_KARAK = 0,
+				MAP_CAMP = 0,
+				MAP_OASIS = 0,
+				MAP_CLASH = 0,
+				MAP_SIEGE = 0,
+				MAP_GLADIATORS = 0,
+				MAP_TEUTOBURG = 8,
+				MAP_HERACLEA = 8,
+				MAP_IDES_OF_MARCH = 0,
+				MAP_SAMMIRHAYEED = 10,
+				MAP_TWOTRIBES = 0,
+			)
+		if ("Early Fire Arms (1650-1930)")
+// 			1903 - TDM
+			. = list(
+				MAP_HILL_203 = 0,
+				MAP_YPRES = 0,
+				MAP_VERDUN = 8,
+				MAP_SIBERSYN = 6,
+				MAP_TSARITSYN = 6,
+				MAP_PORT_ARTHUR = 10,
+				MAP_SANTO_TOMAS = 8,
+				MAP_CALOOCAN = 0,
+				MAP_LITTLE_CREEK_TDM = 0,
+				MAP_MISSIONARY_RIDGE = 10,
+				MAP_NAVAL = 0,
+				MAP_BROADSIDE = 0,
+//					MAP_SKULLISLAND = 0,
+				MAP_SUPPLY_RAID = 0,
+				MAP_BRIDGE = 0,
+				MAP_RECIFE = 10,
+				MAP_FIELDS = 10,
+				MAP_RUHR_UPRISING = 14,
+				MAP_ROBUSTA = 15,
+				MAP_SEKIGAHARA = 6,
+			)
+		if ("World War II (1931-1948)")
+//	 		1943 - TDM
+			. = list(
+				MAP_REICHSTAG = 0,
+				MAP_MICROMAHA = 0,
+				MAP_NANKOU = 0,
+				MAP_MARCO_POLO_BRIDGE = 0,
+				MAP_SMALLINGRAD = 0,
+				MAP_REICHFLAKTURM = 0,
+				MAP_PAVLOV_HOUSE = 0,
+				MAP_HOTEL = 0,
+				MAP_KHALKHYN_GOL = 8,
+				MAP_KURSK = 10,
+				MAP_BARBAROSSA = 10,
+				MAP_VITEBSK = 10,
+				MAP_STALINGRAD = 10,
+				MAP_LONG_MARCH = 12,
+				MAP_ARDENNES = 12,
+				MAP_SMALLSIEGEMOSCOW = 12,
+				MAP_INTRAMUROS = 14,
+				MAP_RIZAL_STADIUM = 14,
+				MAP_WAKE_ISLAND = 14,
+				MAP_NANJING = 14,
+				MAP_WARSAW = 14,
+				MAP_OMAHA = 20,
+//					MAP_BIGSIEGEMOSCOW = 20,
+				MAP_FOREST = 20,
+//					MAP_KARELIA = 14,
+				MAP_BERLIN = 20,
+//					MAP_IWO_JIMA = 40,
+			)
+		if ("Modern Fire Arms (1949-2021)")
+// 			2013 - TDM
+			. = list(
+				MAP_RETREAT = 6,
+				MAP_ROAD_TO_DAK_TO = 0,
+				MAP_COMPOUND = 6,
+				MAP_ONG_THAHN = 12,
+				MAP_HUE = 15,
+				MAP_AFRICAN_WARLORDS = 6,
+				MAP_TADOJSVILLE = 12,
+				MAP_ZHENBAO = 10,
+				MAP_MAGISTRAL = 10,
+				MAP_HILL_3234 = 12,
+				MAP_KANDAHAR = 16,
+				MAP_ALLEYWAY = 0,
+				MAP_WACO = 0,
+				MAP_YELTSIN = 6,
+				MAP_GROZNY = 10,
+				MAP_BANK_ROBBERY = 0,
+				MAP_DRUG_BUST = 0,
+				MAP_ARAB_TOWN = 0,
+				MAP_ARAB_TOWN_2 = 0,
+				MAP_HOSTAGES = 0,
+				MAP_SYRIA = 6,
+				MAP_CAPITOL_HILL = 6,
+			)
+		if ("Fiction")
+			. = list(
+				MAP_TANTIVEIV = 0,
+				MAP_WHITERUN = 10,
+				MAP_ROTSTADT = 12,
+			)
+		if ("HRP TDM (Gulag, Occupation, AOTD, etc)")
+			. = list(
+//					MAP_HUNT = 6,
+//					MAP_FOOTBALL = 6,
+				MAP_GULAG13 = 6,
+//					MAP_ABASHIRI = 6,
+//					MAP_RIVER_KWAI = 0,
+				MAP_LITTLE_CREEK = 6,
+				MAP_OCCUPATION = 10,
+				MAP_THE_ART_OF_THE_DEAL = 18,
+			)
+		if ("Battle Royale")
+			. = list(
+				MAP_BATTLEROYALE_MEDIEVAL = 0,
+				MAP_BATTLEROYALE_IMPERIAL = 0,
+				MAP_BATTLEROYALE_WILDWEST = 0,
+				MAP_BATTLEROYALE_MODERN = 0,
+//					MAP_HUNGERGAMES = 0,
+			)
+		if ("MilSim (BETA TESTING)")
+//			MilSim 2014 to 2023 - TDM
+			. = list(
+				MAP_OPERATION_FALCON = 0,
+			)
+		if ("Chad Mode")
+			. = list(
+				MAP_JUNGLE_OF_THE_CHADS = 0,
+			)
+		if ("PvE (Voyage, Antarctica, etc)")
+			. = list(
+				MAP_ANTARCTICA = 0,
+				MAP_SUBCOM13 = 0,
+				MAP_LIGHTS_OUT = 0,
+				MAP_WIZARD_BOY = 0,
+				MAP_FOOTBALL = 4,
+				//MAP_HUNT = 4,
+				MAP_CURSED_ISLAND = 4,
+				MAP_VOYAGE = 6,
+			)
+
+		if ("Civilization 13 (Nomads)")
+			. = list(
+//					MAP_CIVILIZATIONS = 0,
+				MAP_NOMADS = 0,
+				MAP_NOMADS_DESERT = 0,
+				MAP_NOMADS_ICE_AGE = 0,
+				MAP_NOMADS_JUNGLE = 0,
+				MAP_NOMADS_DIVIDE = 10,
+				MAP_NOMADS_CONTINENTAL = 10,
+				MAP_NOMADS_PANGEA = 10,
+				MAP_NOMADS_WASTELAND = 0,
+				MAP_NOMADS_WASTELAND_2 = 0,
+				//MAP_NOMADS_WASTELAND_3 = 0,
+				MAP_NOMADS_NEW_WORLD = 5,
+				MAP_NOMADS_MEDITERRANEAN = 0,
+//					MAP_NOMADS_ISLAND = 0,
+				MAP_NOMADS_KARAFUTO = 0,
+				MAP_NOMADS_EUROPE = 10,
+				MAP_NOMADS_ASIA = 10,
+//					MAP_NOMADS_UK = 10,
+//					MAP_NOMADS_OCEANIA = 10,
+			)
+		if ("Civilization 13 (Colony & Pioneers)")
+			. = list(
+				MAP_COLONY = 0,
+				MAP_JUNGLE_COLONY = 4,
+				MAP_PIONEERS = 5,
+				MAP_PIONEERS_WASTELAND_2 = 0,
+				MAP_BOHEMIA = 10,
+				MAP_FOUR_COLONIES = 20,
+			)
+		if ("Civilization 13 (Others)")
+			. = list(
+				MAP_TRIBES = 12,
+				MAP_HUNT = 0,
+				MAP_LITTLE_CREEK = 10,
+				MAP_THE_ART_OF_THE_DEAL = 10,
+				MAP_FOUR_KINGDOMS = 0,
+				MAP_GULAG13 = 0,
+//					MAP_ABASHIRI = 6,
+//					MAP_RIVER_KWAI = 0,
+				MAP_OCCUPATION = 10,
+			)
 
 /process/mapswap/proc/is_ready()
 	. = FALSE

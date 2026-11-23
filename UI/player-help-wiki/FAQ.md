@@ -91,6 +91,10 @@ Build a **research bench** (8 soft wood), put a book on it, click a subject and 
 
 You gain scholarship by working at a research bench, studying chapters, writing them, and by hands-on work that goes into a book. Mastering a body skill also teaches its discipline: crafting teaches Engineering, farming and hunting teach Agriculture, medical teaches Medicine, philosophy teaches Basic Mathematics, and weapon skills teach Military Science. The **Scholarship** tab shows your levels. See [Scholarship](guides/Guide_to_Books_and_Scholars.md#scholarship) and [Learning by doing](guides/Guide_to_Books_and_Scholars.md#learning-by-doing).
 
+### My book is at 30%. How do I make a prototype?
+
+For ordinary prototypes, learn the subject's prerequisites and put at least **34%** of the research into the book. Take it off the bench and hold it while you use the normal recipe. If the recipe still refuses, check the message for the exact missing research points or prerequisites. The first five successful builds for that subject in that book add progress. Experimental machines for capstone demonstrations use a [separate 50% threshold](guides/Guide_to_Books_and_Scholars.md#demonstrations).
+
 ### Why is my research so slow?
 
 Work beside the bench runs at full pace; two or three tiles away it runs at three quarters. Skill above the chapter's requirement makes research up to twice as fast. Using **samples** of what the subject unlocks on the bench speeds it up, and a field of study speeds up its own discipline. See [Research benches](guides/Guide_to_Books_and_Scholars.md#research-benches) and [Fields of study](guides/Guide_to_Books_and_Scholars.md#fields-of-study).

@@ -99,16 +99,17 @@ class PlanCodesTest(unittest.TestCase):
         'code/modules/1713/train_designer.dm': ('train', 'TRAIN_DESIGNER_WINDOW'),
         'code/modules/space/station_designer.dm': ('station', 'STATION_DESIGNER_WINDOW'),
         'code/game/objects/house_designer.dm': ('house', 'HOUSE_DESIGNER_WINDOW'),
+        'code/modules/1713/rail_designer.dm': ('rail', 'RAIL_DESIGNER_WINDOW'),
     }
     MENUS = ('code/modules/naval/ship_draught.dm', 'code/modules/naval/sub_draught.dm',
              'code/modules/naval/air_draught.dm', 'code/modules/craft/vehicle_draught.dm',
              'code/modules/1713/train_draught.dm', 'code/modules/space/station_plan.dm',
-             'code/game/objects/house_plan.dm')
+             'code/game/objects/house_plan.dm', 'code/modules/1713/rail_plan.dm')
 
     def test_every_kind_row_names_its_designer(self):
         kinds = read('code/modules/naval/draught_kinds.dm')
         rows = re.findall(r'^\t\t"(\w+)" = list\((.*)\),$', kinds, re.M)
-        self.assertEqual({k for k, _ in rows}, {'SHIP', 'SUB', 'CAR', 'AIR', 'HOUSE', 'TRAIN', 'STATION'})
+        self.assertEqual({k for k, _ in rows}, {'SHIP', 'SUB', 'CAR', 'AIR', 'HOUSE', 'TRAIN', 'STATION', 'RAIL'})
         windows = {w: re.search(r'#define %s "(\w+)"' % w, read(p)).group(1) for p, (_, w) in self.DESIGNERS.items()}
         for kind, row in rows:
             with self.subTest(kind=kind):

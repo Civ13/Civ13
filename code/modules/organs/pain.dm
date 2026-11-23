@@ -110,7 +110,8 @@
 		if(I.damage > 0 && prob(2))
 			var/obj/item/organ/external/parent = get_organ(I.parent_organ)
 			if(parent)
-				src.custom_pain("You feel an ache in your [parent.name].", min(50, I.damage), affecting = parent)
+				// Existing damage can ache, but reporting it must not inflict fresh pain or roll a scream.
+				src.custom_pain("You feel an ache in your [parent.name].", min(50, I.damage), affecting = parent, nohalloss = TRUE)
 
 	if(prob(2))
 		switch(getToxLoss())

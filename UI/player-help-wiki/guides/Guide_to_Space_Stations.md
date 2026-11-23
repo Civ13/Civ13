@@ -70,7 +70,7 @@ The window tells you what is wrong with a plan, and warns you about modules more
 
 A plan up to the size of the starter station for your era costs what the starter does: 180 steel, 40 glass, 40 copper and 60 electronics. That is 3 modules in 1969, 5 from 2013 and 8 from 2026. Each module beyond that costs 60 more steel.
 
-To copy a station you already have, use a blank sheet of paper on its orbit console. The plan is drawn from its modules. Design codes copy plans between sheets.
+To copy a station you already have, use a blank sheet of paper on its orbit console. The plan is drawn from its modules. Plans export and import as design codes, from the sheet menu or with **Export code** and **Import code** in the window (see [Sharing plans as design codes](Guide_to_Boats.md#sharing-plans-as-design-codes)).
 
 ## Living aboard
 

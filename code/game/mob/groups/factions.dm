@@ -350,6 +350,86 @@
 
 
 
+// Wall art stays on the walkable side, as with paintings and noticeboards.
+/obj/structure/banner
+	var/banner_mount_dir = 0
+	var/banner_was_anchored = FALSE
+
+/obj/structure/banner/proc/banner_can_mount()
+	return type == /obj/structure/banner/faction || type == /obj/structure/banner/faction/banner_a || type == /obj/structure/banner/faction/banner_b || type == /obj/structure/banner/religious
+
+/obj/structure/banner/proc/banner_can_handle(mob/living/human/H)
+	return istype(H) && isturf(loc) && H.z == z && H.Adjacent(src) && H.stat == CONSCIOUS && !H.restrained()
+
+/obj/structure/banner/proc/banner_wall_tool(obj/item/W, mob/living/human/H)
+	if (!banner_can_mount() || !istype(H) || !W)
+		return FALSE
+	if (is_tool(W, TOOL_HAMMER) && H.a_intent != I_HARM)
+		if (banner_can_handle(H) && H.get_active_hand() == W)
+			banner_mount(H)
+		return TRUE
+	if (is_tool(W, TOOL_WRENCH) && banner_mount_dir)
+		if (banner_can_handle(H) && H.get_active_hand() == W)
+			banner_unmount(H)
+		return TRUE
+	return FALSE
+
+/obj/structure/banner/proc/banner_mount(mob/living/human/H)
+	if (!banner_can_mount() || !banner_can_handle(H))
+		return FALSE
+	if (banner_mount_dir)
+		to_chat(H, SPAN_NOTICE("Use a wrench to take the banner down first."))
+		return FALSE
+	var/turf/T = loc
+	var/facing = H.dir
+	// Leave any legacy map offsets alone. Floor nudges within the snap
+	// travel with the banner and are retained when it comes back down.
+	if (T.density || nudge_base(pixel_x) || nudge_base(pixel_y) || !(facing in cardinal) || !painting_is_wall_turf(get_step(T, facing)))
+		to_chat(H, SPAN_WARNING("Face a solid wall beside a freestanding banner to hang it."))
+		return FALSE
+	if (banner_wall_occupied(T, facing))
+		to_chat(H, SPAN_WARNING("Something already hangs there."))
+		return FALSE
+	banner_was_anchored = anchored
+	banner_mount_dir = facing
+	anchored = TRUE
+	pixel_x += 32 * ((facing == EAST) - (facing == WEST))
+	pixel_y += 32 * ((facing == NORTH) - (facing == SOUTH))
+	add_fingerprint(H)
+	to_chat(H, SPAN_NOTICE("You hang the banner on the wall."))
+	return TRUE
+
+/obj/structure/banner/proc/banner_wall_occupied(turf/T, facing)
+	for (var/obj/structure/banner/B in T)
+		if (B != src && B.banner_mount_dir == facing)
+			return TRUE
+	for (var/obj/structure/noticeboard/B in T)
+		if (B.board_mount_dir == facing)
+			return TRUE
+	for (var/obj/structure/painting_frame/F in T)
+		if (F.dir == facing)
+			return TRUE
+	if (facing == NORTH)
+		for (var/obj/structure/painting_frame/F in get_step(T, WEST))
+			var/obj/item/canvas/C = F.held_canvas()
+			if (F.dir == NORTH && C && C.wide_hang)
+				return TRUE
+	return FALSE
+
+/obj/structure/banner/proc/banner_unmount(mob/living/human/H)
+	if (!banner_can_mount() || !banner_can_handle(H) || !banner_mount_dir)
+		return FALSE
+	var/facing = banner_mount_dir
+	pixel_x -= 32 * ((facing == EAST) - (facing == WEST))
+	pixel_y -= 32 * ((facing == NORTH) - (facing == SOUTH))
+	anchored = banner_was_anchored
+	banner_mount_dir = 0
+	banner_was_anchored = FALSE
+	add_fingerprint(H)
+	to_chat(H, SPAN_NOTICE("You take the banner down from the wall."))
+	return TRUE
+
+
 /obj/structure/banner/faction
 	name = "faction banner"
 	icon = 'icons/obj/banners.dmi'
@@ -418,6 +498,8 @@
 
 
 /obj/structure/banner/faction/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (banner_wall_tool(W, user))
+		return
 	if (W.sharp)
 		user.visible_message("<span class ='danger'>[user] starts ripping off \the [src]!</span>", "<span class ='danger'>You start ripping off \the [src]!</span>")
 		if (do_after(user, 130, src))
