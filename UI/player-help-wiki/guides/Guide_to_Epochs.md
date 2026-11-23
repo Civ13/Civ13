@@ -19,14 +19,15 @@ Civ13 uses ten epochs. The date identifies the stage of the game, not the tier o
 
 ## How to use this guide
 
-The advice below is for **persistent worlds** such as Gaia. Finishing a [capstone chapter](Guide_to_Books_and_Scholars.md#research-benches) moves the whole world into its next age. That opens the stage for new work; it does not teach every player its recipes. Study the relevant chapters and check your skills, stations and the [Crafting Atlas](https://civ13.github.io/Civ13/crafting/). [Faction research](Guide_to_Research.md) works differently in other modes.
+The advice below is for **persistent worlds** such as Gaia. Finishing a [capstone chapter](Guide_to_Books_and_Scholars.md#research-benches) moves the land you are in into its next age. Each land keeps its own age, so the other lands are not moved until a copy of that capstone reaches them. That opens the stage for new work; it does not teach every player its recipes. Study the relevant chapters and check your skills, stations and the [Crafting Atlas](https://civ13.github.io/Civ13/crafting/). [Faction research](Guide_to_Research.md) works differently in other modes.
 
 Each age below has three parts: **what changes** when the world enters it, what to **focus** on while you are in it, and what to **prepare** so your group is ready to open the next one.
 
 ### What every age has in common
 
-- **An age lives in writing.** The world stays in its age only while a book, manual or torn chapter somewhere in the world still holds the capstone that opened it (or a later one). If every copy stays gone for several minutes, the world falls back one age. Characters keep what they studied, and anyone who still knows the capstone can write it down again to bring the age straight back, with no bill to pay a second time.
-- **Keep spare copies.** Store copies of each capstone in more than one place and with more than one group, so one fire, raid or lost bag cannot cost the world an age.
+- **An age lives in writing.** A land stays in its age only while a book, manual or torn chapter somewhere in that land still holds the capstone that opened it (or a later one). If the last copy is destroyed or carried to another land, the land keeps its age for two hours. Bring a copy back in that time and nothing is lost; otherwise the land falls back one age, then one more each hour while the copies stay missing. Characters keep what they studied, and anyone who still knows the capstone can write it down again to bring the age straight back, with no bill to pay a second time.
+- **Books carry ages between lands.** A capstone book carried into a land that has not reached its age yet does nothing at first. If it stays there for two hours, that land moves forward one age, then one more each hour until it reaches the book's age. Take it away before then and the wait starts again. So a book that leaves home for good slowly takes its age with it, while one brought back within two hours changes nothing.
+- **Keep spare copies.** Store copies of each capstone in more than one place, with more than one group and in every land you want to keep in that age, so one fire, raid, lost bag or journey cannot cost a land its age.
 - **Late capstones need materials.** From Steam Power on, each capstone also needs a bill of materials delivered to the bench while its book is on it. Anyone may deliver, from any faction. Deliveries are written into that book, so they travel with it, but a copied or printed book starts its bill again.
 - **Some capstones need a demonstration.** Steam Power, Electricity, Nuclear Power, Digital Computing and Digital Networks each need the researcher to watch a working machine for a set time. Stay close to it and keep it running until the recording finishes.
 
