@@ -40,7 +40,7 @@ A punch, blade, bullet or thrown object that lands on someone's **hand** can kno
 
 ## Combat stances
 
-A combat stance lets your melee attacks choose the body part for you. The stance button sits beside the tactic button on your HUD. Click it to step through the stances, or use **IC > Combat Stance** to pick one from a list. Every character starts in **Manual**.
+A combat stance lets your melee attacks choose the body part for you. The stance button sits beside the dodge and parry button on your HUD (next to the body figure on the Console HUD). Click it to step through the stances, or use **IC > Combat Stance** to pick one from a list. Every character starts in **Manual**.
 
 | Stance | Where your attacks go |
 | --- | --- |

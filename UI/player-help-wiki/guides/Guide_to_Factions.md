@@ -98,7 +98,7 @@ To move the hall, the leader or an officer with the hall and fixtures power righ
 
 ## Recruitment stations
 
-A **recruitment station** (10 planks, **economy & production**) lets players join without a recruiter online. The leader clicks it and chooses **Designate for my faction**. Only the leader can release it again.
+A **recruitment station** (10 planks, **economy & production**) lets players join without a recruiter online. The leader clicks it and chooses **Designate for my faction**. Only the leader can release it again. A faction can have at most **3** designated stations; to designate another, the leader must release one first.
 
 - **Rules (leader only):** **Closed** stops new applications. **Review every application** sends every application to the queue (new stations start here). **Accept matching applicants at once** lets players who meet the rules join straight away.
 - **Requirements** can ask for a language and minimum skill levels (0-10) in crafting, farming, medical and combat. **Open recruitment** sets them aside.
