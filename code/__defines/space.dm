@@ -54,3 +54,9 @@
 #define ROCKET_BOOSTER_VE 2.4
 // Propellant units (reagent) a tonne of propellant takes to load.
 #define ROCKET_UNITS_PER_TONNE 5
+// Reuse (space/rocket_reuse.dm): from 2013 a first stage with landing legs
+// flies back, keeping this share of its propellant to land.
+#define ROCKET_FLYBACK_AGE 8
+// Below this condition a rocket section will not mount (rocket_works.dm, rocket_reuse.dm).
+#define ROCKET_SECTION_MIN_CONDITION 25
+#define ROCKET_FLYBACK_RESERVE 0.1

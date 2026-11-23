@@ -30,3 +30,28 @@ rocket takes the sheet's propellant and seats, carries the planner, flies
 only to orbit and takes its storeys and sections with it.
 
     python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/works_probe.dm 300
+
+## `reuse_probe.dm`
+
+Rocket reuse (`rocket_reuse.dm`): a returned section is worn, counts its
+flight and is refused until inspected; a capsule with a heat shield and
+parachutes carries a well-formed record to orbit and home, and a capsule
+without parachutes cannot deorbit; malformed records and records on other
+flights are refused; coming home, the capsule splashes down by the shore,
+lands softly on its landing rockets or comes down hard, once per flight;
+landing legs fly a first stage back only from 2013, and the propellant kept
+to land costs delta-v.
+
+    python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/reuse_probe.dm 300
+
+## `missions_probe.dm`
+
+Uncrewed missions (`rocket_missions.dm`): the payload picks the mission; a
+lunar probe rocket needs a pad, propellant and an idle console nearby, and an
+orbit-only probe is told it lacks the lunar transfer; the probe flies a
+one-way Moon mission, records its landing as a surveyed site a crewed lander
+can choose, never ascends or carries samples, and the site stays after the
+mission is abandoned. The heavy cargo launch is checked through the transfer
+bridge in `tests/orbit_world/probe.dm` (`orbit_rocket_cargo_checks`).
+
+    python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/missions_probe.dm 300

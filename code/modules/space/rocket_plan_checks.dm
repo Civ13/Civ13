@@ -100,11 +100,15 @@
 	if (!D.stack.len)
 		return
 	var/list/top = D.top_segment()
+	var/list/first = D.first_stage_recovers() ? D.segments()[1] : list()
 	for (var/i = 1, i <= D.stack.len, i++)
 		var/key = D.stack[i]
 		var/list/P = rocket_plan_pieces()[key]
 		switch (key)
-			if ("C", "K", "Q", "M", "G")
+			if ("G")
+				if (!(i in top) && !(i in first))
+					R.error("Landing legs belong on the top stage, for whatever lands on the Moon[map && map.ordinal_age >= ROCKET_FLYBACK_AGE ? ", or on the first stage to fly it back to the stand" : ""].", list("[i]"), key)
+			if ("C", "K", "Q", "M")
 				if (!(i in top))
 					R.error("The [P["name"]] must ride above the last decoupler: anything below it drops away on the way up.", list("[i]"), key)
 			if ("X", "Y")

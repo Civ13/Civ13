@@ -34,12 +34,13 @@ class Waterlogging(unittest.TestCase):
     def test_immersion_does_not_equate_to_every_engine_flooding(self):
         exposure = proc(DRIVES, '/proc/ship_engine_wet(')
         self.assertIn('!submarine_at(T)', exposure)
-        self.assertIn('!(locate(/obj/roof) in T)', exposure)
+        self.assertIn('L.depth_disabled && hull_depth_underwater(T) && !sunken_hull_pressure_sheltered(T)', exposure)
+        self.assertNotIn('locate(/obj/roof)', exposure)
         self.assertIn('L.water_at(T) >= cap * HULL_ENGINE_FLOOD_SHARE', exposure)
         self.assertIn('L.bay_capacity(bay)', exposure)
         self.assertIn('T.z == B.upper_z() || T.z == B.top_z()', exposure)
         step = proc(DRIVES, '/proc/step_waterlogged_engines()')
-        self.assertIn('(!water && !sea_layer_cell(B.origin()))', step)
+        self.assertIn('(!water && !depth_disabled)', step)
         self.assertIn('ship_engine_wet(E, src)', step)
 
     def test_wrench_service_and_launch_paths_fail_closed(self):

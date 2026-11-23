@@ -314,13 +314,15 @@ var/global/hull_ledger_timer_off = FALSE
 /datum/hull_ledger/proc/awake()
 	return crewed || under_way() || depth_disabled
 
-// TRUE when this turf is one of her deck tiles, on either deck.
+// TRUE when this turf is on one of her decks or in her hold.
 /datum/hull_ledger/proc/deck_holds(turf/T)
 	var/datum/craft_body/built/B = craft ? craft.body : null
 	if (!T || !istype(B) || !B.placed())
 		return FALSE
 	if (T.z == B.z)
 		return B.contains(T)
+	if (T.z == B.lower_z())
+		return B.carries(T)
 	if (T.z == B.upper_z() || T.z == B.top_z())
 		return B.contains(locate(T.x, T.y, B.z))
 	return FALSE
@@ -396,6 +398,8 @@ var/global/hull_ledger_timer_off = FALSE
 	// Her powered pumps answer the water (hull_pumps.dm).
 	pump_bilge(seconds)
 	if (depth_disabled)
+		if (pressure_air)
+			pressure_scan()
 		step_hull_depth()
 		return
 	check_founder()
@@ -447,6 +451,10 @@ var/global/hull_ledger_timer_off = FALSE
 	if (bays)
 		.["bays"] = bays
 		.["bay_order_heading"] = bay_order_heading
+	if (depth_disabled)
+		var/list/air = pressure_to_list()
+		if (length(air))
+			.["pressure_air"] = air
 
 /datum/hull_ledger/proc/from_list(list/state)
 	if (!islist(state))
@@ -469,6 +477,7 @@ var/global/hull_ledger_timer_off = FALSE
 	if (state["bay_order_heading"] in cardinal)
 		bay_order_heading = state["bay_order_heading"]
 	bays_from_list(state["bays"])
+	pressure_from_list(depth_disabled ? state["pressure_air"] : null)
 
 // ---- The craft's side ----
 
@@ -666,7 +675,7 @@ var/global/hull_ledger_timer_off = FALSE
 	return sink()
 
 // Loss of buoyancy stops travel, not the life of the hull or her crew.
-/datum/hull_ledger/proc/sink()
+/datum/hull_ledger/proc/sink(storm_lee = 0)
 	var/datum/craft_body/built/B = craft ? craft.body : null
 	if (!istype(B) || !B.placed() || depth_disabled || persistence_save_active() || persistence_active_operation || persistence_load_recovery_required)
 		return FALSE
@@ -680,6 +689,13 @@ var/global/hull_ledger_timer_off = FALSE
 	craft.clear_path()
 	if (T)
 		T.end_voyage(null)
+	if (storm_lee in cardinal)
+		// A roll ships water without assuming that it reached the roof of
+		// every intact compartment. Already-flooded bays stay flooded.
+		var/capsize_water = capacity() * 0.80
+		add_water(capsize_water - water, capsize_water)
+		craft.crew_message(SPAN_DANGER("The [craft.name] rolls to leeward in the beam seas!"))
+		apply_storm_roll(storm_lee)
 	craft.crew_message(SPAN_DANGER("The [craft.name] has lost buoyancy! Patch the leaks, pump her out, or abandon ship."))
 	log_game("Built hull [craft.name] lost buoyancy at [B.px],[B.py],[B.z].")
 	step_hull_depth()

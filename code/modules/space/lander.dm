@@ -688,7 +688,10 @@ var/global/list/space_cargo_stacks = list(
 // TRUE when a travel payload's flight fields are absent or well formed.
 /proc/space_flight_payload_ok(list/P)
 	if (isnull(P["lander"]))
-		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["orbit"]) && isnull(P["cargo"]) && isnull(P["sortie"]) && isnull(P["seats"]) && isnull(P["port"])
+		return isnull(P["landing"]) && isnull(P["surveyed"]) && isnull(P["rough"]) && isnull(P["return"]) && isnull(P["orbit"]) && isnull(P["cargo"]) && isnull(P["sortie"]) && isnull(P["seats"]) && isnull(P["port"]) && isnull(P["capsule"])
+	// A modular rocket's capsule record rides a flight to orbit and home (rocket_reuse.dm).
+	if (!isnull(P["capsule"]) && ((isnull(P["orbit"]) && isnull(P["return"])) || !rocket_capsule_record_ok(P["capsule"])))
+		return FALSE
 	// Only a flight to orbit docks at a station's port (orbit_docking.dm).
 	if (!isnull(P["port"]) && (isnull(P["orbit"]) || !orbit_docking_valid_id(P["port"])))
 		return FALSE
@@ -978,6 +981,10 @@ var/global/list/landed_landers = list()
 	. = deorbit_on(notify)
 	travel_hold_end(held)
 
+// Extra fields for the flight home (a modular rocket's capsule, rocket_reuse.dm).
+/obj/structure/landed_lander/proc/flight_home_extras(list/flight)
+	return
+
 /obj/structure/landed_lander/proc/deorbit_on(mob/living/human/notify)
 	var/home = shard_group.mainland
 	if (shard_group.enabled && shard_group.peers[home] && shard_group.peers[home]["state"] != "UP")
@@ -989,6 +996,7 @@ var/global/list/landed_landers = list()
 	var/obj/structure/region_gate/capsule_hatch/hatch = new(get_turf(src))
 	hatch.destination = home
 	hatch.pending_flight = list("lander" = lander_id, "return" = 1)
+	flight_home_extras(hatch.pending_flight)
 	var/departed = 0
 	var/list/refusals = list()
 	for (var/mob/living/human/H in crew())
@@ -1098,6 +1106,9 @@ var/global/list/landed_landers = list()
 		space_cargo_unpack(P["cargo"], get_turf(H))
 	if (incoming && P["rough"])
 		H.take_overall_damage(LANDER_ROUGH_BRUTE, 0, "rough landing")
+	// A modular rocket's capsule comes down near its crew (rocket_reuse.dm).
+	if (incoming && P["return"] && islist(P["capsule"]))
+		rocket_capsule_recover(P, get_turf(H))
 
 // A departure replayed after a reload: the save still holds the lander with
 // the hold that flew, so the carrier's lander goes too.

@@ -501,7 +501,18 @@
 	// down with it can swim clear on their remaining breath, including after
 	// loading a saved hull. Never refill an active breath budget here.
 	var/on_sunken_deck = submerged_built_hull_deck(T)
-	var/exposed_seabed = sea_layer_cell(T) && (!T.iscovered() || on_sunken_deck)
+	if (on_sunken_deck && stat != DEAD && !seabed_diving_rating() && sunken_hull_pressure_breath(T, TRUE))
+		free_diving = FALSE
+		drowning = FALSE
+		water_overlay = FALSE
+		if (plane == FLOOR_PLANE)
+			plane = GAME_PLANE
+		if (!on_fire)
+			overlays_standing[25] = null
+		swim_rest()
+		life_water_refresh()
+		return
+	var/exposed_seabed = on_sunken_deck || (sea_layer_cell(T) && !T.iscovered())
 	if (on_sunken_deck && !free_diving && !seabed_diving_rating() && stat != DEAD)
 		free_diving = TRUE
 		if (swim_breath < 0)

@@ -62,30 +62,41 @@ they put the bucket away. A step of the hull does not stop them.
 Heavy moving storm bands ship water into commissioned hulls on deep salt
 water. Turn bow-on to reduce the intake; a dangerous beam heading on an
 unstable hull for three consecutive ledger samples can make her roll and lose
-buoyancy. Reef or furl to reduce the sail penalty. The first version models
-the loss of buoyancy, not an inverted tile map.
+buoyancy. Reef or furl to reduce the sail penalty. A roll throws unsecured
+crew across the exposed main deck, and over the lee rail if the path reaches
+clear open water. Fixed obstructions stop the slide. Buckled crew, those
+under cover and those on another deck stay with the ship. The angled wash
+shows the roll without rotating the tile map or changing hatch positions.
 
 A hull that loses buoyancy is stopped and cannot cross, refit or recommission.
 It uses existing linked sea levels, moving its complete supported footprint,
-crew, fittings and cargo together. A blocked or missing destination means no
-change of level; the hull and loot stay where they were, not in a second
-inventory. Existing holds, grapples, boats in cradles and unsupported geometry
-block vertical movement. There is no runtime excavation of a seabed and no
-automatic creation of a new z-level.
+crew, fittings and cargo together. A hold can descend with her when its entire
+floor fits in a second linked sea level below the new main deck. The same hold
+floors and their contents move, and the area they left returns to its prior
+terrain. A blocked or missing destination means no change of level; the hull
+and loot stay where they were. Grapples, boats in cradles and unsupported
+geometry still block vertical movement. No seabed is excavated and no new
+z-level is allocated for an individual ship. Gaia currently generates one
+sea layer, so ships with holds there stay waterlogged where they lost buoyancy.
 
 Divers can enter a submerged built hull with normal dive equipment and depth
-limits. A roof on an ordinary built hull does not produce pressurized air.
-Existing submarine air, hatches and ballast remain separate. Use patches and
-pumps to seal the hull and reduce its bilge below 40 percent to rise. Bucket
-bailing can't discharge into the surrounding sea from underwater. A flooded
-engine may need to be dried and serviced with a wrench, even after refloating.
-Powered cranes can recover a detached engine through one open sea column where
-they can already reach a safe landing.
+limits. To leave a hold through an open cargo hatch, stand directly below
+it and click the floor. The opening and its landing must stay clear while
+you climb. A roof alone is not a seal. An intact, roofed steel compartment
+enclosed by watertight bulkheads and closed watertight doors can keep a finite
+supply of trapped air. Standard cargo hatches and ladder holes are not
+pressure seals. Opening a pocket to the sea or flooding it vents the air. Shutting the door underwater or reloading a save does not
+refill it. Existing submarine air, hatches and ballast remain separate.
 
-The tiller continues to save the same hull, its current placement, the bilge
-and its disabled state. The source contracts and native fixture cover normal,
-blocked and recovery paths; connected-client play and full reload/cargo
-recovery require separate verification.
+Use patches and pumps to seal the hull and reduce its bilge below 40 percent
+to rise. Bucket bailing can't discharge into the surrounding sea from
+underwater. A flooded engine may need to be dried and serviced with a wrench,
+even after refloating. Powered cranes can recover a detached engine through
+one open sea column where they can already reach a safe landing.
+
+The tiller continues to save the same hull, its current placement, the bilge,
+its disabled state and any remaining trapped air. Old records without air
+state do not gain a fresh underwater supply when loaded.
 
 ## Breaches below the waterline
 
@@ -292,8 +303,8 @@ the pinned `transports.dm` is untouched.
 One looping timer (`hull_ledgers_tick`, every 30 seconds) steps the ledgers that
 are awake. Players are matched to hulls from the client list with one keyed
 lookup a hull, so empty hulls cost no deck walk. Nothing runs during a world
-save. The tiller saves the ledger inside its `hull_state` record
-(`"ledger": {"water", "holes", "patches", "grounded", "seams", "old_anchor", "fouling", "coppered"}`); nothing stores `world.time`.
+save. The tiller saves the ledger inside its `hull_state` record. Disabled hulls also save their remaining
+compartment air budget. No clock timestamps are saved.
 
 ## A deck awash
 

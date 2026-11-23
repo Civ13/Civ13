@@ -154,6 +154,19 @@
 	var/list/S = segments()
 	return S.len ? S[S.len] : list()
 
+// From ROCKET_FLYBACK_AGE, landing legs on the first stage fly it back to
+// the stand after staging (rocket_reuse.dm).
+/datum/rocket_plan/proc/first_stage_recovers()
+	if (!map || map.ordinal_age < ROCKET_FLYBACK_AGE)
+		return FALSE
+	var/list/segs = segments()
+	if (segs.len < 2)
+		return FALSE
+	for (var/i in segs[1])
+		if (stack[i] == "G")
+			return TRUE
+	return FALSE
+
 /datum/rocket_plan/proc/seats()
 	return count("C") * 3
 
@@ -232,6 +245,9 @@
 			prop += P["prop"]
 		if (!thrust || !prop)
 			continue
+		// A first stage that flies back keeps a share of its propellant to land.
+		if (s == 1 && first_stage_recovers())
+			prop *= 1 - ROCKET_FLYBACK_RESERVE
 		n++
 		var/ve = thrust / flow
 		// The service module's own propellant rides; it is not burnt here.

@@ -59,6 +59,7 @@
 	var/turf/T = get_turf(C)
 	var/obj/covers/steelplating/hold/breach/B = new(T)
 	B.hold_origin = C.hold_origin
+	B.hold_sea_zone = C.hold_sea_zone
 	S.ledger.holes++
 	S.crew_message(SPAN_DANGER("<b>The [S.name] is holed below the waterline!</b> Her hold is breached at [T.x], [T.y]. Weld steel over it to shut it."))
 	return B
@@ -109,6 +110,7 @@
 	var/turf/T = get_turf(B)
 	var/obj/covers/steelplating/hold/F = new(T)
 	F.hold_origin = B.hold_origin
+	F.hold_sea_zone = B.hold_sea_zone
 	qdel(B)
 	S.ledger.holes = max(0, S.ledger.holes - 1)
 	S.crew_message(SPAN_NOTICE("The breach in her hold at [T.x], [T.y] is welded shut. [S.ledger.holes ? "[S.ledger.holes] more hole\s let[S.ledger.holes == 1 ? "s" : ""] the sea in." : "No hole is left open."]"))

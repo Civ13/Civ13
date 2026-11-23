@@ -105,6 +105,7 @@
 	var/datum/craft/C = craft_holding(T)
 	if (C && C.ledger)
 		C.ledger.bays_dirty = TRUE
+		hull_pressure_changed(T)
 
 // ---- Mapping her compartments ----
 

@@ -239,7 +239,7 @@
 		// A pressure hull admits sea water through its own lock-out cycle,
 		// not just because it is operating at depth.
 		return sea_layer_cell(T) && !T.iscovered() && !submarine_at(T)
-	if (sea_layer_cell(T) && !(locate(/obj/roof) in T))
+	if (L.depth_disabled && hull_depth_underwater(T) && !sunken_hull_pressure_sheltered(T))
 		return TRUE
 	if (T.z == B.upper_z() || T.z == B.top_z())
 		return FALSE
@@ -251,7 +251,7 @@
 // its own engines, and a dry hull at the surface needs no cargo walk.
 /datum/hull_ledger/proc/step_waterlogged_engines()
 	var/datum/craft_body/built/B = craft?.body
-	if (!istype(B) || !B.placed() || (!water && !sea_layer_cell(B.origin())))
+	if (!istype(B) || !B.placed() || (!water && !depth_disabled))
 		return
 	for (var/obj/structure/engine/E in B.aboard())
 		if ((!E.waterlogged || E.on) && ship_engine_wet(E, src))

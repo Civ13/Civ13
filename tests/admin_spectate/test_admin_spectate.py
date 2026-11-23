@@ -88,9 +88,20 @@ class AdminSpectateTests(unittest.TestCase):
         # The label only stops the view for its own viewer.
         self.assertIn('usr.client == view.viewer', proc_body(self.text, '/obj/screen/admin_view_label/Click()'))
         stop = proc_body(self.text, '/datum/admin_player_view/proc/stop(')
-        for needle in ('viewer.screen -= mirrored_screen', 'viewer.images -= mirrored_images', 'viewer.eye = ghost',
+        for needle in ('put_back(viewer.screen, viewer.images)', 'viewer.eye = ghost',
                        'MOB_PERSPECTIVE', 'ghost.updateghostsight()'):
             self.assertIn(needle, stop)
+        # The admin's own screen comes back whenever they are still in the ghost,
+        # not only on an announced stop: switching straight to another player
+        # otherwise saved a screen with no plane masters, and ending that view
+        # drew the world pitch black.
+        self.assertLess(stop.index('put_back('), stop.index('if (announce)'))
+        put_back = proc_body(self.text, '/datum/admin_player_view/proc/put_back(')
+        for needle in ('screen -= mirrored_screen', 'images -= mirrored_images', 'in own_screen',
+                       'ghost.hud_used.plane_masters', 'in own_images'):
+            self.assertIn(needle, put_back)
+        start = proc_body(self.text, '/client/proc/admin_start_player_view(')
+        self.assertLess(start.index('admin_player_view.stop('), start.index('new(src, mob, M)'))
         # The ghost's Life must not strip the mirrored HUD images.
         life = proc_body(read('code/game/mob/observer/ghost/ghost.dm'), '/mob/observer/ghost/Life()')
         self.assertLess(life.index('client.admin_player_view'), life.index('client.images.Remove'))

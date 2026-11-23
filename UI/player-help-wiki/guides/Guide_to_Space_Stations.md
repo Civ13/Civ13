@@ -23,7 +23,7 @@ The station transceiver is researched like the long-range radio relay (see [Comm
 3. Hand the office the materials: **180 steel, 40 glass, 40 copper and 60 electronics**. When the last of it is in, the station is ready on the pad.
 4. Members of the party use the office to fly up. The first member to arrive founds the station on a free part of orbit, and everyone after them arrives at the same hatch.
 
-Only your own party can board your station, unless you welcome visitors at a docking port (see below). You can also fly up in a **two-stage rocket** (80 electronics, three seats) or, from 2026, a **reusable rocket** (see below). Rocket crews arrive in a small capsule with a few hours of air and one bunk. To come home, strap in on the capsule's tile and deorbit; the capsule is used up.
+Only your own party can board your station, unless you welcome visitors at a docking port (see below). You can also fly up in a rocket you design and build yourself (see [Rockets](Guide_to_Rockets.md)) or, from 2026, a **reusable rocket** (see below). Rocket crews arrive in a small capsule with a few hours of air and one bunk. To come home, strap in on the capsule's tile and deorbit. A capsule built with a heat shield and parachutes comes down near the crew to be repaired and flown again; any other capsule is used up. A rocket with cargo bays and no capsule can also carry heavy cargo up to your station.
 
 ### Docking a rocket at a station
 
