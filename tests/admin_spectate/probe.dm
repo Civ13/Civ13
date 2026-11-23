@@ -88,6 +88,39 @@ var/spectate_runtime_error = FALSE
 	V.mirror(current, want)
 	spectate_check(current.len == 2, "mirror of an already synced list changes nothing")
 
+	// Ending a view puts the admin's own screen back, plane masters included.
+	G.hud_used = new /datum/hud(null)
+	var/list/masters = list()
+	for (var/key in G.hud_used.plane_masters)
+		masters += G.hud_used.plane_masters[key]
+	spectate_check(masters.len >= 2, "the admin ghost's HUD has plane masters")
+	var/obj/screen/own_item = new
+	var/obj/screen/their_item = new
+	var/list/screen = masters + own_item
+	var/list/images = list()
+	var/list/theirs = list()
+	theirs[their_item] = TRUE
+	V.own_screen = screen.Copy()
+	V.own_images = list()
+	V.mirrored_screen = V.mirror(screen, theirs.Copy())
+	spectate_check(screen.len == 1 && screen[1] == their_item, "a mirrored screen holds only the player's items")
+	V.put_back(screen, images)
+	spectate_check(!(their_item in screen) && (own_item in screen) && !length(masters - screen), "ending a view restores the admin's screen and plane masters")
+	// Switching straight to another player: the second view saves the restored
+	// screen, so ending it still brings the plane masters back.
+	var/datum/admin_player_view/V2 = new(null, G, P)
+	V2.own_screen = screen.Copy()
+	V2.own_images = list()
+	V2.mirrored_screen = V2.mirror(screen, theirs.Copy())
+	V2.put_back(screen, images)
+	spectate_check((own_item in screen) && !length(masters - screen), "a second view in a row still restores the plane masters")
+	// A saved screen that somehow lacks them still gets the ghost's plane masters.
+	V2.own_screen = list(own_item)
+	V2.mirrored_screen = V2.mirror(screen, theirs.Copy())
+	V2.put_back(screen, images)
+	spectate_check(!length(masters - screen), "plane masters come back even when the saved screen lacks them")
+	qdel(V2)
+
 	// Without a client the view cannot start and cleans itself up.
 	spectate_check(!V.sync(), "an inactive view does not sync")
 	spectate_check(!V.start(), "a view without a client does not start")
