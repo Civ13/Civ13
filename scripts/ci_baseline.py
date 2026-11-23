@@ -1639,6 +1639,14 @@ SUITES = {
             'code/__defines/build_markers.dm', 'icons/obj/build_markers.dmi',
             'code/modules/naval/draught_kinds.dm', 'code/modules/naval/ship_draught.dm',
             'code/modules/paintings/design_codes.dm', 'config/crafting/material_recipes_global.txt')},
+    # Contraptions Planner source wiring; native design behavior is in the mechanisms probe.
+    'contraption_plans': {'files': ('tests/contraption_plans/test_sources.py',),
+        'paths': ('tests/contraption_plans/',), 'shared_paths': (
+            'code/__defines/contraption_plans.dm', 'code/modules/1713/contraption_plan.dm',
+            'code/modules/1713/contraption_designer.dm', 'code/modules/1713/mechanisms.dm',
+            'code/modules/1713/siege/siege_engines.dm', 'tests/mechanisms/probe.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/naval/ship_draught.dm',
+            'code/modules/paintings/design_codes.dm')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
     'dugout_canoe': {'files': ('tests/dugout_canoe/test_source.py',),
         'paths': ('tests/dugout_canoe/',), 'shared_paths': (

@@ -100,16 +100,18 @@ class PlanCodesTest(unittest.TestCase):
         'code/modules/space/station_designer.dm': ('station', 'STATION_DESIGNER_WINDOW'),
         'code/game/objects/house_designer.dm': ('house', 'HOUSE_DESIGNER_WINDOW'),
         'code/modules/1713/rail_designer.dm': ('rail', 'RAIL_DESIGNER_WINDOW'),
+        'code/modules/1713/contraption_designer.dm': ('contraption', 'CONTRAPTION_WINDOW'),
     }
     MENUS = ('code/modules/naval/ship_draught.dm', 'code/modules/naval/sub_draught.dm',
              'code/modules/naval/air_draught.dm', 'code/modules/craft/vehicle_draught.dm',
              'code/modules/1713/train_draught.dm', 'code/modules/space/station_plan.dm',
-             'code/game/objects/house_plan.dm', 'code/modules/1713/rail_plan.dm')
+             'code/game/objects/house_plan.dm', 'code/modules/1713/rail_plan.dm',
+             'code/modules/1713/contraption_designer.dm')
 
     def test_every_kind_row_names_its_designer(self):
         kinds = read('code/modules/naval/draught_kinds.dm')
         rows = re.findall(r'^\t\t"(\w+)" = list\((.*)\),$', kinds, re.M)
-        self.assertEqual({k for k, _ in rows}, {'SHIP', 'SUB', 'CAR', 'AIR', 'HOUSE', 'TRAIN', 'STATION', 'RAIL'})
+        self.assertEqual({k for k, _ in rows}, {'SHIP', 'SUB', 'CAR', 'AIR', 'HOUSE', 'TRAIN', 'STATION', 'RAIL', 'MECH'})
         windows = {w: re.search(r'#define %s "(\w+)"' % w, read(p)).group(1) for p, (_, w) in self.DESIGNERS.items()}
         for kind, row in rows:
             with self.subTest(kind=kind):
@@ -136,12 +138,13 @@ class PlanCodesTest(unittest.TestCase):
             with self.subTest(path=path):
                 text = read(path)
                 self.assertIn('if (href_list["%s"] == "import")' % key, text)
-                self.assertIn('draught_import_in_window(H, %s)' % window, text)
+                extra = ', src' if key == 'contraption' else ''
+                self.assertIn(f'draught_import_in_window(H, {window}{extra})', text)
                 self.assertIn('draught_export(H, ', text)
 
     def test_import_uses_the_designer_reader_and_rules(self):
         kinds = read('code/modules/naval/draught_kinds.dm')
-        body = kinds.split('/obj/item/ship_draught/proc/draught_import(mob/living/human/H)', 1)[1].split('\n/', 1)[0]
+        body = kinds.split('/obj/item/ship_draught/proc/draught_import(', 1)[1].split('\n/', 1)[0]
         for needle in ('design_code_ask(H,', 'length(typed) > K["max"]', 'call(K["read"])(typed)',
                        'design_code_refusal(', 'map.ordinal_age < K["age"]', 'design_code_log(H,',
                        'check_design()', 'R.chat_lines()'):
