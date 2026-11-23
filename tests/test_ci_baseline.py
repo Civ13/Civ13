@@ -812,7 +812,8 @@ class BaselinePolicyTests(unittest.TestCase):
         suite = ci.SUITES['character_traits']
         self.assertEqual(suite['files'], ('tests/character_traits/test_foundations.py',
                                          'tests/character_traits/test_random.py',
-                                         'tests/character_traits/test_birth_chart_wheel.py'))
+                                         'tests/character_traits/test_birth_chart_wheel.py',
+                                         'tests/character_traits/test_star_chart.py'))
         self.assertEqual(suite['paths'], ('tests/character_traits/',))
         self.assertFalse(suite.get('always', False))
         for path in (*suite['files'], 'tests/character_traits/README.md'):
@@ -820,6 +821,8 @@ class BaselinePolicyTests(unittest.TestCase):
                 self.assertEqual(self.selected([path]), {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'character_traits'})
                 self.assertEqual(ci.impact([path])['fallback_reasons'], [])
         expected_sources = {
+            'code/game/mob/living/carbon/human/star_chart.dm',
+            'code/game/mob/living/carbon/human/birth_chart_wheel.dm',
             'code/game/mob/living/carbon/human/traits.dm',
             'code/modules/client/preferencesSQLite/preference_setup/general/01_basic.dm',
             'code/modules/client/preferencesSQLite/character_setup_ui.dm',
@@ -840,6 +843,7 @@ class BaselinePolicyTests(unittest.TestCase):
             (suite['files'][0], {'re', 'unittest'}, {'pathlib'}),
             (suite['files'][1], {'random', 're', 'unittest'}, {'test_foundations'}),
             (suite['files'][2], {'ast', 'math', 'operator', 're', 'unittest'}, {'pathlib'}),
+            (suite['files'][3], {'re', 'unittest'}, {'pathlib', 'test_birth_chart_wheel'}),
         ):
             tree = ast.parse((ROOT / path).read_text())
             self.assertEqual({alias.name for node in ast.walk(tree) if isinstance(node, ast.Import)
@@ -853,9 +857,9 @@ class BaselinePolicyTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             for relative in ('scripts/ci_baseline.py', 'scripts/ci_skill_prose.py', 'scripts/byond_toolchain.py',
-                             'tools/byond/version.json', *ci.SUITES[suite_name]['files'],
+                             'tools/byond/version.json', 'civ13.dme', *ci.SUITES[suite_name]['files'],
                              *ci.SUITES[suite_name]['shared_paths'],
-                             'code/game/mob/living/carbon/human/birth_chart_wheel.dm',
+                             'code/modules/1713/world_calendar.dm',
                              'code/game/mob/living/carbon/human/birth_charts.dm',
                              'code/game/mob/new_player/new_player.dm',
                              'code/modules/persistence/region_travel.dm'):
@@ -890,7 +894,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     if failing:
                         # Mutate only the isolated copy: the selected real test
                         # must fail when the zero-total commit guard is removed.
-                        target = root / ci.SUITES[suite_name]['shared_paths'][1]
+                        target = root / 'code/modules/client/preferencesSQLite/character_setup_ui.dm'
                         target.write_text(target.read_text().replace('check_trait_points(candidate) != 0', 'FALSE'))
                         git('add', '.')
                         git('commit', '-qm', 'isolated missing zero-total guard control')
@@ -910,7 +914,7 @@ class BaselinePolicyTests(unittest.TestCase):
                     self.assertFalse(baseline['tracked_dirty_after'])
                     self.assertEqual(traits['exit_code'], int(failing))
                     self.assertEqual(traits['counts'], dict(status='failed' if failing else 'passed',
-                        tests=26, failures=int(failing), errors=0, skipped=0))
+                        tests=31, failures=int(failing), errors=0, skipped=0))
                     self.assertEqual(traits['files'], list(ci.SUITES[suite_name]['files']))
                     errors = ci.aggregate(plan, baseline, compiler, jobs, False)
                     if failing:

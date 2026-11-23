@@ -39,6 +39,14 @@
 	if (birth_chart_record_valid(record))
 		birth_chart_record = record
 
+// The natal-v1 and current-sky models use the same Moon and local Rising
+// formulas. Keep the natal Sun (a saved sign) separate from the live Sun.
+/proc/birth_chart_moon_angle(day, minute)
+	return world_calendar_fmod(13 * day + round(minute / 120), 360)
+
+/proc/birth_chart_rising_angle(local_minute)
+	return round(local_minute / 4)
+
 // Fictional angular model, fixed under record version 1 (not an ephemeris).
 /proc/birth_chart_angles(sign_id, list/record)
 	var/list/angles = list("Sun" = null, "Moon" = null, "Rising" = null)
@@ -49,10 +57,10 @@
 	var/index = birth_chart_signs.Find(sign_id)
 	if (index)
 		angles["Sun"] = (index - 1) * 30 + world_calendar_fmod(day, 30)
-	angles["Moon"] = world_calendar_fmod(13 * day + round(minute / 120), 360)
+	angles["Moon"] = birth_chart_moon_angle(day, minute)
 	if (!isnull(record["zone"]))
 		var/local_minute = world_calendar_fmod(minute + 60 * record["zone"], 1440)
-		angles["Rising"] = round(local_minute / 4)
+		angles["Rising"] = birth_chart_rising_angle(local_minute)
 	return angles
 
 /proc/birth_chart_house(angle, rising)

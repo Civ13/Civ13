@@ -52,3 +52,6 @@ celestial bodies and angles should extend a documented sky model, not fabricate
 missing historical inputs or silently change existing charts. Future gameplay
 can select from those structured values under its own rules; the chart itself
 grants no new effects.
+
+Open [Star Chart](star-chart.md) for an up-to-date sky reading and a private
+comparison with the recorded parts of your fixed natal chart.
