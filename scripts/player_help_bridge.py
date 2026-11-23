@@ -112,14 +112,14 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '1b3b2157c6426fc03834e3756b881787f581ecaa'
+WIKI_REVIEWED_REVISION = '65a53079eb9dd8787de502cac3e819806d5e172a'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('ec8abe24ffa48f2ac1f8a9d4ced3389392fcc46760acc24ddd7bf6195bcc096f', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
-    'guides/Guide_to_Combat.md': ('3eb8da3688c36b235efcb5e1ab18deda018fbb2f902bf0dda3f9974414cbf475', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
+    'guides/Guide_to_Combat.md': ('da7579531503a7301a3ad2a865fc2fd717e79e5a5711c35b830b5936b3a7d2af', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('6de3dc86ffcdb60ef2711137bdb3ab7301423b78b12c44d1a6b2c3f0e4ba1973', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
@@ -186,7 +186,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Amalgamation.md': ('c6e59ac3698ec0e0e9fd671045c1cb68b981941f4f9fcd4fe4ca8901f877e937', 'amalgamation amalgam mercury gold silver ore recovery retort patio'),
     'guides/Guide_to_Armor.md': ('f1024c2c3032cbdbad66acae9a3fb5f05f4db9ba57cabbeffde1210e58dccc85', 'armor armour protection helmet cuirass plate mail chainmail shield padded gambeson body armor bullet proof vest dayfield layering'),
     'guides/Guide_to_Chat.md': ('88cdb4f258921f70eb5de9ce6e4337106ec948ad706c5c780bf46b7f66a6ef21', 'chat window tabs tab filter translate translation translated language ooc looc repeated messages history connection lost ghost ears'),
-    'guides/Guide_to_Factions.md': ('b4b0d706e80b39a886ef54a6b3588998466b1489941b3f3a2df66f0dacfc1ee8', 'faction factions province provinces claim territory stake resident hall leader officer office recruit recruitment station island border visitor pass nation vassal siege war banner defence window sleep protection treasury tax'),
+    'guides/Guide_to_Factions.md': ('ea988cd352abcfb09ad78914dc53f950f61dabaccee3d96baada65c304d357e2', 'faction factions province provinces claim territory stake resident hall leader officer office recruit recruitment station island border visitor pass nation vassal siege war banner defence window sleep protection treasury tax'),
     'guides/Guide_to_Companies.md': ('57a38cc569849f5de5abb969a55f1fc1a74672390b3feb8da20383c6a4babcbd', 'company companies stock market shares shareholder stall stalls profits dividend business'),
     'guides/Guide_to_Computers.md': ('18a43fae4409a102f307b90632d49c701f707afbc464769cc003a1e1197515d0', 'computer computers minicomputer processor tape drive diskette terminal files program unga os electronic computing'),
     'guides/Guide_to_Electroplating.md': ('cb4d98759963fa316d4de487a7061b7cbf0b1a99255cfb2c3c8a53bea46230e2', 'electroplating plating plated gilding silver gold nickel chrome bath anode'),
