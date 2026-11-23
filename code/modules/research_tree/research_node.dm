@@ -913,7 +913,9 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/treadwheel/treadmill" = "factories",
 		// --- alloys (1) ---
 		"/obj/item/clothing/shoes/weather/climbing_boots" = "alloys",
-		// --- anesthetic_surgery (2) ---
+		// --- anesthetic_surgery (4) ---
+		"/obj/item/dentures/vulcanite" = "anesthetic_surgery",
+		"/obj/item/weapon/clay/porcelain_dentures" = "anesthetic_surgery",
 		"/obj/item/clothing/mask/sterile" = "anesthetic_surgery",
 		"/obj/item/clothing/suit/storage/jacket/surgeon" = "anesthetic_surgery",
 		// --- apothecary (9) ---
@@ -1608,7 +1610,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/practice_dummy/target" = "field_defenses",
 		"/obj/structure/window/barrier/rock" = "field_defenses",
 		"/obj/structure/window/barrier/sandstone" = "field_defenses",
-		// --- field_surgery (15) ---
+		// --- field_surgery (18) ---
+		"/obj/item/dental_bridge" = "field_surgery",
+		"/obj/item/weapon/surgery/dental_forceps" = "field_surgery",
+		"/obj/item/weapon/surgery/dental_forceps/bronze" = "field_surgery",
 		"/obj/item/weapon/reagent_containers/syringe" = "field_surgery",
 		"/obj/item/weapon/storage/firstaid/surgery_empty" = "field_surgery",
 		"/obj/item/weapon/storage/organ_box" = "field_surgery",
@@ -1900,7 +1905,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/reagent_containers/pill/hashish" = "herbalism",
 		"/obj/item/weapon/reagent_containers/pill/opium" = "herbalism",
 		"/obj/structure/drying_rack" = "herbalism",
-		// --- hygiene (14) ---
+		// --- hygiene (15) ---
+		"/obj/item/weapon/tooth_cleaner/chewing_stick" = "hygiene",
 		"/obj/structure/aqueduct_bath" = "hygiene",
 		"/obj/item/weapon/material/kitchen/utensil/knife/razorblade" = "hygiene",
 		"/obj/structure/shower/bathtub/bronze" = "hygiene",
@@ -2142,7 +2148,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/sign/traffic/stop" = "modern_construction",
 		"/obj/structure/sign/traffic/yeld" = "modern_construction",
 		"/obj/structure/window/barrier/jersey" = "modern_construction",
-		// --- modern_medicine (1) ---
+		// --- modern_medicine (2) ---
+		"/obj/item/dentures/acrylic" = "modern_medicine",
 		"/obj/item/weapon/reagent_containers/blood/empty" = "modern_medicine",
 		// --- monuments (17) ---
 		"/obj/item/weapon/material/bust" = "monuments",
@@ -2689,7 +2696,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/religious/totem_pole" = "ritual_worship",
 		"/obj/structure/religious/woodcross1" = "ritual_worship",
 		"/obj/structure/religious/woodcross2" = "ritual_worship",
-		// --- sanitation (13) ---
+		// --- sanitation (14) ---
+		"/obj/item/weapon/tooth_cleaner/toothbrush" = "sanitation",
 		"/obj/structure/aqueduct/pipe/lead" = "sanitation",
 		"/obj/structure/sink/aqueduct_fountain/tap" = "sanitation",
 		"/obj/structure/mirror/unsilvered" = "sanitation",
@@ -2838,7 +2846,10 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/window_frame/sandstonefull" = "stone_masonry",
 		"/obj/structure/window_frame/stone" = "stone_masonry",
 		"/obj/structure/window_frame/stonefull" = "stone_masonry",
-		// --- surgical_theory (4) ---
+		// --- surgical_theory (7) ---
+		"/obj/item/dentures/bone" = "surgical_theory",
+		"/obj/item/dentures/human" = "surgical_theory",
+		"/obj/item/weapon/surgery/dental_pick" = "surgical_theory",
 		"/obj/item/weapon/doctor_handbook" = "surgical_theory",
 		"/obj/item/weapon/surgery/surgicaldrill" = "surgical_theory",
 		"/obj/structure/bed/chair/wheelchair" = "surgical_theory",

@@ -31,6 +31,8 @@ SHELL = 'code/modules/1713/herb_garden.dm'
 FISH = 'code/modules/reagents/reagent_containers/food/snacks/meat.dm'
 HANDLOAD = 'code/modules/projectiles/handloading.dm'
 TILES = 'code/modules/1713/terracotta_floors.dm'
+DENTISTRY = 'code/modules/1713/dentistry.dm'
+ORGANS = 'code/modules/organs/organ_external.dm'
 CASINGS = 'code/modules/projectiles/_ammo_casing.dm'
 NODES = 'code/modules/research_tree/research_node.dm'
 VARS = {'name', 'dried_type', 'dry_size', 'steep_reagent', 'steep_amount', 'sprig_type', 'plant', 'stack',
@@ -160,6 +162,23 @@ def add_interactions(files, add, records, covered):
               ('Put the unfired tiles in an oven or kiln, add fuel and light it.',
                'Each unfired tile comes out as one terracotta tile.'),
               'A fuelled oven or kiln is required.', ('/obj/structure/oven',), '/obj/structure/oven')
+
+    # Dentistry: unfired porcelain dentures fire into a set; teeth come from mouths.
+    dental = files.get(DENTISTRY)
+    if dental is not None:
+        require(dental, DENTISTRY, '/obj/item/weapon/clay/porcelain_dentures', 'result = /obj/item/dentures/porcelain',
+                '/datum/surgery_step/dental/extract/end_step(', 'H.remove_natural_tooth(TRUE)')
+        route('Fire porcelain dentures', 'Kiln firing', [('/obj/item/weapon/clay/porcelain_dentures', 1)],
+              [('/obj/item/dentures/porcelain', 1)],
+              DENTISTRY, line_of(dental, '/obj/item/weapon/clay/porcelain_dentures'),
+              ('Put the unfired porcelain dentures in an oven or kiln, add fuel and light it.',),
+              'A fuelled oven or kiln is required.', ('/obj/structure/oven',), '/obj/structure/oven')
+        route('Draw a tooth', 'Dentistry', [], [('/obj/item/stack/teeth', 1)],
+              DENTISTRY, line_of(dental, '/datum/surgery_step/dental/extract/end_step('),
+              ('On help intent, aim at the mouth and use dental forceps (or a hemostat or wirecutters) on someone.',
+               'Each pull draws one tooth, a rotten one first. A hard blow to the mouth can also knock teeth out.'),
+              'The patient must have teeth left and an uncovered mouth.',
+              ('/obj/item/weapon/surgery/dental_forceps',))
 
     # Steeping: hold an herb with steep_reagent and use it on an open container of water.
     steep = files[STEEP]

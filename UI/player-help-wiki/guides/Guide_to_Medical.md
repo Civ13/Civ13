@@ -633,6 +633,70 @@ Rudimentary/emergency: Knife
 - Hemp rope
 - Wood torch
 
+## Teeth and dentistry
+
+You have 32 teeth. A hard punch, kick or blunt blow to the mouth can knock
+some out, and they never grow back on their own.
+
+### Tooth decay and toothache
+
+  - Every bite of food leaves a little plaque on your teeth. Sweet food
+    (sugar, honey and syrup) leaves much more.
+  - Too much plaque slowly rots a tooth. A cavity gives you a dull
+    toothache now and then, and pain when you bite down.
+  - A cavity left untreated for about two hours can turn into an
+    **abscess**: a throbbing, swollen jaw that others can see, worse pain
+    and a little sickness. It never kills on its own.
+  - Painkillers dull the ache. Drawing the rotten tooth ends an abscess,
+    and so does penicillin (the tooth still needs treating).
+  - **Keep teeth clean:** use a **chewing stick** (Hygiene; carved from
+    wood with a knife, 6 uses) or a **toothbrush** (Sanitation; carved
+    from bone with a knife, lasts) in your hand. A chewing stick clears
+    most plaque, a toothbrush all of it.
+
+### Treating teeth
+
+Aim at the **mouth** on **help intent** and use the tool on the patient
+(or yourself). The patient's mouth must be uncovered.
+
+  - **Drawing a tooth:** dental forceps (iron or bronze, Field Surgery)
+    work best; a hemostat or wirecutters will do at a pinch. A rotten
+    tooth always comes out first.
+  - **Putting a tooth back:** a knocked-out tooth stays fresh for about
+    ten minutes. Use it on its owner's mouth (Surgical Theory) to press
+    it back in. About half take straight away, fewer the longer you
+    wait; a tooth that does not take is dead.
+  - **Filling a cavity** (Surgical Theory): first scrape the rot out with
+    a dental pick or a surgical drill, then pack the cavity with a sheet
+    of lead, tin or gold, or a lump of silver amalgam (Anesthetic
+    Surgery). A filled tooth no longer decays. An abscessed tooth must be
+    drawn, or the infection cleared, before it can be filled.
+
+### Replacing lost teeth
+
+| Replacement | Research | Made from | Chewing |
+| --- | --- | --- | --- |
+| Gold band bridge | Field Surgery | 1 gold and 3 teeth | 3 teeth, fully |
+| Carved bone dentures | Surgical Theory | 3 bone, with a knife | poor |
+| Human-tooth dentures | Surgical Theory | 2 bone and 16 teeth, with a knife | fair |
+| Porcelain dentures | Anesthetic Surgery | 2 clay, fired in an oven or kiln | good, but can shatter |
+| Vulcanite dentures | Anesthetic Surgery | 2 rubber and a porcelain set | very good |
+| Acrylic dentures | Modern Medicine | 2 plastic | full |
+
+  - A **bridge** is bound to the teeth either side of a gap by using it on
+    the mouth. It needs at least two natural teeth to hold on to, and
+    falls out if fewer are left.
+  - **Dentures** fill every remaining gap. Use them on your own or a
+    patient's mouth. To take yours out, click your own mouth with an
+    empty hand on help intent. A hard blow can knock them out.
+
+### Living with missing teeth
+
+  - With fewer than 16 teeth that can chew, you eat in smaller bites
+    (half size with none).
+  - With 8 or more gaps, your "s" sometimes whistles into "th".
+  - A full set of false teeth fixes your speech and hides the gaps.
+
 ## Human bodies and remains
 
 A dead body left out in the open starts to rot after **2 season changes** and turns to bones after **4**. Where the seasons do not change, it starts to rot after **6 hours** and turns to bones after **12**. Bones take the same time again to vanish. Time while the server is down does not count.

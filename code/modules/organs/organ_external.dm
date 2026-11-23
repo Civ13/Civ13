@@ -1487,7 +1487,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 /obj/item/organ/external/head/proc/knock_out_teeth(throw_dir, num=32) //Won't support knocking teeth out of a dismembered head or anything like that yet.
 	num = Clamp(num, TRUE, 32)
-	var/done = FALSE
+	var/done = knock_out_prosthetics() // dentistry.dm
+	var/natural_before = get_teeth()
 	if (teeth_list && teeth_list.len) //We still have teeth
 		var/stacks = rand(1,3)
 		for (var/curr = TRUE to stacks) //Random amount of teeth stacks
@@ -1496,6 +1497,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 			var/drop = round(min(teeth.amount, num)/stacks) //Calculate the amount of teeth in the stack
 			var/obj/item/stack/teeth/T = new teeth.type(owner.loc, drop)
 			teeth.use(drop)
+			T.mark_fresh(owner) // dentistry.dm: can be replanted for a while
 			T.add_blood(owner)
 			playsound(owner, "trauma", 75, FALSE)
 			var/turf/target = get_turf(owner.loc)
@@ -1508,6 +1510,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 			T.throw_at(target,T.throw_range,T.throw_speed)
 			teeth.zero_amount() //Try to delete the teeth
 			done = TRUE
+	if (natural_before > get_teeth())
+		lose_dental_teeth(natural_before - get_teeth(), natural_before)
 	return done
 
 

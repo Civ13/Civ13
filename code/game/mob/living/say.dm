@@ -12,6 +12,9 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 /mob/living/proc/is_muzzled()
 	return FALSE
 
+/mob/living/proc/dental_speech(message)
+	return message
+
 /mob/living/proc/handle_speech_problems(var/message, var/verb)
 
 	var/prefix = ""
@@ -34,6 +37,7 @@ var/list/radio_prefixes = list(";", ":b", ":l", ":r", ":t", ":f",
 	if (lisp)
 		message = lisp(message, lisp)
 		speech_problem_flag = TRUE
+	message = dental_speech(message) // gaps in the teeth (dentistry.dm)
 
 	returns[1] = prefix + message
 	returns[2] = verb

@@ -171,6 +171,8 @@
 /obj/item/weapon/reagent_containers/food/snacks/proc/take_food_bite(mob/living/human/H, amount)
 	var/before = reagents.get_reagent_amount("nutriment") + reagents.get_reagent_amount("protein")
 	var/list/diet_flavours = diet_lineage_shares(reagents)
+	if (ishuman(H))
+		amount = H.dental_bite(src, amount) // dentistry.dm: plaque and chewing
 	reagents.trans_to_mob(H, amount, CHEM_INGEST)
 	if (istype(src, /obj/item/weapon/reagent_containers/food/snacks/prepared_meal))
 		var/obj/item/weapon/reagent_containers/food/snacks/prepared_meal/M = src
