@@ -6,11 +6,45 @@
 // or window on the straight line between them, joins that cable as if it
 // stood next to it. Machines join when the point is secured or a machine is
 // built or moved in reach, and leave when they move out or the point goes.
-// Nothing scans per tick: draw checks only compare distances.
+// Movement and barrier edits refresh membership; nothing scans per tick.
 
 #define POWER_POINT_LIMIT 256
 
 var/global/list/power_points = list()
+var/global/list/power_point_dirty_turfs
+
+// Coalesce topology edits through construction/destruction and door animation.
+/proc/power_point_barrier_changed(turf/T)
+	if (!T || !power_points.len || cable_autolink_holds)
+		return
+	if (!power_point_dirty_turfs)
+		power_point_dirty_turfs = list()
+		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(power_point_flush_barriers)), 1)
+	power_point_dirty_turfs |= T
+
+/proc/power_point_flush_barriers()
+	var/list/changed = power_point_dirty_turfs
+	power_point_dirty_turfs = null
+	if (!length(changed))
+		return
+	var/list/candidates = list()
+	// The registry is capped. Only scan local ranges of affected points.
+	for (var/obj/structure/power_point/P in power_points)
+		if (!P.in_service())
+			continue
+		for (var/turf/T in changed)
+			if (P.z != T.z || get_dist(P, T) > P.reach)
+				continue
+			for (var/obj/O in range(P.reach, P))
+				if (O.powerneeded > 0 && !istype(O, /obj/structure/power_point))
+					candidates |= O
+			break
+	for (var/obj/O in candidates)
+		O.power_point_moved()
+
+/proc/power_point_barrier(obj/B)
+	return B.density && (B.opacity || B.takes_wall_slot() || istype(B, /obj/structure/window))
+
 
 /obj/structure/power_point
 	name = "power point"
@@ -38,7 +72,6 @@ var/global/list/power_points = list()
 		cable_autolink_queue += src
 
 /obj/structure/power_point/Destroy()
-	release_all()
 	detach_cable()
 	power_points -= src
 	registered = FALSE
@@ -52,7 +85,7 @@ var/global/list/power_points = list()
 	return anchored && powersource && isturf(powersource.loc) && powersource.powerflow > 0
 
 /obj/structure/power_point/proc/in_service()
-	return registered && anchored && isturf(loc) && powersource && isturf(powersource.loc) && powersource.loc == loc && (src in powersource.connections)
+	return !QDELETED(src) && registered && anchored && isturf(loc) && powersource && !QDELETED(powersource) && isturf(powersource.loc) && powersource.loc == loc && (src in powersource.connections)
 
 // True when nothing solid lies on the straight line from here to O: a wall,
 // a closed door or other opaque structure, or a window.
@@ -69,9 +102,7 @@ var/global/list/power_points = list()
 		if (T.density)
 			return FALSE
 		for (var/obj/B in T)
-			if (B == O || !B.density)
-				continue
-			if (B.opacity || istype(B, /obj/structure/window))
+			if (B != O && !QDELETED(B) && power_point_barrier(B))
 				return FALSE
 	return TRUE
 
@@ -82,11 +113,31 @@ var/global/list/power_points = list()
 /obj/structure/power_point/power_point_serves(obj/O)
 	return in_service() && O.power_point == src && O.z == z && get_dist(src, O) <= reach
 
+/obj/proc/power_point_has_direct_cable()
+	var/obj/structure/cable/C = powersource
+	return (!power_point || power_point.powersource != C) && C && !QDELETED(C) && isturf(loc) && isturf(C.loc) && z == C.z && get_dist(src, C) <= 1 && (src in C.connections)
+
+/obj/proc/power_point_forget_owner()
+	var/obj/structure/power_point/P = power_point
+	if (istype(P))
+		P.served -= src
+	power_point = null
+
+/obj/proc/power_point_unlink_source()
+	var/obj/structure/cable/C = powersource
+	if (C)
+		if (!QDELETED(C))
+			C.update_power(-powerneeded, 1, src)
+		C.connections -= src
+	powersource = null
+	powered = FALSE
+
 /obj/structure/power_point/proc/attach(obj/O)
-	if (!in_service() || !can_serve(O))
+	if (!in_service() || !can_serve(O) || O.power_point_has_direct_cable())
 		return FALSE
+	O.power_point_forget_owner()
 	if (O.powersource && O.powersource != powersource)
-		return FALSE
+		O.power_point_unlink_source()
 	O.powersource = powersource
 	powersource.connections |= O
 	O.power_point = src
@@ -95,15 +146,13 @@ var/global/list/power_points = list()
 
 /obj/structure/power_point/proc/release(obj/O)
 	served -= O
-	if (!O)
+	if (!O || O.power_point != src)
 		return
-	if (O.power_point == src)
-		O.power_point = null
-	// A machine on or next to the cable keeps it, as if cabled by hand.
-	if (powersource && O.powersource == powersource && (!isturf(O.loc) || get_dist(O, powersource) > 1 || O.z != powersource.z))
-		powersource.update_power(-O.powerneeded, 1, O)
-		powersource.connections -= O
-		O.powersource = null
+	O.power_point = null
+	// Never detach a foreign cable or a newer automatic owner through a stale entry.
+	if (O.powersource && O.powersource == powersource)
+		O.power_point_unlink_source()
+	else if (!O.powersource)
 		O.powered = FALSE
 
 /obj/structure/power_point/proc/release_all()
@@ -111,19 +160,19 @@ var/global/list/power_points = list()
 		release(O)
 	served.Cut()
 
-// Joins every machine in reach that has no cable of its own. A machine
-// already on this cable (restored from a save) is adopted again.
+// Run the shared nearest-point selection even when a machine already has a
+// point. A newly secured closer point can take over without stealing direct wiring.
 /obj/structure/power_point/proc/serve_nearby()
 	if (!in_service())
 		return 0
 	var/count = 0
 	for (var/obj/O in range(reach, src))
-		if (O.powerneeded <= 0 || (O.powersource && O.powersource != powersource) || (O in served))
+		if (!can_serve(O))
 			continue
-		if (attach(O))
+		var/old_point = O.power_point
+		O.power_point_moved()
+		if (O.power_point == src && old_point != src)
 			count++
-	if (count)
-		powersource.rebuild_supply()
 	return count
 
 /obj/structure/power_point/proc/attach_cable()
@@ -139,11 +188,15 @@ var/global/list/power_points = list()
 	return TRUE
 
 /obj/structure/power_point/proc/detach_cable()
+	var/list/previous = served.Copy()
 	release_all()
 	if (powersource)
 		powersource.connections -= src
 		powersource = null
 	update_icon()
+	for (var/obj/O in previous)
+		if (!QDELETED(O) && !O.power_point && !O.powersource)
+			O.power_point_moved()
 
 /obj/structure/power_point/after_load()
 	..()
@@ -230,34 +283,100 @@ var/global/list/power_points = list()
 
 // ---------------------------------------------------------------- machines
 
-// A machine looks for a power point when it is built or moved, and lets go
-// of one that it has moved out of reach of.
+// Re-evaluate on construction, movement and local geometry edits.
 /obj/proc/power_point_moved()
-	if (power_point)
-		var/obj/structure/power_point/P = power_point
-		if (!istype(P) || !P.in_service() || !P.can_serve(src))
-			if (istype(P))
-				P.release(src)
-			else
-				power_point = null
-	if (!powersource && powerneeded > 0 && isturf(loc))
-		seek_power_point()
+	if (QDELETED(src) || istype(src, /obj/structure/power_point))
+		return
+	if (power_point_has_direct_cable())
+		power_point_forget_owner()
+		return
+	if (seek_power_point())
+		return
+	var/obj/structure/power_point/P = power_point
+	if (istype(P))
+		P.release(src)
+	else
+		power_point = null
+	if (powersource && !power_point_has_direct_cable())
+		power_point_unlink_source()
 
 /obj/proc/seek_power_point()
+	if (power_point_has_direct_cable() || powerneeded <= 0 || !isturf(loc))
+		return FALSE
+	var/obj/structure/power_point/best = null
+	var/best_dist = 0
 	for (var/obj/structure/power_point/P in power_points)
-		if (P.z == z && get_dist(P, src) <= P.reach && P.attach(src))
-			P.powersource.rebuild_supply()
-			return TRUE
-	return FALSE
+		if (P.z != z || !P.in_service())
+			continue
+		var/distance = get_dist(P, src)
+		if (distance > P.reach || (best && distance > best_dist))
+			continue
+		// Equal distance favors x, then y, then stable registry order for
+		// map-authored points stacked on the exact same tile.
+		if (best && distance == best_dist && (P.x > best.x || (P.x == best.x && P.y >= best.y)))
+			continue
+		if (!P.can_serve(src))
+			continue
+		best = P
+		best_dist = distance
+	if (!best)
+		return FALSE
+	if (power_point == best && powersource == best.powersource && (src in best.served) && (src in powersource.connections))
+		return TRUE
+	if (!best.attach(src))
+		return FALSE
+	best.powersource.rebuild_supply()
+	return TRUE
 
 /obj/structure/on_runtime_spawn()
 	..()
-	if (powerneeded > 0 && power_points.len && !cable_autolink_holds && isturf(loc))
-		seek_power_point()
+	if (cable_autolink_holds || !isturf(loc))
+		return
+	if (power_point_barrier(src))
+		power_point_barrier_changed(loc)
+	if (powerneeded > 0 && power_points.len)
+		power_point_moved()
+
+/obj/covers/on_runtime_spawn()
+	..()
+	if (power_point_barrier(src))
+		power_point_barrier_changed(get_turf(src))
+
+/obj/covers/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous && power_point_barrier(src))
+		power_point_barrier_changed(get_turf(previous))
+		power_point_barrier_changed(get_turf(src))
+
+/obj/covers/forceMove(atom/destination, special_event, list/throw_hop_token = null)
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous && power_point_barrier(src))
+		power_point_barrier_changed(get_turf(previous))
+		power_point_barrier_changed(get_turf(src))
 
 /obj/structure/Move()
+	var/atom/previous = loc
 	. = ..()
-	if (. && (power_point || (powerneeded > 0 && power_points.len)))
+	if (. && loc != previous)
+		power_point_structure_moved(previous)
+
+/obj/structure/forceMove(atom/destination, special_event, list/throw_hop_token = null)
+	var/atom/previous = loc
+	. = ..()
+	if (. && loc != previous)
+		power_point_structure_moved(previous)
+
+/obj/structure/proc/power_point_structure_moved(atom/previous)
+	if (power_point_barrier(src))
+		power_point_barrier_changed(get_turf(previous))
+		power_point_barrier_changed(get_turf(src))
+	// Carrying deck fittings is atomic; don't detach a consumer before the
+	// cable and its point have both arrived. The craft owns shore-link cuts.
+	if (craft_carrying())
+		return
+	if (power_point || (powerneeded > 0 && power_points.len))
 		power_point_moved()
 
 // ---------------------------------------------------------------- types

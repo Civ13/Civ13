@@ -15,6 +15,11 @@
 	var/not_disassemblable = TRUE
 
 /obj/structure/Destroy()
+	if (power_point)
+		power_point_forget_owner()
+		power_point_unlink_source()
+	if (power_point_barrier(src))
+		power_point_barrier_changed(get_turf(src))
 	if (school_property)
 		school_property = FALSE
 		moldy_school_property_destroyed(src)
@@ -358,14 +363,17 @@
 	return TRUE
 
 /obj/structure/proc/connect_cable(var/mob/user, var/obj/item/stack/cable_coil/W)
-	if (powersource)
+	if (powersource && !power_point)
 		to_chat(user, "There's already a cable connected here! Split it further from \the [src]")
 		return
 	var/obj/item/stack/cable_coil/CC = W
-	powersource = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
-	if (!powersource)
+	var/obj/structure/cable/C = CC.place_turf(get_turf(src), user, turn(get_dir(user,src),180))
+	if (!C)
 		return
-	powersource.connections += src
+	power_point_forget_owner()
+	power_point_unlink_source()
+	powersource = C
+	powersource.connections |= src
 	powersource.update_icon()
 	// place_turf already links these edges; this idempotent pass retains the
 	// machine attachment feedback without rebuilding supply a second time.

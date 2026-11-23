@@ -111,6 +111,7 @@ var/global/civ_telecom_cursor = 1
 /obj/proc/civ_attach_cable(atom/movable/O, mob/living/human/H)
 	if (!istype(O, /obj/structure/cable) || !H || H.stat != CONSCIOUS || !H.can_use_hands() || H.z != z || O.z != z || get_dist(H, src) > 1 || get_dist(H, O) > 1 || get_dist(src, O) > 1 || !anchored || !isturf(loc))
 		return
+	power_point_forget_owner()
 	if (powersource)
 		powersource.update_power(-powerneeded, 1, src)
 		powersource.connections -= src

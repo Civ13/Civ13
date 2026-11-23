@@ -18,6 +18,9 @@
 	density = TRUE
 	opacity = TRUE
 
+/obj/map_metadata/pp_test_map/New()
+	return
+
 /obj/structure/engine/pp_tester
 	maxpower = 100
 	on = TRUE
@@ -130,6 +133,57 @@ var/global/pp_failures = 0
 		pp_check("cut cable: transformer out of service", T.in_service() ? 1 : 0, 0)
 		qdel(T)
 		pp_check("destroyed transformer leaves the registry", (T in power_points) ? 1 : 0, 0)
+
+		// Two equidistant points: coordinates, not link order, break the tie.
+		var/obj/structure/cable/right_wire = new(locate(6, 8, 1))
+		var/obj/structure/cable/left_wire = new(locate(2, 8, 1))
+		var/obj/structure/power_point/outlet/secured/right = new(locate(6, 8, 1))
+		var/obj/structure/power_point/outlet/secured/left = new(locate(2, 8, 1))
+		right.attach_cable()
+		left.attach_cable()
+		var/obj/structure/pp_lamp/shared = pp_lamp_at(4, 8)
+		pp_check("nearest tie resolves by coordinate", shared.power_point == left, TRUE)
+		pp_check("fixture force-move succeeds", shared.forceMove(locate(5, 8, 1)), TRUE)
+		pp_check("force-move picks nearer point", shared.power_point == right, TRUE)
+		pp_check("force-move clears old ownership", shared in left.served, FALSE)
+		pp_check("fixture force-move back succeeds", shared.forceMove(locate(4, 8, 1)), TRUE)
+		pp_check("force-move back resolves nearest tie", shared.power_point == left, TRUE)
+
+		var/obj/structure/power_point/outlet/secured/same = new(locate(2, 8, 1))
+		same.attach_cable()
+		pp_check("same-cable alternate may take ownership", same.attach(shared), TRUE)
+		pp_check("same-cable handoff releases old list", shared in left.served, FALSE)
+		left.release(shared)
+		pp_check("stale old release preserves new owner", shared.power_point == same && shared.powersource == left_wire, TRUE)
+
+		// Turf changes enqueue a local refresh. Drain synchronously here: this
+		// isolated fixture excludes the production timer controller.
+		var/turf/barrier_tile = locate(3, 8, 1)
+		barrier_tile.ChangeTurf(/turf/pp_wall)
+		power_point_flush_barriers()
+		pp_check("new wall reroutes a powered machine", shared.power_point == right, TRUE)
+		barrier_tile = locate(3, 8, 1)
+		barrier_tile.ChangeTurf(/turf/floor/plating)
+		power_point_flush_barriers()
+		pp_check("wall removal reopens the nearer tie winner", shared.power_point == left, TRUE)
+		map = new /obj/map_metadata/pp_test_map()
+		var/obj/covers/jail/bars = new(locate(3, 8, 1))
+		power_point_flush_barriers()
+		pp_check("dense transparent wall covers interrupt service", shared.power_point == right, TRUE)
+		qdel(bars)
+		power_point_flush_barriers()
+		pp_check("removed wall cover restores service", shared.power_point == left, TRUE)
+
+		// Direct wiring beats an otherwise eligible automatic connection.
+		var/obj/structure/cable/direct = new(locate(4, 8, 1))
+		shared.power_point_forget_owner()
+		shared.power_point_unlink_source()
+		shared.powersource = direct
+		direct.connections |= shared
+		right.serve_nearby()
+		left.serve_nearby()
+		pp_check("direct cable survives automatic service scan", !shared.power_point && shared.powersource == direct, TRUE)
+		pp_check("right wire stays connected", right.powersource == right_wire, TRUE)
 	catch (var/exception/ex)
 		world.log << "POWER POINT EXCEPTION: [ex.name] [ex.file]:[ex.line]"
 		pp_failures++

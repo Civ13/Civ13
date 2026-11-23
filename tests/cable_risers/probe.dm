@@ -146,6 +146,17 @@ var/global/riser_failures = 0
 		var/obj/structure/multiz/ladder/up/lonely = new(locate(4, 4, 3))
 		lonely.find_target()
 		riser_check("ladder on the top level has no target", lonely.target ? 1 : 0, 0)
+		riser_check("battery charging reaches the engine across two risers", top.reserve_battery_charge(100), 90)
+		E.on = FALSE
+		var/obj/structure/battery/lithium_ion/storage = new(bottom.loc)
+		storage.anchored = TRUE
+		storage.powersource = bottom
+		bottom.connections |= storage
+		storage.mode = "discharge"
+		storage.stored_energy = 100
+		storage.settle_tick()
+		riser_check("battery discharge crosses the same two risers", top.rebuild_supply(), 40)
+		riser_check("battery discharge is not a charging source across risers", top.reserve_battery_charge(40), 0)
 	catch (var/exception/E)
 		world.log << "RISER EXCEPTION: [E.name] [E.file]:[E.line]"
 		riser_failures++

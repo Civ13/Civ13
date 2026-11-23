@@ -16,6 +16,7 @@ var/global/list/underground_live_levels = list()
 
 	// This makes sure that turfs are not changed to space when one side is part of a zone
 	overlays.Cut()
+	var/old_density = density
 	var/old_opacity = opacity
 	var/old_dynamic_lighting = dynamic_lighting
 	var/list/old_affecting_lights = affecting_lights
@@ -81,6 +82,8 @@ var/global/list/underground_live_levels = list()
 		W.terrain_shade_refresh()
 	if (underground_live_levels.len && !W.density && (W.z in underground_live_levels))
 		W.underground_opened()
+	if (old_density != W.density)
+		power_point_barrier_changed(W)
 	return W
 
 /turf/proc/transport_properties_from(turf/other)
