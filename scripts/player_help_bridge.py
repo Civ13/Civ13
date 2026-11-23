@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3d93f70e84371fd80f974608fa9e24ddf0ff66ad'
+WIKI_REVIEWED_REVISION = '77f2a4e1f3869ad53602f70006041590fcf389a6'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -177,7 +177,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Paperwork.md': ('2fd1ea8cc4c7b121e7fd2c6cb288209b139c974e371b427dd5234706dbbbcc53', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('f5c43032ed26fac5c67b066093ee584f00a3bf0046a459c063bcf483cda44e22', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
-    'Miscellaneous_Crafting.md': ('9015932974df193a9f59fb59c359040e7a38e541ad13e104ae2cacf8f33e08fc', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
+    'Miscellaneous_Crafting.md': ('56cc9a1b46efce403d0d55a7aa769d969d19e6785ffd9e645df02bc21769f165', 'miscellaneous crafting misc items dress dresses dressmaking tailoring tailor tailored sew sewing pattern patterns design clothes shirt gown cloak sleeves collar dye dyes wool linen fabric book hat hats headwear beret veil gloves boots shoes belt sash backpack satchel quiver bandolier restyle alteration alter candle candles'),
     'maps/The_Americas.md': ('8f926f8eb3d365684968b7e32d7c5de5322d30ad85e166fa7315d5a6db401e5a', 'americas america north south isthmus mainland persistent map world hills tamping grading rammer'),
     'regions/Regions.md': ('bfd6704a336cad7458062de572ccabf9f7f3630e9fd82018b4d173913d56f343', 'regions region lands land worlds world europe africa asia oceania greenland antarctica continents travel climate peoples'),
     'maps/Gaia.md': ('2e973629f07a33edbbad6695d26e01faa9a4e33120763bfd91701ea412349769', 'gaia map world underground'),
