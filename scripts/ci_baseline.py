@@ -58,9 +58,15 @@ SUITES = {
         'shared_paths': ('civ13.dme',)},
     'object_interval_dispatch': {'files': ('tests/process_time/test_dispatch_source.py',),
         'paths': ('tests/process_time/', 'code/processes/obj.dm', 'code/processes/_process.dm')},
-    'abandonment_protection': {'files': ('tests/abandoned_items/test_protection.py',),
-        'paths': ('tests/abandoned_items/test_protection.py',), 'shared_paths': (
-            'code/processes/abandoned_items.dm', 'tests/save_movement/source_adapter.py')},
+    'abandonment_protection': {'files': (
+        'tests/abandoned_items/test_protection.py', 'tests/abandoned_items/test_manure_ground_clock.py',
+        'tests/food_progression/test_fertilizer_no_decay.py'),
+        'paths': ('tests/abandoned_items/test_protection.py', 'tests/abandoned_items/test_manure_ground_clock.py',
+                  'tests/food_progression/test_fertilizer_no_decay.py'),
+        'shared_paths': ('code/processes/abandoned_items.dm', 'tests/save_movement/source_adapter.py',
+                         'code/game/mob/living/carbon/human/shit_piss.dm',
+                         'code/game/mob/living/simple_animal/simple_ai.dm', 'code/game/mob/living/simple_animal/simple_animal.dm',
+                         'code/modules/reagents/reagent_containers/food.dm')},
     'astar_current_score': {'files': ('tests/astar_current_score/test_score.py',),
         'paths': ('tests/astar_current_score/', 'code/pathfinding.dm')},
     'bag_valve_mask': {'files': ('tests/bag_valve_mask/test_bag_valve_mask.py',), 'paths': (

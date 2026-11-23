@@ -57,6 +57,83 @@ var/decay_assertions = 0
 			pending++
 	return list("objects" = waste, "pending" = pending, "registry" = abandoned_items.len)
 
+/proc/decay_test_manure(turf/ground, process/abandoned_items/P)
+	var/four_hours = 4 * 60 * 60 * 10
+	var/obj/item/weapon/reagent_containers/food/snacks/poo/animal/manure = new(ground)
+	var/obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer/compost = new(ground)
+	var/obj/item/stack/dung/dry = new(ground)
+	decay_assert(manure.abandonment_index && !isnull(manure.manure_ground_since), "new ground manure enters bounded scheduler")
+	decay_assert(!compost.abandonment_index && !dry.abandonment_index, "compost and dry dung do not age")
+	var/turf/other = locate(2, 1, 1)
+	manure.manure_ground_since = world.time - 600
+	decay_assert(manure.Move(other, EAST) && manure.manure_ground_age >= 600, "ground movement keeps prior exposure")
+	var/mob/holder = new(other)
+	manure.manure_ground_since = world.time - 600
+	decay_assert(manure.forceMove(holder) && isnull(manure.manure_ground_since), "equipped location pauses immediately")
+	var/age = manure.manure_ground_age
+	decay_assert(age >= 1200 && !manure.check_abandonment(world.time + four_hours * 2) && manure.manure_ground_age == age, "equipped time is not charged")
+	decay_assert(manure.forceMove(ground) && !isnull(manure.manure_ground_since), "dropping resumes exposure")
+	var/obj/item/weapon/storage/backpack/bag = new(ground)
+	manure.manure_ground_since = world.time - 600
+	decay_assert(bag.handle_item_insertion(manure, TRUE) && manure.loc == bag && isnull(manure.manure_ground_since), "native storage insertion pauses")
+	age = manure.manure_ground_age
+	decay_assert(age >= 1800 && !manure.check_abandonment(world.time + four_hours * 3) && manure.manure_ground_age == age, "stored time is not charged")
+	decay_assert(bag.remove_from_storage(manure, ground) && manure.loc == ground && !isnull(manure.manure_ground_since), "native storage removal resumes from existing age")
+
+	// Save via the real exporter. The existing elapsed window is still live,
+	// but only the numeric age belongs in the save, not the process clock.
+	manure.manure_ground_age = four_hours - 1200
+	manure.manure_ground_since = world.time - 100
+	var/savefile/F = new("isolated-manure.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, manure, 1)
+	F.cd = map_storage.entry_path(F, ref)
+	var/age_on_disk = persistence_saved_scalar(F["manure_ground_age"])
+	decay_assert(age_on_disk >= four_hours - 1100 && age_on_disk < four_hours, "save includes unobserved ground time")
+	decay_assert(!("manure_ground_since" in F.dir), "save omits process clock")
+	F["manure_ground_since"] << -four_hours * 10 // Ignore a stale stamp on import too.
+	map_storage.clear_bookkeeping()
+	var/obj/item/weapon/reagent_containers/food/snacks/poo/animal/restored = map_storage.Load_Entry(F, ref, null, ground)
+	decay_assert(restored && restored.manure_ground_age == age_on_disk && isnull(restored.manure_ground_since), "load preserves age but ignores stale uptime")
+	restored.after_load()
+	restored.persistence_restore_finished()
+	var/restarted_at = restored.manure_ground_since
+	var/remaining = four_hours - age_on_disk
+	decay_assert(!isnull(restarted_at) && !restored.check_abandonment(restarted_at + remaining - 1), "restored pile is safe before four cumulative hours")
+	decay_assert(restored.check_abandonment(restarted_at + remaining), "restored pile expires at exactly four cumulative hours")
+
+	// Omitted age is what a pre-feature save looks like.
+	var/obj/item/weapon/reagent_containers/food/snacks/poo/animal/old = new(bag)
+	var/savefile/legacy = new("isolated-manure-legacy.sav")
+	legacy["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/old_ref = map_storage.BuildVarDirectory(legacy, old, 1)
+	legacy.cd = map_storage.entry_path(legacy, old_ref)
+	decay_assert(!("manure_ground_age" in legacy.dir), "zero age omitted from save")
+	map_storage.clear_bookkeeping()
+	var/obj/item/weapon/reagent_containers/food/snacks/poo/animal/legacy_restored = map_storage.Load_Entry(legacy, old_ref, null, ground)
+	legacy_restored.after_load()
+	legacy_restored.persistence_restore_finished()
+	decay_assert(legacy_restored.manure_ground_age == 0 && !isnull(legacy_restored.manure_ground_since), "pre-feature save starts at zero on ground")
+	legacy_restored.manure_ground_since = world.time - four_hours
+	legacy_restored.before_save()
+	decay_assert(legacy_restored.manure_ground_age == four_hours && !QDELETED(legacy_restored), "expired manure is not deleted during serialization")
+	var/datum/persistence_world_operation/save_operation = new
+	save_operation.kind = "save"
+	persistence_active_operation = save_operation
+	P.fire()
+	persistence_active_operation = null
+	qdel(save_operation)
+	decay_assert(!QDELETED(legacy_restored), "processor defers expired manure during an active save")
+	P.fire()
+	decay_assert(QDELETED(legacy_restored) && !compost.gcDestroyed && !dry.gcDestroyed, "bounded processor removes only expired loose manure")
+	map_storage.clear_bookkeeping()
+	qdel(manure); qdel(compost); qdel(dry); qdel(bag); qdel(holder)
+	decay_assert(!abandoned_items.len, "manure fixture leaves no registry entries")
+
 /world/New()
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "byond" = "[world.byond_version].[world.byond_build]", "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz)), "metadata.json")
 	try
@@ -131,6 +208,7 @@ var/decay_assertions = 0
 		var/process/abandoned_items/P = new
 		P.setup()
 		var/turf/T = locate(1,1,1)
+		decay_test_manure(T, P)
 		var/obj/item/trash/decay_probe/I = new(T)
 		decay_assert(I.abandonment_index > 0, "New registers waste")
 		I.register_abandoned_item()
