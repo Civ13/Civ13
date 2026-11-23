@@ -12,6 +12,9 @@
 //                                         as for pictures, up to 16 colours)
 //   C13SHIP/1/<name>/<tiles>              ship's draughts (naval/ship_draught.dm)
 //   C13HOUSE/1/<name>/<tiles>/<notes>     house plans (game/objects/house_plan.dm)
+//   C13SUB, C13CAR, C13AIR, C13TRAIN, C13STATION  the other plans a ship's
+//                                         draught carries (naval/draught_kinds.dm,
+//                                         which also exports and imports them all)
 //
 // A code only describes a design. Importing never skips the normal rules:
 // pictures still need the pigments, a canvas and room under the region cap,

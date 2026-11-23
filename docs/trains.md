@@ -60,6 +60,32 @@ itself. `code/modules/1713/train_bends.dm`:
 
 Checks: `bends/` in `tests/train_platforms`.
 
+## Wide curves
+
+A platelayer with a hammer can ease a sharp corner into a wide curve of radius
+4 or 8 (right-click the corner, "Ease the Curve"). It lifts the corner and that
+many tiles of plain straight track on each side and relays them as one curve of
+the same number of tiles, so no rail is gained or lost. A crowbar relays a curve
+as the sharp corner again. `code/modules/1713/train_arcs.dm`:
+
+- `/obj/structure/rails/arc` tiles run from S to E as a short straight run, a
+  staircase and another run (`train_arc_path()`), each tile leading by
+  `leg_a`/`leg_b`. `rail_target()` routes them like any two-legged tile; they are
+  not bends for the spacing rule, since a car never folds across them.
+- Trains take a curve at up to `train_arc_speed()` tiles a second (4 on
+  radius 4, 6 on radius 8, against 3 on a sharp corner) before `curve_check()`
+  derails them.
+- On the staircase a deck lies diagonally (`rail_arc_lay()` in
+  `train_platform_tiles()`), so a car's tiles overlap no more than on a sharp
+  corner, and furniture aboard turns once over the curve (`train_turning()`).
+- The master tile draws Fable's art (`train_arc4.dmi`, `train_arc8.dmi`) turned
+  and mirrored onto the curve. Cars, deck parts and engine bodies on a curve are
+  drawn turned to the track and moved onto its circle (`train_arc_pose()`),
+  animated over the step's glide; they are drawn square again off it. Riders
+  and loose loads stay on their tiles.
+
+Checks: `arcs/` in `tests/train_platforms`.
+
 ## Speed and load
 
 Speeds are tiles per second. `max_train_speed` is a locomotive's step delay in

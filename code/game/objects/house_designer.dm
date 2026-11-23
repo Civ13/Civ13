@@ -36,7 +36,7 @@
 //   EXAMPLES  ready-made plans in the same form
 //   HELP      the part book: key -> list(what, use, how)
 // A drawing can be longer than one link holds, so the window sends it in
-// parts: ?src=REF;house=begin;n=<parts>;mode=preview|save;name=<name>, then
+// parts: ?src=REF;house=begin;n=<parts>;mode=preview|save|export (or house=import);name=<name>, then
 // house=part;i=<index>;d=<text> for each as the server acknowledges the last
 // (houseAck), then house=end. The server answers with housePlan(json of
 // house_designer_answer()), houseStatus(text) and, after a save, houseSaved().
@@ -197,6 +197,11 @@
 		upload_parts = null
 		house_designer_status(H, "Hold the sheet and a pen or pencil to draw on it.")
 		return
+	// Import and Export work the same in every designer (naval/draught_kinds.dm).
+	if (href_list["house"] == "import")
+		upload_parts = null
+		sheet.draught_import_in_window(H, HOUSE_DESIGNER_WINDOW)
+		return
 	if (sheet.draught_code && !sheet.house_plan_kind())
 		upload_parts = null
 		house_designer_status(H, "The sheet already holds another drawing.")
@@ -205,7 +210,7 @@
 		if ("begin")
 			var/n = text2num(href_list["n"])
 			var/max_parts = CEILING(DESIGN_CODE_HOUSE_MAX / HOUSE_DESIGNER_PART, 1)
-			if (!isnum(n) || n < 1 || n > max_parts || n != round(n) || !(href_list["mode"] in list("preview", "save")))
+			if (!isnum(n) || n < 1 || n > max_parts || n != round(n) || !(href_list["mode"] in list("preview", "save", "export")))
 				house_designer_status(H, "The drawing could not be sent.")
 				return
 			upload_parts = list()
@@ -228,9 +233,12 @@
 			if (!got || got.len != upload_count)
 				house_designer_status(H, "The drawing could not be sent.")
 				return
-			var/result = accept_drawing(H, jointext(got, ""), upload_name, upload_mode == "save")
+			var/export = upload_mode == "export"
+			var/result = accept_drawing(H, jointext(got, ""), upload_name, export || upload_mode == "save")
 			if (!isnull(result))
 				house_designer_status(H, result)
+			if (export && result == "Saved on the sheet.")
+				sheet.draught_export(H, house_plan_clean_name(upload_name))
 
 // Reads a drawing sent from the window. A preview answers with the figures;
 // a save keeps it on the sheet. Returns a status line, or null when the
@@ -277,6 +285,7 @@ button:hover{border-color:#ffd985}
 button.on{background:#b48c4d;color:#211c16;border-color:#ffd985}
 button.go{flex:none;white-space:nowrap;background:#6b4d1f;border-color:#b48c4d;font-weight:bold;font-size:12px;padding:5px 14px}
 input,select{background:#1d1916;color:#e9dfc8;border:1px solid #806040;font-family:Verdana,sans-serif;font-size:11px;height:22px;box-sizing:border-box;padding:1px 3px}
+button.cd{flex:none;white-space:nowrap;margin-right:4px}
 .row{display:flex;align-items:center;margin-bottom:5px}
 .row label{flex:0 0 46px;color:#bfae96;font-size:11px}
 .hint{color:#b0a080;font-size:11px;line-height:1.35}
@@ -377,7 +386,8 @@ input,select{background:#1d1916;color:#e9dfc8;border:1px solid #806040;font-fami
 <div class='ph'>Tools</div><div class='pal' id='pt'></div>
 <div class='acts' style='margin-top:2px'><button onclick='roofStorey()' title='Roofs every tile inside the walls of this storey, wall tiles included, with the picked roofing'>Roof this storey</button><button onclick='copyBelow()' title='Stands the walls, windows and pillars of the storey below on this one'>Copy the walls below</button><button onclick='clearStorey()'>Clear storey</button></div>
 <div class='row' style='margin-top:3px'><button onclick='undo()' style='margin-right:3px'>Undo</button><button onclick='redo()' style='margin-right:8px'>Redo</button><span class='hint' style='white-space:nowrap'>Start from&nbsp;</span><select id='ex' style='flex:1 1 auto;min-width:0;margin-right:4px'><option value=''>-</option></select><button onclick='loadExample()'>Load</button></div>
-<div class='row' style='margin-bottom:0'><button class='go' onclick='send(1)'>Save to the sheet</button><span id='st'></span></div>
+<div class='row'><button class='go' onclick='send(1)'>Save to the sheet</button><span id='st'></span></div>
+<div class='row' style='margin-bottom:0'><button class='cd' onclick='exportCode()' title='Save the drawing on the sheet and show its design code to copy'>Export code</button><button class='cd' onclick='importCode()' title='Paste a design code; it replaces what is drawn on this sheet'>Import code</button></div>
 <div class='hint' style='margin-top:6px'>Click or drag to draw with the picked part. A tile holds one piece, one floor and one roofing. Right-click clears what the picked tool draws.</div>
 </div>
 
@@ -566,10 +576,13 @@ for(i=0;i<notes.length;i++)nt.push(notes[i][0]+','+notes[i][1]+','+notes[i][2]+'
 return 'C13HOUSE/1/'+nm+'/'+runs.join(';')+'/'+nt.join(';');}
 function go(q){window.location='byond://?src='+REF+'&'+q;}
 function waiting(){return parts!==null&&new Date().getTime()-busy<4000;}
+// Export saves like Save and then shows the code; Import asks for one.
+function exportCode(){send('export');}
+function importCode(){if(timer){clearTimeout(timer);timer=null;}go('house=import');}
 function send(save){var p,j;if(timer){clearTimeout(timer);timer=null;}if(waiting()){if(save)status('Wait a moment...');dirty=true;return;}
 p=code();if(p.length>MAX){status('The plan is too detailed for one sheet: simplify it, or split the house over two plans.');return;}
 parts=[];for(j=0;j<p.length;j+=PART)parts.push(p.substring(j,j+PART));busy=new Date().getTime();dirty=false;if(save){sendRev=rev;status('Saving...');}
-go('house=begin&n='+parts.length+'&mode='+(save?'save':'preview')+'&name='+encodeURIComponent($('nm').value));}
+go('house=begin&n='+parts.length+'&mode='+(save=='export'?'export':save?'save':'preview')+'&name='+encodeURIComponent($('nm').value));}
 function houseAck(n){n=parseInt(n,10);if(!parts)return;if(n<parts.length){go('house=part&i='+n+'&d='+encodeURIComponent(parts[n]));return;}parts=null;go('house=end');}
 function done(){parts=null;if(dirty){dirty=false;changed();}}
 // The server answers once per 0.3 s: wait out the gap, so the last change

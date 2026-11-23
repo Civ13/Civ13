@@ -20,19 +20,25 @@
 /obj/item/weapon/reagent_containers/food/snacks/proc/can_cut_preserved_meat()
 	return !rotten && decay > 0 && decaytimer < decay && (!rots || decaytimer < decay / 2)
 
-/obj/item/weapon/reagent_containers/food/snacks/proc/prepare_meat_cutlet(obj/item/weapon/reagent_containers/food/snacks/rawcutlet/cutlet)
+/obj/item/weapon/reagent_containers/food/snacks/proc/prepare_meat_cutlet(obj/item/weapon/reagent_containers/food/snacks/rawcutlet/cutlet, pieces = 2)
 	if (salted_meat)
 		cutlet.mark_salted_meat()
 	// Cutting must not turn an aged slab into fresh preservable food.
 	cutlet.decaytimer = decaytimer * cutlet.decay / decay
 	if (cutlet.rots && cutlet.decaytimer >= cutlet.decay / 2)
 		cutlet.rot()
-	// Each of the two strips keeps half the slab's germs; only cooking kills them.
-	if (reagents && cutlet.reagents)
+	// The pieces share the slab's germs and toxins evenly, so cutting neither
+	// loses nor multiplies them (#6938); only cooking kills germs.
+	if (reagents && cutlet.reagents && pieces > 0)
 		for (var/germ in germ_reagent_disease)
 			var/amount = reagents.get_reagent_amount(germ)
 			if (amount > 0)
-				cutlet.reagents.add_reagent(germ, amount / 2)
+				cutlet.reagents.add_reagent(germ, amount / pieces)
+		for (var/datum/reagent/toxin/T in reagents.reagent_list)
+			if (T.volume > 0 && !(T.id in germ_reagent_disease))
+				cutlet.reagents.add_reagent(T.id, T.volume / pieces)
+		if (food_toxin_origin && length(food_toxin_amounts(cutlet.reagents)))
+			cutlet.note_food_toxin(food_toxin_origin)
 
 /obj/item/weapon/reagent_containers/food/snacks/proc/salt_meat(obj/item/weapon/reagent_containers/food/condiment/salt_source, mob/user)
 	if (salted_meat)
@@ -77,7 +83,7 @@
 			return
 		for (var/i = 1 to 2)
 			var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/cutlet = new(src)
-			prepare_meat_cutlet(cutlet)
+			prepare_meat_cutlet(cutlet, 2)
 		to_chat(user, "You cut the meat into thin strips.")
 		qdel(src)
 	else

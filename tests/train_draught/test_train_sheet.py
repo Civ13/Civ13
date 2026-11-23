@@ -119,7 +119,7 @@ class Wiring(unittest.TestCase):
         self.assertIn('"/obj/structure/rail_works" = "rail_steam"', RESEARCH)
 
     def test_sheet_is_a_draught_kind(self):
-        self.assertIn('"TRAIN" = list("name" = "train", "max" = DESIGN_CODE_TRAIN_MAX, "read" = /proc/train_draught_from_code, "take" = "take_train")', KINDS)
+        self.assertIn('"TRAIN" = list("name" = "train", "title" = "Train sheet", "max" = DESIGN_CODE_TRAIN_MAX, "read" = /proc/train_draught_from_code, "take" = "take_train", "open" = "open_train_designer"', KINDS)
 
     def test_files_are_included(self):
         for name in ('train_draught', 'train_draught_checks', 'train_works', 'train_designer'):

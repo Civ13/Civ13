@@ -36,7 +36,7 @@
 //   HELP      the part book: key -> list(what, use, how); stock kinds by
 //             kind, "custom", "x", and "floor_<key>", "roof_<key>",
 //             "edge_<key>", "fit_<key>"
-// The window sends ?src=REF;train=preview|save;code=<C13TRAIN code>
+// The window sends ?src=REF;train=preview|save|export|import;code=<C13TRAIN code>
 // and the server answers with trainStats(summary html), trainChecks(json
 // of the report's data(); cells are car numbers from the front) and
 // trainStatus(text).
@@ -251,7 +251,12 @@
 	if (!ship_designer_can_draw(H, sheet))
 		train_designer_status(H, "Hold the sheet and a pen or pencil to draw on it.")
 		return
-	var/save = href_list["train"] == "save"
+	// Import and Export work the same in every designer (naval/draught_kinds.dm).
+	if (href_list["train"] == "import")
+		sheet.draught_import_in_window(H, TRAIN_DESIGNER_WINDOW)
+		return
+	var/export = href_list["train"] == "export"
+	var/save = export || href_list["train"] == "save"
 	if (!save)
 		if (!isnull(last_preview) && world.time < last_preview + TRAIN_DESIGNER_PREVIEW_GAP)
 			return
@@ -268,6 +273,8 @@
 	if (save)
 		sheet.take_train(D)
 		train_designer_status(H, "Saved on the sheet.")
+		if (export)
+			sheet.draught_export(H, D.name)
 	qdel(D)
 
 // Raw string: no DM interpolation inside, and never a double quote followed
@@ -286,6 +293,7 @@ button:hover{border-color:#ffd985}
 button.on{background:#b48c4d;color:#211c16;border-color:#ffd985}
 button.go{flex:none;white-space:nowrap;background:#6b4d1f;border-color:#b48c4d;font-weight:bold;font-size:12px;padding:4px 14px}
 input,select{background:#1d1916;color:#e9dfc8;border:1px solid #806040;font-family:Verdana,sans-serif;font-size:11px;height:22px;box-sizing:border-box;padding:1px 3px}
+button.cd{flex:none;white-space:nowrap;margin-left:4px}
 .row{display:flex;align-items:center;margin-bottom:5px}
 .row label{flex:none;color:#bfae96;font-size:11px;margin-right:6px}
 .hint{color:#b0a080;font-size:11px;line-height:1.35}
@@ -387,7 +395,7 @@ img.pic{vertical-align:middle}
 </style></head><body>
 
 <div id='topbar'><div class='sec'><h2>Train<span id='tot'></span></h2><div class='in'>
-<div class='row'><label for='nm'>Name</label><input id='nm' maxlength='40' style='flex:0 0 200px;width:200px;margin-right:12px' onchange='changed()' onkeyup='changed()'><button onclick='undo()' style='margin-right:3px'>Undo</button><button onclick='redo()' style='margin-right:12px'>Redo</button><span class='hint' style='white-space:nowrap'>Start from&nbsp;</span><select id='ex' style='flex:0 0 190px;width:190px;margin-right:4px'><option value=''>-</option></select><button onclick='loadExample()' style='margin-right:12px'>Load</button><button class='go' onclick='send(1)'>Save to the sheet</button><span id='st'></span></div>
+<div class='row'><label for='nm'>Name</label><input id='nm' maxlength='40' style='flex:0 0 200px;width:200px;margin-right:12px' onchange='changed()' onkeyup='changed()'><button onclick='undo()' style='margin-right:3px'>Undo</button><button onclick='redo()' style='margin-right:12px'>Redo</button><span class='hint' style='white-space:nowrap'>Start from&nbsp;</span><select id='ex' style='flex:0 0 190px;width:190px;margin-right:4px'><option value=''>-</option></select><button onclick='loadExample()' style='margin-right:12px'>Load</button><button class='go' onclick='send(1)'>Save to the sheet</button><button class='cd' onclick='exportCode()' title='Save the drawing on the sheet and show its design code to copy'>Export code</button><button class='cd' onclick='importCode()' title='Paste a design code; it replaces what is drawn on this sheet'>Import code</button><span id='st'></span></div>
 <div id='strip'></div>
 <div class='row' style='margin-bottom:0'><span class='hint' style='margin-right:6px'>front</span><button id='bf' onclick='move(-1)' title='Move the picked car one place towards the front' style='margin-right:3px'>&lt; Forward</button><button id='bb' onclick='move(1)' title='Move the picked car one place towards the back' style='margin-right:3px'>Back &gt;</button><button id='bd' onclick='dup()' title='Add a copy of the picked car behind it' style='margin-right:3px'>Duplicate</button><button id='br' onclick='takeOff()' title='Take the picked car off the train'>Remove</button><span id='selname'></span><span class='hint'>back</span></div>
 </div></div></div>
@@ -582,8 +590,11 @@ function code(){var nm=cleanName($('nm').value.replace(/_/g,' '),'train').replac
 // The link splits at ; and &, so those are escaped; the code's own / : and
 // , are left as they are to keep a long train's link short.
 function enc(s){return encodeURIComponent(s).replace(/%3A/g,':').replace(/%2C/g,',').replace(/%2F/g,'/');}
+// Export saves like Save and then shows the code; Import asks for one.
+function exportCode(){send('export');}
+function importCode(){if(timer){clearTimeout(timer);timer=null;}location.href='byond://?src='+REF+';train=import';}
 function send(save){if(timer){clearTimeout(timer);timer=null;}lastSent=new Date().getTime();if(save)status('Saving...');
-location.href='byond://?src='+REF+';train='+(save?'save':'preview')+';code='+enc(code());}
+location.href='byond://?src='+REF+';train='+(save=='export'?'export':save?'save':'preview')+';code='+enc(code());}
 // The server answers one summary per 0.3 s: wait out the gap, so the last
 // change is never the one it skips.
 function changed(){if(timer)clearTimeout(timer);var wait=Math.max(300,450-(new Date().getTime()-lastSent));timer=setTimeout(function(){timer=null;send(0);},wait);}

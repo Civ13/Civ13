@@ -22,7 +22,7 @@ var/global/rail_network_serial = 0
 		return FALSE
 	var/found = FALSE
 	for (var/obj/structure/rails/R in T)
-		if (istype(R, /obj/structure/rails/split) || istype(R, /obj/structure/rails/turn) || istype(R, /obj/structure/rails/rotate) || istype(R, /obj/structure/rails/turntable))
+		if (istype(R, /obj/structure/rails/split) || istype(R, /obj/structure/rails/turn) || istype(R, /obj/structure/rails/arc) || istype(R, /obj/structure/rails/rotate) || istype(R, /obj/structure/rails/turntable))
 			return FALSE
 		if (R.dir != heading && R.dir != OPPOSITE_DIR(heading))
 			return FALSE

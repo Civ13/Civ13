@@ -88,5 +88,65 @@ class DesignCodesTest(unittest.TestCase):
         self.assertIn('/obj/structure/flag/pole/custom/after_load()', read('code/modules/1713/structures.dm'))
 
 
+class PlanCodesTest(unittest.TestCase):
+    """Every plan on a ship's draught exports and imports the same way."""
+
+    DESIGNERS = {
+        'code/modules/naval/ship_designer.dm': ('ship', 'SHIP_DESIGNER_WINDOW'),
+        'code/modules/naval/sub_designer.dm': ('sub', 'SUB_DESIGNER_WINDOW'),
+        'code/modules/naval/air_designer.dm': ('air', 'AIR_DESIGNER_WINDOW'),
+        'code/modules/craft/vehicle_designer.dm': ('car', 'VEHICLE_DESIGNER_WINDOW'),
+        'code/modules/1713/train_designer.dm': ('train', 'TRAIN_DESIGNER_WINDOW'),
+        'code/modules/space/station_designer.dm': ('station', 'STATION_DESIGNER_WINDOW'),
+        'code/game/objects/house_designer.dm': ('house', 'HOUSE_DESIGNER_WINDOW'),
+    }
+    MENUS = ('code/modules/naval/ship_draught.dm', 'code/modules/naval/sub_draught.dm',
+             'code/modules/naval/air_draught.dm', 'code/modules/craft/vehicle_draught.dm',
+             'code/modules/1713/train_draught.dm', 'code/modules/space/station_plan.dm',
+             'code/game/objects/house_plan.dm')
+
+    def test_every_kind_row_names_its_designer(self):
+        kinds = read('code/modules/naval/draught_kinds.dm')
+        rows = re.findall(r'^\t\t"(\w+)" = list\((.*)\),$', kinds, re.M)
+        self.assertEqual({k for k, _ in rows}, {'SHIP', 'SUB', 'CAR', 'AIR', 'HOUSE', 'TRAIN', 'STATION'})
+        windows = {w: re.search(r'#define %s "(\w+)"' % w, read(p)).group(1) for p, (_, w) in self.DESIGNERS.items()}
+        for kind, row in rows:
+            with self.subTest(kind=kind):
+                for field in ('"name"', '"title"', '"max"', '"read"', '"take"', '"open"', '"window"'):
+                    self.assertIn(field + ' = ', row)
+                window = re.search(r'"window" = "(\w+)"', row).group(1)
+                self.assertIn(window, windows.values())
+        self.assertIn('"age" = ORBIT_MIN_AGE', dict(rows)['STATION'])
+
+    def test_every_sheet_menu_uses_the_shared_labels(self):
+        for path in self.MENUS:
+            with self.subTest(path=path):
+                text = read(path)
+                self.assertIn('DRAUGHT_EXPORT_LABEL', text)
+                self.assertIn('DRAUGHT_IMPORT_LABEL', text)
+                self.assertIn('draught_export(H, D.name)', text)
+                self.assertIn('draught_import(H)', text)
+                self.assertNotIn('Copy her design code', text)
+                self.assertNotIn('"Paste a design code"', text)
+        self.assertIn('#define DRAUGHT_EXPORT_LABEL', read('code/__defines/naval.dm'))
+
+    def test_every_designer_window_imports_and_exports(self):
+        for path, (key, window) in self.DESIGNERS.items():
+            with self.subTest(path=path):
+                text = read(path)
+                self.assertIn('if (href_list["%s"] == "import")' % key, text)
+                self.assertIn('draught_import_in_window(H, %s)' % window, text)
+                self.assertIn('draught_export(H, ', text)
+
+    def test_import_uses_the_designer_reader_and_rules(self):
+        kinds = read('code/modules/naval/draught_kinds.dm')
+        body = kinds.split('/obj/item/ship_draught/proc/draught_import(mob/living/human/H)', 1)[1].split('\n/', 1)[0]
+        for needle in ('design_code_ask(H,', 'length(typed) > K["max"]', 'call(K["read"])(typed)',
+                       'design_code_refusal(', 'map.ordinal_age < K["age"]', 'design_code_log(H,',
+                       'check_design()', 'R.chat_lines()'):
+            self.assertIn(needle, body)
+        self.assertNotIn('paste_any_code', read('code/modules/naval/sub_draught.dm'))
+
+
 if __name__ == '__main__':
     unittest.main()

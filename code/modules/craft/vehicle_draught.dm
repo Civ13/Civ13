@@ -447,13 +447,13 @@ var/global/list/vehicle_draught_engines = list(
 	name = D ? "vehicle sheet ([D.name])" : initial(name)
 
 /obj/item/ship_draught/proc/vehicle_sheet_menu(mob/living/human/H, datum/vehicle_draught/D)
-	var/choice = WWinput(H, D.summary_text(), name, "Cancel", list("Draw on the sheet", "Copy its design code", "Paste a design code", "Cancel"))
+	var/choice = WWinput(H, D.summary_text(), name, "Cancel", list("Draw on the sheet", DRAUGHT_EXPORT_LABEL, DRAUGHT_IMPORT_LABEL, "Cancel"))
 	if (choice == "Draw on the sheet")
 		open_vehicle_designer(H)
-	else if (choice == "Copy its design code")
-		design_code_show(H, "Vehicle sheet: [D.name]", draught_code, "Paste it into any ship's draught to draw the same vehicle.")
-	else if (choice == "Paste a design code")
-		paste_any_code(H)
+	else if (choice == DRAUGHT_EXPORT_LABEL)
+		draught_export(H, D.name)
+	else if (choice == DRAUGHT_IMPORT_LABEL)
+		draught_import(H)
 
 // ---- Building from a sheet ----
 
