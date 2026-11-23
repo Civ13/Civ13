@@ -67,9 +67,13 @@ var/global/list/orbit_docking_ports = list()
 
 /obj/structure/docking_port/New()
 	..()
+	orbit_docking_ports |= src
+
+// A new port is named once; a restored one keeps its saved name (restore_contract.dm).
+/obj/structure/docking_port/on_runtime_spawn()
+	..()
 	if (!orbit_docking_valid_id(port_id))
 		port_id = "port-[num2text(world.realtime, 20)]-[rand(100000, 999999)]"
-	orbit_docking_ports |= src
 
 /obj/structure/docking_port/Destroy()
 	orbit_docking_ports -= src
