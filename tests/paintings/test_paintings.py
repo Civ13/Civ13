@@ -91,13 +91,9 @@ class PaintingsTest(unittest.TestCase):
             block = text[text.index(owner):].split('\n\n')[0]
             self.assertIn('"overlays"', block)
 
-
-if __name__ == '__main__':
-    unittest.main()
-
     def test_drawings_follow_paper_and_books(self):
         hooks = {
-            'code/modules/paperwork/view.dm': 'drawings_html(src)',
+            'code/modules/paperwork/view.dm': 'drawings_html(src, reader)',
             'code/modules/paperwork/copy.dm': 'result.copy_drawings_from(snapshot["paper"])',
             'code/modules/1713/book.dm': 'drawing_set_list(NB, drawings_copy(NC.drawings))',
             'code/modules/research_tree/book_pages.dm': 'take_page_drawings(P)',
@@ -105,3 +101,62 @@ if __name__ == '__main__':
         for path, hook in hooks.items():
             self.assertIn(hook, (ROOT / path).read_text(encoding='utf-8'), path)
         self.assertIn('show_drawings(user)', (ROOT / 'code/modules/1713/book.dm').read_text(encoding='utf-8'))
+
+
+class FramedPlansTest(unittest.TestCase):
+    def setUp(self):
+        self.painting = (MOD / 'paintings.dm').read_text(encoding='utf-8')
+        self.codec = (MOD / 'painting_codec.dm').read_text(encoding='utf-8')
+        self.board = (ROOT / 'code/game/objects/structures/noticeboard.dm').read_text(encoding='utf-8')
+
+    def test_mount_uses_one_actual_held_original_after_wall_and_occupancy_checks(self):
+        mount = self.painting.split('/proc/wall_frame_mount(', 1)[1].split('/proc/painting_is_wall_turf(', 1)[0]
+        boundaries = [
+            'original.loc != user', '!user.item_is_in_hands(original)', '!painting_is_wall(wall)',
+            'get_step(T, dir) != W', '!wall.Adjacent(user)', 'painting_frame_occupies(spot, dir)',
+            'B.banner_mount_dir == dir', 'B.board_mount_dir == dir', 'new(T)',
+            'if (!user.transfer_held_item_to(original, F))', 'F.place(V)',
+        ]
+        positions = [mount.index(mark) for mark in boundaries]
+        self.assertEqual(positions, sorted(positions))
+        self.assertNotIn('original.forceMove(', mount)
+        self.assertNotIn('qdel(original)', mount)
+        self.assertIn('F.dir == NORTH && C && C.wide_hang', self.painting)
+        self.assertIn('if (painting_frame_occupies(T, facing))', self.board)
+
+    def test_frame_rebuilds_view_and_drop_preserves_original(self):
+        frame = self.painting.split('/obj/structure/painting_frame/after_load()', 1)[1].split('/// Lockets', 1)[0]
+        self.assertIn('place()', frame)
+        self.assertIn('V = P.framed_plan_diagram()', frame)
+        self.assertIn('image(V.thumbnail())', frame)
+        self.assertIn('holder.put_in_hands(original)', frame)
+        self.assertIn('!Adjacent(holder)', frame)
+        self.assertLess(frame.index('if (QDELETED(original) || original.loc == src)'), frame.index('qdel(src)'))
+        self.assertIn('for (var/obj/item/O in contents)\n\t\t\tO.forceMove(T)', frame)
+        self.assertIn('painting_show_full(user, C)', frame)
+        self.assertLess(frame.index('painting_show_full(user, C)'), frame.index('if (!isobserver(user) && !Adjacent(user))'))
+        self.assertLess(frame.index('if (!isobserver(user) && !Adjacent(user))'), frame.index('window=framed_plan'))
+        self.assertIn('window=framed_plan', frame)
+        self.assertNotIn('Topic(', frame)
+        self.assertNotIn('onclose(', frame)
+        self.assertIn('drawings_html(S, user)', frame)
+        self.assertNotIn('document_classic_html(', frame)
+        drawing = (MOD / 'drawings.dm').read_text(encoding='utf-8')
+        self.assertIn('F.update_icon()', drawing)
+        self.assertIn('painting_max_index(plain) >= palette.len', drawing)
+
+    def test_visual_projection_reuses_canonical_readers_and_has_no_mutating_routes(self):
+        diagram = self.codec.split('/datum/framed_plan_diagram/proc/html()', 1)[1]
+        for value in (
+            'draught_kind_row()', 'length(draught_code) > K["max"]', 'call(K["read"])(draught_code)',
+            'ship_designer_layout(D)', 'sub_designer_sheet(D)', 'vehicle_designer_sheet(D)',
+            'air_designer_sheet(D)', 'house_designer_sheet(D)', 'R.links(x, y)', 'train.cars',
+            'station_designer_sheet(D)', 'tile_bounds()', 'html_encode(title)', 'html_encode(T[3])',
+            'html_encode(T[4])', 'html_encode(note)',
+        ):
+            self.assertIn(value, diagram)
+        self.assertNotRegex(diagram, r'byond://|href=|<script|Topic\(|draught_code\s*=')
+
+
+if __name__ == '__main__':
+    unittest.main()

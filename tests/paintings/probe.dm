@@ -41,6 +41,7 @@ var/paint_runtime_error = FALSE
 		paint_codec_checks()
 		paint_upload_checks()
 		paint_hang_checks()
+		paint_framed_plan_checks()
 		paint_locket_checks()
 		paint_drawing_checks()
 		paint_gallery_checks()
@@ -127,6 +128,7 @@ var/paint_runtime_error = FALSE
 	var/count = C.canvas_w * C.canvas_h
 	C.accept_painting(H, painting_pack(painting_repeat("0", count)), C.base_colour, TRUE, "Wall")
 	paint_check(C.finished && length(C.small) == 32 * 32 * 3, "a 64x64 wall painting shrinks to 32x32")
+	H.r_hand = C
 	paint_check(painting_hang(H, C, wall), "a finished painting hangs on a wall")
 	var/obj/structure/painting_frame/F = locate() in stand
 	paint_check(F && F.dir == EAST && F.pixel_x == 32 && C.loc == F && F.overlays.len == 2, "the frame sits against the wall with the painting in it")
@@ -139,6 +141,50 @@ var/paint_runtime_error = FALSE
 	qdel(E)
 	paint_check(B.loc == stand, "a broken easel drops its canvas")
 	paint_check(mortar_pigment_result(new /obj/item/stack/ore/charcoal(stand)) == /obj/item/pigment/charcoal && mortar_pigment_result(new /obj/item/stack/ore/iron(stand)) == /obj/item/pigment/ochre_red && mortar_pigment_result(new /obj/item/stack/material/clay(stand)) == /obj/item/pigment/ochre_yellow && mortar_pigment_result(new /obj/item/stack/material/bone(stand)) == /obj/item/pigment/bone_white, "the mortar grinds charcoal, iron ore, clay and bone into pigments")
+	qdel(H)
+
+/proc/paint_framed_plan_checks()
+	var/turf/T = locate(11, 5, 1)
+	var/turf/W = locate(12, 5, 1)
+	W.density = TRUE
+	var/mob/living/human/paint_probe/H = new(T)
+	var/obj/item/ship_draught/P = new(H)
+	H.r_hand = P
+	paint_check(!P.framed_plan_diagram(), "a blank plan cannot be framed")
+	var/datum/rail_plan/R = new
+	R.name = "East railway"
+	R.set_track(1, 1, TRUE)
+	R.set_track(2, 1, TRUE)
+	R.set_track(2, 2, TRUE)
+	P.take_rail(R)
+	qdel(R)
+	var/original_code = P.draught_code
+	var/datum/framed_plan_diagram/V = P.framed_plan_diagram()
+	var/diagram = V?.html()
+	paint_check(V && findtext(diagram, "East railway") && findtext(diagram, "Track at 2,2") && !findtext(diagram, "byond://"), "the frame renders all rail tiles without editor links")
+	paint_check(wall_frame_mount(H, P, W, V), "the active sheet can hang on a wall")
+	var/obj/structure/painting_frame/F = locate() in T
+	paint_check(F && F.held_plan() == P && P.draught_code == original_code && !H.r_hand, "the frame holds the exact original sheet")
+	if (F)
+		F.overlays.Cut()
+		F.after_load()
+		paint_check(F.overlays.len == 2 && F.held_plan() == P, "loading rebuilds the thumbnail from the retained original")
+		qdel(F)
+		paint_check(P.loc == T && P.draught_code == original_code, "breaking a frame puts the untouched sheet back on its floor tile")
+	qdel(V)
+	qdel(P)
+	var/obj/item/weapon/paper/S = new(H)
+	H.r_hand = S
+	paint_draw(H, S, "#7744aa", "Framed rose")
+	paint_check(wall_frame_mount(H, S, W), "a loose drawing can hang in the same wall frame")
+	var/obj/structure/painting_frame/sketch_frame = locate() in T
+	if (sketch_frame)
+		paint_check(sketch_frame.held_sketch() == S && findtext(drawings_html(S), "Framed rose"), "the original artwork remains available at full size")
+		drawing_set_list(S, null)
+		paint_check(sketch_frame.overlays.len == 1, "removing artwork updates the frame immediately")
+		qdel(sketch_frame)
+		paint_check(S.loc == T, "unframing art returns the original sheet")
+	qdel(S)
 	qdel(H)
 
 /proc/paint_locket_checks()
@@ -241,6 +287,7 @@ var/paint_runtime_error = FALSE
 	var/turf/side = locate(10, 15, 1)
 	var/turf/side_wall = locate(11, 15, 1)
 	side_wall.density = TRUE
+	H.r_hand = G
 	H.forceMove(side)
 	paint_check(!painting_hang(H, G, side_wall), "a gallery painting refuses a wall that is not to the north")
 	H.forceMove(T)
@@ -249,11 +296,13 @@ var/paint_runtime_error = FALSE
 	paint_check(F && F.dir == NORTH && F.pixel_y == 32 && F.overlays.len == 2, "the gallery frame sits on the wall")
 	var/obj/item/canvas/C = new(H)
 	C.accept_painting(H, painting_pack(painting_repeat("0", C.canvas_w * C.canvas_h)), C.base_colour, TRUE, "Neighbour")
+	H.r_hand = C
 	H.forceMove(locate(5, 15, 1))
 	paint_check(!painting_hang(H, C, locate(5, 16, 1)), "the second tile of a gallery painting is taken")
 	var/obj/item/canvas/gallery/wide/D = new(H)
 	D.accept_painting(H, painting_pack(painting_repeat("1", D.canvas_w * D.canvas_h)), "[D.base_colour],#1f4fa0", TRUE, "Shore")
 	paint_check(D.finished && length(D.small) == 56 * 24 * 3, "a 128x64 wide painting shrinks to 56x24")
+	H.r_hand = D
 	H.forceMove(locate(7, 15, 1))
 	paint_check(!painting_hang(H, D, locate(7, 16, 1)), "a gallery painting needs the wall to run on to the right")
 	qdel(F)

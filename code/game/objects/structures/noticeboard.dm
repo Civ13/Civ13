@@ -92,6 +92,9 @@
 		if (B.banner_mount_dir == facing)
 			to_chat(user, SPAN_WARNING("A banner already hangs there."))
 			return
+	if (painting_frame_occupies(T, facing))
+		to_chat(user, SPAN_WARNING("A frame already hangs there."))
+		return
 	board_mount_dir = facing
 	anchored = TRUE
 	pixel_x = facing == EAST ? 32 : (facing == WEST ? -32 : 0)
