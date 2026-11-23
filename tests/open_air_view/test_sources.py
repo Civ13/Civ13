@@ -8,10 +8,11 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/modules/multiz/open_air_view.dm').read_text(encoding='utf-8-sig')
+PROCESS = (ROOT / 'code/processes/open_air_view.dm').read_text(encoding='utf-8-sig')
 
 
-def proc(name):
-    return SOURCE.split(name + '\n', 1)[1].split('\n/', 1)[0]
+def proc(name, source=SOURCE):
+    return source.split(name + '\n', 1)[1].split('\n/', 1)[0]
 
 
 class OpenAirView(unittest.TestCase):
@@ -71,8 +72,8 @@ class OpenAirView(unittest.TestCase):
         self.assertIn('open_air_view_moved(src, origin)', movable)
 
     def test_scan_skips_saves(self):
-        process = (ROOT / 'code/processes/open_air_view.dm').read_text()
-        self.assertLess(process.index('open_air_view_busy()'), process.index('C.open_air_view_scan()'))
+        fire = proc('/process/open_air_view/fire()', PROCESS)
+        self.assertLess(fire.index('open_air_view_busy()'), fire.index('refresh_work(work)'))
         busy = proc('/proc/open_air_view_busy()')
         for guard in ('persistence_active_operation', 'persistence_save_in_progress', 'lighting_startup_in_progress'):
             self.assertIn(guard, busy)
@@ -81,6 +82,33 @@ class OpenAirView(unittest.TestCase):
         link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)')
         self.assertIn('z == building_allocating_z || multiz_level_below(z) == building_allocating_z', link)
 
+    def test_budgeted_pass_keeps_unfinished_viewers_fixed_views_and_proxies(self):
+        fire = proc('/process/open_air_view/fire()', PROCESS)
+        cursor = fire.index('current_list[work_index++] = null')
+        self.assertLess(cursor, fire.index('refresh_work(work)'))
+        self.assertLess(fire.index('refresh_work(work)'), fire.index('PROCESS_TICK_CHECK'))
+        self.assertIn('if (work_index > current_list.len)\n\t\t\tcurrent_list = null', fire)
+        reset = proc('/process/open_air_view/reset_current_list()', PROCESS)
+        regs = ('current_list = clients.Copy()', 'current_list += open_air_views_fixed',
+                'current_list += open_air_proxies', 'work_index = 1')
+        positions = [reset.index(reg) for reg in regs]
+        self.assertEqual(positions, sorted(positions))
+        dispatch = proc('/process/open_air_view/proc/refresh_work(work)', PROCESS)
+        self.assertLess(dispatch.index('directory[C.ckey] == C'), dispatch.index('C.open_air_view_scan()'))
+        self.assertIn('if (!QDELETED(V))', dispatch)
+        self.assertIn('if (!QDELETED(P))', dispatch)
+        self.assertNotIn('in world', PROCESS)
+
+    def test_busy_pause_reuses_the_same_suffix_without_fresh_registry_scan(self):
+        fire = proc('/process/open_air_view/fire()', PROCESS)
+        self.assertIn('if (open_air_view_busy())\n\t\t\tpaused_work = current_list'
+                      '\n\t\t\tcurrent_list = null\n\t\t\treturn', fire)
+        reset = proc('/process/open_air_view/reset_current_list()', PROCESS)
+        self.assertIn('if (paused_work)\n\t\tcurrent_list = paused_work'
+                      '\n\t\tpaused_work = null\n\t\treturn', reset)
+        self.assertLess(reset.index('open_air_view_busy()'), reset.index('current_list = paused_work'))
+        self.assertLess(reset.index('current_list = paused_work'), reset.index('current_list = clients.Copy()'))
+
     def test_moving_viewer_is_linked_ahead(self):
         scan = proc('/client/proc/open_air_view_scan()')
         self.assertIn('clamp(centre.x - last.x, -OPEN_AIR_VIEW_LEAD, OPEN_AIR_VIEW_LEAD)', scan)
@@ -88,8 +116,10 @@ class OpenAirView(unittest.TestCase):
         self.assertIn('open_air_view_link_around(centre.z, cx, cy, rx, ry, lead_x, lead_y)', scan)
 
     def test_one_failure_does_not_stop_the_scan(self):
-        process = (ROOT / 'code/processes/open_air_view.dm').read_text()
-        self.assertIn('try\n\t\t\tC.open_air_view_scan()\n\t\tcatch (var/exception/scan_error)', process)
+        dispatch = proc('/process/open_air_view/proc/refresh_work(work)', PROCESS)
+        self.assertIn('try\n', dispatch)
+        self.assertLess(dispatch.index('try\n'), dispatch.index('C.open_air_view_scan()'))
+        self.assertLess(dispatch.index('P.open_air_proxy_check()'), dispatch.index('catch (var/exception/scan_error)'))
         link = proc('/proc/open_air_view_link_around(z, cx, cy, rx, ry, lead_x = 0, lead_y = 0)')
         self.assertIn('try\n\t\t\tT.open_air_view_refresh()\n\t\tcatch (var/exception/cell_error)', link)
         self.assertIn('if (text == open_air_view_last_error)\n\t\treturn', SOURCE)
