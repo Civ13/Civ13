@@ -134,7 +134,9 @@
 
 			if (HUDdatum.HUDneed[HUDname]["hideflag"])
 				HUD.hideflag = HUDdatum.HUDneed[HUDname]["hideflag"]
-			H.HUDneed[HUD.name] += HUD
+			// Filed under the style's key, not the tile's name: a tile may rename
+			// itself for its hover text (the stance button names its stance).
+			H.HUDneed[HUDname] = HUD
 			if (HUD.process_flag)
 				H.HUDprocess += HUD
 

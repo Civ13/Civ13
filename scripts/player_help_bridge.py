@@ -50,6 +50,7 @@ QUESTION_SYNONYMS = {
     'rain': 'weather', 'storm': 'weather', 'heal': 'medical', 'dirty': 'hygiene wash', 'smell': 'hygiene wash',
     'language': 'languages', 'translate': 'translation', 'interface': 'hud', 'screen': 'hud',
     'travel': 'trail', 'continent': 'land region climate', 'country': 'land region climate',
+    'territory': 'province', 'claim': 'take hold', 'capture': 'take siege', 'conquer': 'province siege',
 }
 # Irregular forms the suffix fold cannot reach, so "where is it grown" finds "Where they grow".
 IRREGULAR_WORDS = {
@@ -111,14 +112,14 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '8e9ee4c36ee864883f16f57b2d14fb27e547a680'
+WIKI_REVIEWED_REVISION = '65a53079eb9dd8787de502cac3e819806d5e172a'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('ec8abe24ffa48f2ac1f8a9d4ced3389392fcc46760acc24ddd7bf6195bcc096f', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
-    'guides/Guide_to_Combat.md': ('3eb8da3688c36b235efcb5e1ab18deda018fbb2f902bf0dda3f9974414cbf475', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
+    'guides/Guide_to_Combat.md': ('da7579531503a7301a3ad2a865fc2fd717e79e5a5711c35b830b5936b3a7d2af', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('6de3dc86ffcdb60ef2711137bdb3ab7301423b78b12c44d1a6b2c3f0e4ba1973', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
@@ -141,7 +142,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Resource_Extraction.md': ('041b3303d0be5737e6ab566e041aa0e28675845cc4a2015964a7e91a33d01332', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('34251d517df8b0cf9e2daad566be261ae690910d23b40dd6c49b468a8b57c589', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fog mist dew frost wind chill humid humidity sun hat robe barometer thermometer hygrometer anemometer rain gauge weather station forecast fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
     'guides/Guide_to_Tanks.md': ('e2e82451576f0cc5a405b8151caa3dcf27a51c4827782156345a3a1ddf4a9e61', 'tank driving crew ammunition'),
-    'guides/Guide_to_Trains.md': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Trains.md': ('e72e935bc4971533a1e0ddf4d075f0d8dca523aacf4f8a3fe44fcee1278ab35b', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Weather.md': ('d3ae91b93e0899ebf0c128df972df17ce914d4288a5ad185f827624aad45d18a', 'weather climate forecast predict storm storms pressure hpa low lows high highs front fronts barometer hygrometer anemometer rain gauge weather station beaufort dew point sleet hail freezing rain rain shadow sea breeze land breeze'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('ac2a6dab9b5aac3051a30f35809e9ddf770387219996f75df90aa90d438847a6', 'trench trenches fortification sandbag dig shovel'),
@@ -149,7 +150,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Weapons.md': ('91264132c8e516f6d6d48d67bd179d419ab630dd9decd1918f3c1f529c947631', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('fc23f954b4a8120e96ff5ca78be457261658aadf18490fe6401780851dd174fa', 'new player beginner start first round basics'),
     'Hotkeys.md': ('d7184103137b1ff83ffe7cd7ebc94878df8ed5a5c0a4b6a66447c9e25d4292fb', 'hotkeys hotkey keys keyboard controls key press'),
-    'FAQ.md': ('0e8aa3c8f9ac3d65173d39752b650037b330a19ebc87c21b1daaf03044737368', 'faq frequently asked questions common question quick answers'),
+    'FAQ.md': ('66708ea71b238c9c16224d837724577c482a89fc1383ded54d227b4297bb7550', 'faq frequently asked questions common question quick answers'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
     'Governor.md': ('131ef4f1f37d1bd38c1cd0c71bf6805cd677f308bef000c39ddb3cf0e7cd584d', 'governor role laws treasury colony'),
     'Merchant.md': ('9d9317e9e196b3e14f4b9237a68d6a41d3e2906d35e1b6cae529d389765eeebb', 'merchant role supplies export trade colony'),
@@ -157,14 +158,14 @@ WIKI_REVIEWED_GUIDES = {
     'Blacksmith.md': ('73e814dbe4cda23643b735dc3d694e8c5b081bb082d6688a1e5d9cc81ee8816e', 'blacksmith role anvil forge colony'),
     'gamemodes/Game_Modes.md': ('aa29af667563cabab26238b30efc94f6e5ec44de1e1ef198bc3c96995e7da01b', 'game mode modes gamemode'),
     'gamemodes/Team_Combat.md': ('37102cd630a71889feff9884e1cc2cf8521fed380ad9404ad7ff6fa037748975', 'team combat tdm deathmatch siege king hill area control objectives grace'),
-    'gamemodes/Civilizations_and_Nomads.md': ('da9db1861986be3b459d83e6085e10c89cc113cf2601729ea791259e49715be3', 'civilizations nomads gaia faction nation government monarchy republic democracy revolt'),
+    'gamemodes/Civilizations_and_Nomads.md': ('8b5edfd450a076f0e35a626fd894184436adb9d680322a0c1ff3a3b430332ab1', 'civilizations nomads gaia faction nation government monarchy republic democracy revolt'),
     'gamemodes/Colony_Building.md': ('498a18c35178fc60be2ab365642ff9d2540dcc2033018472df5ec9d8e1cbbace', 'colony building colonist colonists'),
     'gamemodes/Survival_Scenarios.md': ('d0102e9cd9e34835ee673175271b91be2b1d69a69473569f2c0e4422d92c67d4', 'survival scenario scenarios stranded wasteland zombie'),
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('60468ff890363f7e167f7c71dd71ed48a674725efbc02b81306558fc58611426', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('4eac2e55a9315828c6b3bc266e702571d94cf5ed98c925e582e2868dcf69d345', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
+    'guides/Guide_to_Aircraft.md': ('3de5f099c0fe5c97456b1e58ed470d73f25f26f71a482f05e6f770fb1bbae43b', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
@@ -180,11 +181,12 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('679cef92412118192e9790a2020227e15e5c2dea317bcd13b5a6cfd06ed367e0', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('277fea5469946954179bce3d9ce3b9531e4b36f0781fd93262bf0a65a6f52201', 'guides overview list of guides index'),
+    'guides_overview.md': ('93f508e5f75da77bcf872848c622aa1ba91e2641cccabec23cc1da2ce5191b7a', 'guides overview list of guides index'),
     'guides/Guide_to_Accolades_and_Characters.md': ('ba470e71fc388556c68e2e5d002ba6701dbd616cab102ba7b699ad9e14ab31a1', 'accolades accolade achievements lifetime points extra second another character characters slot switch switching kin family relatives'),
     'guides/Guide_to_Amalgamation.md': ('c6e59ac3698ec0e0e9fd671045c1cb68b981941f4f9fcd4fe4ca8901f877e937', 'amalgamation amalgam mercury gold silver ore recovery retort patio'),
     'guides/Guide_to_Armor.md': ('f1024c2c3032cbdbad66acae9a3fb5f05f4db9ba57cabbeffde1210e58dccc85', 'armor armour protection helmet cuirass plate mail chainmail shield padded gambeson body armor bullet proof vest dayfield layering'),
-    'guides/Guide_to_Chat.md': ('94353e154a9eb700179f87149fe4d10e0d5a12e03ff5ea29dd759945cedabade', 'chat window tabs tab filter translate translation translated language ooc looc repeated messages history connection lost ghost ears'),
+    'guides/Guide_to_Chat.md': ('88cdb4f258921f70eb5de9ce6e4337106ec948ad706c5c780bf46b7f66a6ef21', 'chat window tabs tab filter translate translation translated language ooc looc repeated messages history connection lost ghost ears'),
+    'guides/Guide_to_Factions.md': ('ea988cd352abcfb09ad78914dc53f950f61dabaccee3d96baada65c304d357e2', 'faction factions province provinces claim territory stake resident hall leader officer office recruit recruitment station island border visitor pass nation vassal siege war banner defence window sleep protection treasury tax'),
     'guides/Guide_to_Companies.md': ('57a38cc569849f5de5abb969a55f1fc1a74672390b3feb8da20383c6a4babcbd', 'company companies stock market shares shareholder stall stalls profits dividend business'),
     'guides/Guide_to_Computers.md': ('18a43fae4409a102f307b90632d49c701f707afbc464769cc003a1e1197515d0', 'computer computers minicomputer processor tape drive diskette terminal files program unga os electronic computing'),
     'guides/Guide_to_Electroplating.md': ('cb4d98759963fa316d4de487a7061b7cbf0b1a99255cfb2c3c8a53bea46230e2', 'electroplating plating plated gilding silver gold nickel chrome bath anode'),
@@ -211,7 +213,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Travel.md': ('bffeb4b02d999151bdd9e225e8dbe85d050159fed08318c34ad6bbb61663bb97', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
     'guides/Guide_to_Tribal_Life.md': ('9850870389868ec34eba898d67ed6bf2be045873230a5ae3f9dadb0e2f9f7a2c', 'tribe tribal totem pole deeds burial mound cairn feast feasts barter music'),
     'guides/Guide_to_the_Moon.md': ('c8da8a4e6c6b3679092d43b9c7546cf511252081294beb7293c7c13c1ef056bf', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
-    'guides/Guide_to_Crafting.md': ('90d7753c5350238fadf4dc48aa21978e82946111c8a665c7970bd35c953561bf', 'crafting craft recipes workbench materials items make build vehicle designer'),
+    'guides/Guide_to_Crafting.md': ('7c17144a4a69776967210d60dfa3447473103b65437eaba142c04de96d026755', 'crafting craft recipes workbench materials items make build vehicle designer'),
     'guides/Guide_to_Metallurgy.md': ('506ddd8ed495e8120aa3c0a4032be216bf478cb1ece0711180a83e24677df02e', 'metallurgy metal smelting smelt ore ingot furnace bloomery iron copper tin bronze steel alloy anvil forge'),
     'Starter_Guide.md': ('224ca2edfa9527b274ac3d7db18ba161bff39c4491b8828cf443cb23e504a0bc', 'starter guide beginner basics first steps controls interface intents'),
     'Music.md': ('049a85fd6517277b3abffa464c88c43dbda8d3060307b13491cd595a7a541c1d', 'music instrument instruments song songs play sheet notes piano'),
@@ -243,8 +245,26 @@ WIKI_HIDDEN_LINE = re.compile(r'\b(?:magic\w*|mana|wizard\w*|sorcer\w*|wands?|qu
 INTERNAL_NAME = re.compile(r'(?:Nations RP \()?\bPersistence\b(?: Beta\))?')
 
 
+# The game's own label for a persistent world's mode ("Persistent (Book Research)")
+# is an internal name too. It told the model the mode was only about research, and
+# an answer repeated it (2026-11-22), so the model is given public wording instead
+# and an answer that still carries the label has it reworded.
+INTERNAL_MODE = re.compile(r'["\'“”]?\bPersistent \((Book Research|Auto-Research)\)["\'“”]?(?: (?:game ?)?mode)?', re.IGNORECASE)
+PUBLIC_MODES = {
+    'book research': 'Civilizations and Nomads on a persistent world (research is written into books)',
+    'auto-research': 'Civilizations and Nomads on a persistent world (research advances on its own)',
+}
+
+
+def public_mode(label):
+    found = INTERNAL_MODE.fullmatch(label.strip())
+    if found:
+        return PUBLIC_MODES[found.group(1).lower()]
+    return 'Civilizations and Nomads on a persistent world' if re.match(r'\s*persisten', label, re.IGNORECASE) else label
+
+
 def public_wording(text):
-    return INTERNAL_NAME.sub('the persistent world', text)
+    return INTERNAL_NAME.sub('the persistent world', INTERNAL_MODE.sub('Civilizations and Nomads', text))
 
 
 def wiki_anchor(heading):
@@ -1166,6 +1186,8 @@ def public_game_context(request):
     if not isinstance(raw, dict):
         return {}
     result = {key: raw[key][:120] for key in ('map', 'map_id', 'gamemode', 'era', 'season', 'time_of_day') if isinstance(raw.get(key), str)}
+    if 'gamemode' in result:
+        result['gamemode'] = public_mode(result['gamemode'])
     if type(raw.get('era_ordinal')) is int and 0 <= raw['era_ordinal'] <= 100:
         result['era_ordinal'] = raw['era_ordinal']
     if type(raw.get('civilizations')) is bool or raw.get('civilizations') in (0, 1):

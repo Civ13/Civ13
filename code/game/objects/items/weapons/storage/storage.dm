@@ -508,7 +508,9 @@
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
 				else if (W && W.w_class >= 3) //Otherwise they can only see large or normal items from a distance...
 					M.show_message("<span class='notice'>\The [usr] puts [W] into [src].</span>")
-		if (istype(W, /obj/item/weapon/bedroll) && istype(src,/obj/item/weapon/storage/backpack))
+		// Only packs drawn with a bedroll strapped on have a "[base_icon]1"
+		// state; any other pack would turn invisible on the HUD.
+		if (istype(W, /obj/item/weapon/bedroll) && istype(src,/obj/item/weapon/storage/backpack) && base_icon && icon_has_state(icon, "[base_icon]1"))
 			icon_state = "[base_icon]1"
 /*		if ((istype(W, /obj/item/weapon/bedroll) && istype(W, /obj/item/weapon/reagent_containers/glass/small_pot/hangou)) && istype(src,/obj/item/weapon/storage/backpack/ww2/jap))
 			icon_state = "[base_icon]2"
@@ -549,7 +551,7 @@
 	else
 		if (!W.persistence_set_loc(get_turf(src))) return FALSE
 
-	if (istype(W, /obj/item/weapon/bedroll))
+	if (istype(W, /obj/item/weapon/bedroll) && base_icon && icon_state == "[base_icon]1")
 		icon_state = "[base_icon]"
 	if (usr)
 		orient2hud(usr)
@@ -800,3 +802,10 @@
 			return 1000
 
 		//return 2**(w_class-1) //1,2,4,8,16,...
+
+// Repairs packs saved with a sprite state their icon lacks (a bedroll once
+// switched any pack to "[base_icon]1"), which drew nothing on the HUD.
+/obj/item/weapon/storage/after_load()
+	..()
+	if (icon && icon_state && !icon_has_state(icon, icon_state))
+		settle_icon_state()

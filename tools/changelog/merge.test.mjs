@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { changelogLine, run, channel } from './publish.mjs';
+import { changelogLine, isNoChangeFiller, run, channel } from './publish.mjs';
 import { checkQueues } from './check-queues.mjs';
 import { checkPR } from './check-pr.mjs';
 import { readFileSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
@@ -47,7 +47,7 @@ test('only an explicit visible single line opts in', () => {
 
 test('placeholder markers and template prompts fail the publisher and PR description check', () => {
   for (const marker of ['required', 'REQUIRED.', '**required**', '[TODO]', '`TBD`', 'to be determined',
-    'FIXME', 'optional', 'placeholder', 'example', 'none', 'N/A', 'your changelog here',
+    'FIXME', 'optional', 'placeholder', 'example', 'your changelog here',
     'Enter your changelog here', 'Describe the player-visible change', 'Replace the changelog text']) {
     const body = `Changelog: ${marker}\nLauncher update failures now include safe diagnostic codes.`;
     assert.throws(() => changelogLine(body), /placeholder/);
@@ -58,6 +58,32 @@ test('placeholder markers and template prompts fail the publisher and PR descrip
   assert.equal(changelogLine('Changelog: Required tools are shown before crafting.'), 'Required tools are shown before crafting.');
   assert.equal(changelogLine('Changelog: Added a TODO list to the journal.'), 'Added a TODO list to the journal.');
   assert.throws(() => checkPR({}), /PR event/);
+});
+
+test('no-change filler is never published and the PR check asks for a blank field', () => {
+  // Exact lines merged on 2026-11-22 (#6882, #6840, #6805, #6796); three of them posted.
+  const filler = ['none (Help text refresh only).', 'none (test data only)', 'none.', 'none (build fix).',
+    'None', '(none)', '*None*', 'N/A', 'n/a - tooling only', 'NA', 'nil', 'Nothing.', 'not applicable',
+    'No changelog', 'No changelog needed.', 'No changes', 'No player-facing changes.', 'Not player-facing (CI)',
+    'Non-player-facing change', 'No player visible change', 'Internal only', 'Internal: refactor', 'Docs only.',
+    'Documentation', 'Tests only', 'Test data only', 'CI', 'Tooling', 'Build fix', 'Refactor', 'Maintenance.',
+    'Developer only', 'Skip', '-', '\u2014', '`none`'];
+  for (const entry of filler) {
+    const body = `Summary\n\nChangelog: ${entry}\n\nChecks passed.`;
+    assert.equal(isNoChangeFiller(entry), true, entry);
+    assert.equal(changelogLine(body), null, entry);
+    assert.throws(() => checkPR({ pull_request: { body } }), /leave the Changelog: line blank/, entry);
+  }
+  // Ordinary announcements that merely start with similar words still post.
+  for (const text of ['None of your stored food spoils in a cellar any more.', 'Nothing burns in a stone oven unless it is lit.',
+    'No more lag when many players stand near water.', 'Internal combustion engines now need oil.',
+    'Documents can now be sealed with wax.', 'Tests of strength at the training post give smaller gains.',
+    'Build menus show which tools each recipe needs.', 'Maintenance kits repair worn tools.',
+    'Not every tree drops seeds now.', 'Skipping stones across water is now possible.']) {
+    assert.equal(isNoChangeFiller(text), false, text);
+    assert.equal(changelogLine(`Changelog: ${text}`), text);
+    assert.equal(checkPR({ pull_request: { body: `Changelog: ${text}` } }), text);
+  }
 });
 
 test('installed template and documented placeholder labels do not become announcements', () => {
@@ -136,8 +162,8 @@ test('merged CRCRLF description uses the same guarded receipt and suppresses rep
   await run(env, event(), h);
   assert.equal(h.posts(), 1);
 });
-test('absent or blank fields require no credentials or external effects', async () => {
-  for (const body of [null, 'Description', 'Changelog:']) {
+test('absent, blank or filler fields require no credentials or external effects', async () => {
+  for (const body of [null, 'Description', 'Changelog:', 'Help refresh.\n\nChangelog: none (Help text refresh only).\n', 'Changelog: N/A\nFixed crafting.']) {
     const pr = { ...basePR, body };
     await run({ ...env, MERGE_CHANGELOG_ENABLED: '', DISCORD_CHANGELOG_WEBHOOK: '' }, event(), { sleep: noSleep, api: async path => { const found = lookups(pr, path); assert.notEqual(found, undefined, path); return found; }, http: async () => { throw Error('Must not call Discord'); } });
   }

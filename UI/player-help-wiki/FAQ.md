@@ -144,7 +144,15 @@ Hold leather or cloth and click a lit campfire under the open sky to send a **sm
 
 ### How do I invite someone to my faction?
 
-Get close to them, right-click them and choose **Recruit**. The leader and members with the **Recruitment** permission can recruit. A faction can also build a **recruitment station** from 10 planks and take members through it. See [Civilizations & Nomads](gamemodes/Civilizations_and_Nomads.md#recruitment-stations).
+Get close to them, right-click them and choose **Recruit**. The leader and members with the **Recruitment** permission can recruit. A faction can also build a **recruitment station** from 10 planks and take members through it. See [Recruitment stations](guides/Guide_to_Factions.md#recruitment-stations). For everything else about running a faction, see [Factions, Provinces & Nations](guides/Guide_to_Factions.md).
+
+### How do I claim a province for my faction?
+
+There is no claim button: your faction claims a province by living there. Build and fasten a **faction hall** in the province, get at least 4 members to become residents (each with their own bed within 40 tiles of the hall for 3 days, and enough play time on the land), and lead the province on stake for 72 hours. **Province Holdings** on the **Faction tab** shows your stake and why anyone does not count yet. See [Factions, Provinces & Nations](guides/Guide_to_Factions.md#provinces-holding-land-on-a-continent).
+
+### Can my faction have an island of its own?
+
+Yes, one. Your leader sails to a land across the sea and plants a **colony charter** there, then **Faction Island** on the **Faction tab** sets who may land. See [Faction islands](guides/Guide_to_Factions.md#faction-islands).
 
 ### How do I change which language I speak, or learn a new one?
 

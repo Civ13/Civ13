@@ -112,6 +112,20 @@ class WikiAnswerTests(unittest.TestCase):
         self.assertEqual(reply['answer'], 'the persistent world is the long world; on the persistent world you keep your home.')
         self.assertIn('Magic and other hidden discoveries', self.prompts[-1])
 
+    def test_the_internal_mode_label_never_reaches_the_model_or_a_player(self):
+        # Val, 2026-11-22: "How do I claim a province" was answered "You cannot ... The
+        # 'Persistent (Book Research)' gamemode focuses on research".
+        self.replies.append('You cannot claim one. The "Persistent (Book Research)" gamemode focuses on research.')
+        evidence, reply = self.evidence('How do I claim a province for my faction?', 901, {'gamemode': 'Persistent (Book Research)'})
+        self.assertNotIn('Persistent (', evidence)
+        self.assertIn('Civilizations and Nomads on a persistent world (research is written into books)', evidence)
+        self.assertIn('Your faction claims one by living there', evidence)
+        self.assertNotIn('Persistent (', reply['answer'])
+        self.assertEqual(bridge.public_mode('Persistent (Auto-Research)'), 'Civilizations and Nomads on a persistent world (research advances on its own)')
+        self.assertEqual(bridge.public_mode('Persistent something new'), 'Civilizations and Nomads on a persistent world')
+        self.assertEqual(bridge.public_mode('Team Deathmatch'), 'Team Deathmatch')
+        self.assertFalse(wiki_eval.score_answer({'answer': ['province'], 'forbid': ['cannot claim']}, 'You cannot claim a province.')['pass'])
+
     def test_rare_words_and_named_entries_rank_first(self):
         corpus = ([{'topic': 'wooden thing %d' % index, 'source': 'recipe', 'text': 'Recipe: a wooden thing made of wood.'} for index in range(30)] +
                   [{'topic': 'guides/Guide_to_Flint.md Getting flint', 'aliases': 'flint knapping', 'headings': 'Getting flint', 'source': 'wiki',

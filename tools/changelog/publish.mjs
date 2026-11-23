@@ -8,7 +8,17 @@ const shaPattern = /^[a-f0-9]{40}$/;
 const idPattern = /^[a-z0-9][a-z0-9-]{0,79}$/;
 const hash = x => createHash('sha256').update(JSON.stringify(x)).digest('hex');
 function requireValue(ok, message) { if (!ok) throw new Error(message); }
-export function changelogLine(body) {
+// "No announcement" filler such as `none (Help text refresh only).`, `n/a`,
+// `Not player-facing` or `Internal only` means the author wanted no post. The
+// publisher treats it as blank; the PR check asks for a truly blank field.
+const fillerHead = /^(?:none|nil|nothing|n\/?a|not applicable|no changelog(?: entry| needed)?|no changes?|skip(?:ped)?|internal|docs?|documentation|tests?|test data|ci|tooling|build(?: fix)?|refactor(?:ing)?|maintenance|dev(?:eloper)?)(?: changes?)?(?: only)?(?=$|\s*[.,;:!?(\[\-\u2013\u2014])/u;
+const fillerPhrase = /^(?:no|not|non)[\s-]+(?:a[\s-]+)?(?:player|user)[\s-]+(?:facing|visible)\b/u;
+export function isNoChangeFiller(entry) {
+  const text = String(entry ?? '').normalize('NFKC').toLowerCase()
+    .replace(/^[\s`*_()[\]{}:]+|[\s`*_()[\]{}:.!?]+$/g, '').trim();
+  return text === '' || /^[-\u2013\u2014]+$/u.test(text) || fillerHead.test(text) || fillerPhrase.test(text);
+}
+export function changelogLine(body, { rejectFiller = false } = {}) {
   if (body == null) return null;
   requireValue(typeof body === 'string' && body.length <= 65536, 'Invalid PR body');
   // Examples inside comments or fenced code are not opt-ins.
@@ -30,13 +40,16 @@ export function changelogLine(body) {
   }
   requireValue(entries.length <= 1, 'Use only one Changelog: line');
   if (!entries[0]) return null;
+  if (isNoChangeFiller(entries[0])) {
+    requireValue(!rejectFiller, 'Changelog filler such as "none (...)" or "n/a" is not announcement text; leave the Changelog: line blank when nothing changes for players');
+    return null;
+  }
   // A template marker is not announcement copy, even if prose follows on
   // later lines. Do not silently publish the marker or guess at that prose.
   const marker = entries[0].normalize('NFKC').toLowerCase()
     .replace(/^[\s`*_[\]{}:]+|[\s`*_[\]{}:.!?]+$/g, '').trim();
   const placeholders = new Set(['required', 'optional', 'todo', 'to do', 'tbd',
-    'to be determined', 'fixme', 'pending', 'placeholder', 'example', 'none',
-    'n/a', 'not applicable', 'no changelog', 'your changelog here',
+    'to be determined', 'fixme', 'pending', 'placeholder', 'example', 'your changelog here',
     'changelog text here', 'player-facing text here']);
   // A flattened second label must not turn a template marker into copy.
   const nestedMarker = marker.split(/\s+player changelog\s*:/u)[0]

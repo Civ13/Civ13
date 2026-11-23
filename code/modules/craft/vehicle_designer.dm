@@ -2,7 +2,9 @@
 // The vehicle designer (docs/vehicle-sheets.md)
 // ------------------------------------------------------------
 // Hold a blank ship's draught (or a vehicle sheet) and a pen or pencil and
-// choose "Draw a vehicle on the sheet": a window shows the vehicle's plan,
+// choose "Draw a vehicle on the sheet" (or "Draw a tank" or "Draw a plane",
+// which open the same window on the heavy axis or the airframe controls with
+// that kind's ready-made sheet): a window shows the vehicle's plan,
 // front to the top and its left on the left. The axis, the engine and the
 // size are picked above the plan; frames, wheels and tracks, and the parts
 // that stand on the frames are picked from a palette and clicked onto it.
@@ -27,8 +29,9 @@
 //   MOVERS    list(key, name)
 //   PARTS     list(key, name)
 //   ENGINES   list(key, name, min cc, max cc, steel per 1000 cc, power per 1000 cc)
-//   MIN, MAX  the sizes a land vehicle may be; a plane is 3 wide and 3 to 5
-//             long, or 5 wide and 4 long
+//   MIN, MAX  the sizes a land vehicle may be
+//   PLANEMAX  a plane is 3 wide and 3 to PLANEMAX long, or 5 wide (a twin)
+//             and 4 to PLANEMAX long
 //   START     the sheet: list(name, axis, engine, cc, width, length,
 //             list(list(col, row, frame, mover, part), ...)) with "" for none
 //   EXAMPLES  ready-made sheets in the same form
@@ -83,7 +86,9 @@ var/global/list/vehicle_designer_sprites = list(
 	sheet = null
 	return ..()
 
-/obj/item/ship_draught/proc/open_vehicle_designer(mob/living/human/H)
+// start_axis opens a blank sheet on that axis's first ready-made sheet: the
+// light tank for "heavy", the light plane for "plane".
+/obj/item/ship_draught/proc/open_vehicle_designer(mob/living/human/H, start_axis = "car")
 	if (!ship_designer_can_draw(H, src))
 		to_chat(H, SPAN_WARNING("Hold the sheet and a pen or pencil to draw on it."))
 		return
@@ -98,10 +103,14 @@ var/global/list/vehicle_designer_sprites = list(
 	if (!D)
 		var/list/examples = vehicle_draught_examples()
 		D = examples[1]
+		for (var/datum/vehicle_draught/E in examples)
+			if (E.axis == start_axis)
+				D = E
+				break
 		examples -= D
 		for (var/datum/E in examples)
 			qdel(E)
-		D.name = "vehicle"
+		D.name = D.plane() ? "plane" : (D.axis == "heavy" ? "tank" : "vehicle")
 	for (var/key in vehicle_designer_sprites)
 		H << browse_rsc(vehicle_designer_sprites[key], "vehd_[key].png")
 	show_browse(H, vehicle_designer_html(V, D), "window=[VEHICLE_DESIGNER_WINDOW];size=1000x640")
@@ -154,6 +163,7 @@ var/global/list/vehicle_designer_sprites = list(
 		"ENGINES" = engines,
 		"MIN" = VEHICLE_DRAUGHT_MIN,
 		"MAX" = VEHICLE_DRAUGHT_MAX,
+		"PLANEMAX" = AIRCRAFT_MAX_LENGTH,
 		"START" = vehicle_designer_sheet(D),
 		"EXAMPLES" = examples,
 		"PICS" = pics,
@@ -344,7 +354,7 @@ img.pic{image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;vertic
 
 </div><script>
 var DATA=@@DATA@@;
-var REF=DATA.REF,AXES=DATA.AXES,FRAMES=DATA.FRAMES,MOVERS=DATA.MOVERS,PARTS=DATA.PARTS,ENGINES=DATA.ENGINES,MIN=DATA.MIN,MAX=DATA.MAX,EXAMPLES=DATA.EXAMPLES||[],PICS=DATA.PICS||[],HELP=DATA.HELP||{};
+var REF=DATA.REF,AXES=DATA.AXES,FRAMES=DATA.FRAMES,MOVERS=DATA.MOVERS,PARTS=DATA.PARTS,ENGINES=DATA.ENGINES,MIN=DATA.MIN,MAX=DATA.MAX,PMAX=DATA.PLANEMAX||DATA.MAX,EXAMPLES=DATA.EXAMPLES||[],PICS=DATA.PICS||[],HELP=DATA.HELP||{};
 var FRAMECOL={s:'#56616b',w:'#7a5230',a:'#8a99a6'};
 var AX='car',EN='',CC=0,W=2,L=3,cells={},cur='f:s',hist=[],timer=null,lastSent=0,T=64;
 var CHK=[],lit=-1,pin=-1,peek=null;
@@ -383,7 +393,7 @@ r=row(PARTS,k);return r?r[1]:k;}
 function kindOf(k){if(k=='x')return 'x';if(row(FRAMES,k))return 'f';if(row(MOVERS,k))return 'm';if(row(PARTS,k))return 'p';if(row(AXES,k))return 'a';if(row(ENGINES,k))return 'e';return 'p';}
 
 // ---- The sheet ----
-function sizeOk(w,l){if(plane())return (w==3&&l>=3&&l<=MAX)||(w==5&&l==4);return w>=MIN&&w<=MAX&&l>=MIN&&l<=MAX;}
+function sizeOk(w,l){if(plane())return (w==3&&l>=3&&l<=PMAX)||(w==5&&l>=4&&l<=PMAX);return w>=MIN&&w<=MAX&&l>=MIN&&l<=MAX;}
 function firstFrame(){return axis()[2][0];}
 function frameOk(f){var a=axis()[2];for(var i=0;i<a.length;i++)if(a[i]==f)return true;return false;}
 function load(sheet){$('nm').value=sheet[0];AX=sheet[1];EN=sheet[2];CC=+sheet[3];W=+sheet[4];L=+sheet[5];cells={};var r,c,i,t;
@@ -397,7 +407,7 @@ function resize(w,l){var old=cells,r,c,o;cells={};W=w;L=l;for(r=1;r<=L;r++)for(c
 function setSize(w,l){if(!sizeOk(w,l)||(w==W&&l==L)){controls();return;}push();resize(w,l);refresh();changed();}
 function setPlaneSize(v){var p=v.split('x');setSize(+p[0],+p[1]);}
 function setAxis(a){if(a==AX||!row(AXES,a))return;push();var was=plane(),k,v;AX=a;
-if(plane()){resize(3,Math.min(Math.max(L,3),Math.min(5,MAX)));for(k in cells)if(cells[k][0])cells[k][0]='a';}
+if(plane()){resize(3,Math.min(Math.max(L,3),PMAX));for(k in cells)if(cells[k][0])cells[k][0]='a';}
 else{if(!sizeOk(W,L))resize(Math.min(Math.max(W,MIN),MAX),Math.min(Math.max(L,MIN),MAX));for(k in cells){v=cells[k];if(v[0]&&!frameOk(v[0]))v[0]=was&&v[0]=='a'?'s':firstFrame();}}
 if(cur.charAt(0)=='f'&&!frameOk(cur.substring(2)))cur='f:'+firstFrame();
 refresh();changed();}
@@ -435,7 +445,7 @@ t=v[1]?cap(nameOf('m',v[1]))+(cn?'':' (not on a corner: left out)'):'A wheel or 
 return '<span class="sl'+(v[1]?(cn?'':' loose'):' slot')+'" id="m_'+c+'_'+r+'" style="top:'+y+'px;'+(c==1?'left:0':'right:0')+'" title="'+esc(t)+'" onclick="slotClick('+c+','+r+')" oncontextmenu="slotClear('+c+','+r+');return false;">'+(src?'<img class="pic" src="'+src+'" alt="'+(v[1]?esc(k):'+')+'" onerror="this.parentNode.innerHTML=this.alt">':(v[1]?esc(k):'+'))+'</span>';}
 function slotClick(c,r){if(cur.charAt(0)=='m'||cur.charAt(0)=='x'){if(cur.charAt(0)=='x')slotClear(c,r);else apply(c,r,0);}else status('Pick a wheel or a track, then click here.');}
 function slotClear(c,r){var v=cells[key(c,r)];if(!v[1])return;push();v[1]='';draw();changed();}
-function draw(){var g=$('g'),gw=$('gw'),h='',s='',r,c,G=30;T=W<=4?64:48;
+function draw(){var g=$('g'),gw=$('gw'),h='',s='',r,c,G=30;T=(W<=4&&L<=5)?64:48;
 gw.style.width=(W*T+4+2*G)+'px';gw.style.height=(L*T+4)+'px';g.style.left=G+'px';
 g.style.width=(W*T)+'px';g.style.height=(L*T)+'px';
 for(r=1;r<=L;r++)for(c=1;c<=W;c++){h+=tile(c,r);if(edge(c))s+=slot(c,r);}g.innerHTML=h;
@@ -445,7 +455,7 @@ function opts(sel,list,val){var h='',i;for(i=0;i<list.length;i++)h+='<option val
 function controls(){var i,a=[],e=engine(),p;
 opts($('ax'),AXES,AX);opts($('eng'),ENGINES,EN);
 $('szl').style.display=plane()?'none':'';$('szp').style.display=plane()?'':'none';
-if(plane()){for(i=3;i<=Math.min(5,MAX);i++)a.push(['3x'+i,'3 wide, '+i+' long']);a.push(['5x4','5 wide, 4 long (twin)']);opts($('sp'),a,W+'x'+L);}
+if(plane()){for(i=3;i<=PMAX;i++)a.push(['3x'+i,'3 wide, '+i+' long']);for(i=4;i<=PMAX;i++)a.push(['5x'+i,'5 wide, '+i+' long (twin)']);opts($('sp'),a,W+'x'+L);}
 else{for(i=MIN;i<=MAX;i++)a.push([i,i]);opts($('sw'),a,W);opts($('sl'),a,L);}
 $('cc').value=CC;$('cc').min=e[2];$('cc').max=e[3];p=Math.round(e[5]*CC/1000);
 $('engh').innerHTML=e[2]+' to '+e[3]+' cc &middot; '+p+' power, moves '+(p*2);

@@ -76,6 +76,10 @@ Pick your members wisely. Or cunningly use them to your advantage.
 
 Work smart, not hard!
 
+```admonish tip
+New to factions? [Factions, Provinces & Nations](../guides/Guide_to_Factions.md) walks through founding a faction, its offices, holding provinces, faction islands, nations and war step by step. The sections below are the full reference.
+```
+
 #### General
 
 * To **Create** a faction, open the **Faction tab** and click **Create Faction**. Choose a name for it and draw your faction's symbol on the 32x32 canvas, or stamp one of the classic shapes and draw over it. Your banner colours are taken from the drawing. As Leader you can change the symbol later with **Modify Faction Symbol** on the **Faction tab**.
@@ -199,7 +203,7 @@ Once you have joined a faction in character, your new characters can start with 
 
 #### Recruitment stations
 
-On maps that allow custom factions, a faction can take members through a **recruitment station** instead of recruiting each person by hand. Craft one from **10 planks** (in the **economy & production** category) and place it. The leader then clicks it and chooses **Designate for my faction**, and the station takes the faction's colours. Only the leader can release it again.
+On maps that allow custom factions, a faction can take members through a **recruitment station** instead of recruiting each person by hand. Craft one from **10 planks** (in the **economy & production** category) and place it. The leader then clicks it and chooses **Designate for my faction**, and the station takes the faction's colours. Only the leader can release it again. A faction can have at most **3** designated stations; to designate another, the leader must release one first.
 
 * **Joining:** click a station to see the faction's rules and whether you meet them. Depending on the rules you can **Join** straight away or **Apply** with a short introduction. You can **Withdraw** an application at any time. If it is approved, come back to a station and **Confirm and join**. You must not be in another faction to apply.
 * **Reviewing:** the leader and members with the **Recruitment** permission can approve, reject or revoke applications at any station of their faction, or from anywhere with **Recruitment Applications** on the **Faction tab**. They can give a reason, which the applicant sees. Applicants and reviewers are told about new decisions when they log in.
@@ -214,6 +218,8 @@ On maps that allow custom factions, a faction can take members through a **recru
 #### Provinces
 
 Each continent is divided into **provinces** that follow the land: coasts, rivers, lakes, mountain ranges and straits. Choose **Province Holdings** on the **Faction tab** to see which province you stand in, whether you count as one of your faction's residents there (and if not, why), and how much stake every side has in every province.
+
+There is no button or item that claims a province. Your faction claims one by living there: settle enough residents around a fastened hall to lead the province on stake, and keep that lead until the province is yours.
 
 * **Stake:** each resident is worth 1 point. A resident is a member who has been in the faction for 3 days, has had their own bed for 3 days within 40 tiles of one of the faction's fastened halls, and plays regularly: 10 hours in all on this land, and 4 hours over at least 3 different days of the last week. Your faction's best hall in the province adds 2 points per stage, never more than its residents there. Factions of one nation add their stake together, but a large group's residents count for less beyond the first 10.
 * **Leading:** a side leads a province with at least 6 points from at least 4 people, 35% of all the stake there and 1.25 times the next side.

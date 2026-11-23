@@ -140,7 +140,7 @@ class WikiGuideTests(unittest.TestCase):
                 self.assertIn(expected, self.prompt(corpus, status, question))
 
     def test_current_revision_changed_topics_reach_injected_transport(self):
-        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '8e9ee4c36ee864883f16f57b2d14fb27e547a680')
+        self.assertEqual(bridge.WIKI_REVIEWED_REVISION, '65a53079eb9dd8787de502cac3e819806d5e172a')
         cases = {
             'Chemistry': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8',
                           'chemistry reaction bench',
@@ -154,7 +154,7 @@ class WikiGuideTests(unittest.TestCase):
                              'construction trench digging save',
                              'Partial trench digging and filling progress survives world saves, alongside trench layout and contents.',
                              'Does trench digging progress survive world saves?'),
-            'Trains': ('d5e92d85b38f8ba49772deb986acf445fa0c433269f23b9be227f6659e01a528',
+            'Trains': ('e72e935bc4971533a1e0ddf4d075f0d8dca523aacf4f8a3fe44fcee1278ab35b',
                        'train trains railway track locomotive station switcher rails wagon',
                        'A split switcher moves the vehicle one tile sideways without changing its heading.',
                        'How does a train switcher work?'),

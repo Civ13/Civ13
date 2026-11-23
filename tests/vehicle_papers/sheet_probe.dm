@@ -52,7 +52,7 @@ var/naval_runtime_error = FALSE
 
 	// ---- Codes and the ready-made sheets ----
 	var/list/examples = vehicle_draught_examples()
-	naval_check(examples.len == 4, "four ready-made sheets")
+	naval_check(examples.len == 5, "five ready-made sheets")
 	for (var/datum/vehicle_draught/E in examples)
 		var/datum/design_report/R = E.check_design()
 		naval_check(!R.blocked(), "the [E.name] can be built as drawn ([jointext(R.texts(DESIGN_ERROR), " ")])")
@@ -102,6 +102,14 @@ var/naval_runtime_error = FALSE
 	naval_check(sheet_report_has(plane, DESIGN_WARNING, "no cockpit"), "a pilot's seat out of the wing row gets no cockpit")
 	plane.set_part(1, 2, "U")
 	naval_check(sheet_report_has(plane, DESIGN_ERROR, "cannot carry a tank turret"), "a plane cannot carry a turret")
+	// A plane's sizes are its airframe's: 3 wide and 3 to 6 long, or a twin
+	// 5 wide and 4 to 6 long, whose wings bear more the longer it is.
+	naval_check(plane.size_allowed(3, 3) && plane.size_allowed(3, 6) && plane.size_allowed(5, 4) && plane.size_allowed(5, 6), "a plane may be 3 wide and 3 to 6 long or 5 wide and 4 to 6 long")
+	naval_check(!plane.size_allowed(3, 7) && !plane.size_allowed(5, 3) && !plane.size_allowed(4, 4) && !plane.size_allowed(5, 7) && !plane.size_allowed(2, 4), "and no other size")
+	var/datum/vehicle_draught/twin = examples[5]
+	naval_check(twin.plane() && twin.width == 5 && twin.length == 5 && twin.axis_power() == 1500 && twin.crew() == 5, "the twin transport is 5 by 5 with wings bearing 1500 and five seats ([twin.axis_power()], [twin.crew()])")
+	naval_check(twin.set_size(5, 6) && twin.axis_power() == 1600 && twin.set_size(5, 4) && twin.axis_power() == 1400, "a twin's wings bear 1400 at 4 long and 1600 at 6")
+	naval_check(twin.set_axis("car") && twin.width == 5 && twin.length == 4 && twin.set_size(5, 5) && twin.set_axis("plane") && twin.length == 5 && twin.width == 5, "and it keeps a size both kinds allow when the axis changes")
 	var/list/book = design_part_help_for("vehicle_sheet")
 	var/list/missing = list()
 	for (var/list/table in list(vehicle_draught_axes, vehicle_draught_frames, vehicle_draught_movers, vehicle_draught_parts, vehicle_draught_engines))

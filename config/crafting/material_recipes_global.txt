@@ -3033,6 +3033,7 @@ RECIPE: /material/iron/,flatbed wagon,/obj/structure/trains/transport/flatbed,4,
 RECIPE: /material/iron/,transport wagon,/obj/structure/trains/storage/closed,5,250,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,platform car kit,/obj/structure/train_car_kit,12,300,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,rail warehouse office,/obj/structure/rail_warehouse,15,200,1,1,trains,101,0,0,8,null
+RECIPE: /material/iron/,rail works,/obj/structure/rail_works,30,300,1,1,trains,101,0,0,8,null
 RECIPE: /material/iron/,train coupling,/obj/item/train_coupling,4,80,0,0,trains,101,0,0,8,null
 RECIPE: /material/lead/,fusible plug,/obj/item/fusible_plug,1,60,0,0,trains,101,0,0,8,null
 RECIPE: /material/iron/,tender kit,/obj/structure/train_car_kit/tender,24,400,1,1,trains,101,0,0,8,null

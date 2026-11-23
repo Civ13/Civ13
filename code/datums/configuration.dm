@@ -152,6 +152,7 @@
 	var/recruitment_expiry_days = 7 // Faction recruitment applications and approved offers (faction_recruitment.dm).
 	var/recruitment_queue_limit = 50 // Pending applications per faction.
 	var/recruitment_cooldown_minutes = 5 // Between one player's applications.
+	var/recruitment_station_limit = 3 // Stations one faction may have designated in a world (recruitment_station.dm).
 	var/skip_persistence_saving = FALSE
 	var/persistence_reboot_hour = -1 // server-clock hour (0-23) at which a persistent world saves and reboots to reclaim memory. -1 disables.
 	var/persistence_memory_limit_mb = 0 // world saves/loads switch to segmented low-memory levels when projected memory passes this; 0 disables.
@@ -231,9 +232,9 @@
 					if (isnum(number) && number == round(number) && number >= 1 && number <= 10 && "[number]" == trim(value))
 						vars[name] = number
 
-				if ("recruitment_expiry_days", "recruitment_queue_limit", "recruitment_cooldown_minutes")
+				if ("recruitment_expiry_days", "recruitment_queue_limit", "recruitment_cooldown_minutes", "recruitment_station_limit")
 					var/number = text2num(value)
-					var/list/bounds = list("recruitment_expiry_days" = list(1, 60), "recruitment_queue_limit" = list(1, 500), "recruitment_cooldown_minutes" = list(0, 1440))
+					var/list/bounds = list("recruitment_expiry_days" = list(1, 60), "recruitment_queue_limit" = list(1, 500), "recruitment_cooldown_minutes" = list(0, 1440), "recruitment_station_limit" = list(1, 50))
 					if (isnum(number) && number == round(number) && number >= bounds[name][1] && number <= bounds[name][2] && "[number]" == trim(value))
 						vars[name] = number
 

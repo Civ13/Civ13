@@ -50,6 +50,8 @@ SUITES = {
     'flour_dough': {'files': ('tests/flour_dough/test_dough.py',),
         'paths': ('tests/flour_dough/', 'code/modules/reagents/reagent_containers/food/condiment.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'airstrike_rearm': {'files': ('tests/airstrike_rearm/test_sources.py',),
+        'paths': ('tests/airstrike_rearm/', 'code/modules/1713/weapons/zoom.dm', 'code/_helpers/global_lists.dm')},
     'getline2_contract': {'files': ('tests/getline2/test_getline2.py',),
         'paths': ('tests/getline2/',),
         'shared_paths': ('code/_helpers/unsorted.dm', 'tests/save_movement/source_adapter.py')},
@@ -1596,6 +1598,15 @@ SUITES = {
             'code/modules/space/station_plan.dm', 'code/modules/space/station_plan_checks.dm',
             'code/modules/space/station_designer.dm', 'scripts/build_station_designer_icons.py',
             'icons/station_designer/')},
+    # Stdlib-only: train sheets' stock cars cost their kits, every part is
+    # described and the rail works is wired. The native probe is probe.dm.
+    'train_draught': {'files': ('tests/train_draught/test_train_sheet.py', 'tests/train_draught/test_designer_pictures.py'),
+        'paths': ('tests/train_draught/',), 'shared_paths': (
+            'code/modules/1713/train_draught.dm', 'code/modules/1713/train_draught_checks.dm',
+            'code/modules/1713/train_works.dm', 'code/modules/1713/train_designer.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/research_tree/research_node.dm',
+            'config/crafting/material_recipes_global.txt', 'icons/obj/vehicles/train_platforms.dmi',
+            'docs/train-sheets.md', 'scripts/build_train_designer_icons.py', 'icons/train_designer/')},
     # Stdlib-only: every part the house planner offers is described and costs
     # its recipe, and the window's page is sound. The native probe is run.py.
     'house_plans': {'files': ('tests/house_plans/test_sources.py',),
@@ -2817,7 +2828,7 @@ SUITES = {
         'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),
         'shared_paths': ('interface/skin.dmf', 'code/modules/client/client_procs.dm')},
     # Customizable HUD wiring; tests/hud_layout/run.py is the manual native fixture.
-    'hud_layout': {'files': ('tests/hud_layout/test_layout.py', 'tests/hud_layout/test_console_style.py', 'tests/hud_layout/test_tap_step.py'),
+    'hud_layout': {'files': ('tests/hud_layout/test_layout.py', 'tests/hud_layout/test_console_style.py', 'tests/hud_layout/test_tap_step.py', 'tests/hud_layout/test_slots.py'),
         'paths': ('tests/hud_layout/', 'code/_onclick/hud/hud_layout.dm', 'tools/hud-skin/',
             'icons/mob/screen/ConsoleStyle.dmi', 'icons/mob/screen/needs.dmi',
             'icons/mob/screen/healthdoll_console.dmi', 'icons/mob/screen/zone_sel_console.dmi'),
@@ -2901,7 +2912,7 @@ SUITES = {
     # Handcuff placement races and per-human chew cooldown (#4229, #4230).
     # Faction recruitment applications, offers and their durable field (#4237).
     'faction_recruitment': {'files': ('tests/faction_recruitment/test_source.py',),
-        'paths': ('tests/faction_recruitment/', 'code/game/mob/groups/faction_recruitment.dm'),
+        'paths': ('tests/faction_recruitment/', 'code/game/mob/groups/faction_recruitment.dm', 'code/game/mob/groups/recruitment_station.dm'),
         'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/faction_membership.dm', 'code/game/mob/groups/faction_rename.dm',
             'code/game/mob/groups/factions.dm', 'code/modules/persistence/durable_contract.dm',
             'code/game/mob/living/carbon/human/death.dm', 'code/modules/1713/cmss13_squad.dm',

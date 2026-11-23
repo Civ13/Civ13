@@ -32,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[3]
 QUESTIONS = Path(__file__).with_name('questions.json')
 # Names the public Help must never use, whatever the question.
 # A refusal may repeat the player's own words ("the guides do not cover spells").
-HIDDEN = re.compile(r'\bPersistence\b|\bmana\b|\bwands?\b|\bincantation|\bshrine', re.I)
+HIDDEN = re.compile(r'\bPersistence\b|\bPersistent \(|\bmana\b|\bwands?\b|\bincantation|\bshrine', re.I)
 GAME_CONTEXT = {'map': 'Gaia', 'map_id': 'GAIA', 'gamemode': 'Civilizations', 'era': '5000 B.C.',
                 'era_ordinal': 0, 'civilizations': True}
 
@@ -65,13 +65,18 @@ def conversation(request, entry):
     """A follow-up question carries the earlier exchanges, as the game sends them."""
     if entry.get('turns'):
         request['conversation'] = {'version': 1, 'turns': entry['turns']}
+    # A question may be asked under the mode label a persistent world really sends.
+    if entry.get('gamemode'):
+        request['game_context'] = dict(request['game_context'], gamemode=entry['gamemode'])
     return request
 
 
 def score_answer(entry, answer):
     facts = [bool(re.search(pattern, answer, re.I)) for pattern in entry['answer']]
     hidden = bool(HIDDEN.search(answer))
-    return {'facts': sum(facts), 'of': len(facts), 'hidden': hidden, 'pass': all(facts) and not hidden}
+    # "forbid" patterns are wrong claims a player was given, such as "you cannot claim a province".
+    wrong = any(re.search(pattern, answer, re.I) for pattern in entry.get('forbid', []))
+    return {'facts': sum(facts), 'of': len(facts), 'hidden': hidden, 'pass': all(facts) and not hidden and not wrong}
 
 
 def question_list(questions):

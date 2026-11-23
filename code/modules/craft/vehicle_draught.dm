@@ -104,7 +104,7 @@ var/global/list/vehicle_draught_engines = list(
 	if (!isnum(w) || !isnum(l) || w != round(w) || l != round(l))
 		return FALSE
 	if (plane())
-		return (w == 3 && l >= 3 && l <= VEHICLE_DRAUGHT_MAX) || (w == 5 && l == 4)
+		return aircraft_airframe_size_ok(w, l)
 	return w >= VEHICLE_DRAUGHT_MIN && w <= VEHICLE_DRAUGHT_MAX && l >= VEHICLE_DRAUGHT_MIN && l <= VEHICLE_DRAUGHT_MAX
 
 // Resizes the sheet, keeping what is drawn on the tiles it keeps. New tiles
@@ -132,7 +132,7 @@ var/global/list/vehicle_draught_engines = list(
 	if (!size_allowed(width, length))
 		var/list/kept = cells
 		width = plane() ? 3 : min(max(width, VEHICLE_DRAUGHT_MIN), VEHICLE_DRAUGHT_MAX)
-		length = plane() ? min(max(length, 3), VEHICLE_DRAUGHT_MAX) : length
+		length = plane() ? min(max(length, 3), AIRCRAFT_MAX_LENGTH) : min(max(length, VEHICLE_DRAUGHT_MIN), VEHICLE_DRAUGHT_MAX)
 		cells = kept
 		set_size(width, length)
 	for (var/key in cells)
@@ -275,7 +275,7 @@ var/global/list/vehicle_draught_engines = list(
 	var/obj/structure/vehicleparts/axis/P = A["path"]
 	. = initial(P.maxpower)
 	if (plane() && width == 5)
-		. = max(., 1400)
+		. = max(., aircraft_twin_wing_load(length))
 
 /datum/vehicle_draught/proc/engine_power()
 	var/list/E = vehicle_draught_engines[engine]
@@ -430,6 +430,9 @@ var/global/list/vehicle_draught_engines = list(
 	. += vehicle_draught_from_rows("cargo truck", "car", "diesel", 4000, list("sWE sWT", "s.D s.C", "s.H s.H", "sWH sWH"))
 	. += vehicle_draught_from_rows("light tank", "heavy", "diesel", 5000, list("sKE s.X sKC", "s.D s.U s.L", "sK. s.. sK."))
 	. += vehicle_draught_from_rows("light plane", "plane", "gasoline", 3000, list("aWE a.. aWT", "a.. a.D a..", "a.. a.. a..", "aW. a.. aW."))
+	// A twin's engines stand in the nacelles each side of the nose, each with
+	// its tank; the cabin rows between the wings and the tail carry the seats.
+	. += vehicle_draught_from_rows("twin transport", "plane", "gasoline", 3000, list("aW. a.E a.. a.E aW.", "a.Y a.. a.D a.. a.Y", "a.. a.C a.. a.C a..", "a.. a.C a.. a.C a..", "aW. a.. a.. a.. aW."))
 
 // ---- The sheet ----
 
@@ -637,7 +640,7 @@ var/global/list/vehicle_draught_engines = list(
 	var/datum/vehicle_draught/D = new(new_axis, w, l)
 	if (D.width != w || D.length != l)
 		qdel(D)
-		return "It is [w] by [l] tiles; a sheet holds vehicles [VEHICLE_DRAUGHT_MIN] to [VEHICLE_DRAUGHT_MAX] tiles each way[new_axis == "plane" ? " and planes of a hand-built airframe's sizes" : ""]."
+		return "It is [w] by [l] tiles; a sheet holds vehicles [VEHICLE_DRAUGHT_MIN] to [VEHICLE_DRAUGHT_MAX] tiles each way[new_axis == "plane" ? ", and planes 3 wide and 3 to [AIRCRAFT_MAX_LENGTH] long or 5 wide and 4 to [AIRCRAFT_MAX_LENGTH] long" : ""]."
 	D.name = vehicle_draught_clean_name(A.name)
 	for (var/key in D.cells)
 		D.set_frame(text2num(splittext(key, ",")[1]), text2num(splittext(key, ",")[2]), null)

@@ -77,7 +77,7 @@ var/list/default_hud_tiles = list(
 	"health" = list(448, 192), "nutrition" = list(448, 160), "bodytemp" = list(448, 256), "mood" = list(448, 224),
 	"throw" = list(416, 32), "pull" = list(416, 32), "resist" = list(416, 32), "drop" = list(416, 32), "m_intent" = list(416, 0),
 	"equip" = list(192, 32), "swap" = list(192, 32, 64, 32), "intent" = list(368, 0), "help" = list(352, 0), "harm" = list(384, 0),
-	"zone" = list(448, 0, 32, 64), "rzone" = list(448, 64), "fixeye" = list(448, 77), "gunmode" = list(96, 32), "move" = list(128, 32),
+	"zone" = list(448, 0, 32, 64), "rzone" = list(448, 64), "fixeye" = list(448, 78), "gunmode" = list(96, 32), "move" = list(128, 32),
 	"itemuse" = list(160, 32), "inventory" = list(0, 0), "mode" = list(288, 0), "secondary" = list(320, 0), "tactic" = list(256, 0),
 	"inv14" = list(32, 64), "inv13" = list(32, 32), "inv2" = list(64, 64), "inv10" = list(0, 64), "inv8" = list(0, 96),
 	"inv20" = list(64, 96), "inv11" = list(32, 128), "inv12" = list(0, 32), "inv1" = list(160, 0), "inv22" = list(128, 0),

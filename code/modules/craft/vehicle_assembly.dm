@@ -44,6 +44,10 @@
 /obj/structure/vehicleparts/axis/proc/assembly_max_size()
 	return VEHICLE_CONSTANTS.MAX_VEHICLE_SIZE
 
+// The most frames a vehicle on this axis may have.
+/obj/structure/vehicleparts/axis/proc/assembly_max_frames()
+	return VEHICLE_CONSTANTS.MAX_COMPONENTS
+
 // ---- The survey ----
 
 /datum/vehicle_survey
@@ -78,7 +82,7 @@
 	if (!first)
 		refusal = ship ? "the rudder axis must stand on one of the boat's ship frames" : "the axis must stand on one of the vehicle's frames"
 		return
-	var/limit = VEHICLE_CONSTANTS.MAX_COMPONENTS
+	var/limit = A.assembly_max_frames()
 	var/list/queue = list(first)
 	frames += first
 	while (queue.len)

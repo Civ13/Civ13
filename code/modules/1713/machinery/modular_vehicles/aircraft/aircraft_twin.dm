@@ -71,17 +71,22 @@
 	noroof = TRUE
 	mouse_opacity = 2
 
-// The piece of a 5-wide, 4-long airframe for row (1 = nose) and column (1 =
-// the plane's left); cockpit marks the pilot's tile.
-/proc/aircraft_twin_section_type(row, col, cockpit)
+// The piece of a 5-wide airframe for row (1 = nose) of rows and column (1 =
+// the plane's left); cockpit marks the pilot's tile. Past 4 long the fuselage
+// row repeats between the wing row and the tail, as in the airliner.
+/proc/aircraft_twin_section_type(row, col, cockpit, rows = 4)
 	var/list/pieces = list(
 		list(/obj/structure/vehicleparts/frame/car/aircraft/twin_open, /obj/structure/vehicleparts/frame/car/aircraft/twin_engine/left, /obj/structure/vehicleparts/frame/car/aircraft/nose/center/twin, /obj/structure/vehicleparts/frame/car/aircraft/twin_engine/right, /obj/structure/vehicleparts/frame/car/aircraft/twin_open),
 		list(/obj/structure/vehicleparts/frame/car/aircraft/wing/twin_tip/left, /obj/structure/vehicleparts/frame/car/aircraft/twin_nacelle/left, /obj/structure/vehicleparts/frame/car/aircraft/cockpit, /obj/structure/vehicleparts/frame/car/aircraft/twin_nacelle/right, /obj/structure/vehicleparts/frame/car/aircraft/wing/twin_tip/right),
 		list(/obj/structure/vehicleparts/frame/car/aircraft/twin_open, /obj/structure/vehicleparts/frame/car/aircraft/fuselage/left, /obj/structure/vehicleparts/frame/car/aircraft/fuselage/center, /obj/structure/vehicleparts/frame/car/aircraft/fuselage/right, /obj/structure/vehicleparts/frame/car/aircraft/twin_open),
 		list(/obj/structure/vehicleparts/frame/car/aircraft/twin_tailplane/left, /obj/structure/vehicleparts/frame/car/aircraft/twin_tail/left, /obj/structure/vehicleparts/frame/car/aircraft/tail/center, /obj/structure/vehicleparts/frame/car/aircraft/twin_tail/right, /obj/structure/vehicleparts/frame/car/aircraft/twin_tailplane/right),
 		)
-	if (row < 1 || row > 4 || col < 1 || col > 5)
+	if (row < 1 || row > rows || col < 1 || col > 5)
 		return null
+	if (row == rows)
+		row = 4
+	else if (row > 2)
+		row = 3
 	if (row == 2 && col == 3 && !cockpit)
 		return /obj/structure/vehicleparts/frame/car/aircraft/fuselage/center
 	var/list/R = pieces[row]

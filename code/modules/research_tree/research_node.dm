@@ -2523,6 +2523,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/train_car_kit/crane_car" = "rail_steam",
 		"/obj/structure/workshop_machine/shear_legs/crane/steam/rail" = "rail_steam",
 		"/obj/structure/train_brake_wheel" = "rail_steam",
+		"/obj/structure/rail_works" = "rail_steam",
 		"/obj/item/train_fire_rake" = "rail_steam",
 		"/obj/structure/rail_ash_pit" = "rail_steam",
 		"/obj/item/train_brake_shoes" = "rail_steam",

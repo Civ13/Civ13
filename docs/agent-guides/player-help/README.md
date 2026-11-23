@@ -99,3 +99,9 @@ the three rarest question words each keep their best guide excerpt, and at most
 two excerpts of one guide section lead. `wiki_eval` entries may carry `turns`
 for follow-up questions. Default pacing is a 10 second cooldown and 5 questions
 per 2 minutes.
+
+2026-11-22: the game's mode label for a persistent world ("Persistent (Book
+Research)") is internal. `public_game_context` gives the model
+`public_mode()` wording instead, and `public_wording` rewords the label in any
+answer. `wiki_eval` entries may carry `gamemode` (asked under that label) and
+`forbid` (wrong claims that fail the answer, such as "cannot claim").
