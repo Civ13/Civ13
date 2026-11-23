@@ -738,7 +738,7 @@ A **ship's draught** is a ship drawn on paper: every tile of her hull, the floor
 
 #### Sharing plans as design codes
 
-Every plan drawn on a ship's draught can be exported as a design code and imported again: ships (with their extra decks), submarines, vehicles, tanks, planes, airships, trains, space stations and houses. Codes are plain text, so you can keep them outside the game or give them to other players.
+Every plan drawn on a ship's draught can be exported as a design code and imported again: ships (with their extra decks), submarines, vehicles, tanks, planes, airships, trains, railways, space stations and houses. Codes are plain text, so you can keep them outside the game or give them to other players.
 
 - **Export.** Use the sheet and choose **Export its design code**, or press **Export code** beside **Save to the sheet** in the drawing window. Export from the window saves the drawing first. Copy the code from the window that opens.
 - **Import.** Use any ship's draught and choose **Import a design code**, or press **Import code** in a drawing window, then paste the code. A blank sheet accepts any kind of plan. The imported plan replaces whatever was drawn, and the drawing window for that kind of plan opens.

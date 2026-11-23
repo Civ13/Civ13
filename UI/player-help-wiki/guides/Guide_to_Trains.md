@@ -77,6 +77,37 @@ Use switchers for branches and a lever within two tiles of each switcher you wan
 
 Keep the track clear. A moving train stops when it hits anything solid, and it smashes what it hits.
 
+### Wide curves
+
+A sharp corner is slow: trains take it at no more than about 110 km/h. Easing it into a **wide curve** lets them keep up speed, and long cars sweep round it smoothly.
+
+1. Lay the corner as usual, with plain straight track running on from it on both sides: **four tiles** each side for a gentle curve, **eight** for a wide one. Leave the ground inside the corner clear.
+2. Hold a **hammer**, right-click the corner and choose **Ease the Curve**, then pick the size.
+3. The corner and the straights beside it are lifted and relaid as one curve. It uses the same number of tiles, so you gain and lose no rail.
+
+| Curve | Straight track needed each side | Fastest safe speed |
+| --- | --- | --- |
+| Sharp corner | none | about 110 km/h |
+| Gentle (4) | 4 tiles | about 145 km/h |
+| Wide (8) | 8 tiles | about 220 km/h |
+
+Corners eased into curves don't count as corners for the spacing rule. A **crowbar** on a curve relays it as the sharp corner and its straights again. Pry those again to take them apart. Nothing is relaid while a wagon stands on it.
+
+### Planning a line
+
+A [ship's draught](Guide_to_Boats.md#ships-draughts) (1 wood, Papermaking) can hold a **rail plan**. Drawing one costs nothing and lays nothing: it shows you where the hammer will refuse to spike track before you spend any rails.
+
+- Hold a blank ship's draught with a pen, pencil or pigment in your other hand. Use the sheet and choose **Draw a railway on the sheet**. The window shows a 40 by 40 tile sheet, north to the top.
+- With **Track**, click or drag to draw the line tile by tile. Where it turns a right angle it makes a sharp corner. **Erase**, or a right-click with any tool, lifts track.
+- With **Ease curve**, click a corner to mark it as a gentle (4) or wide (8) curve. The curve is drawn where it will lie.
+- The **Checks** panel lists what is wrong:
+  - corners fewer than four tiles apart (an error), or fewer than eight (a warning);
+  - curves without their straight track or without room to lie;
+  - places where lines meet. There you lay a switch by hand.
+  Click a finding to ring its tiles. The figures count the tiles, sleepers and rails you'll need.
+- **Save to the sheet** keeps the plan. **Export code** and **Import code** share it as a design code. See [Sharing plans as design codes](Guide_to_Boats.md#sharing-plans-as-design-codes).
+- **Pegging it out:** stand where the south-west corner of the drawing should go. Use the rail plan and choose **Peg it out on the ground**. Every tile of the line gets a builder's peg, and a peg comes up by itself once finished track lies on its tile. A corner to be eased carries a note saying how wide a curve to make. Pull that peg yourself once the curve is in. **Pull up the pegs and forget the site** takes every peg up.
+
 ### Taking track apart
 
 A **crowbar** takes track apart one step at a time, giving the parts back: first it pulls the spikes (the rails sit loose on their sleepers again), then it lifts the rails off, then it pries up the sleepers. Switchers and rotators come apart in one go and return their iron. Nothing comes apart while a wagon stands on the tile. If a tile turned the wrong way, pry it up and lay it again.
@@ -522,7 +553,7 @@ Speed puts a train on the ground without hitting anything.
 
 ![A boxcar off the rails with sprung deck boards, the same car back on the track, and a red rerailing jack](../images/civ13-train-derailed.png)
 
-- **Curves and switches.** A train that takes a curve, or the branch of a switch, at more than about 110 km/h on the cab's speed readout leaves the rails. The first throttle notch of every engine is slow enough for any curve; small one-tile locomotives never get that fast. Shut off and brake well before the curve, because a heavy train takes a long way to slow down.
+- **Curves and switches.** A train that takes a sharp corner, or the branch of a switch, at more than about 110 km/h on the cab's speed readout leaves the rails. A gentle curve holds it to about 145 km/h and a wide one to about 220 km/h. See [Wide curves](#wide-curves). The first throttle notch of every engine is slow enough for any curve; small one-tile locomotives never get that fast. Shut off and brake well before the curve, because a heavy train takes a long way to slow down.
 - **Worn track.** Worn track taken at more than about 180 km/h, or track in a bad way at more than about 70 km/h, spreads under the train and puts its leading car off. See [Track wear and platelaying](#track-wear-and-platelaying).
 - **Bends too close together.** A train won't run onto corners that are closer together than its longest car is long: it stops short and the cab is told. Driven at them faster than a crawl (about 35 km/h), its leading cars leave the rails instead. Relay the line with longer straights between the corners.
 - **The end of the track.** Running off the end of the rails at more than about 70 km/h derails the leading car. So does a rail somebody has lifted out of the line. Creep up to the end of a siding, or build a buffer stop there.
