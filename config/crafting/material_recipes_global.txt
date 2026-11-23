@@ -3584,6 +3584,19 @@ RECIPE: /material/bamboo/,outside-corner tatami floor,/obj/covers/tatami/trim/co
 RECIPE: /material/bamboo/,three-sided tatami floor,/obj/covers/tatami/trim/cee,1,20,1,1,construction,0,0,0,8,null
 RECIPE: /material/bamboo/,fully framed tatami floor,/obj/covers/tatami/trim/full,1,20,1,1,construction,0,0,0,8,null
 
+//**| DENTISTRY |**
+RECIPE: /material/iron/,dental forceps,/obj/item/weapon/surgery/dental_forceps,2,50,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/bronze/,bronze dental forceps,/obj/item/weapon/surgery/dental_forceps/bronze,2,50,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/iron/,dental pick,/obj/item/weapon/surgery/dental_pick,1,40,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/wood/,chewing stick,/obj/item/weapon/tooth_cleaner/chewing_stick,0.5,15,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/bone/,toothbrush,/obj/item/weapon/tooth_cleaner/toothbrush,1,40,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/gold/,gold band bridge,/obj/item/dental_bridge,1,80,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/bone/,carved bone dentures,/obj/item/dentures/bone,3,150,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/bone/,human-tooth dentures,/obj/item/dentures/human,2,150,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/clay/,unfired porcelain dentures,/obj/item/weapon/clay/porcelain_dentures,2,90,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/rubber/,vulcanite dentures,/obj/item/dentures/vulcanite,2,90,0,1,healthcare,0,0,0,8,null
+RECIPE: /material/plastic/,acrylic dentures,/obj/item/dentures/acrylic,2,60,0,1,healthcare,0,0,0,8,null
+
 //**| GENERATED TOOL MATERIAL VARIANTS: edit config/recipe_variants.json, then run scripts/recipe_variants.py --write |**
 RECIPE: /material/copper/,copper hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,copper
 RECIPE: /material/bronze/,bronze hammer,/obj/item/weapon/hammer,3,75,0,1,tools,0,0,0,8,bronze

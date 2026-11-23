@@ -344,5 +344,43 @@
       "/obj/item/machine_part/shaft": 1,
       "/obj/item/machine_part/bearing": 1
     }
+  },
+  "/obj/item/dental_bridge": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/stack/teeth": 3
+    }
+  },
+  "/obj/item/dentures/bone": {
+    "tools": [
+      "knife"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/dentures/human": {
+    "tools": [
+      "knife"
+    ],
+    "inputs": {
+      "/obj/item/stack/teeth": 16
+    }
+  },
+  "/obj/item/weapon/tooth_cleaner/toothbrush": {
+    "tools": [
+      "knife"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/weapon/tooth_cleaner/chewing_stick": {
+    "tools": [
+      "knife"
+    ],
+    "inputs": {}
+  },
+  "/obj/item/dentures/vulcanite": {
+    "tools": [],
+    "inputs": {
+      "/obj/item/dentures/porcelain": 1
+    }
   }
 }

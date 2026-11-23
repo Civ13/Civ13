@@ -268,9 +268,7 @@
 	if (gender == MALE && circumcised && !w_uniform && !wear_suit)
 		msg += "<span class='danger'>[src] is circumcised!</span>\n"
 
-	var/obj/item/organ/external/head/O = locate(/obj/item/organ/external/head) in organs
-	if (O && O.get_teeth() < O.max_teeth)
-		msg += "<span class='warning'>[O.get_teeth() <= 0 ? "All" : "[O.max_teeth - O.get_teeth()]"] of [T.his] teeth are missing!</span>\n"
+	msg += dental_examine_text(T) // dentistry.dm
 
 	msg += drug_examine_text(T)
 

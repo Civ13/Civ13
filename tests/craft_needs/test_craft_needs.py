@@ -31,8 +31,10 @@ DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8', errors='ignore')
 # Stack inputs declared outside material_sheets.dm.
 OTHER_STACKS = {
     '/obj/item/stack/hay': 'code/modules/1713/hay.dm',
+    '/obj/item/stack/teeth': 'code/modules/organs/organ_external.dm',
 }
 LOOSE_INPUTS = {
+    '/obj/item/dentures/porcelain': 'code/modules/1713/dentistry.dm',
     '/obj/item/weapon/reagent_containers/food/snacks/animalfat':
         'code/modules/reagents/reagent_containers/food/snacks/meat.dm',
     '/obj/item/machine_part/gear': 'code/modules/materials/machine_parts.dm',

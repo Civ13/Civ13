@@ -384,6 +384,7 @@
 		handle_medical_side_effects()
 		if (map.civilizations)
 			handle_hair_growth()
+			handle_teeth() // dentistry.dm
 
 		if (original_job && base_faction)
 			faction_hud_users |= src
