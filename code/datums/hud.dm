@@ -188,14 +188,6 @@
 	icon = 'icons/mob/screen/ConsoleStyle.dmi'
 	anchored_layout = TRUE
 	// Storage windows open on the row above the console.
-	// On the widescreen view the action row has room for a fourth button, so
-	// the stance button sits between dodge / parry and the body part selector
-	// it aims with: kick, tactic, dodge / parry, stance. The square view keeps
-	// it two rows up, clear of the gun buttons.
-	wide_locs = list(
-		"need:secondary attack" = "EAST-4,SOUTH+1:2",
-		"need:combat stance" = "EAST-1,SOUTH+1:2",
-	)
 	ConteinerData = list(
 		"Xspace" = 4,
 		"Yspace" = 3,
@@ -234,10 +226,10 @@
 		"intent" =				list("type" = /obj/screen/intent,	 "loc" = "EAST-3:16,SOUTH:2"),
 		"harm" = 				list("type" = /obj/screen/fastintent/harm,	 "loc" = "EAST-2,SOUTH:2"),
 		"grab" = 				list("type" = /obj/screen/fastintent/grab,	 "loc" = "EAST-2,SOUTH:2"),
-		"m_intent" = 			list("type" = /obj/screen/mov_intent, "loc" = "EAST-1,SOUTH:2"),
+		"m_intent" = 			list("type" = /obj/screen/mov_intent, "loc" = "EAST,SOUTH+3:26"),
 		"damage zone" = 		list("type" = /obj/screen/zone_sel3,   "loc" = "EAST,SOUTH:2", "icon" = 'icons/mob/screen/zone_sel_console.dmi'),
 		"tactic" = 				list("type" = /obj/screen/tactic,	 "loc" = "EAST-3,SOUTH+1:2"),
-		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "EAST-1,SOUTH+3:2"),
+		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "EAST-1,SOUTH:2"),
 		"mode" = 				list("type" = /obj/screen/mode,	   "loc" = "EAST-2,SOUTH+1:2"),
 		"secondary attack" = 	list("type" = /obj/screen/kick_jump_bite,	   "loc" = "EAST-1,SOUTH+1:2"),
 		"random damage zone" = 	list("type" = /obj/screen/zone_sel_random,   "loc" = "EAST,SOUTH+2:2"),
@@ -248,11 +240,13 @@
 		// Clothing corner.
 		"toggle inventory" = 	list("type" = /obj/screen/toggle_inventory,	   "loc" = "WEST:2,SOUTH:2"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "WEST+2:2,SOUTH:2"),
-		// Up and down a level, above the body part selector.
-		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "EAST,SOUTH+4:18"),
-		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "EAST,SOUTH+3:18"),
+		// Movement stack up the right edge, a gap above the eye button: walk /
+		// run ("m_intent", in the action corner list above), tap step, then down
+		// and up a level. Fighting stays around the body part selector.
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "EAST,SOUTH+6:26"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "EAST,SOUTH+5:26"),
 		// Tap to step on or off (subtile_movement.dm).
-		"tap step" = 			list("type" = /obj/screen/tap_step,	   "loc" = "EAST,SOUTH+5:18"),
+		"tap step" = 			list("type" = /obj/screen/tap_step,	   "loc" = "EAST,SOUTH+4:26"),
 		)
 
 	slot_data = list (
