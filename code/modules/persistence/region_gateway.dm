@@ -4,18 +4,20 @@
 // handovers (a standby that takes over a port with world.OpenPort is not listed
 // again). Every player who joins is sent on through the routing relay
 // (region_relay.dm) to the land their character lives in, or to the start
-// region when they have none. Nobody plays, saves or starts a character here.
+// region when they have none. An optional, private Characters screen helps
+// choose where to continue; it cannot change slots or claim a body. Nobody
+// plays, saves or starts a character here.
 //
-// The gateway asks its own transfer agent the same question a land's Join check
-// asks (/account claim without a body). For a world that is neither the
-// account's home nor the start region that question never claims anything: it
-// answers ELSEWHERE with the home (or the start region), PENDING or TRAVELLING.
-// The destination still makes its own admission check when the player arrives.
+// Ordinary automatic routing asks the local agent about the client's active
+// character. The opt-in chooser instead uses a read-only coordinator lookup,
+// refuses incomplete answers and wakes only a confirmed destination after a
+// click. The destination still makes its own admission check on arrival.
 // See scripts/shard-group/README.md, "Gateway world".
 
 // How long a player is kept trying before they are offered a manual retry.
 #define GATEWAY_FORWARD_WAIT (2 MINUTES)
 #define GATEWAY_RETRY_DELAY (5 SECONDS)
+#define GATEWAY_ROSTER_RETRY_DELAY (2 SECONDS)
 #define GATEWAY_STATUS_INTERVAL (1 MINUTES)
 // The shard board polls once a minute; allow a delayed poll but not a stuck cache.
 #define GATEWAY_POPULATION_MAX_AGE (3 MINUTES)
@@ -67,14 +69,119 @@
 	return shard_group && shard_group.enabled && shard_group.kind == "GATEWAY"
 
 /mob/new_player/var/tmp/gateway_forwarding = FALSE
+/client/var/tmp/gateway_character_lobby = FALSE // UI preference from the connection, not admission
+/client/var/tmp/gateway_expected_slot = 0 // untrusted assertion; may only refuse a handoff
+
+// The public front door of a Persistence group, not a TDM waiting room.
+/proc/region_gateway_roster_address()
+	if(!shard_group || !shard_group.enabled || !shard_group.gate || !shard_group.start_region)
+		return null
+	var/list/front = shard_group.peers[shard_group.gate]
+	var/list/start = shard_group.peers[shard_group.start_region]
+	if(!islist(front) || front["kind"] != "GATEWAY" || !islist(start) || start["kind"] != "SURFACE" || region_gateway_battle_peer())
+		return null
+	return shard_group.gate_address()
+
+// Requested only as a UI hint. Never pass a slot, owner key, or route on a
+// connect URL; the new world derives those from the authenticated client.
+/proc/region_gateway_open_roster(client/C)
+	var/address = region_gateway_roster_address()
+	if(!accolade_client_ckey(C) || !address || character_lobby_departure_refusal(C))
+		return FALSE
+	C << link("byond://[address]?character_lobby=1")
+	return TRUE
+
+/proc/region_gateway_roster_enabled(client/C)
+	return region_gateway_here() && C && C.gateway_character_lobby && accolade_client_ckey(C) && region_gateway_roster_address()
+
+/proc/region_gateway_roster_choice_allowed(client/C, list/state, slot)
+	return isnum(slot) && slot == round(slot) && slot >= 1 && slot <= character_slots_max && character_slot_open(state, slot) && (slot == 1 || character_slots_verified(C))
+
+/proc/region_gateway_active_slot(client/C, list/state)
+	var/slot = state?["active"]
+	return region_gateway_roster_choice_allowed(C, state, slot) ? slot : 1
+
+// Never adopt the slot from a URL. The destination still independently
+// restores and verifies its record; a stale copy may not embody another slot.
+/proc/region_gateway_expected_slot_ok(client/C)
+	if(!C || !C.gateway_expected_slot)
+		return TRUE
+	var/account = accolade_client_ckey(C)
+	return region_home_enabled() && account && C.character_slot == C.gateway_expected_slot && region_gateway_active_slot(C, character_slot_state(account)) == C.gateway_expected_slot
+
+/proc/region_gateway_show_roster(mob/new_player/lobby)
+	var/client/C = lobby?.client
+	if(!C || C.mob != lobby || !region_gateway_roster_enabled(C))
+		return FALSE
+	var/account = accolade_client_ckey(C)
+	var/list/state = character_slot_state(account)
+	var/active = region_gateway_active_slot(C, state)
+	var/list/names = state["names"]
+	var/list/cards = list("<html><head><title>Characters</title></head><body><h2>Your characters</h2><p>Choose how to continue. You can only switch after the land you are leaving checks your current character. No body wakes up on the gateway.</p>")
+	for(var/slot = 1 to character_slots_max)
+		if(slot != active && !character_slot_open(state, slot))
+			continue
+		var/list/entry = names["[slot]"]
+		var/name = islist(entry) && istext(entry[1]) ? html_encode(entry[1]) : "Character [slot]"
+		var/action = ""
+		if(slot == active)
+			action = "Current character. <a href='byond://?gateway_character_slot=[slot]'>Continue to their land</a>."
+		else if(character_slot_return_wait(state, slot))
+			action = "Not ready to play again yet. Check the switch cooldown in your current land."
+		else if(region_gateway_roster_choice_allowed(C, state, slot))
+			action = "Another slot. <a href='byond://?gateway_character_slot=[slot]'>Switch on your current land</a>."
+		else
+			action = "Unavailable until you verify your account."
+		cards += "<h3>Slot [slot]: [name]</h3><p>[action]</p>"
+	cards += "<p>New characters are created through Join at the destination, not here.[region_gateway_practice_link()]</p></body></html>"
+	show_browse(C, jointext(cards, ""), "window=gateway_characters;size=510x430")
+	return TRUE
+
+/proc/region_gateway_choose_character(mob/new_player/lobby, slot)
+	var/client/C = lobby?.client
+	if(!C || C.mob != lobby || !region_gateway_roster_enabled(C) || lobby.gateway_forwarding)
+		return FALSE
+	var/list/state = character_slot_state(accolade_client_ckey(C))
+	if(!region_gateway_roster_choice_allowed(C, state, slot) || (slot != region_gateway_active_slot(C, state) && character_slot_return_wait(state, slot)))
+		region_gateway_show_roster(lobby)
+		return FALSE
+	// An alternate choice sends the active character to their own land
+	// first, where the existing Characters panel can check sleep, custody,
+	// cooldown and injury. The gateway deliberately writes no switch record.
+	lobby.gateway_character_choice = slot
+	region_gateway_forward(lobby)
+	return TRUE
+
+/mob/new_player/var/tmp/gateway_character_choice = 0
 
 // Where the gateway sends the player with this key next: list("home" = region
 // id), or list("wait" = what to tell them) while the answer is not ready. Sleeps.
-/proc/region_gateway_destination(key)
-	var/account = ckey(key)
+/proc/region_gateway_destination(key, slot = 1, roster = FALSE)
+	var/account = owner_key_for(ckey(key), slot)
 	// Guests own no character and cannot travel: they start where new players do.
-	if(IsGuestKey(key) || !transfer_bridge || !transfer_bridge.enabled())
+	if(IsGuestKey(key))
 		return list("home" = shard_group.start_region)
+	if(!account || !transfer_bridge || !transfer_bridge.enabled())
+		if(roster || slot > 1)
+			return list("wait" = "The character directory is unavailable. No character has been selected or moved.")
+		return list("home" = shard_group.start_region)
+	if(roster)
+		var/list/reply = transfer_bridge.request("/lobby/home", list("ckey" = account))
+		var/list/status = reply?["ok"] && islist(reply["result"]) ? reply["result"] : null
+		switch(status?["state"])
+			if("HOME", "NO_HOME")
+				var/home = status["region"]
+				if(istext(home) && home != shard_group.region && shard_group.peers[home] && (status["state"] != "NO_HOME" || home == shard_group.start_region))
+					return list("home" = home)
+			if("PARKED")
+				var/home = status["home"]
+				if(region_home_parked_land(home))
+					return list("parked" = home)
+			if("PENDING")
+				return list("wait" = "Checking your character's land. Please wait...")
+			if("TRAVELLING")
+				return list("wait" = "Your character is still on its way between lands. It is safe; you are sent on once it arrives.")
+		return list("wait" = "The character directory cannot confirm your land yet. No character has been selected or moved.")
 	var/list/answer = transfer_bridge.request("/account", list("ckey" = account, "op" = "claim"))
 	var/list/result = (answer && answer["ok"] && islist(answer["result"])) ? answer["result"] : null
 	if(!result)
@@ -115,25 +222,60 @@
 /proc/region_gateway_forward(mob/new_player/lobby)
 	set waitfor = FALSE
 	var/client/C = lobby ? lobby.client : null
-	if(!C || lobby.gateway_forwarding)
+	if(!C || C.mob != lobby || lobby.gateway_forwarding)
 		return FALSE
+	var/roster = region_gateway_roster_enabled(C)
+	var/choice = lobby.gateway_character_choice
+	if(roster && !choice)
+		return region_gateway_show_roster(lobby)
+	var/persistence_front = !!region_gateway_roster_address()
+	var/account = persistence_front ? accolade_client_ckey(C) : null
+	var/slot = account ? region_gateway_active_slot(C, character_slot_state(account)) : 1
 	lobby.gateway_forwarding = TRUE
 	var/deadline = world.time + GATEWAY_FORWARD_WAIT
 	var/told = null
 	var/offered = FALSE
 	var/sent = FALSE
-	while(lobby && C && lobby.client == C)
-		var/list/where = region_gateway_destination(C.key)
-		if(!lobby || !C || lobby.client != C)
+	while(lobby && C && lobby.client == C && C.mob == lobby)
+		var/list/where = region_gateway_destination(C.key, slot, roster)
+		if(!lobby || !C || lobby.client != C || C.mob != lobby)
+			break
+		var/list/state = account ? character_slot_state(account) : null
+		var/slot_changed = persistence_front && (account != accolade_client_ckey(C) || slot != region_gateway_active_slot(C, state))
+		var/choice_refused = roster && (!region_gateway_roster_enabled(C) || !region_gateway_roster_choice_allowed(C, state, choice) || (choice != slot && character_slot_return_wait(state, choice)))
+		if(slot_changed || choice_refused)
+			lobby.gateway_character_choice = 0
+			to_chat(C, SPAN_WARNING("Your character selection changed. Recheck your Characters screen or reconnect."))
+			if(roster)
+				region_gateway_show_roster(lobby)
 			break
 		var/home = where["home"]
+		var/parked = where["parked"]
+		if(roster && parked)
+			var/owner = owner_key_for(account, slot)
+			where["wait"] = region_home_summon(owner, parked) ? "Your character is on a laid-up land. Its harbour is being made ready; this can take a few minutes." : "Your character is on a laid-up land. Nobody could wake it yet; trying again."
+			if(lobby?.client != C || C.mob != lobby)
+				break
 		if(home)
 			var/list/peer = shard_group.peers[home]
 			var/name = peer ? peer["name"] : home
 			if(told != home)
 				told = home
+				if(roster && choice != slot)
+					to_chat(C, SPAN_NOTICE("After arrival, use OOC > Characters to switch. Your current character must satisfy the land's switching rules."))
 				to_chat(C, SPAN_NOTICE("Taking you to [html_encode(name)]... If nothing happens, <a href='byond://?gateway_retry=1'>try again</a>."))
-			if(shard_group.send_player(C, home))
+			if(roster && shard_group.relay_on() && peer && peer["state"] != "UP")
+				// Waking may take minutes. Ask the directory again on the
+				// next pass rather than using this answer after the wait.
+				if(!shard_group.peer_wakeable(home))
+					shard_group.refresh_peer(home)
+				if(lobby?.client != C || C.mob != lobby)
+					break
+				if(peer["state"] != "UP")
+					var/why = shard_group.wake_peer(home, lobby)
+					if(why && lobby?.client == C && C.mob == lobby)
+						to_chat(C, SPAN_WARNING(why))
+			else if(shard_group.send_player(C, home, !roster, roster ? slot : 0))
 				sent = TRUE
 				break
 		else if(where["wait"] != told)
@@ -149,7 +291,7 @@
 		if(world.time >= deadline)
 			to_chat(C, SPAN_WARNING("Your land could not be reached yet. <a href='byond://?gateway_retry=1'>Try again</a>, or reconnect in a few minutes.[region_gateway_practice_link()]"))
 			break
-		sleep(GATEWAY_RETRY_DELAY)
+		sleep(roster ? GATEWAY_ROSTER_RETRY_DELAY : GATEWAY_RETRY_DELAY)
 	if(lobby)
 		lobby.gateway_forwarding = FALSE
 	return sent
@@ -230,5 +372,6 @@
 
 #undef GATEWAY_FORWARD_WAIT
 #undef GATEWAY_RETRY_DELAY
+#undef GATEWAY_ROSTER_RETRY_DELAY
 #undef GATEWAY_STATUS_INTERVAL
 #undef GATEWAY_POPULATION_MAX_AGE

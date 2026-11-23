@@ -43,6 +43,7 @@ def call(url, token, path, body=None, timeout=5):
 
 if __package__ in (None, ''):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from tools.transfer_storage.lobby import OWNER_KEY, PARKED_HOME
 from tools.transfer_storage.train_custody import TrainCustody
 from tools.transfer_storage.region import LAND_STAGES, account_key_valid, colony_valid, faction_id_valid, land_id_valid
 from tools.transfer_storage.world_chart import WorldChart, land_home, owner_valid, tile_valid
@@ -280,13 +281,13 @@ class Coordinator(TrainCustody):
         finally:
             self.db.execute('ROLLBACK')  # read-only, including early returns
 
-    def lobby_home(self, ckey):
+    def lobby_home(self, ckey, include_snapshot=False):
         """Resolve an account's route without claiming custody or starting a world.
 
         Only the reconciled coordinator is authoritative. Its cached travel
         rows do not rule out a new, uncollected request in a region, so every
         enrolled agent must give a fresh, consistent answer before we route.
-        No endpoint is exposed for this coordinator method in this slice.
+        The gateway mailbox may request the verified epoch and revision.
         The destination still checks admission after handoff.
         """
         unavailable = {'state': 'UNAVAILABLE'}
@@ -333,9 +334,48 @@ class Coordinator(TrainCustody):
         if 'TRAVELLING' in barriers:
             return {'state': 'TRAVELLING'}
         region = home if home is not None else self.start_region
-        if region not in regions:
-            return unavailable
-        return {'state': 'HOME' if home is not None else 'NO_HOME', 'region': region}
+        if region in regions:
+            answer = {'state': 'HOME' if home is not None else 'NO_HOME', 'region': region}
+        else:
+            parked = PARKED_HOME.fullmatch(home) if isinstance(home, str) else None
+            if not parked:
+                return unavailable
+            x, y = map(int, parked.groups())
+            tile = self.chart.template(x, y) if tile_valid(x, y) else None
+            if not tile or not tile.get('parked') or tile.get('state') not in ('LANDED', 'SETTLED', 'CLAIMED'):
+                return unavailable
+            answer = {'state': 'PARKED', 'home': home}
+        if include_snapshot:
+            answer.update(epoch=epoch, rev=rev)
+        return answer
+
+    def lobby_once(self, gateway):
+        """Process at most one expiring lookup on the designated gateway agent."""
+        endpoint = self.regions().get(gateway)
+        if not endpoint:
+            return False
+        url, token = endpoint
+        try:
+            reply = call(url, token, '/lobby/home-pending', timeout=0.2)
+            if type(reply) is not dict or reply.get('ok') is not True or type(reply.get('result')) is not dict:
+                return False
+            requests = reply['result'].get('requests')
+            if type(requests) is not list or len(requests) != 1 or type(requests[0]) is not dict:
+                return False
+            key, request_id = requests[0].get('owner'), requests[0].get('id')
+            if (not isinstance(key, str) or not OWNER_KEY.fullmatch(key) or
+                    not isinstance(request_id, str) or len(request_id) != 32 or
+                    any(c not in '0123456789abcdef' for c in request_id)):
+                return False
+            answer = self.lobby_home(key, include_snapshot=True)
+            if answer.get('region') == gateway:
+                answer = {'state': 'UNAVAILABLE'}
+            done = call(url, token, '/lobby/home-result',
+                        {'owner': key, 'id': request_id, 'answer': answer}, timeout=0.2)
+            return (type(done) is dict and done.get('ok') is True and type(done.get('result')) is dict
+                    and done['result'].get('accepted') is True)
+        except (OSError, ValueError, TypeError):
+            return False
 
     def homes(self):
         return {c: r for c, r in self.db.execute('SELECT ckey, region FROM home WHERE region IS NOT NULL ORDER BY ckey')}
@@ -921,6 +961,7 @@ def main(argv=None):
     parser.add_argument('--mainland', help="the group's main region: era source and land-stage reference")
     parser.add_argument('--start-region', help='region where new characters start, and fallen ones with no bed '
                         'keeping their home (default: the mainland)')
+    parser.add_argument('--lobby-gateway', help='enrolled non-playable gateway agent with read-only route lookups')
     parser.add_argument('--interval', type=float, default=5.0, help='seconds between relay passes')
     parser.add_argument('--radio-interval', type=float, default=1.0, help='seconds between radio passes')
     parser.add_argument('--bootstrap-new-group', action='store_true',
@@ -948,6 +989,9 @@ def main(argv=None):
             parser.error('--region takes NAME=URL=TOKEN_FILE, got %r' % item)
         with open(parts[2], encoding='utf-8') as f:
             enrollments.append((parts[0], parts[1], f.read().strip()))
+    if args.lobby_gateway and (args.lobby_gateway not in {region for region, _, _ in enrollments} or
+                               args.lobby_gateway in (args.mainland, args.start_region)):
+        parser.error('--lobby-gateway must name an enrolled non-playable region')
     coordinator = Coordinator(args.db, args.group, args.mainland, args.bootstrap_new_group,
                               [s for s in args.slots.split(',') if s], args.expeditions, args.start_region,
                               args.records_dir, args.activity_db)
@@ -1001,6 +1045,8 @@ def main(argv=None):
                 except (OSError, ValueError, sqlite3.Error) as e:
                     print('player records pass failed: %s' % e, file=sys.stderr)
             coordinator.relay_radio_once()
+            if args.lobby_gateway:
+                coordinator.lobby_once(args.lobby_gateway)
             if args.once:
                 return
             time.sleep(radio_interval)

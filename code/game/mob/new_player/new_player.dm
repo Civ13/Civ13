@@ -1723,6 +1723,8 @@ var/global/redirect_all_players = null
 	new_character.regenerate_icons()
 	faction_start_apply(new_character)
 	new_character.key = key		//Manually transfer the key to log them in
+	if (new_character.client?.mob == new_character)
+		new_character.client.gateway_expected_slot = 0
 
 	return new_character
 

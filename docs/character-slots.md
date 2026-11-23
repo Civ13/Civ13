@@ -27,6 +27,30 @@ helpers are in `code/modules/persistence/player_reclaim.dm`.
   in to break it up. Kin sharing one faction is enforced by the player houses
   plan.
 
+## The character lobby on Persistence
+
+Completing Sleep in a valid assigned bed opens a private character picker.
+Reconnecting to that sleeper also opens it, after the usual saved-body
+ownership checks. Wake this character uses the usual 30-second Wake Up action;
+opening the lobby does not wake, move, or protect a body. A normal awake
+reconnect still returns directly to the character.
+
+The picker shows the account's slots and a short status and base-stat summary
+for a uniquely identified local body. The optional gateway lobby lists the
+account's known names and slots without claiming a body. Use **Continue to
+their land** to route the active slot. The destination still checks admission;
+an unavailable or travelling home does not send this choice to a substitute
+region. Opening the lobby from a bed does not bypass injury, restraint,
+warrant, jail, or save/recovery checks.
+
+Choosing a different slot takes you to your current character's land. Complete
+the switch with its existing **OOC > Characters** action so that land can check
+whether it is safe to leave the body behind. This version does not change the
+active slot from the gateway or replace a missing remote body. New character
+customization and creation still happen at the destination's Join screen.
+The character lobby is not a playable world and is not enabled on round-based
+gateways.
+
 ## Structuring
 
 - One leadership seat per player: a character cannot found or be handed a

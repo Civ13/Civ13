@@ -187,10 +187,12 @@
 								refusal = "You could not fall asleep here. Try Sleep again."
 							to_chat(src, SPAN_WARNING(refusal))
 							log_game("Sleep refused for [key_name(src)] at [x],[y],[z]: [refusal]")
-						else if (previous_bed == "elsewhere")
-							to_chat(src, SPAN_NOTICE("This is now your bed. Your previous bed is no longer assigned to you."))
-						else if (!previous_bed)
-							to_chat(src, SPAN_NOTICE("This is now your bed."))
+						else
+							if (previous_bed == "elsewhere")
+								to_chat(src, SPAN_NOTICE("This is now your bed. Your previous bed is no longer assigned to you."))
+							else if (!previous_bed)
+								to_chat(src, SPAN_NOTICE("This is now your bed."))
+							sleeping_client.open_character_sleep_picker()
 						return
 					if (!enter_bed_sleep())
 						to_chat(src, SPAN_RED("You could not fall asleep. Wait for any world save or load to finish, then try again."))
@@ -252,6 +254,27 @@
 	inducedSSD = FALSE
 	divine_rested()
 	return TRUE
+
+// The picker button is already explicit confirmation. Keep the regular
+// wake delay and finish path; an obsolete window or timer cannot wake a body.
+/mob/living/human/var/tmp/character_picker_waking = FALSE
+
+/mob/living/human/proc/request_character_picker_wake(client/C)
+	if(character_picker_waking || character_lobby_sleep_body(C) != src)
+		return FALSE
+	if(persistence_sleep_transfer_blocked() || map_storage.character_recovery_unready())
+		to_chat(C, SPAN_WARNING("Wait for the world save or recovery to finish, then try again."))
+		return FALSE
+	character_picker_waking = TRUE
+	to_chat(C, SPAN_NOTICE("You will wake up in 30 seconds."))
+	addtimer(CALLBACK(src, PROC_REF(complete_character_picker_wake), C), 30 SECONDS)
+	return TRUE
+
+/mob/living/human/proc/complete_character_picker_wake(client/C)
+	character_picker_waking = FALSE
+	if(!C || character_lobby_sleep_body(C) != src || map_storage.character_recovery_unready())
+		return
+	finish_wake_up()
 
 //to keep the character sleeping
 // One refresh loop per body: a restored body restarts it on reconnect, and a
@@ -372,7 +395,7 @@
 // Roof images live in the client's image list, which a reconnect or a world
 // load starts empty. The flag alone would be restored from the save.
 /mob/living/human/persistence_runtime_var(key)
-	return key == "roofs_removed" || key == "roofs_client" || ..()
+	return key == "roofs_removed" || key == "roofs_client" || key == "character_picker_waking" || ..()
 
 /mob/living/human/proc/process_turret_roofs()
 	if (!client)

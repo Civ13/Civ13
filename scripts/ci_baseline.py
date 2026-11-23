@@ -2046,6 +2046,9 @@ SUITES = {
             'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Character slot owner keys (docs/character-slots.md); source checks only.
+    'gateway_character_roster': {'files': ('tests/region_gateway/test_roster.py',), 'paths': (
+        'tests/region_gateway/test_roster.py', 'code/modules/persistence/region_gateway.dm',
+        'code/modules/persistence/region_relay.dm')},
     'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py',
         'tests/character_slots/test_structuring.py',
         'tests/character_slots/test_account_summary.py'),
