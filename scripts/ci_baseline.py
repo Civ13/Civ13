@@ -3024,7 +3024,12 @@ SUITES = {
     'design_codes': {'files': ('tests/design_codes/test_design_codes.py',),
         'paths': ('tests/design_codes/', 'code/modules/paintings/design_codes.dm'), 'shared_paths': (
             'code/modules/paintings/', 'code/game/objects/structures/sign_flags.dm',
-            'code/modules/1713/structures.dm', 'code/modules/1713/dressmaking.dm')},
+            'code/modules/1713/structures.dm', 'code/modules/1713/dressmaking.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/__defines/naval.dm',
+            'code/modules/naval/ship_designer.dm', 'code/modules/naval/sub_designer.dm',
+            'code/modules/naval/air_designer.dm', 'code/modules/craft/vehicle_designer.dm',
+            'code/modules/1713/train_designer.dm', 'code/modules/space/station_designer.dm',
+            'code/game/objects/house_designer.dm')},
     'herb_garden': {'files': ('tests/herb_garden/test_herb_garden.py',),
         'paths': ('tests/herb_garden/', 'code/modules/1713/herb_garden.dm', 'code/modules/ecology/flora_regrowth.dm',
                   'code/modules/ecology/foraging.dm', 'icons/farming/plants.dmi', 'icons/farming/seeds.dmi',

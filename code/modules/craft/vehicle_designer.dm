@@ -38,7 +38,7 @@
 //   PICS      the pictures the server sends: "frame_s", "mover_W", "part_E"
 //             ... each as "vehd_<name>.png" (vehicle_designer_sprites)
 //   HELP      the part book: key -> list(what, use, how)
-// The window sends ?src=REF;car=preview|save;code=<C13CAR code>;name=<name>
+// The window sends ?src=REF;car=preview|save|export|import;code=<C13CAR code>;name=<name>
 // and the server answers with carStats(summary html), carChecks(json of
 // the report's data()) and carStatus(text).
 // ============================================================
@@ -194,7 +194,12 @@ var/global/list/vehicle_designer_sprites = list(
 	if (!ship_designer_can_draw(H, sheet))
 		vehicle_designer_status(H, "Hold the sheet and a pen or pencil to draw on it.")
 		return
-	var/save = href_list["car"] == "save"
+	// Import and Export work the same in every designer (naval/draught_kinds.dm).
+	if (href_list["car"] == "import")
+		sheet.draught_import_in_window(H, VEHICLE_DESIGNER_WINDOW)
+		return
+	var/export = href_list["car"] == "export"
+	var/save = export || href_list["car"] == "save"
 	if (!save)
 		if (!isnull(last_preview) && world.time < last_preview + VEHICLE_DESIGNER_PREVIEW_GAP)
 			return
@@ -212,6 +217,8 @@ var/global/list/vehicle_designer_sprites = list(
 	if (save)
 		sheet.take_vehicle(D)
 		vehicle_designer_status(H, "Saved on the sheet.")
+		if (export)
+			sheet.draught_export(H, D.name)
 	qdel(D)
 
 // Raw string: no DM interpolation inside, and never a double quote followed
@@ -234,6 +241,7 @@ button:hover{border-color:#ffd985}
 button.on{background:#b48c4d;color:#211c16;border-color:#ffd985}
 button.go{flex:none;white-space:nowrap;background:#6b4d1f;border-color:#b48c4d;font-weight:bold;font-size:12px;padding:5px 14px}
 input,select{background:#1d1916;color:#e9dfc8;border:1px solid #806040;font-family:Verdana,sans-serif;font-size:11px;height:22px;box-sizing:border-box;padding:1px 3px}
+button.cd{flex:none;white-space:nowrap;margin-right:4px}
 .row{display:flex;align-items:center;margin-bottom:5px}
 .row label{flex:0 0 50px;color:#bfae96;font-size:11px}
 .hint{color:#b0a080;font-size:11px;line-height:1.35}
@@ -343,7 +351,8 @@ img.pic{image-rendering:pixelated;-ms-interpolation-mode:nearest-neighbor;vertic
 <div class='ph'>Wheels and tracks <span class='hint'>- fitted on the four corner frames</span></div><div class='pal' id='pm'></div>
 <div class='ph'>Parts <span class='hint'>- one stands on a frame</span></div><div class='pal' id='pp'></div>
 <div class='row' style='margin-top:4px'><button onclick='undo()' style='margin-right:8px'>Undo</button><span class='hint'>Start from&nbsp;</span><select id='ex' style='flex:1 1 auto;min-width:0;margin-right:4px'><option value=''>-</option></select><button onclick='loadExample()'>Load</button></div>
-<div class='row' style='margin-bottom:0'><button class='go' onclick='send(1)'>Save to the sheet</button><span id='st'></span></div>
+<div class='row'><button class='go' onclick='send(1)'>Save to the sheet</button><span id='st'></span></div>
+<div class='row' style='margin-bottom:0'><button class='cd' onclick='exportCode()' title='Save the drawing on the sheet and show its design code to copy'>Export code</button><button class='cd' onclick='importCode()' title='Paste a design code; it replaces what is drawn on this sheet'>Import code</button></div>
 <div class='hint' style='margin-top:7px'>Click a tile to draw on it with the picked tool. Right-click takes its part off, then its wheel or track. The boxes beside the plan are where the corner frames' wheels or tracks run.</div>
 </div>
 
@@ -472,8 +481,11 @@ function refresh(){controls();draw();part();}
 function code(){var nm=$('nm').value.replace(/[\/;,]/g,' ').replace(/^\s+|\s+$/g,'').replace(/ /g,'_'),t=[],r,c,v;if(!nm)nm='vehicle';
 for(r=1;r<=L;r++)for(c=1;c<=W;c++){v=cells[key(c,r)];t.push(c+','+r+','+(v[0]||'-')+','+(v[1]||'-')+','+(v[2]||'-'));}
 return 'C13CAR/1/'+nm+'/'+AX+'/'+EN+'/'+CC+'/'+W+'/'+L+'/'+t.join(';');}
+// Export saves like Save and then shows the code; Import asks for one.
+function exportCode(){send('export');}
+function importCode(){if(timer){clearTimeout(timer);timer=null;}location.href='byond://?src='+REF+';car=import';}
 function send(save){if(timer){clearTimeout(timer);timer=null;}lastSent=new Date().getTime();if(save)status('Saving...');
-location.href='byond://?src='+REF+';car='+(save?'save':'preview')+';code='+encodeURIComponent(code())+';name='+encodeURIComponent($('nm').value);}
+location.href='byond://?src='+REF+';car='+(save=='export'?'export':save?'save':'preview')+';code='+encodeURIComponent(code())+';name='+encodeURIComponent($('nm').value);}
 // The server answers one summary per 0.3 s: wait out the gap, so the last
 // change is never the one it skips.
 function changed(){if(timer)clearTimeout(timer);var wait=Math.max(300,450-(new Date().getTime()-lastSent));timer=setTimeout(function(){timer=null;send(0);},wait);}

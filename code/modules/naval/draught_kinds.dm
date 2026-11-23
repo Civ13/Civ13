@@ -12,6 +12,15 @@
 //   "max"   the longest code it accepts
 //   "read"  the proc that reads its code into a datum, or null
 //   "take"  the sheet's proc that keeps that datum on it
+//   "title" what the export pop-up calls the sheet
+//   "open"  the sheet's proc that opens its designer window
+//   "window" that window's id, closed when an import switches kind
+//   "age"   (optional) the earliest age whose blank sheet offers this kind;
+//           an import before it is refused the same way
+//
+// Every kind is exported and imported the same way (docs/design-codes.md):
+// the sheet menu's "Export its design code" / "Import a design code", and the
+// same pair of buttons in every designer window (draught_export/draught_import).
 // ============================================================
 
 // Built by a proc: the world's global initialiser is near BYOND's size limit
@@ -20,13 +29,13 @@ var/global/list/draught_kinds = draught_kinds_list()
 
 /proc/draught_kinds_list()
 	return list(
-		"SHIP" = list("name" = "ship", "max" = DESIGN_CODE_SHIP_MAX, "read" = /proc/ship_draught_from_code, "take" = "take"),
-		"SUB" = list("name" = "submarine", "max" = DESIGN_CODE_SUB_MAX, "read" = /proc/sub_draught_from_code, "take" = "take_sub"),
-		"CAR" = list("name" = "vehicle", "max" = DESIGN_CODE_CAR_MAX, "read" = /proc/vehicle_draught_from_code, "take" = "take_vehicle"),
-		"AIR" = list("name" = "airship", "max" = DESIGN_CODE_AIR_MAX, "read" = /proc/air_draught_from_code, "take" = "take_air"),
-		"HOUSE" = list("name" = "house", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house"),
-		"TRAIN" = list("name" = "train", "max" = DESIGN_CODE_TRAIN_MAX, "read" = /proc/train_draught_from_code, "take" = "take_train"),
-		"STATION" = list("name" = "space station", "max" = DESIGN_CODE_STATION_MAX, "read" = /proc/station_plan_from_code, "take" = "take_station"),
+		"SHIP" = list("name" = "ship", "title" = "Ship's draught", "max" = DESIGN_CODE_SHIP_MAX, "read" = /proc/ship_draught_from_code, "take" = "take", "open" = "open_designer", "window" = "ship_designer"),
+		"SUB" = list("name" = "submarine", "title" = "Submarine sheet", "max" = DESIGN_CODE_SUB_MAX, "read" = /proc/sub_draught_from_code, "take" = "take_sub", "open" = "open_sub_designer", "window" = "sub_designer"),
+		"CAR" = list("name" = "vehicle", "title" = "Vehicle sheet", "max" = DESIGN_CODE_CAR_MAX, "read" = /proc/vehicle_draught_from_code, "take" = "take_vehicle", "open" = "open_vehicle_designer", "window" = "vehicle_designer"),
+		"AIR" = list("name" = "airship", "title" = "Airship sheet", "max" = DESIGN_CODE_AIR_MAX, "read" = /proc/air_draught_from_code, "take" = "take_air", "open" = "open_air_designer", "window" = "air_designer"),
+		"HOUSE" = list("name" = "house", "title" = "House plan", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house", "open" = "open_house_designer", "window" = "house_designer"),
+		"TRAIN" = list("name" = "train", "title" = "Train sheet", "max" = DESIGN_CODE_TRAIN_MAX, "read" = /proc/train_draught_from_code, "take" = "take_train", "open" = "open_train_designer", "window" = "train_designer"),
+		"STATION" = list("name" = "space station", "title" = "Station plan", "max" = DESIGN_CODE_STATION_MAX, "read" = /proc/station_plan_from_code, "take" = "take_station", "open" = "open_station_designer", "window" = "station_designer", "age" = ORBIT_MIN_AGE),
 	)
 
 // The longest code any kind of sheet accepts.
@@ -35,3 +44,59 @@ var/global/list/draught_kinds = draught_kinds_list()
 	for (var/kind in draught_kinds)
 		var/list/K = draught_kinds[kind]
 		. = max(., K["max"])
+
+// The kind row for the code on the sheet, or null.
+/obj/item/ship_draught/proc/draught_kind_row()
+	return draught_code ? draught_kinds[design_code_kind(draught_code)] : null
+
+// Shows the code on the sheet ready to copy.
+/obj/item/ship_draught/proc/draught_export(mob/living/human/H, plan_name)
+	var/list/K = draught_kind_row()
+	if (!K)
+		to_chat(H, SPAN_WARNING("There is nothing drawn on the sheet to export."))
+		return
+	design_code_show(H, "[K["title"]]: [plan_name]", draught_code, "Import it into any ship's draught to draw the same [K["name"]].")
+
+// Imports a pasted code onto the sheet (any kind in draught_kinds). The code
+// is read by the same proc the designer window saves through, so an imported
+// plan is held to exactly the rules of one drawn by hand, and its checks are
+// shown the way the window shows them. Returns the kind row taken, or null.
+/obj/item/ship_draught/proc/draught_import(mob/living/human/H)
+	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, space station or house design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/... or C13HOUSE/...). It replaces what is drawn on this sheet.", draught_code_max())
+	if (!typed || QDELETED(src) || !(src in H.get_contents()))
+		return null
+	var/kind = design_code_kind(typed)
+	var/list/K = draught_kinds[kind]
+	if (K && length(typed) > K["max"])
+		K = null
+	var/datum/D = K ? call(K["read"])(typed) : null
+	if (!D)
+		to_chat(H, SPAN_WARNING(design_code_refusal(typed, K ? kind : "SHIP")))
+		return null
+	if (K["age"] && (!map || map.ordinal_age < K["age"]))
+		to_chat(H, SPAN_WARNING("Nobody in this age could build [design_code_kind_name(kind)]."))
+		qdel(D)
+		return null
+	call(src, K["take"])(D)
+	design_code_log(H, K["name"], name, typed)
+	to_chat(H, SPAN_NOTICE("You draw the [D:name] on the sheet."))
+	var/datum/design_report/R = D:check_design()
+	if (R)
+		var/list/lines = R.chat_lines()
+		if (R.blocked())
+			to_chat(H, SPAN_WARNING("As drawn it cannot be built yet:"))
+		for (var/line in lines)
+			to_chat(H, line)
+		qdel(R)
+	qdel(D)
+	return K
+
+// The Import button in a designer window: imports onto the sheet, then shows
+// it in the right window (another kind's window when the code is another kind).
+/obj/item/ship_draught/proc/draught_import_in_window(mob/living/human/H, from_window)
+	var/list/K = draught_import(H)
+	if (!K)
+		return
+	if (K["window"] != from_window)
+		show_browse(H, null, "window=[from_window]")
+	call(src, K["open"])(H)

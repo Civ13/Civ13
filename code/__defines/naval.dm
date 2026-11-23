@@ -159,3 +159,8 @@
 #define TRAIN_DRAUGHT_MAX_CARS 16
 #define TRAIN_DRAUGHT_MAX_TILES 120
 #define DESIGN_CODE_TRAIN_MAX 3600
+
+// The menu labels every kind of sheet uses for its design code
+// (naval/draught_kinds.dm), so players meet one wording everywhere.
+#define DRAUGHT_EXPORT_LABEL "Export its design code"
+#define DRAUGHT_IMPORT_LABEL "Import a design code"

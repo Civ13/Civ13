@@ -726,7 +726,7 @@
 	var/list/options = list("Draw on the sheet", pegged ? "Peg out the storey I stand on" : "Peg it out on the ground")
 	if (pegged)
 		options += "Pull up the pegs and forget the site"
-	options += list("Copy its design code", "Paste a design code", "Cancel")
+	options += list(DRAUGHT_EXPORT_LABEL, DRAUGHT_IMPORT_LABEL, "Cancel")
 	var/text = D.summary_text()
 	if (pegged)
 		text += "<br>[house_pegs_text()]"
@@ -742,10 +742,10 @@
 			qdel(now)
 	else if (choice == "Pull up the pegs and forget the site")
 		house_pegs_forget(H)
-	else if (choice == "Copy its design code")
-		design_code_show(H, "House plan: [D.name]", draught_code, "Paste it into any ship's draught to draw the same house.")
-	else if (choice == "Paste a design code")
-		paste_any_code(H)
+	else if (choice == DRAUGHT_EXPORT_LABEL)
+		draught_export(H, D.name)
+	else if (choice == DRAUGHT_IMPORT_LABEL)
+		draught_import(H)
 
 #undef HOUSE_PLAN_NAME_MAX
 #undef HOUSE_PLAN_SOFT_STOREYS
