@@ -30,18 +30,24 @@ def mature_tree_adapter(loc, randint):
     construction and seasonal behavior remain injected boundaries.
     """
     defaults = dict(pixel_x=0, pixel_y=0)
+    trunk_center = None
     for path in ('/obj/structure/wild', '/obj/structure/wild/tree',
                  '/obj/structure/wild/tree/live_tree'):
         declaration = proc(WILD, path + '\n')
         for field, value in re.findall(r'^\t(pixel_[xy]) = (-?\d+)\s*$', declaration, re.M):
             defaults[field] = int(value)
+        center = re.search(r'^	trunk_center_x = (-?\d+)$', declaration, re.M)
+        if center:
+            trunk_center = int(center[1])
+    if trunk_center is None:
+        raise AssertionError('Missing wild-tree trunk origin')
     tree = State(loc=loc, initial_pixels=defaults, change_season=lambda: None, **defaults)
     constructor = proc(WILD, '/obj/structure/wild/tree/New()')
-    assignments = re.findall(r'^\t\t(pixel_[xy]) = rand\((-?\d+),\s*(-?\d+)\)', constructor, re.M)
-    if {field for field, _, _ in assignments} != {'pixel_x', 'pixel_y'}:
+    assignments = re.findall(r'^\t\t(pixel_[xy]) = rand\((-?\d+),\s*(-?\d+)\)( - trunk_center_x)?$', constructor, re.M)
+    if {field for field, _, _, _ in assignments} != {'pixel_x', 'pixel_y'}:
         raise AssertionError('Unsupported wild-tree pixel constructor')
-    for field, lower, upper in assignments:
-        setattr(tree, field, randint(int(lower), int(upper)))
+    for field, lower, upper, subtract_center in assignments:
+        setattr(tree, field, randint(int(lower), int(upper)) - (trunk_center if subtract_center else 0))
     return tree
 
 
@@ -112,7 +118,7 @@ class Trees(unittest.TestCase):
         for x in range(-24, -7):
             for y in range(17):
                 with self.subTest(x=x, y=y):
-                    rolls = iter((x, y))
+                    rolls = iter((x + 32, y))
                     def roll(lower, upper):
                         value = next(rolls)
                         self.assertLessEqual(lower, value)
@@ -209,7 +215,9 @@ class Trees(unittest.TestCase):
                                                  ('rain', 75, 80, None), ('snow_storm', 80, 80, 'frozen'),
                                                  ('sandstorm', 80, 80, 'destroyed')):
             state = dict(src=plant, loc=plant, area=State(icon_state=weather, climate='temperate'),
-                         water=initial, max_water=80, winter_hardy=False, map=State(heat_wave=False), stage=6, death=None)
+                         water=initial, max_water=80, winter_hardy=False, stage=6, death=None,
+                         frost_plant_step=lambda: False, flood_plant_step=lambda: False,
+                         weather_look_at=lambda _: weather, weather_heat_at=lambda _: False)
             result = adapter.execute(code, **state)
             self.assertEqual((result[1], result[3]), (expected, death))
 
