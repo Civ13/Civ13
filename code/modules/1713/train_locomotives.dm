@@ -400,17 +400,14 @@
 		return
 	var/list/new_tiles = train_platform_tiles(loc, dir)
 	var/plain = train_tile_unwatched(loc)
-	var/turning = 0
-	if (dir == turn(old_dir, 90))
-		turning = 90
-	else if (dir == turn(old_dir, -90))
-		turning = -90
+	var/turning = train_turning(old_tiles[2], old_dir, loc, dir)
 	for (var/atom/movable/AM in cargo)
 		var/i = cargo[AM]
 		if (AM.loc == old_tiles[i] && new_tiles[i] && AM.train_shift(new_tiles[i], plain))
 			if (turning && isobj(AM))
 				AM.set_dir(turn(AM.dir, turning))
 	place_body(plain)
+	train_arc_pose(src, body_parts, dir)
 
 // Fuel this engine takes from the hand.
 /obj/structure/trains/locomotive/proc/takes_fuel(obj/item/W)

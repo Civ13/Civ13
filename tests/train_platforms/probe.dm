@@ -4,7 +4,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 400
+	maxx = 440
 	maxy = 26
 	maxz = 1
 	turf = /turf/floor/dirt
@@ -3572,6 +3572,117 @@ var/global/platform_probe_runtime_error = FALSE
 	platform_check("bends/fast_into_tight_bends_derails", !F.driving && fast_car.derailed && F.y <= 9 && F.rail_speed == 0)
 	platform_check("bends/car_takes_wider_bends", platform_step(E, 18) == 18 && E.loc == platform_turf(376, 20) && platform_parts_placed(platform_segments(car)))
 
+// A corner at (x, y): track north from y 2, then east for east tiles.
+/proc/platform_arc_line(x, east, y = 10)
+	for (var/ty in 2 to y)
+		platform_track(x, ty, NORTH)
+	for (var/tx in x + 1 to x + east)
+		platform_track(tx, y, EAST)
+	return locate(/obj/structure/rails/turn) in platform_turf(x, y)
+
+/proc/platform_arcs_run()
+	// Easing a corner: radius 8 needs eight straight tiles each side.
+	var/obj/structure/rails/turn/short = platform_arc_line(432, 6)
+	platform_check("arcs/needs_straights", short && short.arc_problem(8) && !short.arc_problem(4))
+	// Too fast for the curve, the train leaves the rails; under its limit,
+	// which is above a sharp corner's, it does not.
+	train_arc_ease(short, 4)
+	var/obj/structure/trains/platform/fast_car = platform_car("flatbed", 432, 5, NORTH)
+	var/obj/structure/trains/locomotive/coal/F = new(platform_turf(432, 6))
+	F.dir = NORTH
+	F.fuel = 100
+	F.on = TRUE
+	F.connected = fast_car
+	var/calm = F.rail_speed
+	F.rail_speed = 3.8
+	var/under = !F.curve_check(F, EAST, platform_turf(432, 5)) && !fast_car.derailed
+	F.rail_speed = calm
+	F.throttle = 3
+	F.rail_speed = 6.5
+	F.drive()
+	drive_wait(F)
+	platform_check("arcs/too_fast_leaves_the_rails", under && fast_car.derailed && !F.driving)
+	var/obj/structure/rails/turn/C = platform_arc_line(402, 10)
+	var/obj/structure/trains/W0 = new /obj/structure/trains/transport/flatbed(platform_turf(402, 8))
+	var/blocked = C.arc_problem(4)
+	qdel(W0)
+	var/turf/S = train_arc_ease(C, 4)
+	var/arcs = 0
+	for (var/turf/T in block(platform_turf(400, 2), platform_turf(412, 12)))
+		if (train_arc_at(T))
+			arcs++
+	var/obj/structure/rails/arc/first = train_arc_at(platform_turf(402, 6))
+	var/obj/structure/rails/arc/last = train_arc_at(platform_turf(406, 10))
+	// The curve may be laid from either end; it is the same curve.
+	platform_check("arcs/eases_corner", blocked && (S == platform_turf(402, 6) || S == platform_turf(406, 10)) && arcs == 9 && first && last && !rail_at(platform_turf(402, 10)) && rail_at(platform_turf(402, 5)) && (SOUTH in first.exits()) && (EAST in last.exits()) && !rail_bend_at(platform_turf(403, 8)))
+	// A short engine and wagon run round it and out along the straight.
+	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(402, 4))
+	L.dir = NORTH
+	L.fuel = 100
+	L.on = TRUE
+	var/obj/structure/trains/W = new /obj/structure/trains/transport/flatbed(platform_turf(402, 3))
+	W.dir = NORTH
+	L.connected = W
+	var/stepped = platform_step(L, 13)
+	platform_check("arcs/train_runs_round", stepped == 13 && L.loc == platform_turf(409, 10) && L.dir == EAST && W.loc == platform_turf(408, 10) && !L.train_arc_posed && !L.pixel_x && !L.pixel_y)
+	// Speed: a wide curve is taken faster than a sharp corner, not without limit.
+	platform_check("arcs/speed_limits", rail_arc_speed_at(platform_turf(403, 8)) == 4 && !rail_arc_speed_at(platform_turf(402, 5)) && train_arc_speed(8) == 6)
+	// Put back to a sharp corner with a crowbar.
+	qdel(L)
+	qdel(W)
+	var/obj/structure/rails/arc/A = train_arc_at(platform_turf(403, 8))
+	var/sharp_ok = !A.sharpen_problem()
+	train_arc_sharpen(A)
+	platform_check("arcs/sharpens_back", sharp_ok && rail_bend_at(platform_turf(402, 10)) && !train_arc_at(platform_turf(403, 8)) && !rail_at(platform_turf(403, 8)) && rail_at(platform_turf(402, 7)) && rail_at(platform_turf(406, 10)))
+	// A four-section car rounds a radius 8 curve: its deck lies across the
+	// staircase, it is drawn on the circle, and it comes out square.
+	var/obj/structure/rails/turn/C8 = platform_arc_line(414, 20, 20)
+	var/turf/S8 = train_arc_ease(C8, 8)
+	var/obj/structure/trains/platform/car = platform_car("flatbed", 414, 8, NORTH)
+	var/obj/structure/trains/locomotive/coal/E = new(platform_turf(414, 9))
+	E.dir = NORTH
+	E.fuel = 100
+	E.on = TRUE
+	E.connected = car
+	var/list/segs = platform_segments(car)
+	var/worst = 0
+	var/posed = FALSE
+	var/placed = TRUE
+	var/flips = 0
+	var/last_dir = E.dir
+	for (var/i in 1 to 24)
+		if (!platform_step(E, 1))
+			break
+		var/list/tiles = platform_car_tiles(segs)
+		var/list/seen = list()
+		var/twice = 0
+		for (var/turf/T in tiles)
+			if (T in seen)
+				twice++
+			seen += T
+		worst = max(worst, twice)
+		if (E.dir != last_dir)
+			flips++
+		last_dir = E.dir
+		if (!platform_parts_placed(segs))
+			placed = FALSE
+		for (var/obj/structure/trains/platform/P in segs)
+			if (P.train_arc_posed && (P.pixel_x || P.pixel_y || !(P.transform ~= matrix())))
+				posed = TRUE
+	var/square = TRUE
+	for (var/obj/structure/trains/platform/P in segs)
+		if (P.train_arc_posed || P.pixel_x || P.pixel_y || P.dir != EAST)
+			square = FALSE
+		for (var/obj/structure/train_part/part in P.deck_parts)
+			if (part.train_arc_posed || part.pixel_x || part.pixel_y)
+				square = FALSE
+	platform_check("arcs/car_deck_lies_across", placed && worst <= 2)
+	// It faces the way the track mostly runs, turning once, not at every step.
+	platform_check("arcs/car_drawn_on_circle", posed && flips == 1)
+	platform_check("arcs/car_comes_out_square", (S8 == platform_turf(414, 12) || S8 == platform_turf(422, 20)) && E.loc == platform_turf(427, 20) && square)
+	// Furniture aboard turns once over the whole curve, not at every step.
+	platform_check("arcs/turns_once", train_turning(platform_turf(414, 15), NORTH, platform_turf(415, 15), EAST) == 0 && train_turning(platform_turf(414, 5), NORTH, platform_turf(414, 6), NORTH) == 0)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -3620,6 +3731,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_electric_run()
 		platform_entomb_run()
 		platform_bends_run()
+		platform_arcs_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

@@ -64,6 +64,9 @@ var/datum/map_stub/map = new
 	return FALSE
 /proc/train_consist_list(obj/structure/trains/head)
 	return list(head)
+// Wide curves (train_arcs.dm) only add a kind of track and how it is drawn.
+/obj/structure/rails/arc
+/proc/train_arc_pose(obj/structure/centre, list/parts, heading)
 /proc/train_glide_before(atom/movable/AM, turf/dest)
 /proc/train_glide_after(atom/movable/AM, turf/from)
 /atom/movable/proc/train_glide_set_loc(turf/dest)

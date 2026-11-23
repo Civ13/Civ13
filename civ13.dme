@@ -1148,6 +1148,7 @@
 #include "code\modules\1713\track_laying.dm"
 #include "code\modules\1713\treated_cloth.dm"
 #include "code\modules\1713\train_adhesion.dm"
+#include "code\modules\1713\train_arcs.dm"
 #include "code\modules\1713\train_bends.dm"
 #include "code\modules\1713\train_brakes.dm"
 #include "code\modules\1713\train_conductor.dm"

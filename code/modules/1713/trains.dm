@@ -461,6 +461,8 @@
 		return FALSE
 	if (!fdir)
 		fdir = train_heading()
+	// On a wide curve a car faces the way the track runs (train_arcs.dm).
+	fdir = rail_arc_facing(newloc, fdir)
 	check_connections()
 	if (buckled_mob && map.check_caribbean_block(buckled_mob, newloc))
 		return FALSE
@@ -478,6 +480,8 @@
 		return FALSE
 	train_glide_after(src, oldloc)
 	dir = reversed ? OPPOSITE_DIR(fdir) : fdir
+	// Drawn round a wide curve (train_arcs.dm).
+	train_arc_pose(src, null, dir)
 	if (buckled_mob)
 		if (buckled_mob.buckled == src)
 			buckled_mob.train_glide_set_loc(loc)
@@ -512,7 +516,7 @@ var/global/train_solo_move = FALSE
 	for (var/obj/structure/rails/R in T)
 		if (istype(R, /obj/structure/rails/split/switcher))
 			return R
-		if (!found || istype(R, /obj/structure/rails/turn))
+		if (!found || istype(R, /obj/structure/rails/turn) || istype(R, /obj/structure/rails/arc))
 			found = R
 	return found
 
@@ -531,6 +535,24 @@ var/global/train_solo_move = FALSE
 		var/turf/branch = SW.branch_turf()
 		if (rail_at(branch))
 			return list(branch, fdir)
+	else if (istype(RT, /obj/structure/rails/arc))
+		// On a wide curve a car faces the way the track mostly runs, not the
+		// way it last stepped, and leaves by the leg most nearly ahead
+		// (train_arcs.dm).
+		var/leave = 0
+		var/best = -2
+		for (var/d in RT.exits())
+			var/along = train_arc_dx(d) * train_arc_dx(mdir) + train_arc_dy(d) * train_arc_dy(mdir)
+			if (along > best)
+				best = along
+				leave = d
+		tgtt = get_step(RT, leave)
+		if (!leave || !tgtt)
+			return null
+		for (var/obj/structure/rails/R in tgtt)
+			if (R.accepts(leave))
+				return list(tgtt, rail_arc_facing(tgtt, leave))
+		return null
 	else if (istype(RT, /obj/structure/rails/turn) && RT.turn_dir)
 		var/list/legs = RT.exits()
 		// A car that came in along one leg leaves by the other; one that
@@ -541,7 +563,7 @@ var/global/train_solo_move = FALSE
 		tgtt = get_step(RT, fdir)
 	if (!rail_canmove(fdir))
 		return null
-	return list(tgtt, fdir)
+	return list(tgtt, rail_arc_facing(tgtt, fdir))
 
 // How hard this car hits what is in front of it: 1 is the old fixed blow.
 // A locomotive scales it with its speed and the weight behind it.
