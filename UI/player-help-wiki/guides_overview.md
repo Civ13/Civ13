@@ -105,6 +105,7 @@ New to the game? Go to [Start Here](topics/Start_Here.md).
 ## [Vehicles](topics/Vehicles.md)
 
 - [Boats & Ships](guides/Guide_to_Boats.md)
+- [Ship Damage Control](guides/Guide_to_Ship_Damage_Control.md)
 - [Trains](guides/Guide_to_Trains.md)
 - [Tanks](guides/Guide_to_Tanks.md)
 - [Aircraft](guides/Guide_to_Aircraft.md)
