@@ -139,6 +139,11 @@
 		return
 
 	if (istype(A, /obj/structure/reagent_dispensers))
+		var/obj/structure/reagent_dispensers/D = A
+		// A locked barrel keeps its contents, as for any other container (#6967).
+		if (D.locked && D.custom_code != 0)
+			to_chat(user, "<span class='notice'>\The [D] is locked.</span>")
+			return
 		if (!reagents.get_free_space())
 			to_chat(user, "<span class='warning'>\The [src] is already soaked.</span>")
 			return
