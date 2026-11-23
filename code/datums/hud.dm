@@ -11,6 +11,10 @@
 	// is used as written. FALSE: locs are tiles on the 15x15 design grid and
 	// hud_layout.dm works out which edge each one follows.
 	var/anchored_layout = FALSE
+	// "need:<name>" or "inv:<slot>" -> the screen_loc that tile takes instead on
+	// a view at least two tiles wider than HUD_DESIGN_VIEW. A loc here names its
+	// own edge, so it is never anchored by guesswork (hud_layout.dm).
+	var/list/wide_locs = null
 
 /datum/hud/human
 	name = "NewStyle"
@@ -92,6 +96,10 @@
 /datum/hud/human/civstyle
 	name = "1713Style"
 	icon = 'icons/mob/screen/1713Style.dmi'
+	// On the widescreen view the stance button sits beside the dodge / parry
+	// button, in the gap between the hands block and the action corner. The
+	// square view has no gap there, so it stays above the tactic button.
+	wide_locs = list("need:combat stance" = "CENTER+3,1")
 	ConteinerData = list(
 		"Xspace" = 2,
 		"Yspace" = 5,
@@ -112,10 +120,10 @@
 		"aim_cross" =		list("type" = /obj/screen/aiming_cross,			"loc" = "1,1", "icon" = 'icons/mob/screen/aiming_cross.dmi', "icon_state" = "cross3"),
 	)
 	HUDneed = list(
-		"health" = 				list("type" = /obj/screen/health,	 "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll.dmi'),
-		"nutrition" = 			list("type" = /obj/screen/nutrition,  "loc" = "15,6"),
-		"mood" = 				list("type" = /obj/screen/mood,	   "loc" = "15,8"),
-		"body temperature" = 	list("type" = /obj/screen/bodytemp,   "loc" = "15,9"),
+		"health" = 				list("type" = /obj/screen/health,	 "loc" = "15,7:14", "icon" = 'icons/mob/screen/healthdoll.dmi'),
+		"nutrition" = 			list("type" = /obj/screen/nutrition,  "loc" = "15,6:14"),
+		"mood" = 				list("type" = /obj/screen/mood,	   "loc" = "15,8:14"),
+		"body temperature" = 	list("type" = /obj/screen/bodytemp,   "loc" = "15,9:14"),
 		"throw" = 				list("type" = /obj/screen/HUDthrow,   "loc" = "14,2"),
 		"pull" = 				list("type" = /obj/screen/pull,	   "loc" = "14,2"),
 		"drop" = 				list("type" = /obj/screen/drop,	   "loc" = "14,2"),
@@ -134,14 +142,16 @@
 		"random damage zone" = 	list("type" = /obj/screen/zone_sel_random,   "loc" = "15,3"),
 		"damage zone" = 		list("type" = /obj/screen/zone_sel3,   "loc" = "15,1", "icon" = 'icons/mob/screen/zone_sel.dmi'),
 		"swap hand" = 			list("type" = /obj/screen/swap,	   "loc" = "7,2"),
-		"fixeye" = 				list("type" = /obj/screen/fixeye,	 "loc" = "15,3:13"),
+		"fixeye" = 				list("type" = /obj/screen/fixeye,	 "loc" = "15,3:14"),
 		"toggle gun mode" = 	list("type" = /obj/screen/gun/mode,	   "loc" = "4,2"),
 		"allow movement" = 		list("type" = /obj/screen/gun/move,	   "loc" = "5,2"),
 		"allow item use" = 		list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory" = 	list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
-		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5"),
-		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4"),
+		// The eye button is a whole tile standing on the 14px Random label, so
+		// everything above it in the column starts 14px up as well.
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5:14"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4:14"),
 		// Tap to step on or off (subtile_movement.dm).
 		"tap step" = 			list("type" = /obj/screen/tap_step,	   "loc" = "12,2"),
 		)
@@ -178,6 +188,14 @@
 	icon = 'icons/mob/screen/ConsoleStyle.dmi'
 	anchored_layout = TRUE
 	// Storage windows open on the row above the console.
+	// On the widescreen view the action row has room for a fourth button, so
+	// the stance button sits between dodge / parry and the body part selector
+	// it aims with: kick, tactic, dodge / parry, stance. The square view keeps
+	// it two rows up, clear of the gun buttons.
+	wide_locs = list(
+		"need:secondary attack" = "EAST-4,SOUTH+1:2",
+		"need:combat stance" = "EAST-1,SOUTH+1:2",
+	)
 	ConteinerData = list(
 		"Xspace" = 4,
 		"Yspace" = 3,
@@ -219,7 +237,7 @@
 		"m_intent" = 			list("type" = /obj/screen/mov_intent, "loc" = "EAST-1,SOUTH:2"),
 		"damage zone" = 		list("type" = /obj/screen/zone_sel3,   "loc" = "EAST,SOUTH:2", "icon" = 'icons/mob/screen/zone_sel_console.dmi'),
 		"tactic" = 				list("type" = /obj/screen/tactic,	 "loc" = "EAST-3,SOUTH+1:2"),
-		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "EAST-3,SOUTH+3:2"),
+		"combat stance" = 		list("type" = /obj/screen/combat_stance,	 "loc" = "EAST-1,SOUTH+3:2"),
 		"mode" = 				list("type" = /obj/screen/mode,	   "loc" = "EAST-2,SOUTH+1:2"),
 		"secondary attack" = 	list("type" = /obj/screen/kick_jump_bite,	   "loc" = "EAST-1,SOUTH+1:2"),
 		"random damage zone" = 	list("type" = /obj/screen/zone_sel_random,   "loc" = "EAST,SOUTH+2:2"),
@@ -265,6 +283,10 @@
 /datum/hud/human/litewebstyle
 	name = "LiteWebStyle"
 	icon = 'icons/mob/screen/litewebStyle.dmi'
+	// On the widescreen view the stance button sits beside the dodge / parry
+	// button, in the gap between the hands block and the action corner. The
+	// square view has no gap there, so it stays above the tactic button.
+	wide_locs = list("need:combat stance" = "CENTER+3,1")
 	ConteinerData = list(
 		"Xspace" = 2,
 		"Yspace" = 5,
@@ -285,10 +307,10 @@
 		"aim_cross" =		list("type" = /obj/screen/aiming_cross,	"loc" = "1,1", "icon" = 'icons/mob/screen/aiming_cross.dmi', "icon_state" = "cross3"),
 	)
 	HUDneed = list(
-		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,6", "icon" = 'icons/mob/screen/healthdoll_lw.dmi'),
-		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "15,8"),
-		"mood"  			 = list("type" = /obj/screen/mood,	   "loc" = "15,7"),
-		"body temperature"	= list("type" = /obj/screen/bodytemp,   "loc" = "15,9"),
+		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,6:9", "icon" = 'icons/mob/screen/healthdoll_lw.dmi'),
+		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "15,8:9"),
+		"mood"  			 = list("type" = /obj/screen/mood,	   "loc" = "15,7:9"),
+		"body temperature"	= list("type" = /obj/screen/bodytemp,   "loc" = "15,9:9"),
 		"throw"	   = list("type" = /obj/screen/HUDthrow,   "loc" = "13,1"),
 		"pull"		= list("type" = /obj/screen/pull,	   "loc" = "13,1"),
 		"m_intent"	= list("type" = /obj/screen/mov_intent, "loc" = "14,1"),
@@ -305,8 +327,10 @@
 		"allow item use" 	 = list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
-		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5"),
-		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4"),
+		// The eye button is a whole tile standing on the 9px Random label, so
+		// everything above it in the column starts 9px up as well.
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5:9"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4:9"),
 		// Tap to step on or off (subtile_movement.dm).
 		"tap step" = 			list("type" = /obj/screen/tap_step,	   "loc" = "12,2"),
 		)
@@ -337,6 +361,10 @@
 /datum/hud/human/fofstyle
 	name = "FoFStyle"
 	icon = 'icons/mob/screen/FoFStyle.dmi'
+	// On the widescreen view the stance button sits beside the dodge / parry
+	// button, in the gap between the hands block and the action corner. The
+	// square view has no gap there, so it stays above the tactic button.
+	wide_locs = list("need:combat stance" = "CENTER+3,1")
 	ConteinerData = list(
 		"Xspace" = 2,
 		"Yspace" = 5,
@@ -357,10 +385,10 @@
 		"aim_cross" =		list("type" = /obj/screen/aiming_cross,	"loc" = "1,1", "icon" = 'icons/mob/screen/aiming_cross.dmi', "icon_state" = "cross3"),
 	)
 	HUDneed = list(
-		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,7", "icon" = 'icons/mob/screen/healthdoll_fof.dmi'),
-		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "15,6"),
-		"mood"  			 = list("type" = /obj/screen/mood,	   "loc" = "15,8"),
-		"body temperature"	= list("type" = /obj/screen/bodytemp,   "loc" = "15,9"),
+		"health"	  = list("type" = /obj/screen/health,	 "loc" = "15,7:1", "icon" = 'icons/mob/screen/healthdoll_fof.dmi'),
+		"nutrition"   = list("type" = /obj/screen/nutrition,  "loc" = "15,6:1"),
+		"mood"  			 = list("type" = /obj/screen/mood,	   "loc" = "15,8:1"),
+		"body temperature"	= list("type" = /obj/screen/bodytemp,   "loc" = "15,9:1"),
 		"throw"	   = list("type" = /obj/screen/HUDthrow,   "loc" = "12,1"),
 		"pull"		= list("type" = /obj/screen/pull,	   "loc" = "12,1"),
 		"m_intent"	= list("type" = /obj/screen/mov_intent, "loc" = "14,1"),
@@ -371,14 +399,16 @@
 		"intent"	  = list("type" = /obj/screen/intent,	 "loc" = "13,1"),
 		"random damage zone" = list("type" = /obj/screen/zone_sel_random,   "loc" = "15,3"),
 		"damage zone" = list("type" = /obj/screen/zone_sel3,   "loc" = "15,1", "icon" = 'icons/mob/screen/zone_sel_fof.dmi'),
-		"fixeye"	 = list("type" = /obj/screen/fixeye,	 "loc" = "15,3"),
+		"fixeye"	 = list("type" = /obj/screen/fixeye,	 "loc" = "15,3:1"),
 		"toggle gun mode"   = list("type" = /obj/screen/gun/mode,	   "loc" = "4,2"),
 		"allow movement"	= list("type" = /obj/screen/gun/move,	   "loc" = "5,2"),
 		"allow item use" 	 = list("type" = /obj/screen/gun/item,	   "loc" = "6,2"),
 		"toggle inventory"   = list("type" = /obj/screen/toggle_inventory,	   "loc" = "1,1"),
 		"craft" = 				list("type" = /obj/screen/craft,	   "loc" = "13,2"),
-		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5"),
-		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4"),
+		// The eye button stands on the Random label, one pixel into the next
+		// tile, so everything above it in the column starts 1px up as well.
+		"go up" = 				list("type" = /obj/screen/updown,	   "loc" = "15,5:1"),
+		"go down" = 			list("type" = /obj/screen/updown/down,	   "loc" = "15,4:1"),
 		// Tap to step on or off (subtile_movement.dm).
 		"tap step" = 			list("type" = /obj/screen/tap_step,	   "loc" = "12,2"),
 		)

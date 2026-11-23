@@ -496,6 +496,7 @@ var/global/list/hud_icon_px_cache = list()
 	var/list/scaled = list()
 	var/datum/hud/style = global.HUDdatums[defaultHUD]
 	var/anchored = style && style.anchored_layout
+	var/list/wide = (style && V[1] >= design[1] + 2) ? style.wide_locs : null
 	for (var/obj/screen/S in hud_layout_elements())
 		if (!S.hud_default_loc)
 			S.hud_default_loc = S.screen_loc
@@ -521,7 +522,11 @@ var/global/list/hud_icon_px_cache = list()
 			// Default positions are written for the 15x15 design grid; anchor them
 			// there so the right-hand column and bar follow the edge of a wider view.
 			// An anchored style names each tile's edge itself.
-			if (!anchored)
+			// A style may name another spot for a tile on a wide view (wide_locs).
+			var/list/W = wide ? hud_parse_screen_loc(wide[S.hud_layout_key]) : null
+			if (W)
+				D = W
+			else if (!anchored)
 				D = hud_infer_anchor(D, design_w, design_h)
 			if (g > 1 && size == 1 && (findtext(S.hud_layout_key, "need:") == 1 || findtext(S.hud_layout_key, "inv:") == 1))
 				flow += list(list(S, hud_anchor_origin(D[1], view_w) + D[2], hud_anchor_origin(D[3], view_h) + D[4], foot[1], foot[2]))

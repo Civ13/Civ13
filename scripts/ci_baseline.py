@@ -2826,7 +2826,7 @@ SUITES = {
         'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),
         'shared_paths': ('interface/skin.dmf', 'code/modules/client/client_procs.dm')},
     # Customizable HUD wiring; tests/hud_layout/run.py is the manual native fixture.
-    'hud_layout': {'files': ('tests/hud_layout/test_layout.py', 'tests/hud_layout/test_console_style.py', 'tests/hud_layout/test_tap_step.py'),
+    'hud_layout': {'files': ('tests/hud_layout/test_layout.py', 'tests/hud_layout/test_console_style.py', 'tests/hud_layout/test_tap_step.py', 'tests/hud_layout/test_slots.py'),
         'paths': ('tests/hud_layout/', 'code/_onclick/hud/hud_layout.dm', 'tools/hud-skin/',
             'icons/mob/screen/ConsoleStyle.dmi', 'icons/mob/screen/needs.dmi',
             'icons/mob/screen/healthdoll_console.dmi', 'icons/mob/screen/zone_sel_console.dmi'),
