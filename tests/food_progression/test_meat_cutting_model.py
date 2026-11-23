@@ -66,7 +66,7 @@ class MeatCuttingModelTests(unittest.TestCase):
             handler = section(source, marker, "\n/obj/")
             self.assertLess(handler.index("if (!can_cut_preserved_meat())"), handler.index("new(src)"))
             self.assertIn(f"for (var/i = 1 to {count})", handler)
-            self.assertIn("prepare_meat_cutlet(cutlet)", handler)
+            self.assertIn(f"prepare_meat_cutlet(cutlet, {count})", handler)
         self.assertIn('istype(src, /obj/item/weapon/reagent_containers/food/snacks/bearmeat)', MEAT.split('/proc/can_salt_meat()', 1)[1].split('\n/obj/', 1)[0])
         self.assertIn('if (decay == 0 || fertilizer_value > 0)\n\t\t\treturn', FOOD)
         self.assertIn('decaytimer += 600', FOOD)
