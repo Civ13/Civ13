@@ -146,8 +146,9 @@
 	if(wake && peer["state"] != "UP")
 		// A land the doorman can wake or start is asked through it: a direct poll of one
 		// in cold storage or stopped fails and read it as down, which turned the player away.
+		// The doorman is asked first: the state here may be an old failed poll.
 		if(!peer_wakeable(id))
-			poll_peer(id)
+			refresh_peer(id)
 		if(peer["state"] != "UP")
 			var/why = wake_peer(id, C.mob)
 			if(why)

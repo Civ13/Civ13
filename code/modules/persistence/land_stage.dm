@@ -164,9 +164,14 @@ var/global/list/land_suggestions_told = list() // region id -> the suggestion ad
 		text += " (paused)"
 	return text
 
-// The Regions panel's column: a stage only for lands people live in.
+// The Regions panel's column: a stage only for lands people live in, and only
+// once an admin has given the land one. A land nobody staged read "unexplored"
+// although players lived there (North America, 2026-11-23), which looked like
+// the reason they could not get home.
 /proc/land_stage_column(id, kind)
 	if(id != shard_group.mainland && !land_stage_kind_ok(kind))
+		return ""
+	if(id != shard_group.mainland && !land_stages[id])
 		return ""
 	return land_stage_text(land_stage(id), land_stage_paused(id))
 
