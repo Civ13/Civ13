@@ -70,6 +70,17 @@ class AccoladeSourceTest(unittest.TestCase):
         self.assertIn("record_chapter_author(node_id, writer)", research)
         self.assertIn("accolade_learned_from(H, source, node_id)", research)
 
+    def test_crafting_targets_match_the_catalog_and_docs(self):
+        self.assertIn("#define ACCOLADE_MAKER_RECIPES 100\n", SOURCE)
+        self.assertIn("#define ACCOLADE_ARTISAN_RECIPES 500\n", SOURCE)
+        docs = read("docs/accolades.md")
+        for key, name, points, goal in (
+            ("maker", "Maker", 10, 100), ("artisan", "Artisan", 30, 500)
+        ):
+            description = f"Craft [ACCOLADE_{key.upper()}_RECIPES] different things with one character."
+            self.assertIn(f'"{key}" = list("{name}", {points}, "Making", "{description}")', SOURCE)
+            self.assertIn(f"| {name} | One character crafts {goal} different things | {points} |", docs)
+
     def test_group_accolades_need_other_real_players(self):
         other = SOURCE[SOURCE.index("/proc/accolade_other_counts("):SOURCE.index("// A crafted recipe result")]
         self.assertIn("other != ckey", other)

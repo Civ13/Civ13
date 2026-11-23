@@ -34,8 +34,8 @@
 #define ACCOLADE_APPRENTICE_SUBJECTS 10
 #define ACCOLADE_SCHOLAR_SUBJECTS 50
 #define ACCOLADE_WANDERER_LANDS 3
-#define ACCOLADE_MAKER_RECIPES 25
-#define ACCOLADE_ARTISAN_RECIPES 100
+#define ACCOLADE_MAKER_RECIPES 100
+#define ACCOLADE_ARTISAN_RECIPES 500
 #define ACCOLADE_HUNTER_KILLS 10
 #define ACCOLADE_WINTER_MINUTES 120
 #define ACCOLADE_FOUNDER_MEMBERS 5
@@ -59,8 +59,8 @@
 		"world_traveller" = list("World Traveller", 40, "Travel", "Live in every land of the world."),
 		"long_winter" = list("Long Winter", 15, "Survival", "Spend 2 hours of play outdoors in a tundra or taiga winter with one character."),
 		"copyist" = list("Copyist", 10, "Knowledge", "Copy a book, a chapter or a map by hand."),
-		"maker" = list("Maker", 10, "Making", "Craft 25 different things with one character."),
-		"artisan" = list("Artisan", 30, "Making", "Craft 100 different things with one character."),
+		"maker" = list("Maker", 10, "Making", "Craft [ACCOLADE_MAKER_RECIPES] different things with one character."),
+		"artisan" = list("Artisan", 30, "Making", "Craft [ACCOLADE_ARTISAN_RECIPES] different things with one character."),
 		"smelter" = list("Smelter", 10, "Making", "Light a furnace or a tatara to smelt metal."),
 		"farmer" = list("Farmer", 5, "Food", "Harvest a ripe crop."),
 		"herder" = list("Herder", 10, "Food", "Tame an animal."),
