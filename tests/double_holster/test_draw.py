@@ -25,7 +25,11 @@ def draw_second(first, second):
     body = extract(read(HOLSTER), '/obj/item/clothing/accessory/holster/proc/unholster')
     branch = body.split('\telse if (holstered2 && capacity == 2)', 1)[1]
     branch = branch.split('\n\telse if (holstered && capacity == 2)', 1)[0]
-    start = branch.index('\t\t\tuser.put_in_hands(holstered2)')
+    # The hand placement (holster_draw_into_hand) runs first and returns on
+    # failure (#6961); project the effects that follow a successful draw.
+    guard = branch.index('\t\t\tif (!holster_draw_into_hand(user, holstered2))\n\t\t\t\treturn')
+    start = branch.index('\t\t\tholstered2.add_fingerprint(user)')
+    assert guard < start
     lines = [line[3:] for line in branch[start:].splitlines() if line.strip()]
     assert lines[-1] == 'holstered2 = null'
     code = '\n'.join('\t' + line for line in lines)
@@ -39,6 +43,7 @@ def draw_second(first, second):
         user.drawn.append(item)
         item.add_fingerprint(user)  # Human hand placement also fingerprints it.
     user.put_in_hands = put_in_hands
+    put_in_hands(second)  # holster_draw_into_hand succeeded
     handler(holster, user)
     return holster, user
 
