@@ -117,7 +117,7 @@
 	var/list/state = character_slot_state(account)
 	var/active = region_gateway_active_slot(C, state)
 	var/list/names = state["names"]
-	var/list/cards = list("<html><head><title>Characters</title></head><body><h2>Your characters</h2><p>Choose how to continue. You can only switch after the land you are leaving checks your current character. No body wakes up on the gateway.</p>")
+	var/list/cards = list("<html><head><title>Characters</title></head><body>[region_gateway_tabs(C)]<h2>Your characters</h2><p>Choose how to continue. You can only switch after the land you are leaving checks your current character. No body wakes up on the gateway.</p>")
 	for(var/slot = 1 to character_slots_max)
 		if(slot != active && !character_slot_open(state, slot))
 			continue
@@ -224,6 +224,8 @@
 	var/client/C = lobby ? lobby.client : null
 	if(!C || C.mob != lobby || lobby.gateway_forwarding)
 		return FALSE
+	if(region_gateway_overview_session(C))
+		return region_gateway_show_overview(lobby)
 	var/roster = region_gateway_roster_enabled(C)
 	var/choice = lobby.gateway_character_choice
 	if(roster && !choice)

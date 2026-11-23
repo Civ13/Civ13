@@ -171,6 +171,28 @@ var/global/gateway_probe_runtime_error = FALSE
 	shard_group.record_sleeping("tutorial", list("state" = "stopped"), world.time)
 	gateway_probe_check("hub/confirmed_zero", findtext(region_gateway_hub_status(), "Players across regions:</b> 0<br>"))
 
+	// The public overview is a projection of cached fixed-world peers.
+	var/list/public_gaia = shard_group.peers["gaia"]
+	gateway_probe_check("overview/confirmed_zero", region_gateway_public_players(public_gaia, region_gateway_public_state(public_gaia, world.time)) == "0")
+	var/list/stale = list("checked" = world.time - (3 MINUTES), "state" = "UP", "players" = 71)
+	gateway_probe_check("overview/stale_not_zero", region_gateway_public_state(stale, world.time) == "Unknown" && region_gateway_public_players(stale, "Unknown") == "&mdash;")
+	gateway_probe_check("overview/rejects_invalid_count", region_gateway_public_players(list("players" = 1.5), "Online") == "&mdash;")
+	public_gaia["ordinal_age"] = 0
+	gateway_probe_check("overview/online_epoch", region_gateway_public_epoch(public_gaia, "Online") == "Stone Age")
+	gateway_probe_check("overview/invalid_or_stale_epoch", region_gateway_public_epoch(list("ordinal_age" = 1000), "Online") == "&mdash;" && region_gateway_public_epoch(public_gaia, "Unknown") == "&mdash;")
+	public_gaia["name"] = "Gaia <public>"
+	shard_group.peers["pacific"] = list("name" = "Pacific Ocean", "kind" = "OCEANIC", "checked" = world.time, "state" = "UP", "players" = 1, "address" = "private-host.example:1791", "train_stations" = list("Private Platform"))
+	shard_group.peers["test_private_expedition"] = list("name" = "Private Expedition", "kind" = "EXPEDITION", "address" = "private-host.example:1792")
+	shard_group.order += "pacific"
+	shard_group.order += "test_private_expedition"
+	before = bridge.asked.len
+	var/chart = region_gateway_overview_html(null)
+	gateway_probe_check("overview/land_and_ocean", findtext(chart, "Gaia") && findtext(chart, "Pacific Ocean") && findtext(chart, "Ocean"))
+	gateway_probe_check("overview/escapes_name", findtext(chart, "Gaia &lt;public&gt;") && !findtext(chart, "Gaia <public>"))
+	gateway_probe_check("overview/suppresses_private_and_service", !findtext(chart, "Private Expedition") && !findtext(chart, ">Tutorial<") && !findtext(chart, ">Gateway<"))
+	gateway_probe_check("overview/no_addresses_stations_or_travel", !findtext(chart, "private-host.example") && !findtext(chart, "Private Platform") && !findtext(chart, "region_go="))
+	gateway_probe_check("overview/no_agent_queries", before == bridge.asked.len)
+
 	// Seen from a land: no Join link, no trail, nobody sent there.
 	gateway_probe_check("config/land_view", shard_group.configure(gateway_probe_group("gaia")) && !region_gateway_here())
 	var/list/peer = shard_group.peers["gateway"]
