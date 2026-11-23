@@ -192,6 +192,7 @@ var/global/orbit_failures = 0
 		orbit_network_checks()
 		orbit_freight_checks()
 		orbit_freight_flight_checks()
+		orbit_rocket_cargo_checks()
 		orbit_freight_route_checks()
 		orbit_satellite_checks()
 		orbit_docking_checks()
@@ -1412,6 +1413,55 @@ var/global/orbit_failures = 0
 	transfer_bridge = real_bridge
 	shard_group.peers["gaia"] = real_gaia
 	map.ordinal_age = 7
+
+// A modular rocket's heavy cargo launch (rocket_missions.dm) flies its bays
+// as the same freight payload, named by the rocket's own id, and a replayed
+// departure finds the rocket by that id.
+/proc/orbit_rocket_cargo_checks()
+	var/party = "civ:gaia:Delta"
+	var/datum/transfer_bridge/real_bridge = transfer_bridge
+	var/datum/transfer_bridge/probe_agent/agent = new
+	agent.port = 1
+	agent.token = "probe"
+	agent.ledger_base = 0
+	agent.peers = list("gaia")
+	transfer_bridge = agent
+	var/list/real_gaia = shard_group.peers["gaia"]
+	shard_group.peers["gaia"] = list("kind" = "NOMADS", "name" = "Gaia", "state" = "UP")
+	var/obj/structure/region_gate/trail_marker/launch_pad/pad = new(locate(11, 5, 1))
+	pad.destination = "gaia"
+	pad.approved = TRUE
+	var/datum/rocket_plan/D = rocket_plan_examples()[2]
+	var/obj/structure/crewed_lander/modular_rocket/R = new(locate(10, 5, 1))
+	R.plan_code = D.to_code()
+	for (var/key in D.stack)
+		new /obj/structure/rocket_section(R, key, D.frame)
+	R.refresh()
+	orbit_check("a rocket with bays and no capsule flies cargo", R.mission_kind(), "cargo")
+	var/mob/living/human/eva_tester/H = new(locate(10, 6, 1))
+	H.party_train_party = party
+	var/obj/item/stack/material/steel/S = new(R, 25)
+	orbit_check("cargo rocket refuses without propellant", findtext("[R.cargo_refusal(H)]", "propellant") ? 1 : 0, 1)
+	R.propellant = R.propellant_needed
+	orbit_check("cargo rocket flies to orbit only", "[R.cargo_refusal(H)]", "A cargo rocket flies to orbit. Point the pad at an orbit to launch it.")
+	var/rid = R.flight_id()
+	var/reason = R.launch_cargo(pad, H)
+	orbit_check("cargo rocket launched through the bridge", "[reason]", "")
+	orbit_check("cargo rocket spent", QDELETED(R) && QDELETED(S) ? 1 : 0, 1)
+	var/list/P = length(agent.sent) ? orbit_freight_decode(agent.sent[1]) : null
+	orbit_check("cargo rocket's freight payload", P ? "[P["id"] == rid ? 1 : 0],[P["party"]],[length(P["cargo"])]" : "null", "1,[party],1")
+	// A replayed departure finds a rocket by its id.
+	var/obj/structure/crewed_lander/modular_rocket/again = new(locate(10, 5, 1))
+	again.rocket_id = rid
+	var/obj/item/pressure_tank/tank = new(again)
+	if (P)
+		transfer_bridge.replay(list(list("effect_id" = "probe-rocket:remove", "kind" = "remove", "payloads" = list(agent.sent[1]))))
+	orbit_check("replayed departure sends the cargo rocket again", QDELETED(again) && QDELETED(tank) ? 1 : 0, 1)
+	transfer_bridge.applied -= list("probe-rocket:remove")
+	qdel(pad)
+	qdel(H)
+	transfer_bridge = real_bridge
+	shard_group.peers["gaia"] = real_gaia
 
 // Freight routes (orbit_freight_routes.dm): a dispatcher loads a freighter
 // at its pad from the crates beside it and launches it with nobody there.

@@ -92,10 +92,24 @@ up with shear legs or a tower crane (`hoist_only_types`). Where the world
 has fewer levels, the remaining storeys mount from the highest level.
 
 The finished stack is a modular rocket on the stand's tile. It takes the
-sheet's propellant and seats, shows the launch planner on examine, flies
-only to orbit for now, and refuses to launch until the orbit leg is reached
-with what is actually in its bays. A crew that cannot come home is warned
-before launch.
+sheet's propellant and seats and shows the launch planner on examine.
+
+## Missions
+
+What a rocket does at launch follows its payload
+(`code/modules/space/rocket_missions.dm`):
+
+| Payload | Mission | Needs |
+| --- | --- | --- |
+| Crew capsule | Crew fly to orbit (to a capsule of their own or a station port) | Orbit leg with the hold loaded; a crew that cannot come home is warned |
+| Cargo bays, no capsule | Heavy cargo launch: the bays fly as freight to the launcher's party station hatch in orbit | Orbit leg with the hold loaded, a party, the flight network |
+| Probe, no capsule | One-way lunar probe flown from a mission console within 7 tiles | Orbit, lunar transfer and landing legs, the Moon's survey map |
+
+The cargo flight reuses the freighter's payload (`orbit_freight.dm`) under
+the rocket's own `rocket_id`, so a replayed departure finds the rocket. The
+lunar probe lands anywhere flat; the landing is recorded as a surveyed site
+that crewed landers can choose, and the probe maps the Moon from the console
+until the mission is abandoned. It has no ascent stage and takes no samples.
 
 ## Reuse and wear
 

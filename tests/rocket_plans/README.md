@@ -43,3 +43,15 @@ landing legs fly a first stage back only from 2013, and the propellant kept
 to land costs delta-v.
 
     python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/reuse_probe.dm 300
+
+## `missions_probe.dm`
+
+Uncrewed missions (`rocket_missions.dm`): the payload picks the mission; a
+lunar probe rocket needs a pad, propellant and an idle console nearby, and an
+orbit-only probe is told it lacks the lunar transfer; the probe flies a
+one-way Moon mission, records its landing as a surveyed site a crewed lander
+can choose, never ascends or carries samples, and the site stays after the
+mission is abandoned. The heavy cargo launch is checked through the transfer
+bridge in `tests/orbit_world/probe.dm` (`orbit_rocket_cargo_checks`).
+
+    python3 tests/ecology_spawning/run_linux.py . tests/rocket_plans/missions_probe.dm 300
