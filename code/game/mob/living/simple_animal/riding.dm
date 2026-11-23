@@ -28,19 +28,22 @@
 			overlays -= cover_overlay
 
 /mob/living/simple_animal/MouseDrop_T(mob/living/M, mob/living/human/user)
-	if (can_ride && isnull(rider) && M == user && !user.lying && !user.prone && (!user.werewolf || user.body_build.name == "Default"))
+	if (can_ride && stat != DEAD && isnull(rider) && M == user && !user.lying && !user.prone && (!user.werewolf || user.body_build.name == "Default"))
 		var/mob/living/human/MM = M
 		M.visible_message("<span class='notice'>[M] starts trying to get on \the [src]'s back...</span>","<span class='notice'>You start trying to get on \the [src]'s back...</span>")
 		if (do_after(MM, src.animal_mount_delay(), src))
+			// The animal can die during the delay; a corpse takes no rider.
+			if (!take_rider(MM))
+				to_chat(M, "<span class='warning'>You can't ride \the [src] now.</span>")
+				return
 			M.visible_message("<span class='notice'>[M] manages to successfully climb into \the [src]'s back.</span>","<span class='notice'>You manage to successfully climb into \the [src]'s back.</span>")
-			take_rider(MM)
 			return
 	else
 		..()
 
 // Puts H in the saddle at once (the end of a successful mount).
 /mob/living/simple_animal/proc/take_rider(mob/living/human/H)
-	if (!can_ride || !istype(H) || !isnull(rider))
+	if (!can_ride || stat == DEAD || !istype(H) || !isnull(rider))
 		return FALSE
 	H.plane = GAME_PLANE
 	npc_subtile_pending_intent = null
