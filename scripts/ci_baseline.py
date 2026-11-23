@@ -562,9 +562,11 @@ SUITES = {
                          'scripts/terrain_heights.py', 'maps/heights/',
                          'maps/nomads/nomads_gaia.dmm', 'maps/nomads/nomads_europe.dmm',
                          'maps/nomads/nomads_jungle.dmm', 'maps/nomads/nomads_asia.dmm')},
-    'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py',),
+    'cleaning_rag': {'files': ('tests/cleaning_rag/test_targets.py', 'tests/cleaning_rag/test_ignition.py'),
         'paths': ('tests/cleaning_rag/',), 'shared_paths': (
-            'code/game/objects/items/weapons/detective.dm', 'code/_helpers/mobs.dm',
+            'code/game/objects/items/weapons/detective.dm', 'code/game/objects/items/weapons/cigs_lighters.dm',
+            'code/game/objects/items/devices/flashlight.dm', 'code/modules/1713/lantern.dm', 'code/_helpers/mobs.dm',
+            'code/_onclick/click.dm', 'code/_onclick/item_attack.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'tests/save_movement/source_adapter.py')},
     'lipstick_application': {'files': ('tests/lipstick_application/test_completion.py',),
