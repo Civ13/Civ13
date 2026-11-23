@@ -34,12 +34,22 @@
 		"roof" = list("name" = "roof", "state" = "roof"),
 		"rail" = list("name" = "track", "state" = "rail"),
 		)
+		var/list/water_parts = waterworks_parts()
+		for (var/key in water_parts)
+			var/list/P = water_parts[key]
+			table["waterworks_[key]"] = list("name" = P["name"], "state" = "peg", "type" = P["type"])
 	return table
 
 // Whether work of a kind stands on a tile. Any wall answers a wall and any
 // roofing a roof: the plan says what was meant, the builder what was to hand.
 /proc/build_marker_built(kind, turf/T)
 	if (!T)
+		return FALSE
+	var/list/row = build_marker_kinds()[kind]
+	if (row && row["type"])
+		for (var/obj/structure/S in T)
+			if (S.type == row["type"] && !QDELETED(S))
+				return TRUE
 		return FALSE
 	switch (kind)
 		if ("wall")
