@@ -8,6 +8,11 @@
 #define SHARD_REFRESH_FLOOR 150
 // The doorman refreshes every 30 s; an older entry means it lost the world.
 #define SHARD_DOORMAN_FRESH_SECONDS 90
+// How long one direct poll of a peer may take (deciseconds). world.Export to a
+// frozen world on this host never returns: the suspended process holds its
+// port open and never answers, which held the gateway's poll loop for ten
+// hours (2026-11-22) and turned players bound for North America away.
+#define SHARD_POLL_TIMEOUT 100
 #define SHARD_MAX_REGIONS 512 // expedition slots grow without a cap; shard_group.py keeps other regions to 32
 
 var/global/datum/shard_group/shard_group = new
@@ -78,6 +83,8 @@ var/global/datum/shard_group/shard_group = new
 	var/doorman = null
 	// FALSE once the doorman has stopped answering, so the log hears it once.
 	var/doorman_answering = TRUE
+	// region id -> the direct poll still waiting on it (/datum/shard_peer_poll).
+	var/list/polls_waiting = null
 
 /datum/shard_group/New()
 	..()
@@ -457,17 +464,58 @@ var/global/datum/shard_group/shard_group = new
 		return "127.0.0.1:[shard_address_port(target)]"
 	return target
 
-// Asks one peer directly; TRUE when it answered as itself.
+// Asks one peer directly; TRUE when it answered as itself. A peer that does
+// not answer within SHARD_POLL_TIMEOUT (a frozen world never does) keeps its
+// last known state, and is not asked again until that call ends.
 /datum/shard_group/proc/poll_peer(id)
 	var/list/peer = peers[id]
 	if(!peer)
 		return FALSE
+	var/datum/shard_peer_poll/waiting = polls_waiting ? polls_waiting[id] : null
+	if(waiting && !waiting.done)
+		return FALSE
+	var/datum/shard_peer_poll/poll = new
+	LAZYSET(polls_waiting, id, poll)
+	poll.ask("byond://[peer_address(peer)]?shard_region=1&format=json")
+	var/deadline = world.time + SHARD_POLL_TIMEOUT
+	while(!poll.done && world.time < deadline)
+		sleep(1)
+	if(!poll.done)
+		log_game("Region group: [id] did not answer a direct poll within [SHARD_POLL_TIMEOUT / 10] seconds; it keeps its last state.")
+		return FALSE
+	LAZYREMOVE(polls_waiting, id)
+	return record(id, poll.answer, world.time)
+
+// One world.Export to a peer, run apart so the caller can stop waiting.
+/datum/shard_peer_poll
 	var/answer = null
+	var/done = FALSE
+
+/datum/shard_peer_poll/proc/ask(target)
+	set waitfor = FALSE
+	var/result = null
 	try
-		answer = world.Export("byond://[peer_address(peer)]?shard_region=1&format=json")
+		result = world.Export(target)
 	catch
-		answer = null
-	return record(id, answer, world.time)
+		result = null
+	answer = result
+	done = TRUE
+
+// Reads one peer's state afresh before a player is sent there: from the
+// doorman for a world on this host, which knows whether it sleeps or is
+// stopped, and directly only when it is awake or not the doorman's. A stale
+// DOWN (an old poll that failed) otherwise refused a land the doorman could
+// wake. TRUE when the peer answers as up. Sleeps.
+/datum/shard_group/proc/refresh_peer(id)
+	var/list/peer = peers[id]
+	if(!peer)
+		return FALSE
+	var/list/hosted = doorman ? doorman_states() : null
+	var/list/entry = hosted ? hosted["[shard_address_port(peer["address"])]"] : null
+	if(islist(entry) && entry["state"] != "awake")
+		record_sleeping(id, entry, world.time)
+		return FALSE
+	return poll_peer(id)
 
 /datum/shard_group/proc/poll_once()
 	last_poll = world.time
@@ -817,4 +865,5 @@ var/global/datum/shard_group/shard_group = new
 #undef SHARD_POLL_INTERVAL
 #undef SHARD_REFRESH_FLOOR
 #undef SHARD_DOORMAN_FRESH_SECONDS
+#undef SHARD_POLL_TIMEOUT
 #undef SHARD_MAX_REGIONS

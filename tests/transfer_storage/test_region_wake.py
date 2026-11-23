@@ -223,6 +223,38 @@ class RegionWakeTests(unittest.TestCase):
             self.assertIn(words, status)
         self.assertIn('while(world.time < deadline)', await_peer)
 
+    def test_a_direct_poll_that_never_returns_does_not_hold_the_poll_loop(self):
+        # 2026-11-22: one missed doorman answer sent the gateway's poll loop to
+        # world.Export a frozen world, which never answers; the loop hung for
+        # ten hours and a player bound for North America was turned away.
+        body = proc(GROUP, '/datum/shard_group/proc/poll_peer')
+        self.assertIn('poll.ask(', body)
+        self.assertIn('world.time + SHARD_POLL_TIMEOUT', body)
+        self.assertIn('if(waiting && !waiting.done)\n\t\treturn FALSE', body)
+        self.assertLess(body.index('if(!poll.done)'), body.index('record(id, poll.answer'))
+        timed_out = body[body.index('if(!poll.done)'):body.index('LAZYREMOVE(polls_waiting, id)')]
+        self.assertNotIn('record(', timed_out)
+        ask = proc(GROUP, '/datum/shard_peer_poll/proc/ask')
+        self.assertIn('set waitfor = FALSE', ask)
+        self.assertIn('world.Export(target)', ask)
+        self.assertIn('#undef SHARD_POLL_TIMEOUT', GROUP)
+
+    def test_a_player_sent_to_a_land_asks_the_doorman_first(self):
+        relay = read('code/modules/persistence/region_relay.dm')
+        send = relay[relay.index('/datum/shard_group/proc/send_player('):relay.index('/datum/shard_group/proc/send_player_soon')]
+        self.assertIn('if(!peer_wakeable(id))\n\t\t\trefresh_peer(id)', send)
+        self.assertLess(send.index('refresh_peer(id)'), send.index('wake_peer(id, C.mob)'))
+        body = proc(GROUP, '/datum/shard_group/proc/refresh_peer')
+        self.assertLess(body.index('doorman_states()'), body.index('poll_peer(id)'))
+        self.assertIn('record_sleeping(id, entry, world.time)\n\t\treturn FALSE', body)
+
+    def test_an_unstaged_land_is_not_shown_as_unexplored(self):
+        # 2026-11-23: North America read "unexplored" to a player who lived there.
+        lands = read('code/modules/persistence/land_stage.dm')
+        column = proc(lands, '/proc/land_stage_column')
+        self.assertIn('if(id != shard_group.mainland && !land_stages[id])\n\t\treturn ""', column)
+        self.assertLess(column.index('!land_stages[id]'), column.index('land_stage_text('))
+
 
 if __name__ == '__main__':
     unittest.main()
