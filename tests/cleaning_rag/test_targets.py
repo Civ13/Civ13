@@ -147,5 +147,13 @@ class RagInhalationTest(unittest.TestCase):
                                         during_wait=lambda target: setattr(target, 'nearby', False)), ([], []))
 
 
+class RagLockedBarrelTest(unittest.TestCase):
+    # Issue 6967; native check: tests/rag_locked_barrel/probe.dm
+    def test_locked_barrel_check_precedes_the_soak(self):
+        after = SOURCE.split('/obj/item/weapon/reagent_containers/glass/rag/afterattack(', 1)[1].split('\n/', 1)[0]
+        lock = after.index('if (D.locked && D.custom_code != 0)')
+        self.assertLess(lock, after.index('A.reagents.trans_to_obj(src, reagents.maximum_volume)'))
+
+
 if __name__ == '__main__':
     unittest.main()
