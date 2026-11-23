@@ -17,3 +17,15 @@
 #define BOOK_RESEARCH_NEAR 3
 #define BOOK_RESEARCH_AWAY_RATE 0.75
 #define BOOK_STUDY_TIME(tier) (600 + 300 * max(0, tier))
+
+// A land's era follows the capstones written down in it (era_loss.dm). Real
+// time, in deciseconds, so it also passes while a land sleeps.
+// How often a land checks its written records.
+#define ERA_RECORD_CHECK_INTERVAL (5 MINUTES)
+// How long a land keeps its era after the last copy of the capstone has left
+// or been destroyed: a book brought back within this costs nothing.
+#define ERA_RECORD_RETURN_WINDOW (2 HOURS)
+// How long a later capstone must stay in a land before the land starts to rise.
+#define ERA_RECORD_SETTLE_TIME (2 HOURS)
+// At most one era gained or lost per this long.
+#define ERA_RECORD_STEP (1 HOURS)

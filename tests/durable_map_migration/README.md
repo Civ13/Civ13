@@ -14,8 +14,8 @@ independently of round/topology schema versions.
 Unversioned saves are classified by the known field addition; an old save and an
 unversioned new save missing exactly that field cannot be distinguished. Explicit
 version 2 requires its 132 fields and version 3 all 133. New captures declare
-`map_fields_version: 6` (v4 added `river_flood_state`, v5 `fishing_grounds_state`,
-v6 `language_lineage_state`;
+`map_fields_version: 7` (v4 added `river_flood_state`, v5 `fishing_grounds_state`,
+v6 `language_lineage_state`, v7 `era_records_state`;
 older saves restore each as an empty list). Unknown field versions, unrelated missing or
 extra fields, malformed roots and invalid scalar types remain rejected.
 

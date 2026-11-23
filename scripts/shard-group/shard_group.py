@@ -4323,6 +4323,8 @@ def group_epoch(group, epoch, platform=None):
     mainland must be awake to take it first; the others are told at once so they need not wait
     for their next poll of the mainland. A region asleep, cold or stopped follows the mainland by
     itself when it next runs. The epoch only moves forward: a region already there answers "current".
+    With book research no region follows the mainland (era_loss.dm): each land keeps the era its own
+    books hold, and an epoch set here falls back where that land has no copy of the capstone.
     """
     ordinal = parse_epoch(epoch)
     chosen = hosts(group, None, platform)

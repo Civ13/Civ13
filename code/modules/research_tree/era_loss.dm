@@ -1,32 +1,43 @@
 // ============================================================
-// Research Tree - losing an era (Val, 2026-11-12)
+// Research Tree - each land's era follows its books (Val, 2026-11-12, 2026-11-23)
 // ------------------------------------------------------------
 // With book research an era lives in writing: the capstone chapter that
-// moved the world into it. When no book, recipe manual, compendium or torn
-// chapter anywhere in this world (carried, stored in a container, on a bench,
-// on an offline character) still holds the capstone of the current era or a
-// later one, the world falls back one era.
+// moved a land into it. Every land (each region world, and a world on its
+// own) keeps the era whose capstone is written down in that land: in a book,
+// recipe manual, compendium or torn chapter that is carried, stored in a
+// container, on a bench or on an offline character there. A capstone written
+// in one land does nothing for another until a copy is taken there.
 //
-// - The check runs every ERA_LOSS_CHECK_INTERVAL; the records must be missing
-//   on ERA_LOSS_MISSED_CHECKS checks in a row, so a book only briefly out of
-//   the world never costs an era.
-// - One era is lost at a time. If the era below has lost its records too, it
-//   goes on a later check.
-// - Characters keep what they studied. Anyone who still knows the capstone
-//   can write it down again, which brings the era straight back.
-// - A region never falls below its mainland's era (follow_mainland_epoch
-//   keeps regions up with it), and holds while the mainland can't be reached.
+// - The records are checked every ERA_RECORD_CHECK_INTERVAL.
+// - When no copy of the current era's capstone (or a later one) is left in a
+//   land, because the last one was carried to another land or destroyed, the
+//   land keeps its era for ERA_RECORD_RETURN_WINDOW. A copy brought back (or
+//   written again) in that time costs nothing. After it the land falls back
+//   one era, and one more every ERA_RECORD_STEP while the records are missing.
+// - When a land holds a later capstone than its era, carried in from another
+//   land, the land rises one era once that copy has stayed ERA_RECORD_SETTLE_TIME,
+//   and one more every ERA_RECORD_STEP until it reaches the book's era
+//   (gain_era in book_research.dm). So a
+//   book that leaves its land for good slowly moves its era with it, and one
+//   brought home in time moves nothing.
+// - Writing a capstone (or writing a lost one again from memory) moves the
+//   land straight into its era, as before.
+// - Characters keep what they studied. The Stone Age is never lost.
+// - The clocks are real time and saved with the world (era_records_state), so
+//   a restart or a sleeping land does not reset them.
 // ============================================================
-
-#define ERA_LOSS_CHECK_INTERVAL (5 MINUTES)
-#define ERA_LOSS_MISSED_CHECKS 2
 
 // Every book and torn chapter, so the check never scans the world.
 var/global/list/era_record_items = list()
 
-// Runtime only: world.time restarts at boot, and a reboot starts the count again.
+// Runtime only: world.time restarts at boot.
 var/global/era_loss_next_check = 0
-var/global/era_loss_missed = 0
+
+// Saved (durable map field version 7): when this land's records first went
+// missing ("missing_since"), when a later capstone first arrived
+// ("above_since") and when the era last moved by this file ("last_step"),
+// each as world.realtime written as text, which JSON keeps exactly.
+/obj/map_metadata/var/list/era_records_state = list()
 
 /obj/item/weapon/book/New()
 	..()
@@ -77,7 +88,7 @@ var/global/era_loss_missed = 0
 	return null
 
 // The highest era whose capstone is still written down somewhere in this
-// world (0 when none is). Deleted items and items outside the map don't count.
+// land (0 when none is). Deleted items and items outside the map don't count.
 /proc/surviving_era_record_tier(list/items = era_record_items)
 	var/list/tiers = era_capstone_tiers()
 	. = 0
@@ -89,36 +100,76 @@ var/global/era_loss_missed = 0
 			if (tier > .)
 				. = tier
 
-// The lowest era this world may fall to: 0, or the mainland's era for a
-// region of a group. null while the mainland's era is unknown.
-/obj/map_metadata/proc/era_loss_floor()
-	if (!shard_group || !shard_group.enabled || !shard_group.mainland || shard_group.region == shard_group.mainland)
+// A saved clock, or null when unset or unreadable.
+/obj/map_metadata/proc/era_record_clock(key)
+	if (!islist(era_records_state))
+		era_records_state = list()
+	var/value = era_records_state[key]
+	if (istext(value))
+		value = text2num(value)
+	return isnum(value) ? value : null
+
+/obj/map_metadata/proc/set_era_record_clock(key, value)
+	if (!islist(era_records_state))
+		era_records_state = list()
+	if (isnull(value))
+		era_records_state -= key
+	else
+		era_records_state[key] = num2text(value, 20)
+
+// Time since a clock started, starting it now when unset. A clock that reads
+// later than now (the host's clock went back) starts again.
+/obj/map_metadata/proc/era_record_elapsed(key, now)
+	var/since = era_record_clock(key)
+	if (isnull(since) || since > now)
+		set_era_record_clock(key, now)
 		return 0
-	var/list/peer = shard_group.peers[shard_group.mainland]
-	if (!peer || peer["state"] != "UP" || !isnum(peer["ordinal_age"]))
-		return null
-	return peer["ordinal_age"]
+	return now - since
+
+/obj/map_metadata/proc/era_record_step_ready(now)
+	var/last = era_record_clock("last_step")
+	return isnull(last) || last > now || now - last >= ERA_RECORD_STEP
+
+// The land's era now matches its records (a capstone was just written).
+/obj/map_metadata/proc/era_records_settled()
+	set_era_record_clock("missing_since", null)
+	set_era_record_clock("above_since", null)
 
 /obj/map_metadata/proc/era_loss_tick()
 	if (world.time < era_loss_next_check)
 		return FALSE
-	era_loss_next_check = world.time + ERA_LOSS_CHECK_INTERVAL
+	era_loss_next_check = world.time + ERA_RECORD_CHECK_INTERVAL
 	return check_era_records()
 
-// Returns TRUE when this check cost the world an era.
-/obj/map_metadata/proc/check_era_records(list/items = era_record_items)
-	if (!persistence || !book_research_enabled() || ordinal_age <= 0 || persistence_save_in_progress || !persistence_player_restore_ready)
-		era_loss_missed = 0
+// Returns TRUE when this check moved the land's era, down or up.
+/obj/map_metadata/proc/check_era_records(list/items = era_record_items, now = world.realtime)
+	// The clocks wait through a save or a load rather than starting over.
+	if (!persistence || !book_research_enabled() || persistence_save_in_progress || !persistence_player_restore_ready)
 		return FALSE
-	var/floor = era_loss_floor()
-	if (isnull(floor) || floor >= ordinal_age || surviving_era_record_tier(items) >= ordinal_age)
-		era_loss_missed = 0
+	var/held = surviving_era_record_tier(items)
+	if (held < ordinal_age)
+		set_era_record_clock("above_since", null)
+		if (era_record_elapsed("missing_since", now) < ERA_RECORD_RETURN_WINDOW || !era_record_step_ready(now))
+			return FALSE
+		if (!lose_era())
+			return FALSE
+		set_era_record_clock("last_step", now)
+		// The era below may be missing too; it goes a step later.
+		if (held >= ordinal_age)
+			set_era_record_clock("missing_since", null)
+		return TRUE
+	set_era_record_clock("missing_since", null)
+	if (held == ordinal_age)
+		set_era_record_clock("above_since", null)
 		return FALSE
-	era_loss_missed++
-	if (era_loss_missed < ERA_LOSS_MISSED_CHECKS)
+	if (era_record_elapsed("above_since", now) < ERA_RECORD_SETTLE_TIME || !era_record_step_ready(now))
 		return FALSE
-	era_loss_missed = 0
-	return lose_era()
+	if (!gain_era())
+		return FALSE
+	set_era_record_clock("last_step", now)
+	if (held <= ordinal_age)
+		set_era_record_clock("above_since", null)
+	return TRUE
 
 /obj/map_metadata/proc/lose_era()
 	if (ordinal_age <= 0)
@@ -132,6 +183,6 @@ var/global/era_loss_missed = 0
 	for (var/i = ordinal_age + 1, i <= 9, i++)
 		if ("age[i]_done" in vars)
 			vars["age[i]_done"] = FALSE
-	log_game("Book research: no written record of era [lost] is left; the world falls back to era [ordinal_age].")
-	to_chat(world, "<big><font color='#8a4b2d'>The last written record of <b>[cap ? cap.name : ordinal_age_name(lost)]</b> is gone. The world falls back into the <b>[ordinal_age_name(ordinal_age)]</b>.</font></big>")
+	log_game("Book research: no written record of era [lost] has been in this land for too long; it falls back to era [ordinal_age].")
+	to_chat(world, "<big><font color='#8a4b2d'>No written record of <b>[cap ? cap.name : ordinal_age_name(lost)]</b> has been in these lands for too long. They fall back into the <b>[ordinal_age_name(ordinal_age)]</b>.</font></big>")
 	return TRUE
