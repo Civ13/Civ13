@@ -264,7 +264,7 @@ var/global/datum/shard_group/shard_group = new
 // What a peer, the host tool or a player sees of this region.
 /datum/shard_group/proc/describe()
 	. = list("group" = group, "region" = region, "name" = name, "kind" = kind, "players" = length(clients), "map" = map ? map.title : null)
-	// Other regions follow the mainland's epoch (follow_mainland_epoch).
+	// Without book research other regions follow the mainland's epoch (follow_mainland_epoch).
 	if(map)
 		.["ordinal_age"] = map.ordinal_age
 	.["train_stations"] = train_route_advertisements()
@@ -328,7 +328,6 @@ var/global/datum/shard_group/shard_group = new
 	peer["docking_ports"] = orbit_docking_clean_advertisements(reply["docking_ports"])
 	peer["train_stations"] = train_route_clean_advertisements(reply["train_stations"])
 	peer["map"] = istext(reply["map"]) ? copytext(reply["map"], 1, 65) : null
-	// The mainland's era is the floor a region's era can fall to (era_loss.dm).
 	peer["ordinal_age"] = isnum(reply["ordinal_age"]) ? reply["ordinal_age"] : null
 	if(id == mainland)
 		follow_mainland_epoch(reply["ordinal_age"])
@@ -337,8 +336,10 @@ var/global/datum/shard_group/shard_group = new
 // Every region keeps the mainland's epoch (Val, 2026-11-05): a fresh region
 // would otherwise start at the persistence floor (1943) while the mainland is
 // further on. The epoch only moves forward, and the region's own save keeps it.
+// With book research each land keeps the era its own books hold instead
+// (Val, 2026-11-23; era_loss.dm), so nothing follows the mainland.
 /datum/shard_group/proc/follow_mainland_epoch(ordinal)
-	if(!map || region == mainland || !isnum(ordinal) || ordinal != round(ordinal))
+	if(!map || region == mainland || map.book_research_enabled() || !isnum(ordinal) || ordinal != round(ordinal))
 		return FALSE
 	if(ordinal <= map.ordinal_age || ordinal >= epoch_names.len)
 		return FALSE

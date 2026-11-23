@@ -822,53 +822,73 @@ var/knowledge_practice_waits = 0
 	for (var/i = 1, i <= 9, i++)
 		map.vars["age[i]_done"] = old_flags[i]
 
-// Losing an era (Val, 2026-11-12): when no book, manual, compendium or torn
-// chapter holds the current era's capstone, the world falls back one era.
+// Each land's era follows its books (Val, 2026-11-12, 2026-11-23): with the
+// capstone gone the land keeps its era for the return window, then falls one
+// era per step; a later capstone that stays rises it one era per step.
 /proc/check_era_loss()
 	var/old_age = map.age
 	var/old_ordinal = map.ordinal_age
 	var/old_ready = persistence_player_restore_ready
+	var/old_state = map.era_records_state
 	persistence_player_restore_ready = TRUE
 	map.age = "1013"
 	map.ordinal_age = 2
-	era_loss_missed = 0
+	map.era_records_state = list()
+	var/t = 100000
 	var/obj/item/weapon/book/record = new(locate(4,6,1))
 	knowledge_check(record in era_record_items, "new books join the era record list")
 	record.research_chapters = "iron_smithing"
 	var/list/kept = list(record)
-	knowledge_check(surviving_era_record_tier(kept) == 2 && !map.check_era_records(kept) && !map.check_era_records(kept) && map.ordinal_age == 2, "a book holding the era's capstone keeps the era")
+	knowledge_check(surviving_era_record_tier(kept) == 2 && !map.check_era_records(kept, t) && !map.check_era_records(kept, t + 10 HOURS) && map.ordinal_age == 2, "a book holding the era's capstone keeps the era")
 	var/obj/item/weapon/paper/research_page/torn = new(locate(4,6,1))
 	torn.node_id = "iron_smithing"
 	var/obj/item/weapon/book/node_book/manual = create_node_book(locate(4,6,1), "iron_smithing")
 	var/obj/item/weapon/book/node_compendium/compendium = new(locate(4,6,1))
 	compendium.node_ids = list("basic_tools", "iron_smithing")
 	knowledge_check(surviving_era_record_tier(list(torn)) == 2 && surviving_era_record_tier(list(manual)) == 2 && surviving_era_record_tier(list(compendium)) == 2, "torn chapters, manuals and compendiums count as records")
-	var/obj/item/weapon/book/later = new(locate(4,6,1))
-	later.research_chapters = "gunpowder"
-	knowledge_check(surviving_era_record_tier(list(later)) == 3 && !map.check_era_records(list(later)) && !map.check_era_records(list(later)) && map.ordinal_age == 2, "a later era's capstone also keeps the era")
 	var/obj/item/weapon/book/older = new(locate(4,6,1))
 	older.research_chapters = "bronze_working"
 	var/list/only_older = list(older)
-	knowledge_check(!map.check_era_records(only_older) && map.ordinal_age == 2, "one missed check never costs an era")
-	knowledge_check(!map.check_era_records(kept) && !map.check_era_records(only_older) && map.ordinal_age == 2, "finding the record again restarts the count")
-	knowledge_check(map.check_era_records(only_older) && map.ordinal_age == 1 && map.age == "313 B.C." && !map.age2_done, "two missed checks in a row cost one era")
-	knowledge_check(!map.check_era_records(only_older) && !map.check_era_records(only_older) && map.ordinal_age == 1, "an era whose capstone survives holds")
+	knowledge_check(!map.check_era_records(only_older, t) && !map.check_era_records(only_older, t + ERA_RECORD_RETURN_WINDOW - 600) && map.ordinal_age == 2, "the land keeps its era through the return window")
+	knowledge_check(!map.check_era_records(kept, t + ERA_RECORD_RETURN_WINDOW - 300) && !map.check_era_records(only_older, t + ERA_RECORD_RETURN_WINDOW + 600) && map.ordinal_age == 2, "a copy brought back in time restarts the window")
+	var/back = t + ERA_RECORD_RETURN_WINDOW + 600
+	knowledge_check(map.check_era_records(only_older, back + ERA_RECORD_RETURN_WINDOW) && map.ordinal_age == 1 && map.age == "313 B.C." && !map.age2_done, "after the return window the land falls one era")
+	knowledge_check(!map.check_era_records(only_older, back + ERA_RECORD_RETURN_WINDOW + 10 HOURS) && map.ordinal_age == 1, "an era whose capstone survives holds")
 	var/list/nothing = list()
-	map.check_era_records(nothing)
-	knowledge_check(map.check_era_records(nothing) && map.ordinal_age == 0 && map.age == "5000 B.C.", "with no records left the eras fall one at a time")
-	knowledge_check(!map.check_era_records(nothing) && !map.check_era_records(nothing) && map.ordinal_age == 0, "the Stone Age is never lost")
 	map.ordinal_age = 2
+	map.era_records_state = list()
+	map.check_era_records(nothing, t)
+	knowledge_check(map.check_era_records(nothing, t + ERA_RECORD_RETURN_WINDOW) && map.ordinal_age == 1, "with no records left the first era falls after the window")
+	knowledge_check(!map.check_era_records(nothing, t + ERA_RECORD_RETURN_WINDOW + ERA_RECORD_STEP - 600) && map.ordinal_age == 1, "the next era waits a step")
+	knowledge_check(map.check_era_records(nothing, t + ERA_RECORD_RETURN_WINDOW + ERA_RECORD_STEP) && map.ordinal_age == 0 && map.age == "5000 B.C.", "then the eras fall one a step")
+	knowledge_check(!map.check_era_records(nothing, t + 50 HOURS) && map.ordinal_age == 0, "the Stone Age is never lost")
+	map.era_records_state = list("missing_since" = "[t]", "last_step" = "[t]")
+	knowledge_check(map.era_records_state["missing_since"] == "[t]" && map.era_record_clock("missing_since") == t, "the saved clocks read back")
+	map.era_records_state = list()
+	var/obj/item/weapon/book/later = new(locate(4,6,1))
+	later.research_chapters = "gunpowder"
+	var/list/arrived = list(later)
+	map.ordinal_age = 1
+	knowledge_check(surviving_era_record_tier(arrived) == 3 && !map.check_era_records(arrived, t) && !map.check_era_records(arrived, t + ERA_RECORD_SETTLE_TIME - 600) && map.ordinal_age == 1, "a later capstone carried in does nothing before it settles")
+	knowledge_check(!map.check_era_records(nothing, t + ERA_RECORD_SETTLE_TIME - 300) && !map.check_era_records(arrived, t + ERA_RECORD_SETTLE_TIME + 600) && map.ordinal_age == 1, "a book taken away before it settles starts again")
+	var/came = t + ERA_RECORD_SETTLE_TIME + 600
+	knowledge_check(map.check_era_records(arrived, came + ERA_RECORD_SETTLE_TIME) && map.ordinal_age == 2 && map.age == "1013", "a settled capstone raises the land one era")
+	knowledge_check(!map.check_era_records(arrived, came + ERA_RECORD_SETTLE_TIME + ERA_RECORD_STEP - 600) && map.ordinal_age == 2, "the next era waits a step")
+	knowledge_check(map.check_era_records(arrived, came + ERA_RECORD_SETTLE_TIME + ERA_RECORD_STEP) && map.ordinal_age == 3, "and the land reaches the book's era")
+	knowledge_check(!map.check_era_records(arrived, came + 50 HOURS) && map.ordinal_age == 3, "never past the book's era")
+	knowledge_check(surviving_era_record_tier(list(later, record)) == 3 && !map.check_era_records(list(later), came + 60 HOURS) && map.ordinal_age == 3, "a later era's capstone keeps the era")
+	map.ordinal_age = 2
+	map.era_records_state = list()
 	map.persistence = FALSE
-	map.check_era_records(nothing)
-	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "round maps never lose an era")
+	map.check_era_records(nothing, t)
+	knowledge_check(!map.check_era_records(nothing, t + 50 HOURS) && map.ordinal_age == 2, "round maps never lose an era")
 	map.persistence = TRUE
 	map.book_research = FALSE
-	map.check_era_records(nothing)
-	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "worlds without book research never lose an era")
+	map.check_era_records(nothing, t)
+	knowledge_check(!map.check_era_records(nothing, t + 50 HOURS) && map.ordinal_age == 2, "worlds without book research never lose an era")
 	map.book_research = TRUE
 	persistence_player_restore_ready = FALSE
-	map.check_era_records(nothing)
-	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "no era is lost before the world has finished loading")
+	knowledge_check(!map.check_era_records(nothing, t) && !map.check_era_records(nothing, t + 50 HOURS) && map.ordinal_age == 2 && !map.era_records_state.len, "no clock starts before the world has finished loading")
 	persistence_player_restore_ready = TRUE
 	var/old_enabled = shard_group.enabled
 	var/old_region = shard_group.region
@@ -877,21 +897,19 @@ var/knowledge_practice_waits = 0
 	shard_group.enabled = TRUE
 	shard_group.region = "fixture_region"
 	shard_group.mainland = "fixture_mainland"
-	shard_group.peers = list("fixture_mainland" = list("state" = "DOWN", "ordinal_age" = 0))
-	map.check_era_records(nothing)
-	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "a region holds its era while the mainland can't be reached")
-	shard_group.peers["fixture_mainland"] = list("state" = "UP", "ordinal_age" = 2)
-	map.check_era_records(nothing)
-	knowledge_check(!map.check_era_records(nothing) && map.ordinal_age == 2, "a region never falls below its mainland's era")
-	shard_group.peers["fixture_mainland"] = list("state" = "UP", "ordinal_age" = 1)
-	map.check_era_records(nothing)
-	knowledge_check(map.check_era_records(nothing) && map.ordinal_age == 1, "a region falls with its mainland")
+	shard_group.peers = list("fixture_mainland" = list("state" = "UP", "ordinal_age" = 2))
+	map.era_records_state = list()
+	map.check_era_records(nothing, t)
+	knowledge_check(map.check_era_records(nothing, t + ERA_RECORD_RETURN_WINDOW) && map.ordinal_age == 1, "a land falls below its mainland's era without books of its own")
+	knowledge_check(!shard_group.follow_mainland_epoch(5) && map.ordinal_age == 1, "with book research a land never follows the mainland's era")
 	shard_group.enabled = old_enabled
 	shard_group.region = old_region
 	shard_group.mainland = old_mainland
 	shard_group.peers = old_peers
+	map.ordinal_age = 1
+	map.era_records_state = list("missing_since" = "[t]")
 	var/obj/item/weapon/book/rewrite = new(locate(4,6,1))
-	knowledge_check(rewrite.add_research_chapter("iron_smithing") && map.ordinal_age == 2 && map.age == "1013", "writing a lost capstone down again brings its era back")
+	knowledge_check(rewrite.add_research_chapter("iron_smithing") && map.ordinal_age == 2 && map.age == "1013" && isnull(map.era_record_clock("missing_since")), "writing a lost capstone down again brings its era back and stops the clock")
 	map.ordinal_age = 2
 	qdel(rewrite)
 	knowledge_check(!(rewrite in era_record_items), "destroyed books leave the era record list")
@@ -903,7 +921,7 @@ var/knowledge_practice_waits = 0
 	qdel(older)
 	map.age = old_age
 	map.ordinal_age = old_ordinal
-	era_loss_missed = 0
+	map.era_records_state = old_state
 	persistence_player_restore_ready = old_ready
 
 // With book research a fabricator lists what its user knows, even when the
