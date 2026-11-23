@@ -254,7 +254,7 @@ var/global/list/ship_designer_sprites = ship_designer_sprites_table()
 	var/datum/ship_draught/D = draught()
 	for (var/sprite in ship_designer_sprites)
 		H << browse_rsc(ship_designer_sprites[sprite], sprite)
-	show_browse(H, ship_designer_html(src, D), "window=[SHIP_DESIGNER_WINDOW];size=1060x780")
+	show_browse(H, ship_designer_html(src, D), "window=[SHIP_DESIGNER_WINDOW];size=1180x780")
 	onclose(H, SHIP_DESIGNER_WINDOW, src)
 	// The figures for the drawing as the window holds it (centred on the
 	// sheet), so the cells a check lights up are the window's own.
@@ -356,6 +356,7 @@ var/global/list/ship_designer_groups = ship_designer_groups_table()
 body{margin:0;background:var(--bg);color:var(--text);font:13px Verdana,sans-serif;overflow:hidden;display:flex;flex-direction:column;user-select:none}
 #top{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:9px 12px 8px;border-bottom:1px solid var(--line)}
 #top h1{font-size:17px;margin:0 6px 0 0;white-space:nowrap}
+#top button{flex:none;white-space:nowrap}
 input,select{background:var(--inset);color:var(--text);border:1px solid var(--line);border-radius:3px;font:13px Verdana,sans-serif;padding:5px 7px}
 button{background:var(--chip);color:var(--text);border:0;border-radius:3px;font:13px Verdana,sans-serif;padding:6px 10px;cursor:pointer}
 button:hover{background:#544329}
@@ -421,7 +422,7 @@ table{border-collapse:collapse;width:100%}td{padding:4px 0;border-bottom:1px sol
 .ck:focus-visible{outline:2px solid var(--hi);outline-offset:1px}
 .cnt{color:var(--dim);font-size:11px;font-weight:normal;float:right;margin-top:2px}
 </style></head><body>
-<div id='top'><h1>Ship's draught</h1><input id='nm' maxlength='40' style='width:210px' title='Her name'><span id='st'></span><span class='sp'></span><span class='dim'>Start from</span><select id='ex' title='Ready-made draughts to start from'><option value=''>a ready-made ship...</option></select><button class='primary' id='save'>Save to the sheet</button></div>
+<div id='top'><h1>Ship's draught</h1><input id='nm' maxlength='40' style='width:210px' title='Her name'><span id='st'></span><span class='sp'></span><span class='dim'>Start from</span><select id='ex' title='Ready-made draughts to start from'><option value=''>a ready-made ship...</option></select><button class='primary' id='save'>Save to the sheet</button><button id='b_export' title='Save the drawing on the sheet and show its design code to copy'>Export code</button><button id='b_import' title='Paste a design code; it replaces what is drawn on this sheet'>Import code</button></div>
 <div id='main'><div id='sheetcol'>
 <div id='deckbar'><span class='dim'>Deck</span><span class='seg' id='levels'></span><span id='deckkey'></span></div>
 <div id='sheetbar'><span class='dim'>Zoom</span><span class='seg'><button id='z_sheet'>Whole sheet</button><button id='z_ship'>Fit ship</button><button id='z_in' title='Closer (mouse wheel)'>+</button><button id='z_out' title='Further (mouse wheel)'>-</button></span><span class='sp'></span><button id='b_undo' title='Undo'>Undo <kbd>Ctrl Z</kbd></button><button id='b_redo' title='Redo (Ctrl Y)'>Redo</button><button id='b_clear' title='Wipe the sheet (Undo brings it back)'>Clear</button></div>
@@ -638,7 +639,7 @@ if(e.ctrlKey&&k=='z'){e.preventDefault();if(e.shiftKey)redo();else undo();}else 
 else if(k=='r'&&!e.ctrlKey){turn();}};
 
 // ---- Talking to the server: it reckons every figure ----
-function status(){var s=$('st');if(note){s.className=noteBad?'bad':'';s.innerHTML=esc(note);}else if(rev!=savedRev){s.className='dirty';s.innerHTML='&#9679; Unsaved changes';}else{s.className='';s.innerHTML='';}}
+function status(){var s=$('st');s.title=note;if(note){s.className=noteBad?'bad':'';s.innerHTML=esc(note);}else if(rev!=savedRev){s.className='dirty';s.innerHTML='&#9679; Unsaved changes';}else{s.className='';s.innerHTML='';}}
 function say(s,bad){note=s;noteBad=!!bad;status();}
 function code(){var out=[],more=[],plain=true,k,l,c;for(k in cells){c=cells[k];out.push(k+','+c[0]+','+(c[1]||'-')+','+c[2]+','+(dk(1,k)?1:0));}
 for(l in decks)for(k in decks[l]){c=decks[l][k];more.push(l+','+k+','+(c[0]||'-')+','+c[1]);if(l!='1'||c[0])plain=false;}
@@ -647,8 +648,8 @@ function go(q){window.location='byond://?src='+REF+'&'+q;}
 function changed(){rev++;note='';status();preview();}
 function preview(){if(timer)clearTimeout(timer);timer=setTimeout(function(){timer=null;send('preview');},600);}
 function waiting(){return busy&&new Date().getTime()-busy<5000;}
-function send(m){if(waiting()){if(m=='save')say('Wait a moment...');else preview();return;}var p=code();parts=[];for(var j=0;j<p.length;j+=PART)parts.push(p.substring(j,j+PART));if(!parts.length)parts.push('');
-busy=new Date().getTime();if(m=='save'){sendRev=rev;say('Saving...');}go('ship=begin&n='+parts.length+'&mode='+m+'&name='+encodeURIComponent($('nm').value));}
+function send(m){if(waiting()){if(m!='preview')say('Wait a moment...');else preview();return;}var p=code();parts=[];for(var j=0;j<p.length;j+=PART)parts.push(p.substring(j,j+PART));if(!parts.length)parts.push('');
+busy=new Date().getTime();if(m!='preview'){sendRev=rev;say('Saving...');}go('ship=begin&n='+parts.length+'&mode='+m+'&name='+encodeURIComponent($('nm').value));}
 function shipAck(n){n=parseInt(n,10);if(!parts)return;if(n<parts.length){go('ship=part&i='+n+'&d='+encodeURIComponent(parts[n]));return;}parts=null;go('ship=end');}
 function txt(s){s=(s+'').replace(/\+/g,' ');try{return decodeURIComponent(s);}catch(e){return s;}}
 function row(a,b){return '<tr><td>'+a+'</td><td>'+b+'</td></tr>';}
@@ -692,7 +693,7 @@ $('m_free').onclick=function(){box=false;mark();};$('m_box').onclick=function(){
 $('m_on').onclick=function(){mirror=true;mark();draw();};$('m_off').onclick=function(){mirror=false;mark();draw();};
 $('z_sheet').onclick=function(){setFit('sheet');};$('z_ship').onclick=function(){setFit('ship');};
 $('z_in').onclick=function(){zoom(1,cv.width/2,cv.height/2);};$('z_out').onclick=function(){zoom(-1,cv.width/2,cv.height/2);};
-$('b_undo').onclick=undo;$('b_redo').onclick=redo;$('b_clear').onclick=clearAll;$('save').onclick=function(){send('save');};
+$('b_undo').onclick=undo;$('b_redo').onclick=redo;$('b_clear').onclick=clearAll;$('save').onclick=function(){send('save');};$('b_export').onclick=function(){send('export');};$('b_import').onclick=function(){go('ship=import');};
 $('ex').onchange=loadExample;$('nm').oninput=function(){changed();};
 (function(){var s=$('ex');for(var i=0;i<EXAMPLES.length;i++){var o=document.createElement('option');o.value=i;o.appendChild(document.createTextNode(cap(EXAMPLES[i][0])));s.appendChild(o);}})();
 $('nm').value=DATA.NAME;load(DATA.START,DATA.START_DECKS);levels();deckKey();palette();mark();part();tell();resize();window.onresize=resize;
@@ -727,11 +728,16 @@ $('nm').value=DATA.NAME;load(DATA.START,DATA.START_DECKS);levels();deckKey();pal
 	if (!ship_designer_can_draw(H, src))
 		ship_designer_status(H, "Hold the sheet and a pen or pencil to draw on it.")
 		return
+	// Import and Export work the same in every designer (naval/draught_kinds.dm).
+	if (href_list["ship"] == "import")
+		upload_parts = null
+		src.draught_import_in_window(H, SHIP_DESIGNER_WINDOW)
+		return
 	switch (href_list["ship"])
 		if ("begin")
 			var/n = text2num(href_list["n"])
 			var/max_parts = CEILING(DESIGN_CODE_SHIP_MAX / SHIP_DESIGNER_PART, 1)
-			if (!isnum(n) || n < 1 || n > max_parts || n != round(n) || !(href_list["mode"] in list("preview", "save")))
+			if (!isnum(n) || n < 1 || n > max_parts || n != round(n) || !(href_list["mode"] in list("preview", "save", "export")))
 				ship_designer_status(H, "The drawing could not be sent.")
 				return
 			upload_parts = list()
@@ -754,9 +760,12 @@ $('nm').value=DATA.NAME;load(DATA.START,DATA.START_DECKS);levels();deckKey();pal
 			if (!got || got.len != upload_count)
 				ship_designer_status(H, "The drawing could not be sent.")
 				return
-			var/result = accept_drawing(H, jointext(got, ""), upload_name, upload_mode == "save")
+			var/export = upload_mode == "export"
+			var/result = accept_drawing(H, jointext(got, ""), upload_name, export || upload_mode == "save")
 			if (!isnull(result))
 				ship_designer_status(H, result)
+			if (export && result == "Saved on the sheet.")
+				src.draught_export(H, ship_draught_clean_name(upload_name))
 
 // Reads a drawing sent from the window. A preview answers with the summary;
 // a save keeps it on the sheet. Returns a status line, or null when the

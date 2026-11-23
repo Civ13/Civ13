@@ -420,29 +420,13 @@ var/global/list/sub_draught_fixed_cost = list("steel" = 56)
 
 // The sheet in hand when it carries a submarine.
 /obj/item/ship_draught/proc/sub_sheet_menu(mob/living/human/H, datum/sub_draught/D)
-	var/choice = WWinput(H, D.summary_text(), name, "Cancel", list("Draw on the sheet", "Copy her design code", "Paste a design code", "Cancel"))
+	var/choice = WWinput(H, D.summary_text(), name, "Cancel", list("Draw on the sheet", DRAUGHT_EXPORT_LABEL, DRAUGHT_IMPORT_LABEL, "Cancel"))
 	if (choice == "Draw on the sheet")
 		open_sub_designer(H)
-	else if (choice == "Copy her design code")
-		design_code_show(H, "Submarine sheet: [D.name]", draught_code, "Paste it into any ship's draught to draw the same submarine.")
-	else if (choice == "Paste a design code")
-		paste_any_code(H)
-
-// Pasting any kind of sheet's code onto it (draught_kinds).
-/obj/item/ship_draught/proc/paste_any_code(mob/living/human/H)
-	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, space station or house design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/... or C13HOUSE/...). It replaces what is drawn on this sheet.", draught_code_max())
-	if (!typed || H.get_active_hand() != src)
-		return
-	var/kind = design_code_kind(typed)
-	var/list/K = draught_kinds[kind]
-	var/datum/D = K ? call(K["read"])(typed) : null
-	if (!D)
-		to_chat(H, SPAN_WARNING(design_code_refusal(typed, K ? kind : "SHIP")))
-		return
-	call(src, K["take"])(D)
-	design_code_log(H, K["name"], name, typed)
-	to_chat(H, SPAN_NOTICE("You draw the [D:name] on the sheet."))
-	qdel(D)
+	else if (choice == DRAUGHT_EXPORT_LABEL)
+		draught_export(H, D.name)
+	else if (choice == DRAUGHT_IMPORT_LABEL)
+		draught_import(H)
 
 #undef SUB_DRAUGHT_NAME_MAX
 #undef SUB_DRAUGHT_SECTION_STEEL

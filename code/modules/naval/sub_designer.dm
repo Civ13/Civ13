@@ -117,7 +117,7 @@ var/global/list/sub_designer_sprites = list(
 	html += "<div style='margin-top:4px'>Fittings:</div><div id='fits'></div>"
 	html += "<div style='margin-top:4px'><button onclick='undo()'>Undo</button> Start from: <select id='ex'><option value=''>-</option></select><button onclick='loadExample()'>Load</button></div>"
 	html += "<div id='stats'></div><div id='st'></div>"
-	html += "<div style='margin-top:6px'><button onclick=\"send('save')\">Save to the sheet</button></div>"
+	html += "<div style='margin-top:6px'><button onclick=\"send('save')\">Save to the sheet</button><button onclick=\"send('export')\" title='Save the drawing on the sheet and show its design code to copy'>Export code</button><button onclick='importCode()' title='Paste a design code; it replaces what is drawn on this sheet'>Import code</button></div>"
 	html += "<div class='hint' style='margin-top:6px'>The glass bow and the engine room in the stern, with its fuel and ballast tanks, are part of every boat. Hatches go in her side sections. Right-click a section to take its fitting out.</div>"
 	html += "</div><div id='info'><div class='sec'><h2>Part</h2><div class='in' id='part'></div></div><div class='sec'><h2>Checks<span id='chkn'></span></h2><div class='in' id='checks'><span class='hint'>Reckoning...</span></div></div></div></div><script>"
 	html += "var REF='\ref[S]',BEAM=[SUB_DRAUGHT_BEAM],MINL=[SUB_DRAUGHT_MIN_LENGTH],MAXL=[SUB_DRAUGHT_MAX_LENGTH],FITS=[json_encode(fittings)],PICS=[json_encode(pictures)],EXAMPLES=[json_encode(examples)],START=[json_encode(sub_designer_sheet(D))],HELP=[json_encode(design_part_help_for("sub"))];"
@@ -155,6 +155,7 @@ var fit=v[1]?fitPic(v[1],32)+'<br>':'';
 h+='<td class=s style=\"'+st+'\" title=\"'+(v[1]?fitName(v[1]):'')+'\" onclick=\"apply('+c+','+r+',0)\" oncontextmenu=\"apply('+c+','+r+',1);return false;\">'+fit+label+'</td>';}h+='</tr>';}g.innerHTML=h;}
 function code(){var nm=document.getElementById('nm').value.replace(/[\/;,]/g,' ').replace(/ /g,'_');if(!nm)nm='submarine';var t=[];for(var r=1;r<=L;r++)for(var c=1;c<=BEAM;c++){var v=cells[key(c,r)];t.push(c+','+r+','+v[0]+','+(v[1]||'-')+','+(v[2]||'-'));}return 'C13SUB/1/'+nm+'/'+L+'/'+t.join(';');}
 function send(mode){window.location='byond://?src='+REF+'&sub='+mode+'&code='+encodeURIComponent(code())+'&name='+encodeURIComponent(document.getElementById('nm').value);}
+function importCode(){if(timer){clearTimeout(timer);timer=null;}window.location='byond://?src='+REF+'&sub=import';}
 function changed(){if(timer)clearTimeout(timer);timer=setTimeout(function(){timer=null;send('preview');},400);}
 function status(t){document.getElementById('st').innerHTML=t;}
 function subStatus(t){status(t);}
@@ -229,7 +230,12 @@ load(START);tool('h');draw();
 	if (!ship_designer_can_draw(H, sheet))
 		sub_designer_status(H, "Hold the sheet and a pen or pencil to draw on it.")
 		return
-	var/save = href_list["sub"] == "save"
+	// Import and Export work the same in every designer (naval/draught_kinds.dm).
+	if (href_list["sub"] == "import")
+		sheet.draught_import_in_window(H, SUB_DESIGNER_WINDOW)
+		return
+	var/export = href_list["sub"] == "export"
+	var/save = export || href_list["sub"] == "save"
 	if (!save)
 		if (!isnull(last_preview) && world.time < last_preview + SUB_DESIGNER_PREVIEW_GAP)
 			return
@@ -247,6 +253,8 @@ load(START);tool('h');draw();
 	if (save)
 		sheet.take_sub(D)
 		sub_designer_status(H, "Saved on the sheet.")
+		if (export)
+			sheet.draught_export(H, D.name)
 	qdel(D)
 
 #undef SUB_DESIGNER_WINDOW
