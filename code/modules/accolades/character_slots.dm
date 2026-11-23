@@ -228,6 +228,8 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 /proc/character_slot_switch_refusal(client/C, slot)
 	if(region_gateway_here())
 		return "Use the gateway character lobby. A switch must be admitted in your character's land."
+	if(!region_gateway_expected_slot_ok(C))
+		return "Your selected character changed. Reconnect through the gateway before switching."
 	var/ckey = accolade_client_ckey(C)
 	if(!ckey)
 		return "Extra characters belong to a signed-in BYOND account."

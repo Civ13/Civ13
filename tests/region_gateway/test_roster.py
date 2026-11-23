@@ -53,6 +53,16 @@ class GatewayRosterTests(unittest.TestCase):
         self.assertNotIn("region_home_summon", roster)
         self.assertIn('return list("wait" = "The character directory cannot confirm', roster)
 
+    def test_stale_gateway_hint_cannot_release_event_stash_or_switch_slot(self):
+        event = (ROOT / "modules/persistence/region_event.dm").read_text()
+        reclaim = proc(event, "/map_storage/reclaim_saved_player(")
+        self.assertLess(reclaim.index("region_gateway_expected_slot_ok(lobby.client)"), reclaim.index("S.release()"))
+        chars = (ROOT / "modules/accolades/character_slots.dm").read_text()
+        switch = proc(chars, "/proc/character_slot_switch(")
+        refusal = proc(chars, "/proc/character_slot_switch_refusal(")
+        self.assertIn("!region_gateway_expected_slot_ok(C)", refusal)
+        self.assertLess(switch.index("character_slot_switch_refusal(C, slot)"), switch.index("shared_records.add("))
+
     def test_sleep_departure_checks_and_escapes_roster_labels(self):
         self.assertIn("character_lobby_departure_refusal(C)", proc(GATE, "/proc/region_gateway_open_roster("))
         render = proc(GATE, "/proc/region_gateway_show_roster(")
