@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'c4044eff5f8eaae95cf908cf6d60e2c16c593b00'
+WIKI_REVIEWED_REVISION = 'abff97ba468696753ab195e7641aab8f80eaf78d'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -168,7 +168,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('9096d3d940101d15c745af27165d81d6ebb111f5c4a677c795e1aa10a495d171', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('ad3fd1eb2b109f8d1ab3aead23d2bfa189ff7e5a4880e5c0e6b66ada8c13f49e', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('0a42bcabcaf3efe8a77e6b0305714b8b0b72675101ab13cb533d4323e32024c5', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -190,7 +190,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Amalgamation.md': ('c6e59ac3698ec0e0e9fd671045c1cb68b981941f4f9fcd4fe4ca8901f877e937', 'amalgamation amalgam mercury gold silver ore recovery retort patio'),
     'guides/Guide_to_Armor.md': ('f1024c2c3032cbdbad66acae9a3fb5f05f4db9ba57cabbeffde1210e58dccc85', 'armor armour protection helmet cuirass plate mail chainmail shield padded gambeson body armor bullet proof vest dayfield layering'),
     'guides/Guide_to_Chat.md': ('88cdb4f258921f70eb5de9ce6e4337106ec948ad706c5c780bf46b7f66a6ef21', 'chat window tabs tab filter translate translation translated language ooc looc repeated messages history connection lost ghost ears'),
-    'guides/Guide_to_Factions.md': ('ea988cd352abcfb09ad78914dc53f950f61dabaccee3d96baada65c304d357e2', 'faction factions province provinces claim territory stake resident hall leader officer office recruit recruitment station island border visitor pass nation vassal siege war banner defence window sleep protection treasury tax'),
+    'guides/Guide_to_Factions.md': ('f4e36378a4f41227009573bfbae031dd7e9c3a70d463beaf35a84abc476b61c7', 'faction factions province provinces claim territory stake resident hall leader officer office recruit recruitment station island border visitor pass nation vassal siege war banner defence window sleep protection treasury tax'),
     'guides/Guide_to_Companies.md': ('57a38cc569849f5de5abb969a55f1fc1a74672390b3feb8da20383c6a4babcbd', 'company companies stock market shares shareholder stall stalls profits dividend business'),
     'guides/Guide_to_Computers.md': ('18a43fae4409a102f307b90632d49c701f707afbc464769cc003a1e1197515d0', 'computer computers minicomputer processor tape drive diskette terminal files program unga os electronic computing'),
     'guides/Guide_to_Electroplating.md': ('cb4d98759963fa316d4de487a7061b7cbf0b1a99255cfb2c3c8a53bea46230e2', 'electroplating plating plated gilding silver gold nickel chrome bath anode'),

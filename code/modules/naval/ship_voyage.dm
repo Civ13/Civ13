@@ -14,7 +14,6 @@
 // ============================================================
 
 #define VOYAGE_TICK 100 // deciseconds between looks at the voyage
-#define VOYAGE_MIN_CREW 2
 #define VOYAGE_SCOUT_RANGE 4 // chart tiles out; she comes back the same way
 #define VOYAGE_WAIT_MAX 18000 // deciseconds she waits off an unready coast before turning back
 // Deciseconds a ship lies at anchor after a landfall before her next voyage or
@@ -143,9 +142,9 @@
 		if (H.client && H.stat == CONSCIOUS)
 			. += H
 
-// Why she cannot set out on a voyage now, or null. min_crew: the crew a
-// voyage needs aboard; a sea lane to a known land (sea_lanes.dm) needs one.
-/obj/structure/hull_tiller/proc/voyage_refusal(mob/living/human/H, min_crew = VOYAGE_MIN_CREW)
+// Why she cannot set out on a voyage now, or null. One sailor aboard and
+// awake is crew enough; she may carry as many as she holds.
+/obj/structure/hull_tiller/proc/voyage_refusal(mob/living/human/H)
 	if (voyage)
 		return "She is already on a voyage."
 	if (!shard_group || !shard_group.enabled)
@@ -156,8 +155,8 @@
 	craft.fit_drives()
 	if (craft.max_speed() < VESSEL_SPEED_SLOW)
 		return "She cannot make a voyage without a way to sail: rig a mast or fit a running engine."
-	if (length(voyage_crew()) < min_crew)
-		return min_crew > 1 ? "A voyage needs at least [min_crew] of her crew aboard and awake." : "Somebody must be aboard and awake to sail her."
+	if (!length(voyage_crew()))
+		return "Somebody must be aboard and awake to sail her."
 	// Whatever would stop her crossing at landfall stops her setting out (ship_crossing.dm).
 	var/load = sea_crossing_load(src)
 	if (istext(load))
@@ -165,10 +164,10 @@
 	return null
 
 /obj/structure/hull_tiller/proc/voyage_menu(mob/living/human/H)
-	// Known lands across the sea (sea_lanes.dm) need no chart and one sailor.
+	// Known lands across the sea (sea_lanes.dm) need no chart.
 	// Over the map edges the continents are reached by sailing off them (ship_edge_crossing.dm).
 	var/list/known = sea_edge_travel_on() ? list() : sea_lane_destinations()
-	var/reason = voyage_refusal(H, length(known) ? 1 : VOYAGE_MIN_CREW)
+	var/reason = voyage_refusal(H)
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
@@ -199,7 +198,7 @@
 		return
 	if (choice in known)
 		var/list/lane = known[choice]
-		reason = landfall_rest_refusal() || voyage_refusal(H, 1)
+		reason = landfall_rest_refusal() || voyage_refusal(H)
 		if (reason)
 			to_chat(H, SPAN_WARNING(reason))
 			return
@@ -511,7 +510,6 @@
 	return FALSE
 
 #undef VOYAGE_TICK
-#undef VOYAGE_MIN_CREW
 #undef VOYAGE_SCOUT_RANGE
 #undef VOYAGE_WAIT_MAX
 #undef VOYAGE_LANDFALL_REST

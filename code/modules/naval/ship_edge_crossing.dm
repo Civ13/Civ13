@@ -14,14 +14,14 @@
 // of breakers in the Atlantic, and a ship in the Atlantic that lies against
 // the box comes out on the island's edge on that side.
 //
-// Only a seaworthy ship crosses (a mast or a running engine, and two crew).
+// Only a seaworthy ship crosses (a mast or a running engine, and somebody aboard
+// and awake to sail her).
 // Swimmers and small boats do not: walkers use the walk links (region_edge.dm)
 // and the sea edges hold nobody in the water. The whole thing waits for the
 // host's group option edge_travel_oceans (shard_group.dm).
 // ============================================================
 
 #define SEA_EDGE_BAND 4
-#define SEA_EDGE_MIN_CREW 2
 // How far along the arrival edge she may be put from the matching place.
 #define SEA_EDGE_SEARCH 80
 // How far in from the edge (or out from a box) she may be put.
@@ -146,14 +146,14 @@
 		return load
 	return landfall_rest_refusal() || crossing_hold_refusal(route[1])
 
-// Open water is no place for a raft: a mast or a running engine, and hands to
-// work her. Why she cannot put out into it, or null.
+// Open water is no place for a raft: a mast or a running engine, and a sailor
+// aboard and awake (one is enough). Why she cannot put out into it, or null.
 /obj/structure/hull_tiller/proc/sea_edge_seaworthy_refusal()
 	craft.fit_drives()
 	if (craft.max_speed() < VESSEL_SPEED_SLOW)
 		return "She cannot sail the open sea without a way to sail: rig a mast or fit a running engine."
-	if (length(voyage_crew()) < SEA_EDGE_MIN_CREW)
-		return "The open sea needs at least [SEA_EDGE_MIN_CREW] of her crew aboard and awake."
+	if (!length(voyage_crew()))
+		return "Somebody must be aboard and awake to sail her."
 	return null
 
 // Round the world in an ocean whose west and east edges join: she comes out
@@ -281,6 +281,5 @@
 	return null
 
 #undef SEA_EDGE_BAND
-#undef SEA_EDGE_MIN_CREW
 #undef SEA_EDGE_SEARCH
 #undef SEA_EDGE_DEPTH
