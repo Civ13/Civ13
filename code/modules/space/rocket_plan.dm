@@ -31,24 +31,6 @@
 // ============================================================
 
 #define ROCKET_PLAN_NAME_MAX 40
-#define ROCKET_G 9.81
-#define ROCKET_LIFTOFF_TWR 1.2
-#define ROCKET_UPPER_TWR 0.3
-#define ROCKET_DV_ORBIT 7.0
-#define ROCKET_DV_RETURN 0.1
-#define ROCKET_DV_TRANSFER 2.5
-#define ROCKET_DV_LANDING 1.8
-#define ROCKET_DV_LUNAR_RETURN 2.2
-#define ROCKET_CREW_MASS 0.1
-// A full cargo bay, in tonnes, and the hold items it takes.
-#define ROCKET_BAY_TONNES 5
-#define ROCKET_BAY_ITEMS 20
-#define ROCKET_BOOSTER_DRY 2.5
-#define ROCKET_BOOSTER_PROPELLANT 10
-#define ROCKET_BOOSTER_THRUST 800
-#define ROCKET_BOOSTER_VE 2.4
-// Propellant units (reagent) a tonne of propellant takes to load.
-#define ROCKET_UNITS_PER_TONNE 5
 
 // The pieces a plan can stack.
 //   name, what (one line), dry (t), prop (t), thrust (kN), ve (exhaust speed),

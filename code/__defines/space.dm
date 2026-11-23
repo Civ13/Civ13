@@ -34,3 +34,23 @@
 #define ROCKET_LEG_TRANSFER "transfer"
 #define ROCKET_LEG_LANDING "landing"
 #define ROCKET_LEG_LUNAR_RETURN "lunar_return"
+
+// Rocket plan physics (space/rocket_plan.dm): game units, see docs/rocket-plans.md.
+#define ROCKET_G 9.81
+#define ROCKET_LIFTOFF_TWR 1.2
+#define ROCKET_UPPER_TWR 0.3
+#define ROCKET_DV_ORBIT 7.0
+#define ROCKET_DV_RETURN 0.1
+#define ROCKET_DV_TRANSFER 2.5
+#define ROCKET_DV_LANDING 1.8
+#define ROCKET_DV_LUNAR_RETURN 2.2
+#define ROCKET_CREW_MASS 0.1
+// A full cargo bay, in tonnes, and the hold items it takes.
+#define ROCKET_BAY_TONNES 5
+#define ROCKET_BAY_ITEMS 20
+#define ROCKET_BOOSTER_DRY 2.5
+#define ROCKET_BOOSTER_PROPELLANT 10
+#define ROCKET_BOOSTER_THRUST 800
+#define ROCKET_BOOSTER_VE 2.4
+// Propellant units (reagent) a tonne of propellant takes to load.
+#define ROCKET_UNITS_PER_TONNE 5
