@@ -21,11 +21,12 @@
     "code/game/mob/living/carbon/human/human_helpers.dm": "702fae5e01b593302f57fbc9b6f7246773c39e030e78a64e50068d937919a2f3",
     "code/game/objects/buckling.dm": "591bc9ced32f443a2238b6eed0d6b72dc405c03f551e1ac6090f18b308c8c1b7",
     "code/game/atoms_movable.dm": "f1c977e2bb60a4a36d27962a8530c4967c1a2862ab348ddc090d837a49fd0ced",
-    "tests/world_save/run-durable-world.py": "ac4b4aea7b764f76313055c38a30ddcad150cba31d7f7bd41eb11549c044f59a"
+    "tests/world_save/run-durable-world.py": "ac4b4aea7b764f76313055c38a30ddcad150cba31d7f7bd41eb11549c044f59a",
+    "code/modules/persistence/region_gateway.dm": "d17dd114912ccb40650414de7fa70493d6983c914e70d1d06c085d496c58f6ed"
   },
   "procedure_sha256": {
     "code/modules/persistence/player_reclaim.dm": {
-      "/map_storage/proc/reclaim_saved_player": "564c7e79bd6fcf06819ab0a91681c1f1f378ba4b6b179f60c2d9286ab45adb1c",
+      "/map_storage/proc/reclaim_saved_player": "6e815df3f17b7661be6b9aa654104769a653d3dfd7e103c001fa1c183f50b7e3",
       "/map_storage/proc/find_restored_player": "aae3ded618b308c82ad1ab66197a1b00d1bb275dc9ca810595d5c5edddc85106"
     },
     "code/modules/persistence/bed_return.dm": {
@@ -35,7 +36,10 @@
       "/map_storage/proc/finish_character_return": "293e59097017478fe8afd0a23d42b19d1245a3ba9a923ac5a25759b4afc034f9",
       "/map_storage/proc/character_return_turf": "50cbb1adb8c73f73ffb2297f4c26a603b2e9a903842541d3a356a032ad4494f4",
       "/map_storage/proc/character_recovery_unready": "ad3acc9efa31ae0d786fa2a3f7992168cd6abf33a96f954e5a0ec51ef80b3d10",
-      "/map_storage/proc/allow_new_character": "c7bc8e5b65d803c65ab42f7a359d1619fa0bbc9ef4c0d841b5b03821fd42eaa0"
+      "/map_storage/proc/allow_new_character": "099c2e4374587750db8e451a950ad2cee7540e91ab7efd71f34a5355ad4ee071"
+    },
+    "code/modules/persistence/region_gateway.dm": {
+      "/proc/region_gateway_expected_slot_ok": "a45a37296fa1a79fa2bac588c0901de5804460ec338589b6d745f389dbf2b576"
     }
   }
 }
