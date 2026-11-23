@@ -79,6 +79,8 @@ var/global/list/design_code_last_import = list() // ckey -> world.time
 			return "a train sheet"
 		if ("STATION")
 			return "a space station plan"
+		if ("ROCKET")
+			return "a rocket sheet"
 		if ("HOUSE")
 			return "a house plan"
 		if ("GUN")
