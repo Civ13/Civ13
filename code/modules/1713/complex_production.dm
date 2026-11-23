@@ -667,13 +667,15 @@
 /obj/item/stack/sausagecasing/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon/reagent_containers/food/snacks/mince))
 		to_chat(user, "You start stuffing the casing with the mince.")
-		if (do_after(user, 10))
+		if (do_after(user, 10, src))
+			// The casing or mince can be taken or used up during the wait (issue 6975).
+			if (QDELETED(src) || QDELETED(W) || W.loc != user || (loc != user && !user.Adjacent(src)))
+				return
+			if (!use(1))
+				return
 			to_chat(user, "You stuff the casing with the mince.")
 			new /obj/item/weapon/reagent_containers/food/snacks/sausage(user.loc)
 			qdel(W)
-			src.amount -= 1
-			if (src.amount < 1)
-				qdel(src)
 	else
 		..()
 
