@@ -126,11 +126,14 @@ class HarborPlannerTest(unittest.TestCase):
         imp = body('/obj/item/ship_draught/proc/draught_import(', source)
         for guard in ('!harbor_can_draw(H, src)', 'H.client != connection',
                       'draught_code != expected_code', 'persistence_admission_changed(admission)',
-                      '!harbor_editor.can_edit(H)'):
+                      '(recheck && !recheck.Invoke())'):
             tail = imp.split('design_code_ask(', 1)[1]
             self.assertLess(tail.index(guard), tail.index('call(src, K["take"])(D)'))
         menu = body('/obj/item/ship_draught/proc/harbor_sheet_menu(')
-        self.assertLess(menu.index('draught_code != expected_code'), menu.index('draught_import(H, TRUE)'))
+        self.assertLess(menu.index('draught_code != expected_code'), menu.index('draught_import(H)'))
+        # The open editor's own checks run again after the import prompt.
+        editor = body('/datum/harbor_designer/Topic(')
+        self.assertIn('draught_import_in_window(H, HARBOR_WINDOW, CALLBACK(src, PROC_REF(can_edit), H))', editor)
 
 
 if __name__ == '__main__':

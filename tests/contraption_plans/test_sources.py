@@ -51,9 +51,11 @@ class ContraptionPlanSources(unittest.TestCase):
         self.assertIn('persistence_admission_changed(admission)', UI)
         self.assertIn('|| importing ||', topic)
         kinds = read('code/modules/naval/draught_kinds.dm')
+        # The editor's can_edit() runs again, through the recheck callback, after the prompt.
+        self.assertIn('draught_import_in_window(H, CONTRAPTION_WINDOW, CALLBACK(src, PROC_REF(can_edit), H))', UI)
         self.assertLess(kinds.index('design_code_ask(H,'),
-                        kinds.index('!editor.can_edit(H)'))
-        self.assertLess(kinds.index('!editor.can_edit(H)'),
+                        kinds.index('(recheck && !recheck.Invoke())'))
+        self.assertLess(kinds.index('(recheck && !recheck.Invoke())'),
                         kinds.index('call(src, K["take"])(D)'))
 
     def test_native_probe_has_bounded_negative_controls(self):

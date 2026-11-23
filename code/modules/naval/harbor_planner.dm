@@ -398,33 +398,49 @@
 	var/list/help = design_part_help_for("harbor")
 	var/list/entry = help[P.part]
 	var/list/page = list({"
-		<html><head><meta charset='utf-8'><style>
-		body{background:#eee4cd;color:#28251e;font:14px Georgia,serif;padding:14px}
-		h2,h3,p{margin:8px 0} a{display:inline-block;margin:2px;padding:6px 9px;color:#2e2921;background:#fff8e7;border:1px solid #998763;text-decoration:none}
-		.sheet{background:#e0d6ba;padding:12px;margin-top:12px}
-		.error{color:#8e261c}.warning{color:#785219}
-		.tiles{border-collapse:collapse;font:12px monospace}
-		.tiles .runway{border:2px dashed #69645a}.tiles td{width:22px;height:22px;text-align:center;border:1px solid #8a856e;background:#e9dcc0}
-		.tiles .deep{background:#527b9e;color:white}.tiles .shallow,.tiles .flooded{background:#9cc6cf}
-		.tiles .trench{background:#b69d75}.tiles .solid,.tiles .edge,.tiles .below{background:#69645a;color:white}
-		.tiles .ice{background:#d3e4ee}.tiles .bad{background:#a34334;color:white}
+		<html><head><meta charset='utf-8'><meta http-equiv='X-UA-Compatible' content='IE=edge'><title>Harbor Planner</title><style>
+		body{background:#211c16;color:#e9dfc8;font-family:Verdana,sans-serif;font-size:12px;margin:10px}
+		h2{font-size:17px;margin:0 0 6px 0} h3{font-size:13px;color:#ffd985;margin:8px 0 4px 0} p{margin:6px 0;line-height:1.4}
+		a{display:inline-block;margin:0 3px 3px 0;padding:4px 8px;color:#e9dfc8;background:#4a3a2a;border:1px solid #806040;text-decoration:none}
+		a:hover,a:focus{border-color:#ffd985}
+		.on a{background:#b48c4d;color:#211c16;border-color:#ffd985;font-weight:bold}
+		.hint{color:#c5b48e}
+		.sheet{background:#30271e;border:1px solid #66513b;padding:8px 10px;margin-top:8px}
+		.error{color:#ffb098}.warning{color:#f5da8c}.note{color:#c5b48e}
+		.tiles{border-collapse:collapse;font:bold 12px Consolas,monospace;margin:6px 0}
+		.tiles th{color:#c5b48e;font-weight:normal;padding:0 5px 0 0;text-align:right}
+		.tiles td{width:22px;height:22px;text-align:center;border:1px solid #8a7a55}
+		.tiles .runway th{color:#ffd985}.tiles .runway td{border-style:dashed}
+		.key span{display:inline-block;white-space:nowrap;margin:0 10px 3px 0}
+		.key b{display:inline-block;width:18px;height:18px;line-height:18px;margin-right:4px;text-align:center;border:1px solid #8a7a55;font:bold 12px Consolas,monospace;vertical-align:middle}
+		.land,.unseen,.deep,.shallow,.flooded,.trench,.solid,.edge,.below,.ice,.bad{background:#d9c9a3;color:#2a1c0e}
+		.unseen{background:#a89c80;color:#2a1c0e}
+		.deep{background:#2f5f86;color:#fff}.shallow,.flooded{background:#9cc6cf}
+		.trench{background:#b08a55}.solid,.edge,.below{background:#5a554c;color:#fff}
+		.ice{background:#eaf3f7}.bad{background:#a63a22;color:#fff}
 		</style></head><body><h2>Harbor Planner</h2>
-		<p>Draw, survey and save a relative layout. This sheet never builds, digs or launches anything.</p>
+		<p class='hint'>Draw, survey and save a relative layout. This sheet never builds, digs or launches anything.</p>
 		<p>
 	"})
+	// The chosen part and hull are highlighted like a pressed button in the other planners.
 	for (var/key in harbor_parts())
 		var/list/facts = help[key]
-		page += control(facts["what"], "part", key)
+		var/part_control = control(html_encode(facts["what"]), "part", key)
+		page += key == P.part ? "<span class='on'>[part_control]</span>" : part_control
 	page += "</p>"
 	if (P.part in list("slip", "dock"))
-		page += "<p>Hull envelope: [control("Schooner", "hull", "schooner")] [control("Freighter", "hull", "freighter")]</p>"
+		page += "<p>Hull envelope: "
+		for (var/hull in list("schooner", "freighter"))
+			var/hull_control = control(capitalize(hull), "hull", hull)
+			page += hull == P.hull ? "<span class='on'>[hull_control]</span>" : hull_control
+		page += "</p>"
 	if (P.part in list("timber", "steel", "dock"))
 		page += "<p>Length [P.length]: [control("-", "length", "-1")] [control("+", "length", "1")]"
 		if (P.part == "dock")
 			page += " &nbsp; Width [P.width]: [control("-", "width", "-2")] [control("+", "width", "2")]"
 		page += "</p>"
 	page += "<p>[control("Rotate", "rotate")] [control("Survey from here", "survey")] [control("Save on sheet", "save")] [control("Export", "export")] [control("Import", "import")]</p>"
-	page += "<div class='sheet'><h3>[html_encode(P.summary_text())]</h3><p>[entry["use"]] [entry["how"]]</p>"
+	page += "<div class='sheet'><h3>[html_encode(P.summary_text())]</h3><p>[html_encode(entry["use"])] [html_encode(entry["how"])]</p>"
 	if (P.part == "timber")
 		page += "<p>Materials: [P.length] timber spans ([P.length * 8] wood before any spans already laid), plus a pile driver.</p>"
 	else if (P.part == "steel")
@@ -439,7 +455,7 @@
 		if (P.part == "boathouse")
 			var/static/list/corners = list("1" = "NORTHEAST", "4" = "SOUTHEAST", "2" = "SOUTHWEST", "8" = "NORTHWEST")
 			direction = corners["[P.heading]"]
-		page += "<p>Survey [site_label] [P.site.x],[P.site.y] | Toward: [direction] | Furthest row at top.</p>"
+		page += "<p>Surveyed from the [site_label] tile where you stood | Toward: [direction] | Furthest row at top.</p>"
 		var/list/bad = list()
 		for (var/datum/design_finding/F in R.findings)
 			if (F.level == DESIGN_ERROR && F.cells)
@@ -456,18 +472,20 @@
 				var/depth = seen ? harbor_depth(T) : "unseen"
 				var/obstruction = seen && (bad["[u],[v]"] || (u > P.length && (harbor_obstructed(T, TRUE) || vessel_at(T) || depth == "trench")))
 				var/style = obstruction ? "bad" : depth
-				var/label = obstruction ? "!" : seen ? uppertext(copytext(depth, 1, 2)) : "?"
-				page += "<td class='[style]' title='[depth]'>[label]</td>"
+				// Solid ground gets X so it never shares the S of shallow water.
+				var/label = obstruction ? "!" : seen ? (depth == "solid" ? "X" : uppertext(copytext(depth, 1, 2))) : "?"
+				page += "<td class='[style]' title='[obstruction ? "[depth] - investigate" : depth]'>[label]</td>"
 			page += "</tr>"
-		page += "</table><p>Red ! = investigate. ? = unseen, not clear or blocked. Deep and shallow are game terrain classes, not measured depths.</p>"
+		page += "</table><p class='key' aria-label='Tile key'><span><b class='deep'>D</b>deep water</span><span><b class='shallow'>S</b>shallow water</span><span><b class='flooded'>F</b>flooded trench</span><span><b class='trench'>T</b>dry trench</span><span><b class='ice'>I</b>ice</span><span><b class='land'>L</b>open land</span><span><b class='solid'>X</b>solid ground or wall</span><span><b class='below'>B</b>underwater level</span><span><b class='edge'>E</b>map edge</span><span><b class='bad'>!</b>investigate</span><span><b class='unseen'>?</b>unseen</span></p>"
+		page += "<p class='hint'>Unseen tiles are neither clear nor blocked. Deep and shallow are game terrain classes, not measured depths. Row numbers count tiles away from the [site_label]. Hover a tile to read its terrain.</p>"
 		if (P.part == "slip")
-			page += "<p>Dashed rows are the surveyed launch corridor beyond the berth.</p>"
+			page += "<p class='hint'>Dashed rows with gold numbers are the surveyed launch corridor beyond the berth.</p>"
 	else
-		page += "<p>Stand on a turf to survey a site.</p>"
+		page += "<p class='hint'>No site surveyed yet. Stand on the starting tile, face the way the work should run, and press Survey from here.</p>"
 	page += "<h3>Checks</h3>"
 	var/list/listed = R.data()
 	if (!listed.len)
-		page += "<p>No obvious blocker in this survey. Follow the actual construction checks.</p>"
+		page += "<p class='note'>No obvious blocker in this survey. Follow the actual construction checks.</p>"
 	for (var/list/row in listed)
 		page += "<p class='[row["level"]]'><b>[capitalize(row["level"])]:</b> [html_encode(row["text"])]</p>"
 	page += "</div></body></html>"

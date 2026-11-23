@@ -115,7 +115,7 @@
 <title>Waterworks planner</title><style>
 body{background:#211c16;color:#e9dfc8;font:13px Verdana,sans-serif;margin:10px}
 h1{font-size:17px;margin:0 0 6px} h2{font-size:14px;color:#ffd985;margin:8px 0 4px}
-p{margin:6px 0} #layout{display:flex;align-items:flex-start;gap:12px}
+p{margin:6px 0} #layout{display:flex;align-items:flex-start}
 #drawing{flex:0 0 448px;margin-right:10px} #details{flex:1}
 #grid{border-collapse:collapse;background:#d9c9a3;table-layout:fixed} #grid td{padding:0;border:1px solid #b19c73}
 #grid button{width:34px;height:30px;padding:0;display:block;margin:0;background:transparent;color:#2a1c0e;border:0}
@@ -124,6 +124,9 @@ button,select,input{background:#4a3a2a;border:1px solid #806040;color:#f2e5ca;ma
 button:hover,button:focus{border-color:#ffd985;cursor:pointer} .hint{color:#c5b48e}
 #checks{margin:0;padding-left:18px} #checks li{padding:2px;outline-offset:2px} #checks .error{color:#ffb098} #checks .warning{color:#f5da8c}
 #status{color:#ffd985;min-height:18px}
+.key span{display:inline-block;white-space:nowrap;margin:0 10px 3px 0;color:#c5b48e}
+.key b{display:inline-block;width:18px;height:18px;line-height:18px;margin-right:4px;text-align:center;border:1px solid #b19c73;vertical-align:middle;font-weight:normal}
+.k0{background:#d9c9a3}.k1{background:#17505f;color:#fff}.k2{background:#a63a22;color:#fff}
 </style></head><body>
 <h1>Waterworks planner</h1>
 <p class='hint'>Stand at the south-west grid corner. North is up. Only tiles you can see in good light can be surveyed and pegged.</p>
@@ -131,6 +134,7 @@ button:hover,button:focus{border-color:#ffd985;cursor:pointer} .hint{color:#c5b4
 <p><label for='name'>Plan name </label><input id='name' maxlength='40'>
 <label for='mode'>Network </label><select id='mode'><option value='A'>Aqueduct</option><option value='S'>Sewer</option></select></p>
 <table id='grid' aria-label='Route drawing, north at the top'></table>
+<p class='key' aria-label='Tile key'><span><b class='k0'></b>empty tile</span><span><b class='k1'>1</b>route tile, numbered from the inlet</span><span><b class='k2'>1</b>tile named by the check you are pointing at</span></p>
 <p><button id='undo'>Remove last</button><button id='clear'>Clear drawing</button></p>
 <p class='hint'>Click a tile to add a part, or select another part to replace a numbered tile. Start at the inlet and follow tile edges.</p>
 </div><div id='details'>
@@ -149,8 +153,8 @@ function el(id){return document.getElementById(id);}
 function tile(x,y){return x+','+y;}
 function index(x,y){for(var i=0;i<route.length;i++)if(route[i][0]===x&&route[i][1]===y)return i;return -1;}
 function highlight(cells){var i;for(i=0;i<marked.length;i++)if(buttons[marked[i]])buttons[marked[i]].classList.remove('mark');marked=cells||[];for(i=0;i<marked.length;i++)if(buttons[marked[i]])buttons[marked[i]].classList.add('mark');}
-function paint(){var k,b,i;highlight([]);for(k in buttons){b=buttons[k];b.textContent='';b.className='';b.title=k;}
-for(i=0;i<route.length;i++){k=tile(route[i][0],route[i][1]);b=buttons[k];b.className='on';b.textContent=i+1;b.title=k+': '+D.parts[route[i][2]].name;}}
+function paint(){var k,b,i;highlight([]);for(k in buttons){b=buttons[k];b.textContent='';b.className='';b.title=k;b.setAttribute('aria-label','Tile '+k+', empty');}
+for(i=0;i<route.length;i++){k=tile(route[i][0],route[i][1]);b=buttons[k];b.className='on';b.textContent=i+1;b.title=k+': '+D.parts[route[i][2]].name;b.setAttribute('aria-label','Tile '+k+', step '+(i+1)+', '+D.parts[route[i][2]].name);}}
 function dirty(){rev++;paint();el('checks').textContent='';el('site').textContent='';el('materials').textContent='Preview for quantities. Unsurveyed pieces are counted as unbuilt.';el('status').textContent='Drawing changed locally. Preview or save it.';}
 function partHelp(){var p=D.parts[el('palette').value];el('parthelp').textContent=p.use+' Recipe: '+p.cost+' ('+p.research+').';}
 function palette(){var box=el('palette'),k,p,o;box.textContent='';for(k in D.parts){p=D.parts[k];if(p.mode!==el('mode').value)continue;o=document.createElement('option');o.value=k;o.textContent=p.name;box.appendChild(o);}partHelp();}
@@ -163,7 +167,7 @@ href+=';code='+encodeURIComponent('C13WATER/1/'+n+'/'+el('mode').value+'/'+(rout
 window.location=href;}
 function waterworksAnswer(raw){var a=JSON.parse(raw),ch=el('checks'),m=el('materials'),items=[],k,i,f,li;el('status').textContent=a.message;
 if(!a.checks||D.sent!==rev)return;
-highlight([]);ch.textContent='';el('site').textContent='South-west origin: '+a.site;
+highlight([]);ch.textContent='';el('site').textContent=a.site==='no ground'?'No ground to survey here.':'Checked with the south-west grid corner on the tile where you stand.';
 for(k in a.materials)items.push(a.materials[k]+' '+k);
 m.textContent=items.join(', ')||'No unbuilt parts on this drawing.';
 if(!a.checks.length)ch.textContent='No planner findings at this site.';

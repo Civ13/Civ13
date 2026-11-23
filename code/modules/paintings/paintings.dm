@@ -685,7 +685,7 @@
 	var/obj/item/ship_draught/P = held_plan()
 	var/datum/framed_plan_diagram/V = P?.framed_plan_diagram()
 	if (V)
-		show_browse(user, V.html(), "window=framed_plan;size=760x680")
+		show_browse(user, V.html(), "window=framed_plan;size=[V.window_size()]")
 		qdel(V)
 		return
 	var/obj/item/weapon/paper/S = held_sketch()
