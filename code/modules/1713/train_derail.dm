@@ -103,6 +103,13 @@
 /obj/structure/trains/locomotive/proc/curve_check(obj/structure/trains/lead, before_dir, turf/before_loc)
 	if (!lead || QDELETED(lead) || rail_speed <= TRAIN_CURVE_SPEED || !isturf(lead.loc))
 		return FALSE
+	// A wide curve has its own limit over its whole length (train_arcs.dm).
+	var/arc_limit = rail_arc_speed_at(lead.loc)
+	if (arc_limit)
+		if (rail_speed <= arc_limit)
+			return FALSE
+		var/fast = rail_speed / arc_limit
+		return leave_rails(fast >= 1.5 ? 2 : 1, fast * 0.5, "\The [lead] takes the curve too fast and leaves the rails!") > 0
 	var/turned = (lead.dir != before_dir)
 	var/what = "the curve"
 	if (!turned && before_loc)

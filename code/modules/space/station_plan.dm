@@ -292,13 +292,13 @@
 	name = D ? "station plan ([D.name])" : initial(name)
 
 /obj/item/ship_draught/proc/station_sheet_menu(mob/living/human/H, datum/station_plan/D)
-	var/choice = WWinput(H, D.summary_text(), name, "Cancel", list("Draw on the sheet", "Copy its design code", "Paste a design code", "Cancel"))
+	var/choice = WWinput(H, D.summary_text(), name, "Cancel", list("Draw on the sheet", DRAUGHT_EXPORT_LABEL, DRAUGHT_IMPORT_LABEL, "Cancel"))
 	if (choice == "Draw on the sheet")
 		open_station_designer(H)
-	else if (choice == "Copy its design code")
-		design_code_show(H, "Station plan: [D.name]", draught_code, "Paste it into any ship's draught to draw the same station.")
-	else if (choice == "Paste a design code")
-		paste_any_code(H)
+	else if (choice == DRAUGHT_EXPORT_LABEL)
+		draught_export(H, D.name)
+	else if (choice == DRAUGHT_IMPORT_LABEL)
+		draught_import(H)
 
 // ---- Drawing a station ----
 

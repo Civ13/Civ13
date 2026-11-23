@@ -976,9 +976,9 @@ var/global/list/ship_draught_decks = list(
 		qdel(house)
 		return
 	var/datum/ship_draught/D = draught()
-	var/list/options = list("Draw on the sheet", "Paste a design code", "Cancel")
+	var/list/options = list("Draw on the sheet", DRAUGHT_IMPORT_LABEL, "Cancel")
 	if (D)
-		options.Insert(2, "Copy her design code")
+		options.Insert(2, DRAUGHT_EXPORT_LABEL)
 	else
 		options.Insert(2, "Draw a house on the sheet")
 		options.Insert(3, "Draw a submarine on the sheet")
@@ -1008,10 +1008,10 @@ var/global/list/ship_draught_decks = list(
 		open_train_designer(H)
 	else if (choice == "Draw a space station on the sheet" && !draught_code)
 		open_station_designer(H)
-	else if (choice == "Copy her design code" && D)
-		design_code_show(H, "Ship's draught: [D.name]", draught_code, "Paste it into any ship's draught to draw the same ship.")
-	else if (choice == "Paste a design code")
-		paste_any_code(H)
+	else if (choice == DRAUGHT_EXPORT_LABEL && D)
+		draught_export(H, D.name)
+	else if (choice == DRAUGHT_IMPORT_LABEL)
+		draught_import(H)
 	if (D)
 		qdel(D)
 

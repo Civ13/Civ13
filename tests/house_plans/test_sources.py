@@ -144,7 +144,7 @@ class HousePlanSheet(unittest.TestCase):
 
     def test_the_sheet_reads_a_house_code(self):
         kinds = (ROOT / 'code/modules/naval/draught_kinds.dm').read_text(encoding='utf-8')
-        self.assertIn('"HOUSE" = list("name" = "house", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house")', kinds)
+        self.assertIn('"HOUSE" = list("name" = "house", "title" = "House plan", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house", "open" = "open_house_designer"', kinds)
         sheet = (ROOT / 'code/modules/naval/ship_draught.dm').read_text(encoding='utf-8')
         self.assertIn('"Draw a house on the sheet"', sheet)
         self.assertEqual(sheet.count('house_plan()'), 2)

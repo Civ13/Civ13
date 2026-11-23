@@ -420,6 +420,8 @@ var/global/train_step_plain = FALSE
 /proc/train_platform_tiles(turf/T, heading)
 	if (!T)
 		return list(null, null, null)
+	// Across a wide curve the deck lies diagonally (train_arcs.dm).
+	heading = rail_arc_lay(T, heading)
 	return list(get_step(T, turn(heading, 90)), T, get_step(T, turn(heading, -90)))
 
 /proc/train_centre_of_other(turf/T, obj/structure/trains/self)
@@ -663,7 +665,7 @@ var/global/train_step_plain = FALSE
 	var/turf/oldloc = loc
 	// way: where the car heads; newdir: where it faces, the other way for a
 	// car coupled in back to front. Sides and deck slots go by its facing.
-	var/way = heading_for(newloc, fdir)
+	var/way = rail_arc_facing(newloc, heading_for(newloc, fdir))
 	var/newdir = reversed ? OPPOSITE_DIR(way) : way
 	var/list/old_tiles = train_platform_tiles(oldloc, dir)
 	var/list/new_tiles = train_platform_tiles(newloc, newdir)
@@ -678,11 +680,7 @@ var/global/train_step_plain = FALSE
 		moving_train = FALSE
 		return FALSE
 	last_moved = world.time
-	var/turning = 0
-	if (newdir == turn(dir, 90))
-		turning = 90
-	else if (newdir == turn(dir, -90))
-		turning = -90
+	var/turning = train_turning(oldloc, dir, newloc, newdir)
 	dir = newdir
 	for (var/atom/movable/AM in cargo)
 		if (AM.loc == old_tiles[cargo[AM]] && new_tiles[cargo[AM]] && AM.train_shift(new_tiles[cargo[AM]], plain))
@@ -702,6 +700,7 @@ var/global/train_step_plain = FALSE
 				if (aside)
 					AM.train_shift(aside, plain)
 	place_parts(newloc, newdir, plain)
+	train_arc_pose(src, deck_parts, newdir)
 	train_deck_clearance(cargo, OPPOSITE_DIR(way))
 	if (connected && !train_solo_move)
 		connected.Move(oldloc, way)
