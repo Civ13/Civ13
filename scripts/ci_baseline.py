@@ -1626,6 +1626,8 @@ SUITES = {
         'paths': ('tests/house_plans/',), 'shared_paths': (
             'code/game/objects/house_plan.dm', 'code/game/objects/house_plan_checks.dm',
             'code/game/objects/house_designer.dm', 'code/__defines/house_plans.dm',
+            'code/game/objects/house_plan_pegs.dm', 'code/game/objects/build_markers.dm',
+            'code/__defines/build_markers.dm', 'icons/obj/build_markers.dmi',
             'code/modules/naval/draught_kinds.dm', 'code/modules/naval/ship_draught.dm',
             'code/modules/paintings/design_codes.dm', 'config/crafting/material_recipes_global.txt')},
     # Dugout canoe log stages, sea rules and recipes: source contracts only.
