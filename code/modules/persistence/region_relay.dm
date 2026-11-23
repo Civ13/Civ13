@@ -135,6 +135,17 @@
 	if(id == gate)
 		C << link("byond://[peer["address"]]")
 		return TRUE
+	// The relay sent the gateway a login it had no route for (a player who
+	// rejoined the relay's port straight from BYOND's reconnect or recent servers
+	// list, 2026-11-23). No route ever names the gateway, so a non-local player
+	// here from loopback came that way; a route for them would name loopback (or
+	// an old address the relay still holds for their key) and they would come
+	// back unrouted again. The gateway's own public port sees their address:
+	// they join that, and are sent on from there.
+	if(kind == "GATEWAY" && gate == region && (!C.address || region_relay_ip_loopback(C.address)) && !C.local_connection() && gate_address())
+		to_chat(C, SPAN_NOTICE("Reconnecting you through the front door..."))
+		C << link("byond://[gate_address()]")
+		return TRUE
 	if(!public)
 		// Region ports are closed to the internet behind a relay; only a true
 		// local connection (the host) can use one directly.
