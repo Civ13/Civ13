@@ -175,7 +175,11 @@
 #define BLOOMERY_FUEL_PER_ORE 1 // fuel per unit of iron ore (one charcoal per two ore)
 
 /obj/structure/furnace/proc/firing_fuel_cost()
-	return BLOOMERY_FIRING_BASE + max(0, iron) * BLOOMERY_FUEL_PER_ORE + max(0, iron_sand) * BLOOMERY_FUEL_PER_ORE / 2
+	return firing_fuel_cost_for(iron, iron_sand)
+
+// What a firing of this much ore and iron sand would cost.
+/obj/structure/furnace/proc/firing_fuel_cost_for(ore, sand = 0)
+	return BLOOMERY_FIRING_BASE + max(0, ore) * BLOOMERY_FUEL_PER_ORE + max(0, sand) * BLOOMERY_FUEL_PER_ORE / 2
 
 /obj/structure/furnace/proc/has_firing_fuel()
 	return fuel > 1 && fuel >= firing_fuel_cost() && !firing_refusal()

@@ -22,7 +22,7 @@ Production sources run in the shared resource-extraction constructor fixture wit
 - Saved switches: position is saved instead of the belt list, a reloaded switch shows its position and reapplies it to its belts, and an invalid position stops them.
 - Crate ports: closed crates accept items that fit, merge matching stacks, offer and release filtered items, and never take an item held by a person. Open crates have no port.
 - Stamp mill port: plain stone fills the hopper up to its limit, a partial insert splits the stack, and other materials are refused.
-- Cable reservations: a repeated draw less than a second after a traversal reuses the published reservation; an older reservation, an overloaded grid or a stopped source takes a full traversal and refuses or releases as before.
+- Cable reservations: a repeated draw less than a second after a traversal reuses the published reservation; an older reservation, an overloaded grid or a stopped source takes a full traversal and refuses or releases as before, and a traversal after a source loses capacity sheds the load it can no longer carry.
 
 Removing the belt load hook's direction rederivation makes three checks fail. Runtime fixture checks do not establish a full disk save and reload, graphical interaction or live balance.
 
@@ -48,8 +48,8 @@ Removing the belt power check makes five drive checks fail.
 
 `machines_probe.dm` (phase 2b) checks:
 
-- Bloomery: takes up to fifty iron ore and burnable fuel from automation, refuses other items and has no port while unanchored; ore alone waits, fuel starts the smelt and pays its two fuel; the finished sponge iron is offered from the bloomery's tile and can be taken; more ore restarts a fuelled bloomery. Clay kilns stay manual.
-- Blast furnace: loads ore and charcoal, starts, and offers only pig iron.
+- Bloomery: takes up to fifty iron ore and enough charcoal or wood to fire a full load from automation, refuses raw coal and other items and has no port while unanchored; ore alone waits, fuel for the whole firing starts the smelt and pays for it; the finished sponge iron is offered from the bloomery's tile and can be taken; fuel alone waits and more ore restarts a fuelled bloomery. Clay kilns stay manual.
+- Blast furnace: loads ore and charcoal but waits without a driven bellows; beside a turning prime mover it starts once a firing's fuel is loaded, and offers only pig iron.
 - Powered saw mill: a twenty-log hopper; nothing is cut without power or while unanchored; each powered step cuts one log into twelve planks that merge on the tile and are offered; load clamps and resumes the hopper, which is saved; removing the mill returns its logs.
 
 `fabricators_probe.dm` (phase 3a) checks:
