@@ -2823,6 +2823,9 @@ SUITES = {
     'launcher_empty_switch': {'files': ('tests/launcher_empty_switch/test_launcher_empty_switch.py',),
         'paths': ('tests/launcher_empty_switch/',),
         'shared_paths': ('code/modules/projectiles/guns/projectile.dm',)},
+    'bearcave_aggro': {'files': ('tests/bearcave_aggro/test_bearcave_aggro.py',),
+        'paths': ('tests/bearcave_aggro/',),
+        'shared_paths': ('code/game/objects/structures/animalspawner/bearcave.dm',)},
     # Force-feeding rechecks reach and mouth coverage after its wait.
     'force_feed': {'files': ('tests/force_feed/test_finish_recheck.py',), 'paths': (
         'tests/force_feed/', 'code/modules/reagents/reagent_containers/pill.dm'),

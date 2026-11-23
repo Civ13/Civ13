@@ -155,7 +155,7 @@
 			var/pick = pick(1, 2, 3)
 			for(var/i=0, i<pick, i++)
 				bear_out()
-		else if (src.total_population > 1 && src.total_population < 5)
+		else if (src.total_population > 1) // two to five bears (#6930)
 			var/pick = pick(1, 2)
 			for(var/i=0, i<pick, i++)
 				bear_out()
