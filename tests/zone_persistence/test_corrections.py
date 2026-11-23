@@ -78,6 +78,23 @@ class Corrections(unittest.TestCase):
         for n,mutant in enumerate(mutations):
             with self.subTest(omission=n),self.assertRaises(AssertionError): correction_contract(**mutant)
 
+    def test_cave_rebuild_only_resolves_an_area_for_stray_membership(self):
+        source = read('code/modules/multiz/dug_underground.dm')
+        restore = adapter.extract(source, '/map_storage/proc/restore_dug_underground')
+        # A no-cave world, or an added cave whose membership is already
+        # correct, must not run the get-or-create constructor after publication.
+        self.assertEqual(restore.count('dug_underground_area()'), 1)
+        self.assertIn(
+            '\t\tif (strays.len)\n'
+            '\t\t\tif (!caves)\n'
+            '\t\t\t\tcaves = dug_underground_area()\n'
+            '\t\t\tcaves.contents.Add(strays)\n'
+            '\t\tdug_underground_light_level(z)',
+            re.sub(r'^[\t ]*//[^\n]*\n', '', restore, flags=re.M),
+        )
+        self.assertLess(restore.index('underground_breach_scan('), restore.index('for (var/z'))
+        self.assertLess(restore.index('z <= building_base_maxz()'), restore.index('strays += T'))
+
     def test_predicate_load_cannot_reuse_turf_for_the_next_callback(self):
         body=adapter.extract(AREAS.rsplit('#endif',1)[0],'/proc/persistence_area_predicates_true',defines={'CIV13_ZONE_PERSISTENCE':True})
         body=body.replace('for(var/i = 1, i <= callbacks.len, i++)','for(var/i in indices(callbacks))')

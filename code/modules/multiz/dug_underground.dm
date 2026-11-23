@@ -603,7 +603,7 @@ var/global/dug_underground_forming = FALSE
 	// Open cells under lakes and rivers pour again (they are not saved).
 	tunnel_breaches.Cut()
 	underground_breach_scan(underground_level_z())
-	var/area/caves = dug_underground_area()
+	var/area/caves
 	for (var/z in underground_levels())
 		if (z <= building_base_maxz())
 			continue
@@ -614,6 +614,10 @@ var/global/dug_underground_forming = FALSE
 				strays += T
 			TICK_CHECK
 		if (strays.len)
+			// The saved registry is already published. Do not register a new
+			// cave area until there is actual membership to restore.
+			if (!caves)
+				caves = dug_underground_area()
 			caves.contents.Add(strays)
 		dug_underground_light_level(z)
 
