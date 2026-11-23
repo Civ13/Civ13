@@ -2410,7 +2410,8 @@ SUITES = {
     # test_foundations specification helper. No native runner or network import.
     # Shared production sources retain their conservative all-suite fallback.
     'character_traits': {'files': ('tests/character_traits/test_foundations.py',
-                                   'tests/character_traits/test_random.py'),
+                                   'tests/character_traits/test_random.py',
+                                   'tests/character_traits/test_birth_chart_wheel.py'),
         'paths': ('tests/character_traits/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/traits.dm',
             'code/modules/client/preferencesSQLite/character_setup_ui.dm',
