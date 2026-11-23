@@ -51,6 +51,7 @@
 	var/list/internal_organs = list() 	// Internal organs of this body part
 	var/broken_description
 	var/open = FALSE
+	var/incision_clamped = FALSE	// bleeders of the open incision are clamped until it closes (issue 6979)
 	var/stage = FALSE
 	var/cavity = FALSE
 	var/sabotaged = FALSE 				// If a prosthetic limb is emagged, it will detonate when it fails.
@@ -750,6 +751,11 @@ Note that amputating the affected organ does in fact remove the infection from t
 
 		number_wounds += W.amount
 
+	// A closed incision forgets its clamps; an open one keeps them after its wound heals away.
+	if (!open)
+		incision_clamped = FALSE
+	clamped |= incision_clamped
+
 	//things tend to bleed if they are CUT OPEN
 	if (open && !clamped && (H && !(H.species.flags & NO_BLOOD)))
 		status |= ORGAN_BLEEDING
@@ -1002,6 +1008,9 @@ Note that amputating the affected organ does in fact remove the infection from t
 /obj/item/organ/external/proc/clamping()
 	var/rval = FALSE
 	status &= ~ORGAN_BLEEDING
+	if (open)
+		rval |= !incision_clamped
+		incision_clamped = TRUE
 	for (var/datum/wound/W in wounds)
 		if (W.internal) continue
 		rval |= !W.clamped
