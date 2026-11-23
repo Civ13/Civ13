@@ -41,6 +41,11 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'hull_depth': {'files': ('tests/hull_depth/test_sources.py',), 'paths': ('tests/hull_depth/', 'code/modules/naval/hull_depth.dm')},
+    'hull_storm': {'files': ('tests/hull_storm/test_storm.py',), 'paths': ('tests/hull_storm/', 'code/modules/naval/hull_storm.dm')},
+    'hull_waterlogging': {'files': ('tests/hull_waterlogging/test_sources.py',), 'paths': ('tests/hull_waterlogging/', 'code/modules/naval/hull_drives.dm')},
+    'flight_save_risk': {'files': ('tests/flight_save_risk/test_sources.py',), 'paths': ('tests/flight_save_risk/', 'code/modules/naval/flight_save_risk.dm')},
+    'voyage_storm': {'files': ('tests/voyage_storm/test_source.py',), 'paths': ('tests/voyage_storm/', 'code/modules/naval/voyage_provisions.dm')},
     'npc_friendly_fire_line': {'files': ('tests/getline2/test_friendly_fire.py',),
         'paths': ('tests/getline2/test_friendly_fire.py',), 'shared_paths': (
             'code/game/mob/living/simple_animal/hostile/tactical_ai.dm',

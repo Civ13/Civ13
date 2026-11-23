@@ -52,12 +52,40 @@ they put the bucket away. A step of the hull does not stop them.
   `/obj/covers/repairedfloor/ship/patch`, which weeps 1 bucketful a minute.
 - A holed hull cannot be refitted, or the survey would drop the tile.
 - Full over mostly deep water she founders. Every 30 seconds the crew is warned;
-  after four she goes down unless the water is back under 98%. The tiller is
-  struck, floors, structures and machinery on her tiles are deleted, and mobs,
-  items and closets are left on the water. The sinking is logged and admins are
-  told.
+  after four she loses buoyancy unless the water is back under 98%. Her helm,
+  crew, hull, fittings and actual cargo stay together.
 - Full over mostly shallow water she is grounded: no speed, no turn. She floats
   again when no hole is open and she is bailed below awash.
+
+## Storm damage, sinking and refloating
+
+Heavy moving storm bands ship water into commissioned hulls on deep salt
+water. Turn bow-on to reduce the intake; a dangerous beam heading on an
+unstable hull for three consecutive ledger samples can make her roll and lose
+buoyancy. Reef or furl to reduce the sail penalty. The first version models
+the loss of buoyancy, not an inverted tile map.
+
+A hull that loses buoyancy is stopped and cannot cross, refit or recommission.
+It uses existing linked sea levels, moving its complete supported footprint,
+crew, fittings and cargo together. A blocked or missing destination means no
+change of level; the hull and loot stay where they were, not in a second
+inventory. Existing holds, grapples, boats in cradles and unsupported geometry
+block vertical movement. There is no runtime excavation of a seabed and no
+automatic creation of a new z-level.
+
+Divers can enter a submerged built hull with normal dive equipment and depth
+limits. A roof on an ordinary built hull does not produce pressurized air.
+Existing submarine air, hatches and ballast remain separate. Use patches and
+pumps to seal the hull and reduce its bilge below 40 percent to rise. Bucket
+bailing can't discharge into the surrounding sea from underwater. A flooded
+engine may need to be dried and serviced with a wrench, even after refloating.
+Powered cranes can recover a detached engine through one open sea column where
+they can already reach a safe landing.
+
+The tiller continues to save the same hull, its current placement, the bilge
+and its disabled state. The source contracts and native fixture cover normal,
+blocked and recovery paths; connected-client play and full reload/cargo
+recovery require separate verification.
 
 ## Breaches below the waterline
 

@@ -4,6 +4,8 @@ var/game_id = "probe"
 var/list/sent = list()
 var/list/said = list()
 var/list/failures = list()
+var/test_pilot_at_risk = FALSE
+/proc/any_flight_at_disconnect_risk() return test_pilot_at_risk
 /proc/webhook_enabled() return TRUE
 /proc/webhook_send(method, list/query) sent += "[method]:[query["event"]]:[query["kind"]]:[query["seconds"]]"
 /proc/webhook_add_region(list/query) return query
@@ -48,5 +50,21 @@ var/list/failures = list()
 	expect(result.len == 1 && result[1] == FALSE, "the called-off countdown returns FALSE")
 	expect(isnull(planned_shutdown_status_text()) && !planned_shutdown_cancel(), "nothing left to cancel")
 	expect(json_encode(sent) == json_encode(list("shutdown_notice:scheduled:restart:0", "shutdown_notice:scheduled:maintenance:12", "shutdown_notice:scheduled:update:600", "shutdown_notice:cancelled:update:0")), "Discord notices: [json_encode(sent)]")
+	// Opt-in waits keep running gameplay, and a current provider may clear
+	// between poll ticks. An emergency countdown never enters that wait.
+	test_pilot_at_risk = TRUE
+	started = world.time
+	expect(planned_shutdown_countdown("reboot", 0) && world.time == started, "forced reboot bypasses the vehicle wait")
+	spawn(20) test_pilot_at_risk = FALSE
+	expect(planned_shutdown_countdown("restart", 0, defer_for_vehicle_risk = TRUE), "routine restart proceeds once the pilot is safe")
+	expect(world.time - started >= 50 && world.time - started < 100, "routine restart rechecks at its first risk poll")
+	test_pilot_at_risk = TRUE
+	result.Cut()
+	spawn(0) result += planned_shutdown_countdown("restart", 0, defer_for_vehicle_risk = TRUE)
+	sleep(20)
+	expect(planned_shutdown_remaining() > 0 && planned_shutdown_cancel("probe"), "admins can cancel during the vehicle wait")
+	sleep(50)
+	expect(result.len == 1 && result[1] == FALSE, "cancelled vehicle wait does not proceed to saving")
+	test_pilot_at_risk = FALSE
 	text2file(json_encode(list("failures" = failures.len, "messages" = failures)), "result.json")
 	del(world)

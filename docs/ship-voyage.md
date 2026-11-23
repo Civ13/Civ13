@@ -41,8 +41,8 @@ mainland's.
 
 A voyage takes about a minute a chart tile under sail (the larger of the two
 distances), or 40 seconds when her engines drive her at full ahead.
-She drops anchor and lies off the coast under way: the tiller only tells how
-long is left and offers **Turn back**. Her crew still see her sail: every
+She drops anchor and lies off the coast under way: the tiller tells how
+long is left and offers **Turn back** and any pending storm choices. Her crew still see her sail: every
 tile of open water within 24 tiles of her is drawn for them streaming past
 from bow to stern, a tile every 1.2 seconds, until the voyage ends
 (`code/modules/naval/voyage_sea.dm`, appearance only: override images of the
@@ -109,10 +109,15 @@ Code: `code/modules/naval/voyage_provisions.dm`.
   short costs the crew 60 nutrition between them, never taking anyone below
   150. Nobody starves at sea.
 - **Happenings,** at most one of each a voyage: a **storm** (8% a chart tile)
-  costs one or two tiles' time or washes something loose on deck overboard;
-  a **sighting** (10% a tile) charts the water a tile or two off her course
-  for her owner; sailing short, the crew are warned past halfway that rations
-  are low, so they can turn back.
+  gives the crew 30 seconds to stow cargo and choose at the tiller. **Detour**
+  costs one chart tile's sailing time, but no extra rations or lost cargo, and
+  is the default if nobody acts. **Press on** risks washing one loose item
+  overboard from an exposed deck (50% chance if there is any), but avoids the
+  detour. The hold, roofed decks, and cargo in pockets or containers are safe
+  from this event. These are voyage encounters, not forecasts drawn from the
+  weather at the hull's parked location. A **sighting** (10% a tile) charts
+  water a tile or two off her course for her owner; sailing short, the crew
+  are warned past halfway that rations are low, so they can turn back.
 
 ## Landfall
 

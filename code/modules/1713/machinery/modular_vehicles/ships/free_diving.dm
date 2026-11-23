@@ -37,7 +37,7 @@
 
 // Breathing down here is the held breath (handle_drowning), not the open air.
 /mob/living/human/outside_exposure_step(turf/T)
-	if (free_diving && sea_layer_cell(T) && !T.iscovered() && !pressure_suit_sealed())
+	if (free_diving && sea_layer_cell(T) && (!T.iscovered() || submerged_built_hull_deck(T)) && !pressure_suit_sealed())
 		return FALSE
 	return ..()
 
@@ -49,7 +49,7 @@
 	if (!below)
 		return null
 	var/turf/B = locate(T.x, T.y, below)
-	if (!sea_layer_cell(B) || B.iscovered())
+	if (!sea_layer_cell(B) || (B.iscovered() && !submerged_built_hull_deck(B)))
 		return null
 	return B
 

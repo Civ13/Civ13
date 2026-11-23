@@ -497,8 +497,17 @@
 		bends_tick() // decompression sickness (scuba.dm)
 	var/turf/T = get_turf(src)
 	if (!T) return // nowhere to drown or redraw: a body between places (persistence_load_holds_life)
+	// A flooded built deck is open sea, not a pressure hull. Crew carried
+	// down with it can swim clear on their remaining breath, including after
+	// loading a saved hull. Never refill an active breath budget here.
+	var/on_sunken_deck = submerged_built_hull_deck(T)
+	var/exposed_seabed = sea_layer_cell(T) && (!T.iscovered() || on_sunken_deck)
+	if (on_sunken_deck && !free_diving && !seabed_diving_rating() && stat != DEAD)
+		free_diving = TRUE
+		if (swim_breath < 0)
+			swim_breath = max(1, round(swim_breath_max() / 2))
 	// A sealed diver walks the seabed (seabed.dm) and breathes from the bottle.
-	if (sea_layer_cell(T) && !T.iscovered() && seabed_diving_rating())
+	if (exposed_seabed && seabed_diving_rating())
 		drowning = FALSE
 		if (water_overlay)
 			water_overlay = FALSE
@@ -510,7 +519,7 @@
 		return
 	// A free diver on the seabed, on a held breath (free_diving.dm).
 	if (free_diving)
-		if (sea_layer_cell(T) && !T.iscovered() && !seabed_diving_rating())
+		if (exposed_seabed && !seabed_diving_rating())
 			free_dive_tick(T)
 			life_water_refresh()
 			return

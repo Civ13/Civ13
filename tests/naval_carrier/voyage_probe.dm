@@ -137,8 +137,16 @@ var/naval_runtime_error = FALSE
 	fed["rations"] = 10 // as if 2 crew sail 5 tiles on 4 rations
 	naval_check(tiller.voyage_event(fed) && ("short" in fed["events"]), "past halfway on short rations the crew are warned")
 	var/ends = fed["ends"]
-	tiller.voyage_storm(fed)
-	naval_check(fed["ends"] > ends || length(tiller.voyage_rations()) == 3, "a storm costs her time or something loose on deck")
+	naval_check(tiller.voyage_storm(fed) && fed["storm_until"] > world.time, "a squall gives the crew time to stow cargo")
+	naval_check(fed["ends"] == ends && length(tiller.voyage_rations()) == 4, "a warning alone changes no destination, time or cargo")
+	var/obj/item/loose = tiller.voyage_loose_cargo()
+	naval_check(loose && loose.loc == locate(62, 30, 2), "only exposed loose cargo can wash overboard")
+	loose.forceMove(hold)
+	naval_check(!tiller.voyage_loose_cargo(), "stowing the loose item protects it")
+	naval_check(!tiller.voyage_storm_resolve(fed.Copy(), TRUE), "a stale squall choice changes nothing")
+	naval_check(tiller.voyage_storm_resolve(fed) && !fed["storm_until"] && fed["ends"] == ends + fed["tile"], "detouring safely costs one chart tile's time")
+	naval_check(!tiller.voyage_storm_resolve(fed, TRUE) && !tiller.voyage_storm(fed), "a resolved squall cannot be chosen or rolled again")
+	naval_check(length(tiller.voyage_rations()) == 4, "detour leaves all cargo aboard")
 	fed["rations"] = 2
 	tiller.voyage_eat(fed)
 	naval_check(length(tiller.voyage_rations()) <= 2, "at landfall the crew eat what the voyage needed")
