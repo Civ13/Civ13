@@ -347,7 +347,11 @@ class StationLimitSource(unittest.TestCase):
         self.assertIn('check_rights(R_SERVER)', verb)
         self.assertIn('config.recruitment_station_limit = value', verb)
         self.assertIn('min(50, max(1, round(value)))', verb)
-        self.assertIn('/client/proc/set_recruitment_station_limit,', read('code/modules/admin/admin_verbs.dm'))
+        # Listed with the R_SERVER verbs, matching the proc's own rights check.
+        verbs = read('code/modules/admin/admin_verbs.dm')
+        server = verbs.split('var/list/admin_verbs_server = list(', 1)[1].split('\n)', 1)[0]
+        self.assertIn('/client/proc/set_recruitment_station_limit,', server)
+        self.assertEqual(verbs.count('/client/proc/set_recruitment_station_limit,'), 1)
 
 
 if __name__ == '__main__':
