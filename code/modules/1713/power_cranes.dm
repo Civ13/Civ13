@@ -28,7 +28,7 @@ var/global/list/tower_crane_fuels = list("diesel", "biodiesel", "gasoline")
 
 /obj/structure/workshop_machine/shear_legs/crane/steam/examine(mob/user, distance)
 	..(user, distance)
-	to_chat(user, SPAN_NOTICE("It has fuel for [round(fuel)] of [fuel_limit] hauls."))
+	to_chat(user, SPAN_NOTICE("It has fuel for [round(fuel)] of [fuel_limit] hauls. Click with an empty hand to recover an unfastened waterlogged engine from directly below open sea within reach."))
 
 // TRUE, with the reason told, when the crane cannot haul for want of fuel.
 /obj/structure/workshop_machine/shear_legs/crane/steam/proc/out_of_fuel(mob/user)
@@ -72,6 +72,20 @@ var/global/list/tower_crane_fuels = list("diesel", "biodiesel", "gasoline")
 	if (!istype(H) || out_of_fuel(H))
 		return
 	return ..()
+
+// A powered crane can lift a detached waterlogged engine through one open
+// column of seawater. Normal loads still require the original open-air route.
+/obj/structure/workshop_machine/shear_legs/crane/steam/haul_below_column(turf/source)
+	if (!sea_layer_cell(source))
+		return ..()
+	var/turf/surface = locate(source.x, source.y, z)
+	return sea_layer_open_surface(surface) && !surface.iscovered() && !(locate(/obj/roof) in surface)
+
+/obj/structure/workshop_machine/shear_legs/crane/steam/haul_below_load(obj/load, turf/source)
+	if (!sea_layer_cell(source))
+		return ..()
+	var/obj/structure/engine/E = load
+	return istype(E) && E.waterlogged && !E.anchored && !E.fueltank && !length(E.connections) && !(locate(/obj/roof) in source)
 
 // The engine winds: one haul of fuel, a fraction of the hand time.
 /obj/structure/workshop_machine/shear_legs/crane/steam/driven_time(base_time)

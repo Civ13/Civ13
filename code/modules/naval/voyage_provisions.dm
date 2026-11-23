@@ -7,14 +7,15 @@
 //   counts, in the hold, in crates or carried. What the voyage needs is eaten
 //   when she arrives; a ship that sailed short leaves her crew hungry, never
 //   starving.
-// - Happenings, at most one each a voyage: a storm (time lost, or something
-//   loose on deck washed overboard), a sighting (the lookout charts water
+// - Happenings, at most one each a voyage: a storm (detour, or risk loose
+//   deck cargo while pressing on), a sighting (the lookout charts water
 //   near her course) and, sailing short, a warning that rations are low.
 // ============================================================
 
 #define VOYAGE_TILE_SAIL 600 // deciseconds a chart tile takes under sail
 #define VOYAGE_TILE_ENGINE 400 // and driven at full ahead by engines
 #define VOYAGE_STORM_CHANCE 8 // percent a chart tile
+#define VOYAGE_STORM_DECISION 300 // deciseconds to stow cargo and choose
 #define VOYAGE_SIGHTING_CHANCE 10
 #define VOYAGE_HUNGER_PER_RATION 60 // nutrition a missing ration costs
 #define VOYAGE_HUNGER_FLOOR 150 // short rations never take anyone below this
@@ -105,21 +106,46 @@
 		return null
 	var/list/loose = list()
 	for (var/obj/item/I in B.aboard())
-		if (!I.anchored && isturf(I.loc))
+		if (I.anchored || !isturf(I.loc) || I.z < B.z)
+			continue
+		var/turf/T = I.loc
+		if (!(locate(/obj/roof) in T))
 			loose += I
 	return length(loose) ? pick(loose) : null
 
+// The voyage is a timed abstraction, not the hull's parked local weather.
 /obj/structure/hull_tiller/proc/voyage_storm(list/mine)
+	if (!craft || !mine || voyage != mine || mine["storm_until"] || mine["storm_passed"])
+		return FALSE
+	mine["storm_until"] = world.time + VOYAGE_STORM_DECISION
+	craft.crew_message(SPAN_WARNING("Squall ahead! Stow loose deck cargo. Choose at the tiller within 30 seconds: take a slower detour or press on and risk loose cargo. Without orders, she detours."))
+	return TRUE
+
+// H answers the warning at the tiller. Recheck after the menu, not just when
+// the choices were displayed.
+/obj/structure/hull_tiller/proc/voyage_storm_can_choose(mob/living/human/H, list/mine)
+	if (QDELETED(src) || !H || QDELETED(H) || !H.client || H.incapacitated() || persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+		return FALSE
+	return craft && mine && voyage == mine && mine["storm_until"] > world.time && H.z == z && get_dist(H, src) <= 1 && (H in voyage_crew()) && craft.helm_access(H) == CRAFT_HELM_FREE && !crossing_hold_text()
+
+/obj/structure/hull_tiller/proc/voyage_storm_resolve(list/mine, press_on = FALSE)
+	if (!craft || !mine || voyage != mine || !mine["storm_until"])
+		return FALSE
+	mine["storm_until"] = null
+	mine["storm_passed"] = TRUE
+	if (!press_on)
+		mine["ends"] = max(mine["ends"], world.time) + mine["tile"]
+		log_game("Voyage: the [craft.name] took a storm detour of [mine["tile"] / 10] seconds (voyage [mine["id"]]).")
+		craft.crew_message(SPAN_NOTICE("She takes the long way around the squall. The detour costs one chart tile's sailing time."))
+		return TRUE
 	var/obj/item/lost = prob(50) ? voyage_loose_cargo() : null
 	if (lost)
 		log_game("Voyage: a storm washed [lost] ([lost.type]) off the [craft.name] (voyage [mine["id"]]).")
-		craft.crew_message(SPAN_WARNING("A storm! Green water sweeps her deck and takes \the [lost] overboard. Lash down what you want to keep."))
+		craft.crew_message(SPAN_WARNING("She presses on. Green water sweeps her deck and takes \the [lost] overboard."))
 		qdel(lost)
-		return
-	var/delay = rand(1, 2) * mine["tile"]
-	mine["ends"] += delay
-	log_game("Voyage: a storm held the [craft.name] back [delay / 10] seconds (voyage [mine["id"]]).")
-	craft.crew_message(SPAN_WARNING("A storm! She runs before it under bare poles and loses about [round(delay / 600, 1) || 1] minute\s."))
+	else
+		craft.crew_message(SPAN_NOTICE("She presses on through the squall without losing any deck cargo."))
+	return TRUE
 
 // The lookout sees water a tile or two off her course: it goes on her owner's chart.
 /obj/structure/hull_tiller/proc/voyage_sighting(list/mine)
@@ -143,6 +169,7 @@
 #undef VOYAGE_TILE_SAIL
 #undef VOYAGE_TILE_ENGINE
 #undef VOYAGE_STORM_CHANCE
+#undef VOYAGE_STORM_DECISION
 #undef VOYAGE_SIGHTING_CHANCE
 #undef VOYAGE_HUNGER_PER_RATION
 #undef VOYAGE_HUNGER_FLOOR

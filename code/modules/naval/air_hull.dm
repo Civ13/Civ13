@@ -1244,6 +1244,7 @@ var/global/list/air_hull_crafts = list()
 			if (!craft.order_turn(heading))
 				to_chat(H, SPAN_WARNING("She cannot come about here: [craft.last_refusal]."))
 				return
+			craft.note_flight_helm(H)
 			return
 		// A blank sheet of paper in hand becomes her airship sheet (air_draught.dm).
 		if ("Draw her lines")
@@ -1270,6 +1271,7 @@ var/global/list/air_hull_crafts = list()
 			decommission()
 			return
 	if (craft)
+		craft.note_flight_helm(H)
 		craft.crew_message(SPAN_NOTICE("[H] at the helm: [choice]. [status_text()]"))
 
 /obj/structure/airship_helm/proc/commission_menu(mob/living/human/H)

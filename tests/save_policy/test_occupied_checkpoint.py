@@ -91,6 +91,16 @@ class Contract(unittest.TestCase):
         self.assertLess(warn, recheck)
         self.assertLess(fresh, save)
 
+    def test_vehicle_wait_is_after_warning_and_before_rechecking_save(self):
+        run = proc_body(SOURCE, '/proc/persistence_run_checkpoint()')
+        warn = run.index('sleep(PERSISTENCE_CHECKPOINT_WARNING)')
+        wait = run.index('persistence_wait_for_safe_vehicle_state()')
+        admission = run.index('var/block = persistence_checkpoint_block_reason()')
+        self.assertLess(warn, wait)
+        self.assertLess(wait, admission)
+        self.assertLess(admission, run.index('persistence_checkpoint_age() < persistence_checkpoint_due()'))
+        self.assertLess(admission, run.index('ticker.savemap()'))
+
     def test_failure_backs_off_without_moving_deadline(self):
         run = proc_body(SOURCE, '/proc/persistence_run_checkpoint()')
         failed = run[run.index('\telse\n'):]

@@ -26,6 +26,22 @@ Keep the existing empty-region catch-up, save votes, manual saves, idle host req
 - Plan an initial 20-to-30-minute lead with a stable per-region offset inside that window; size it using isolated save-duration measurements. A region already overdue should attempt at its next safe opportunity. Staggering reduces coincident starts but does not serialize independently hosted worlds.
 - Back off after a refusal or unsuccessful completion, including exceptions; do not retry on every scheduler tick. Backoff does not move the four-hour deadline. Clear overdue state only when a completed generation advances. Warn players before a scheduled checkpoint and report overdue/blocked state to admins without chat or log spam. Do not expose save internals to player chat.
 
+## Pilot-dependent hazards
+
+An occupied checkpoint and a routine persistence save-and-restart, save-and-stop,
+handover or maintenance reboot wait for a connected pilot in immediate danger.
+This uses the same read-only vehicle risk query on each path. Movement by itself
+does not count: the current aircraft and hull providers decide whether the pilot
+must still act. The check runs immediately before the save or handover freeze,
+then every five seconds for **at most two extra minutes**, ending sooner when
+the risk clears. Clearing the risk does not bypass normal save admission or
+turn an occupied checkpoint into a restart.
+
+An ordinary shutdown countdown remains cancellable through this grace period.
+Explicit immediate reboot, direct manual saves and empty-only operator paths
+retain their separate admission rules. A dangerous vehicle cannot keep a
+scheduled operation waiting indefinitely or move the checkpoint's deadline.
+
 ## Conditional update and restart
 
 Each four-hour cycle is a **save, not a scheduled reboot**. Ask the host's

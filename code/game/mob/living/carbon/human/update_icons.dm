@@ -192,7 +192,7 @@ Please contact me on #coderbus IRC. ~Carn x
 			set_water_click_area(FALSE)
 		for (var/image/I in overlays_standing)
 			overlays += I
-		if (species.has_floating_eyes)
+		if (species && species.has_floating_eyes)
 			overlays |= species.get_eyes(src)
 
 	update_posture_transform()

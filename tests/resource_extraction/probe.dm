@@ -55,7 +55,9 @@ var/extraction_runtime_error = FALSE
 /world/New()
 	OpenPort("none")
 	try
+		GLOB.all_observable_events = list()
 		GLOB.moved_event = new /decl/observ/moved
+		GLOB.dir_set_event = new /decl/observ/dir_set
 		movementMachine = new
 		extraction_check(!world.port, "fixture has no listening port")
 		map = new /obj/map_metadata/extraction_probe
@@ -183,7 +185,7 @@ var/extraction_runtime_error = FALSE
 		extraction_circuit_inputs(H)
 		extraction_save_roundtrip()
 	catch(var/exception/e)
-		extraction_check(FALSE, "exception [e]")
+		extraction_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = extraction_failures, "runtime_error" = extraction_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build, "maxx" = world.maxx, "maxy" = world.maxy, "maxz" = world.maxz)), "result.json")
 	del(world)
 
