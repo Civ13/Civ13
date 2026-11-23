@@ -2091,6 +2091,7 @@
 #include "code\modules\space\outside_exposure.dm"
 #include "code\modules\space\pressure_suits.dm"
 #include "code\modules\space\rocket_designer.dm"
+#include "code\modules\space\rocket_missions.dm"
 #include "code\modules\space\rocket_plan.dm"
 #include "code\modules\space\rocket_plan_checks.dm"
 #include "code\modules\space\rocket_reuse.dm"

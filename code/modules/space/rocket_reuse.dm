@@ -252,16 +252,22 @@
 		. += list(list(S.piece, S.frame, S.condition, S.flights))
 	qdel(D)
 
+// Lands flyback_records() taken before launch beside T.
+/proc/rocket_flyback_land(turf/T, list/back)
+	if (!T || !length(back))
+		return
+	var/turf/landing = rocket_landing_ground(T, ROCKET_LAND_RANGE, FALSE) || T
+	for (var/list/rec in back)
+		rocket_section_returned(landing, rec[1], rec[2], rec[3], rec[4], ROCKET_WEAR_FLYBACK)
+	landing.visible_message(SPAN_NOTICE("The first stage flies back and drops onto its landing legs beside the stand."))
+	log_game("Rocket reuse: first stage of [back.len] sections back at [landing.x],[landing.y],[landing.z].")
+
 /obj/structure/crewed_lander/modular_rocket/launch(obj/structure/region_gate/trail_marker/launch_pad/pad, lx = null, ly = null, mob/living/human/notify = null)
 	var/turf/T = get_turf(src)
 	var/list/back = flyback_records()
 	. = ..()
-	if (isnull(.) && back.len)
-		var/turf/landing = rocket_landing_ground(T, ROCKET_LAND_RANGE, FALSE) || T
-		for (var/list/rec in back)
-			rocket_section_returned(landing, rec[1], rec[2], rec[3], rec[4], ROCKET_WEAR_FLYBACK)
-		landing.visible_message(SPAN_NOTICE("The first stage flies back and drops onto its landing legs beside the stand."))
-		log_game("Rocket reuse: first stage of [back.len] sections back at [landing.x],[landing.y],[landing.z].")
+	if (isnull(.))
+		rocket_flyback_land(T, back)
 
 #undef ROCKET_WEAR_SOFT
 #undef ROCKET_WEAR_SPLASH

@@ -900,7 +900,7 @@ Past the edge of the map lies open sea, and somewhere out there are lands nobody
 ### Setting out
 
 1. Bring her within 4 tiles of the edge of the map, ring **All stop**, and make sure she can make way: a rigged mast or a running engine.
-2. Get at least **2 crew** aboard and awake. Stay aboard through landfall if you intend to cross. If you log out while still aboard, your character can still cross with the ship.
+2. Have at least one person aboard and awake; a lone sailor can make the voyage. Stay aboard through landfall if you intend to cross. If you log out while still aboard, your character can still cross with the ship.
 3. Click the tiller and choose **Set out on a voyage**. You see your chart: your faction's chart if you belong to one, otherwise your own.
 
 From there you can:

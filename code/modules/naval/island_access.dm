@@ -227,7 +227,7 @@
 	var/claimant = island_access_claim_of(src)
 	if (!claimant)
 		var/list/how = list("Every faction may claim one island across the sea as its own safe haven, and decide who may land there.")
-		how += "To claim one, its leader sails a ship with a mast or engine and at least 2 crew from the coast (her tiller's voyage menu) to a land across the sea, then plants a colony charter there."
+		how += "To claim one, its leader sails a ship with a mast or engine from the coast (her tiller's voyage menu) to a land across the sea, then plants a colony charter there."
 		how += "The claim stands while at least 3 members keep a bed there; nobody else can take it. Offline sleepers in their own beds there are protected."
 		if (!civilization || civilization == "none")
 			how += "You belong to no faction yet."

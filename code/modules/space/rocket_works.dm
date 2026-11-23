@@ -574,6 +574,8 @@
 	var/plan_code = ""
 
 /obj/structure/crewed_lander/modular_rocket/Destroy()
+	var/list/rockets = modular_rockets()
+	rockets -= src
 	// Its upper storeys go with it, and its sections leave with it.
 	var/obj/structure/rocket_stand/S = locate() in get_turf(src)
 	if (S)
@@ -651,9 +653,9 @@
 	if (S)
 		S.mount(user, O)
 
-// A rocket flies wherever its legs reach: orbit from 1969, the Moon once
-// probes fly (a later phase). The crew orbit only when it can bring them home
-// or a station takes them in.
+// A crewed rocket flies to orbit; its crew orbit only when it can bring them
+// home or a station takes them in. Uncrewed cargo and probe missions are in
+// rocket_missions.dm.
 /obj/structure/crewed_lander/modular_rocket/vehicle_refusal(destination)
 	var/datum/rocket_plan/D = plan()
 	if (!D)
@@ -675,7 +677,7 @@
 		if (!orbit["ok"])
 			. = "The launch planner says it cannot reach orbit with this load: [orbit["why"]]."
 	if (!. && !D.count("C"))
-		. = "Nobody rides an uncrewed rocket. Its cargo and probe missions fly from a later works."
+		. = "Nobody rides an uncrewed rocket: launch it for its cargo or probe mission."
 	if (!.)
 		var/list/peer = shard_group && shard_group.peers[destination]
 		if (space_flight_orbit_full(destination) && !(islist(peer) && length(peer["docking_ports"])))
