@@ -295,7 +295,7 @@ An **automatic coupler** is a steel knuckle that takes the place of the hook and
 
 - **Start the engine** or **Stop the engine**. On a steam locomotive these are **Light the fire** and **Drop the fire**. It needs fuel to start, and a steam locomotive needs water in its boiler.
 - **Injector on** or **Injector off**, on steam locomotives. See [Steam, water and the boiler](#steam-water-and-the-boiler).
-- **Throttle up** and **Throttle down** move between notches 0 and 3. Each notch is a third of the engine's top speed. The train gathers speed over a few tiles rather than jumping to it.
+- **Throttle up** and **Throttle down** move between notches 0 and 3. Each notch is a third of the engine's top speed. A train creeps away and gathers speed gradually: a light steam train takes about ten seconds to reach full speed, and a train at its engine's full load about twice as long.
 - **Brake** closes the throttle and puts the engine's own brake on. It holds the engine only, so a long train also needs its handbrakes (see [Brakes](#brakes)). Closing the throttle without braking lets the train coast.
 - **Sand the rails** drops sand under the wheels for the next few tiles so they grip (see [Wheel slip and sand](#wheel-slip-and-sand)).
 - **Reverser** sets forward or backward, and only works while the train is standing. Forward is always the way **that engine** faces, wherever it is in the train. Backing up moves the train with the far end leading. Set the levers for the way that end of the train will go.
@@ -309,7 +309,7 @@ Examine the locomotive to see its notch, reverser, speed, a steam locomotive's p
 - **Two engines** make a heavier train fast again. Hitch a second running locomotive anywhere in the train, at the front, in the middle or pushing at the back. It adds its pull and burns its own fuel. The engine whose throttle was opened first drives the train; the other's controls take over once it has stopped.
 - **What leads the train sets its top speed.** A locomotive running forward at the head gets full speed. A locomotive running backward gets three quarters. Wagons pushed ahead of the engine, forward or backing up, get half, unless a running locomotive is at their head.
 - **An engine at each end**, each facing out, lets a train run at full speed both ways without turning anything round. Drive from the engine that faces the way you want to go.
-- **Trains don't stop on the spot.** Braking takes a couple of tiles for an engine on its own, and many more with a long, heavy train behind it. Coasting takes longer still. Start braking well before a station or a junction.
+- **Trains don't stop on the spot.** A train loses speed gradually: an engine on its own brakes to a stand in a few tiles, a long, heavy train needs many more, and a coasting train rolls a long way. Start braking well before a station or a junction.
 
 ### Wheel slip and sand
 
