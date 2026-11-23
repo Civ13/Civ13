@@ -42,7 +42,7 @@ class Carriers(unittest.TestCase):
         self.assertIn("meat.reagents.add_reagent(germ, 2)", defense)
         cutlet = proc(read("code/modules/reagents/reagent_containers/food/snacks/meat.dm"),
                       "/obj/item/weapon/reagent_containers/food/snacks/proc/prepare_meat_cutlet(")
-        self.assertIn("cutlet.reagents.add_reagent(germ, amount / 2)", cutlet)
+        self.assertIn("cutlet.reagents.add_reagent(germ, amount / pieces)", cutlet)
 
     def test_cooking_kills_every_germ(self):
         kill = proc(self.severe, "/datum/reagents/proc/kill_germs()")
