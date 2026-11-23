@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'cf93f5409304981acb3e1e97d095f796e1c5e2ab'
+WIKI_REVIEWED_REVISION = 'c4044eff5f8eaae95cf908cf6d60e2c16c593b00'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -185,7 +185,7 @@ WIKI_REVIEWED_GUIDES = {
     'maps/Nomads_Maps.md': ('679cef92412118192e9790a2020227e15e5c2dea317bcd13b5a6cfd06ed367e0', 'nomads maps map terrain biome biomes'),
     'gamemodes/Voyage.md': ('9922f438d0253c6b4d812bc852422a54c37f428b4c3221b2a732397ef245ddfe', 'voyage expedition ship mode'),
     'gamemodes/Events.md': ('de6e6133e735e5da8a03a290f45e599b82cee216d9b150d25c583e3c34606336', 'events event special rounds'),
-    'guides_overview.md': ('0ec11b5b8d7c1b3df0bba6d8feffd3a150eed440a324c30d22c31d73f1992ef0', 'guides overview list of guides index'),
+    'guides_overview.md': ('e218bf3ccb9fdf5230429cbdf14f0288bf2eb0c0f0f3092afe7ec3d79e115290', 'guides overview list of guides index'),
     'guides/Guide_to_Accolades_and_Characters.md': ('2cae04321313d4bd63d1966af63c18e07ed1ff287591195ae5e629ea130d392d', 'accolades accolade achievements lifetime points extra second another character characters slot switch switching kin family relatives'),
     'guides/Guide_to_Amalgamation.md': ('c6e59ac3698ec0e0e9fd671045c1cb68b981941f4f9fcd4fe4ca8901f877e937', 'amalgamation amalgam mercury gold silver ore recovery retort patio'),
     'guides/Guide_to_Armor.md': ('f1024c2c3032cbdbad66acae9a3fb5f05f4db9ba57cabbeffde1210e58dccc85', 'armor armour protection helmet cuirass plate mail chainmail shield padded gambeson body armor bullet proof vest dayfield layering'),
@@ -211,12 +211,13 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Pottery_and_Lime.md': ('a2011da6650c69805f700235d90f1e9ca64e448fc85e2de2d6f1d16bdaba5df3', 'pottery potter wheel brick bricks mould bench lime kiln quicklime bellows glassblowing glass mason saw line shaft gear box clutch steam engine hopper'),
     'guides/Guide_to_Quicksilver_Crafts.md': ('5c47dd936fed9b4fb97b0ab3f734844ec44dfb659731e6383afd22b5c19b6666', 'quicksilver mercury barometer thermometer mirror silvering felt hat'),
     'guides/Guide_to_Resins_and_Fabrics.md': ('30b69a95d41215329b5dccc68bbb43d4206ff72020ff10cde6355e36fc192066', 'resin resins pitch tar turpentine rubber latex silk silkworm fabric fabrics waxed cloth oilcloth laminate'),
-    'guides/Guide_to_Space_Stations.md': ('b52ab031bdd3b5d86dd8a880c4943c2578dc6e9848d300eb2cd669b401fa7baf', 'space station stations orbit orbital module rocket launch dock docking airlock spacesuit satellite'),
+    'guides/Guide_to_Space_Stations.md': ('1ebdae9ea1287f3d66e296e6894c85545b07dd06a831af82e19e1c8abfea4ab1', 'space station stations orbit orbital module rocket launch dock docking airlock spacesuit satellite'),
+    'guides/Guide_to_Rockets.md': ('e3e66eecff3f412017c15c5d1c98d3b7d28c79878b9b29dbf9cdf4c12124287d', 'rocket rockets rocketry launch planner stage stages booster boosters capsule heat shield parachutes rocket works launch stand cargo bay probe lunar probe delta-v reuse wear inspect overhaul'),
     'guides/Guide_to_Tool_Materials.md': ('4f950f3024433fc970befecf51fe69cc1a7505f6975afec778d06607414666e6', 'tool tools material materials copper bronze iron steel pickaxe shovel hatchet sickle hoe wear durability machine parts lathe pipes cannon barrels sparks'),
     'guides/Guide_to_Trapping.md': ('cb69900d9bdc5cb81f6c47ab82fbf9320c7c86f89a0bc08441a67e4fb02bd4fc', 'trapping trap traps snare snares deadfall fish weir pit trap rabbit fox catch'),
     'guides/Guide_to_Travel.md': ('bffeb4b02d999151bdd9e225e8dbe85d050159fed08318c34ad6bbb61663bb97', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
     'guides/Guide_to_Tribal_Life.md': ('9850870389868ec34eba898d67ed6bf2be045873230a5ae3f9dadb0e2f9f7a2c', 'tribe tribal totem pole deeds burial mound cairn feast feasts barter music'),
-    'guides/Guide_to_the_Moon.md': ('c8da8a4e6c6b3679092d43b9c7546cf511252081294beb7293c7c13c1ef056bf', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
+    'guides/Guide_to_the_Moon.md': ('417a712be4aa2c41f5cf78f776ba2b00ea33b5ffbb11ab43a331311c45d44e70', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
     'guides/Guide_to_Crafting.md': ('7befe794ff9dbe2c36dbb2cf5e02ac25c0071d16dd7a9c5abc9b21d7a0e800aa', 'crafting craft recipes workbench materials items make build vehicle designer'),
     'guides/Guide_to_Metallurgy.md': ('506ddd8ed495e8120aa3c0a4032be216bf478cb1ece0711180a83e24677df02e', 'metallurgy metal smelting smelt ore ingot furnace bloomery iron copper tin bronze steel alloy anvil forge'),
     'Starter_Guide.md': ('54c0022fa9016aacc58e7b411ac84da421057dcb80a9f47bd70d3d9c2833e5dd', 'starter guide beginner basics first steps controls interface intents'),

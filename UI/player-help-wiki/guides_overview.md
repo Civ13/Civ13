@@ -112,6 +112,7 @@ New to the game? Go to [Start Here](topics/Start_Here.md).
 - [Aircraft](guides/Guide_to_Aircraft.md)
 - [Aircraft Carriers](guides/Guide_to_Aircraft_Carriers.md)
 - [Space Stations](guides/Guide_to_Space_Stations.md)
+- [Rockets](guides/Guide_to_Rockets.md)
 
 ## [Combat](topics/Combat.md)
 
