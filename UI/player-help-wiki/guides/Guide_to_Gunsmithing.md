@@ -94,7 +94,7 @@ From WW1 on, the gunsmithing bench lets you design your own gun from a stock, a 
 
 **Stocking the bench.** Click the bench with wood and steel sheets to load them; the bench shows how much of each it holds. Every part is paid for out of that stock.
 
-**Designing a gun.** You need a Crafting skill of **2.5x** and coins worth **50 silver** (about 13 gold coins) in one hand; the coins are spent when you finish. Click the bench with an empty hand, press **Start New Gun**, then:
+**Designing a gun.** You need a Crafting skill of **2.5x**. Click the bench with an empty hand, press **Start New Gun**, then:
 
 1. Choose a **stock**.
 2. Choose a **receiver**.
@@ -106,9 +106,9 @@ From WW1 on, the gunsmithing bench lets you design your own gun from a stock, a 
 
 You get the gun and a **blueprint** of it. If the bench runs short of materials at any step, the design is cancelled.
 
-**Building from a blueprint.** Anyone with a Crafting skill of **1.5x** can click a stocked bench with a blueprint to build another copy of that gun. No coins are needed, only the same wood and steel.
+**Building from a blueprint.** Anyone with a Crafting skill of **1.5x** can click a stocked bench with a blueprint to build another copy of that gun. It takes the same wood and steel.
 
-**Blueprint design codes.** Use a gun blueprint in your hand to see its design code (it starts with `C13GUN`). You can copy it and keep it outside the game or give it to someone else. To turn a code back into a gun, open a gunsmithing bench and choose **Import a design code** next to **Start New Gun**. The bench works through the code step by step as if you had picked each part yourself, so it asks for everything designing by hand does: the designing skill and coins, parts and a look your people can already make, a caliber the receiver takes, and the steel and wood on the bench. If any part can't be made here, the bench says which one and cancels. If it all works, you pay the coins and get the gun and its blueprint.
+**Blueprint design codes.** Use a gun blueprint in your hand to see its design code (it starts with `C13GUN`). You can copy it and keep it outside the game or give it to someone else. To turn a code back into a gun, open a gunsmithing bench and choose **Import a design code** next to **Start New Gun**. The bench works through the code step by step as if you had picked each part yourself, so it asks for everything designing by hand does: the designing skill, parts and a look your people can already make, a caliber the receiver takes, and the steel and wood on the bench. If any part can't be made here, the bench says which one and cancels. If it all works, you get the gun and its blueprint.
 
 What the bench offers depends on your research:
 

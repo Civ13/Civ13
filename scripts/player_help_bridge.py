@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '4c99914632155a050f156d2ded9bce83dd663040'
+WIKI_REVIEWED_REVISION = '564f4905a236ff29ec8e38e45feb0a20f5134610'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -135,7 +135,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Leadership.md': ('d8fa16a65959d1c7f632c782de1129a9c6dfade1614a9e55ebcdd92851e972df', 'leadership squad leader officer commander artillery coordinates'),
     'guides/Guide_to_Medical.md': ('e877378ca9a6599c15c11208085d85ef17041eb479f28a27436d240c118b43de', 'medical heal injury wound surgery'),
     'guides/Guide_to_Pollution.md': ('f084e6ca8e6592361aba0dbc37f37d58b3f09bd20686bd067fdecdd71543f7ef', 'pollution polluted soot smog smoke charcoal clean ground growth'),
-    'guides/Guide_to_Power.md': ('aae521a52b291a3fac7b5054dce39aff5ef0f9ef634f08a22ba434d2827e6110', 'power battery batteries electricity generator'),
+    'guides/Guide_to_Power.md': ('56eb8dc09d3219169bc7d82f066113e5f34cc69fb0e9091cf8c20c481a34e37a', 'power battery batteries electricity generator'),
     'guides/Guide_to_Radiation.md': ('6b6295a3bb2bf0eb54d559e32a49eb18d512a50bec9366757df81b049e0e8d00', 'radiation radioactive exposure'),
     'guides/Guide_to_Ranching.md': ('0763963aa0eab5a2e8430c66c9ae9e1f3347f99ca1f19bdb7e2f4cf120d1aacc', 'ranching livestock animal breeding'),
     'guides/Guide_to_Beekeeping.md': ('b977db7511ce86997466d4f929d03099d7f7f8e03c7336356534f5d6c5e7c8f6', 'bees bee beekeeping hive hives honey honeycomb beeswax wax candle swarm sting stings smoker extractor pollination mead sealing veil'),
@@ -144,12 +144,12 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('041b3303d0be5737e6ab566e041aa0e28675845cc4a2015964a7e91a33d01332', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('34251d517df8b0cf9e2daad566be261ae690910d23b40dd6c49b468a8b57c589', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fog mist dew frost wind chill humid humidity sun hat robe barometer thermometer hygrometer anemometer rain gauge weather station forecast fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
-    'guides/Guide_to_Tanks.md': ('e2e82451576f0cc5a405b8151caa3dcf27a51c4827782156345a3a1ddf4a9e61', 'tank driving crew ammunition'),
-    'guides/Guide_to_Trains.md': ('93abef5b672eaef394fecd470491e8b61225b2a24c4c6aeae1acac5b489b119a', 'train trains railway track locomotive station switcher rails wagon'),
+    'guides/Guide_to_Tanks.md': ('2231fe471034c5c44758d33928141f103a54a28bcdaccf6b436f23e7a5d429de', 'tank driving crew ammunition'),
+    'guides/Guide_to_Trains.md': ('24ae81ef09bf210b45e49be2567908270d8006067a8d26342b6b012477de28a9', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Weather.md': ('d3ae91b93e0899ebf0c128df972df17ce914d4288a5ad185f827624aad45d18a', 'weather climate forecast predict storm storms pressure hpa low lows high highs front fronts barometer hygrometer anemometer rain gauge weather station beaufort dew point sleet hail freezing rain rain shadow sea breeze land breeze'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('ac2a6dab9b5aac3051a30f35809e9ddf770387219996f75df90aa90d438847a6', 'trench trenches fortification sandbag dig shovel'),
-    'guides/Guide_to_Gunsmithing.md': ('76ffa88707904665f1f468d80438c57b34afa8f012d0516c18a865ec8b40ed7d', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket arquebus matchlock'),
+    'guides/Guide_to_Gunsmithing.md': ('ab4f1b431a1c13ac6b537c84b99cbe04624b65b157828a51ec2e7f3f4b00b23a', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket arquebus matchlock'),
     'guides/Guide_to_Weapons.md': ('91264132c8e516f6d6d48d67bd179d419ab630dd9decd1918f3c1f529c947631', 'weapons gun reload ammunition'),
     'New_Player_Guide.md': ('fc23f954b4a8120e96ff5ca78be457261658aadf18490fe6401780851dd174fa', 'new player beginner start first round basics'),
     'Hotkeys.md': ('d7184103137b1ff83ffe7cd7ebc94878df8ed5a5c0a4b6a66447c9e25d4292fb', 'hotkeys hotkey keys keyboard controls key press'),
@@ -167,7 +167,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Battle_Royale.md': ('18d1e4cf951f943bd7a0f5030c1825bd82a77427349b086842a309e492c4d841', 'battle royale battleroyale'),
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
-    'guides/Guide_to_Boats.md': ('4169cb75c79d298cc30b5067d11fc85cc5a59150c4435a2013d33ce24df0598f', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
+    'guides/Guide_to_Boats.md': ('c23539a18683f412e72b7dc1ed6419858fc274f6ad9d8d3c1c70978a196123ca', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('0a42bcabcaf3efe8a77e6b0305714b8b0b72675101ab13cb533d4323e32024c5', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
@@ -216,7 +216,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Travel.md': ('bffeb4b02d999151bdd9e225e8dbe85d050159fed08318c34ad6bbb61663bb97', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
     'guides/Guide_to_Tribal_Life.md': ('9850870389868ec34eba898d67ed6bf2be045873230a5ae3f9dadb0e2f9f7a2c', 'tribe tribal totem pole deeds burial mound cairn feast feasts barter music'),
     'guides/Guide_to_the_Moon.md': ('c8da8a4e6c6b3679092d43b9c7546cf511252081294beb7293c7c13c1ef056bf', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
-    'guides/Guide_to_Crafting.md': ('9b399ae4abf75cb28daa882173a75741d8e1bf25ef1557534318b0ee7718a874', 'crafting craft recipes workbench materials items make build vehicle designer'),
+    'guides/Guide_to_Crafting.md': ('7befe794ff9dbe2c36dbb2cf5e02ac25c0071d16dd7a9c5abc9b21d7a0e800aa', 'crafting craft recipes workbench materials items make build vehicle designer'),
     'guides/Guide_to_Metallurgy.md': ('506ddd8ed495e8120aa3c0a4032be216bf478cb1ece0711180a83e24677df02e', 'metallurgy metal smelting smelt ore ingot furnace bloomery iron copper tin bronze steel alloy anvil forge'),
     'Starter_Guide.md': ('54c0022fa9016aacc58e7b411ac84da421057dcb80a9f47bd70d3d9c2833e5dd', 'starter guide beginner basics first steps controls interface intents'),
     'Music.md': ('049a85fd6517277b3abffa464c88c43dbda8d3060307b13491cd595a7a541c1d', 'music instrument instruments song songs play sheet notes piano'),

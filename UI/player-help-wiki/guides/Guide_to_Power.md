@@ -41,7 +41,7 @@ Machines that use the cable grid include [hydroponics trays](Guide_to_Farming.md
 3. Click the battery to select its mode. Primary cells cycle **off → discharge → off**. The accumulator and the lithium-ion bank cycle **off → charge → discharge → off**.
 4. Examine it to read stored energy, output limit and mode. Switch it off when finished: discharge consumes energy each second even when no machine uses it.
 
-The jar and pile cannot recharge electrically. When empty, switch off, replace the iron electrode and grape juice using the amounts above. The accumulator charges from spare output of running engines on its cable network, after machine loads; another battery cannot charge it.
+The jar and pile cannot recharge electrically. When empty, switch off, replace the iron electrode and grape juice using the amounts above. The accumulator charges from spare output of running engines on its cable network, after machine loads and wire losses, including through cable risers and overhead wires; another battery cannot charge it.
 
 Cut its cable before unanchoring. Moving or disconnecting a battery turns it off. After a world save is loaded, stored chemical state is retained, but mode, output and wiring must be rebuilt by players. This describes battery save behavior where server world saves are enabled; it does not promise that every round or server retains your settlement.
 
@@ -83,6 +83,10 @@ A **wall outlet** (2 copper, Electricity research) works like a small transforme
 A **utility pole** (6 wood, Electricity research) also powers machines within 3 tiles, and carries **overhead wires** to other poles. Fasten each pole on a cable, then use a cable coil on one pole and then on another within 8 tiles: the wire costs one piece of cable per tile and joins the two grids into one, across roads, fields or rivers. A pole holds up to four wires. Wirecutters take a pole's wires down and give the cable back; unfastening or moving the pole does the same.
 
 A **power meter** (3 iron, Electricity research) shows what a grid is doing. Fasten it on a cable with a wrench, then click it. It shows the grid's supply, demand and load, with a chart of the last minute that keeps updating while you stand next to it. Examine it for a quick reading.
+
+When a grid runs short, the meter shows how much power machines asked for, how much they got and how much went unserved, and names up to six machines that were turned away. It sounds one alarm when a shortage lasts five seconds. To keep an important machine running, right-click the meter, choose **Toggle nearby machine power priority** and pick a machine on its grid that you can reach. A priority machine takes power from ordinary ones when there is enough to run it, and ordinary machines lose power first when supply drops. Priority choices reset when the server restarts.
+
+Where several transformers, outlets or poles can reach a machine, it takes power from the nearest one. Building or removing a wall or door nearby, or moving the machine, makes it look again.
 
 ## Power between floors
 
