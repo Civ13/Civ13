@@ -333,7 +333,9 @@ class PlantPotCinchona(unittest.TestCase):
         source = '/proc/plant_projection()\n' + body + '\n'
         env = {'to_chat': lambda *_: None, 'do_after': wait,
                'QDELETED': lambda obj: obj.deleted,
-               'qdel': lambda obj: setattr(obj, 'deleted', True)}
+               'qdel': lambda obj: setattr(obj, 'deleted', True),
+               # The pot records the plant (and its remaining quinine) before deleting it.
+               'record_potted_cinchona': lambda _plant: setattr(pot, 'filled_type', 'cinchona')}
         return adapter.project(source, '/proc/plant_projection', 'src, W, user', env)(pot, item, actor)
 
     def test_both_pots_use_shared_planting_and_recheck_after_wait(self):

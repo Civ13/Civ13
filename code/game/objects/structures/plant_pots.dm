@@ -16,6 +16,8 @@
 	var/protection_chance = 35 //odds of something hitting the src
 	var/filled_type = null
 	var/filled = FALSE
+	var/potted_quinine = null	// quinine left in a potted cinchona; null means a whole plant
+	var/potted_bitecount = 0
 
 /obj/structure/plant_pot/proc/finish_plastic_plant(obj/item/W, mob/user, obj/structure/plant_pot/S)
 	var/choice = WWinput(user, "What type of plastic plant?","Choose a plant type","Normal",list("Plastic Tree", "Plastic Pine Tree", "Plastic Palm Tree", "Plastic Leaf Plant"))
@@ -59,9 +61,28 @@
 	icon = 'icons/obj/flora/filled_plantpots.dmi'
 	icon_state = "[planttype]cinchona"
 	desc = "A pot with a cinchona plant."
-	filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
+	record_potted_cinchona(W)
 	qdel(W)
 	return TRUE
+
+/obj/structure/plant_pot/proc/record_potted_cinchona(obj/item/weapon/reagent_containers/food/snacks/grown/cinchona/C)
+	filled_type = /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona
+	potted_quinine = C.reagents ? C.reagents.get_reagent_amount("quinine") : 0
+	potted_bitecount = C.bitecount
+
+// Trowel removal returns the potted plant as it went in: a partly eaten
+// cinchona keeps only the quinine it had left (issue 6972).
+/obj/structure/plant_pot/proc/remove_potted_plant()
+	if (!filled_type)
+		return null
+	var/obj/item/P = new filled_type(loc)
+	if (istype(P, /obj/item/weapon/reagent_containers/food/snacks/grown/cinchona) && !isnull(potted_quinine))
+		var/obj/item/weapon/reagent_containers/food/snacks/grown/cinchona/C = P
+		C.reagents.del_reagents()
+		if (potted_quinine > 0)
+			C.reagents.add_reagent("quinine", potted_quinine)
+		C.bitecount = potted_bitecount
+	return P
 
 /* Clay Plant-Pots*/
 
@@ -80,7 +101,7 @@
 		if (filled_type)
 			to_chat(user, "You start removing the plant from the pot.")
 			if (do_after(user, 15, src))
-				new filled_type(loc)
+				remove_potted_plant()
 				new /obj/structure/plant_pot/clay/light(loc)
 				qdel(src)
 				return
@@ -250,7 +271,7 @@
 		if (filled_type)
 			to_chat(user, "You start removing the plant from the planter.")
 			if (do_after(user, 15, src))
-				new filled_type(loc)
+				remove_potted_plant()
 				new /obj/structure/plant_pot/medium_planter/clay/yellow(loc)
 				qdel(src)
 				return
