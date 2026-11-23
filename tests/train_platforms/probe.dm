@@ -454,6 +454,15 @@ var/global/platform_probe_runtime_error = FALSE
 	H.drive()
 	drive_wait(L)
 	drive_wait(H)
+	// Braking is always quicker than gathering way, light train or heavy.
+	var/brakes_beat_accel = TRUE
+	for (var/obj/structure/trains/locomotive/E in list(L, H))
+		E.refresh_consist()
+		E.braking = TRUE
+		if (E.stopping_decel(0, max(1, E.consist_weight / 6)) < 2 * TRAIN_ACCEL * min(2, E.pull_ratio()) - 0.001)
+			brakes_beat_accel = FALSE
+		E.braking = FALSE
+	platform_check("brake/stops_quicker_than_it_starts", brakes_beat_accel)
 	platform_check("brake/heavy_longer", (H.y - heavy_from) > (L.y - light_from) && L.y - light_from >= 1)
 
 	// Double heading: a second running engine in the train adds its pull.
