@@ -35,7 +35,7 @@ class RegionRaidTests(unittest.TestCase):
         # Every trip, raids included, records the land it left from.
         self.assertIn('\tP["from"] = shard_group.region\n', payload)
         depart = proc(TRAVEL, '/obj/structure/region_gate/proc/depart_party')
-        self.assertIn('H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H))', depart)
+        self.assertIn('H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H), leave_behind)', depart)
         self.assertIn('region_raid_note_origin(H, P)', proc(TRAVEL, '/proc/region_travel_build'))
 
     def test_origin_is_only_kept_in_a_raid_world_and_never_another_raid(self):
