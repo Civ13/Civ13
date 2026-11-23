@@ -131,6 +131,7 @@ SUITES = {
         'paths': ('tests/leech_wait/', 'code/game/mob/living/simple_animal/friendly/leech.dm')},
     'sheep_lambs': {'files': ('tests/sheep_lambs/test_sources.py',),
         'paths': ('tests/sheep_lambs/', 'code/game/mob/living/simple_animal/friendly/farm_animals.dm')},
+    'vomit_cooldown': {'files': ('tests/vomit_cooldown/test_source.py',), 'paths': ('tests/vomit_cooldown/', 'code/game/mob/living/carbon/carbon_defines.dm')},
     'chemsmoke_exclusion': {'files': ('tests/chemsmoke_exclusion/test_guard.py',),
         'paths': ('tests/chemsmoke_exclusion/', 'code/game/objects/effects/chem/chemsmoke.dm', 'code/game/objects/effects/chem/chemsmoke_types.dm')},
     'scheduled_task_guard': {'files': ('tests/scheduled_task_guard/test_guard.py',), 'paths': ('tests/scheduled_task_guard/', 'code/processes/scheduler.dm', 'code/__defines/qdel.dm'),
