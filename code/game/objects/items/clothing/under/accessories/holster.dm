@@ -61,6 +61,16 @@
 		holstered = null
 		name = initial(name)
 
+// Puts a drawn gun into one of the user's hands. On failure (lying down,
+// for one) the gun stays in the holster rather than dropping (#6961).
+/obj/item/clothing/accessory/holster/proc/holster_draw_into_hand(mob/user, obj/item/G)
+	if (user.put_in_active_hand(G) || user.put_in_inactive_hand(G))
+		user.update_inv_l_hand()
+		user.update_inv_r_hand()
+		return TRUE
+	to_chat(user, SPAN_WARNING("You can't get \the [G] into your hand right now."))
+	return FALSE
+
 /obj/item/clothing/accessory/holster/proc/unholster(mob/user as mob)
 	if (capacity == 1)
 		if (!holstered)
@@ -74,6 +84,8 @@
 		if (istype(user.get_active_hand(),/obj) && istype(user.get_inactive_hand(),/obj))
 			to_chat(user, "<span class='warning'>You need an empty hand to draw \the [holstered]!</span>")
 		else
+			if (!holster_draw_into_hand(user, holstered))
+				return
 			if (user.a_intent == I_HARM)
 				usr.visible_message(
 					"<span class='danger'>[user] draws \the [holstered], ready to shoot!</span>",
@@ -84,7 +96,6 @@
 					"<span class='notice'>[user] draws \the [holstered], pointing it at the ground.</span>",
 					"<span class='notice'>You draw \the [holstered], pointing it at the ground.</span>"
 					)
-			user.put_in_hands(holstered)
 			holstered.add_fingerprint(user)
 			w_class = initial(w_class)
 			clear_holster()
@@ -93,6 +104,8 @@
 		if (istype(user.get_active_hand(),/obj) && istype(user.get_inactive_hand(),/obj))
 			to_chat(user, "<span class='warning'>You need an empty hand to draw \the [holstered2]!</span>")
 		else
+			if (!holster_draw_into_hand(user, holstered2))
+				return
 			if (user.a_intent == I_HARM)
 				usr.visible_message(
 					"<span class='danger'>[user] draws \the [holstered2], ready to shoot!</span>",
@@ -103,7 +116,6 @@
 					"<span class='notice'>[user] draws \the [holstered2], pointing it at the ground.</span>",
 					"<span class='notice'>You draw \the [holstered2], pointing it at the ground.</span>"
 					)
-			user.put_in_hands(holstered2)
 			holstered2.add_fingerprint(user)
 			w_class = initial(w_class)
 			if (holstered)
@@ -114,6 +126,8 @@
 		if (istype(user.get_active_hand(),/obj) && istype(user.get_inactive_hand(),/obj))
 			to_chat(user, "<span class='warning'>You need an empty hand to draw \the [holstered]!</span>")
 		else
+			if (!holster_draw_into_hand(user, holstered))
+				return
 			if (user.a_intent == I_HARM)
 				usr.visible_message(
 					"<span class='danger'>[user] draws \the [holstered], ready to shoot!</span>",
@@ -124,7 +138,6 @@
 					"<span class='notice'>[user] draws \the [holstered], pointing it at the ground.</span>",
 					"<span class='notice'>You draw \the [holstered], pointing it at the ground.</span>"
 					)
-			user.put_in_hands(holstered)
 			holstered.add_fingerprint(user)
 			w_class = initial(w_class)
 			holstered = null
