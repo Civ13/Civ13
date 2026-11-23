@@ -26,6 +26,20 @@ Stopping the engine or closing the throttle lets the train coast; the brake
 stops it faster. Neither stops it on the spot, and the driver's brake holds
 the engine alone ([Brakes](#brakes)).
 
+## Smooth movement
+
+A train still moves a whole tile per step, but each step is drawn as one
+glide lasting until the next step, the way boats and ships sail
+(`code/modules/craft/glide.dm`). `code/modules/1713/train_glide.dm` holds the
+`glide_size` of every car, deck part, load and rider at the train's pace
+before it moves (`train_glide_begin()`/`train_glide_end()` around each step
+of `drive()` and a free roll); free-moving riders and loads swung two tiles
+round a curve are drawn back a tile and slid instead. Moves go through
+`train_glide_before()`/`train_glide_after()` in the car `Move()` and
+`train_shift()`; outside a step they do nothing. The train gives every glide
+back when it stops (`train_glide_rest()`). Checks: `glide/` in
+`tests/train_platforms`.
+
 ## Speed and load
 
 Speeds are tiles per second. `max_train_speed` is a locomotive's step delay in
