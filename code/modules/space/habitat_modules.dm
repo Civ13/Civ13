@@ -196,9 +196,19 @@ var/global/list/habitat_cores = list()
 			continue
 		var/obj/structure/simple_door/habitat_hatch/H = locate() in T
 		if (H && !QDELETED(H))
-			if (!H.is_open() || neighbour_through(T))
+			if (!H.is_open() || neighbour_through(T) || habitat_hatch_on_capsule(T, src))
 				continue
 		.++
+
+// TRUE when the outer hatch on ring tile T opens onto the deck of a capsule
+// docked at its port (orbit_docking.dm): that cabin is sealed too.
+/proc/habitat_hatch_on_capsule(turf/T, obj/structure/habitat_core/C)
+	var/dx = T.x - C.x
+	var/dy = T.y - C.y
+	if (dx && dy)
+		return FALSE
+	var/turf/beyond = locate(T.x + ((dx > 0) - (dx < 0)), T.y + ((dy > 0) - (dy < 0)), T.z)
+	return istype(beyond, /turf/floor/lander_deck)
 
 // Docked modules behind open hatches.
 /obj/structure/habitat_core/proc/open_neighbours()

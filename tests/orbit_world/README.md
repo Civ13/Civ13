@@ -254,3 +254,14 @@ plan's own figures and its keel slots on the grid, the office asks for the plan'
 with the crew, the first arrival founds every module of the plan sealed with
 its keel, power and life support on the grid, and the plan drawn at its
 console matches the one it was built from.
+
+It also checks rocket berths (`code/modules/space/orbit_docking.dm`): the
+starter station's docking airlock port has a free berth beyond its outer
+hatch, free berths are advertised and survive the trip while forged entries
+are dropped, a closed port is offered only to its owners and an open one to
+anyone, docking flights are well formed, a capsule docks at the berth on the
+station's own plane with its deck against the hatch (the hatch counts as
+sealed), a taken berth is not advertised and a second rocket flies its own
+capsule, bars from inside and outside block only their side, and a spent
+capsule frees the berth. Station plans need a docking airlock with a clear
+berth.

@@ -53,6 +53,7 @@ what the code does so far and the rules later steps must keep.
 | 10d | Cargo freighter (2013): uncrewed rocket with a 20-item hold, lands its crate beside the party's station hatch or launch complex office, comes back when refused; journaled "freight" payloads in the transfer agent, replayed after a reload | `code/modules/space/orbit_freight.dm`, `transfer_bridge.dm`, `tools/transfer_storage/region.py` |
 | 14 | Satellites: satellite launcher, ground station, weather (forecast from the season and storm timers), comms (relays need no antenna, half wear), navigation (2013, GPS receiver with waypoints), spy satellite (rival stations, pads, vehicles and people outdoors) and survey orbiter (maps the Moon or Mars for a mission console) | `code/modules/space/satellites.dm`, `radio_relay.dm` |
 | 15 | Station visits (2013): docking port on a station plane, owners choose who may dock (only us, guests, everyone), ferry across and home, parcels for the station or its guests | `code/modules/space/orbit_docking.dm` |
+| 22 | Rocket berths (1969): a docking airlock in every station, free berths advertised to other worlds, launches choose a free welcoming port, capsules dock against the hatch, bars from inside or outside | `orbit_docking.dm`, `orbital_flight.dm`, `lander.dm`, `station_plan.dm` |
 | 19 | Freight routes: freight dispatcher beside a pad loads the freighter there from crates beside it and launches it for its party at a set load, never waking a sleeping world | `code/modules/space/orbit_freight_routes.dm` |
 | 18 | Asteroid mining: small asteroids drift onto station planes (hazard clock, max 2), tether to keep, mine with a pickaxe for iron, copper, ice, silver, gold | `code/modules/space/orbit_asteroids.dm` |
 | 17 | Station defences: hull armour plates (3 per module, each soaks a strike) and the 2013 point-defence turret (75% intercept within 7 tiles, +15 s per turret, max 2, on forced dockings) | `code/modules/space/orbit_defences.dm` |
@@ -390,6 +391,34 @@ arrive with no capsule. A live orbit region still needs Val's rollout step.
   land beside the port and ferry home the normal way.
 - Visitors keep every other party check: thrusters, pods, decks, sectors
   and consoles stay the owners'.
+
+## Rocket berths
+
+Val, 2026-11-23: every station has at least one docking port, rockets launch
+to a station only while one of its ports is free, the crew choose the port,
+and either side can bar it.
+
+- **Berth.** A docking port fitted on an airlock's outer hatch has a berth:
+  the open space beyond the hatch (`berth_turf()`, two tiles out). Starter
+  stations get a docking airlock at the end of the east arm; station plans
+  need a docking airlock (`P`, `station-plans.md`). Berths work from 1969;
+  ferries, parcels and boarding raids still open in 2013.
+- **Advertising.** The orbit world's shard status carries
+  `docking_ports` (`orbit_docking_advertisements()`): each free berth's id,
+  station party and name, who it welcomes and its guests, 24 at most. Other
+  worlds clean it with `orbit_docking_clean_advertisements()`.
+- **Launch.** A rocket or crew ship pointed at orbit offers the free berths
+  that welcome the crew's party, and open orbit while a plane is free. A full
+  orbit with a free berth still launches. The chosen port rides as the
+  `port` payload field (whitelisted, orbit flights only); a berth no longer
+  advertised refuses the launch.
+- **Docking.** The capsule is built at the berth with its deck against the
+  hatch, on the station's plane (no plane claimed). An open outer hatch onto
+  a docked capsule's deck counts as sealed. A berth taken meanwhile sends the
+  capsule to open orbit. Deorbiting spends the capsule and frees the berth.
+- **Bars.** Standing beside the port, the station side may bar it from
+  inside (nobody crosses the hatch from the berth) and the capsule side from
+  outside (nobody crosses from the station). Saved on the port.
 
 ## Freight routes
 

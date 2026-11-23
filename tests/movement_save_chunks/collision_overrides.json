@@ -788,6 +788,16 @@
       ]
     },
     {
+      "path": "code/modules/space/orbit_docking.dm",
+      "declarations": [
+        {
+          "owner": "",
+          "declaration": "/obj/structure/docking_port/CanPass(atom/movable/mover, turf/target, height = 0, air_group = 0)",
+          "sha256_body": "5d62968ffcd63b589e63b4dbeeb17ea9af438dfdec1fcc5e5c39ececdb70b75d"
+        }
+      ]
+    },
+    {
       "path": "code/processes/__processScheduler.dm",
       "declarations": [
         {
