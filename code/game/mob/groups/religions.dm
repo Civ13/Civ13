@@ -561,6 +561,8 @@ obj/structure/altar/iron
 		invisibility = 0
 
 /obj/structure/banner/religious/attackby(obj/item/weapon/W as obj, mob/user as mob)
+	if (banner_wall_tool(W, user))
+		return
 	if (W.sharp)
 		user.visible_message("<span class ='danger'>[user] starts ripping off \the [src]!</span>", "<span class ='danger'>You start ripping off \the [src]!</span>")
 		if (do_after(user, 130, src))

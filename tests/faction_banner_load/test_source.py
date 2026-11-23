@@ -33,5 +33,34 @@ class FactionBannerLoadSource(unittest.TestCase):
         self.assertIn('if (overs)\n\t\t\t\toverlays += overs', self.new)
 
 
+    def test_player_banner_wall_tools_dispatch_before_ripping(self):
+        sources = {'faction': SOURCE, 'religious': SOURCE.with_name('religions.dm')}
+        for kind, path in sources.items():
+            with self.subTest(kind=kind):
+                source = path.read_text(encoding='utf-8')
+                body = re.search(rf'^/obj/structure/banner/{kind}/attackby\([^\n]*\)\n((?:\t[^\n]*\n|\n)+)', source, re.M).group(1)
+                self.assertRegex(body, r'(?m)^\tif \(banner_wall_tool\(W, user\)\)\n\t\treturn\s*$')
+                self.assertLess(body.index('banner_wall_tool(W, user)'), body.index('W.sharp'))
+                self.assertIn('qdel(src)', body)
+
+    def test_wall_placement_preserves_banner_art_and_identity(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        core = source.split('/obj/structure/banner/proc/banner_mount(', 1)[1]
+        core = core.split('/obj/structure/banner/faction\n', 1)[0]
+        self.assertNotRegex(core, r'(?m)\b(?:overlays|icon_state|bstyle|faction|loc)\s*=')
+        self.assertNotIn('qdel(', core)
+        self.assertNotIn('forceMove(', core)
+        self.assertIn('anchored = banner_was_anchored', core)
+        self.assertIn('banner_mount_dir = 0', core)
+
+    def test_wall_placement_checks_target_and_existing_wall_art(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        mount = source.split('/obj/structure/banner/proc/banner_mount(', 1)[1]
+        self.assertLess(mount.index('painting_is_wall_turf'), mount.index('banner_mount_dir = facing'))
+        self.assertLess(mount.index('banner_wall_occupied(T, facing)'), mount.index('banner_mount_dir = facing'))
+        self.assertIn('B.board_mount_dir == facing', mount)
+        self.assertIn('F.dir == NORTH && C && C.wide_hang', mount)
+
+
 if __name__ == '__main__':
     unittest.main()
