@@ -168,6 +168,11 @@ paste it in.
 Faction symbols for banners have their own codes, starting with `C13SYMBOL/`;
 see [Civilizations and Nomads](gamemodes/Civilizations_and_Nomads.md#general).
 
+A crafted faction or religious banner can also hang on a wall. Stand on the
+banner's tile, face a solid wall right beside it and use a hammer without harm
+intent. It keeps its colours and symbol. A wrench takes it back down. Only one
+banner, painting or notice board can hang on each wall face.
+
 ## Tailoring your own clothes
 
 Design, cut and sew clothing, overclothes, hats, gloves, footwear and belts in
