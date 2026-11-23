@@ -154,14 +154,90 @@
 /obj/item/weapon/reagent_containers/food/snacks/poo/animal
 	name = "manure"
 	desc = "Makes good fertilizer at least."
-	decay = 0 // fertilizer keeps until it is used
+	decay = 0 // Not food spoilage; only exposed manure ages.
+	abandonment_decay = TRUE
 	dry_size = 6
 	dried_type = /obj/item/stack/dung
 	fertilizer_value = 10
+	var/manure_ground_age = 0
+	var/tmp/manure_ground_since = null
 	New()
 		..()
 		if (!restoring) // a load keeps the saved look
 			icon_state = pick("animal1", "animal2", "animal3")
+
+#define MANURE_GROUND_LIFETIME (4 * 60 * 60 * 10)
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/on_runtime_spawn()
+	..()
+	update_manure_ground_age(world.time)
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/proc/update_manure_ground_age(now)
+	if (restoring)
+		return
+	if (!isturf(loc))
+		// A raw loc assignment may have bypassed movement. Do not guess how
+		// much of the unobserved interval was spent outside storage.
+		manure_ground_since = null
+		return
+	if (!isnull(manure_ground_since) && now >= manure_ground_since)
+		manure_ground_age = min(MANURE_GROUND_LIFETIME, manure_ground_age + now - manure_ground_since)
+	manure_ground_since = now
+
+// Account for the old position first. Resetting/restarting the ordinary debris
+// clock on movement must not erase the manure's cumulative ground time.
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/Move()
+	update_manure_ground_age(world.time)
+	. = ..()
+	if (. && !QDELETED(src))
+		update_manure_ground_age(world.time)
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/forceMove(atom/destination, special_event, list/throw_hop_token)
+	update_manure_ground_age(world.time)
+	. = ..()
+	if (. && !QDELETED(src))
+		update_manure_ground_age(world.time)
+
+// Native bag insertion/removal bypasses Move and forceMove.
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/persistence_set_loc(atom/destination)
+	update_manure_ground_age(world.time)
+	. = ..()
+	if (. && !QDELETED(src))
+		update_manure_ground_age(world.time)
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/check_abandonment(now)
+	if (QDELETED(src) || !is_abandonment_waste())
+		unregister_abandoned_item()
+		return FALSE
+	update_manure_ground_age(now)
+	if (restoring || !isturf(loc) || manure_ground_age < MANURE_GROUND_LIFETIME || abandonment_protected())
+		return FALSE
+	if (persistence_save_active())
+		return FALSE // A moving save may be capturing this pile across a yield.
+	qdel(src)
+	return TRUE
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/before_save()
+	..()
+	// Only fold in elapsed time. The scheduler, not the serializer, disposes it.
+	update_manure_ground_age(world.time)
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/persistence_runtime_var(key)
+	return key == "manure_ground_since" || ..()
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/persistence_import_fields(list/saved_fields)
+	..()
+	if (!("manure_ground_age" in saved_fields) || !isnum(manure_ground_age))
+		manure_ground_age = 0
+	else
+		manure_ground_age = clamp(manure_ground_age, 0, MANURE_GROUND_LIFETIME)
+	manure_ground_since = null
+
+/obj/item/weapon/reagent_containers/food/snacks/poo/animal/persistence_restore_finished()
+	..()
+	update_manure_ground_age(world.time)
+
+#undef MANURE_GROUND_LIFETIME
 
 /obj/item/weapon/reagent_containers/food/snacks/poo/fertilizer
 	name = "compost"
