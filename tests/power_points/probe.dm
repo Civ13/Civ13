@@ -52,6 +52,12 @@ var/global/pp_failures = 0
 	OpenPort("none")
 	sleep(1)
 	try
+		// forceMove raises the moved event; the fixture has no global setup.
+		if (!GLOB.moved_event)
+			GLOB.all_observable_events = list()
+			GLOB.moved_event = new
+			GLOB.dir_set_event = new
+			GLOB.destroyed_event = new
 		// Map placement: a secured transformer on a cable feeds a lamp once released.
 		var/obj/structure/cable/mc = new(locate(10, 10, 1))
 		var/obj/structure/engine/pp_tester/ME = new(locate(10, 10, 1))
