@@ -602,6 +602,17 @@ Once the basin is dry she lies **dry**, just as when she is [hauled out on a sli
 
 To leave, choose **Open the sluices** at the gate. After ten seconds the basin floods again, then choose **Open the gate** and sail out. Even while the basin is flooded, a hull lying wholly inside it counts as at a berth, as in a [boathouse slip](#working-on-a-boat-in-the-boathouse-slip).
 
+### Planning a harbor on paper
+
+A [ship's draught](#ships-draughts) can hold a **harbor plan** to help you lay out a pier, slipway, boathouse slip or drydock before you start work. Hold a blank draught with a pen or pencil in your other hand, use it and choose **Draw a harbor on the sheet**.
+
+1. Pick the project: a **timber pier**, a **steel pier**, a **slipway** (for a schooner or a freighter), a **boathouse slip** or a **drydock**. Piers and drydocks can be made longer or shorter, and a drydock wider.
+2. Stand where the work starts, at the pier's start, the slipway post, the boathouse or the drydock's gate, and face the way it should run. Press **Survey from here**, and use **Rotate** to turn the plan.
+3. The plan colours each tile by what is there now: deep or shallow water, flooded or dry trench, ice, land or solid ground. A red **!** marks a tile to look at, and **?** a tile you can't see from where you stand. Only tiles your character can see in good light are surveyed, so walk around the site and survey again if parts are unseen. For a slipway the dashed rows ahead show the run she will slide down at launch.
+4. The checks under the plan list what is likely to go wrong, and the sheet lists the main materials.
+
+The plan never builds, digs or launches anything, and a clean survey is not a promise: the real slipway post, dock gate or pile driver makes its own checks when you build. **Save on sheet**, **Export** and **Import** work as for any draught. The design code (starting `C13HARBOR`) holds only the project and its size, not the place, so someone else can use it at another shore.
+
 ### Building and refitting at a berth
 
 A [hull of your own](#building-your-own-hull) can be laid down, and refitted, out of the water at a berth:

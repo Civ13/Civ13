@@ -73,3 +73,12 @@ A water clock gives one pull when that hour begins, as long as it holds water. A
 
 A mechanism port (5 electronics, Digital Computing) joins the cords to an [integrated circuit](Guide_to_Integrated_Circuits.md). Set it on the floor, put a circuit inside it, and use rope on it to tie cords as you would on a lever. A signal on its **Pull** input pulls those cords, at most once every two seconds. A lever's or pressure plate's cord tied to the port sends a signal out of its **Pulled** output. Picking the port up drops its cords.
 
+## Planning a contraption on paper
+
+A ship's draught can hold a drawing of a contraption, so you can check its cords before you build it. Hold a blank draught (see [Guide to Boats](Guide_to_Boats.md#ships-draughts)) with a pen or pencil in your other hand, use it and choose **Draw a contraption on the sheet**.
+
+- Pick a part and click a tile on the 12 by 12 plan. Choose **Tie cord**, then a trigger and the thing it works, to draw a cord. The plan checks that each cord is within reach and that no trigger has more than four cords. A portcullis must be within two tiles of its winch, and its cord goes to the winch.
+- **Test pull or throw over** on a trigger, or **Test throwing back** on a lever, lists what would happen. Nothing in the world moves, rings or opens.
+- The examples show a pressure plate ringing a doorway bell, a lever working a portcullis winch, and a lever working a sluice gate.
+- **Save on this sheet** keeps the drawing, and the sheet's export and import share it as a code starting `C13MECH`. Build the real parts and tie the cords as described above.
+
