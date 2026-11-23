@@ -117,7 +117,7 @@
 	
 	var/list/turfs = getline2(start, end, FALSE)
 	for(var/turf/T in turfs)
-		if(T == start || T == end) continue
+		if(T == end) continue
 		for(var/mob/living/L in T)
 			if(L.stat == DEAD) continue
 			if(ishuman(L))
