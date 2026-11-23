@@ -352,7 +352,7 @@
 		if (DRAUGHT_EXPORT_LABEL)
 			draught_export(H, D.name)
 		if (DRAUGHT_IMPORT_LABEL)
-			draught_import(H, TRUE)
+			draught_import(H)
 
 /obj/item/ship_draught/proc/open_harbor_designer(mob/living/human/H)
 	if (!harbor_can_draw(H, src))
@@ -495,7 +495,7 @@
 		plan.site = null
 	if (href_list["harbor"] == "import")
 		import_pending = TRUE
-		sheet.draught_import_in_window(H, HARBOR_WINDOW, src)
+		sheet.draught_import_in_window(H, HARBOR_WINDOW, CALLBACK(src, PROC_REF(can_edit), H))
 		if (!QDELETED(src))
 			import_pending = FALSE
 		return

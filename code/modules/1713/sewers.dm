@@ -163,7 +163,9 @@ var/global/list/sewer_pumps = list()
 
 // The open water this drain spills into, or null.
 /obj/structure/sewer_piece/drain/proc/outfall_dir()
-	var/turf/T = get_turf(src)
+	return sewer_bank_outfall_dir(get_turf(src))
+
+/proc/sewer_bank_outfall_dir(turf/T)
 	if (!T)
 		return 0
 	for (var/d in cardinal)

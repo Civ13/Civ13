@@ -33,6 +33,7 @@ var/global/list/draught_kinds = draught_kinds_list()
 		"SUB" = list("name" = "submarine", "title" = "Submarine sheet", "max" = DESIGN_CODE_SUB_MAX, "read" = /proc/sub_draught_from_code, "take" = "take_sub", "open" = "open_sub_designer", "window" = "sub_designer"),
 		"CAR" = list("name" = "vehicle", "title" = "Vehicle sheet", "max" = DESIGN_CODE_CAR_MAX, "read" = /proc/vehicle_draught_from_code, "take" = "take_vehicle", "open" = "open_vehicle_designer", "window" = "vehicle_designer"),
 		"AIR" = list("name" = "airship", "title" = "Airship sheet", "max" = DESIGN_CODE_AIR_MAX, "read" = /proc/air_draught_from_code, "take" = "take_air", "open" = "open_air_designer", "window" = "air_designer"),
+		"WATER" = list("name" = "waterworks", "title" = "Waterworks plan", "max" = DESIGN_CODE_WATER_MAX, "read" = /proc/waterworks_plan_from_code, "take" = "take_waterworks", "open" = "open_waterworks_designer", "window" = "waterworks_designer"),
 		"HOUSE" = list("name" = "house", "title" = "House plan", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house", "open" = "open_house_designer", "window" = "house_designer"),
 		"HARBOR" = list("name" = "harbor", "title" = "Harbor plan", "max" = 48, "read" = /proc/harbor_plan_from_code, "take" = "take_harbor", "open" = "open_harbor_designer", "window" = "harbor_designer"),
 		"RAIL" = list("name" = "railway", "title" = "Rail plan", "max" = DESIGN_CODE_RAIL_MAX, "read" = /proc/rail_plan_from_code, "take" = "take_rail", "open" = "open_rail_designer", "window" = "rail_designer"),
@@ -63,20 +64,17 @@ var/global/list/draught_kinds = draught_kinds_list()
 // is read by the same proc the designer window saves through, so an imported
 // plan is held to exactly the rules of one drawn by hand, and its checks are
 // shown the way the window shows them. Returns the kind row taken, or null.
-/obj/item/ship_draught/proc/draught_import(mob/living/human/H, harbor_held = FALSE, datum/harbor_designer/harbor_editor = null)
+/obj/item/ship_draught/proc/draught_import(mob/living/human/H, datum/callback/recheck = null)
 	var/client/connection = H?.client
 	var/expected_code = draught_code
 	var/datum/admission = persistence_admission_identity
-	if (harbor_held && !harbor_can_draw(H, src))
-		return null
-	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, railway, space station, harbor or house design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/..., C13RAIL/..., C13HARBOR/... or C13HOUSE/...). It replaces what is drawn on this sheet.", draught_code_max())
-	if (!typed || QDELETED(src) || !(src in H.get_contents()))
+	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, railway, space station, harbor, house or waterworks design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/..., C13RAIL/..., C13HARBOR/..., C13HOUSE/... or C13WATER/...). It replaces what is drawn on this sheet.", draught_code_max())
+	if (!typed || QDELETED(src) || QDELETED(H) || !(src in H.get_contents()) || (recheck && !recheck.Invoke()))
 		return null
 	var/kind = design_code_kind(typed)
-	if (harbor_held || kind == "HARBOR" || design_code_kind(expected_code) == "HARBOR" || design_code_kind(draught_code) == "HARBOR")
+	// The prompt can outlive the holder, connection or another edit of the sheet.
+	if (kind == "HARBOR" || design_code_kind(expected_code) == "HARBOR" || design_code_kind(draught_code) == "HARBOR")
 		if (!harbor_can_draw(H, src) || H.client != connection || draught_code != expected_code || persistence_admission_changed(admission))
-			return null
-		if (harbor_editor && (QDELETED(harbor_editor) || !harbor_editor.can_edit(H)))
 			return null
 	var/list/K = draught_kinds[kind]
 	if (K && length(typed) > K["max"])
@@ -105,8 +103,8 @@ var/global/list/draught_kinds = draught_kinds_list()
 
 // The Import button in a designer window: imports onto the sheet, then shows
 // it in the right window (another kind's window when the code is another kind).
-/obj/item/ship_draught/proc/draught_import_in_window(mob/living/human/H, from_window, datum/harbor_designer/harbor_editor = null)
-	var/list/K = harbor_editor ? draught_import(H, TRUE, harbor_editor) : draught_import(H)
+/obj/item/ship_draught/proc/draught_import_in_window(mob/living/human/H, from_window, datum/callback/recheck = null)
+	var/list/K = draught_import(H, recheck)
 	if (!K)
 		return
 	if (K["window"] != from_window)

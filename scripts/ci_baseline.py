@@ -3176,6 +3176,13 @@ SUITES = {
         'paths': ('tests/chat_translation/', 'code/game/mob/hear_say.dm', 'interface/chat/chat.html',
                   'code/modules/persistence/region_ooc.dm', 'docs/chat-translation.md',
                   'code/modules/chat/chat_translate.dm', 'tools/edge-translator/')},
+    'waterworks_planner': {'files': ('tests/house_plans/test_waterworks.py',),
+        'paths': ('tests/house_plans/waterworks_probe.dm', 'tests/house_plans/test_waterworks.py',
+                  'code/modules/1713/waterworks_plan.dm', 'code/modules/1713/waterworks_designer.dm',
+                  'code/__defines/waterworks_plans.dm'),
+        'shared_paths': ('code/modules/1713/aqueducts.dm', 'code/modules/1713/sewers.dm',
+            'code/game/objects/build_markers.dm', 'code/modules/naval/ship_draught.dm',
+            'code/modules/naval/draught_kinds.dm', 'code/modules/paintings/design_codes.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
