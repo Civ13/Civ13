@@ -1920,6 +1920,7 @@
 #include "code\modules\naval\yard_office.dm"
 #include "code\modules\naval\shipyard.dm"
 #include "code\modules\naval\slipway.dm"
+#include "code\modules\naval\harbor_planner.dm"
 #include "code\modules\naval\slipway_draught.dm"
 #include "code\modules\naval\slipway_haul.dm"
 #include "code\modules\naval\slipway_hull.dm"

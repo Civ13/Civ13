@@ -53,6 +53,7 @@ parent with its own `kind` and `abstract_type`, its checks, and a
 | `ship` | `/datum/ship_draught` | `naval/draught_checks.dm` |
 | `sub` | `/datum/sub_draught` | `naval/draught_checks.dm` |
 | `vehicle` | `/datum/vehicle_survey` (frames before hand assembly) | `craft/vehicle_checks.dm` |
+| `harbor` | `/datum/harbor_plan` | [Harbor Planner](harbor-planner.md): site, footprint, access |
 | `vehicle_sheet` | `/datum/vehicle_draught` (a vehicle sheet, [vehicle-sheets.md](vehicle-sheets.md)) | `craft/vehicle_draught_checks.dm` |
 
 ## Describing parts
