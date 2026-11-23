@@ -1,8 +1,8 @@
 // Gun blueprint design code probe (tests/gun_blueprints/run.py). A bench, a
-// skilled gunsmith with coins and the bench stocked: blueprints export codes,
+// skilled gunsmith and a stocked bench: blueprints export codes,
 // and an imported code is worked through the bench's own design steps, so it
 // is refused for parts the gunsmith's people do not know, a caliber the
-// receiver cannot take, a bare bench or empty hands.
+// receiver cannot take or a bare bench, regardless of coins in hand.
 
 /world
 	maxx = 5
@@ -46,14 +46,9 @@ var/global/gun_probe_checks = 0
 	gun_probe_checks++
 	world.log << "GUN PASS: [message]"
 
-/proc/gun_probe_smith(skill = 300, coins = 100)
+/proc/gun_probe_smith(skill = 300)
 	var/mob/living/human/gun_code_probe/H = new(locate(2, 2, 1))
 	H.stats = list("crafting" = list(skill, skill))
-	if (coins)
-		var/obj/item/stack/money/M = new /obj/item/stack/money(H)
-		M.value = 1
-		M.amount = coins
-		H.r_hand = M
 	return H
 
 /proc/gun_probe_bench(steel = 100, wood = 100)
@@ -86,24 +81,27 @@ var/global/gun_probe_checks = 0
 	gun_assert(!gun_design_from_code("C13SHIP/1/a/b/c/d/e/f/g"), "another kind is refused")
 	qdel(A)
 
-	// A whole design imports: a blueprint and the gun, paid in steel, wood and coins.
+	// A whole design makes a blueprint and the first gun without coins.
 	var/design = "C13GUN/1/Probe_Rifle/Rifle_Wooden_Stock/Bolt-Action/Internal_Magazine/Long_Rifle_Barrel/a792x57/kar98k"
 	var/mob/living/human/H = gun_probe_smith()
 	var/obj/structure/gunbench/B = gun_probe_bench()
+	gun_assert(!H.l_hand && !H.r_hand && B.can_design(H), "the skilled smith can design with empty hands")
 	var/obj/item/blueprint/gun/made = B.import_design_code(H, design)
 	gun_assert(made && made.receiver_type == "Bolt-Action" && made.caliber == "a792x57" && made.custom_name == "Probe Rifle", "a known design imports as a blueprint")
 	gun_assert(B.steel_amt == 100 - 17 && B.wood_amt == 100 - 7, "the bench spends what designing by hand spends ([B.steel_amt] steel, [B.wood_amt] wood)")
 	gun_assert(!B.current_gun, "the bench is clear afterwards")
 	gun_assert(gun_blueprint_code(made) == design, "the imported blueprint exports the same code")
-	var/obj/item/stack/money/coins = H.r_hand
-	gun_assert(QDELETED(coins) || coins.amount == 50, "the 50 silver is paid")
+	var/obj/item/weapon/gun/projectile/custom/first = locate() in get_turf(B)
+	gun_assert(first && first.name == "Probe Rifle", "the first gun is still delivered")
 
-	// With a look.
-	H.r_hand = new /obj/item/stack/money(H)
-	H.r_hand:value = 1
-	H.r_hand:amount = 100
+	// With a look and a small coin stack, which must stay untouched.
+	var/obj/item/stack/money/coins = new /obj/item/stack/money(H)
+	coins.value = 1
+	coins.amount = 10
+	H.r_hand = coins
 	made = B.import_design_code(H, "C13GUN/1/Looker/Rifle_Wooden_Stock/Bolt-Action/Internal_Magazine/Rifle_Barrel/a792x57/mosin")
 	gun_assert(made && made.override_sprite == "mosin", "a look in the code is kept")
+	gun_assert(!QDELETED(coins) && H.r_hand == coins && coins.amount == 10, "held coins are untouched")
 	gun_probe_clear()
 
 	// Parts beyond the gunsmith's people are refused, and nothing is spent.
@@ -130,16 +128,9 @@ var/global/gun_probe_checks = 0
 	H = gun_probe_smith()
 	B = gun_probe_bench(2, 100)
 	gun_assert(!B.import_design_code(H, design), "a bench without the steel refuses")
-	H = gun_probe_smith(coins = 0)
-	B = gun_probe_bench()
-	gun_assert(!B.can_design(H), "no coins in hand, no design")
 	H = gun_probe_smith(skill = 100)
-	gun_assert(!B.can_design(H), "an unskilled maker cannot design")
-	H = gun_probe_smith(coins = 10)
 	B = gun_probe_bench()
-	count = gun_probe_blueprints()
-	gun_assert(!B.import_design_code(H, design) && gun_probe_blueprints() == count, "too few coins for the blueprint: no blueprint")
-	gun_assert(!B.current_gun, "and the bench is clear")
+	gun_assert(!B.can_design(H), "an unskilled maker cannot design")
 
 /world/New()
 	OpenPort("none")

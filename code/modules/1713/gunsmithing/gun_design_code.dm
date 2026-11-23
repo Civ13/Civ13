@@ -6,10 +6,9 @@
 // Spaces in a field are written "_" (design_code_fields drops spaces). Any
 // blueprint exports its code. Importing happens at a gunsmithing bench and is
 // the bench's own design flow replayed choice by choice (bench_action), so it
-// asks exactly what designing by hand asks: the designer's skill, the coins,
-// the parts the gunsmith's people know (gunsmith_tech_band), the calibers the
-// receiver and feed take on this map, the bench's steel and wood, and the
-// 50 silver when the blueprint is drawn.
+// asks exactly what designing by hand asks: the designer's skill, the parts
+// the gunsmith's people know (gunsmith_tech_band), the calibers the receiver
+// and feed take on this map, and the bench's steel and wood.
 // ============================================================
 
 #define GUN_CODE_MAX 240
@@ -71,7 +70,7 @@
 		return
 	if (!can_design(H))
 		return
-	var/typed = design_code_ask(H, "Gunsmithing Bench", "Paste a gun blueprint's design code (it starts with C13GUN/). The bench works through it as if you chose each part, so it needs parts your people know, the steel and wood on the bench and 50 silver in hand.", GUN_CODE_MAX)
+	var/typed = design_code_ask(H, "Gunsmithing Bench", "Paste a gun blueprint's design code (it starts with C13GUN/). The bench works through it as if you chose each part, so it needs parts your people know and the steel and wood on the bench.", GUN_CODE_MAX)
 	if (!typed || current_gun || H.stat || get_dist(src, H) > 2)
 		return
 	import_design_code(H, typed)
@@ -136,7 +135,7 @@
 	var/obj/item/blueprint/gun/made = last_blueprint
 	last_blueprint = null
 	if (!made)
-		return null // the name step said why (the coins)
+		return null
 	design_code_log(H, "gun blueprint", made.name, typed)
 	return made
 
