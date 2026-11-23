@@ -176,12 +176,25 @@
 		players += count
 	return list("players" = players, "unknown" = unknown)
 
+/proc/region_gateway_battle_peer()
+	for(var/id in shard_group.peers)
+		var/list/peer = shard_group.peers[id]
+		if(islist(peer) && peer["kind"] == "BATTLE")
+			return peer
+	return null
+
 // BYOND's built-in count is for the listed world itself. Use its status text
 // for the region-wide population: the known sum as a plain number, or no line
 // while no region has reported yet.
 /proc/region_gateway_hub_status()
 	var/list/mainland = shard_group.peers[shard_group.mainland]
+	var/label = "Mainland"
 	var/title = islist(mainland) && istext(mainland["map"]) ? mainland["map"] : null
+	// A TDM group's front door shows the battle being fought, not the waiting room.
+	var/list/battle = region_gateway_battle_peer()
+	if(battle)
+		label = "Battle"
+		title = istext(battle["map"]) ? battle["map"] : null
 	var/list/population = region_gateway_population()
 	var/players = population["players"]
 	var/unknown = population["unknown"]
@@ -190,7 +203,7 @@
 		. += "<b>Players across regions:</b> [players]<br>"
 	// After the total: the hub keeps only the start of a status (world.dm).
 	if(title)
-		. += "<b>Mainland:</b> [hub_status_text(title)]<br>"
+		. += "<b>[label]:</b> [hub_status_text(title)]<br>"
 
 // The peers' player counts change without anyone logging in here.
 /proc/region_gateway_status_loop()
