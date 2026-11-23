@@ -72,9 +72,6 @@ var/global/list/draught_kinds = draught_kinds_list()
 	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, railway, space station, harbor, contraption, house or waterworks design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/..., C13RAIL/..., C13HARBOR/..., C13MECH/..., C13HOUSE/... or C13WATER/...). It replaces what is drawn on this sheet.", draught_code_max())
 	if (!typed || QDELETED(src) || QDELETED(H) || !(src in H.get_contents()) || (recheck && !recheck.Invoke()))
 		return null
-	// The prompt can outlive the browser, a holder change or a second sheet edit.
-	if (editor && (QDELETED(editor) || editor.sheet != src || !editor.can_edit(H)))
-		return null
 	var/kind = design_code_kind(typed)
 	// The prompt can outlive the holder, connection or another edit of the sheet.
 	if (kind == "HARBOR" || design_code_kind(expected_code) == "HARBOR" || design_code_kind(draught_code) == "HARBOR")
