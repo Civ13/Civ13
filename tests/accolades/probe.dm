@@ -147,19 +147,42 @@ var/acc_runtime_error = FALSE
 	acc_check(istype(W), "the window datum builds")
 	acc_check(length(accolade_catalog()) == 26, "twenty-six accolades")
 
-	// Maker: different things made, not the same thing twice.
+	// Crafts count distinct output types on one character, not repeated crafts.
 	var/mob/living/human/M = new /mob/living/human(locate(6, 6, 1))
 	M.persistence_owner_ckey = "gina"
-	for (var/i = 1 to 30)
-		M.accolade_crafted(/obj/item/weapon)
-	acc_check(accolade_status(accolade_state("gina"), "maker") == "open", "the same thing made again does not count")
-	var/list/made = typesof(/obj/item/weapon)
-	for (var/i = 1 to 25)
+	var/list/made = typesof(/obj/item)
+	for (var/i = 1 to 99)
 		M.accolade_crafted(made[i])
-	accolade_forget("gina")
-	acc_check(accolade_status(accolade_state("gina"), "maker") == "ready", "25 different things meet Maker")
+	M.accolade_crafted(made[99])
+	acc_check(accolade_status(accolade_state("gina"), "maker") == "open", "99 unique results plus a repeat do not meet Maker")
+	M.accolade_crafted(made[100])
+	acc_check(accolade_status(accolade_state("gina"), "maker") == "ready", "100 unique results meet Maker")
+	acc_check(accolade_status(accolade_state("gina"), "artisan") == "open", "the old 100 threshold does not meet Artisan")
 	var/list/kept = accolade_progress_clean(M.accolade_progress)
-	acc_check(length(kept["crafted"]) == 25, "crafted things are kept with the character")
+	acc_check(length(kept["crafted"]) == 100, "all 100 old-cap entries survive cleaning")
+	M.accolade_progress = kept
+	for (var/i = 101 to 499)
+		M.accolade_crafted(made[i])
+	acc_check(accolade_status(accolade_state("gina"), "artisan") == "open", "499 unique results do not meet Artisan")
+	M.accolade_crafted(made[500])
+	acc_check(accolade_status(accolade_state("gina"), "artisan") == "ready", "500 unique results meet Artisan")
+	M.accolade_crafted(made[501])
+	kept = accolade_progress_clean(M.accolade_progress)
+	acc_check(length(kept["crafted"]) == 500 && !("[made[501]]" in kept["crafted"]), "crafting progress stops at 500 unique results")
+	H.accolade_progress = kept
+	P = region_travel_decode(H.region_travel_payload(list()))
+	carried = islist(P) ? P["accolades"] : null
+	var/list/carried_crafts = islist(carried) ? carried["crafted"] : null
+	acc_check(length(carried_crafts) == 500 && ("[made[500]]" in carried_crafts), "500 distinct craft results survive the travel payload")
+
+	// Historical ready and claimed records do not depend on the raised thresholds.
+	accolade_meet("legacycrafter", "maker")
+	accolade_meet("legacycrafter", "artisan")
+	accolade_claim("legacycrafter", "maker")
+	state = accolade_state("legacycrafter")
+	acc_check(accolade_status(state, "maker") == "claimed" && accolade_status(state, "artisan") == "ready", "legacy claimed and ready records stay intact")
+	accolade_claim("legacycrafter", "artisan")
+	acc_check(accolade_points("legacycrafter") == 40, "legacy rewards stay 10 and 30 points")
 
 	// Founder: progress remembers the faction founded.
 	M.accolade_founded("Rome")

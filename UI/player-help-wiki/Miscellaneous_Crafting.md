@@ -173,6 +173,8 @@ banner's tile, face a solid wall right beside it and use a hammer without harm
 intent. It keeps its colours and symbol. A wrench takes it back down. Only one
 banner, painting or notice board can hang on each wall face.
 
+A **wall frame** shows a plan or a sketch on a wall. Stand right beside a solid wall and use a drawn [ship's draught](guides/Guide_to_Boats.md#ships-draughts) (a ship, submarine, vehicle, plane, airship, house, railway, train or space station plan), or a loose sheet of paper with a drawing on it, on the wall. The frame shows a small picture. Examine it from beside the frame for the full plan or drawing; a sketch's writing is not shown. Take the frame down with a hammer to get the original sheet back. A frame takes the wall face like a painting does.
+
 ## Tailoring your own clothes
 
 Design, cut and sew clothing, overclothes, hats, gloves, footwear and belts in

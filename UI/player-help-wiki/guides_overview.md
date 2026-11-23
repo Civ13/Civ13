@@ -79,6 +79,7 @@ New to the game? Go to [Start Here](topics/Start_Here.md).
 
 ## [Research & Technology](topics/Research_and_Technology.md)
 
+- [Epochs](guides/Guide_to_Epochs.md)
 - [Research](guides/Guide_to_Research.md)
 - [Books and Scholars](guides/Guide_to_Books_and_Scholars.md)
 - [Chemistry](guides/Guide_to_Chemistry.md)

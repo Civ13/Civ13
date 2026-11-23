@@ -145,6 +145,17 @@ var/herb_runtime_error = FALSE
 	var/turf/T = first.loc
 	qdel(first)
 	herb_check(wild_herb_seed_patches(TRUE) == 1, "a lost patch is topped up [wild_herb_seed_report]")
+	// Issue 6986: a pass cut short by a save waits and retries instead of finishing.
+	var/obj/structure/wild/flowers/wild_herb/gone = wild_herb_list[1]
+	qdel(gone)
+	wild_herb_seed_state = 1
+	persistence_save_in_progress = TRUE
+	wild_herb_seed_run()
+	herb_check(wild_herb_seed_state == 0 && wild_herb_seed_interrupted, "a pass interrupted by a save goes back to waiting [wild_herb_seed_report]")
+	persistence_save_in_progress = FALSE
+	wild_herb_seed_state = 1
+	wild_herb_seed_run()
+	herb_check(wild_herb_seed_state == 2 && !wild_herb_seed_interrupted && wild_herb_list.len == 4, "the retried pass tops the patches back up and finishes [wild_herb_seed_report]")
 	var/obj/structure/wild/flowers/wild_herb/occupied = wild_herb_list[1]
 	herb_check(T && !wild_herb_site_ok(occupied.loc), "an occupied tile is not a site")
-	herb_check(wild_herb_types_for("temperate").len == 4 && wild_herb_types_for("semiarid").len == 2 && !wild_herb_types_for("desert").len, "herbs follow their climates")
+	herb_check(wild_herb_types_for("temperate").len == 5 && wild_herb_types_for("semiarid").len == 3 && !wild_herb_types_for("desert").len, "herbs follow their climates")

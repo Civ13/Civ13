@@ -313,6 +313,7 @@ var/global/list/wild_herb_list = list()
 var/global/wild_herb_seed_state = 0 // 0 waiting, 1 running, 2 done
 var/global/wild_herb_seed_wait = 0
 var/global/wild_herb_seed_report = ""
+var/global/wild_herb_seed_interrupted = FALSE // the last pass stopped for a save or load
 
 /proc/wild_herb_seed_check()
 	if (wild_herb_seed_state || !map || !map.ecology_wildlife)
@@ -328,7 +329,9 @@ var/global/wild_herb_seed_report = ""
 
 /proc/wild_herb_seed_run()
 	wild_herb_seed_patches()
-	wild_herb_seed_state = 2
+	// A save or load cut the pass short: wait again and retry once it is over,
+	// counting the patches already planted (issue 6986).
+	wild_herb_seed_state = wild_herb_seed_interrupted ? 0 : 2
 
 // Herb types that grow in a climate.
 /proc/wild_herb_types_for(climate)
@@ -372,9 +375,11 @@ var/global/wild_herb_seed_report = ""
 	var/needed = target - herbs
 	var/planted = 0
 	var/attempts = max(0, needed) * 25
+	wild_herb_seed_interrupted = FALSE
 	while (needed > 0 && attempts-- > 0 && grass_turf_list.len)
 		CHECK_TICK
 		if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+			wild_herb_seed_interrupted = TRUE
 			break
 		var/turf/site = pick(grass_turf_list)
 		if (!wild_herb_site_ok(site))
