@@ -208,7 +208,6 @@ var/decay_assertions = 0
 		var/process/abandoned_items/P = new
 		P.setup()
 		var/turf/T = locate(1,1,1)
-		decay_test_manure(T, P)
 		var/obj/item/trash/decay_probe/I = new(T)
 		decay_assert(I.abandonment_index > 0, "New registers waste")
 		I.register_abandoned_item()
@@ -347,6 +346,7 @@ var/decay_assertions = 0
 		qdel(I); qdel(bag); qdel(M); qdel(C); qdel(fake)
 		qdel(cash); qdel(candle); qdel(tray); qdel(tool); qdel(arrow)
 		decay_assert(!abandoned_items.len, "fixture registry returns to baseline")
+		decay_test_manure(T, P)
 		// Mixed preservation and swap removals cannot starve exposed entries.
 		var/obj/item/weapon/storage/backpack/protected_bag = new(T)
 		for (var/n = 1, n <= 600, n++)
