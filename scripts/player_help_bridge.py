@@ -112,14 +112,14 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'd50b453c984131241705d5fb6b600deb2f7a26df'
+WIKI_REVIEWED_REVISION = '65a53079eb9dd8787de502cac3e819806d5e172a'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('ec8abe24ffa48f2ac1f8a9d4ced3389392fcc46760acc24ddd7bf6195bcc096f', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
-    'guides/Guide_to_Combat.md': ('3eb8da3688c36b235efcb5e1ab18deda018fbb2f902bf0dda3f9974414cbf475', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
+    'guides/Guide_to_Combat.md': ('da7579531503a7301a3ad2a865fc2fd717e79e5a5711c35b830b5936b3a7d2af', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('6de3dc86ffcdb60ef2711137bdb3ab7301423b78b12c44d1a6b2c3f0e4ba1973', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
@@ -165,7 +165,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Gladiators.md': ('36ac7d70edff2c99d78351585450428ad5cd02542b0cc3dfc5c178bca7d1ffb6', 'gladiator gladiators arena imperator custodes medicus'),
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('60468ff890363f7e167f7c71dd71ed48a674725efbc02b81306558fc58611426', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
-    'guides/Guide_to_Aircraft.md': ('4eac2e55a9315828c6b3bc266e702571d94cf5ed98c925e582e2868dcf69d345', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
+    'guides/Guide_to_Aircraft.md': ('3de5f099c0fe5c97456b1e58ed470d73f25f26f71a482f05e6f770fb1bbae43b', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
     'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('52f9f6370922d7dede523e51247ae6ea0723d24118cecd26e594c051278dfc3f', 'slang terms jargon abbreviation meaning mean word words'),
@@ -186,6 +186,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Amalgamation.md': ('c6e59ac3698ec0e0e9fd671045c1cb68b981941f4f9fcd4fe4ca8901f877e937', 'amalgamation amalgam mercury gold silver ore recovery retort patio'),
     'guides/Guide_to_Armor.md': ('f1024c2c3032cbdbad66acae9a3fb5f05f4db9ba57cabbeffde1210e58dccc85', 'armor armour protection helmet cuirass plate mail chainmail shield padded gambeson body armor bullet proof vest dayfield layering'),
     'guides/Guide_to_Chat.md': ('88cdb4f258921f70eb5de9ce6e4337106ec948ad706c5c780bf46b7f66a6ef21', 'chat window tabs tab filter translate translation translated language ooc looc repeated messages history connection lost ghost ears'),
+    'guides/Guide_to_Factions.md': ('ea988cd352abcfb09ad78914dc53f950f61dabaccee3d96baada65c304d357e2', 'faction factions province provinces claim territory stake resident hall leader officer office recruit recruitment station island border visitor pass nation vassal siege war banner defence window sleep protection treasury tax'),
     'guides/Guide_to_Companies.md': ('57a38cc569849f5de5abb969a55f1fc1a74672390b3feb8da20383c6a4babcbd', 'company companies stock market shares shareholder stall stalls profits dividend business'),
     'guides/Guide_to_Computers.md': ('18a43fae4409a102f307b90632d49c701f707afbc464769cc003a1e1197515d0', 'computer computers minicomputer processor tape drive diskette terminal files program unga os electronic computing'),
     'guides/Guide_to_Electroplating.md': ('cb4d98759963fa316d4de487a7061b7cbf0b1a99255cfb2c3c8a53bea46230e2', 'electroplating plating plated gilding silver gold nickel chrome bath anode'),
@@ -212,7 +213,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Travel.md': ('bffeb4b02d999151bdd9e225e8dbe85d050159fed08318c34ad6bbb61663bb97', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
     'guides/Guide_to_Tribal_Life.md': ('9850870389868ec34eba898d67ed6bf2be045873230a5ae3f9dadb0e2f9f7a2c', 'tribe tribal totem pole deeds burial mound cairn feast feasts barter music'),
     'guides/Guide_to_the_Moon.md': ('c8da8a4e6c6b3679092d43b9c7546cf511252081294beb7293c7c13c1ef056bf', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
-    'guides/Guide_to_Crafting.md': ('90d7753c5350238fadf4dc48aa21978e82946111c8a665c7970bd35c953561bf', 'crafting craft recipes workbench materials items make build vehicle designer'),
+    'guides/Guide_to_Crafting.md': ('7c17144a4a69776967210d60dfa3447473103b65437eaba142c04de96d026755', 'crafting craft recipes workbench materials items make build vehicle designer'),
     'guides/Guide_to_Metallurgy.md': ('506ddd8ed495e8120aa3c0a4032be216bf478cb1ece0711180a83e24677df02e', 'metallurgy metal smelting smelt ore ingot furnace bloomery iron copper tin bronze steel alloy anvil forge'),
     'Starter_Guide.md': ('224ca2edfa9527b274ac3d7db18ba161bff39c4491b8828cf443cb23e504a0bc', 'starter guide beginner basics first steps controls interface intents'),
     'Music.md': ('049a85fd6517277b3abffa464c88c43dbda8d3060307b13491cd595a7a541c1d', 'music instrument instruments song songs play sheet notes piano'),

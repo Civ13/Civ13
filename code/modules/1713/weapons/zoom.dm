@@ -246,12 +246,12 @@ Parts of code courtesy of Super3222
 							if (1)
 								if (faction1_aircraft_rearming)
 									faction1_aircraft_rearming = FALSE
-									faction1_airstrikes_remaining = faction1_airstrikes_max
+									faction1_airstrikes_remaining = faction1_airstrikes_max.Copy() // a copy: strikes must not spend the maximum
 									payload_remaining = faction1_airstrikes_remaining[payload_class]
 							if (2)
 								if (faction2_aircraft_rearming)
 									faction2_aircraft_rearming = FALSE
-									faction2_airstrikes_remaining = faction2_airstrikes_max
+									faction2_airstrikes_remaining = faction2_airstrikes_max.Copy()
 									payload_remaining = faction2_airstrikes_remaining[payload_class]
 
 						if (payload_remaining > 0) // If they have payloads remaining continue, otherwise make them re-arm

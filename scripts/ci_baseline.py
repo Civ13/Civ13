@@ -50,6 +50,8 @@ SUITES = {
     'flour_dough': {'files': ('tests/flour_dough/test_dough.py',),
         'paths': ('tests/flour_dough/', 'code/modules/reagents/reagent_containers/food/condiment.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'airstrike_rearm': {'files': ('tests/airstrike_rearm/test_sources.py',),
+        'paths': ('tests/airstrike_rearm/', 'code/modules/1713/weapons/zoom.dm', 'code/_helpers/global_lists.dm')},
     'getline2_contract': {'files': ('tests/getline2/test_getline2.py',),
         'paths': ('tests/getline2/',),
         'shared_paths': ('code/_helpers/unsorted.dm', 'tests/save_movement/source_adapter.py')},
@@ -2827,7 +2829,7 @@ SUITES = {
         'paths': ('tests/fit_viewport/', 'code/modules/client/fullscreen.dm', 'code/modules/client/interface.dm'),
         'shared_paths': ('interface/skin.dmf', 'code/modules/client/client_procs.dm')},
     # Customizable HUD wiring; tests/hud_layout/run.py is the manual native fixture.
-    'hud_layout': {'files': ('tests/hud_layout/test_layout.py', 'tests/hud_layout/test_console_style.py', 'tests/hud_layout/test_tap_step.py'),
+    'hud_layout': {'files': ('tests/hud_layout/test_layout.py', 'tests/hud_layout/test_console_style.py', 'tests/hud_layout/test_tap_step.py', 'tests/hud_layout/test_slots.py'),
         'paths': ('tests/hud_layout/', 'code/_onclick/hud/hud_layout.dm', 'tools/hud-skin/',
             'icons/mob/screen/ConsoleStyle.dmi', 'icons/mob/screen/needs.dmi',
             'icons/mob/screen/healthdoll_console.dmi', 'icons/mob/screen/zone_sel_console.dmi'),

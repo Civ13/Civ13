@@ -58,21 +58,29 @@ The **airliner** is the twin-engine plane with a long cabin: 5 tiles across and 
 
 After **Rocketry** the hangar also builds a **UH-1 helicopter**: 3 tiles wide and 7 long, with the pilot on the front right, a co-pilot beside them and five cabin seats. It is built in the **7x7** square northeast of the hangar, so clear that much room first. Its turboshaft engine burns **diesel**. It needs no runway: start the engine, and **Climb** spools the rotor up for a few seconds and lifts it straight up. Stopped in the air it hovers and turns on the spot. Descend close to the ground at low speed to set it down on any dry, fairly level ground. If the engine dies in the air it sinks fast and lands hard, so restart it quickly. It is too big to hangar.
 
+## Designing your own plane
+
+Hold a blank **ship's draught** and a pen or pencil, use the draught and choose **Draw a plane on the sheet**. The designer opens on a light plane you can change tile by tile: the size, the engine, where the tanks, the pilot and the seats go. The **Checks** list says what would keep it on the ground. The [crafting guide](Guide_to_Crafting.md#drawing-a-vehicle-sheet) covers the window itself.
+
+A single-engine airframe is **3 wide** and **3 to 6 long**. A twin-engine airframe is **5 wide** and **4 to 6 long**: every row past the fourth is one more cabin row behind the wings, so a 5 by 6 design has the airliner's body. Under **Start from**, the **twin transport** is a ready-made 5 by 5 twin with a pilot and four seats.
+
+A longer plane carries more and pays for it on the ground. The wings of a twin bear more weight with each cabin row, and every two sections past the light plane's twelve add a tile to the take-off roll (two on open ground). A heavy load still lengthens the roll, slows the climb and burns more fuel, so check the figures before filling every tile with seats and tanks.
+
 ## Building a plane from a sheet
 
-A plane drawn on a [vehicle sheet](Guide_to_Crafting.md#drawing-a-vehicle-sheet) can be built at the hangar: use the sheet on the hangar, with the square northeast of it clear as far as the plane is long. See the crafting guide for what it costs.
+A plane drawn on a [vehicle sheet](Guide_to_Crafting.md#drawing-a-vehicle-sheet) can be built at the hangar: use the sheet on the hangar, with the square northeast of it clear as far as the plane's longest side (6x6 for a 6-long plane). A twin's sheet needs **Aviation & Rocketry**. See the crafting guide for what it costs.
 
 ## Building a plane by hand
 
 Without a hangar, a plane can be put together from loose parts like a [hand-built vehicle](Guide_to_Crafting.md#modular-tanks). Craft the airframe sections, airframe controls and pilot's seat in the **vehicle parts** category.
 
-1. Lay airframe sections side by side in a rectangle **3 sections wide** and **3 to 5 long**. The 3 is the wingspan; the long side runs from nose to tail.
+1. Lay airframe sections side by side in a rectangle **3 sections wide** and **3 to 6 long**. The 3 is the wingspan; the long side runs from nose to tail.
 2. Stand the parts on the sections: an engine and a fuel tank (on the middle of the front row, so the engine turns the propeller), the **pilot's seat** on the middle of the second row, a wheel on each of the four corners, and passenger seats anywhere behind. A car's driver's seat does not fly a plane.
 3. Put the airframe controls on any section and click them. The survey says what the airframe still needs. Choose **Assemble it**, then pick which way the nose points: along the long side.
 
-Every section takes the shape its place calls for: the front row becomes the nose, the second row the wings with the cockpit under the pilot, the last row the tail and anything between the fuselage. A **3 by 3** plane is a short trainer, **3 by 4** has the light plane's shape, and **3 by 5** is a long transport. Planes longer than the light plane need a longer take-off roll, one more runway tile for every two extra sections, and a 5-long plane does not fit a 4x4 hangar bay. Parts stood on it later are fitted with **Fit new parts**, and its builders can **Take it apart** again. Fill the tank and it flies like any other plane.
+Every section takes the shape its place calls for: the front row becomes the nose, the second row the wings with the cockpit under the pilot, the last row the tail and anything between the fuselage. A **3 by 3** plane is a short trainer, **3 by 4** has the light plane's shape, and **3 by 5** or **3 by 6** is a long transport. Planes longer than the light plane need a longer take-off roll, one more runway tile for every two extra sections, and a 5-long plane does not fit a 4x4 hangar bay. Parts stood on it later are fitted with **Fit new parts**, and its builders can **Take it apart** again. Fill the tank and it flies like any other plane.
 
-A **5 by 4** airframe becomes a **twin-engine plane** instead, with the 5 sections as the wingspan: point the nose along the 5-section side. Stand an engine and a fuel tank on the second and fourth sections of the front row, the pilot's seat in the middle of the second row, and wheels on the four corners. The front corners and the outer sections of the third row are open air beside the nose and cabin. It takes the same 12 and 24 tile rolls as the hangar's twin. Taking it apart loosens both engines.
+An airframe **5 wide** and **4 to 6 long** becomes a **twin-engine plane** instead, with the 5 sections as the wingspan: point the nose along the 5-section side. Stand an engine and a fuel tank on the second and fourth sections of the front row, the pilot's seat in the middle of the second row, and wheels on the four corners. The front corners and the outer sections of the third row are open air beside the nose and cabin. A 5 by 4 twin takes the same 12 and 24 tile rolls as the hangar's twin. A 5 or 6 long one has one or two more cabin rows between the wings and the tail, carries more, and needs a longer roll. Taking it apart loosens both engines.
 
 ## Laying a runway
 
