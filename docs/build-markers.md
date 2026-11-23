@@ -44,7 +44,7 @@ build_markers_pull(set_id, z)   // pull them, on one level when z is given
 replaces a peg of the same set, so marking the same ground twice is safe. It
 returns null when nothing is left to ask for.
 
-## Adding a kind of work (rails next)
+## Adding a kind of work
 
 1. A row in `build_marker_kinds()`: `"rail" = list("name" = "track", "state" = "rail")`.
    The `rail` tag is already drawn in the icon file.
@@ -53,6 +53,9 @@ returns null when nothing is left to ask for.
    sleepers are `/obj/structure/rail_bed`).
 3. The planner calls `build_marker_place()` for each tile of its plan, as
    `house_plan_peg_out()` does for a house.
+
+Rails are the second kind: `rail_plan_peg_out()` in
+`code/modules/1713/rail_plan.dm` pegs a rail plan out (docs/trains.md "Rail plans").
 
 ## Tests
 

@@ -13,3 +13,7 @@
 #define TRAIN_ACCEL 0.25
 // The driver's brake stops a train at least this many times as fast as it gathers way.
 #define TRAIN_BRAKE_OVER_ACCEL 2
+
+// Rail plans on a ship's draught (1713/rail_plan.dm, docs/trains.md "Rail plans").
+#define RAIL_PLAN_SIDE 40 // tiles of the sheet each way
+#define DESIGN_CODE_RAIL_MAX 16000 // the busiest sheet of separate tiles

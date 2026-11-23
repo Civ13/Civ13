@@ -99,7 +99,7 @@ class BuildersPegs(unittest.TestCase):
 
     def test_every_kind_has_a_tag_and_a_rule(self):
         kinds = dict(re.findall(r'^\t\t"(\w+)" = list\("name" = "[^"]+", "state" = "(\w+)"\),$', MARKERS, re.M))
-        self.assertEqual(set(kinds), {'wall', 'door', 'window', 'pillar', 'stairs', 'ladder', 'floor', 'roof'})
+        self.assertEqual(set(kinds), {'wall', 'door', 'window', 'pillar', 'stairs', 'ladder', 'floor', 'roof', 'rail'})
         states = self.dmi_states()
         built = MARKERS.split('/proc/build_marker_built(', 1)[1].split('\n/proc/', 1)[0]
         for kind, state in kinds.items():

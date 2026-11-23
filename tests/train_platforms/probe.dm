@@ -3683,6 +3683,72 @@ var/global/platform_probe_runtime_error = FALSE
 	// Furniture aboard turns once over the whole curve, not at every step.
 	platform_check("arcs/turns_once", train_turning(platform_turf(414, 15), NORTH, platform_turf(415, 15), EAST) == 0 && train_turning(platform_turf(414, 5), NORTH, platform_turf(414, 6), NORTH) == 0)
 
+// A rail plan: north from (5,14) to (5,5) and east from (5,14) to (14,14).
+/proc/platform_rail_plan_l()
+	var/datum/rail_plan/D = new
+	D.name = "Branch line"
+	for (var/y in 5 to 14)
+		D.set_track(5, y, TRUE)
+	for (var/x in 6 to 14)
+		D.set_track(x, 14, TRUE)
+	return D
+
+/proc/platform_rail_plans_run()
+	var/datum/rail_plan/D = platform_rail_plan_l()
+	var/eased = D.set_curve(5, 14, 4)
+	var/datum/rail_plan/back = rail_plan_from_code(D.to_code())
+	var/list/done = D.finished_tiles()
+	platform_check("rail_plan/code_round_trip", eased && back && back.name == "Branch line" && back.tile_count() == 19 && back.curve_at(5, 14) == 4 && D.is_corner(5, 14) && !D.curve_problem(5, 14) && done.len == 19 && !done["5,14"] && !rail_plan_from_code("C13RAIL/1/x/41,1,1/") && !rail_plan_from_code("C13RAIL/1/x/5,5,1/6,6,4"))
+	var/datum/design_report/R = D.check_design()
+	var/clean = !R.blocked()
+	qdel(R)
+	// Radius 8 takes eight straight tiles each side: both legs have them,
+	// until a branch off the east leg leaves it short.
+	D.set_curve(5, 14, 8)
+	var/fits8 = !D.curve_problem(5, 14)
+	D.set_track(13, 13, TRUE)
+	var/short = D.curve_problem(5, 14)
+	qdel(D)
+	// Corners two tiles apart fold a car and are refused; five apart only
+	// trouble long cars.
+	var/datum/rail_plan/S = new
+	for (var/y in 1 to 5)
+		S.set_track(1, y, TRUE)
+	S.set_track(2, 5, TRUE)
+	S.set_track(3, 5, TRUE)
+	for (var/y in 6 to 10)
+		S.set_track(3, y, TRUE)
+	R = S.check_design()
+	var/folded = R.blocked()
+	qdel(R)
+	qdel(S)
+	S = new
+	for (var/y in 1 to 5)
+		S.set_track(1, y, TRUE)
+	for (var/x in 2 to 6)
+		S.set_track(x, 5, TRUE)
+	for (var/y in 6 to 10)
+		S.set_track(6, y, TRUE)
+	R = S.check_design()
+	var/warned = !R.blocked() && R.count(DESIGN_WARNING) && S.bend_gap(1, 5) == 5
+	qdel(R)
+	qdel(S)
+	platform_check("rail_plan/checks_bends_and_curves", clean && fits8 && short && folded && warned)
+	// Pegged out: one peg on every tile of the line, the eased corner noted;
+	// laying track on a pegged tile pulls its peg.
+	D = platform_rail_plan_l()
+	D.set_curve(5, 14, 4)
+	var/list/result = rail_plan_peg_out(D, 275, 24, 1, "rail-probe")
+	var/obj/effect/build_marker/corner = build_marker_at(platform_turf(280, 10), "rail-probe")
+	var/pegs = length(build_markers_of("rail-probe"))
+	platform_track(280, 19, NORTH)
+	var/obj/effect/build_marker/laid = build_marker_at(platform_turf(280, 19), "rail-probe")
+	if (laid)
+		laid.look()
+	platform_check("rail_plan/pegged_out", result && result["pegs"] == 19 && pegs == 19 && corner && findtext(corner.note, "radius 4") && (!laid || QDELETED(laid)) && build_marker_built("rail", platform_turf(280, 19)))
+	build_markers_pull("rail-probe")
+	qdel(D)
+
 /world/New()
 	OpenPort("none")
 	GLOB.all_observable_events = list()
@@ -3732,6 +3798,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_entomb_run()
 		platform_bends_run()
 		platform_arcs_run()
+		platform_rail_plans_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"
