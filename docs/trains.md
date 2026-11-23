@@ -100,6 +100,12 @@ braked weight is
   Brake is on, and
 - every car whose `handbrake` is on (`consist_braked`).
 
+With the driver's Brake on, the train always loses speed at least
+`TRAIN_BRAKE_OVER_ACCEL` (2) times as fast as it can gather it
+(`stopping_decel()`: twice `TRAIN_ACCEL` times its pull ratio), so even a long
+train held only by its engine stops in well under the time it took to get up
+to speed. Handbrakes and a brake van shorten the stop further.
+
 So a lone engine stops as before, while an engine with a long train behind it
 needs many more tiles unless cars are braked too. `refresh_consist()` adds
 both up; `set_handbrake()` refreshes the driving engine at once.
