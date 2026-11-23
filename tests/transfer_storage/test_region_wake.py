@@ -255,6 +255,24 @@ class RegionWakeTests(unittest.TestCase):
         self.assertIn('if(id != shard_group.mainland && !land_stages[id])\n\t\treturn ""', column)
         self.assertLess(column.index('!land_stages[id]'), column.index('land_stage_text('))
 
+    def test_a_login_the_relay_had_no_route_for_rejoins_the_front_door(self):
+        # 2026-11-23: a direct rejoin of the relay port reached nobody. The relay now
+        # sends it to the gateway, which names its port to the relay every minute and
+        # links such a player (no public address) to its own public port.
+        relay = read('code/modules/persistence/region_relay.dm')
+        send = relay[relay.index('/datum/shard_group/proc/send_player('):relay.index('/datum/shard_group/proc/send_player_soon')]
+        front = send.index('if(kind == "GATEWAY" && gate == region && (!C.address || region_relay_ip_loopback(C.address))')
+        self.assertIn('!C.local_connection() && gate_address())', send)
+        self.assertLess(send.index('if(id == gate)'), front)
+        self.assertLess(front, send.index('ask_relay(route)'))
+        self.assertLess(front, send.index('if(!public)'))
+        self.assertIn('C << link("byond://[gate_address()]")', send)
+        gateway = read('code/modules/persistence/region_gateway.dm')
+        loop = proc(gateway, '/proc/region_gateway_status_loop')
+        self.assertIn('region_gateway_tell_relay()', loop)
+        tell = proc(gateway, '/proc/region_gateway_tell_relay')
+        self.assertIn('ask_relay("gate=1&port=[shard_address_port(shard_group.address)]")', tell)
+
 
 if __name__ == '__main__':
     unittest.main()

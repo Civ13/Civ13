@@ -3176,6 +3176,50 @@ def relay_pid(group):
     return recorded_pid(Path(group['root']) / 'relay.pid')
 
 
+def relay_code():
+    """A fingerprint of the relay's source (relay.py and the doorman helpers it imports)."""
+    digest = hashlib.sha256()
+    for name in ('relay.py', 'doorman.py'):
+        path = HERE.parent / 'gaia-host' / name
+        digest.update(name.encode('utf-8') + b'\0' + path.read_bytes())
+    return digest.hexdigest()[:16]
+
+
+def refresh_relay(group, send=None, terminate=None):
+    """End a relay that runs other code than the source on disk, but only while it pipes
+    no connection, so nobody playing is cut off; ensure_relay then starts the new one.
+
+    The relay keeps the code it started with, and nothing restarted it: the relay that
+    learned to send unrouted logins to the gateway (2026-11-23) would otherwise wait
+    for a reboot. A relay started before its code was recorded counts as outdated.
+    Returns True when it was ended."""
+    pid = relay_pid(group)
+    if not group.get('relay_port') or not pid:
+        return False
+    root = Path(group['root'])
+    if read_record(root / 'relay.json').get('code') == relay_code():
+        return False
+    if send is None:
+        import doorman
+        send = doorman.topic
+    try:
+        reply = json.loads(send(group['relay_control_port'], 'relay_status=1&token=%s' % relay_token(group)))
+    except (OSError, RuntimeError, ValueError):
+        return False
+    if not isinstance(reply, dict) or not reply.get('ok') or reply.get('connections') != 0:
+        return False
+    try:
+        born = (root / 'relay.pid').stat().st_mtime
+    except OSError:
+        born = None
+    try:
+        (terminate or Platform().terminate)(pid, expect=process_safety.python_expect(born_before=born))
+    except Unverified:
+        return False  # not the relay: leave that process alone
+    gaia_host.remove_file(root / 'relay.pid', quiet=True)
+    return True
+
+
 def ensure_relay(group, start=detach):
     """Start the group's routing relay unless it is off or already runs."""
     if not group.get('relay_port') or relay_pid(group):
@@ -3192,6 +3236,7 @@ def ensure_relay(group, start=detach):
         argv.append('--capture')
     pid = start(argv, root, root / 'relay.log')
     (root / 'relay.pid').write_text('%d\n' % pid, encoding='utf-8')
+    write_record(root / 'relay.json', pid=pid, code=relay_code())
     return True
 
 
@@ -4068,6 +4113,8 @@ def supervise(group, start=detach):
     started = {}
     # A relay that cannot start must not keep the agents and the coordinator down.
     try:
+        if refresh_relay(group):
+            started['relay_refreshed'] = True
         if ensure_relay(group, start):
             started['relay'] = True
         elif sync_relay_ports(group):
