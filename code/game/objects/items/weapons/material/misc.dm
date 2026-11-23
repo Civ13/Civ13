@@ -349,6 +349,10 @@
 	block_chance = 40
 	cooldownw = 6
 
+// A recovered flint head still uses the existing branch-and-binding recipe.
+/obj/item/weapon/flint/var/recovered_hatchet_head_max
+/obj/item/weapon/flint/var/recovered_hatchet_head_hp
+
 /obj/item/weapon/material/hatchet
 	tool_flags = TOOL_HATCHET
 	name = "hatchet"
@@ -371,6 +375,130 @@
 	chopping_speed = 1.7
 	health = 20
 	maxhealth = 20
+
+	// Combat axes and unhafted or differently mounted stone tools opt out.
+	var/component_wear = TRUE
+	// Null maxima mark old saves; initialize from their combined wear lazily.
+	var/hatchet_head_max
+	var/hatchet_head_hp
+	var/hatchet_handle_max
+	var/hatchet_handle_hp
+
+/obj/item/weapon/material/hatchet/proc/init_hatchet_wear()
+	if (hatchet_head_max)
+		return
+	var/condition = max(0, min(1, health / max(1, maxhealth)))
+	hatchet_head_max = max(1, min(maxhealth, round(material.integrity / 10)))
+	hatchet_handle_max = max(1, maxhealth)
+	// An old aggregate value cannot tell which part was worn. Do not give
+	// the player back durability that is no longer present in the save.
+	hatchet_head_hp = hatchet_head_max * condition
+	hatchet_handle_hp = hatchet_handle_max * condition
+
+/obj/item/weapon/material/hatchet/proc/sync_hatchet_wear()
+	tool_head_condition = hatchet_head_hp / hatchet_head_max
+	tool_handle_condition = hatchet_handle_hp / hatchet_handle_max
+	maxhealth = hatchet_handle_max
+	health = maxhealth * min(tool_head_condition, tool_handle_condition)
+
+/obj/item/weapon/material/hatchet/fit_recovered_head(obj/item/weapon/material/part/head_part)
+	if (!component_wear)
+		return
+	hatchet_head_max = head_part.maxhealth
+	hatchet_head_hp = head_part.health
+	hatchet_handle_max = maxhealth
+	hatchet_handle_hp = maxhealth * tool_handle_condition
+	hatchet_stock_grade = head_part.hatchet_stock_grade
+	forged_grade = hatchet_stock_grade
+	sync_hatchet_wear()
+
+/obj/item/weapon/material/hatchet/proc/hatchet_brittle_head()
+	// Flint tools are brittle without changing the material globally.
+	return material.is_brittle() || material.name == "flint"
+
+/obj/item/weapon/material/hatchet/apply_wear(amount, cause = WEAR_WORK, consumed = FALSE)
+	if (!component_wear || !material)
+		return ..()
+	if (QDELETED(src) || !loc)
+		return TRUE
+	init_hatchet_wear()
+	if (cause == WEAR_BLOW)
+		amount = plating_wear(amount)
+	amount = finish_wear(amount)
+	hatchet_head_hp = max(0, hatchet_head_hp - amount)
+	hatchet_handle_hp = max(0, hatchet_handle_hp - amount)
+	sync_hatchet_wear()
+	if (hatchet_head_hp <= 0 || hatchet_handle_hp <= 0)
+		break_hatchet(consumed)
+		return TRUE
+	return FALSE
+
+/obj/item/weapon/material/hatchet/check_health(consumed)
+	if (!component_wear || !material)
+		return ..()
+	if (health > 0 && maxhealth > 0)
+		return FALSE
+	if (QDELETED(src) || !loc)
+		return TRUE
+	// Direct damage (including the brittle combat path) is head failure.
+	init_hatchet_wear()
+	hatchet_head_hp = 0
+	break_hatchet(consumed)
+	return TRUE
+
+/obj/item/weapon/material/hatchet/proc/break_hatchet(consumed)
+	var/turf/T = get_turf(src)
+	if (!consumed && drops_debris && T)
+		if (hatchet_head_hp > 0 || !hatchet_brittle_head())
+			T.visible_message(SPAN_WARNING(hatchet_head_hp > 0 ? "The [src] loses its handle, leaving the head intact." : "The [src]'s head needs sharpening before it can be used again."))
+			if (istype(src, /obj/item/weapon/material/hatchet/tribal/flint))
+				var/obj/item/weapon/flint/sharpened/F = new(T)
+				F.recovered_hatchet_head_max = hatchet_head_max
+				F.recovered_hatchet_head_hp = hatchet_head_hp
+			else
+				var/obj/item/weapon/material/part/axehead/hatchet/P = new(T, material.name)
+				P.maxhealth = hatchet_head_max
+				P.health = hatchet_head_hp
+				P.crafting_quality = tool_head_quality || crafting_quality
+				P.hatchet_stock_grade = hatchet_stock_grade
+				P.forged_grade = hatchet_stock_grade
+				P.update_force()
+		else
+			T.visible_message(SPAN_WARNING("The [src]'s head splinters!"))
+			material.place_shard(T)
+	if (isliving(loc))
+		var/mob/living/M = loc
+		M.drop_from_inventory(src)
+	qdel(src)
+
+/obj/item/weapon/material/hatchet/wear_fraction()
+	if (!component_wear || !material)
+		return ..()
+	init_hatchet_wear()
+	return min(hatchet_head_hp / hatchet_head_max, hatchet_handle_hp / hatchet_handle_max)
+
+/obj/item/weapon/material/hatchet/repair_wear(amount, strain = 0)
+	if (!component_wear || !material)
+		return ..()
+	init_hatchet_wear()
+	if (too_worn_to_repair(strain) || hatchet_head_hp >= hatchet_head_max)
+		return FALSE
+	hatchet_head_max -= min(strain, hatchet_head_max * 0.1)
+	hatchet_head_hp = min(hatchet_head_hp + amount, hatchet_head_max)
+	sync_hatchet_wear()
+	return TRUE
+
+/obj/item/weapon/material/hatchet/too_worn_to_repair(strain = 0)
+	if (!component_wear || !material)
+		return ..()
+	init_hatchet_wear()
+	return hatchet_head_max - min(strain, hatchet_head_max * 0.1) < 1
+
+/obj/item/weapon/material/hatchet/examine(mob/user)
+	..()
+	if (component_wear && material)
+		init_hatchet_wear()
+		to_chat(user, "<b>Head condition:</b> [round(100 * hatchet_head_hp / hatchet_head_max)]%. <b>Handle condition:</b> [round(100 * hatchet_handle_hp / hatchet_handle_max)]%.")
 
 /obj/item/weapon/material/hatchet/steel
 	chopping_speed = 1.4
@@ -923,6 +1051,7 @@
 	maxhealth = 30
 
 /obj/item/weapon/material/hatchet/battleaxe
+	component_wear = FALSE
 	name = "battle axe"
 	desc = "A very sharp axe blade upon a long wood handle. Great at chopping most things."
 	icon = 'icons/obj/weapons.dmi'
@@ -962,6 +1091,7 @@
 	applies_material_colour = TRUE
 
 /obj/item/weapon/material/hatchet/bone_battleaxe
+	component_wear = FALSE
 	name = "battle axe"
 	material = "bone"
 	desc = "A very sharp bone axe blade upon a long wood handle. Not great at chopping wood but excellent at chopping limbs."

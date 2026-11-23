@@ -124,16 +124,23 @@
 	if (!completed || !axe_actor_connected(user) || !axe_parts_valid(user, head, binding))
 		return
 	var/weak_binding = istype(binding, /obj/item/stack/crude_twine)
+	var/recovered_head_max = head.recovered_hatchet_head_max
+	var/recovered_head_hp = head.recovered_hatchet_head_hp
 	if (!binding.use(1))
 		return
 	// Invalidate the reusable head before creating the completed tool.
 	head.sharpened = FALSE
 	qdel(head)
 	var/obj/item/weapon/material/hatchet/tribal/flint/axe = new(get_turf(user))
+	axe.init_hatchet_wear()
 	if (weak_binding)
-		axe.maxhealth = max(1, axe.maxhealth * 0.25)
-		axe.health = axe.maxhealth
+		axe.hatchet_handle_max = max(1, axe.hatchet_handle_max * 0.25)
+		axe.hatchet_handle_hp = axe.hatchet_handle_max
 		axe.desc += " Its crude grass binding wears out quickly."
+	if (recovered_head_max)
+		axe.hatchet_head_max = recovered_head_max
+		axe.hatchet_head_hp = recovered_head_hp
+	axe.sync_hatchet_wear()
 	to_chat(user, SPAN_NOTICE("You finish making the bound flint axe."))
 	qdel(src)
 	offer_crafted_axe_to_active_hand(user, axe)
