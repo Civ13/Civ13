@@ -69,3 +69,41 @@ var/banner_p_runtime_error = FALSE
 	sleep(30)
 	banner_p_check(!banner_p_runtime_error, "no runtime for a dissolved faction's banner")
 	banner_p_check(gone.invisibility == 0 && gone.overlays.len == 2, "dissolved faction's banner keeps cloth and trim ([gone.overlays.len])")
+	banner_p_wall_checks(loading)
+
+/mob/living/human/banner_mount_probe/New()
+	icon_update = FALSE
+	return
+
+/proc/banner_p_wall_checks(obj/structure/banner/faction/B)
+	var/turf/T = get_turf(B)
+	var/turf/N = get_step(T, NORTH)
+	var/turf/E = get_step(T, EAST)
+	N.density = FALSE
+	E.density = TRUE
+	var/mob/living/human/banner_mount_probe/H = new(T)
+	B.anchored = FALSE
+	B.pixel_x = 2
+	H.dir = NORTH
+	var/original_name = B.name
+	var/original_state = B.icon_state
+	var/original_art = B.overlays[3]
+	banner_p_check(!B.banner_mount(H) && !B.banner_mount_dir && B.loc == T && B.pixel_x == 2, "open floor refuses a mount without moving or offsetting the banner")
+	H.dir = EAST
+	banner_p_check(B.banner_mount(H) && B.banner_mount_dir == EAST && B.anchored && B.loc == T && B.pixel_x == 34 && !B.pixel_y, "east wall mount retains floor anchor and nudge")
+	banner_p_check(B.faction == "Swan" && B.name == original_name && B.icon_state == original_state && B.overlays[3] == original_art, "mount keeps faction and restored art")
+	var/list/fields = B.get_saved_vars()
+	banner_p_check(("banner_mount_dir" in fields) && ("pixel_x" in fields), "nondefault mount direction and offset are selected for persistence")
+	var/obj/structure/banner/religious/R = new(T)
+	banner_p_check(!R.banner_mount(H) && !R.banner_mount_dir, "a second banner cannot occupy the same wall face")
+	N.density = TRUE
+	H.dir = NORTH
+	var/obj/structure/banner/faction/team/team1/S = new(T)
+	banner_p_check(!S.banner_mount(H) && !S.banner_mount_dir, "team banner refuses a free, valid wall face")
+	banner_p_check(R.banner_mount(H) && R.banner_mount_dir == NORTH && R.pixel_y == 32 && !R.pixel_x && R.loc == T, "same turf has a distinct north face for a religious banner")
+	banner_p_check(B.banner_unmount(H) && !B.banner_mount_dir && B.loc == T && B.pixel_x == 2 && !B.pixel_y && !B.anchored && B.faction == "Swan" && B.overlays[3] == original_art, "takedown preserves original anchoring, offset and art")
+	var/obj/structure/painting_frame/F = new(T)
+	F.dir = EAST
+	F.place()
+	H.dir = EAST
+	banner_p_check(!B.banner_mount(H) && !B.banner_mount_dir && B.pixel_x == 2, "existing painting on the target face prevents the mount")

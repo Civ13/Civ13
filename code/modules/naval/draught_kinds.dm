@@ -3,7 +3,7 @@
 // ------------------------------------------------------------
 // Each kind is a design code prefix with its own datum, reader and rules: a
 // ship (ship_draught.dm), a submarine (sub_draught.dm) or a land
-// vehicle or plane (craft/vehicle_draught.dm), an airship (air_draught.dm), a train (1713/train_draught.dm), a space
+// vehicle or plane (craft/vehicle_draught.dm), an airship (air_draught.dm), a train (1713/train_draught.dm), a railway (1713/rail_plan.dm), a space
 // station (space/station_plan.dm) or a house (game/objects/house_plan.dm). A new kind of
 // planner (a spaceship, a rocket, a station) is one more row here with its
 // own reader, a take proc on the sheet and its own window.
@@ -34,6 +34,7 @@ var/global/list/draught_kinds = draught_kinds_list()
 		"CAR" = list("name" = "vehicle", "title" = "Vehicle sheet", "max" = DESIGN_CODE_CAR_MAX, "read" = /proc/vehicle_draught_from_code, "take" = "take_vehicle", "open" = "open_vehicle_designer", "window" = "vehicle_designer"),
 		"AIR" = list("name" = "airship", "title" = "Airship sheet", "max" = DESIGN_CODE_AIR_MAX, "read" = /proc/air_draught_from_code, "take" = "take_air", "open" = "open_air_designer", "window" = "air_designer"),
 		"HOUSE" = list("name" = "house", "title" = "House plan", "max" = DESIGN_CODE_HOUSE_MAX, "read" = /proc/house_plan_from_code, "take" = "take_house", "open" = "open_house_designer", "window" = "house_designer"),
+		"RAIL" = list("name" = "railway", "title" = "Rail plan", "max" = DESIGN_CODE_RAIL_MAX, "read" = /proc/rail_plan_from_code, "take" = "take_rail", "open" = "open_rail_designer", "window" = "rail_designer"),
 		"TRAIN" = list("name" = "train", "title" = "Train sheet", "max" = DESIGN_CODE_TRAIN_MAX, "read" = /proc/train_draught_from_code, "take" = "take_train", "open" = "open_train_designer", "window" = "train_designer"),
 		"STATION" = list("name" = "space station", "title" = "Station plan", "max" = DESIGN_CODE_STATION_MAX, "read" = /proc/station_plan_from_code, "take" = "take_station", "open" = "open_station_designer", "window" = "station_designer", "age" = ORBIT_MIN_AGE),
 	)
@@ -62,7 +63,7 @@ var/global/list/draught_kinds = draught_kinds_list()
 // plan is held to exactly the rules of one drawn by hand, and its checks are
 // shown the way the window shows them. Returns the kind row taken, or null.
 /obj/item/ship_draught/proc/draught_import(mob/living/human/H)
-	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, space station or house design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/... or C13HOUSE/...). It replaces what is drawn on this sheet.", draught_code_max())
+	var/typed = design_code_ask(H, name, "Paste a ship, submarine, vehicle, airship, train, railway, space station or house design code (C13SHIP/..., C13SUB/..., C13CAR/..., C13AIR/..., C13TRAIN/..., C13STATION/..., C13RAIL/... or C13HOUSE/...). It replaces what is drawn on this sheet.", draught_code_max())
 	if (!typed || QDELETED(src) || !(src in H.get_contents()))
 		return null
 	var/kind = design_code_kind(typed)

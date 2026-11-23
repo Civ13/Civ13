@@ -62,7 +62,7 @@ var/global/last_persistence_save_vote_time = 0
 	// Runtime admin policy. Restarting the server restores the existing enabled default.
 	var/disruptive_votes_enabled = TRUE
 	proc/disruptive_action(vote_type, list/completion)
-		if (vote_type in list("restart", "epoch", "map")) return TRUE
+		if (vote_type in list("restart", "epoch", "map", "battle map")) return TRUE
 		if (completion && completion.len == 2)
 			// These process callbacks perform the actual map/server transition,
 			// including when attached to a generically named question.
@@ -129,6 +129,8 @@ var/global/last_persistence_save_vote_time = 0
 	var/tally_changed = FALSE // a vote came in since the open windows were last updated
 	var/list/current_votes = list()
 	var/list/additional_text = list()
+	// Per choice details a vote type keeps for its window: battle map -> list("epoch", "players").
+	var/list/choice_info = list()
 	var/win_threshold = 0.65
 	var/list/callback = null
 	var/list/disabled[10]
@@ -216,6 +218,7 @@ var/global/last_persistence_save_vote_time = 0
 		voting.Cut()
 		current_votes.Cut()
 		additional_text.Cut()
+		choice_info.Cut()
 		disabled.Cut()
 		forced_choice = null
 		forced_by = null
@@ -259,7 +262,7 @@ var/global/last_persistence_save_vote_time = 0
 				text = "<b>Vote Tied Between:</b>\n"
 				for (var/option in winners)
 					var/display_opt = option
-					if ((mode in list("map", "safehouse map")) && map_id_to_title[option])
+					if ((mode in list("map", "safehouse map", "battle map")) && map_id_to_title[option])
 						display_opt = map_id_to_title[option]
 					text += "\t[display_opt]\n"
 			var/newwinner = pick(winners)
@@ -269,10 +272,18 @@ var/global/last_persistence_save_vote_time = 0
 				if (choices[current_votes[key]] == newwinner)
 					round_voters += key // Keep track of who voted for the winning round.
 			var/display_winner = newwinner
-			if ((mode in list("map", "safehouse map")) && map_id_to_title[newwinner])
+			if ((mode in list("map", "safehouse map", "battle map")) && map_id_to_title[newwinner])
 				display_winner = map_id_to_title[newwinner]
-			text += "<b>Vote Result: <span class = 'ping'>[display_winner]</span></b><br>"
-			text += "<b>The vote has ended.</b>"
+			if (mode == "battle map")
+				var/cast = 0
+				for (var/option in choices)
+					cast += choices[option]
+				text += "<b>Battle map vote: <span class = 'ping'>[display_winner]</span> won[winners.len > 1 ? " the tie-break" : ""] with [choices[newwinner]] of [cast] vote\s.</b>"
+			else
+				text += "<b>Vote Result: <span class = 'ping'>[display_winner]</span></b><br>"
+				text += "<b>The vote has ended.</b>"
+		else if (mode == "battle map")
+			text += "<b>Battle map vote: nobody voted, so the battle keeps its map.</b>"
 		else
 			text += "<b>Vote Result: <span class = 'ping'>No</span> - Not enough YES votes (59% is needed)</b>"
 		log_vote(text)
@@ -312,7 +323,7 @@ var/global/last_persistence_save_vote_time = 0
 		if (!mode || !is_current(H)) return FALSE
 		if (choice != null && !(choice in choices)) return FALSE
 		var/display_choice = choice
-		if ((mode in list("map", "safehouse map")) && choice && map_id_to_title[choice])
+		if ((mode in list("map", "safehouse map", "battle map")) && choice && map_id_to_title[choice])
 			display_choice = map_id_to_title[choice]
 		var/action = choice ? "forced the [mode] vote result to [display_choice]" : "ended the [mode] vote early"
 		log_admin("[admin_key] [action].")
@@ -437,6 +448,16 @@ var/global/last_persistence_save_vote_time = 0
 					for (var/map in processes.mapswap.maps)
 						if (clients.len < processes.mapswap.maps[map])
 							disabled[map] = "[processes.mapswap.maps[map]] players needed"
+				if ("battle map")
+					// The Barracks picks the TDM battle world's next map (tdm_barracks/barracks_map_vote.dm).
+					if (!tdm_barracks_active()) return FALSE
+					question = "Next battle map"
+					var/list/battle_maps = tdm_battle_map_choices(clients.len)
+					if (!battle_maps.len) return FALSE
+					for (var/id in battle_maps)
+						choices.Add(id)
+						choices[id] = 0
+						choice_info[id] = battle_maps[id]
 				if ("safehouse map")
 					var/obj/map_metadata/extraction_survival/M = map
 					if (!istype(M) || M.round_closing) return FALSE
@@ -566,17 +587,20 @@ var/global/last_persistence_save_vote_time = 0
 				text += "\n[question]"
 
 			log_vote(text)
+			var/vote_seconds = round((active_request.deadline - world.time) / 10)
+			if (mode == "battle map")
+				to_chat(world, "<span class = 'deadsay'><b>Battle map vote started by [initiator].</b>\nThe battle world is empty, so the Barracks picks its next map: [choices.len] map\s suit the [clients.len] player\s here.\n<a href='?src=\ref[src]'>Open the ballot</a> or type <b>vote</b>. You have [vote_seconds] seconds, and can change your vote until then.</span>")
+			else
+				to_chat(world, "<span class = 'deadsay'><b>[text]</b>\n<a href='?src=\ref[src]'>Open the ballot</a> or type <b>vote</b> to place your vote.\nYou have [vote_seconds] seconds to vote.</span>")
 			if (mode == "ship selection")
-				to_chat(world, "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have 60 seconds to vote.</span>")
 				world << sound('sound/effects/siren_once.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 			else
-				to_chat(world, "<span class = 'deadsay'><b>[text]</b>\nType <b>vote</b> or click <a href='?src=\ref[src]'>here</a> to place your votes.\nYou have [config.vote_period/10] seconds to vote.</span>")
 				world << sound('sound/ambience/alarm4.ogg', repeat = FALSE, wait = FALSE, volume = 50, channel = 3)
 
 			if ((mode == "gamemode" || mode == "ship selection") && round_progressing)
 				round_progressing = FALSE
 				to_chat(world, "<font color='red'><b>Round start has been delayed.</b></font>")
-			time_remaining = round(config.vote_period/10)
+			time_remaining = vote_seconds
 
 			for (var/client/C in clients)
 				if (C)
@@ -594,21 +618,196 @@ var/global/last_persistence_save_vote_time = 0
 		if (C.mob)
 			onclose(C.mob, "vote", src)
 
-	// Sends the current vote counts and seconds left to every open vote window
-	// without reloading it.
+	// Sends the current vote counts, seconds left and each voter's own pick to
+	// every open vote window without reloading it.
 	proc/push_tally()
 		if (!mode)
 			return
 		var/list/counts = list()
 		for (var/i = 1, i <= choices.len, i++)
 			counts += (choices[choices[i]] || 0)
-		var/list/data = list("generation" = generation, "counts" = counts, "left" = time_remaining)
-		var/payload = list2params(list(json_encode(data)))
+		var/list/data = list("generation" = generation, "counts" = counts, "left" = time_remaining, "pick" = 0)
 		for (var/client/C in voting.Copy())
 			if (!C)
 				voting -= C
 				continue
-			C << output(payload, "vote.browser:voteUpdate")
+			data["pick"] = current_votes[C.ckey] || 0
+			C << output(list2params(list(json_encode(data))), "vote.browser:voteUpdate")
+
+	// What the window calls choice number i: maps go by their title.
+	proc/choice_title(i)
+		var/id = choices[i]
+		if (mode in list("map", "safehouse map", "battle map"))
+			if (map_id_to_title[id])
+				return map_id_to_title[id]
+			if (mode == "map")
+				return capitalize(lowertext(id))
+		return id
+
+	// The one line description under choice number i, or null.
+	proc/choice_desc(i)
+		var/id = choices[i]
+		switch (mode)
+			if ("map", "safehouse map", "battle map")
+				return map_id_to_desc[id]
+			if ("epoch")
+				return processes.epochswap.epoch_desc[id]
+			if ("gamemode")
+				return processes.gamemode.gamemode_desc[id]
+		return null
+
+	// The era a choice is listed under (choice_info), or null for an ungrouped vote.
+	proc/choice_era(i)
+		var/list/info = choice_info[choices[i]]
+		return islist(info) ? info["epoch"] : null
+
+	// "World War II (1931-1948)" -> list("World War II", "1931-1948").
+	proc/era_parts(era)
+		var/cut = findtext(era, " (")
+		if (!cut)
+			return list(era, "")
+		return list(copytext(era, 1, cut), replacetext(copytext(era, cut + 2), ")", ""))
+
+	// The heading of the running vote and the line under it.
+	proc/window_title()
+		if (question)
+			return question
+		switch (mode)
+			if ("restart")
+				return "Restart the round?"
+			if ("epoch")
+				return "Next epoch"
+			if ("map")
+				return "Next map"
+			if ("safehouse map")
+				return "Next safehouse map"
+			if ("gamemode")
+				return "Game mode"
+		return capitalize(mode)
+
+	proc/window_hint()
+		if (mode == "battle map")
+			return "The battle world is empty, so the Barracks picks its map. Every map here can start with the [clients.len] player\s present."
+		if (win_threshold > 0)
+			return "Passes with [round(win_threshold * 100)]% of the votes cast. You can change your vote until time runs out."
+		return "Most votes wins. You can change your vote until time runs out."
+
+	// The look of the vote window, after common_browser_style.
+	proc/window_style()
+		return {"<style>
+body { background: #2c1d0d; line-height: 1.35; overflow-y: scroll; }
+.vt-top { position: sticky; top: 0; z-index: 5; background: #392611; border-bottom: 1px solid #1a1108; box-shadow: 0 3px 8px rgba(0,0,0,0.45); }
+.vt-head { padding: 10px 14px 8px 14px; overflow: hidden; }
+.vt-clock { float: right; margin-left: 12px; text-align: center; min-width: 62px; padding: 3px 6px 4px 6px; background: #271a0c; border: 1px solid #1a1108; }
+.vt-clock b { display: block; font-size: 24px; line-height: 1.1; color: #f0e6c8; }
+.vt-clock small { display: block; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #b0a080; }
+.vt-hurry b { color: #ff8040; }
+.vt-kicker { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: #b0a080; }
+.vt-title { font-size: 22px; font-weight: bold; line-height: 1.2; color: #f0e6c8; }
+.vt-sub { font-size: 12px; color: #c9bfa6; margin-top: 2px; }
+.vt-drain { height: 3px; background: #1a1108; }
+.vt-drain div { height: 3px; background: #ff8040; }
+.vt-mine { padding: 5px 14px; font-size: 13px; background: #271a0c; overflow: hidden; white-space: nowrap; }
+.vt-mine b { color: #ffb070; }
+#vote-lead { float: right; margin-left: 10px; color: #b0a080; }
+.vt-filter { padding: 6px 14px 7px 14px; }
+.vt-q { width: 100%; box-sizing: border-box; padding: 4px 8px; margin: 0 0 6px 0; font-family: inherit; font-size: 13px; color: #e1e1d7; background: #1a1108; border: 1px solid #5a4020; }
+a.vt-tab, a.vt-tab:link, a.vt-tab:visited, a.vt-tab:active { display: inline-block; margin: 0 3px 3px 0; padding: 2px 8px; font-size: 12px; color: #c9bfa6; background: #271a0c; border: 1px solid #1a1108; cursor: pointer; }
+a.vt-tab:hover { color: #ff8040; }
+a.vt-tab i { font-style: normal; color: #8f8263; margin-left: 3px; }
+a.vt-tab-on, a.vt-tab-on:link, a.vt-tab-on:visited, a.vt-tab-on:active, a.vt-tab-on:hover { color: #1a1108; background: #ff8040; border-color: #ff8040; font-weight: bold; }
+a.vt-tab-on i { color: #5a2a10; }
+.vt-list { padding: 0 8px 4px 8px; }
+.vt-era { margin: 12px 6px 4px 6px; padding-bottom: 2px; border-bottom: 1px solid #5a4020; font-size: 15px; font-weight: bold; color: #f0e6c8; }
+.vt-era span { font-size: 12px; font-weight: normal; color: #b0a080; margin-left: 6px; }
+.vt-era i { float: right; font-size: 11px; font-style: normal; font-weight: normal; color: #8f8263; padding-top: 3px; }
+.vt-row { position: relative; margin: 3px 0; background: #392611; border: 1px solid #1a1108; border-left: 4px solid #1a1108; overflow: hidden; }
+.vt-bar { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: #5c3a18; }
+a.vt-pick, a.vt-pick:link, a.vt-pick:visited, a.vt-pick:active, .vt-nopick { position: relative; display: block; margin: 0; padding: 6px 10px 6px 10px; color: #e1e1d7; background: transparent; border: 0; cursor: pointer; overflow: hidden; }
+a.vt-pick:hover { color: #e1e1d7; background: rgba(255,128,64,0.14); }
+.vt-n { float: right; min-width: 30px; margin-left: 10px; text-align: right; font-size: 20px; font-weight: bold; line-height: 1.15; color: #f0e6c8; }
+.vt-zero .vt-n { color: #6f5a3c; font-weight: normal; }
+.vt-name { font-size: 15px; font-weight: bold; }
+.vt-need { font-size: 11px; color: #b0a080; margin-left: 6px; white-space: nowrap; }
+.vt-tag { display: none; margin-left: 6px; padding: 0 5px; font-size: 10px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; color: #1a1108; background: #ff8040; }
+.vt-desc { display: block; font-size: 12px; font-style: italic; color: #b0a080; }
+.vt-lead .vt-n { color: #ffb070; }
+.vt-you { border-color: #ff8040; border-left-color: #ff8040; background: #4a2f14; }
+.vt-you .vt-tag { display: inline-block; }
+.vt-you .vt-name { color: #ffb070; }
+.vt-off { opacity: 0.55; }
+.vt-nopick { cursor: default; }
+.vt-why { font-size: 11px; color: #d0a070; margin-left: 6px; }
+.vt-admin { position: absolute; z-index: 2; right: 6px; top: 50%; margin-top: -11px; font-size: 11px; }
+.vt-admin + a.vt-pick { margin-right: 54px; }
+.vt-tight .vt-desc { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.vt-tight .vt-row:hover .vt-desc, .vt-tight .vt-you .vt-desc { white-space: normal; }
+.vt-none { padding: 18px 14px; text-align: center; color: #b0a080; font-style: italic; }
+.vt-foot { padding: 8px 14px 14px 14px; overflow: hidden; font-size: 12px; }
+.vt-foot .vt-close { float: right; }
+</style>"}
+
+	// Runs in the open window: counts down by itself and takes new counts and the
+	// voter's own pick from push_tally(), so the page is never reloaded mid vote.
+	proc/window_script()
+		return {"
+function vEl(id) { return document.getElementById(id); }
+function vText(e) { return e ? (e.textContent || e.innerText || '') : ''; }
+function vRow(i) { return vEl('vote-row-' + i) || vEl('vote-off-' + i); }
+function voteShowLeft() {
+	var s = Math.max(0, voteLeft), m = Math.floor(s / 60), r = s % 60;
+	var e = vEl('vote-left'); if (e) e.innerHTML = m + ':' + (r < 10 ? '0' : '') + r;
+	var c = vEl('vote-clock'); if (c) c.className = s <= 10 ? 'vt-clock vt-hurry' : 'vt-clock';
+	var d = vEl('vote-drain'); if (d && voteTotal > 0) d.style.width = Math.min(100, s * 100 / voteTotal) + '%';
+}
+function voteCount(i) { return parseInt(vText(vEl('vote-count-' + i)), 10) || 0; }
+function votePaint() {
+	var total = 0, best = 0, lead = 0, tied = 0, i, n;
+	for (i = 1; i <= voteN; i++) {
+		n = voteCount(i); total += n;
+		if (n > best) { best = n; lead = i; tied = 1; } else if (n > 0 && n == best) tied++;
+	}
+	for (i = 1; i <= voteN; i++) {
+		var row = vEl('vote-row-' + i); if (!row) continue;
+		n = voteCount(i);
+		var bar = vEl('vote-bar-' + i); if (bar) bar.style.width = (total ? Math.round(n * 100 / total) : 0) + '%';
+		row.className = 'vt-row' + (i == votePick ? ' vt-you' : '') + (n > 0 && n == best ? ' vt-lead' : '') + (n ? '' : ' vt-zero');
+	}
+	var mine = vEl('vote-mine'), pick = vEl('vote-name-' + votePick);
+	if (mine) mine.innerHTML = pick ? 'Your vote: <b>' + pick.innerHTML + '</b>' : 'You have not voted yet - click a choice to vote.';
+	var top = vEl('vote-lead'), first = vEl('vote-name-' + lead);
+	if (top) top.innerHTML = !best ? 'No votes yet' : (tied > 1 ? tied + ' tied on ' + best : 'Leading: ' + (first ? first.innerHTML : '') + ' (' + best + ')');
+}
+function voteMark(i) { votePick = i; votePaint(); }
+function voteSetEra(k) {
+	voteEra = k;
+	for (var j = 0; j <= voteEras; j++) { var t = vEl('vote-tab-' + j); if (t) t.className = 'vt-tab' + (j == k ? ' vt-tab-on' : ''); }
+	voteFilter();
+	return false;
+}
+function voteFilter() {
+	var q = vEl('vote-q'), s = q ? q.value.toLowerCase() : '', shown = 0, per = {}, i, j;
+	for (i = 1; i <= voteN; i++) {
+		var row = vRow(i); if (!row) continue;
+		var era = parseInt(row.getAttribute('data-era'), 10) || 0;
+		var ok = (!voteEra || era == voteEra) && (!s || (vText(vEl('vote-name-' + i)) + ' ' + vText(vEl('vote-desc-' + i))).toLowerCase().indexOf(s) >= 0);
+		row.style.display = ok ? '' : 'none';
+		if (ok) { shown++; per\[era\] = 1; }
+	}
+	for (j = 1; j <= voteEras; j++) { var h = vEl('vote-era-' + j); if (h) h.style.display = per\[j\] ? '' : 'none'; }
+	var none = vEl('vote-none'); if (none) none.style.display = shown ? 'none' : '';
+}
+function voteUpdate(json) {
+	var d; try { d = JSON.parse(json); } catch (err) { return; }
+	if (!d || d.generation != voteGen) return;
+	voteLeft = d.left; voteShowLeft();
+	for (var i = 0; i < d.counts.length; i++) { var c = vEl('vote-count-' + (i + 1)); if (c) c.innerHTML = d.counts\[i\]; }
+	if (typeof d.pick == 'number') votePick = d.pick;
+	votePaint();
+}
+setInterval(function () { voteLeft--; voteShowLeft(); }, 1000);
+voteShowLeft(); votePaint();
+"}
 
 	proc/interface(var/client/C)
 		if (!C)	return
@@ -617,91 +816,108 @@ var/global/last_persistence_save_vote_time = 0
 			if (C.holder.rights & R_ADMIN)
 				admin = TRUE
 		voting |= C
-		. = "<html><head><title>Voting Panel</title></head><body>[common_browser_style]"
+		var/list/out = list("<html><head><title>Voting Panel</title></head><body>[common_browser_style][window_style()]")
 		if (mode)
-			if (question)	. += "<h2>Vote: '[question]'</h2>"
-			else			. += "<h2>Vote: [capitalize(mode)]</h2>"
-			. += "Time Left: <span id='vote-left'>[time_remaining]</span> s<hr>"
-			. += "<table width = '100%'><tr><td align = 'center'><b>Choices</b></td><td align = 'center'><b>Votes</b></td>"
-			if (admin)
-				. += "<td align = 'center'><b>Admin</b></td>"
+			var/total_time = (active_request && started_time != null) ? max(1, round((active_request.deadline - started_time) / 10)) : max(1, time_remaining)
+			var/my_pick = current_votes[C.ckey] || 0
+
+			// Eras in listing order, when the vote type groups its choices (choice_info).
+			var/list/eras = list()
 			for (var/i = 1, i <= choices.len, i++)
-				var/votes = choices[choices[i]]
+				var/era = choice_era(i)
+				if (era)
+					eras[era] = eras[era] + 1
+
+			out += "<div class='vt-top'><div class='vt-head'>"
+			out += "<div class='vt-clock' id='vote-clock'><b id='vote-left'>[time_remaining]</b><small>left</small></div>"
+			out += "<div class='vt-kicker'>[mode == "battle map" ? "Barracks vote" : "[capitalize(mode)] vote"][initiator ? " - started by [initiator]" : ""]</div>"
+			out += "<div class='vt-title'>[window_title()]</div>"
+			out += "<div class='vt-sub'>[window_hint()]</div>"
+			out += "</div><div class='vt-drain'><div id='vote-drain'></div></div>"
+			out += "<div class='vt-mine'><span id='vote-lead'></span><span id='vote-mine'></span></div>"
+			if (choices.len > 10 || eras.len > 1)
+				out += "<div class='vt-filter'>"
+				if (choices.len > 10)
+					out += "<input class='vt-q' id='vote-q' type='text' placeholder='Search [choices.len] choices...' oninput='voteFilter()' onkeyup='voteFilter()'>"
+				if (eras.len > 1)
+					out += "<a class='vt-tab vt-tab-on' id='vote-tab-0' href='#' onclick='return voteSetEra(0)'>All<i>[choices.len]</i></a>"
+					var/tab = 0
+					for (var/era in eras)
+						tab++
+						var/list/parts = era_parts(era)
+						out += "<a class='vt-tab' id='vote-tab-[tab]' href='#' onclick='return voteSetEra([tab])' title='[parts[2]]'>[parts[1]]<i>[eras[era]]</i></a>"
+				out += "</div>"
+			// A long list keeps each description to one line until the row is pointed at.
+			out += "</div><div class='vt-list[choices.len > 10 ? " vt-tight" : ""]'>"
+
+			var/last_era = null
+			for (var/i = 1, i <= choices.len, i++)
+				var/id = choices[i]
+				var/votes = choices[id]
 				if (!votes)	votes = 0
-				. += "<tr>"
+				var/era = choice_era(i)
+				var/era_index = era ? eras.Find(era) : 0
+				if (era && era != last_era)
+					last_era = era
+					var/list/parts = era_parts(era)
+					out += "<div class='vt-era' id='vote-era-[era_index]'><i>[eras[era]] map\s</i>[parts[1]]<span>[parts[2]]</span></div>"
 
-				var/display_name = choices[i]
-				var/display_desc = ""
-				if (mode == "map")
-					if (map_id_to_title[choices[i]])
-						display_name = map_id_to_title[choices[i]]
-					else
-						display_name = capitalize(lowertext(choices[i]))
-					if (map_id_to_desc[choices[i]])
-						display_desc = "<br><span style='font-size: 0.85em; color: #b0a080; font-style: italic;'>[map_id_to_desc[choices[i]]]</span>"
-				else if (mode == "epoch")
-					if (processes.epochswap.epoch_desc[choices[i]])
-						display_desc = "<br><span style='font-size: 0.85em; color: #b0a080; font-style: italic;'>[processes.epochswap.epoch_desc[choices[i]]]</span>"
-				else if (mode == "gamemode")
-					if (processes.gamemode.gamemode_desc[choices[i]])
-						display_desc = "<br><span style='font-size: 0.85em; color: #b0a080; font-style: italic;'>[processes.gamemode.gamemode_desc[choices[i]]]</span>"
+				var/list/info = choice_info[id]
+				var/needed = (islist(info) && isnum(info["players"]) && info["players"] > 0) ? "<span class='vt-need'>[info["players"]]+ players</span>" : ""
+				var/desc = choice_desc(i)
+				desc = desc ? "<span class='vt-desc' id='vote-desc-[i]'>[desc]</span>" : ""
+				var/extra = additional_text.len >= i ? additional_text[i] : ""
 
-				if (disabled.Find(choices[i]))
+				if (disabled.Find(id))
+					// Cannot be voted for: shown greyed with the reason.
+					out += "<div class='vt-row vt-off' id='vote-off-[i]' data-era='[era_index]'><div class='vt-nopick'><span class='vt-name' id='vote-name-[i]'>[choice_title(i)]</span><span class='vt-why'>[disabled[id]]</span>[desc]</div></div>"
 					continue
-				else if (current_votes[C.ckey] == i)
-					. += "<td><b><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a></b>[display_desc]</td><td align = 'center' id='vote-count-[i]'>[votes]</td>"
-				else
-					. += "<td><a href='?src=\ref[src];generation=[generation];vote=[i]'>[display_name]</a>[display_desc]</td><td align = 'center' id='vote-count-[i]'>[votes]</td>"
-				if (additional_text.len >= i)
-					. += additional_text[i]
+				out += "<div class='vt-row' id='vote-row-[i]' data-era='[era_index]'><div class='vt-bar' id='vote-bar-[i]'></div>"
 				if (admin)
-					. += "<td align = 'center'><a href='?src=\ref[src];generation=[generation];vote=force;choice=[i]' title='End the vote with this result'>Force</a></td>"
-				. += "</tr>"
+					out += "<div class='vt-admin'><a href='?src=\ref[src];generation=[generation];vote=force;choice=[i]' title='End the vote with this result'>Force</a></div>"
+				out += "<a class='vt-pick' href='?src=\ref[src];generation=[generation];vote=[i]' onclick='voteMark([i])'>"
+				out += "<span class='vt-n' id='vote-count-[i]'>[votes]</span>"
+				out += "<span class='vt-name' id='vote-name-[i]'>[choice_title(i)]</span><span class='vt-tag'>Your vote</span>[needed][extra][desc]</a>"
+				out += "</div>"
 
-			. += "</table><hr>"
-			// Counts down locally and takes new counts from push_tally().
-			. += {"<script>
-var voteGen = [generation];
-var voteLeft = [time_remaining];
-function voteShowLeft() { var e = document.getElementById('vote-left'); if (e) e.innerHTML = Math.max(0, voteLeft); }
-setInterval(function () { voteLeft--; voteShowLeft(); }, 1000);
-function voteUpdate(json) {
-	var d; try { d = JSON.parse(json); } catch (err) { return; }
-	if (!d || d.generation != voteGen) return;
-	voteLeft = d.left; voteShowLeft();
-	for (var i = 0; i < d.counts.length; i++) { var c = document.getElementById('vote-count-' + (i + 1)); if (c) c.innerHTML = d.counts\[i\]; }
-}
-</script>"}
+			out += "<div class='vt-none' id='vote-none' style='display:none'>Nothing matches. Clear the search or pick another era.</div></div>"
+			out += "<script>var voteGen = [generation], voteLeft = [time_remaining], voteTotal = [total_time], votePick = [my_pick], voteN = [choices.len], voteEras = [eras.len], voteEra = 0;[window_script()]</script>"
+			out += "<div class='vt-foot'>"
 			if (admin)
-				. += "(<a href='?src=\ref[src];generation=[generation];vote=end' title='Close the vote now on the current votes'>End Vote Now</a>) "
+				out += "<a href='?src=\ref[src];generation=[generation];vote=end' title='Close the vote now on the current votes'>End Vote Now</a> "
 			if (admin && mode != "map")
-				. += "(<a href='?src=\ref[src];generation=[generation];vote=cancel'>Cancel Vote</a>) "
+				out += "<a href='?src=\ref[src];generation=[generation];vote=cancel'>Cancel Vote</a> "
 		else
-			. += "<h2>Start a vote:</h2><hr><ul><li>"
+			out += "<div class='vt-top'><div class='vt-head'><div class='vt-kicker'>No vote is running</div><div class='vt-title'>Start a vote</div>"
+			out += "<div class='vt-sub'>Everyone online is asked, and the result is announced in chat.</div></div></div><div class='vt-list'>"
+			// battle map (Barracks only)
+			if (tdm_barracks_active())
+				var/map_block = tdm_barracks.map_vote_block()
+				if (!map_block)
+					out += "<div class='vt-row'><a class='vt-pick' href='?src=\ref[src];vote=battlemap'><span class='vt-name'>Battle map</span><span class='vt-desc'>Pick the map the empty battle world loads next.</span></a></div>"
+				else
+					out += "<div class='vt-row vt-off'><div class='vt-nopick'><span class='vt-name'>Battle map</span><span class='vt-desc'>[map_block]</span></div></div>"
 			//restart
 			if (!persistence_blocks_vote("restart") && (admin || config.allow_vote_restart))
-				. += "<a href='?src=\ref[src];vote=restart'>Restart</a>"
+				out += "<div class='vt-row'><a class='vt-pick' href='?src=\ref[src];vote=restart'><span class='vt-name'>Restart</span><span class='vt-desc'>Ask everyone whether to end this round.</span></a></div>"
 			else
-				. += "<font color='grey'>Restart (Disallowed)</font>"
-			. += "</li><li>"
+				out += "<div class='vt-row vt-off'><div class='vt-nopick'><span class='vt-name'>Restart</span><span class='vt-why'>Disallowed</span></div></div>"
 			if (persistence_round_active())
 				var/save_block = persistence_save_vote_block_reason()
 				if (!save_block)
-					. += "<a href='?src=\ref[src];vote=save'>Save progress</a>"
+					out += "<div class='vt-row'><a class='vt-pick' href='?src=\ref[src];vote=save'><span class='vt-name'>Save progress</span><span class='vt-desc'>Ask everyone whether to save the world now.</span></a></div>"
 				else
-					. += "<font color='grey'>Save progress ([save_block])</font>"
-				. += "</li><li>"
+					out += "<div class='vt-row vt-off'><div class='vt-nopick'><span class='vt-name'>Save progress</span><span class='vt-desc'>[save_block]</span></div></div>"
 			if (admin)
-				. += "\t(<a href='?src=\ref[src];vote=toggle_restart'>[config.allow_vote_restart?"Allowed":"Disallowed"]</a>)"
-				. += "</li><li>"
-				. += "<a href='?src=\ref[src];vote=gamemode'>Gamemode</a></li>"
-			//custom
-			if (admin)
-				. += "<li><a href='?src=\ref[src];vote=custom'>Custom</a></li>"
-			. += "</ul><hr>"
-		. += "<a href='?src=\ref[src];generation=[generation];vote=close' style='position:absolute;right:50px'>Close</a></body></html>"
+				out += "<div class='vt-era'>Admin</div>"
+				out += "<div class='vt-row'><a class='vt-pick' href='?src=\ref[src];vote=toggle_restart'><span class='vt-name'>Player restart votes: [config.allow_vote_restart?"Allowed":"Disallowed"]</span><span class='vt-desc'>Click to switch.</span></a></div>"
+				out += "<div class='vt-row'><a class='vt-pick' href='?src=\ref[src];vote=gamemode'><span class='vt-name'>Gamemode</span></a></div>"
+				//custom
+				out += "<div class='vt-row'><a class='vt-pick' href='?src=\ref[src];vote=custom'><span class='vt-name'>Custom</span><span class='vt-desc'>Your own question with up to ten options.</span></a></div>"
+			out += "</div><div class='vt-foot'>"
+		out += "<a class='vt-close' href='?src=\ref[src];generation=[generation];vote=close'>Close</a></div></body></html>"
 
-		return .
+		return jointext(out, "")
 
 
 	Topic(href,href_list[],hsrc)
@@ -760,10 +976,22 @@ function voteUpdate(json) {
 			if ("gamemode")
 				if (usr.client.holder)
 					initiate_vote("gamemode",usr.key)
+			if ("battlemap")
+				// Started from the Barracks: it says why when it cannot start.
+				if (tdm_barracks_active())
+					tdm_barracks.start_map_vote(usr.client)
+					if (mode == "battle map")
+						return // start_map_vote opened the ballot
 			else
 				var/t = round(text2num(href_list["vote"]))
 				if (t) // It starts from TRUE, so there's no problem
-					submit_vote(usr.ckey, t, text2num(href_list["generation"]))
+					if (submit_vote(usr.ckey, t, text2num(href_list["generation"])))
+						// The open page marks the pick itself; redrawing it would lose
+						// the voter's place, era and search in a long list.
+						voting |= usr.client
+						tally_changed = FALSE
+						push_tally()
+						return
 		usr.vote()
 
 

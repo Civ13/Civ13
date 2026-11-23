@@ -13,6 +13,13 @@ Six workshop stations make clay, glass, stone and furnace work faster. Everythin
 
 Fasten or unfasten a station with a wrench. To take a wheel, bench, bellows or saw apart, hit it with a hammer on **Harm intent**.
 
+## Making your first clay pot
+
+1. Use a **shovel** on exposed dirt to get a **dirt pile**. If grass or snow is in the way, clear it and try the exposed dirt.
+2. Fill a **bucket** with water, then use it on the dirt pile. The game uses **10 units of water** and drops **2 clay** at your feet.
+3. Use the clay in your active hand and choose **unfired clay cooking pot**. In the default crafting catalog this costs 2 clay; check the recipe on your map.
+4. Use the unfired pot **on** a campfire or oven to load it. Add fuel if needed, light the fire with an empty hand and, once the pot is fired, take it out. Leaving the pot on the ground beside the fire won't fire it.
+
 ## Potter's wheel
 
 Use **clay** on the wheel and choose what to throw: pots, cups, bowls, jugs, pitchers, vases, cooking pots, crocks and vessels of your own design (see **[Making a Home](Guide_to_Homes.md#pottery-of-your-own-design)**). You only see the wares you already know how to make.

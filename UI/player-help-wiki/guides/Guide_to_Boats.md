@@ -349,7 +349,7 @@ A [ship's draught](#ships-draughts) can hold a submarine instead of a ship, so y
 - **The rules:** she needs exactly one wheel, one ballast and periscope station and at least one lock-out hatch. A bulkhead right across her with no door is refused, because nobody could reach the rooms behind it.
 - **Building her:** use the sheet on loose **submarine controls** to clip it to them. Lay hull sections 3 wide and as long as the sheet, stand her wheel, station, banks and other fittings where the sheet shows them, put the engine and fuel tank in the middle of the stern row, and assemble her as above. Each section takes the shape the sheet gives it.
 - **Copying a boat afloat:** hold a blank sheet of paper, use her ballast and periscope station and choose **Draw her lines**.
-- **Sharing it:** use the sheet and choose **Copy her design code** for a code starting `C13SUB`. **Paste a design code** accepts ship and submarine codes.
+- **Sharing it:** use the sheet and choose **Export its design code** for a code starting `C13SUB`, or press **Export code** in the drawing window. **Import a design code** (or **Import code** in the window) draws any shared plan onto the sheet, as described under [Sharing plans as design codes](#sharing-plans-as-design-codes).
 
 A slipway only builds ships, so it refuses a submarine sheet.
 
@@ -728,13 +728,21 @@ A **ship's draught** is a ship drawn on paper: every tile of her hull, the floor
     - **Save to the sheet** keeps the drawing, finished or not. **Unsaved changes** shows beside her name until you do.
 - **Copying a ship afloat:** hold a blank sheet of paper and click her tiller, then choose **Draw her lines**. Only her crew can draw her, and only while she is commissioned.
 - **Reading it:** examine the sheet, or use it in your hand. It tells you how many tiles she has and whether she is a small craft, a boat or a ship. It also lists the materials her floors and fittings cost to build by hand, and the speed she should make empty under sail on a reach and with every rowing bench manned. If her masts need more weight low in her, it tells you about how much ballast to carry.
-- **Sharing it:** use the sheet and choose **Copy her design code** for a code starting `C13SHIP`, which you can keep outside the game. **Paste a design code** draws a shared ship onto a sheet, replacing what was on it.
+- **Sharing it:** see [Sharing plans as design codes](#sharing-plans-as-design-codes) below.
 - **Building her on a slipway:** build a [slipway](#slipway-ships) on the shore facing the water and use the drawn sheet on its post. She is marked out on the ground in front of it, stern at the post and bow toward the water, with a faint outline on every tile still to build. There must be open water ahead for her to launch into, and nothing solid or already floored where she will lie. Bring the materials to the post or to any marked tile: her floors go down first from stern to bow, then her fittings one kind at a time, each costing what it costs to build by hand (walls want planks as well as wood, anchors and pumps want iron). A boat or ship of more than 12 tiles then gets a gunwale on every open side of her deck, or a steel bulwark on steel floor, at 2 wood or 2 steel each; they are counted in what her draught says she costs, so she comes down the ways ready to commission. Each floor or fitting appears as soon as it is paid for, and you keep working while the stack in your hand still pays for the next piece. Several people can build her at once, and she goes up faster for every pair of hands. Her other decks come last: her **hold** is dug out and floored under the berth, her **deck above** is roofed over her and floored, then her **second deck above** over that, then what stands on those decks and her ladders. A hold needs rock or deep water under the berth, and each deck above needs open air over it, or the slipway tells you what is in the way.
 - **Launching her:** when the last piece is fitted, use the slipway post and choose **Launch**. She slides down the ways until all of her floats, with every deck and everyone and everything aboard, and comes off commissioned under the name on her draught, ready to sail from her tiller. The ground she slides over must be clear, a dry dock must be flooded first, and her tiller or steering oar must still stand where the draught shows it. Giving her up before she is finished takes the draught off the post and leaves what was built where it stands.
 
 - **Wiring:** cables, engines, generators and batteries aboard stay connected when she moves, so lamps and machines keep running under way. A cable that runs from her to the shore parts as soon as she moves. The same holds for slipway ships and the aircraft carrier.
 - Once commissioned she can sail onto deep salt water. If you strike her out there, the floors are plain planks again and will not last on the deep sea.
 - If the tiller is destroyed she is a raft of planks again. Set a new tiller and commission her.
+
+#### Sharing plans as design codes
+
+Every plan drawn on a ship's draught can be exported as a design code and imported again: ships (with their extra decks), submarines, vehicles, tanks, planes, airships, trains, space stations and houses. Codes are plain text, so you can keep them outside the game or give them to other players.
+
+- **Export.** Use the sheet and choose **Export its design code**, or press **Export code** beside **Save to the sheet** in the drawing window. Export from the window saves the drawing first. Copy the code from the window that opens.
+- **Import.** Use any ship's draught and choose **Import a design code**, or press **Import code** in a drawing window, then paste the code. A blank sheet accepts any kind of plan. The imported plan replaces whatever was drawn, and the drawing window for that kind of plan opens.
+- An imported plan follows the same rules as one you draw yourself. Codes that are too big or broken are refused, and space stations can only be imported once your age can draw them. After an import, the plan's checks are listed in chat, so you can see straight away whether it can be built as drawn. Building it still takes the usual materials, research and work.
 
 ### Bilge water
 
@@ -764,7 +772,7 @@ A bucket only goes so far. The pumps that keep a cellar dry also pump a hull's b
 | **Steam mine pump** | Feed it coal, charcoal or wood and start it. It lifts 80 bucketfuls a minute while the fire burns, enough to stay ahead of three holes. |
 | **Sump pump** | Lifts 40 bucketfuls a minute on cable power or its battery. It starts by itself when there is water in the bilge and stops when she is dry. |
 
-- A pump works from anywhere on her deck, and you can pump while she sails.
+- You can pump while sailing. On a ship divided into watertight compartments, a pump or bucket in a dry bay will not drain a different, flooded bay. See [Ship Damage Control](Guide_to_Ship_Damage_Control.md#the-pump-is-running-but-water-isnt-going-down).
 - The steam and sump pumps only run, and only burn fuel or battery, while someone is aboard or she is under way. A boat left at anchor is as you left her.
 - The tiller counts the pumps on her deck and how many are working.
 
@@ -845,14 +853,17 @@ A wooden boat or ship keeps the sea out with **tarred oakum** driven into the se
 
 ### Holes and sinking
 
+If water is already coming in, follow [Ship Damage Control](Guide_to_Ship_Damage_Control.md) for the order to close doors, patch and pump.
+
 Any hull you built can be holed, whatever her size and whether she is wood or steel. A tile of her hull whose floor is gone is a hole: shot away, blown out by a mine or a blast, cut out by her own crew, or broken on a reef or in a storm once that plank was already battered. You can see the sea through it, and stepping on it puts you in the water. Walls and cabins knocked down aboard are not holes.
 
 - **The sea comes in fast.** While anyone is aboard or she is under way, each open hole lets in more than one person with a bucket can bail. Everyone aboard is told when she is holed and where, and the tiller counts her holes.
 - **Listing:** three quarters full she lists and makes slow ahead at best.
-- **Patching:** stand on her deck next to the hole with **wood** in your active hand and a **hammer** in the other, and click the open water of the hole. Six seconds and two pieces of wood nail a **hull patch** over it. A patch is a floor again and closes the hole, but it weeps a little, so a patched boat needs somewhat more bailing. If a patch is destroyed the hole is open again.
+- **Patching a main-deck hole:** stand on her deck next to the hole with **wood** in your active hand and a **hammer** in the other, and click the open water of the hole. Six seconds and two pieces of wood nail a **hull patch** over it. A patch is a floor again and closes the hole, but it weeps a little, so a patched boat needs somewhat more bailing. If a patch is destroyed the hole is open again.
+- **Welding a hold breach:** stand next to the breach below deck, hold a welding tool in your other hand, and use **2 steel** on the breach. It takes about five seconds. Pump out the trapped water afterward.
 - **Refitting a holed hull:** a hole inside her outline must be patched before you refit the hull. A floor taken up from her **edge** is different: drop anchor and choose **Refit the hull**, and that tile is cut away from her shape. Until then it is still part of her, so it can stop her against a bank, a trench or a pier, and she tells you so. This is how to make her a tile smaller to slip past an obstacle.
 - **In the shallows** a hull that fills settles on the bottom. She will not sail or turn, but nothing is lost. Patch every hole and bail her to below awash, and she floats again.
-- **On deep water** a hull that fills founders. Her crew is warned every half minute, and after two minutes she goes down unless they have got ahead of the water by then. Bailing her even a little below full stops the count; an open hole will soon start it again, so patch first.
+- **On deep water** a hull that fills founders. Her crew is warned every half minute, and after two minutes she goes down unless they have got ahead of the water by then. A ship can also founder if nearly full compartments cover more than half the hull, even if the overall bilge is not full. Patch the leaks and keep pumping the flooded bays until the warning stops; taking out a little water may not be enough.
 - **When she goes down** her floors, tiller, masts, engines, guns and everything else built on her are lost. Her crew, loose items and chests are left in the water where she was, with a few timbers. Keep a ship's boat or stay near shore if she is badly hurt.
 
 ### Ship's boats
@@ -878,7 +889,7 @@ Past the edge of the map lies open sea, and somewhere out there are lands nobody
 ### Setting out
 
 1. Bring her within 4 tiles of the edge of the map, ring **All stop**, and make sure she can make way: a rigged mast or a running engine.
-2. Get at least **2 crew** aboard and awake. Everyone aboard when she sets out sails with her; anyone ashore is left behind.
+2. Get at least **2 crew** aboard and awake. Stay aboard through landfall if you intend to cross. If you log out while still aboard, your character can still cross with the ship.
 3. Click the tiller and choose **Set out on a voyage**. You see your chart: your faction's chart if you belong to one, otherwise your own.
 
 From there you can:
@@ -904,13 +915,13 @@ On the way the sea may take a hand, at most once of each kind a voyage:
 - **A sighting**: the lookout spots water off her course, and it goes on your chart.
 - **Short rations**: past halfway on too little food, the crew are warned, so you can still turn back.
 
-While she is at sea she lies at anchor off the coast and nobody steers. The tiller tells you how long is left, and **Turn back** calls the voyage off. When she arrives, she and her crew appear anchored off the new land's coast. If the coast is "not yet in sight", the land is still being readied: she waits for it.
+While she is at sea she lies at anchor off the coast and nobody steers. The tiller tells you how long is left. **Turn back** cancels the voyage when the option is available. If the ship is already committed to landfall, wait aboard: "not yet in sight" means the destination is still getting ready, not that you need to choose again. If the coast never becomes ready, the ship turns back after up to 30 minutes of waiting. When she arrives, she and her crew appear anchored off the new land's coast.
 
 Every land has its own riches. Smaller lands are richer in ore and more often hide something rare, such as gems, a rich vein of gold or silver, or diamonds; larger lands grow food better. Each land is known for a few kinds of ore, which turn up as rich lodes when you mine there, and for a few kinds of game, which are plentiful there.
 
 ### Sailing between the continents
 
-The continents lie across the sea from one another, and a ship can carry you between them. Every land has a coast: Gaia, North and South America, Europe, Africa, Asia, Oceania, Greenland and Antarctica (see [Regions of the World](../regions/Regions.md)). Bring a ship you [built yourself](#building-your-own-hull) within 4 tiles of the map edge, click the tiller and choose **Set out on a voyage**. Every other continent is at the top of the list, with its direction and how long the voyage takes. Gaia is about 6 minutes from North America under sail, Europe 5 from Gaia and Asia 7 from Europe; engines are faster.
+The continents lie across the sea from one another, and a ship can carry you between them. Every land has a coast: Gaia, North and South America, Europe, Africa, Asia, Oceania, Greenland and Antarctica (see [Regions of the World](../regions/Regions.md)). Bring a ship you [built yourself](#building-your-own-hull) within 4 tiles of the map edge, click the tiller and choose **Set out on a voyage**. The eligible coasts the tiller can reach are at the top of the list, with their direction and estimated travel time. Gaia is about 6 minutes from North America under sail, Europe 5 from Gaia and Asia 7 from Europe; engines are faster.
 
 The usual voyage rules apply: she needs a rigged mast or a running engine, and food for everyone aboard. One sailor is enough. Everything aboard sails with her: what the crew wear and carry, loose gear on her deck and whatever is in her chests. Animals, the dead and things standing on her deck (barrels with what is in them, tables, troughs, doors, machines) sail too, and come off as they went aboard. So do carts, rafts, dugouts, outriggers, motorboats and bicycles, once they are empty; anyone riding one gets off as she sails. A canoe or motorboat takes her outboard and its fuel tank with her, and it arrives stopped. A **car, truck or light plane** parked wholly on her main deck crosses too, with its plate, key, fuel and what is in its boot, and is parked where it stood when she arrives. Stop it, switch its engine off, get out and clear anything loose off it first. Her **engines** sail too, so a motor freighter can make the voyage: each arrives stopped and still coupled to the fuel barrel beside it, with the fuel that was in it. Start it again from the engine. A ship with a **cargo hold** takes it with her, along with everything in it and the ladder down to it. On the far side the hold is hollowed out again under her deck where the sea floor allows; where it doesn't, its cargo is put on the deck above it and the hold itself is lost. Her **upper deck** goes too, with its floors, the ladder up and whatever stands on it, and is built again on her roofs where there is open air above her. Where something is in the way up there, the roof under it stays a plain roof and what stood on it is put on her deck. A floor built on a roof of the upper deck, a storey higher still, has to come down first. A warship goes whole: her **gun turrets** keep the shells in their breeches, her **shell racks** the shells in them, and her **belt armour** stays bolted along her sides, so a light cruiser arrives ready to fight. Only an animal someone is playing or riding, a loaded cart, anything strapped into a seat that is not crew, a tank or other vehicle with a turret or heavy axis, and a body with a creature inside it have to be put ashore first; the tiller names them and points them out on deck. If nobody can take her across, everything stays aboard where it was. She arrives anchored off the coast that faces where you came from. Your character lives in the land you sail to from then on; sail back to return. She also arrives in the state she left in: the water in her bilge, her seams, the growth on her bottom and how each sail is set all cross with her.
 

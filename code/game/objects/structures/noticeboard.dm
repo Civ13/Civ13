@@ -88,6 +88,10 @@
 		if (B != src && B.board_mount_dir == facing)
 			to_chat(user, SPAN_WARNING("A noticeboard already hangs there."))
 			return
+	for (var/obj/structure/banner/B in T)
+		if (B.banner_mount_dir == facing)
+			to_chat(user, SPAN_WARNING("A banner already hangs there."))
+			return
 	board_mount_dir = facing
 	anchored = TRUE
 	pixel_x = facing == EAST ? 32 : (facing == WEST ? -32 : 0)

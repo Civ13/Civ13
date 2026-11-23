@@ -1,5 +1,7 @@
 """Offline source-contract and arithmetic checks; not native gameplay evidence."""
+import importlib.util
 from pathlib import Path
+from types import SimpleNamespace
 import unittest
 ROOT = Path(__file__).resolve().parents[2]
 def source(name):
@@ -33,5 +35,50 @@ class Recovery(unittest.TestCase):
         self.assertNotIn('never heals on its own', src)
         self.assertIn('min(9, damage)', source('code/modules/organs/brain.dm'))
         self.assertNotIn('damage--', source('code/modules/organs/brain.dm'))
+    def test_periodic_internal_ache_reports_without_inflicting_pain(self):
+        pain = source('code/modules/organs/pain.dm')
+        emission = pain.split('/mob/living/human/proc/custom_pain(', 1)[1].split(
+            '/mob/living/human/proc/handle_pain()', 1)[0]
+        self.assertIn('if(!nohalloss && (power || flash_pain))', emission)
+        self.assertIn('affecting.add_pain(ceil(power/2))', emission)
+        self.assertIn('to_chat(src,', emission)
+
+        spec = importlib.util.spec_from_file_location(
+            'pain_source_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        adapter.FIELDS += ('internal_organs', 'get_organ')
+
+        def run(pain_source):
+            loop = pain_source.split('	// Damage to internal organs hurts a lot.\n', 1)[1]
+            loop = loop.split('\n	if(prob(2))', 1)[0]
+            limb = SimpleNamespace(pain=0)
+            injury = SimpleNamespace(damage=35, status=0, parent_organ='chest')
+            body = SimpleNamespace(internal_organs=[injury], get_organ=lambda _: limb)
+            messages = []
+
+            def report(_text, power, *, affecting, nohalloss=False):
+                messages.append(power)
+                if not nohalloss:
+                    affecting.pain += (power + 1) // 2
+
+            body.custom_pain = report
+            projected = adapter.project(
+                '/proc/periodic_ache(src)\n' + loop + '\n', '/proc/periodic_ache', 'src',
+                dict(typed_iter=lambda items, _type: items, ORGAN_DEAD=1, prob=lambda _: True),
+                method=True)
+            projected(body)
+            projected(body)
+            injury.damage = 0
+            projected(body)
+            injury.damage, injury.status = 35, 1
+            projected(body)
+            return messages, limb.pain
+
+        self.assertEqual(run(pain), ([35, 35], 0))
+        feedback = pain.replace(', affecting = parent, nohalloss = TRUE)', ', affecting = parent)')
+        self.assertNotEqual(feedback, pain)
+        self.assertEqual(run(feedback), ([35, 35], 36))
+
 if __name__ == '__main__':
     unittest.main()

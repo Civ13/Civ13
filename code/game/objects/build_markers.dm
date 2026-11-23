@@ -32,6 +32,7 @@
 		"ladder" = list("name" = "ladder", "state" = "ladder"),
 		"floor" = list("name" = "floor", "state" = "floor"),
 		"roof" = list("name" = "roof", "state" = "roof"),
+		"rail" = list("name" = "track", "state" = "rail"),
 		)
 	return table
 
@@ -67,6 +68,9 @@
 					return TRUE
 		if ("roof")
 			return (locate(/obj/roof) in T) ? TRUE : FALSE
+		if ("rail")
+			// Finished track only: loose sleepers are /obj/structure/rail_bed.
+			return (locate(/obj/structure/rails) in T) ? TRUE : FALSE
 	return FALSE
 
 // Whether a tile is somewhere to drive a peg: the ground, or a floor over

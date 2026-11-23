@@ -16,10 +16,10 @@ def proc_body(signature):
 
 
 def map_lists():
-    """Each epoch's map list in /process/mapswap/fire(), as (epoch, [map ids])."""
-    body = proc_body('/process/mapswap/fire()')
+    """Each epoch's map list in /proc/mapswap_epoch_maps(), as (epoch, [map ids])."""
+    body = proc_body('/proc/mapswap_epoch_maps(epoch)')
     found = []
-    for case in re.finditer(r'^\t\t\tif \("([^"]+)"\)\n(.*?)^\t\t\t\t\)', body, re.M | re.S):
+    for case in re.finditer(r'^\t\tif \("([^"]+)"\)\n(.*?)^\t\t\t\)', body, re.M | re.S):
         found.append((case.group(1), re.findall(r'^\t+(MAP_\w+) = \d+', case.group(2), re.M)))
     return found
 
@@ -41,7 +41,7 @@ class TdmEpochTest(unittest.TestCase):
         body = proc_body('/process/mapswap/fire()')
         self.assertIn('if ((config.allowedgamemodes == "TDM" || tdm_battle_active()) && !(epoch in tdm_epochs()))\n'
                       '\t\t\tepoch = pick(tdm_epochs())', body)
-        self.assertLess(body.index('epoch = pick(tdm_epochs())'), body.index('switch(epoch)'))
+        self.assertLess(body.index('epoch = pick(tdm_epochs())'), body.index('mapswap_epoch_maps(epoch)'))
 
     def test_every_tdm_epoch_has_a_map_list(self):
         lists = dict(map_lists())

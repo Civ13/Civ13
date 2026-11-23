@@ -237,6 +237,9 @@ SUITES = {
     'noticeboard_remove': {'files': ('tests/noticeboard_remove/test_remove.py',),
         'paths': ('tests/noticeboard_remove/',),
         'shared_paths': ('code/game/objects/structures/noticeboard.dm',)},
+    'faction_banner_load': {'files': ('tests/faction_banner_load/test_source.py',),
+        'paths': ('tests/faction_banner_load/',), 'shared_paths': (
+            'code/game/mob/groups/factions.dm', 'code/game/mob/groups/religions.dm')},
     'moldy_sabotage': {'files': ('tests/moldy_sabotage/test_school_property.py',),
         'paths': ('tests/moldy_sabotage/', 'code/modules/1713/moldy_men/moldy_men_hooks.dm'),
         'shared_paths': ('code/game/objects/structures.dm',
@@ -3023,6 +3026,10 @@ SUITES = {
     'paintings': {'files': ('tests/paintings/test_paintings.py',),
         'paths': ('tests/paintings/', 'code/modules/paintings/', 'icons/obj/paintings.dmi', 'icons/mob/paintings.dmi', 'icons/obj/paintings_gallery.dmi',
                   'tests/sprites/create_paintings.py')},
+    'gun_blueprints': {'files': ('tests/gun_blueprints/test_sources.py',),
+        'paths': ('tests/gun_blueprints/', 'code/modules/1713/gunsmithing/gun_design_code.dm'), 'shared_paths': (
+            'code/modules/1713/gunsmithing/gunsmith.dm', 'code/modules/1713/blueprint.dm',
+            'code/modules/paintings/design_codes.dm')},
     'design_codes': {'files': ('tests/design_codes/test_design_codes.py',),
         'paths': ('tests/design_codes/', 'code/modules/paintings/design_codes.dm'), 'shared_paths': (
             'code/modules/paintings/', 'code/game/objects/structures/sign_flags.dm',

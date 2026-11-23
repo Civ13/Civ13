@@ -65,27 +65,39 @@ var/global/datum/tdm_link/tdm_link = new
 /datum/tdm_link/proc/report(kind, list/data)
 	if(!ready() || shard_group.kind != "BATTLE")
 		return FALSE
-	var/list/peer = shard_group.peers[barracks_id]
+	var/list/reply = send(barracks_id, "tdm_report", kind, data)
+	return islist(reply) && reply["ok"]
+
+// The Barracks asks the battle world for something (the Barracks map vote,
+// barracks_map_vote.dm). The battle's answer, or null when it did not answer.
+/datum/tdm_link/proc/command(kind, list/data)
+	if(!ready() || shard_group.kind != "BARRACKS")
+		return null
+	return send(battle_id, "tdm_command", kind, data)
+
+// One signed message to the other world of the pair; its decoded answer or null.
+/datum/tdm_link/proc/send(peer_id, keyword, kind, list/data)
+	var/list/peer = shard_group.peers[peer_id]
 	if(!peer)
-		return FALSE
+		return null
 	// A frozen world holds a connection until it thaws, and world.Export would
 	// hold this world with it. The group config keeps both worlds awake
 	// (freeze_idle_minutes); this guards a host that does not.
 	if(peer["state"] in list("ASLEEP", "COLD", "STOPPED"))
-		return FALSE
+		return null
 	var/answer = null
 	try
-		answer = world.Export("byond://[shard_group.peer_address(peer)]?tdm_report=1&kind=[url_encode(kind)]&token=[url_encode(token)]&data=[url_encode(json_encode(data))]&format=json")
+		answer = world.Export("byond://[shard_group.peer_address(peer)]?[keyword]=1&kind=[url_encode(kind)]&token=[url_encode(token)]&data=[url_encode(json_encode(data))]&format=json")
 	catch
 		answer = null
 	if(!istext(answer))
-		return FALSE
+		return null
 	var/list/reply = null
 	try
 		reply = json_decode(answer)
 	catch
 		reply = null
-	return islist(reply) && reply["ok"]
+	return islist(reply) ? reply : null
 
 /datum/world_topic/tdm_report
 	keyword = "tdm_report"
@@ -108,6 +120,24 @@ var/global/datum/tdm_link/tdm_link = new
 		else
 			return list("ok" = 0)
 	return list("ok" = 1)
+
+/datum/world_topic/tdm_command
+	keyword = "tdm_command"
+
+/datum/world_topic/tdm_command/Run(list/input)
+	if(!tdm_battle_active() || input["token"] != tdm_link.token)
+		return list("ok" = 0)
+	var/list/data = null
+	try
+		data = json_decode(input["data"])
+	catch
+		data = null
+	if(!islist(data))
+		return list("ok" = 0)
+	switch(input["kind"])
+		if("map")
+			return tdm_battle.barracks_map(data["map"])
+	return list("ok" = 0)
 
 /hook/startup/proc/tdm_link_startup()
 	tdm_link.configure()

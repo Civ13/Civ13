@@ -146,13 +146,13 @@ If you have no boilable container, milk and well water are safer than drinking d
 To boil water:
 
 - Make a simple **cooking pot** from **clay**.
-  - Craft a **wooden handle**, a **bucket**, and a **campfire** with **wood logs**.
+  - Craft a **wooden handle** and a **campfire**, and make a **bucket** from planks.
   - Get some animal **bone** (bones are obtained by butchering animals).
   - Hold bones in the **active hand** and the wooden handle in the **off-hand**.
   - Click bones and make a **bone shovel**.
   - Use the shovel on **dirt** tiles to dig **dirt piles** (any kind of dirt tile works). Click **grass** tiles to remove grass, and click **snowdirt** to shovel snow and expose the dirt underneath.
   - Find a water source and fill the **bucket** with water.
-  - Click dirt piles with the bucket to make lumps of **clay** (1 clay = 10 units of water per dirt pile).
+  - Hold the bucket and use it on a **dirt pile**. One pile and **10 units of water** give **2 clay** at your feet. See [Making your first clay pot](guides/Guide_to_Pottery_and_Lime.md#making-your-first-clay-pot).
   - Take clay and click it in the active hand, then choose **unfired clay cooking pot**.
   - Put the unfired pot into the campfire and click the campfire.
   - Wait until the pot is fired.
