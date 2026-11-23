@@ -96,6 +96,17 @@ Water reaches the pieces about once a minute, and everything beside a wet piece 
 
 Keep bodies and waste out of the channels. Anything rotting in a piece fouls all the water below it, and foul water from a fountain or bath can make people ill until the channel is cleaned. Breaking any piece cuts off the water to everything below it, so guard the line in a war.
 
+### Planning waterworks on paper
+
+A ship's draught can hold a plan for one aqueduct or sewer route. Hold a blank draught (see [Guide to Boats](Guide_to_Boats.md#ships-draughts)) with a pen or pencil in your other hand, use it and choose **Draw waterworks on the sheet**.
+
+- Pick **Aqueduct** or **Sewer**, then pick a part and click tiles in order along their edges, starting at the intake (or the first floor drain). The board is 7 tiles square and a route can be up to 24 tiles long. Click a numbered tile with another part selected to swap it, or use **Remove last**.
+- An aqueduct starts at an intake beside fresh water and ends at a fountain or cistern. A sewer starts at a floor drain and ends at a stone drain on the water's edge. A sewer tile beside water before the end would spill there too, so the plan flags it.
+- Stand on the tile you want as the plan's south-west corner and press **Preview site**. The checks show where water can't climb, where a tile isn't firm dry ground, what is in the way, and warnings such as an uphill sewer or a sewer emptying into fresh water. Only tiles you can see in good light are checked. The list of materials counts only the parts not already built there.
+- Press **Save to sheet**. Then use the sheet, stand on the same corner and choose **Peg out the saved route here**. Builder's pegs mark each part still to build, and each one disappears once that part is built. Pegging somewhere else moves the sheet's pegs; **Pull up its pegs** removes them.
+
+The plan doesn't build anything, supply materials or teach research. Build each part from the crafting menu as usual. **Export** and **Import** share the drawing as a code starting `C13WATER`, without its place or pegs.
+
 ## Rivers in flood
 
 - **Faster current.** A high river carries swimmers, empty rafts and anything left in the water twice as far. At low water the current is weak.
