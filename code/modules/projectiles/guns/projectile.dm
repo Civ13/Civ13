@@ -510,7 +510,10 @@
 	if(launcher && use_launcher)
 		launcher.Fire(target, user, clickparams, pointblank, reflex)
 		if(!launcher.grenades.len)
-			switch_firemodes() //switch back automatically
+			// Switch back to the rifle automatically, keeping its fire mode (#6924).
+			use_launcher = FALSE
+			if (user)
+				to_chat(user, "<span class='notice'>\The [launcher] is empty; you switch back to your gun.</span>")
 			playsound(src, 'sound/weapons/guns/interact/launcher_empty.ogg', 50, 1)
 	else
 		..()
