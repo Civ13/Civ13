@@ -54,11 +54,23 @@
 			loaded.Insert(1, C) //add to the head of the list
 	update_icon()
 
+/proc/bow_load_source_ok(obj/item/A, atom/source, mob/user)
+	if (!A || QDELETED(A) || !user || QDELETED(user) || A.loc != source)
+		return FALSE
+	if (source == user)
+		return TRUE
+	return istype(source, /obj/item/ammo_handful) && !QDELETED(source) && source.loc == user
+
 /obj/item/weapon/gun/projectile/bow/load_ammo(var/obj/item/A, mob/user)
 	if (world.time < user.next_load)
 		return
 
+	// The ammunition can be stripped or taken during the wait; only load it if it
+	// is still where it was, in the user's hand or a handful they hold (issue 6984).
+	var/atom/source = A?.loc
 	if (load_delay && !do_after(user, load_delay, src, can_move = TRUE))
+		return
+	if (!bow_load_source_ok(A, source, user))
 		return
 
 	user.next_load = world.time + 1

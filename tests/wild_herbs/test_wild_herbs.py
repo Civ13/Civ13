@@ -35,6 +35,10 @@ class WildHerbSourceTests(unittest.TestCase):
         herbs = dme.index('code\\modules\\ecology\\wild_herbs.dm')
         self.assertLess(herbs, dme.index('code\\modules\\ecology\\willow_trees.dm'))
 
+    def test_interrupted_pass_retries(self):
+        self.assertIn('wild_herb_seed_state = wild_herb_seed_interrupted ? 0 : 2', self.source)
+        self.assertIn('wild_herb_seed_interrupted = TRUE', self.source)
+
     def test_seed_pass_runs_from_ticker(self):
         ticker = (ROOT / 'code/processes/ticker.dm').read_text(encoding='utf-8')
         self.assertIn('wild_herb_seed_check()', ticker)
