@@ -157,6 +157,27 @@
 	. = ..()
 	updatehealth()
 
+// Heals only the damage a medical stack can treat; a stack that cannot help is kept.
+/mob/living/simple_animal/proc/apply_animal_medical(obj/item/stack/medical/MED, mob/user)
+	if (!istype(MED) || MED.amount < 1)
+		return TRUE
+	var/brute = min(max(MED.heal_brute, 0), getBruteLoss())
+	var/burn = min(max(MED.heal_burn, 0), getBurnLoss())
+	if (brute <= 0 && burn <= 0)
+		to_chat(user, SPAN_NOTICE("\The [MED] can't treat any of \the [src]'s injuries."))
+		return TRUE
+	if (brute > 0)
+		adjustBruteLoss(-brute)
+	if (burn > 0)
+		adjustBurnLoss(-burn)
+	updatehealth()
+	var/med_name = MED.name
+	MED.use(1)
+	for (var/mob/M in viewers(src, null))
+		if ((M.client && !( M.blinded )))
+			M.show_message("<span class='notice'>[user] applies the [med_name] on [src].</span>")
+	return TRUE
+
 /mob/living/simple_animal/Life()
 	..()
 	if (npc_subtile_pending_intent && (client || stat))
@@ -608,17 +629,7 @@
 		feed(G, user)
 	else if (istype(O, /obj/item/stack/medical))
 		if (stat != DEAD)
-			var/obj/item/stack/medical/MED = O
-			if (health < maxHealth)
-				if (MED.amount >= 1)
-					adjustBruteLoss(-MED.heal_brute)
-					MED.amount -= 1
-					if (MED.amount <= 0)
-						qdel(MED)
-					for (var/mob/M in viewers(src, null))
-						if ((M.client && !( M.blinded )))
-							M.show_message("<span class='notice'>[user] applies the [MED] on [src].</span>")
-					return TRUE
+			return apply_animal_medical(O, user)
 		else
 			to_chat(user, SPAN_NOTICE("\The [src] is dead, medical items won't bring \him back to life."))
 			return TRUE

@@ -297,7 +297,8 @@ class TanningSourceContracts(unittest.TestCase):
             return {kind for kind in attrs.values() if kind != 'null'}
         self.assertEqual(accepted(source(RACK)), {'/obj/item/stack/material/wethide'})
         self.assertIn('/obj/item/stack/material/lead', accepted(baseline(RACK)))
-        self.assertIn('/obj/item/stack/material/lead', accepted(source(RACK).replace('\tinput1 = null\n', '', 1)))
+        # The parent converter no longer offers lead as a secondary input (issue 6968).
+        self.assertEqual(accepted(source(RACK).replace('\tinput1 = null\n', '', 1)), {'/obj/item/stack/material/wethide'})
 
     def test_rack_stale_cancelled_replaced_or_depleted_batches_reject(self):
         finish = block(source(RACK), '/obj/structure/converter/tanning/proc/finish_hide_drying')
