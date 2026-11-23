@@ -50,6 +50,15 @@
 /obj/structure/trains/locomotive/proc/brake_decel()
 	return train_brake_decel(consist_braked + (braking ? consist_own : 0), consist_weight)
 
+// Speed the train loses each second (drive loop, trains.dm): rolling
+// resistance by its heft (heavier against a lower notch), and the brakes. With
+// the driver's brake on, a train always stops at least TRAIN_BRAKE_OVER_ACCEL
+// times as fast as it can gather way, however long it is.
+/obj/structure/trains/locomotive/proc/stopping_decel(target, heft)
+	. = (target > 0 ? 0.6 : 0.2) / max(1, heft) + brake_decel()
+	if (braking)
+		. = max(., TRAIN_BRAKE_OVER_ACCEL * TRAIN_ACCEL * min(2, pull_ratio()))
+
 // The weight the engine drags, braked cars counted heavier and a car with a
 // hot axle box (train_servicing.dm) twice.
 /obj/structure/trains/locomotive/proc/drag_weight()
