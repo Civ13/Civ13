@@ -82,8 +82,7 @@
 // Lights the button when pressing it would do something, else greys it out.
 // Re-checks when the body moves, turns or changes control, and every few
 // seconds while it stands still (a ladder may have been built meanwhile).
-// The first check runs on the first Life tick: create_HUDneed() files the
-// tile under its name, so the name must not change before then.
+// The first check runs on the first Life tick.
 /obj/screen/updown/proc/refresh(force = FALSE)
 	var/mob/living/human/H = parentmob
 	if (!istype(H))
