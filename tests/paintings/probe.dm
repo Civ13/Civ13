@@ -174,8 +174,15 @@ var/paint_runtime_error = FALSE
 	qdel(V)
 	qdel(P)
 	var/obj/item/weapon/paper/S = new(H)
+	// Sketch with the active hand's pen ink; a colour the drawer lacks is refused.
+	var/obj/item/weapon/pen/pen = new(H)
+	H.hand = 0
+	H.r_hand = pen
+	H.l_hand = S
+	paint_draw(H, S, painting_hex(book_page_ink(pen.colour)), "Framed rose")
+	H.l_hand = null
 	H.r_hand = S
-	paint_draw(H, S, "#7744aa", "Framed rose")
+	qdel(pen)
 	paint_check(wall_frame_mount(H, S, W), "a loose drawing can hang in the same wall frame")
 	var/obj/structure/painting_frame/sketch_frame = locate() in T
 	if (sketch_frame)

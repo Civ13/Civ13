@@ -534,7 +534,7 @@
 /proc/wall_frame_mount(mob/living/user, obj/item/original, atom/wall, datum/framed_plan_diagram/V)
 	if (!istype(user) || QDELETED(user) || QDELETED(original) || QDELETED(wall) || user.incapacitated() || original.loc != user || !user.item_is_in_hands(original) || !painting_is_wall(wall))
 		return FALSE
-	var/obj/item/canvas/C = original
+	var/obj/item/canvas/C = istype(original, /obj/item/canvas) ? original : null
 	if (istype(C))
 		if (!C.finished || !(C.format in list("wall", "gallery")))
 			return FALSE
