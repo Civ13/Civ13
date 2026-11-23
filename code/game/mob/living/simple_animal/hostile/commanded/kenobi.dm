@@ -135,17 +135,7 @@
 			return
 	else if (istype(O, /obj/item/stack/medical))
 		if (stat != DEAD)
-			var/obj/item/stack/medical/MED = O
-			if (health < maxHealth)
-				if (MED.amount >= 1)
-					adjustBruteLoss(-MED.heal_brute)
-					MED.amount -= 1
-					if (MED.amount <= 0)
-						qdel(MED)
-					for (var/mob/M in viewers(src, null))
-						if ((M.client && !( M.blinded )))
-							M.show_message("<span class='notice'>[user] applies the [MED] on [src].</span>")
-					return TRUE
+			return apply_animal_medical(O, user)
 		else
 			to_chat(user, SPAN_NOTICE("\The [src] is dead, performing first-aid won't bring \him back to life."))
 			return TRUE

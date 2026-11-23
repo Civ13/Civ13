@@ -9,7 +9,7 @@
 	anchored = TRUE
 	var/delay = 10 //Time to wait for the conversion to complete.
 	var/input = /obj/item/stack/material/lead //Input material
-	var/input1 = /obj/item/stack/material/lead //Just for you fwoosh!
+	var/input1 = null //Optional second accepted input; null accepts only input
 	var/inputamount = 1 //How much material is required
 	var/output = /obj/item/stack/material/gold //Finished material
 	var/outputamount = 1 //How much material is produced.
