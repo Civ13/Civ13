@@ -25,7 +25,8 @@ checks apply to that tile and level, with north at the top of the sheet.
 The planner checks the route's shape, supported dry tiles, conflicting
 structures, bank access and terrain height where available. The list shows
 the normal recipe materials still outstanding at that site; the part panel
-lists the corresponding research. Unsurveyed parts are counted as unbuilt.\nThe route and relevant adjoining bank tiles must be visible in good light. Where terrain heights are unavailable, the
+lists the corresponding research. Unsurveyed parts are counted as unbuilt.
+The route and relevant adjoining bank tiles must be visible in good light. Where terrain heights are unavailable, the
 game treats the map as level. A site report is not a simulation of water sent
 through the whole surrounding town, and the physical site can change later.
 
