@@ -360,7 +360,7 @@
 
 /obj/structure/refinery
 	name = "petroleum refinery"
-	desc = "A petroleum refinery."
+	desc = "A refinery that processes crude petroleum into gasoline, diesel, or kerosene."
 	icon = 'icons/obj/obj32x64.dmi'
 	icon_state = "refinery"
 	flammable = FALSE
@@ -442,21 +442,21 @@
 	set name = "Set Output"
 	set src in range(1)
 
+	var/mob/user = usr
 	if (active)
-		to_chat(usr, SPAN_NOTICE("You need to shut the refinery down first!"))
+		to_chat(user, SPAN_NOTICE("You need to shut the refinery down first!"))
 		return
-	else
-		var/prod = WWinput(usr, "What to produce?", "Refinery", "Cancel", list("Gasoline","Diesel","Cancel"))
-		if (prod == "Cancel")
-			return
-		else if (prod == "Gasoline")
-			product = "gasoline"
-			to_chat(usr, "This refinery will now produce <b>Gasoline</b>.")
-			return
-		else if (prod == "Diesel")
-			product = "diesel"
-			to_chat(usr, "This refinery will now produce <b>Diesel</b>.")
-			return
+	var/list/options = list("Gasoline", "Diesel", "Kerosene")
+	var/prod = WWinput(user, "What to produce?", "Refinery", "Cancel", options + list("Cancel"))
+	if (!(prod in options) || QDELETED(src) || QDELETED(user) || !Adjacent(user))
+		return
+	// Another operator may have started the refinery while the prompt was open.
+	if (active)
+		to_chat(user, SPAN_NOTICE("You need to shut the refinery down first!"))
+		return
+	product = lowertext(prod)
+	to_chat(user, "This refinery will now produce <b>[prod]</b>.")
+
 /obj/structure/refinery/attack_hand(var/mob/living/human/H)
 	if (active)
 		active = FALSE
@@ -496,32 +496,43 @@
 		return
 
 
+// Credit the barrel first and debit only the crude used for its accepted output.
+// A partly full barrel must not cause the refinery to discard the rest of a batch.
+/obj/structure/refinery/proc/refine_petroleum_batch(datum/reagents/output)
+	if (!output || volume <= 0)
+		return 0
+	var/reagent_id = product
+	var/rate = 0.7
+	if (product == "gasoline" || product == "kerosene")
+		rate = 0.8
+	else
+		reagent_id = "diesel" // Keep the legacy fallback for unknown settings.
+	var/amount = min(10, volume) * rate
+	amount = min(amount, output.get_free_space())
+	if (amount < MINIMUM_CHEMICAL_VOLUME)
+		return 0
+	var/list/accepted = list()
+	if (!output.add_reagent(reagent_id, amount, accepted_amount = accepted))
+		return 0
+	var/produced = accepted["amount"]
+	volume = max(0, volume - produced / rate)
+	return produced
+
 /obj/structure/refinery/proc/refine()
-	if (powered && active && volume >= 1 && !isemptylist(barrel))
-		if (!barrel[1])
+	if (powered && active && volume > 0 && !isemptylist(barrel))
+		var/obj/item/weapon/reagent_containers/glass/barrel/B = factory_output_barrel()
+		if (!B || !B.reagents || B.reagents.get_free_space() < MINIMUM_CHEMICAL_VOLUME)
+			if (B)
+				visible_message("The refinery stops working. The [B] is full.")
 			active = FALSE
-			update_icon()
-			return
-		if (barrel[1].reagents.total_volume >= barrel[1].reagents.maximum_volume)
-			visible_message("The refinery stops working. The [barrel[1]] is full.")
-			active = FALSE
+			powered = FALSE
+			if (powersource)
+				powersource.update_power(-powerneeded, 1, src)
 			update_icon()
 			return
 		update_icon()
-		var/amt = 10
-		if (volume < 10)
-			amt = volume
-			if (volume < 0)
-				volume = 0
-		if (product == "gasoline")
-			volume -= amt
-			barrel[1].reagents.add_reagent("gasoline",0.8*amt)
-		else if (product == "diesel")
-			volume -= amt
-			barrel[1].reagents.add_reagent("diesel",0.7*amt)
-		else // default to diesel
-			volume -= amt
-			barrel[1].reagents.add_reagent("diesel",0.7*amt)
+		if (!refine_petroleum_batch(B.reagents))
+			return
 		refine_scheduled = TRUE
 		spawn(600) // 1 minute
 			refine_scheduled = FALSE

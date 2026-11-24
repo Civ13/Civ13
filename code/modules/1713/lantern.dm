@@ -11,8 +11,8 @@
 	max_fuel = 3600 // one hour of oil
 	unlimited = FALSE
 	uses_batteries = FALSE
-	// Rendered oil burns twice as long as the same measure of raw lard.
-	refuel_reagents = list("petroleum" = 240, "olive_oil" = 240, "fat_oil" = 240, "cornoil" = 240, "sunflower_oil" = 240, "linseed_oil" = 240, "turpentine" = 240, "lard" = 120)
+	// Kerosene lasts longer than other oils; rendered oil lasts twice as long as raw lard.
+	refuel_reagents = list("kerosene" = 360, "petroleum" = 240, "olive_oil" = 240, "fat_oil" = 240, "cornoil" = 240, "sunflower_oil" = 240, "linseed_oil" = 240, "turpentine" = 240, "lard" = 120)
 	empty_message = "is out of oil"
 	open_flame = TRUE
 
