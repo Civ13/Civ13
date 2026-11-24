@@ -30,8 +30,8 @@
 	var/house_id
 	if (player_house_feature())
 		house_id = land.player_house_of(H)
-		if (!house_id || !player_house_actor(H) || land.player_house_role(H, house_id) != "steward" || persistence_admission_blocked())
-			to_chat(H, SPAN_WARNING("Only a house steward may found a new company in this land."))
+		if (!house_id || persistence_admission_blocked())
+			to_chat(H, SPAN_WARNING("Register your account's house in Player Houses before founding a company in this land."))
 			return
 	if (!newname || newname == "none")
 		return
@@ -56,16 +56,19 @@
 
 	if (house_id)
 		var/list/house = land.player_houses_state[house_id]
-		if (WWinput(H, "Charter this company under House [house["name"]]? You receive the stock, and the house appoints the operators.", "Company Charter", "No", list("Yes", "No")) != "Yes")
+		if (WWinput(H, "Charter this company under House [house["name"]]? You receive the stock, and your account's characters can operate it.", "Company Charter", "No", list("Yes", "No")) != "Yes")
 			return
-		if (land != map || persistence_admission_changed(save_identity) || !player_house_actor(H) || land.player_house_role(H, house_id) != "steward")
+		if (land != map || persistence_admission_changed(save_identity) || land.player_house_of(H) != house_id)
 			return
+
+	if (land != map || (house_id && persistence_admission_changed(save_identity)))
+		return
 
 	// Re-checked: another player can claim the name while the colour prompts are open.
 	if (newname in map.custom_company_nr)
 		to_chat(H, SPAN_DANGER("That company already exists. Choose another name."))
 		return
-	if (house_id && !land.company_attach_house(newname, house_id))
+	if (house_id && !land.company_attach_house(newname, house_id, H))
 		return
 	map.custom_company_nr += newname
 	var/list/newnamev = list("[newname]" = list(list(H,100,0)))

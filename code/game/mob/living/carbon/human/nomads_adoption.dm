@@ -18,8 +18,6 @@
 /mob/living/human/persistence_runtime_var(key)
 	if (key == "adoption_offer_pending" || key == "adoption_offer_next")
 		return TRUE
-	if (player_house_runtime_var(key))
-		return TRUE
 	return ..()
 
 /proc/adoption_enabled()

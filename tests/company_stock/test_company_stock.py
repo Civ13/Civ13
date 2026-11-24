@@ -53,21 +53,31 @@ class HouseControl(unittest.TestCase):
     def test_house_or_legacy_operator_never_redefines_stock_ownership(self):
         operator = proc(self.houses, '/proc/company_may_operate(', '\n/')
         self.assertIn('return find_company_member(H, company)', operator)
-        self.assertIn('map.player_house_role(H, id) == "steward"', operator)
+        self.assertIn('map.player_house_of(H) == id', operator)
         for source in (MARKET, DEATH):
             self.assertNotIn('company_may_operate(', source)
 
-    def test_existing_company_requires_current_steward_and_all_stock_after_consent(self):
+    def test_existing_company_requires_authenticated_house_and_all_stock_after_consent(self):
         charter = proc(self.houses, '/mob/living/human/proc/charter_existing_company()', '\n#')
-        commit = charter.index('land.company_attach_house(company, house_id)')
+        commit = charter.index('land.company_attach_house(company, house_id, src)')
         recheck = charter[charter.index('Give House'):commit]
         self.assertIn('company_has_stake(company, src, 100)', recheck)
-        self.assertIn('player_house_role(src, house_id) != "steward"', recheck)
+        self.assertIn('land.player_house_of(src) != house_id', recheck)
         self.assertIn('persistence_admission_changed(save_identity)', recheck)
         attach = proc(self.houses, '/obj/map_metadata/proc/company_attach_house(', '\n/')
         self.assertIn('company_controlling_house(company)', attach)
         for economic_field in ('custom_company', 'sales_registry', 'company_move_stake'):
             self.assertNotIn(economic_field, attach)
+
+    def test_legacy_or_duplicate_charter_never_falls_back_to_shareholder_control(self):
+        lookup = proc(self.houses, '/obj/map_metadata/proc/company_controlling_house(', '\n/')
+        self.assertIn('charters[company] == TRUE', lookup)
+        self.assertIn('return "conflicted"', lookup)
+        self.assertNotIn('owner_ckey', lookup)
+        operation = proc(self.houses, '/proc/company_may_operate(', '\n/')
+        self.assertIn('if (!id)\n\t\treturn find_company_member(H, company)', operation)
+        self.assertIn('id != "conflicted" && map.player_house_of(H) == id', operation)
+        self.assertNotIn('company_move_stake', operation)
 
     def test_buyer_rechecked_after_yield_and_when_completing_payment(self):
         vending = proc(VENDING, '/obj/structure/vending/sales/ui_act(', '\n/')
