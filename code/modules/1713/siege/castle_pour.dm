@@ -163,8 +163,8 @@
 		return TRUE
 	return ..()
 
-/obj/item/weapon/reagent_containers/examine(mob/user)
-	..()
+/obj/item/weapon/reagent_containers/examine(mob/user, distance = -1)
+	. = ..(user, distance)
 	if (is_hot())
 		to_chat(user, SPAN_WARNING("It is hot."))
 

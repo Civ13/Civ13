@@ -53,6 +53,7 @@
 	death_legacy_note(src, gibbed)
 	forget_recipe_knowledge()
 	recruitment_life_id = null // a death ends every recruitment application of this life
+	lose_player_house_authority()
 	region_home_death(src)
 	if (driver && driver_vehicle)
 		driver_vehicle.driver_died(src) // frees the seat so someone else can drive

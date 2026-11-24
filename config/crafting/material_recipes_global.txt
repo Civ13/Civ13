@@ -1909,6 +1909,7 @@ RECIPE: /material/glass/,beaker,/obj/item/weapon/reagent_containers/glass/beaker
 RECIPE: /material/glass/,large beaker,/obj/item/weapon/reagent_containers/glass/beaker/large,3,40,0,1,chemistry,105,0,0,8,null
 RECIPE: /material/glass/,laboratory distiller,/obj/structure/lab_distillery,10,140,1,1,chemistry,105,0,0,8,null
 RECIPE: /material/glass/,laboratory reaction bench,/obj/structure/reaction_bench,10,140,1,1,chemistry,105,0,0,8,null
+RECIPE: /material/glass/,immunization clinic,/obj/structure/workshop_machine/immunization_clinic,8,140,1,1,medical,120,0,0,8,null
 RECIPE: /material/glass/,laboratory feedstock dispenser,/obj/structure/chemical_dispenser/full/laboratory,20,180,1,1,chemistry,90,0,0,8,null
 RECIPE: /material/iron/,laboratory burner,/obj/item/weapon/laboratory_burner,4,80,0,1,chemistry,105,0,0,8,null
 
@@ -3190,6 +3191,7 @@ RECIPE: /material/iron/,mechanical trap,/obj/item/weapon/beartrap,5,140,0,1,weap
 RECIPE: /material/iron/,snap mousetrap,/obj/item/weapon/mousetrap,1,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
+RECIPE: /material/iron/,chakram,/obj/item/weapon/material/thrown/chakram,3,25,0,1,weapons,0,39,0,8,iron
 
 RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,weapons,0,90,0,8,null
 RECIPE: /material/steel/,bipod,/obj/item/weapon/attachment/under/bipod,2,60,0,1,weapons,0,0,0,8,null

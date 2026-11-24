@@ -9,7 +9,8 @@
 // copies the body's sight flags, so the admin sees what the player sees. A
 // transparent shield over the mirrored screen swallows clicks, so nothing on the
 // player's HUD can be used from the admin's side. Moving the ghost, following
-// someone else, re-entering a body or "Stop Viewing Player" ends it.
+// someone else, re-entering a body or "Stop Viewing Player" ends it. The
+// mirrored view also ends when the player no longer has a live view to share.
 
 #define ADMIN_VIEW_SYNC_DELAY 1 // deciseconds between camera syncs
 
@@ -74,6 +75,25 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 		to_chat(src, SPAN_NOTICE("Your ghost is visible again."))
 	log_admin("[key_name(src)] [admin_ghost_hidden ? "hid" : "unhid"] their admin ghost")
 
+// Keep the mode on this aghost only, never on the account or the living mob.
+/client/proc/toggle_admin_ghost_sight()
+	set category = "Admin"
+	set name = "Toggle Aghost Sight"
+	set desc = "Switch between world lighting with wall occlusion and full-bright sight through walls."
+	if (!check_rights(R_ADMIN, TRUE, mob))
+		return
+	var/mob/observer/ghost/G = mob
+	if (!istype(G) || !G.admin_ghosted)
+		to_chat(src, SPAN_WARNING("Use Aghost before changing your ghost sight."))
+		return
+	if (admin_player_view)
+		to_chat(src, SPAN_WARNING("Stop viewing the player before changing your ghost sight."))
+		return
+	G.admin_sight_selected = TRUE
+	G.seedarkness = !G.seedarkness
+	G.updateghostsight()
+	to_chat(src, SPAN_NOTICE(G.seedarkness ? "Aghost sight: world lighting and wall occlusion." : "Aghost sight: full brightness through walls."))
+
 /client/proc/admin_view_player()
 	set category = "Admin"
 	set name = "View As Player"
@@ -112,6 +132,10 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 	if (M == mob || isnewplayer(M))
 		to_chat(src, SPAN_WARNING("You cannot view that mob."))
 		return FALSE
+	var/client/player_client = M.client
+	if (!player_client || player_client.mob != M)
+		to_chat(src, SPAN_WARNING("That player is not connected to this mob."))
+		return FALSE
 	if (!config.allow_admin_jump)
 		WWalert(src, "Admin jumping is disabled", "View As Player")
 		return FALSE
@@ -122,6 +146,10 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 		admin_ghost()
 		sleep(2)
 	if (!isghost(mob) || M == mob)
+		return FALSE
+	// The target can disconnect or switch bodies while aghost waits above.
+	if (!player_client || QDELETED(M) || M.client != player_client || player_client.mob != M || !get_turf(M))
+		to_chat(src, SPAN_WARNING("That player's live view is no longer available."))
 		return FALSE
 	if (admin_player_view)
 		admin_player_view.stop(FALSE)
@@ -231,7 +259,7 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 
 /datum/admin_player_view/proc/tick()
 	if (active && !sync())
-		stop(TRUE)
+		stop(TRUE, TRUE)
 
 /datum/admin_player_view/proc/relabel()
 	if (label)
@@ -255,17 +283,20 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 	follow_player_client()
 	if (QDELETED(target) || ghost.following != target)
 		return FALSE
-	var/client/T = target.client
-	var/atom/eye = (T && T.eye) ? T.eye : target
+	// Mirror the same connected player, not an unoccupied or newly occupied body.
+	var/client/T = target_client
+	if (!T || T.mob != target || target.client != T)
+		return FALSE
+	var/atom/eye = T.eye ? T.eye : target
 	if (viewer.eye != eye)
 		viewer.eye = eye
 	if (viewer.perspective != EYE_PERSPECTIVE)
 		viewer.perspective = EYE_PERSPECTIVE
-	var/wanted_view = T ? T.view : own_view
+	var/wanted_view = T.view
 	if (viewer.view != wanted_view)
 		viewer.view = wanted_view
-	var/px = T ? T.pixel_x : 0
-	var/py = T ? T.pixel_y : 0
+	var/px = T.pixel_x
+	var/py = T.pixel_y
 	if (viewer.pixel_x != px)
 		viewer.pixel_x = px
 	if (viewer.pixel_y != py)
@@ -275,23 +306,15 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 	ghost.see_in_dark = target.see_in_dark
 
 	var/list/want = list()
-	if (T)
-		for (var/A in T.screen)
-			want[A] = TRUE
-	else if (ghost.hud_used)
-		// A body with nobody in it has no HUD; keep the admin's own plane masters so lighting still draws.
-		for (var/key in ghost.hud_used.plane_masters)
-			var/P = ghost.hud_used.plane_masters[key]
-			if (P)
-				want[P] = TRUE
+	for (var/A in T.screen)
+		want[A] = TRUE
 	want[shield] = TRUE
 	want[label] = TRUE
 	mirrored_screen = mirror(viewer.screen, want)
 
 	want = list()
-	if (T)
-		for (var/I in T.images)
-			want[I] = TRUE
+	for (var/I in T.images)
+		want[I] = TRUE
 	mirrored_images = mirror(viewer.images, want)
 	return TRUE
 
@@ -339,7 +362,7 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 // a view ended without it left the later one restoring a screen with no plane
 // masters, pitch black once the admin moved off. announce tells the admin and
 // drops the follow. A new mob's Login rebuilds everything when they left the ghost.
-/datum/admin_player_view/proc/stop(announce = TRUE)
+/datum/admin_player_view/proc/stop(announce = TRUE, live_view_unavailable = FALSE)
 	if (!active)
 		return
 	active = FALSE
@@ -362,7 +385,10 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 		if (announce)
 			if (target && ghost.following == target)
 				ghost.stop_following()
-			to_chat(viewer, SPAN_NOTICE("You stopped viewing as [target ? target : "the player"]."))
+			if (live_view_unavailable)
+				to_chat(viewer, SPAN_NOTICE("The player's live view is no longer available. Returned to your ghost view."))
+			else
+				to_chat(viewer, SPAN_NOTICE("You stopped viewing as [target ? target : "the player"]."))
 	mirrored_screen = list()
 	mirrored_images = list()
 	own_screen = null

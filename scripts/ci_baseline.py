@@ -126,6 +126,14 @@ SUITES = {
             'code/game/objects/map_metadata/nomads/nomads_gaia.dm',
             'code/modules/1713/weather_policy.dm', 'code/modules/1713/weather.dm',
             'code/__defines/weather.dm', 'tests/weather_policy/test_policy.py')},
+    'kerosene': {'files': ('tests/kerosene/test_source.py',),
+        'paths': ('tests/kerosene/',),
+        'shared_paths': ('code/modules/1713/modern_items.dm', 'code/modules/1713/lantern.dm',
+                         'code/modules/1713/factory_chemistry.dm',
+                         'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Other.dm',
+                         'code/modules/reagents/reagent_pollution.dm', 'scripts/atlas/catalog_metadata.py',
+                         'scripts/build-crafting-atlas.py', 'UI/crafting-atlas.json',
+                         'tests/save_movement/source_adapter.py')},
     'biofuel_capacity': {'files': ('tests/biofuel_capacity/test_output.py',),
         'paths': ('tests/biofuel_capacity/',),
         'shared_paths': ('code/modules/1713/modern_items.dm', 'tests/save_movement/source_adapter.py')},
@@ -1563,7 +1571,8 @@ SUITES = {
     # developer evidence only.
     'admin_player_panel': {'files': ('tests/admin_player_panel/test_admin_player_panel.py',),
         'paths': ('tests/admin_player_panel/', 'code/modules/admin/player_panel_pages.dm'), 'shared_paths': (
-            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/topic.dm', 'code/modules/admin/admin.dm')},
+            'code/modules/admin/admin_verbs.dm', 'code/modules/admin/topic.dm', 'code/modules/admin/admin.dm',
+            'code/modules/admin/verbs/quickBan.dm', 'code/modules/divine/heteromorph.dm')},
     # Admin Hide Ghost / View As Player wiring and guards; offline only.
     'admin_spectate': {'files': ('tests/admin_spectate/test_admin_spectate.py',),
         'paths': ('tests/admin_spectate/',), 'shared_paths': (
@@ -2070,6 +2079,15 @@ SUITES = {
             'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Character slot owner keys (docs/character-slots.md); source checks only.
+    'gateway_character_roster': {'files': ('tests/region_gateway/test_roster.py',), 'paths': (
+        'tests/region_gateway/test_roster.py', 'code/modules/persistence/region_gateway.dm',
+        'code/modules/persistence/region_relay.dm'), 'shared_paths': (
+            'code/modules/persistence/region_home.dm', 'code/modules/persistence/region_event.dm',
+            'code/modules/persistence/player_reclaim.dm', 'code/modules/accolades/character_slots.dm')},
+    'gateway_world_overview': {'files': ('tests/region_gateway/test_overview.py',), 'paths': (
+        'tests/region_gateway/test_overview.py', 'code/modules/persistence/region_gateway_overview.dm',
+        'code/modules/persistence/region_gateway.dm', 'code/modules/persistence/region_relay.dm',
+        'code/modules/persistence/world_links.dm', 'tools/world_links/world_links.json')},
     'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py',
         'tests/character_slots/test_structuring.py',
         'tests/character_slots/test_account_summary.py'),
@@ -2107,7 +2125,8 @@ SUITES = {
                                 'tests/crafting_loader/test_supplied_item_recipes.py',
                                 'tests/crafting_loader/test_basic_clothing.py',
                                 'tests/crafting_loader/test_production_machines.py',
-                                'tests/crafting_loader/test_radio_headset.py'),
+                                'tests/crafting_loader/test_radio_headset.py',
+                                'tests/crafting_loader/test_chakram.py'),
         'paths': ('tests/crafting_loader/',), 'shared_paths': (
             'code/setup.dm', 'tests/save_movement/source_adapter.py',
             'code/modules/research_tree/research_node.dm',
@@ -2434,8 +2453,12 @@ SUITES = {
     # test_foundations specification helper. No native runner or network import.
     # Shared production sources retain their conservative all-suite fallback.
     'character_traits': {'files': ('tests/character_traits/test_foundations.py',
-                                   'tests/character_traits/test_random.py'),
+                                   'tests/character_traits/test_random.py',
+                                   'tests/character_traits/test_birth_chart_wheel.py',
+                                   'tests/character_traits/test_star_chart.py'),
         'paths': ('tests/character_traits/',), 'shared_paths': (
+            'code/game/mob/living/carbon/human/star_chart.dm',
+            'code/game/mob/living/carbon/human/birth_chart_wheel.dm',
             'code/game/mob/living/carbon/human/traits.dm',
             'code/modules/client/preferencesSQLite/character_setup_ui.dm',
             'code/modules/client/preferencesSQLite/preference_setup/general/01_basic.dm',
@@ -2445,7 +2468,11 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/game/mob/living/carbon/human/playstyle_traits.dm',
-            'code/game/mob/living/carbon/human/sight_traits.dm')},
+            'code/game/mob/living/carbon/human/sight_traits.dm',
+            'code/game/mob/living/carbon/human/birth_chart_wheel.dm',
+            'code/game/mob/living/carbon/human/birth_charts.dm',
+            'code/game/mob/new_player/new_player.dm',
+            'code/modules/persistence/region_travel.dm')},
     # Stdlib-only source contracts for the character setup window; the shared
     # sources keep the character_traits fallback above.
     'character_setup': {'files': ('tests/character_setup/test_setup_window.py',),
@@ -2617,7 +2644,9 @@ SUITES = {
                               'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
         'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
         'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
-        'code/processes/throwing.dm', 'code/modules/persistence/functions.dm')},
+        'code/processes/throwing.dm', 'code/modules/persistence/functions.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_defense.dm',
+                         'code/game/mob/living/living_defense.dm')},
     'los_context': {'files': ('tests/los_context/test_offline.py',
                               'tests/los_context/test_production.py',
                               'tests/los_context/test_tile_motion.py',
@@ -2658,7 +2687,7 @@ SUITES = {
         'tests/save_movement/', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/bed_return.dm',
         'code/game/mob/new_player/', 'code/game/mob/living/carbon/human/human_helpers.dm'),
         'shared_paths': ('code/game/gameticker.dm', 'code/modules/persistence/functions.dm',
-            'code/game/mob/living/carbon/carbon_defines.dm',
+            'code/modules/persistence/region_gateway.dm', 'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/carbon/human/nomads_spawn.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/objects/structures.dm', 'code/modules/chat/chat.dm',

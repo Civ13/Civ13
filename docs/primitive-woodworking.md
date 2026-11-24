@@ -50,8 +50,8 @@ reuse is confirmed by Civ13 source, not by the video.
 | Cut workable piece | 1 log -> 1 small piece + 1 bark | 120 ds |
 | Whittle wedge | 1 small piece -> 1 wooden wedge | 120 ds |
 | Whittle mallet | 5 small pieces -> existing wooden mallet | 240 ds |
-| Hammer/wedge split | 2 logs -> 1 crude plank + 2 bark | 240 ds |
-| Sharp non-wood tool flatten | 1 crude plank -> 1 finished plank | 80 ds |
+| Hammer/wedge split | 2 logs -> 1 crude plank + 2 bark | 180 ds |
+| Sharp non-wood tool flatten | 1 crude plank -> 1 finished plank | 60 ds |
 
 These are game abstractions, not measured historical production. One usable small
 piece per log is deliberately conservative; it avoids introducing fractional log
@@ -61,7 +61,8 @@ same five-log input equivalent as existing wooden-hammer crafting. Bark is paid
 once per original log, never again when whittling a piece or flattening a plank.
 
 The split yield matches the existing ordinary axe conversion's two logs per
-finished plank, with 240 + 80 ds of work instead of its 80-ds cut. The integrated
+finished plank. The split and flatten steps take 180 + 60 ds of work. The
+ordinary axe cut takes 80 ds. The integrated
 sawmill checkpoint `d3c33c561fdcb3e85a581482b43f8668d4789306` supplies one finished
 plank per log at the primitive station, with its 20-ds cut and station advantage.
 Its production source is retained unchanged; this integration does not rebalance

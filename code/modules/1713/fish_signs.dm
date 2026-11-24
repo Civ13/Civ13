@@ -20,7 +20,7 @@
 #define FISH_SIGN_GULL_LAYER 5
 
 /client
-	var/tmp/list/fish_sign_images = null
+	var/tmp/list/fish_sign_candidates = null
 	var/tmp/fish_signs_next = 0
 
 // The sign to show on T just now, or null. Chance follows how full the ground is.
@@ -49,19 +49,14 @@
 	I.mouse_opacity = 0
 	return I
 
-/client/proc/fish_signs_clear()
-	if (fish_sign_images)
-		images -= fish_sign_images
-		fish_sign_images = null
-
 /client/proc/fish_signs_refresh()
 	if (world.time < fish_signs_next)
 		return
 	fish_signs_next = world.time + FISH_SIGN_PERIOD
-	fish_signs_clear()
+	fish_sign_candidates = null
 	var/turf/centre = get_turf(eye)
 	if (!centre)
-		return
+		return TRUE
 	var/list/drawn = list()
 	var/list/seen = list()
 	for (var/i = 1 to FISH_SIGN_TRIES)
@@ -73,8 +68,8 @@
 		if (state)
 			drawn += fish_sign_image(T, state)
 	if (drawn.len)
-		fish_sign_images = drawn
-		images += drawn
+		fish_sign_candidates = drawn
+	return TRUE
 
 #undef FISH_SIGN_RADIUS
 #undef FISH_SIGN_TRIES

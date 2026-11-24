@@ -12,7 +12,7 @@
 // for Civ13 without signals, tgui or turf reservations; no CM code is copied.
 //
 // The rooms live on one extra level appended above the world while anyone
-// practises. That level is never saved or built on: a save closes every room
+// practises. That level is never saved: a save closes every room
 // and removes the level first (begin_persistence_operation), the level is
 // removed as soon as the last player leaves, and while it exists world_z_budget
 // refuses every other new level, so it is always world.maxz and can be removed
@@ -25,8 +25,10 @@
 #define PRACTICE_ROOM_PITCH_Y 14
 #define PRACTICE_MAX_ROOMS 8
 // A tutorial region (tutorial_region.dm) only runs rooms, so it holds more
-// (its 116 x 60 map fits 24 of the wider camp rooms).
+// (its 397 x 257 map fits 24 of the plots build_tutorial_room lays out).
 #define PRACTICE_MAX_ROOMS_TUTORIAL 32
+#define PRACTICE_TUTORIAL_WIDTH 64
+#define PRACTICE_TUTORIAL_HEIGHT 62
 // Retry while a save holds the level (a save removes it itself).
 #define PRACTICE_IDLE_DROP (30 SECONDS)
 // A practice level is Gaia-sized at most. A 500 x 350 open-air plane measured
@@ -50,9 +52,21 @@ var/global/datum/practice_rooms/practice_rooms = new
 	var/idle_timer
 	var/last_error
 
+// The level the rooms stand on. A tutorial region builds them on its map's own
+// ground, so the map's underground and building levels work in them like
+// anywhere else; other regions use the level added above the world.
+/datum/practice_rooms/proc/room_z()
+	return tutorial_region_here() ? 1 : practice_room_z
+
+/datum/practice_rooms/proc/pitch_x()
+	return tutorial_region_here() ? PRACTICE_TUTORIAL_WIDTH + 2 : PRACTICE_ROOM_PITCH_X
+
+/datum/practice_rooms/proc/pitch_y()
+	return tutorial_region_here() ? PRACTICE_TUTORIAL_HEIGHT + 2 : PRACTICE_ROOM_PITCH_Y
+
 /datum/practice_rooms/proc/capacity()
-	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH_X)
-	var/rows = round((world.maxy - 1) / PRACTICE_ROOM_PITCH_Y)
+	var/cols = round((world.maxx - 1) / pitch_x())
+	var/rows = round((world.maxy - 1) / pitch_y())
 	return max(0, min(tutorial_region_here() ? PRACTICE_MAX_ROOMS_TUTORIAL : PRACTICE_MAX_ROOMS, cols * rows))
 
 // Why a lobby player cannot enter now, or null.
@@ -65,7 +79,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 		return "The world is saving or loading. Try again in a minute."
 	if (sessions.len >= capacity())
 		return "All practice rooms are in use. Try again in a few minutes."
-	if (!practice_room_z && world_z_budget.error(world.maxz + 1, "practice"))
+	if (!tutorial_region_here() && !practice_room_z && world_z_budget.error(world.maxz + 1, "practice"))
 		return "Practice rooms are unavailable right now. Try again in a few minutes."
 	return null
 
@@ -76,19 +90,24 @@ var/global/datum/practice_rooms/practice_rooms = new
 	return 0
 
 /datum/practice_rooms/proc/slot_origin(slot)
-	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH_X)
+	var/cols = round((world.maxx - 1) / pitch_x())
 	var/col = (slot - 1) % cols
 	var/row = round((slot - 1) / cols)
-	return list(2 + col * PRACTICE_ROOM_PITCH_X, 2 + row * PRACTICE_ROOM_PITCH_Y)
+	return list(2 + col * pitch_x(), 2 + row * pitch_y())
+
+// The slot's rectangle: x1, y1, x2, y2.
+/datum/practice_rooms/proc/slot_rect(slot)
+	var/list/O = slot_origin(slot)
+	return list(O[1], O[2], O[1] + pitch_x() - 3, O[2] + pitch_y() - 3)
 
 /datum/practice_rooms/proc/slot_turfs(slot)
-	var/list/O = slot_origin(slot)
-	return block(locate(O[1], O[2], practice_room_z), locate(O[1] + PRACTICE_ROOM_WIDTH - 1, O[2] + PRACTICE_ROOM_HEIGHT - 1, practice_room_z))
+	var/list/R = slot_rect(slot)
+	return block(locate(R[1], R[2], room_z()), locate(R[3], R[4], room_z()))
 
 // Adds the level through the shared budget. No sleeps between admission and
 // publication, like the other level owners.
 /datum/practice_rooms/proc/ensure_level()
-	if (practice_room_z)
+	if (practice_room_z || tutorial_region_here())
 		return TRUE
 	var/target_z = world.maxz + 1
 	var/datum/new_z_reservation/reservation = world_z_budget.reserve(target_z, "practice")
@@ -116,7 +135,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 
 // Removes the level once no room is in use. Returns TRUE when it is gone.
 /datum/practice_rooms/proc/drop_level()
-	if (!practice_room_z)
+	if (!practice_room_z || tutorial_region_here())
 		return TRUE
 	if (sessions.len)
 		return FALSE
@@ -159,6 +178,9 @@ var/global/datum/practice_rooms/practice_rooms = new
 
 // Deletes everything movable in a room except player-controlled mobs.
 /datum/practice_rooms/proc/wipe_room(slot)
+	if (tutorial_region_here())
+		clear_column(slot_rect(slot))
+		return
 	for (var/turf/T in slot_turfs(slot))
 		for (var/atom/movable/AM in T)
 			if (ismob(AM) && AM:client)
@@ -176,7 +198,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 	var/y1 = O[2]
 	var/x2 = x1 + PRACTICE_ROOM_WIDTH - 1
 	var/y2 = y1 + PRACTICE_ROOM_HEIGHT - 1
-	var/z = practice_room_z
+	var/z = room_z()
 	var/split = x1 + 6
 	var/camp = x1 + 11
 	var/area/A = locate(/area/caribbean/admin/practice) in area_list
@@ -184,6 +206,8 @@ var/global/datum/practice_rooms/practice_rooms = new
 		A = new /area/caribbean/admin/practice
 	A.contents.Add(slot_turfs(slot))
 	wipe_room(slot)
+	if (tutorial_region_here())
+		return build_tutorial_room(slot)
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
 	for (var/turf/T in slot_turfs(slot))
@@ -215,6 +239,158 @@ var/global/datum/practice_rooms/practice_rooms = new
 	props["exit"] = new /obj/effect/practice_marker/exit(locate(x1 + 15, y1 + 6, z))
 	props["split"] = split
 	props["camp"] = camp
+	return props
+
+// The tutorial region's plot, 64 x 62 on the map's own ground level. The
+// course runs west to east along the south through spaces joined by doors on
+// one corridor line (row y + 7), and the rest is a proving ground:
+//
+//   x + 1..5    controls room (wood, 5 x 9)
+//   x + 7..10   training room (wood, 4 x 9)
+//   x + 12..20  open camp (grass, 9 x 13): a dirt path along the corridor
+//               line, fire, water and wash place north of it; bed, lesson
+//               board, tree, grass, flint and the exit south of it
+//   x + 22..30  drawing office (wood, 9 x 13): the workshop desk, the supply
+//               floor and a practice store
+//   x + 32..62  paved yard (concrete, 31 x 60), through the office's east
+//               door: founded ground for vehicles, ships, trains and tall
+//               buildings; practice_workshop.dm fits it out per exercise
+//   x + 1..30   soil yard (grass, 30 x 46, rows y + 15..60), through the
+//               camp's north door: ground to dig in and build on
+//
+// The two yards are one L-shaped field. Everything in the plot can be dug
+// under and built over: the underground and building levels are the map's own
+// (dug_underground.dm, building_levels.dm), walled to the plot by bedrock
+// below (wall_underground) and by the trainee's own reach above (may_stand).
+// The exit marker stands in the camp's south-east corner, off every walking
+// line, so nobody leaves by accident.
+/datum/practice_rooms/proc/tutorial_ground(dx, dy)
+	if (dx <= 0 || dy <= 0 || dx >= PRACTICE_TUTORIAL_WIDTH - 1 || dy >= PRACTICE_TUTORIAL_HEIGHT - 1)
+		return /turf/wall/indestructable
+	if (dx >= 32)
+		return /turf/floor/plating/concrete
+	if (dy >= 15)
+		return dx == 31 ? /turf/floor/dirt : /turf/floor/grass
+	if (dy == 14)
+		return dx == 16 ? /turf/floor/wood : /turf/wall/indestructable
+	if (dx >= 22 && dx <= 30)
+		return /turf/floor/wood
+	if (dx >= 12 && dx <= 20)
+		// Bare earth on the path and around the campfire.
+		return (dy == 7 || (abs(dx - 15) <= 1 && abs(dy - 10) <= 1)) ? /turf/floor/dirt : /turf/floor/grass
+	if (dy >= 3 && dy <= 11 && ((dx >= 1 && dx <= 5) || (dx >= 7 && dx <= 10)))
+		return /turf/floor/wood
+	if (dy == 7 && (dx == 6 || dx == 11 || dx == 21 || dx == 31))
+		return /turf/floor/wood
+	return /turf/wall/indestructable
+
+// Lays the ground of a rectangle of a plot afresh.
+/datum/practice_rooms/proc/lay_tutorial_ground(slot, list/rect)
+	var/list/O = slot_origin(slot)
+	var/old_bulk = wall_bulk_placement
+	wall_bulk_placement = TRUE
+	for (var/turf/T in block(locate(rect[1], rect[2], room_z()), locate(rect[3], rect[4], room_z())))
+		var/kind = tutorial_ground(T.x - O[1], T.y - O[2])
+		new kind(T)
+	wall_bulk_placement = old_bulk
+
+// Clears a rectangle of a tutorial plot on every level. Everything movable
+// goes except connected players and what is listed in keep; the levels above
+// return to open air and the levels below to undug rock. The ground level's
+// turfs are left for the caller to lay again.
+/datum/practice_rooms/proc/clear_column(list/rect, list/keep = null)
+	for (var/z = world.maxz, z >= 1, z--)
+		var/list/cells = block(locate(rect[1], rect[2], z), locate(rect[3], rect[4], z))
+		// Twice: taking a floor out can drop what stood on it, or rubble, here.
+		for (var/pass in 1 to 2)
+			for (var/turf/T in cells)
+				for (var/atom/movable/AM in T)
+					if ((ismob(AM) && AM:client) || istype(AM, /atom/movable/lighting_overlay) || istype(AM, /atom/movable/lighting_fullbright) || (keep && (AM in keep)))
+						continue
+					qdel(AM)
+		if (z == room_z())
+			continue
+		var/cave = underground_depth_of(z)
+		var/was_forming = dug_underground_forming
+		dug_underground_forming = TRUE
+		for (var/turf/T in cells)
+			if (cave)
+				if (!istype(T, /turf/sky/building) && !istype(T, /turf/wall/rockwall/bedrock))
+					T.ChangeTurf(/turf/sky/building/unformed)
+			else if (!istype(T, /turf/sky/building))
+				T.ChangeTurf(/turf/sky/building)
+		dug_underground_forming = was_forming
+
+// Bedrock around a plot on underground level z, so one trainee's tunnels and
+// cave pockets never reach another's. Kept once laid.
+/datum/practice_rooms/proc/wall_underground(slot, z)
+	var/list/R = slot_rect(slot)
+	var/was_forming = dug_underground_forming
+	dug_underground_forming = TRUE
+	for (var/turf/T in block(locate(R[1], R[2], z), locate(R[3], R[4], z)))
+		if ((T.x == R[1] || T.x == R[3] || T.y == R[2] || T.y == R[4]) && !istype(T, /turf/wall/rockwall/bedrock))
+			T.ChangeTurf(/turf/wall/rockwall/bedrock)
+	dug_underground_forming = was_forming
+
+// Called when the map gains an underground level (dug_underground.dm): the
+// plots in use are walled off before anything forms there.
+/datum/practice_rooms/proc/underground_added(z)
+	if (!tutorial_region_here())
+		return
+	for (var/key in sessions)
+		var/datum/practice_session/S = sessions[key]
+		wall_underground(S.slot, z)
+
+/datum/practice_rooms/proc/build_tutorial_room(slot)
+	var/list/O = slot_origin(slot)
+	var/x = O[1]
+	var/y = O[2]
+	var/z = room_z()
+	lay_tutorial_ground(slot, slot_rect(slot))
+	for (var/cave in underground_levels())
+		wall_underground(slot, cave)
+	var/list/props = list()
+	props["start"] = locate(x + 2, y + 4, z)
+	props["marker"] = new /obj/effect/practice_marker(locate(x + 4, y + 10, z))
+	props["knife"] = new /obj/item/weapon/material/kitchen/utensil/knife(locate(x + 2, y + 10, z))
+	props["hat"] = new /obj/item/clothing/head/strawhat(locate(x + 4, y + 5, z))
+	props["door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 6, y + 7, z))
+	props["dummy"] = new /obj/structure/practice_dummy/indestructible/practice_room(locate(x + 9, y + 10, z))
+	props["gauze"] = new /obj/item/stack/medical/bruise_pack(locate(x + 8, y + 5, z))
+	props["camp_door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 11, y + 7, z))
+	// North of the path: fire, food and water.
+	props["fire"] = new /obj/structure/oven/fireplace/practice(locate(x + 15, y + 10, z))
+	var/obj/item/stack/material/wood/firewood = new(locate(x + 13, y + 9, z))
+	firewood.amount = 10
+	props["firewood"] = firewood
+	props["meat"] = new /obj/item/weapon/reagent_containers/food/snacks/meat(locate(x + 13, y + 10, z))
+	props["pot"] = new /obj/item/weapon/reagent_containers/glass/small_pot(locate(x + 17, y + 11, z))
+	props["puddle"] = new /obj/structure/sink/puddle/practice(locate(x + 18, y + 12, z))
+	props["soap"] = new /obj/item/weapon/soap(locate(x + 19, y + 11, z))
+	// South of the path: rest, the extra lessons and the way out.
+	props["bed"] = new /obj/structure/bed/wood(locate(x + 13, y + 2, z))
+	props["lesson_board"] = new /obj/structure/practice_lesson_board(locate(x + 14, y + 6, z))
+	new /obj/structure/wild/tree/live_tree(locate(x + 18, y + 3, z))
+	new /obj/structure/wild/tallgrass(locate(x + 17, y + 4, z))
+	new /obj/structure/wild/tallgrass(locate(x + 19, y + 4, z))
+	new /obj/item/weapon/flint(locate(x + 16, y + 3, z))
+	new /obj/item/weapon/flint(locate(x + 16, y + 3, z))
+	props["exit"] = new /obj/effect/practice_marker/exit(locate(x + 20, y + 1, z))
+	props["yard_door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 16, y + 14, z))
+	props["workshop_door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 21, y + 7, z))
+	props["workshop_desk"] = new /obj/structure/practice_workshop_desk(locate(x + 24, y + 9, z))
+	props["paved_door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 31, y + 7, z))
+	// A store in the office and one in each yard.
+	props["stores"] = list(new /obj/structure/practice_stores(locate(x + 28, y + 10, z)), new /obj/structure/practice_stores(locate(x + 32, y + 9, z)), new /obj/structure/practice_stores(locate(x + 14, y + 16, z)))
+	// Interior corners: the whole plot, the drawing office, the paved yard and
+	// the full-width field north of the rooms (the soil yard and the paved
+	// yard's north part).
+	props["plot"] = list(x + 1, y + 1, x + 62, y + 60)
+	props["shop"] = list(x + 22, y + 1, x + 30, y + 13)
+	props["paved"] = list(x + 32, y + 1, x + 62, y + 60)
+	props["field"] = list(x + 1, y + 15, x + 62, y + 60)
+	props["split"] = x + 6
+	props["camp"] = x + 11
 	return props
 
 // Lobby entry. Returns TRUE when the player is now in a room.
@@ -317,7 +493,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 		"wash" = "Now wash yourself: while undressed, stand in the puddle, pick up the soap and click yourself with it. Being dirty sours your mood and makes your clothes dirty faster.",
 		"dress" = "Put your clean shirt back on (click your uniform slot on the HUD, or use it in hand).",
 		"rest" = "If you fall ill, rest in a bed: you recover faster, and you should keep away from people who are coughing. Drag yourself onto the bed (click-drag your character onto it) to lie down.",
-		"exit" = "Well done! You know how to survive your first day. Get up (click the bed), then walk onto the exit marker, or use the Leave Practice Room verb, to return to the lobby.")
+		"exit" = "Well done! You know how to survive your first day. Get up (click the bed), then walk onto the blue exit marker, or use the Leave Practice Room verb, to return to the lobby.")
 
 /datum/practice_session/New(datum/practice_rooms/rooms, room_slot, list/room_props)
 	..()
@@ -340,7 +516,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 	lobby << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE)
 	body.key = lobby.key
 	qdel(lobby)
-	to_chat(body, "<span class='notice'><b>Welcome to your practice room.</b> Nothing here affects your real character. Follow the steps below. To go back to the lobby at any time, [leave_link()], press Esc and pick <b>Leave practice room</b>, or click the blue exit marker.</span>")
+	to_chat(body, "<span class='notice'><b>Welcome to your practice room.</b> Nothing here affects your real character. Follow the steps below. [props["workshop_desk"] ? "When you reach the camp, its lesson board repeats the character tutorial. The door at the east end of the path leads to a drawing office and a paved yard for vehicles, ships and trains, and the camp's north door to open ground where you can dig down and build up. The practice stores hand out materials and tools without limit. " : ""]To go back to the lobby at any time, [leave_link()], press Esc and pick <b>Leave practice room</b>, or click the blue exit marker.</span>")
 	advance()
 	timer = addtimer(CALLBACK(src, PROC_REF(tick)), 1 SECOND, TIMER_LOOP | TIMER_STOPPABLE)
 	return TRUE
@@ -363,7 +539,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 /datum/practice_session/proc/show_step()
 	var/id = step_id()
 	if (body && id)
-		to_chat(body, "<span class='notice'><b>Practice step [step] of [steps.len]:</b> [steps[id]] <span style='font-size:85%'>([leave_link()] to the lobby)</span></span>")
+		to_chat(body, "<span class='notice'><b>Practice step [step] of [steps.len]:</b> [steps[id]][id == "exit" && props["workshop_desk"] ? " Before you go, you can read the lesson board by the path, try the workshop through the east door, or dig and build in the yard through the north door." : ""] <span style='font-size:85%'>([leave_link()] to the lobby)</span></span>")
 
 /datum/practice_session/proc/advance()
 	step++
@@ -466,6 +642,9 @@ var/global/datum/practice_rooms/practice_rooms = new
 	if (!body.client)
 		end(null)
 		return
+	// However they got there (a fall, a ladder, a vehicle), not outside the plot.
+	if (!may_stand(get_turf(body)))
+		body.forceMove(props["start"])
 	// Fleas on the practice shirt must not give the trainee a real illness.
 	if (body.disease)
 		body.clear_disease()
@@ -513,6 +692,12 @@ var/global/datum/practice_rooms/practice_rooms = new
 // The real character keeps its saved owner; this body is never a character.
 /mob/living/human/practice/record_persistence_owner()
 	persistence_owner_ckey = null
+
+// A trainee stays inside their own plot on every level (practice_workshop.dm).
+/mob/living/human/practice/Move(a, b, flag)
+	if (practice && isturf(a) && !practice.may_stand(a))
+		return FALSE
+	return ..()
 
 /mob/living/human/practice/Logout()
 	. = ..()
@@ -608,4 +793,6 @@ var/global/datum/practice_rooms/practice_rooms = new
 #undef PRACTICE_ROOM_PITCH_Y
 #undef PRACTICE_MAX_ROOMS
 #undef PRACTICE_MAX_ROOMS_TUTORIAL
+#undef PRACTICE_TUTORIAL_WIDTH
+#undef PRACTICE_TUTORIAL_HEIGHT
 #undef PRACTICE_IDLE_DROP

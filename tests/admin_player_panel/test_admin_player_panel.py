@@ -72,6 +72,58 @@ class AdminPlayerPanelTests(unittest.TestCase):
         panel = body(read('code/modules/admin/player_panel_pages.dm'), '/datum/admins/proc/player_options_html(')
         self.assertRegex(panel, r'if \(rights & \(R_MOD \| R_ADMIN\)\)\n\t\tbody \+= .*boot2=')
 
+    def test_ban_button_opens_the_existing_staff_dialog_for_the_visible_account(self):
+        panel = body(SOURCE.read_text(encoding='utf-8-sig'), '/datum/admins/proc/player_options_html(')
+        link = panel.index('panel_ban=')
+        for term in ('<h2>Moderation</h2>', 'if (has_quickBan_rights())', 'quickBan_panel_account(M)', 'if (ban_account)'):
+            self.assertLess(panel.index(term), link)
+        self.assertIn('ban_account=[html_encode(ban_account)]', panel)
+        topic = read('code/modules/admin/topic.dm')
+        action = topic.split('else if (href_list["panel_ban"])', 1)[1].split('else if (href_list["boot2"])', 1)[0]
+        self.assertLess(topic.index('usr.client != owner || !check_rights(0)'), topic.index('href_list["panel_ban"]'))
+        self.assertIn('locate(href_list["panel_ban"])', action)
+        self.assertIn('usr.client.quickBan_from_panel(target, href_list["ban_account"])', action)
+        self.assertNotIn('quickBan_ban(', action)
+        ban = read('code/modules/admin/verbs/quickBan.dm')
+        rights = body(ban, '/datum/admins/proc/has_quickBan_rights()')
+        self.assertIn('rights & (R_MOD | R_TRIALADMIN)', rights)
+        actor = body(ban, '/client/proc/quickBan_actor_current(')
+        self.assertIn('holder == acting_holder && acting_holder.owner == src && acting_holder.has_quickBan_rights()', actor)
+        account = body(ban, '/proc/quickBan_panel_account(')
+        for term in ('QDELETED(target)', '!target.ckey', 'target.client.mob != target',
+                     'target.client.ckey != target.ckey', 'return target.ckey'):
+            self.assertIn(term, account)
+        start = body(ban, '/client/proc/quickBan_from_panel(')
+        self.assertLess(start.index('quickBan_actor_current(acting_holder)'), start.index('quickBan_details('))
+        self.assertLess(start.index('account != expected_account'), start.index('quickBan_details('))
+        self.assertIn('quickBan_details(list("ckey" = account), acting_holder, selection)', start)
+        self.assertNotIn('lastKnown', account + start)
+        self.assertNotIn('find_ip(', start)
+        manual = body(ban, '/client/proc/quickBan_person(')
+        self.assertIn('list("Client", "Manual Input", "Cancel")', manual)
+        self.assertIn('quickBan_details(fields, acting_holder, null)', manual)
+
+    def test_ban_confirmation_rechecks_rights_account_body_connection_and_protected_role(self):
+        source = read('code/modules/admin/verbs/quickBan.dm')
+        gate = body(source, '/client/proc/quickBan_dialog_current(')
+        self.assertIn('!quickBan_actor_current(acting_holder)', gate)
+        self.assertIn('selection && !quickBan_panel_selection_current(selection)', gate)
+        target = body(source, '/proc/quickBan_panel_selection_current(')
+        for term in ('return target &&', 'quickBan_panel_account(target) == selection["account"]',
+                     '(!!target.client) == selection["connected"]', 'target.client == selection["client"]'):
+            self.assertIn(term, target)
+        dialog = body(source, '/client/proc/quickBan_details(')
+        before, after = dialog.split('"Confirm ban", "Ban", "Cancel") != "Ban"')
+        for term in ('in ban_types', 'What job?', 'What faction?', 'How long do you want the ban', 'Provide a reason'):
+            self.assertIn(term, before)
+        self.assertEqual(before.count('if (quickBan_protected_target(fields))'), 1)
+        self.assertNotIn('quickBan_ban(', before)
+        self.assertRegex(after, r"return\s+if \(!quickBan_dialog_current\(acting_holder, selection\) \|\| quickBan_protected_target\(fields\)\)\s+return")
+        self.assertLess(after.index('quickBan_protected_target(fields)'), after.index('quickBan_ban(fields, src)'))
+        protection = body(source, '/client/proc/quickBan_protected_target(')
+        self.assertIn('admin_datums[target_account]', protection)
+        self.assertIn('trying_to_quickBan_admin(target_account, fields["cID"], fields["ip"])', protection)
+
     def test_ranks_and_escaping(self):
         text = SOURCE.read_text(encoding='utf-8-sig')
         listing = body(text, '/datum/admins/proc/player_list_html(')
@@ -90,6 +142,44 @@ class AdminPlayerPanelTests(unittest.TestCase):
                 for row in source.splitlines():
                     if raw in row and 'html_encode(' not in row and '!=' not in row:
                         self.fail(row.strip())
+
+    def test_profile_link_uses_raw_account_key_and_escapes_the_path(self):
+        text = SOURCE.read_text(encoding='utf-8-sig')
+        panel = body(text, '/datum/admins/proc/player_options_html(')
+        self.assertRegex(panel, r"admin_byond_profile_url\(M\.key\)\n\tif \(profile\)\n\t\tbody \+= .*href='\[html_encode\(profile\)\]'")
+        self.assertIn("rel='noopener noreferrer'>BYOND Profile</a>", panel)
+        self.assertNotIn('admin_byond_profile_url(', body(text, '/datum/admins/proc/player_list_html('))
+        helper = body(text, '/proc/admin_byond_profile_url(')
+        self.assertIn('!istext(account_key) || !ckey(account_key)', helper)
+        self.assertIn('regex(@"^Guest-W?[0-9]+$", "i")', helper)
+        self.assertIn('copytext(account_key, 1, 2) == "@"', helper)
+        self.assertIn('replacetext(url_encode(account_key), "+", "%20")', helper)
+        self.assertIn('https://www.byond.com/members/[path_key]?format=text', helper)
+        self.assertNotIn('world.Export', helper + panel)
+
+    def test_staff_form_link_and_action_share_existing_eligibility(self):
+        topic = read('code/modules/admin/topic.dm')
+        action = topic.split('else if (href_list["grant_staff_form"])', 1)[1].split('else if (href_list["simplemake"])', 1)[0]
+        self.assertLess(topic.index('usr.client != owner || !check_rights(0)'), topic.index('href_list["grant_staff_form"]'))
+        grant_call = action.index('H.heteromorph_grant(K, null, usr.ckey)')
+        for guard in ('!check_rights(R_ADMIN) || !check_rights(R_SPAWN)', '!ishuman(H)',
+                      'QDELETED(H)', '!H.client', 'H.client.mob != H', '|| H.heteromorph_id',
+                      'heteromorph_kind("dragonoid")'):
+            self.assertLess(action.index(guard), grant_call)
+        self.assertNotIn('change_mob_type(', action)
+        self.assertNotIn('href_list["species"]', action)
+        panel = body(SOURCE.read_text(encoding='utf-8-sig'), '/datum/admins/proc/player_options_html(')
+        match = panel.index('grant_staff_form=1')
+        for guard in ('if (M.client && !isnewplayer(M))', '(rights & R_ADMIN) && (rights & R_SPAWN) && ishuman(M)',
+                      '!H.heteromorph_id && !H.heteromorph_grant_problem(heteromorph_kind("dragonoid"))'):
+            self.assertLess(panel.index(guard), match)
+        forms = read('code/modules/divine/heteromorph.dm')
+        grant = body(forms, '/mob/living/human/proc/heteromorph_grant(')
+        self.assertLess(grant.index('heteromorph_grant_problem(K)'), grant.index('heteromorph_id = K.id'))
+        eligibility = body(forms, '/mob/living/human/proc/heteromorph_grant_problem(')
+        for guard in ('stat == DEAD', 'K.staff_only && !heteromorph_staff_run()', 'K.origin != heteromorph_world_origin()'):
+            self.assertIn(guard, eligibility)
+        self.assertIn('heteromorph_log(', grant)
 
     def test_script_has_no_interpolation_or_html_writes(self):
         script = client_script()

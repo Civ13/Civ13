@@ -186,6 +186,7 @@ var/global/const/character_slots_max = 4 // slot 1 plus three more
 /map_storage/proc/reclaim_saved_player(mob/new_player/lobby)
 	if(!lobby || !lobby.client || lobby.client.mob != lobby) return FALSE
 	var/client/C = lobby.client
+	if(!region_gateway_expected_slot_ok(C)) return FALSE
 	var/owner = C.owner_key()
 	// Retain saved-body reconnect admission: account bans and recovery readiness.
 	// Fresh-character entry locks, round/join gates and role checks are separate.
@@ -216,9 +217,14 @@ var/global/const/character_slots_max = 4 // slot 1 plus three more
 				return FALSE
 		lobby.spawning = TRUE
 		lobby.close_spawn_windows()
+		if(lobby.client != C || C.mob != lobby || C.owner_key() != owner || !region_gateway_expected_slot_ok(C))
+			if(persistence_player_claims[owner] == lobby) persistence_player_claims.Remove(owner)
+			if(lobby.client == C && C.mob == lobby) lobby.spawning = FALSE
+			return FALSE
 		H.key = C.key
 		if(C.mob != H)
 			throw EXCEPTION("Saved player body did not receive its authenticated client")
+		C.gateway_expected_slot = 0
 		finish_character_return(H)
 		persistence_restored_bodies.Remove(owner)
 	catch(var/exception/reclaim_error)
@@ -227,6 +233,11 @@ var/global/const/character_slots_max = 4 // slot 1 plus three more
 		throw reclaim_error
 	if(persistence_player_claims[owner] == lobby) persistence_player_claims.Remove(owner)
 	qdel(lobby)
+	// An ordinary reconnect (including a queued restore) takes back the
+	// same sleeping body but does not wake it. Show the private chooser
+	// only after ownership was proved and the claim reservation released.
+	if(H.inducedSSD && C.mob == H)
+		C.open_character_sleep_picker()
 	return TRUE
 
 /map_storage/proc/player_restoration_blocked()

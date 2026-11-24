@@ -91,7 +91,7 @@ var/global/list/research_wall_last_warning = list()
 /proc/crafting_recipe_allowed(mob/living/human/H, result_path_string)
 	if (!istype(H))
 		return FALSE
-	if (is_basic_crafting_recipe(result_path_string))
+	if (is_basic_crafting_recipe(result_path_string) || tutorial_waterworks_recipe(H, result_path_string))
 		return TRUE
 	var/node_id = get_recipe_node_req(result_path_string)
 	// Book research: the pencil, paper and blank book are free from the start,

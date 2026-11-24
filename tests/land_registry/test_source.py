@@ -26,6 +26,13 @@ class LandRegistrySource(unittest.TestCase):
         research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
         self.assertIn('"/obj/structure/boundary_stone" = "early_economy"', research)
 
+    def test_hammer_can_remove_marker_without_unclaiming_land(self):
+        marker = self.text.split('/obj/structure/boundary_stone\n', 1)[1].split('\n/', 1)[0]
+        self.assertIn('\n\tnot_disassemblable = FALSE', marker)
+        self.assertIn('\n\tdismantle_wood_fallback = FALSE', marker)
+        destroy = self.text.split('/obj/structure/boundary_stone/Destroy()\n', 1)[1].split('\n/', 1)[0]
+        self.assertEqual(destroy.strip().splitlines(), ['boundary_stones -= src', '\treturn ..()'])
+
     def test_rename_and_normalize_hooks(self):
         roster = (ROOT / 'code/game/mob/groups/faction_roster.dm').read_text(encoding='utf-8')
         self.assertIn('land_rename(old_name, new_name)', roster)

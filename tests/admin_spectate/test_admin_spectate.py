@@ -55,6 +55,45 @@ class AdminSpectateTests(unittest.TestCase):
         self.assertIn('log_admin(', start)
         self.assertIn('message_admins(', start)
 
+    def test_aghost_sight_is_admin_only_and_cannot_interrupt_player_view(self):
+        toggle = proc_body(self.text, '/client/proc/toggle_admin_ghost_sight()')
+        choose = toggle.index('G.admin_sight_selected = TRUE')
+        for guard in ('check_rights(R_ADMIN, TRUE, mob)', '!G.admin_ghosted', 'if (admin_player_view)'):
+            self.assertLess(toggle.index(guard), choose)
+        self.assertLess(toggle.index('G.seedarkness = !G.seedarkness'), toggle.index('G.updateghostsight()'))
+        verbs = read('code/modules/admin/admin_verbs.dm')
+        for group, expected in (('admin', True), ('trialadmin', False), ('mod', False), ('mentor', False)):
+            body = verbs.split(f'var/list/admin_verbs_{group} = list(', 1)[1].split('\n)', 1)[0]
+            self.assertEqual('toggle_admin_ghost_sight' in body, expected, group)
+
+    def test_aghost_modes_restore_wall_occlusion_and_existing_lighting_channel(self):
+        ghost = read('code/game/mob/observer/ghost/ghost.dm')
+        update = proc_body(ghost, '/mob/observer/ghost/proc/updateghostsight()')
+        self.assertLess(update.index('client.admin_player_view'), update.index('if (admin_sight_selected)'))
+        self.assertIn('admin_ghosted && client && check_rights(R_ADMIN, FALSE, src)', update)
+        self.assertIn('sight = seedarkness ? initial(sight) & ~(SEE_TURFS|SEE_MOBS|SEE_OBJS) : initial(sight)', update)
+        self.assertIn('see_in_dark = seedarkness ? 2 : 100', update)
+        self.assertRegex(update, r'if \(!seedarkness\)\n\t\tsee_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING')
+        self.assertIn('see_invisible = SEE_INVISIBLE_LIVING', update)
+        self.assertLess(update.index('see_invisible = SEE_INVISIBLE_LIVING'), update.index('update_lighting_plane()'))
+        self.assertIn('mymob.see_invisible >= INVISIBILITY_LEVEL_TWO', read('code/_onclick/hud/plane_master.dm'))
+        dark = proc_body(ghost, '/mob/observer/ghost/verb/toggle_darkness()')
+        self.assertLess(dark.index('client.toggle_admin_ghost_sight()'), dark.index('seedarkness = !(seedarkness)'))
+
+    def test_aghost_mode_is_per_observer_and_reapplied_after_temporary_camera(self):
+        ghost = read('code/game/mob/observer/ghost/ghost.dm')
+        self.assertIn('var/tmp/admin_sight_selected = FALSE', ghost)
+        self.assertNotIn('/client/var/tmp/admin_sight_selected', self.text)
+        self.assertNotIn('admin_sight_selected', proc_body(ghost, '/mob/observer/ghost/verb/reenter_corpse()'))
+        update = proc_body(ghost, '/mob/observer/ghost/proc/updateghostsight()')
+        self.assertRegex(update, r'else\n\t\t\tadmin_sight_selected = FALSE\n\t\t\tseedarkness = TRUE')
+        life = proc_body(ghost, '/mob/observer/ghost/Life()')
+        self.assertIn('admin_sight_selected && !check_rights(R_ADMIN, FALSE, src)', life)
+        login = read('code/game/mob/observer/ghost/login.dm')
+        self.assertLess(login.index('spirit_update_sight()'), login.index('updateghostsight()'))
+        stop = proc_body(self.text, '/datum/admin_player_view/proc/stop(')
+        self.assertLess(stop.index('viewer.admin_player_view = null'), stop.index('ghost.updateghostsight()'))
+
     def test_hidden_ghost(self):
         body = proc_body(self.text, '/mob/observer/ghost/proc/set_admin_hidden(')
         self.assertIn('invisibility = INVISIBILITY_MAXIMUM', body)
@@ -105,6 +144,30 @@ class AdminSpectateTests(unittest.TestCase):
         # The ghost's Life must not strip the mirrored HUD images.
         life = proc_body(read('code/game/mob/observer/ghost/ghost.dm'), '/mob/observer/ghost/Life()')
         self.assertLess(life.index('client.admin_player_view'), life.index('client.images.Remove'))
+
+    def test_start_requires_same_live_player_before_and_after_aghost_wait(self):
+        start = proc_body(self.text, '/client/proc/admin_start_player_view(')
+        self.assertLess(start.index('!player_client || player_client.mob != M'), start.index('admin_ghost()'))
+        post_wait_guard = 'if (!player_client || QDELETED(M) || M.client != player_client || player_client.mob != M'
+        self.assertLess(start.index('sleep(2)'), start.index(post_wait_guard))
+        self.assertLess(start.index(post_wait_guard), start.index('admin_player_view.stop('))
+
+    def test_view_ends_instead_of_substituting_an_unoccupied_camera(self):
+        sync = proc_body(self.text, '/datum/admin_player_view/proc/sync()')
+        self.assertLess(sync.index('follow_player_client()'), sync.index('var/client/T = target_client'))
+        guard = sync.index('if (!T || T.mob != target || target.client != T)\n\t\treturn FALSE')
+        self.assertLess(guard, sync.index('viewer.eye = eye'))
+        self.assertLess(guard, sync.index('T.screen'))
+        self.assertLess(guard, sync.index('T.images'))
+        self.assertNotIn('plane_masters', sync)
+        follow = proc_body(self.text, '/datum/admin_player_view/proc/follow_player_client()')
+        self.assertIn('var/mob/M = target_client.mob', follow)
+        self.assertIn('ghost.ManualFollow(M)', follow)
+        tick = proc_body(self.text, '/datum/admin_player_view/proc/tick()')
+        self.assertIn('if (active && !sync())\n\t\tstop(TRUE, TRUE)', tick)
+        stop = proc_body(self.text, '/datum/admin_player_view/proc/stop(')
+        self.assertLess(stop.index('put_back('), stop.index('if (live_view_unavailable)'))
+        self.assertIn('Returned to your ghost view.', stop)
 
     def test_admin_map_view_button(self):
         text = read('code/modules/admin/verbs/admin_map.dm')

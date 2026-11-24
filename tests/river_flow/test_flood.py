@@ -221,6 +221,34 @@ class WiringTest(unittest.TestCase):
         self.assertIn('FLOOD_VIEW_MOVE', view)
         self.assertIn('flood_drawn_revision == flood_draw_revision', view)
 
+    def test_water_overlays_require_current_world_los_for_both_anchors(self):
+        flood = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        fish = (ROOT / 'code/modules/1713/fish_signs.dm').read_text(encoding='utf-8')
+        projector = flood.split('/client/proc/present_water_overlays(', 1)[1].split('\n/', 1)[0]
+        # A shoreline image can be drawn on visible ground adjoining water
+        # that is itself hidden. Both the wet source and the image turf count.
+        self.assertIn('water_overlay_tile_visible(origin, S, decisions) && V.water_overlay_tile_visible(T, S, decisions)', projector)
+        self.assertIn('candidates[flood_image(D, "flood_edge[band]", d)] = T', flood)
+        self.assertIn('candidates[flood_image(D, "flood_step[band]", d)] = T', flood)
+        self.assertIn('fish_sign_candidates = drawn', fish)
+        self.assertNotIn('images += drawn', fish)
+        self.assertIn('decision_snapshot(T, S) == LOS_WORLD', flood)
+        self.assertIn('T.z == centre.z', projector)
+        self.assertLess(projector.index('V.begin_snapshot_pass(S)'), projector.index('next_images += I'))
+        self.assertLess(projector.index('S.revision != V.revision'), projector.index('images += next_images'))
+        self.assertIn('images -= water_overlay_images - next_images', projector)
+
+    def test_water_overlays_reconcile_independently_of_sample_cadence(self):
+        lifecycle = (ROOT / 'code/modules/visibility/los_lifecycle.dm').read_text(encoding='utf-8')
+        flood = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
+        geometry = lifecycle.split('/client/proc/reconcile_geometric_los()', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('present_water_overlays(S)', geometry)
+        self.assertIn('if(!S)', geometry)
+        self.assertIn('clear_water_overlays()', geometry.split('if(!S)', 1)[1].split('if(audit_only', 1)[0])
+        self.assertIn('if (flood_changed || signs_changed || geometric != client.water_overlay_geometric)', flood)
+        self.assertIn('ishuman(mob) && eye == mob && !adminobs', flood)
+        self.assertEqual(flood.count('client.los_context.capture(TRUE)'), 1)
+
     def test_flood_view_row_indices_match_the_clipped_grid(self):
         effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
         view = effects.split('/client/proc/flood_refresh_view()', 1)[1].split('\n/', 1)[0]

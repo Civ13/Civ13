@@ -1,6 +1,6 @@
 # Practice rooms
 
-A lobby link, **Practice Room**, puts a player in a private 17 x 12 room with a
+A lobby link, **Practice Room**, puts a player in a private room (17 x 12 for the fallback on other regions) with a
 throwaway "Trainee" body. Nineteen steps appear in chat one at a time. The
 controls part: walk to a marker, pick up a knife, swap hands, wear a straw hat
 and open a door. The middle part: hit a practice dummy on Harm intent and
@@ -42,7 +42,7 @@ purpose `practice`) only while someone practises:
 
 A region group can run the rooms on a world of their own, like the TDM
 Barracks: a region of kind `TUTORIAL` on the blank map
-`maps/special/tutorial.dmm` (116 x 60, up to 32 rooms). Code:
+`maps/special/tutorial.dmm` (397 x 257, up to 24 occupied plots). Code:
 `code/modules/1713/tutorial_region.dm`.
 
 - It never saves: `shard_group.py` gives it `save_minutes` 0 and a config with
@@ -66,6 +66,89 @@ Barracks: a region of kind `TUTORIAL` on the blank map
   a player whose land cannot be reached yet, and leaving them brings the player
   back to the gateway, which sends them on again. The gateway never opens rooms
   of its own.
+
+### The tutorial region's plot
+
+The dedicated Tutorial region gives each trainee a 64 x 62 plot
+(`build_tutorial_room`) on the map's own ground level, not on an added level,
+so the map's ordinary underground (four levels) and building levels (ten)
+work in it. The same nineteen steps run west to east along the south of the
+plot through four spaces joined by doors on one line:
+
+1. **Controls room** and 2. **training room**, both wooden.
+3. **Camp**, open grass with a dirt path between its doors. Fire, food, water
+   and the wash place are north of the path. The bed, the lesson board, a
+   tree, tall grass and flint are south of it, and the blue exit marker stands
+   in the south-east corner, away from the path.
+4. **Drawing office**, through the door at the east end of the path: the
+   workshop desk, the supply floor and a practice store.
+
+The rest of the plot is a proving ground:
+
+- **Paved yard** (31 x 60, concrete), through the office's east door: founded
+  ground for vehicles, ships, trains and tall buildings. The desk fits it out
+  for each built exercise.
+- **Soil yard** (31 x 46, grass), through the camp's north door: ground to dig
+  in, farm and build on. It joins the paved yard's north part, so the two are
+  one L-shaped field.
+
+![The tutorial region's plot](images/practice-rooms/tutorial-room.png)
+
+A source render of one trainee's whole plot (walls draw black). [The paved
+yard as the desk fits it out for each built
+exercise](images/practice-rooms/tutorial-room-exercises.png).
+
+### Digging, building and the stores
+
+- **Digging.** Anywhere on soil a trainee can dig down as in the live game,
+  level after level. Each plot is walled by bedrock on every underground
+  level (`wall_underground`), so tunnels and cave pockets never reach another
+  plot.
+- **Building up.** Floors, roofs and storeys go up as in the live game. The
+  paved yard is founded ground; soil carries two storeys. A trainee cannot
+  step outside their own plot on any level (`may_stand`).
+- **Practice stores** (one in the office, one in each yard) hand out building
+  materials, rail parts and tools, a full stack at a time and without limit,
+  to the plot's own trainee only.
+- **Reset.** Opening or leaving a plot clears it on every level: everything
+  built goes, the levels above return to open air and the rock below to undug
+  rock. The levels themselves stay for the other trainees. The region never
+  saves.
+
+### Workshop and extra lessons
+
+The workshop desk fits the paved yard out for one exercise and lays blank
+draughts and a pencil on the office floor south of the desk. Use the ordinary
+designer, check the drawing, and save it to the sheet. To try a different
+exercise, use the desk again: choosing one clears both yards on every level,
+with everything built, dug or left in them, and lays out the new one. The
+lesson rooms and what the trainee carries stay.
+
+- **Build here:** cars, tanks and planes use a stocked press in the paved
+  yard's south-west corner and airships a stocked yard; both build on the
+  paving to their northeast, which holds the largest airship a sheet can
+  (12 x 12). Trains use the stocked rail works and sixty tiles of straight
+  track up the yard's east side (choose south-facing). A ship of any size the
+  sheet allows, up to 29 tiles in the beam, is built on the slipway at the
+  south wall and launched north into a pool that fills the rest of the yard;
+  it does not go on a voyage. Houses of any size and number of storeys, and
+  railways, are pegged out in either yard and built with materials from the
+  stores. The rocket works fabricates the pieces; nothing stacks, fuels or
+  launches a rocket.
+- **Five more physical exercises:** assemble a five-row submarine in a
+  freshwater basin (no movement or diving); survey and lay a two-span pier;
+  peg and build an intake, channel and fountain; build a lever and tie it to a
+  bell; unfold a workshop and its airlocks on the ground. These are small
+  training builds, not complete live-world installations.
+- **Lesson board** (in the camp): all in-game character tutorial topics
+  (including the HUD, Crafting Atlas, book research, chat and Help) can be
+  reread here. The camp's tree, tall grass and flint serve the branch, twine
+  and whittling lessons. Book research is explained rather than enabled.
+
+Everything in a plot disappears with it. Nothing carries over to a real
+character or contributes to its tutorial progress. Workshop power,
+construction access and the stores belong to the fixed practice fixtures;
+nothing is unlocked in the live game.
 
 Add one to a group config like any region, for example
 `{"id": "tutorial", "name": "Tutorial", "kind": "TUTORIAL", "port": 1760, "transfer_port": 1770, "map": "maps/special/tutorial.dmm"}`

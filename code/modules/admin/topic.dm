@@ -121,6 +121,23 @@
 		log_admin("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"].")
 		message_admins(SPAN_NOTICE("[key_name(usr)] [ticker.delay_end ? "delayed the round end" : "has made the round end normally"]."), key_name(usr))
 		href_list["secretsadmin"] = "check_antagonist"
+	else if (href_list["grant_staff_form"])
+		if (!check_rights(R_ADMIN) || !check_rights(R_SPAWN))
+			return
+		var/mob/living/human/H = locate(href_list["mob"])
+		if (!ishuman(H) || QDELETED(H) || !H.client || H.client.mob != H || H.heteromorph_id)
+			return
+		// Use the audited grant path, including the current target and world
+		// checks. Colour selection and replacement stay in the patron menu.
+		var/datum/heteromorph/K = heteromorph_kind("dragonoid")
+		var/problem = H.heteromorph_grant(K, null, usr.ckey)
+		if (problem)
+			to_chat(usr, SPAN_WARNING(problem))
+			return
+		to_chat(usr, SPAN_NOTICE("[H.real_name] is now a [K.name]."))
+		if (H != usr)
+			to_chat(H, SPAN_NOTICE("<i>You remember what you truly are.</i>"))
+
 	else if (href_list["simplemake"])
 
 		if (!check_rights(R_SPAWN))	return
@@ -411,6 +428,10 @@
 					G.reenter_corpse()
 	else if (href_list["warn"])
 		usr.client.warn(href_list["warn"])
+
+	else if (href_list["panel_ban"])
+		var/mob/target = locate(href_list["panel_ban"])
+		usr.client.quickBan_from_panel(target, href_list["ban_account"])
 
 	else if (href_list["boot2"])
 		var/client/kick_actor = usr.client

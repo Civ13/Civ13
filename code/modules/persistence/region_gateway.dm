@@ -4,18 +4,20 @@
 // handovers (a standby that takes over a port with world.OpenPort is not listed
 // again). Every player who joins is sent on through the routing relay
 // (region_relay.dm) to the land their character lives in, or to the start
-// region when they have none. Nobody plays, saves or starts a character here.
+// region when they have none. An optional, private Characters screen helps
+// choose where to continue; it cannot change slots or claim a body. Nobody
+// plays, saves or starts a character here.
 //
-// The gateway asks its own transfer agent the same question a land's Join check
-// asks (/account claim without a body). For a world that is neither the
-// account's home nor the start region that question never claims anything: it
-// answers ELSEWHERE with the home (or the start region), PENDING or TRAVELLING.
-// The destination still makes its own admission check when the player arrives.
+// Ordinary automatic routing asks the local agent about the client's active
+// character. The opt-in chooser instead uses a read-only coordinator lookup,
+// refuses incomplete answers and wakes only a confirmed destination after a
+// click. The destination still makes its own admission check on arrival.
 // See scripts/shard-group/README.md, "Gateway world".
 
 // How long a player is kept trying before they are offered a manual retry.
 #define GATEWAY_FORWARD_WAIT (2 MINUTES)
 #define GATEWAY_RETRY_DELAY (5 SECONDS)
+#define GATEWAY_ROSTER_RETRY_DELAY (2 SECONDS)
 #define GATEWAY_STATUS_INTERVAL (1 MINUTES)
 // The shard board polls once a minute; allow a delayed poll but not a stuck cache.
 #define GATEWAY_POPULATION_MAX_AGE (3 MINUTES)
@@ -67,14 +69,176 @@
 	return shard_group && shard_group.enabled && shard_group.kind == "GATEWAY"
 
 /mob/new_player/var/tmp/gateway_forwarding = FALSE
+/client/var/tmp/gateway_character_lobby = FALSE // UI preference from the connection, not admission
+/client/var/tmp/gateway_expected_slot = 0 // untrusted assertion; may only refuse a handoff
+
+// The public front door of a Persistence group, not a TDM waiting room.
+/proc/region_gateway_roster_address()
+	if(!shard_group || !shard_group.enabled || !shard_group.gate || !shard_group.start_region)
+		return null
+	var/list/front = shard_group.peers[shard_group.gate]
+	var/list/start = shard_group.peers[shard_group.start_region]
+	if(!islist(front) || front["kind"] != "GATEWAY" || !islist(start) || start["kind"] != "SURFACE" || region_gateway_battle_peer())
+		return null
+	return shard_group.gate_address()
+
+// Requested only as a UI hint. Never pass a slot, owner key, or route on a
+// connect URL; the new world derives those from the authenticated client.
+/proc/region_gateway_open_roster(client/C)
+	var/address = region_gateway_roster_address()
+	if(!accolade_client_ckey(C) || !address || character_lobby_departure_refusal(C))
+		return FALSE
+	C << link("byond://[address]?character_lobby=1")
+	return TRUE
+
+/proc/region_gateway_roster_enabled(client/C)
+	return region_gateway_here() && C && C.gateway_character_lobby && accolade_client_ckey(C) && region_gateway_roster_address()
+
+/proc/region_gateway_roster_choice_allowed(client/C, list/state, slot)
+	return isnum(slot) && slot == round(slot) && slot >= 1 && slot <= character_slots_max && character_slot_open(state, slot) && (slot == 1 || character_slots_verified(C))
+
+/proc/region_gateway_active_slot(client/C, list/state)
+	var/slot = state?["active"]
+	return region_gateway_roster_choice_allowed(C, state, slot) ? slot : 1
+
+// Never adopt the slot from a URL. The destination still independently
+// restores and verifies its record; a stale copy may not embody another slot.
+/proc/region_gateway_expected_slot_ok(client/C)
+	if(!C || !C.gateway_expected_slot)
+		return TRUE
+	var/account = accolade_client_ckey(C)
+	return region_home_enabled() && account && C.character_slot == C.gateway_expected_slot && region_gateway_active_slot(C, character_slot_state(account)) == C.gateway_expected_slot
+
+// The look of the gateway's own windows (layout and palette by Fable): the
+// house browns of the panel windows, one card per choice, one button per card.
+/proc/region_gateway_style()
+	return {"<meta charset='utf-8'><style>
+		html,body{margin:0;padding:0;background:#211c16;color:#eee5d3;font-family:Verdana,Geneva,sans-serif;font-size:13px;line-height:1.45}
+		.gw{padding:14px 16px 18px}
+		.gw-eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#c9a25c}
+		.gw h1{font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:26px;line-height:1.15;color:#f6ecd6;margin:2px 0}
+		.gw-lede{color:#bfae96;margin:0 0 12px}
+		.gw-card{display:flex;align-items:center;gap:12px;background:#30271e;border:1px solid #66513b;border-left:3px solid #66513b;border-radius:4px;padding:10px 12px;margin:0 0 8px}
+		.gw-card.gw-current{border-left-color:#6caa68;background:#342b20}
+		.gw-who{flex:1 1 auto;min-width:0}
+		.gw-slot{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#bfae96}
+		.gw-name{font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.25;color:#f6ecd6;overflow-wrap:anywhere}
+		.gw-detail{color:#bfae96;font-size:12px;margin-top:2px}
+		.gw-pill{display:inline-block;vertical-align:middle;margin-left:8px;border:1px solid #66513b;border-radius:10px;padding:0 8px;font-family:Verdana,Geneva,sans-serif;font-size:11px;line-height:17px;color:#c9b9a0;background:#443623}
+		.gw-pill.gw-good{border-color:#6caa68;color:#c4e8c0;background:#253b25}
+		.gw-pill.gw-info{border-color:#6fb3e0;color:#cfe6f7;background:#1f3342}
+		.gw-pill.gw-warn{border-color:#c77a39;color:#f3c79a;background:#3d2a18}
+		a.gw-btn{flex:0 0 auto;display:inline-block;border:1px solid #b48c4d;border-radius:3px;padding:6px 14px;color:#f3e2bd;text-decoration:none;white-space:nowrap;cursor:pointer}
+		a.gw-btn:hover{background:#443623}
+		a.gw-btn.gw-main{background:#b48c4d;color:#1c160f;font-weight:bold}
+		a.gw-btn.gw-main:hover{background:#c9a25c}
+		.gw-note{color:#a99b87;font-size:11.5px;margin:10px 2px 0}
+		.gw-note a{color:#9ed2ff}
+		.gw-tabs{display:flex;gap:18px;border-bottom:1px solid #66513b;margin:0 0 14px}
+		.gw-tabs a,.gw-tabs strong{display:block;padding:0 1px 7px;margin-bottom:-1px;font-size:14px;font-weight:normal;color:#c9b9a0;text-decoration:none;border-bottom:2px solid transparent}
+		.gw-tabs a:hover{color:#f6ecd6}
+		.gw-tabs strong{color:#ffd985;font-weight:bold;border-bottom-color:#ffd985}
+		</style>"}
+
+// One page of character cards. A row is list(slot, safe name, kind), where
+// kind is "current", "switch", "wait" or "locked". tabs is ready-made markup
+// placed above the heading.
+/proc/region_gateway_roster_page(list/rows, tabs = "")
+	var/list/cards = list("<html><head><title>Characters</title>[region_gateway_style()]</head><body><div class='gw'>[tabs]<div class='gw-eyebrow'>Private &middot; your account</div><h1>Your characters</h1><p class='gw-lede'>Choose a character to continue.</p>")
+	for(var/list/row in rows)
+		var/slot = row[1]
+		var/pill = ""
+		var/detail = ""
+		var/button = ""
+		switch(row[3])
+			if("current")
+				pill = "<span class='gw-pill gw-good'>Current</span>"
+				detail = "The character you last played."
+				button = "<a class='gw-btn gw-main' href='byond://?gateway_character_slot=[slot]'>Continue</a>"
+			if("switch")
+				pill = "<span class='gw-pill gw-info'>Can switch</span>"
+				detail = "Takes you to your current character's land, where the switch is checked."
+				button = "<a class='gw-btn' href='byond://?gateway_character_slot=[slot]'>Switch</a>"
+			if("wait")
+				pill = "<span class='gw-pill gw-warn'>Resting</span>"
+				detail = "Not ready to play again yet. Your current land's Characters window shows the time left."
+			else
+				pill = "<span class='gw-pill'>Locked</span>"
+				detail = "Verify your account to play this character."
+		cards += "<div class='gw-card[row[3] == "current" ? " gw-current" : ""]'><div class='gw-who'><div class='gw-slot'>Slot [slot]</div><div class='gw-name'>[row[2]][pill]</div><div class='gw-detail'>[detail]</div></div>[button]</div>"
+	cards += "<p class='gw-note'>New characters are made with Join in the land itself, not here.[region_gateway_practice_link()]</p></div></body></html>"
+	return jointext(cards, "")
+
+/proc/region_gateway_show_roster(mob/new_player/lobby)
+	var/client/C = lobby?.client
+	if(!C || C.mob != lobby || !region_gateway_roster_enabled(C))
+		return FALSE
+	var/account = accolade_client_ckey(C)
+	var/list/state = character_slot_state(account)
+	var/active = region_gateway_active_slot(C, state)
+	var/list/names = state["names"]
+	var/list/rows = list()
+	for(var/slot = 1 to character_slots_max)
+		if(slot != active && !character_slot_open(state, slot))
+			continue
+		var/list/entry = names["[slot]"]
+		var/name = islist(entry) && istext(entry[1]) ? html_encode(entry[1]) : "Character [slot]"
+		var/kind = "locked"
+		if(slot == active)
+			kind = "current"
+		else if(character_slot_return_wait(state, slot))
+			kind = "wait"
+		else if(region_gateway_roster_choice_allowed(C, state, slot))
+			kind = "switch"
+		rows += list(list(slot, name, kind))
+	show_browse(C, region_gateway_roster_page(rows, region_gateway_tabs(C)), "window=gateway_characters;size=560x560")
+	return TRUE
+
+/proc/region_gateway_choose_character(mob/new_player/lobby, slot)
+	var/client/C = lobby?.client
+	if(!C || C.mob != lobby || !region_gateway_roster_enabled(C) || lobby.gateway_forwarding)
+		return FALSE
+	var/list/state = character_slot_state(accolade_client_ckey(C))
+	if(!region_gateway_roster_choice_allowed(C, state, slot) || (slot != region_gateway_active_slot(C, state) && character_slot_return_wait(state, slot)))
+		region_gateway_show_roster(lobby)
+		return FALSE
+	// An alternate choice sends the active character to their own land
+	// first, where the existing Characters panel can check sleep, custody,
+	// cooldown and injury. The gateway deliberately writes no switch record.
+	lobby.gateway_character_choice = slot
+	region_gateway_forward(lobby)
+	return TRUE
+
+/mob/new_player/var/tmp/gateway_character_choice = 0
 
 // Where the gateway sends the player with this key next: list("home" = region
 // id), or list("wait" = what to tell them) while the answer is not ready. Sleeps.
-/proc/region_gateway_destination(key)
-	var/account = ckey(key)
+/proc/region_gateway_destination(key, slot = 1, roster = FALSE)
+	var/account = owner_key_for(ckey(key), slot)
 	// Guests own no character and cannot travel: they start where new players do.
-	if(IsGuestKey(key) || !transfer_bridge || !transfer_bridge.enabled())
+	if(IsGuestKey(key))
 		return list("home" = shard_group.start_region)
+	if(!account || !transfer_bridge || !transfer_bridge.enabled())
+		if(roster || slot > 1)
+			return list("wait" = "The character directory is unavailable. No character has been selected or moved.")
+		return list("home" = shard_group.start_region)
+	if(roster)
+		var/list/reply = transfer_bridge.request("/lobby/home", list("ckey" = account))
+		var/list/status = reply?["ok"] && islist(reply["result"]) ? reply["result"] : null
+		switch(status?["state"])
+			if("HOME", "NO_HOME")
+				var/home = status["region"]
+				if(istext(home) && home != shard_group.region && shard_group.peers[home] && (status["state"] != "NO_HOME" || home == shard_group.start_region))
+					return list("home" = home)
+			if("PARKED")
+				var/home = status["home"]
+				if(region_home_parked_land(home))
+					return list("parked" = home)
+			if("PENDING")
+				return list("wait" = "Checking your character's land. Please wait...")
+			if("TRAVELLING")
+				return list("wait" = "Your character is still on its way between lands. It is safe; you are sent on once it arrives.")
+		return list("wait" = "The character directory cannot confirm your land yet. No character has been selected or moved.")
 	var/list/answer = transfer_bridge.request("/account", list("ckey" = account, "op" = "claim"))
 	var/list/result = (answer && answer["ok"] && islist(answer["result"])) ? answer["result"] : null
 	if(!result)
@@ -115,25 +279,62 @@
 /proc/region_gateway_forward(mob/new_player/lobby)
 	set waitfor = FALSE
 	var/client/C = lobby ? lobby.client : null
-	if(!C || lobby.gateway_forwarding)
+	if(!C || C.mob != lobby || lobby.gateway_forwarding)
 		return FALSE
+	if(region_gateway_overview_session(C))
+		return region_gateway_show_overview(lobby)
+	var/roster = region_gateway_roster_enabled(C)
+	var/choice = lobby.gateway_character_choice
+	if(roster && !choice)
+		return region_gateway_show_roster(lobby)
+	var/persistence_front = !!region_gateway_roster_address()
+	var/account = persistence_front ? accolade_client_ckey(C) : null
+	var/slot = account ? region_gateway_active_slot(C, character_slot_state(account)) : 1
 	lobby.gateway_forwarding = TRUE
 	var/deadline = world.time + GATEWAY_FORWARD_WAIT
 	var/told = null
 	var/offered = FALSE
 	var/sent = FALSE
-	while(lobby && C && lobby.client == C)
-		var/list/where = region_gateway_destination(C.key)
-		if(!lobby || !C || lobby.client != C)
+	while(lobby && C && lobby.client == C && C.mob == lobby)
+		var/list/where = region_gateway_destination(C.key, slot, roster)
+		if(!lobby || !C || lobby.client != C || C.mob != lobby)
+			break
+		var/list/state = account ? character_slot_state(account) : null
+		var/slot_changed = persistence_front && (account != accolade_client_ckey(C) || slot != region_gateway_active_slot(C, state))
+		var/choice_refused = roster && (!region_gateway_roster_enabled(C) || !region_gateway_roster_choice_allowed(C, state, choice) || (choice != slot && character_slot_return_wait(state, choice)))
+		if(slot_changed || choice_refused)
+			lobby.gateway_character_choice = 0
+			to_chat(C, SPAN_WARNING("Your character selection changed. Recheck your Characters screen or reconnect."))
+			if(roster)
+				region_gateway_show_roster(lobby)
 			break
 		var/home = where["home"]
+		var/parked = where["parked"]
+		if(roster && parked)
+			var/owner = owner_key_for(account, slot)
+			where["wait"] = region_home_summon(owner, parked) ? "Your character is on a laid-up land. Its harbour is being made ready; this can take a few minutes." : "Your character is on a laid-up land. Nobody could wake it yet; trying again."
+			if(lobby?.client != C || C.mob != lobby)
+				break
 		if(home)
 			var/list/peer = shard_group.peers[home]
 			var/name = peer ? peer["name"] : home
 			if(told != home)
 				told = home
+				if(roster && choice != slot)
+					to_chat(C, SPAN_NOTICE("After arrival, use OOC > Characters to switch. Your current character must satisfy the land's switching rules."))
 				to_chat(C, SPAN_NOTICE("Taking you to [html_encode(name)]... If nothing happens, <a href='byond://?gateway_retry=1'>try again</a>."))
-			if(shard_group.send_player(C, home))
+			if(roster && shard_group.relay_on() && peer && peer["state"] != "UP")
+				// Waking may take minutes. Ask the directory again on the
+				// next pass rather than using this answer after the wait.
+				if(!shard_group.peer_wakeable(home))
+					shard_group.refresh_peer(home)
+				if(lobby?.client != C || C.mob != lobby)
+					break
+				if(peer["state"] != "UP")
+					var/why = shard_group.wake_peer(home, lobby)
+					if(why && lobby?.client == C && C.mob == lobby)
+						to_chat(C, SPAN_WARNING(why))
+			else if(shard_group.send_player(C, home, !roster, roster ? slot : 0))
 				sent = TRUE
 				break
 		else if(where["wait"] != told)
@@ -149,7 +350,7 @@
 		if(world.time >= deadline)
 			to_chat(C, SPAN_WARNING("Your land could not be reached yet. <a href='byond://?gateway_retry=1'>Try again</a>, or reconnect in a few minutes.[region_gateway_practice_link()]"))
 			break
-		sleep(GATEWAY_RETRY_DELAY)
+		sleep(roster ? GATEWAY_ROSTER_RETRY_DELAY : GATEWAY_RETRY_DELAY)
 	if(lobby)
 		lobby.gateway_forwarding = FALSE
 	return sent
@@ -230,5 +431,6 @@
 
 #undef GATEWAY_FORWARD_WAIT
 #undef GATEWAY_RETRY_DELAY
+#undef GATEWAY_ROSTER_RETRY_DELAY
 #undef GATEWAY_STATUS_INTERVAL
 #undef GATEWAY_POPULATION_MAX_AGE

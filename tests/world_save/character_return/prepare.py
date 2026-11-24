@@ -9,7 +9,7 @@ import re
 HERE = Path(__file__).resolve().parent
 COMMIT = 'f065e129e2b3c422236869218353db29c2bf62de'
 CASES = ('disk', 'repeat-return', 'failed-handoff', 'occupied-bed', 'destroyed-bed',
-         'refused-move', 'redirected-move', 'reserved', 'recovery-hold', 'dead', 'tdm')
+         'refused-move', 'redirected-move', 'reserved', 'recovery-hold', 'dead', 'tdm', 'expected-slot')
 CONTROLS = {
     'omit-claim-consume': ('repeat-return', 'FAIL: repeated return moved back to bed'),
     'omit-reservation': ('reserved', 'FAIL: reserved return was admitted'),
@@ -64,7 +64,7 @@ def adapt_reclaim(source, base):
     original = base.extract_proc(source, '/map_storage/proc/reclaim_saved_player')
     adapted = original
     for before, after, count in (
-        ('lobby.client', 'lobby.claim_client', 5),
+        ('lobby.client', 'lobby.claim_client', 7),
         ('var/client/C', 'var/datum/character_return_client/C', 1),
         ('H.key = C.key', 'character_return_transfer(C, H)', 1),
     ):
@@ -78,10 +78,25 @@ def adapt_bed(source, base):
     # All bed policy/procedures remain production text. Only the fresh-admission
     # lobby IO accesses need the same inert client boundary as reclaim.
     original = base.extract_proc(source, '/map_storage/proc/allow_new_character')
-    if original.count('lobby.client') != 5:
+    if original.count('lobby.client') != 6:
         raise ValueError('Exact fresh-admission IO anchor changed')
     adapted = original.replace('lobby.client', 'lobby.claim_client')
     return base.replace_once(source, original, adapted, 'dedicated fresh-admission IO'), original, adapted
+
+
+def adapt_gateway(source, base):
+    original = base.extract_proc(source, '/proc/region_gateway_expected_slot_ok')
+    adapted = original
+    # Keep both independent slot comparisons; substitute only fixture inputs
+    # for the authenticated account's durable record and the regional mode flag.
+    for before, after in (
+        ('client/C', 'datum/character_return_client/C'),
+        ('accolade_client_ckey(C)', 'C.ckey'),
+        ('region_home_enabled()', 'C.fixture_region_home_enabled'),
+        ('region_gateway_active_slot(C, character_slot_state(account))', 'C.fixture_active_slot'),
+    ):
+        adapted = base.replace_once(adapted, before, after, 'dedicated gateway admission IO')
+    return original, adapted
 
 
 def prepare(root, output, control=None):
@@ -101,6 +116,8 @@ def prepare(root, output, control=None):
     generated['stubs.dm'] = stubs
     generated['player_reclaim.dm'], reclaim_before, reclaim_after = adapt_reclaim(generated['player_reclaim.dm'], base)
     generated['bed_return.dm'], bed_before, bed_after = adapt_bed((root / 'code/modules/persistence/bed_return.dm').read_text(), base)
+    gateway_before, generated['gateway_expected_slot.dm'] = adapt_gateway(
+        (root / 'code/modules/persistence/region_gateway.dm').read_text(encoding='utf-8-sig'), base)
     if control == 'omit-claim-consume':
         generated['player_reclaim.dm'] = base.replace_once(generated['player_reclaim.dm'],
             '\t\tpersistence_restored_bodies.Remove(owner)\n', '\t\t// Generated omission: retained first-return claim.\n', 'claim consumption omission')
@@ -143,10 +160,10 @@ def prepare(root, output, control=None):
     if control == 'omit-bed-owner':
         fixture += '\n/obj/structure/bed/persistence_runtime_var(key)\n\treturn key == "persistence_bed_owner_ckey" || ..()\n'
     generated['character_return_fixture.dm'] = fixture
-    dme = (root / 'tests/world_save/cross_level.dme').read_text()
+    dme = '#define CHARACTER_RETURN_GATEWAY_FIXTURE\n' + (root / 'tests/world_save/cross_level.dme').read_text()
     dme += '\n' + '\n'.join('#include "' + name + '"' for name in (
         'sleep_adapters.dm', 'sleep_helpers.dm', 'buckling.dm', 'force_move.dm',
-        'bed_return.dm', 'character_return_fixture.dm')) + '\n'
+        'bed_return.dm', 'gateway_expected_slot.dm', 'character_return_fixture.dm')) + '\n'
     generated['probe.dme'] = dme
     receipt = {
         'source_reference_commit': COMMIT, 'source_sha256': manifest['sha256'],
@@ -156,10 +173,11 @@ def prepare(root, output, control=None):
         'cases': [CONTROLS[control][0]] if control else list(CASES),
         'negative_control': control,
         'expected_result': CONTROLS[control][1] if control else 'PASS',
-        'client_io_adapters': {'reclaim_lobby_accesses': 5, 'fresh_admission_lobby_accesses': 5,
+        'client_io_adapters': {'reclaim_lobby_accesses': 7, 'fresh_admission_lobby_accesses': 6,
                                'native_key_handoffs': 1, 'native_client_declarations': 1},
         'adapted_procedures': {
             'reclaim': {'before': digest(reclaim_before.encode()), 'after': digest(reclaim_after.encode())},
+            'gateway_expected_slot': {'before': digest(gateway_before.encode()), 'after': digest(generated['gateway_expected_slot.dm'].encode())},
             'allow_new_character': {'before': digest(bed_before.encode()), 'after': digest(bed_after.encode())},
         },
         'generated_sha256': {name: digest(text.encode()) for name, text in generated.items()},

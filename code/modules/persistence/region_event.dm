@@ -242,7 +242,7 @@ var/global/list/event_stash_registry = list()
 // ordinary reclaim hands it over (bed_return.dm prepare_character_return needs
 // it on a tile). Only once the world could hand it over at all.
 /map_storage/reclaim_saved_player(mob/new_player/lobby)
-	if(lobby && lobby.client && !character_recovery_unready() && !player_restoration_blocked())
+	if(lobby && lobby.client && region_gateway_expected_slot_ok(lobby.client) && !character_recovery_unready() && !player_restoration_blocked())
 		var/obj/structure/event_stash/S = event_stash_of(lobby.client.owner_key())
 		if(S && S.release())
 			to_chat(lobby, SPAN_NOTICE("Welcome back from the event. Your character is as you left it."))

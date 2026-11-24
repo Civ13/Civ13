@@ -254,8 +254,31 @@ var/global/province_siege_timer = null
 	province_siege_banner_lost(src)
 	return ..()
 
+/obj/structure/war_banner/attackby(obj/item/O, mob/user, icon_x, icon_y)
+	if (!is_tool(O, TOOL_HAMMER))
+		return ..()
+	if (faction)
+		to_chat(user, SPAN_WARNING("You cannot dismantle a war banner committed to a siege."))
+		return TRUE
+	playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
+	to_chat(user, SPAN_NOTICE("You begin dismantling the war banner."))
+	if (!do_ship_fixture_after(user, 25, src) || QDELETED(src))
+		return TRUE
+	// A faction leader can declare while the hammer action is in progress.
+	if (faction)
+		to_chat(user, SPAN_WARNING("You cannot dismantle a war banner committed to a siege."))
+		return TRUE
+	to_chat(user, SPAN_NOTICE("You dismantle the war banner."))
+	var/refund = crafted_refund_stack(type, /obj/item/stack/material/wood)
+	if (refund)
+		new refund(get_turf(src))
+	qdel(src)
+	return TRUE
+
 /obj/structure/war_banner/examine(mob/user)
 	..()
+	if (!faction)
+		to_chat(user, SPAN_NOTICE("Use a hammer to dismantle this war banner."))
 	var/datum/province_map/P = map ? map.province_map() : null
 	var/c = P ? P.char_at(x, y) : null
 	if (!c)

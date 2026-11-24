@@ -7,6 +7,8 @@
 	pollutant = 1
 /datum/reagent/gasoline
 	pollutant = 1
+/datum/reagent/kerosene
+	pollutant = 1
 /datum/reagent/diesel
 	pollutant = 1
 /datum/reagent/biodiesel

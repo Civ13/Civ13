@@ -50,6 +50,24 @@ class FishingGrounds(unittest.TestCase):
         self.assertLess(cast.index('prob(round(chance))'), cast.index('G.take(1)'))
         self.assertLess(cast.index('G.take(1)'), cast.index('new catch_path('))
 
+    def test_cast_rechecks_current_water_before_using_bait_or_stock(self):
+        water_kind = self.source.split('/proc/fish_water_kind(turf/T)\n', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('if (istype(T, /turf/floor/beach/water/ice) || ', water_kind)
+        helper = '/proc/fish_cast_water_open(turf/T)\n'
+        self.assertIn(helper, self.source)
+        open_check = self.source.split(helper, 1)[1].split('\n/turf/', 1)[0]
+        for obstruction in ('T.iscovered()', '/obj/structure/vehicleparts/frame', '/obj/structure/vehicleparts/axis'):
+            self.assertIn(obstruction, open_check)
+        cast = self.source.split('/turf/floor/beach/water/proc/fish_cast(', 1)[1].split('\n// The roll', 1)[0]
+        before, after = cast.split('var/done = do_after(H, profile[1], src)', 1)
+        self.assertIn('if (!fish_cast_water_open(src))', before)
+        guard = ('if (fish_water_kind(src) != kind || fish_water_deep(src) != deep || '
+                 '!fish_cast_water_open(src))')
+        self.assertRegex(after, re.escape(guard) + '\n\t\tto_chat[^\n]+\n\t\treturn\n')
+        self.assertLess(after.index('H.ocean_fishing = FALSE'), after.index(guard))
+        self.assertLess(after.index(guard), after.index('line.bait_uses--'))
+        self.assertLess(after.index(guard), after.index('fish_land('))
+
     def test_shoals_hold_no_state(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\fish_shoals.dm"'), 1)
@@ -74,6 +92,13 @@ class FishingGrounds(unittest.TestCase):
     def test_a_net_takes_no_bait(self):
         bait = self.source[self.source.index('/obj/item/weapon/fishing/attackby('):]
         self.assertLess(bait.index('/obj/item/weapon/fishing/net'), bait.index('bait_uses = FISH_BAIT_USES'))
+
+    def test_bait_lasts_four_casts_at_the_existing_bonus(self):
+        self.assertRegex(self.source, r'(?m)^#define FISH_BAIT_USES 4$')
+        self.assertRegex(self.source, r'(?m)^#define FISH_BAIT_BONUS 30$')
+        bait = self.source.split('/obj/item/weapon/fishing/attackby(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('bait_uses = FISH_BAIT_USES', bait)
+        self.assertIn('[FISH_BAIT_USES] casts', bait)
 
     def test_conditions_scale_the_cast_and_strandings_ride_the_flood_pass(self):
         cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]

@@ -15,7 +15,11 @@ SPEC = importlib.util.spec_from_file_location('return_source_adapter', Path(__fi
 adapter = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(adapter)
 
-SOURCE = adapter.read('code/modules/persistence/player_reclaim.dm') + '\n' + adapter.read('code/modules/persistence/bed_return.dm')
+GATEWAY = adapter.read('code/modules/persistence/region_gateway.dm')
+EXPECTED_SLOT = '/proc/region_gateway_expected_slot_ok('
+SOURCE = '\n'.join((adapter.read('code/modules/persistence/player_reclaim.dm'),
+                    adapter.read('code/modules/persistence/bed_return.dm'),
+                    EXPECTED_SLOT + GATEWAY.split(EXPECTED_SLOT, 1)[1].split('\n/proc/', 1)[0]))
 HELPERS = 'code/game/mob/living/carbon/human/human_helpers.dm'
 
 
@@ -133,7 +137,7 @@ class ReturnFixture:
     def __init__(self):
         self.enabled, self.blocked, self.ready = True, False, True
         self.artifacts = []
-        self.world, self.messages, self.deleted = [], [], []
+        self.world, self.messages, self.deleted, self.pickers = [], [], [], []
         self.claims, self.registered = Assoc(), Assoc()
         self.home, self.bed_turf = Turf(), Turf((4, 2, 2))
         self.zone = Turf((1, 1, 1), protected=True)
@@ -144,7 +148,10 @@ class ReturnFixture:
                       buckle_lying=True, buckled_mob=None, gc_destroyed=False,
                       gcDestroyed=False, density=False)
         self.world.append(self.bed)
-        self.client = NS(ckey='account', key='Account', owner_key=lambda: 'account', quickBan_isbanned=lambda kind: False)
+        self.client = NS(ckey='account', key='Account', owner_key=lambda: 'account', quickBan_isbanned=lambda kind: False,
+                         character_slot=1, gateway_expected_slot=0,
+                         open_character_sleep_picker=lambda: self.pickers.append(self.client.mob))
+        self.active_slot = 1
         self.lobby = NS(client=self.client, spawning=False, close_spawn_windows=lambda: None)
         self.client.mob = self.lobby
         self.registered['account'] = DMList([self.body])
@@ -175,6 +182,11 @@ class ReturnFixture:
                         log_game=self.held.append, message_admins=lambda text: None, key_name=lambda actor: 'key',
                         orange=lambda radius, center: DMList(self.nearby), get_dist=lambda a, b: max(abs(a.x - b.x), abs(a.y - b.y)),
                         PERSISTENCE_RETURN_SEARCH_RANGE=7)
+        self.env.update(accolade_client_ckey=lambda C: C.ckey,
+                        region_home_enabled=lambda: True,
+                        character_slot_state=lambda account: {'active': self.active_slot},
+                        region_gateway_active_slot=lambda C, state: state['active'])
+        self.env['region_gateway_expected_slot_ok'] = self.proc('/proc/region_gateway_expected_slot_ok', 'C')
         self.env['persistence_bed_return_enabled'] = self.proc('/proc/persistence_bed_return_enabled', '')
         self.env['persistence_sleep_transfer_blocked'] = lambda: self.blocked
         self.env['death_legacy_now'] = lambda: 235000  # real hours (death_legacy.dm)
@@ -635,6 +647,7 @@ class CharacterReturnTests(unittest.TestCase):
         f.body.persistence_restored = f.body.inducedSSD = False
         self.assertTrue(f.store.reclaim_saved_player(f.lobby))
         self.assertIs(f.body.loc, f.home)
+        self.assertFalse(f.pickers)
 
     def test_imported_body_first_return_is_consumed_before_later_lobby_reclaim(self):
         f = ReturnFixture()
@@ -682,6 +695,43 @@ class CharacterReturnTests(unittest.TestCase):
         self.assertTrue(f.body.inducedSSD, 'reconnect woke a player who chose to sleep')
         self.assertEqual(f.body.sleeping, 66)
         self.assertEqual(f.body.sleep_updates, 1, 'sleep refresh loop was not restarted after the save')
+
+    def test_gateway_handoff_rejects_slot_change_without_claiming_or_resurrecting(self):
+        for changes_after_close in (False, True):
+            with self.subTest(changes_after_close=changes_after_close):
+                f = ReturnFixture()
+                f.client.gateway_expected_slot = 1
+                if changes_after_close:
+                    f.lobby.close_spawn_windows = lambda: setattr(f, 'active_slot', 2)
+                else:
+                    f.active_slot = 2
+                self.assertFalse(f.store.reclaim_saved_player(f.lobby))
+                self.assertIs(f.client.mob, f.lobby)
+                self.assertIsNone(f.body.key)
+                self.assertEqual(f.registered['account'][1], f.body)
+                self.assertFalse(f.claims)
+                self.assertFalse(f.lobby.spawning)
+                self.assertFalse(f.pickers)
+                self.assertEqual(f.client.gateway_expected_slot, 1)
+
+    def test_stale_gateway_selection_never_falls_through_to_fresh_creation(self):
+        f = ReturnFixture()
+        f.world.remove(f.body)
+        f.registered.clear()
+        f.client.gateway_expected_slot = 1
+        f.active_slot = 2
+        self.assertFalse(f.store.allow_new_character(f.lobby))
+        self.assertIs(f.client.mob, f.lobby)
+        self.assertFalse(f.claims)
+        self.assertFalse(f.pickers)
+
+    def test_gateway_matching_slot_uses_saved_body_and_consumes_hint(self):
+        f = ReturnFixture()
+        f.client.gateway_expected_slot = 1
+        self.assertTrue(f.store.reclaim_saved_player(f.lobby))
+        self.assertIs(f.client.mob, f.body)
+        self.assertEqual(f.client.gateway_expected_slot, 0)
+        self.assertEqual(f.pickers, [f.body])
 
     def test_sleep_refresh_loop_is_single_per_body(self):
         proc = adapter.extract(adapter.read(HELPERS), '/mob/living/human/proc/sleep_update')

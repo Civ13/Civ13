@@ -29,7 +29,7 @@
 <li>Use spare materials to map out your utility pole line.</li>
 <li>Create the telegraph at the other end.</li>
 <li>Build your new building around it.</li>
-<li>Construct the telegraph lines and make sure to place a telegraph printer next to each of the telegraphs. (Make sure to load paper into it.)</li>
+<li>Construct the telegraph lines. For a paper record, place a telegraph printer next to the receiving telegraph and load paper into it.</li>
 </ul>
 
 
@@ -62,9 +62,20 @@ situations. (Use a telescope to see them from afar)
 - **Messengers:** these are men who dedicate their lives to delivering letters
 to people who need them in time usually on horseback.
 
-- **Telegraph:** to use a telegraph it must be within 2 tiles of a
-communications pole, you need a telegraph and a telegraph printer with
-paper in it to actually send messages. Doesn't need power
+- **Telegraph:** place it within two tiles of a utility pole on a connected
+line. Telegraphs do not need power. A receiving telegraph shows a message to
+people nearby; a teleprinter within one tile, loaded with paper with enough
+room, can also record it. A printer is not required to send or receive.
+
+  To acknowledge a clinic shipment, name the receiving telegraph with **Name**
+  and put its name and a request reference of 1–12 letters or digits on the
+  paper notice. Once the goods have been dispatched, stand next to the sending
+  telegraph and choose **Confirm Clinic Shipment**. Enter the receiving
+  station name and reference. The message is sent only if exactly one station
+  with that name is reachable on the connected lines. The sender is told whether
+  it was printed. This confirms dispatch, not delivery; the goods still travel
+  physically. The origin name is a player-set label, not proof of identity.
+  There is no offline queue or cross-region route.
 
 - **Cameras:** a simple form of relaying information through photographs,
 either for keeping memories of the past or for spying on enemy nations

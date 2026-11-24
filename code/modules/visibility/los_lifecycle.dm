@@ -94,6 +94,8 @@
 		if(los_context)
 			los_context.retire()
 		los_height_sight_revoke(mob)
+		if(water_overlay_uses_los())
+			clear_water_overlays()
 		return
 	if(los_context && (los_context.body != mob || los_context.retired))
 		los_context.retire()
@@ -101,6 +103,8 @@
 		new /datum/los_context(src)
 	var/datum/los_context/V = los_context
 	if(!V)
+		if(water_overlay_uses_los())
+			clear_water_overlays()
 		return
 	// A temporary capture suspension is not an observer/camera exemption.
 	// Ordinary saves allow read-only geometry refresh as players still move.
@@ -111,6 +115,8 @@
 			root_tree_presenter.invalidate()
 		los_dirty = TRUE
 		los_height_sight_revoke(mob)
+		if(water_overlay_uses_los())
+			clear_water_overlays()
 		return
 	var/key = V.presentation_key()
 	if(!key || !mob.hud_used)
@@ -123,6 +129,8 @@
 		los_height_sight_revoke(mob)
 		los_last_policy = null
 		los_dirty = TRUE
+		if(water_overlay_uses_los())
+			clear_water_overlays()
 		return
 	if(!los_dirty && key == los_last_policy && length(los_pending_movers))
 		if(los_refresh_pending_movers(V))
@@ -141,6 +149,7 @@
 	if(use_compositor && !root_tree_presenter)
 		los_last_error = "root compositor admission failed"
 		los_dirty = TRUE
+		clear_water_overlays()
 		return
 	if(!los_presenter)
 		new /datum/los_presenter(src, V)
@@ -153,6 +162,7 @@
 			los_presenter.invalidate()
 		los_height_sight_revoke(mob)
 		los_dirty = TRUE
+		clear_water_overlays()
 		return
 	if(audit_only && V.audit_scene_unchanged(S))
 		los_next_audit = world.time + 10
@@ -165,6 +175,7 @@
 	if(!published)
 		los_height_sight_revoke(mob)
 		los_dirty = TRUE
+		clear_water_overlays()
 		return
 	los_last_error = null
 	los_last_policy = key
@@ -178,6 +189,7 @@
 	// Every atom the viewer cannot see is masked now; only then may BYOND send
 	// what lies behind walls it can see over.
 	los_height_sight_update(mob, S)
+	present_water_overlays(S)
 	// Recheck raw opacity/art writers which have no central setter. This is a
 	// presentation audit, not an information-release lease: reads capture fresh.
 	// The recorded scene lets an unchanged audit skip the presenter refresh.
