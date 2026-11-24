@@ -196,7 +196,7 @@
 	else
 		return
 
-	if (find_company_member(user, owner))
+	if (company_may_operate(user, owner))
 		if (unlocked)
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
@@ -247,7 +247,7 @@
 				notes = list("This pump still has [unlockedvol] units of [fueltype] inside! Are you sure you want to finish?"),
 				buttons = list(panel_button("Yes", "action", "finish_yes"), panel_button("No", "action", "finish_no"))))
 		if ("manage")
-			if (!find_company_member(user, owner))
+			if (!company_may_operate(user, owner))
 				GLOB.nanomanager.close_user_uis(user, src, ui_key)
 				return
 			var/list/fuels = list()
@@ -320,7 +320,7 @@
 		return
 
 	// Management
-	if (!find_company_member(user, owner))
+	if (!company_may_operate(user, owner))
 		return
 
 	if (href_list["action"] == "change_name_direct")
@@ -328,7 +328,7 @@
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
 		var/custn = player_input(user, "Choose a name for this pump:", null, null, "text", null, TRUE)
-		if (custn == "" || custn == null)
+		if (custn == "" || custn == null || QDELETED(src) || !in_range(src, user) || !company_may_operate(user, owner))
 			return
 		name = custn
 		updatedesc()
@@ -355,6 +355,8 @@
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
 		var/custp = player_input(user, "What should the price be, in silver coins? (Min: 0, Max: 50):", null, null, "num", null, TRUE)
+		if (QDELETED(src) || !in_range(src, user) || !company_may_operate(user, owner))
+			return
 		update_management_price(user, custp)
 		return
 

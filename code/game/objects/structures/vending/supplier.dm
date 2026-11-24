@@ -51,7 +51,7 @@
 /** Logic for stall maintenance, adding operating funds, configuring new buy orders, or selling items to the stall. */
 /obj/structure/supplier/attackby(obj/item/W as obj, mob/user as mob)
 	if (is_tool(W, TOOL_WRENCH))
-		if (owner != "Global" && find_company_member(user,owner))
+		if (owner != "Global" && company_may_operate(user,owner))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			if (anchored)
 				user.visible_message("[user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
@@ -59,11 +59,11 @@
 				user.visible_message("[user] begins securing \the [src] to the floor.", "You start securing \the [src] to the floor.")
 
 			if (do_after(user, 20, src))
-				if (!src) return
+				if (QDELETED(src) || !company_may_operate(user, owner)) return
 				to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
 				anchored = !anchored
 			return
-	else if (find_company_member(user,owner))
+	else if (company_may_operate(user,owner))
 		if (istype(W, /obj/item/stack/money))
 			var/can_buy = FALSE
 			if (istype(W, /obj/item/stack/money/fiat))
@@ -84,7 +84,7 @@
 					if (choice2 > 100000)
 						choice2 = 100000
 					var/choice3 = player_input(user, "How many units do you want to buy?", "Stall Management", 1, "num", null, FALSE)
-					if (choice3 <= 0)
+					if (choice3 <= 0 || !accept_supply_order_edit(user, W))
 						return
 					orderprice = choice2
 					orderamount = round(choice3)
@@ -137,8 +137,10 @@
 					choice2 = 0
 				else if (choice2 > 100000)
 					choice2 = 100000
-				orderprice = choice2
 				var/choice3 = player_input(user, "How much do you want to buy? This stall will keep accepting orders until it runs out of money.", "Stall Management", moneyin, "num", null, FALSE)
+				if (!accept_supply_order_edit(user, W))
+					return
+				orderprice = choice2
 				if (choice3 < 0)
 					choice3 = 0
 				else if (moneyin < orderamount*choice3)
@@ -215,6 +217,10 @@
 	return
 
 /** Pays out amount in standard coins (gold, silver, copper) without losing any remainder. */
+// A steward's second dialog must not outlive their authority or active order.
+/obj/structure/supplier/proc/accept_supply_order_edit(mob/user, obj/item/W)
+	return !QDELETED(src) && !QDELETED(W) && W.loc == user && !ordertype && in_range(src, user) && company_may_operate(user, owner)
+
 /obj/structure/supplier/proc/pay_standard_coins(var/amount)
 	var/coppers = round(amount*10)
 	var/golds = floor(coppers/40)
@@ -233,7 +239,7 @@
 
 /** Management interface for company members to configure buy orders, name, currency, and withdraw operating funds. */
 /obj/structure/supplier/attack_hand(mob/living/human/H as mob)
-	if (find_company_member(H,owner))
+	if (company_may_operate(H,owner))
 		ui_interact(H)
 	else
 		var/currency_name = accepted_currency == "standard" ? "sc" : fiat.currency_list[accepted_currency][1]
@@ -243,7 +249,7 @@
 	return list("rename", "changeprice", "changeamount", "changecurrency", "removeorder", "removeproducts", "removemoney")
 
 /obj/structure/supplier/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
-	if (!find_company_member(user, owner))
+	if (!company_may_operate(user, owner))
 		GLOB.nanomanager.close_user_uis(user, src, ui_key)
 		return
 	var/currency_name = accepted_currency == "standard" ? "standard coins" : fiat.currency_list[accepted_currency][1]
@@ -272,7 +278,7 @@
 	var/mob/living/human/H = user
 	if (!istype(H) || H.stat || get_dist(src, H) > 2)
 		return TRUE
-	if (!find_company_member(H, owner))
+	if (!company_may_operate(H, owner))
 		return TRUE
 	var/list/href_list = list("[action]" = "[params["value"]]")
 

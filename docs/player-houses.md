@@ -11,9 +11,23 @@ must accept, and staff must record a reason. This changes only stewardship.
 
 A surname, faction, or another character slot on the same BYOND account does
 not grant membership. Houses are regional, not synchronized or travelled as
-a group. Historical saves get an empty charter registry. The first draft
-does not attach companies, migrate stock, restore any prior estate, or alter
-profits or faction permissions.
+a group. Historical saves get an empty charter registry.
+
+## Companies
+
+In a house-enabled region, a steward founding a company must confirm its
+controlling house. A sole shareholder can use **Charter Existing Company** to
+put a legacy company under the house. Existing companies with split stock
+remain under their original management until there is a consent workflow for
+multiple shareholders. No company is chartered automatically.
+
+Stewards can build, stock, and operate company stalls and manage company fuel
+pumps. Being in the house alone is not enough. Trading shares, taking dividends,
+company fire teams and the old stock estate rules are separate. When a steward
+dies, the controlling house still owns the charter even after shares pass to
+someone else; remaining stewards keep running the business. If no steward can
+act, staff can recover the charter using the audited succession command.
+Chartering does not restore prior estates, transfer stock, or change balances.
 
 The durable world schema writes v8 and reads v1–v8. Keep the last v7
 generation when rolling back a v8 writer to an older server build. The house

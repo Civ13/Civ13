@@ -45,6 +45,35 @@ class LedgerMove(unittest.TestCase):
         self.assertIn('newname == "Global" || (newname in map.custom_company_nr)', create)
 
 
+class HouseControl(unittest.TestCase):
+    def setUp(self):
+        self.houses = (ROOT / 'code/game/mob/groups/player_houses.dm').read_text()
+        self.craft = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+
+    def test_house_or_legacy_operator_never_redefines_stock_ownership(self):
+        operator = proc(self.houses, '/proc/company_may_operate(', '\n/')
+        self.assertIn('return find_company_member(H, company)', operator)
+        self.assertIn('map.player_house_role(H, id) == "steward"', operator)
+        for source in (MARKET, DEATH):
+            self.assertNotIn('company_may_operate(', source)
+
+    def test_existing_company_requires_current_steward_and_all_stock_after_consent(self):
+        charter = proc(self.houses, '/mob/living/human/proc/charter_existing_company()', '\n#')
+        commit = charter.index('land.company_attach_house(company, house_id)')
+        recheck = charter[charter.index('Give House'):commit]
+        self.assertIn('company_has_stake(company, src, 100)', recheck)
+        self.assertIn('player_house_role(src, house_id) != "steward"', recheck)
+        self.assertIn('persistence_admission_changed(save_identity)', recheck)
+        attach = proc(self.houses, '/obj/map_metadata/proc/company_attach_house(', '\n/')
+        self.assertIn('company_controlling_house(company)', attach)
+        for economic_field in ('custom_company', 'sales_registry', 'company_move_stake'):
+            self.assertNotIn(economic_field, attach)
+
+    def test_company_craft_revalidates_at_commit(self):
+        final_gate = self.craft.index('if (customvar && !company_may_operate(H, customvar))')
+        self.assertLess(self.craft.index('do_after(user, buildtime'), final_gate)
+        self.assertLess(final_gate, self.craft.index('if (use(required, (joinery || carving) ? null : H))'))
+
 class StockMarket(unittest.TestCase):
     def setUp(self):
         self.buy = proc(MARKET, 'if (href_list["buy"])', '// Sell stock')

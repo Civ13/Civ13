@@ -1897,6 +1897,10 @@
 		if (ship_craft)
 			secondary_refund(H)
 		return
+	if (customvar && !company_may_operate(H, customvar))
+		to_chat(user, SPAN_WARNING("You no longer have permission to build for that company."))
+		secondary_refund(H)
+		return
 	if (joinery && !joinery.valid())
 		to_chat(user, SPAN_WARNING("Keep the joinery materials and tools in place until construction completes."))
 		if (ship_craft)

@@ -57,7 +57,7 @@
 			finish_pending_purchase(user)
 			return
 	else if (is_tool(W, TOOL_WRENCH))
-		if (owner != "Global" && find_company_member(user,owner))
+		if (owner != "Global" && company_may_operate(user,owner))
 			playsound(loc, 'sound/items/Ratchet.ogg', 100, TRUE)
 			if (anchored)
 				user.visible_message("[user] begins unsecuring \the [src] from the floor.", "You start unsecuring \the [src] from the floor.")
@@ -65,13 +65,13 @@
 				user.visible_message("[user] begins securing \the [src] to the floor.", "You start securing \the [src] to the floor.")
 
 			if (do_after(user, 20, src))
-				if (!src) return
+				if (QDELETED(src) || !company_may_operate(user, owner)) return
 				to_chat(user, "<span class='notice'>You [anchored? "un" : ""]secured \the [src]!</span>")
 				anchored = !anchored
 			return
 
 	else
-		if (owner != "Global" && find_company_member(user,owner))
+		if (owner != "Global" && company_may_operate(user,owner))
 			for (var/datum/data/vending_product/R in product_records)
 				if (istype(W, R.product_path) && W.name == R.product_name)
 					if (istype(W, /obj/item/stack))
@@ -88,7 +88,7 @@
 			// Ask the price while the item is still in hand, then stock it only if the
 			// seller still holds it and still stands at the stall.
 			var/inputp = player_input(user, "What price do you want to set for \the [W]?", "Product Price", null, "num", null, FALSE)
-			if (QDELETED(src) || QDELETED(W) || W.loc != user || !in_range(src, user))
+			if (QDELETED(src) || QDELETED(W) || W.loc != user || !in_range(src, user) || !company_may_operate(user, owner))
 				return FALSE
 			return add_product(W, inputp, user)
 
@@ -146,7 +146,7 @@
 	if (!istype(usr, /mob/living/human))
 		return
 
-	if (owner != "Global" && find_company_member(usr,owner))
+	if (owner != "Global" && company_may_operate(usr,owner))
 		show_management_ui(usr)
 	else
 		to_chat(usr, "You do not have permission to manage this vendor.")
@@ -156,7 +156,7 @@
 
 // The owner's management window: name, prices, stock removal and currency.
 /obj/structure/vending/sales/proc/manage_interact(mob/user, ui_key, datum/nanoui/ui, force_open)
-	if (owner == "Global" || !find_company_member(user, owner))
+	if (owner == "Global" || !company_may_operate(user, owner))
 		GLOB.nanomanager.close_user_uis(user, src, ui_key)
 		return
 	var/list/currencies = list(panel_option("standard", "Standard Coins"))
@@ -186,7 +186,7 @@
 			return
 	if (!(user.contents.Find(src) || (in_range(src, user) && istype(loc, /turf))))
 		return
-	if (owner == "Global" || !find_company_member(user, owner))
+	if (owner == "Global" || !company_may_operate(user, owner))
 		return
 	var/value = params["value"]
 	var/datum/data/vending_product/VP = null
@@ -342,8 +342,8 @@
 	if ((user.contents.Find(src) || (in_range(src, user) && istype(loc, /turf))))
 		if ((action == "vend") && (vend_ready) && (!currently_vending))
 
-			if (find_company_member(user,owner))
-				to_chat(user, "<span class='warning'>You can't buy from your own company. Remove the product instead.</span>")
+			if (company_may_operate(user, owner) || find_company_member(user, owner))
+				to_chat(user, "<span class='warning'>You can't buy from a company you operate or hold shares in.</span>")
 				status_error = FALSE
 				currently_vending = null
 			else
