@@ -132,6 +132,18 @@ class WikiAnswerTests(unittest.TestCase):
         self.assertEqual(bridge.public_mode('Team Deathmatch'), 'Team Deathmatch')
         self.assertFalse(wiki_eval.score_answer({'answer': ['province'], 'forbid': ['cannot claim']}, 'You cannot claim a province.')['pass'])
 
+    def test_telegraph_answer_rejects_required_printer_claim(self):
+        entry = next(item for item in QUESTIONS if item['id'] == 'telegraph')
+        for answer in ('A pole and printer are required.', 'You need a printer and a pole.',
+                       'A telegraph within 2 tiles of a communications pole, and a telegraph printer with paper in it. It does not need power.'):
+            with self.subTest(answer=answer):
+                self.assertFalse(wiki_eval.score_answer(entry, answer)['pass'])
+        for answer in ('Use a pole; a printer is optional.', 'Use a pole; you do not need a printer.',
+                       'Use a telegraph within two tiles of a connected pole; it needs no power.',
+                       'Use a pole; no printer is needed.'):
+            with self.subTest(answer=answer):
+                self.assertTrue(wiki_eval.score_answer(entry, answer)['pass'])
+
     def test_rare_words_and_named_entries_rank_first(self):
         corpus = ([{'topic': 'wooden thing %d' % index, 'source': 'recipe', 'text': 'Recipe: a wooden thing made of wood.'} for index in range(30)] +
                   [{'topic': 'guides/Guide_to_Flint.md Getting flint', 'aliases': 'flint knapping', 'headings': 'Getting flint', 'source': 'wiki',
