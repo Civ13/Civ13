@@ -56,6 +56,20 @@
 	// they can still be looked at (travel_hold.dm).
 	if (travel_holds && !(modifiers["shift"] && !modifiers["ctrl"] && !modifiers["alt"] && !modifiers["middle"]) && travel_hold_refuses(src, A))
 		return
+	// A deliberate pile selection resumes here as one ordinary click, keeping
+	// the normal facing, hand, reach, cooldown and attack dispatch below.
+	if (modifiers["shift"] && modifiers["alt"] && !modifiers["ctrl"] && !modifiers["middle"] && !modifiers["right"] && ishuman(src))
+		var/mob/living/human/H = src
+		var/turf/site = isturf(A) ? A : A.loc
+		if (isturf(site) && H.item_pile_can_choose(site))
+			var/list/options = item_pile_options(H, site)
+			if (options.len > 1)
+				var/obj/item/selected = H.item_pile_choose(site, options)
+				if (!selected)
+					return
+				A = selected
+				params = "left=1"
+				modifiers = params2list(params)
 	var/icon_x = text2num(modifiers["icon-x"])
 	var/icon_y = text2num(modifiers["icon-y"])
 	if (modifiers["shift"] && modifiers["ctrl"])
