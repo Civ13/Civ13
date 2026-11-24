@@ -66,6 +66,46 @@
 		return istype(P) && P.practice && P.practice.owns_room(P) && P.practice.owns_yard_box(low_x, low_y, high_x, high_y, z)
 	return !practice_room_z || z != practice_room_z
 
+// Limit workshop structures to the trainee's own yard on Tutorial's map levels.
+/proc/tutorial_station_module_site(mob/H, turf/centre, radius)
+	if (!tutorial_region_here())
+		return !practice_room_z || centre.z != practice_room_z
+	var/mob/living/human/practice/P = H
+	if (!istype(P) || !P.practice || P.practice.props["workshop_kind"] != "station" || !P.practice.owns_room(P) || centre.z != P.practice.owner.room_z())
+		return FALSE
+	var/list/paved = P.practice.props["paved"]
+	return P.practice.owns_rect(locate(centre.x - radius, centre.y - radius, centre.z), paved) && P.practice.owns_rect(locate(centre.x + radius, centre.y + radius, centre.z), paved)
+
+// A cord interaction may never target another trainee's plot.
+/proc/tutorial_workshop_pair(mob/living/human/H, atom/source, atom/target)
+	var/turf/A = get_turf(source)
+	var/turf/B = get_turf(target)
+	if (!tutorial_region_here() && (!practice_room_z || (A?.z != practice_room_z && B?.z != practice_room_z)))
+		return TRUE
+	return tutorial_workshop_access(H, source) && tutorial_workshop_access(H, target)
+
+// The first workshop is sealed. Check the supplied site, the airlock kit,
+// and its clear southward exit before and after the construction wait.
+/proc/tutorial_station_kit_refusal(mob/user, obj/item/habitat_kit/kit, turf/centre, spacing, radius)
+	if (!tutorial_region_here() || !istype(kit, /obj/item/habitat_kit/workshop))
+		return null
+	var/mob/living/human/practice/P = user
+	if (!istype(P) || !P.practice || P.practice.props["workshop_kind"] != "station")
+		return null
+	if (P.get_active_hand() != kit || !istype(P.get_inactive_hand(), /obj/item/habitat_kit/airlock))
+		return "Hold an airlock kit in your other hand before unfolding the workshop, so you can open a way out."
+	var/list/paved = P.practice.props["paved"]
+	if (!P.practice.owner || !paved || !centre || centre != get_turf(P) || centre != locate(paved[1] + 10, paved[2] + 10, P.practice.owner.room_z()))
+		return "Stand three tiles east of the marker to unfold the practice workshop."
+	var/turf/airlock_site = locate(centre.x, centre.y - spacing, centre.z)
+	var/turf/exit = locate(centre.x, centre.y - spacing - radius - 1, centre.z)
+	if (!airlock_site || !exit || !P.practice.owns_rect(exit, paved) || exit.density || istype(exit, /turf/floor/habitat) || habitat_module_refusal(airlock_site, P))
+		return "Keep the ground south of the workshop clear for the airlock and its exit."
+	for (var/atom/movable/A in exit)
+		if (A.density)
+			return "Keep the ground south of the workshop clear for the airlock and its exit."
+	return null
+
 /proc/draught_age_available(mob/living/human/H, age)
 	return (map && map.ordinal_age >= age) || tutorial_workshop_access(H, H)
 
@@ -96,20 +136,20 @@
 		"Build a train" = "train",
 		"Make rocket sections" = "rocket",
 		"Build a ship" = "ship",
-		"Draw a submarine" = "sub",
+		"Assemble a submarine" = "sub",
 		"Build a railway" = "rail",
 		"Build a house" = "house",
-		"Plan a harbor" = "harbor",
-		"Plan waterworks" = "water",
-		"Plan a contraption" = "mech",
-		"Plan a space station" = "station",
+		"Build a short pier" = "harbor",
+		"Build an aqueduct" = "water",
+		"Rig a bell" = "mech",
+		"Unfold a station workshop" = "station",
 	)
 	var/client/connection = body.client
 	var/current = props["workshop_selected"]
 	var/prompt = "Choose an exercise. This workshop is yours alone, and you can come back to the desk to switch to another."
 	if (current)
 		prompt = "\"[current]\" is set up. Choosing an exercise now clears both yards on every level, with everything built, dug or left in them, and lays out the new one."
-	var/choice = WWinput(body, "[prompt] Only exercises marked Build or Make include physical construction; the others use the same designers as the live game.", desk.name, "Cancel", exercises + list("Cancel"))
+	var/choice = WWinput(body, "[prompt] Every exercise provides a kit for a small physical build using the live game's designer.", desk.name, "Cancel", exercises + list("Cancel"))
 	if (!exercises[choice] || !connection || body?.client != connection || connection.mob != body || !tutorial_workshop_access(body, desk) || !desk.Adjacent(body) || props["workshop_selected"] != current)
 		return
 	if (current)
@@ -130,6 +170,7 @@
 		for (var/obj/item/I in T)
 			qdel(I)
 	props["workshop_selected"] = null
+	props["workshop_kind"] = null
 
 // The office floor the desk lays sheets on, south of it.
 /datum/practice_session/proc/supply_floor()
@@ -138,6 +179,9 @@
 
 // Fits the paved yard out for one exercise and returns the instructions.
 /datum/practice_session/proc/setup_workshop(exercise)
+	if (!owns_room(body) || !exercise || props["workshop_kind"])
+		return null
+	props["workshop_kind"] = exercise
 	var/list/paved = props["paved"]
 	var/px = paved[1]
 	var/py = paved[2]
@@ -182,8 +226,57 @@
 			for (var/material in W.stock)
 				W.stock[material] = 1000
 			. += " Use the saved rocket sheet on the stocked rocket works just inside the paved yard, then click the works to make each section. Move each finished section out of the way. This exercise does not stack or launch a rocket."
-		else
-			. += " This is a paper exercise; the yards do not build that plan into the world."
+		if ("sub")
+			for (var/col = px + 6 to px + 13)
+				for (var/row = py + 2 to py + 9)
+					var/turf/T = locate(col, row, z)
+					new /turf/floor/beach/water(T)
+			for (var/col = px + 8 to px + 10)
+				for (var/row = py + 3 to py + 7)
+					new /obj/structure/vehicleparts/frame/ship/steel/submarine/section(locate(col, row, z))
+			var/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/W = new(locate(px + 9, py + 7, z))
+			W.session = src
+			new /obj/structure/vehicleparts/shipwheel(locate(px + 9, py + 6, z))
+			new /obj/structure/vehicleparts/sub_station/loose(locate(px + 9, py + 5, z))
+			new /obj/structure/engine/internal/diesel/premade/chiha(locate(px + 9, py + 3, z))
+			new /obj/item/weapon/reagent_containers/glass/barrel/fueltank/tank(locate(px + 9, py + 3, z))
+			. += " Draw a five-row submarine, with a helm in the centre of row two, a ballast station in the centre of row three, and a side hatch. The supplied 3 by 5 hull carries those fittings, a diesel engine and an empty fuel tank. Apply the saved sheet to its controls, then select Assemble it and North. The practice boat cannot drive or dive."
+		if ("harbor")
+			var/turf/start = locate(px + 8, py + 6, z)
+			new /obj/effect/practice_marker(start)
+			for (var/col = px + 9 to px + 10)
+				var/turf/T = locate(col, py + 6, z)
+				new /turf/floor/beach/water/shallowsaltwater(T)
+			new /obj/structure/workshop_machine/pile_driver(locate(px + 8, py + 7, z))
+			for (var/i in 1 to 2)
+				new /obj/item/weapon/bridge_span(supply[3])
+				new /obj/item/weapon/bridge_span/timber(supply[4])
+			. += " Draw a two-span pier. Stand on the marker and face east to survey it. Install spans one at a time from the shore outward. The pile driver stands beside the start if you choose timber. This yard teaches a pier, not a dry dock or boathouse."
+		if ("water")
+			new /obj/effect/practice_marker(locate(px + 9, py + 6, z))
+			var/turf/T = locate(px + 8, py + 6, z)
+			new /turf/floor/beach/water(T)
+			practice_workshop_stack(supply[3], /obj/item/stack/material/stone, 1)
+			new /obj/item/weapon/reagent_containers/glass/small_pot(supply[4])
+			. += " In an aqueduct plan place an intake, channel and fountain on three consecutive tiles running east from the marker. Preview and peg the route while standing on the marker. Build all three pieces from the supplied stone over their pegs. Wait a minute for the channel to feed the fountain, then fill the pot."
+		if ("mech")
+			practice_workshop_stack(supply[3], /obj/item/stack/material/wood, 1)
+			practice_workshop_stack(supply[4], /obj/item/stack/material/rope, 1)
+			new /obj/structure/bell(locate(px + 9, py + 7, z))
+			. += " Draw a lever and bell with a cord between them. Build the lever from the supplied wood within seven tiles of the actual bell, use rope on the lever to tie it to the bell, then throw the lever to ring it."
+		if ("station")
+			new /obj/effect/practice_marker(locate(px + 7, py + 10, z))
+			new /obj/item/habitat_kit/workshop(supply[3])
+			new /obj/item/habitat_kit/airlock(supply[4])
+			new /obj/item/habitat_kit/airlock(supply[4])
+			. += " Draw a command module with a keel airlock at one end and a docking airlock at the other. Hold an airlock kit in one hand and the workshop kit in the other. Unfold the workshop three tiles east of the marker. Inside, step one tile south of its core, swap hands, and unfold the airlock. Open the connecting hatch and outer hatch to leave, then fetch the second airlock and unfold it four tiles north of the workshop. Open its outer hatch and step north to leave. This practice build does not allocate orbit, launch, or install a live docking port."
+
+
+/proc/practice_workshop_stack(turf/T, path, count)
+	for (var/n in 1 to count)
+		var/obj/item/stack/S = new path(T)
+		S.amount = min(S.max_amount, 50)
+		S.update_icon()
 
 /datum/practice_session/proc/setup_practice_press(obj/structure/car_workshop/W)
 	for (var/material in W.stock)
@@ -391,3 +484,47 @@
 	var/obj/item/made = hand_out(H, choice)
 	if (made)
 		to_chat(H, SPAN_NOTICE("You take \a [made] from the stores."))
+
+// Construction permissions are for these three outputs and their selected
+// practice exercise, not knowledge, XP, any other recipe or a real character.
+/proc/tutorial_waterworks_recipe(mob/living/human/H, result_path_string)
+	var/mob/living/human/practice/P = H
+	return istype(P) && P.practice && P.practice.props["workshop_kind"] == "water" && P.practice.owns_rect(P, P.practice.props["paved"]) && P.z == P.practice.owner.room_z() && (result_path_string in list(
+		"/obj/structure/aqueduct_intake",
+		"/obj/structure/aqueduct/channel",
+		"/obj/structure/sink/aqueduct_fountain",
+	))
+
+/obj/structure/vehicleparts/axis/ship/submarine/controls/practice
+	should_save = FALSE
+	var/tmp/datum/practice_session/session
+
+/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/attack_hand(mob/living/human/H)
+	if (tutorial_workshop_access(H, src))
+		return ..()
+
+/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/attackby(obj/item/I, mob/H)
+	if (tutorial_workshop_access(H, src))
+		return ..()
+
+/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/proc/practice_site()
+	return session && session.owner && z == session.owner.room_z() && session.owns_rect(src, session.props["paved"])
+
+/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/assembly_refusal(datum/vehicle_survey/S)
+	var/datum/sub_draught/D = sheet()
+	var/is_five = D && D.length == 5
+	qdel(D)
+	if (!is_five || !practice_site() || S.width != 3 || S.height != 5)
+		return "use a five-row submarine sheet on the supplied hull"
+	// The controls also lay out a five-wide turning square.
+	if (!session.owns_rect(locate(S.min_x - 2, S.min_y, z), session.props["paved"]) || !session.owns_rect(locate(S.max_x + 2, S.max_y, z), session.props["paved"]))
+		return "keep the whole hull and its turning space inside your bay"
+	return ..()
+
+/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/depth_refusal(diving)
+	return "The practice basin is for assembling a submarine, not diving."
+
+/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/do_vehicle_check()
+	moving = FALSE
+	stopmovementloop()
+	return FALSE

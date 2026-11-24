@@ -164,7 +164,9 @@
 		// is_node_done handles a null/"none" faction fine (baseline-era grants
 		// don't depend on faction), so factionless players get their era's
 		// baseline nodes here instead of falling back to legacy thresholds.
-		if (node_req && map && map.book_research_enabled())
+		if (tutorial_waterworks_recipe(user, i[3]))
+			research_allowed = TRUE
+		else if (node_req && map && map.book_research_enabled())
 			// Show current-era rows, plus anything this character can already
 			// craft from personal knowledge or the research-essential rules.
 			// The craft itself still rechecks permission at the point of use.

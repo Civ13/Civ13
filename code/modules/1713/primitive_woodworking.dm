@@ -113,9 +113,9 @@
 		if ("mallet")
 			return list("cost" = 5, "count" = 1, "delay" = 240, "output" = /obj/item/weapon/hammer/tribalhammer, "bark" = 0)
 		if ("plank")
-			return list("cost" = 2, "count" = 1, "delay" = 240, "output" = /obj/item/stack/material/crude_plank, "bark" = 2)
+			return list("cost" = 2, "count" = 1, "delay" = 180, "output" = /obj/item/stack/material/crude_plank, "bark" = 2)
 		if ("flatten")
-			return list("cost" = 1, "count" = 1, "delay" = 80, "output" = /obj/item/stack/material/woodplank, "bark" = 0)
+			return list("cost" = 1, "count" = 1, "delay" = 60, "output" = /obj/item/stack/material/woodplank, "bark" = 0)
 	return null
 
 /proc/woodwork_begin(obj/item/stack/material/source, mob/living/human/user, obj/item/tool, mode)

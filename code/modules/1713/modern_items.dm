@@ -532,6 +532,13 @@
 			return
 		update_icon()
 		if (!refine_petroleum_batch(B.reagents))
+			// A rejected or sub-minimum batch has no retry scheduled; release power
+			// so a later feed or barrel insertion can start the refinery again.
+			active = FALSE
+			powered = FALSE
+			if (powersource)
+				powersource.update_power(-powerneeded, 1, src)
+			update_icon()
 			return
 		refine_scheduled = TRUE
 		spawn(600) // 1 minute

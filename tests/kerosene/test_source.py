@@ -16,7 +16,8 @@ vm = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(vm)
 vm.FIELDS += ('volume', 'product', 'powered', 'active', 'barrel', 'powerneeded',
               'refine_scheduled', 'update_icon', 'factory_output_barrel',
-              'refine_petroleum_batch', 'powersource')
+              'refine_petroleum_batch', 'powersource', 'factory_output_unusable',
+              'factory_has_feed', 'draw_cable_power', 'power_on')
 
 
 class Holder:
@@ -112,6 +113,80 @@ class KeroseneTests(unittest.TestCase):
                 self.assertEqual(timers, [600] if case == 'normal' else [])
                 if case in ('full', 'missing'):
                     self.assertFalse(refinery.active)
+
+    def test_unproductive_cycle_stops_and_releases_power(self):
+        for volume, collector in ((.005, Holder(10)), (10, Holder(10, limit=0))):
+            with self.subTest(volume=volume, room=collector.room):
+                barrel = SimpleNamespace(reagents=collector)
+                power, timers = [], []
+                refinery = SimpleNamespace(product='kerosene', volume=volume, powered=True,
+                    active=True, barrel=[barrel], refine_scheduled=False, powerneeded=1,
+                    powersource=SimpleNamespace(update_power=lambda *args: power.append(args)),
+                    update_icon=lambda: None, factory_output_barrel=lambda: barrel)
+                refinery.refine_petroleum_batch = lambda output: batch()(refinery, output)
+                cycle = vm.project(SOURCE, '/obj/structure/refinery/proc/refine', 'src',
+                    dict(isemptylist=lambda items: not items, MINIMUM_CHEMICAL_VOLUME=.01,
+                         visible_message=lambda _text: None, deferred=timers.append), method=True)
+                cycle(refinery)
+                self.assertEqual(refinery.volume, volume)
+                self.assertFalse(refinery.active)
+                self.assertFalse(refinery.powered)
+                self.assertEqual(timers, [])
+                self.assertEqual(power, [(-1, 1, refinery)])
+
+    def test_nearly_full_output_is_offered_and_taken_by_factory(self):
+        source = (ROOT / 'code/modules/1713/factory_chemistry.dm').read_text()
+        env = dict(MINIMUM_CHEMICAL_VOLUME=.01)
+        petroleum_full = vm.project(source, '/obj/structure/refinery/proc/factory_output_unusable',
+                                    'src, R', env, method=True)
+        biofuel_full = vm.project(source, '/obj/structure/refinery/biofuel/factory_output_unusable',
+                                  'src, R', env, method=True)
+        self.assertTrue(petroleum_full(None, Holder(.005)))
+        self.assertFalse(petroleum_full(None, Holder(.01)))
+        self.assertFalse(biofuel_full(None, Holder(.005)))
+        self.assertTrue(biofuel_full(None, Holder(0)))
+
+        class DMList(list):
+            def __isub__(self, item):
+                self.remove(item)
+                return self
+
+        barrel = SimpleNamespace(reagents=Holder(.005), loc='refinery')
+        barrel.forceMove = lambda destination: setattr(barrel, 'loc', destination)
+        power = []
+        refinery = SimpleNamespace(barrel=DMList([barrel]), active=True, powered=True,
+            powerneeded=1, powersource=SimpleNamespace(update_power=lambda *args: power.append(args)),
+            update_icon=lambda: None, factory_output_barrel=lambda: barrel,
+            factory_output_unusable=lambda holder: petroleum_full(None, holder))
+        offer = vm.project(source, '/obj/structure/refinery/factory_offer',
+            'src, to_dir=0, filter_type=None',
+            dict(factory_waiting_barrel=lambda _src: None, istype=lambda _item, _type: True), method=True)
+        take = vm.project(source, '/obj/structure/refinery/factory_take',
+            'src, I, destination',
+            dict(factory_movable_item=lambda _item: True, get_turf=lambda _src: 'floor'), method=True)
+        self.assertIs(offer(refinery), barrel)
+        self.assertTrue(take(refinery, barrel, 'destination'))
+        self.assertEqual((barrel.loc, refinery.barrel), ('destination', []))
+        self.assertFalse(refinery.active)
+        self.assertFalse(refinery.powered)
+        self.assertEqual(power, [(-1, 1, refinery)])
+
+    def test_factory_does_not_start_with_unusable_output(self):
+        source = (ROOT / 'code/modules/1713/factory_chemistry.dm').read_text()
+        full = vm.project(source, '/obj/structure/refinery/proc/factory_output_unusable',
+                          'src, R', dict(MINIMUM_CHEMICAL_VOLUME=.01), method=True)
+        start = vm.project(source, '/obj/structure/refinery/proc/factory_try_start', 'src',
+                           dict(isturf=lambda _loc: True), method=True)
+        for room, expected in ((.005, False), (.01, True)):
+            with self.subTest(room=room):
+                barrel = SimpleNamespace(reagents=Holder(room))
+                refinery = SimpleNamespace(loc='floor', factory_output_barrel=lambda: barrel,
+                    factory_output_unusable=lambda holder: full(None, holder), refine_scheduled=False,
+                    factory_has_feed=lambda: True, powersource=SimpleNamespace(powered=True),
+                    draw_cable_power=lambda: True, power_on=lambda: None, active=False, powered=False)
+                self.assertEqual(start(refinery), expected)
+                self.assertEqual(refinery.active, expected)
+                self.assertEqual(refinery.powered, expected)
 
     def test_menu_reagent_and_lantern_contracts(self):
         menu = vm.extract(SOURCE, '/obj/structure/refinery/verb/set_product')

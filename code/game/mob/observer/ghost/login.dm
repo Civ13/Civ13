@@ -7,3 +7,6 @@
 		set_admin_hidden(TRUE)
 	updateghostimages()
 	spirit_update_sight() // spirit_observe.dm
+
+	if (admin_sight_selected)
+		updateghostsight()

@@ -14,7 +14,8 @@ Tests: `tests/fishing_grounds/`.
   water you need a deck, bridge or pier under you. The target tile must be open
   water, not a hull or a covered tile.
 - **Odds:** a pole has 30% after 15 seconds, a rod 40% after 12, a spear
-  35% after 10, a sharpened stick 20% after 12. Bait adds 30 points to a line.
+  35% after 10, a sharpened stick 20% after 12. One bait item lasts four casts
+  and adds 30 percentage points to a line's base chance.
   The chance is scaled by how full the ground is, from a quarter at empty to
   the whole at full, and by 0.6 in the open ocean.
 - **Cast net:** a fishing net takes 15 seconds a throw and has three separate
