@@ -430,6 +430,24 @@ class Sieges(unittest.TestCase):
         self.assertIn('PROVINCE_GAIN_HOURS * 36000 || !window', holding)
         self.assertIn('province_rank_effective(c)', holding)
 
+    def test_hammer_dismantling_rechecks_siege_binding_before_salvage(self):
+        text = self.text()
+        dismantle = text.split('/obj/structure/war_banner/attackby(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (!is_tool(O, TOOL_HAMMER))\n\t\treturn ..()', dismantle)
+        binding = '\n\tif (faction)'
+        start, finish = (dismantle.index(binding), dismantle.rindex(binding))
+        wait = dismantle.index('if (!do_ship_fixture_after(user, 25, src) || QDELETED(src))')
+        salvage = dismantle.index('crafted_refund_stack(type, /obj/item/stack/material/wood)')
+        self.assertTrue(start < wait < finish < salvage < dismantle.index('qdel(src)'))
+        for guard, end in ((start, wait), (finish, salvage)):
+            self.assertIn('\n\t\treturn TRUE', dismantle[guard:end])
+        self.assertIn('if (refund)\n\t\tnew refund(get_turf(src))', dismantle)
+        self.assertIn('faction = user.civilization', text.split('/obj/structure/war_banner/attack_hand(', 1)[1])
+        end = text.split('/proc/province_siege_end(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('W.faction = null', end)
+        destroy = text.split('/obj/structure/war_banner/Destroy()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('province_siege_banner_lost(src)', destroy)
+
     def test_wiring(self):
         ranks = RANKS.read_text(encoding='utf-8')
         self.assertIn('province_rank_effective(c)', ranks)
