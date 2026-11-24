@@ -41,6 +41,10 @@ var/building_allocating_z = 0
 	return FALSE // Ordinary legacy fixtures never expand a level.
 #endif
 // Practice rooms (code/modules/1713/practice_rooms.dm) never exist in fixtures.
+// No one is shape-changed in a fixture (code/modules/divine/heteromorph_form.dm).
+/proc/heteromorph_return_all(reason)
+	return 0
+
 #ifndef PRACTICE_ROOM_WIDTH
 var/practice_room_z = 0
 /proc/practice_rooms_close_for_save()
