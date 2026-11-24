@@ -15,15 +15,39 @@
 
 /obj/covers
 	var/hold_origin = null       // A floor of a hull's hold: the turf type it hollowed out, as text.
+	var/hold_sea_zone = 0         // Physical seabed depth restored with that turf, if any.
 
 // The space a hull's hold stands in.
 /turf/floor/plating/ship_hold
 	name = "hold"
 	desc = "The inside of a ship's hull, below the waterline."
 
+// The plating sprite may intercept clicks on the floor. Both routes check
+// that the user is already standing directly beneath an open hatch.
+/turf/floor/plating/ship_hold/attack_hand(mob/user)
+	if (hull_hold_try_climb(user, src))
+		return
+	return ..()
+
 /obj/covers/steelplating/hold
 	name = "hold floor"
 	desc = "The steel floor of a ship's hold, below the waterline."
+
+/obj/covers/steelplating/hold/attack_hand(mob/user)
+	if (hull_hold_try_climb(user, get_turf(src)))
+		return
+	return ..()
+
+/proc/hull_hold_try_climb(mob/living/human/H, turf/B)
+	if (!istype(H) || !B || H.loc != B)
+		return FALSE
+	var/above = multiz_level_above(B.z)
+	var/turf/T = above ? locate(B.x, B.y, above) : null
+	var/obj/structure/cargo_hatch/C = T ? locate(/obj/structure/cargo_hatch) in T : null
+	if (!C || !C.open)
+		return FALSE
+	C.climb_up(H)
+	return TRUE
 
 // The floor of a hull's hold filed on T, or null.
 /proc/hull_hold_cover(turf/T)
@@ -43,15 +67,29 @@
 	var/path = istext(origin) ? text2path(origin) : origin
 	return ispath(path, /turf) ? path : /turf/wall/rockwall
 
+/proc/hull_hold_terrain_zone(turf/T)
+	var/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/S = T
+	return istype(S) ? S.depth_zone : 0
+
+// Restore the ground under a hold and its existing seabed depth. Keep this
+// paired with the cover: a changed turf is otherwise recreated as shelf.
+/proc/hull_restore_hold_terrain(turf/T, path, sea_zone)
+	T = T.ChangeTurf(path)
+	var/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/S = T
+	if (istype(S))
+		S.depth_zone = sea_zone
+
 // Hollows T and lays a hold floor of path on it. Returns the floor, or null
 // when T is not ground a hold may be hollowed out of.
 /proc/hull_hold_lay(turf/T, path = /obj/covers/steelplating/hold)
 	if (!T || !hull_hold_ground(T))
 		return null
 	var/origin = "[T.type]"
+	var/sea_zone = hull_hold_terrain_zone(T)
 	T.ChangeTurf(/turf/floor/plating/ship_hold)
 	var/obj/covers/C = new path(T)
 	C.hold_origin = origin
+	C.hold_sea_zone = sea_zone
 	return C
 
 // The level her hold lies on, or 0 where the map has none below her.
@@ -116,19 +154,19 @@
 // Hollows the tiles her hold arrives on and gives back the ground of those it
 // left. lower_old and lower_new are her hold tiles before and after the move,
 // in offset order; the floors have not moved yet. Returns origin, which
-// after_hold_move() needs: turf -> the ground type that tile had.
+// after_hold_move() needs: turf -> the ground type and sea zone it had.
 /datum/craft_body/built/proc/before_hold_move(list/lower_old, list/lower_new)
 	. = list()
 	var/list/origin = .
 	for (var/turf/S in lower_old)
 		var/obj/covers/C = hull_hold_cover(S)
-		origin[S] = C ? C.hold_origin : "[/turf/wall/rockwall]"
+		origin[S] = list(C ? C.hold_origin : "[/turf/wall/rockwall]", C ? C.hold_sea_zone : 0)
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
 	for (var/turf/D in lower_new)
 		if (!isnull(origin[D]))
 			continue
-		origin[D] = "[D.type]"
+		origin[D] = list("[D.type]", hull_hold_terrain_zone(D))
 		D.ChangeTurf(/turf/floor/plating/ship_hold)
 	wall_bulk_placement = old_bulk
 
@@ -143,11 +181,14 @@
 		kept[D] = TRUE
 		var/obj/covers/C = hull_hold_cover(D)
 		if (C)
-			C.hold_origin = origin[D]
+			var/list/ground = origin[D]
+			C.hold_origin = ground[1]
+			C.hold_sea_zone = ground[2]
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
 	for (var/turf/S in lower_old)
 		if (kept[S])
 			continue
-		S.ChangeTurf(hull_hold_origin_path(origin[S]))
+		var/list/ground = origin[S]
+		hull_restore_hold_terrain(S, hull_hold_origin_path(ground[1]), ground[2])
 	wall_bulk_placement = old_bulk

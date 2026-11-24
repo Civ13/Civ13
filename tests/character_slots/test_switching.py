@@ -60,6 +60,73 @@ class CharacterSlotSourceTest(unittest.TestCase):
         self.assertNotIn("Persistence", SOURCE.replace("persistence", ""))
         self.assertNotIn("—", SOURCE)
 
+    def test_sleep_picker_opens_only_after_confirmed_assigned_bed_sleep(self):
+        helper = (ROOT / "code/game/mob/living/carbon/human/human_helpers.dm").read_text()
+        flow = helper[helper.index("/mob/living/human/verb/mob_sleep"):helper.index("/mob/living/human/verb/mob_wakeup")]
+        self.assertIn("if (!sleeping_client || client != sleeping_client || sleeping_client.mob != src)", flow)
+        self.assertIn("if (!enter_saved_bed_sleep())", flow)
+        self.assertLess(flow.index('to_chat(src, SPAN_WARNING(refusal))'), flow.index("sleeping_client.open_character_sleep_picker()"))
+        self.assertLess(flow.index("sleeping_client.open_character_sleep_picker()"), flow.index("if (!enter_bed_sleep())"))
+
+    def test_picker_requires_own_living_sleeping_body_in_valid_assigned_bed(self):
+        admission = body("/proc/character_lobby_sleep_body(client/C)")
+        for gate in ("accolade_client_ckey(C)", "persistence_bed_return_enabled()", "H.client != C",
+                     "H.persistence_owner_ckey != owner", "H.character_lobby_assigned_bed(owner)"):
+            self.assertIn(gate, admission)
+        bed = body("/mob/living/human/proc/character_lobby_assigned_bed(owner)")
+        for gate in ("stat == DEAD", "!inducedSSD", "sleeping <= 0", "!isturf(loc)",
+                     "B.persistence_bed_owner_ckey == owner", "B.valid_sleep_bed(src)"):
+            self.assertIn(gate, bed)
+        self.assertIn("!!character_lobby_assigned_bed(owner)", body("/mob/living/human/proc/character_slot_resting(owner)"))
+        leaving = body("/proc/character_lobby_departure_refusal(client/C)")
+        for gate in ("character_lobby_sleep_body(C)", "H.character_picker_waking",
+                     "persistence_sleep_transfer_blocked()", "character_recovery_unready()",
+                     "H.character_slot_body_refusal()"):
+            self.assertIn(gate, leaving)
+
+    def test_picker_does_not_turn_browser_values_into_another_body_or_slot(self):
+        action = body("/datum/character_slot_window/ui_act(")
+        picker = action[action.index("if(sleep_picker_body)"):action.index('if("unlock")')]
+        self.assertIn("user.client != owner", action)
+        self.assertIn("character_lobby_sleep_body(C) != user", picker)
+        self.assertLess(picker.index("character_lobby_departure_refusal(C)"), picker.index("region_gateway_open_roster(C)"))
+        for unsafe in ("character_slot_switch(", "params[", ".key =", "new /mob/"):
+            self.assertNotIn(unsafe, picker)
+        self.assertIn("if(region_gateway_here())", body("/proc/character_slot_switch_refusal(client/C, slot)"))
+
+    def test_private_cards_use_exact_owner_keys_and_refuse_ambiguity(self):
+        cards = body("/datum/character_slot_window/proc/sleep_picker_sections()")
+        self.assertIn("H.persistence_owner_ckey != owner_key_for(C.ckey, slot)", cards)
+        self.assertIn('ambiguous["[slot]"] = TRUE', cards)
+        self.assertIn('ambiguous["[slot]"] ? null : bodies["[slot]"]', cards)
+        self.assertIn("slot > 1 && !character_slots_verified(C)", cards)
+        self.assertIn("character_local_body_summary(H)", cards)
+
+    def test_wake_timer_is_one_per_body_and_uses_existing_finish(self):
+        helper = (ROOT / "code/game/mob/living/carbon/human/human_helpers.dm").read_text()
+        wake = helper[helper.index("/mob/living/human/proc/request_character_picker_wake"):helper.index("//to keep the character sleeping")]
+        self.assertIn("if(character_picker_waking || character_lobby_sleep_body(C) != src)", wake)
+        before, after = wake.split("addtimer(CALLBACK(src, PROC_REF(complete_character_picker_wake), C), 30 SECONDS)", 1)
+        self.assertIn("character_picker_waking = TRUE", before)
+        self.assertLess(after.index("character_lobby_sleep_body(C) != src"), after.index("finish_wake_up()"))
+        self.assertNotIn("inducedSSD = FALSE", wake)
+        self.assertIn('key == "character_picker_waking"', helper)
+
+    def test_reconnect_shows_picker_after_unique_authenticated_handoff_only(self):
+        reclaim = (ROOT / "code/modules/persistence/player_reclaim.dm").read_text()
+        flow = reclaim[reclaim.index("/map_storage/proc/reclaim_saved_player("):reclaim.index("/map_storage/proc/player_restoration_blocked()")]
+        offer = flow.index("C.open_character_sleep_picker()")
+        for step in ("length(current_bodies) != 1 || current_bodies[1] != H",
+                     "H.key = C.key", "if(C.mob != H)", "finish_character_return(H)", "qdel(lobby)"):
+            self.assertLess(flow.index(step), offer)
+        release = flow.rindex("persistence_player_claims.Remove(owner)", 0, offer)
+        self.assertLess(release, flow.index("qdel(lobby)"))
+        self.assertLess(flow.rindex("region_gateway_expected_slot_ok(C)"), flow.index("H.key = C.key"))
+        self.assertGreater(flow.index("C.gateway_expected_slot = 0"), flow.index("if(C.mob != H)"))
+        self.assertIn("if(H.inducedSSD && C.mob == H)\n\t\tC.open_character_sleep_picker()", flow)
+        picker = body("/client/proc/open_character_sleep_picker()")
+        self.assertIn("if(!H)\n\t\treturn FALSE", picker)
+
     def test_staff_can_lock_a_slot(self):
         admin = (ROOT / "code/modules/admin/accolades_admin.dm").read_text()
         self.assertIn('"Lock slot"', admin)

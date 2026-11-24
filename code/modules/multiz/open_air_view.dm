@@ -453,10 +453,6 @@ var/global/open_air_view_last_error = null
 // resynced by the process every time it fires.
 var/global/list/open_air_views_fixed = list()
 
-/proc/open_air_view_sync_fixed()
-	for (var/obj/effect/open_air_view/V in open_air_views_fixed)
-		V.open_air_view_sync()
-
 // The saver owns turf fields and the lighting registry while it works, and a
 // lighting startup would make a woken cell wait (and the process look hung).
 /proc/open_air_view_busy()

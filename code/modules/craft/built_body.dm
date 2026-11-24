@@ -84,7 +84,7 @@
 	if (!S || !uz)
 		return null
 	var/turf/U = locate(S.x, S.y, uz)
-	if (!U || !building_open_turf(U))
+	if (!U || !(building_open_turf(U) || (sea_layer_cell(S) && (sea_layer_cell(U) || sea_layer_open_surface(U)))))
 		return null
 	for (var/obj/covers/C in U)
 		var/obj/roof/R = C.building_roof()
@@ -429,6 +429,9 @@
 		. = max(., C.origin_water_level)
 
 /datum/craft_body/built/move_to(x, y, heading)
+	if (craft?.ledger?.depth_disabled)
+		last_refusal = "she has lost buoyancy"
+		return FALSE
 	if (moving)
 		last_refusal = "already moving"
 		return FALSE

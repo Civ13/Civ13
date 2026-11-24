@@ -41,6 +41,8 @@
 
 	var/obj/item/weapon/reagent_containers/glass/barrel/fueltank //only used for internal combustion, but needs to be here because its checked by vehicles
 	var/on = FALSE
+	var/waterlogged = FALSE // saved; pumping out the hull does not service an engine
+	var/tmp/run_generation = 0
 	var/tmp/battery_charge_epoch = -1
 	var/tmp/battery_charge_power = 0
 
@@ -51,8 +53,13 @@
 	var/starting_snd_len = 29 //Length in time of the starting_snd, used for time before the running_snd is played, default is 29
 	var/running_snd_len = 27 //Length in time of the running_snd, used for repeating the sound, default is 27
 
+/obj/structure/engine/persistence_runtime_var(key)
+	return key == "run_generation" || ..()
+
 /obj/structure/engine/examine(mob/user)
 	..()
+	if (waterlogged)
+		to_chat(user, SPAN_WARNING("It is waterlogged. Once it is out of the water, service it with a wrench."))
 	if (user in range(1,src))
 		// Pulling power is the vehicle load limit (axis.dm compares weight with
 		// it). Machines on a cable grid only get maxpower, so show both.
@@ -116,11 +123,13 @@
 	return pullweight
 
 
-/obj/structure/engine/proc/running_sound()
-	if (on)
+/obj/structure/engine/proc/running_sound(generation = null)
+	if (isnull(generation))
+		generation = run_generation
+	if (on && !waterlogged && generation == run_generation)
 		playsound(loc, running_snd, 35, FALSE, 2)
 		spawn(running_snd_len)
-			running_sound()
+			running_sound(generation)
 	return
 
 
@@ -178,7 +187,55 @@
 			CBL.power_off(maxpower)
 	return
 
+// Disable this engine (not other drives, pumps, or dry compartments) once.
+/obj/structure/engine/proc/ship_waterlog()
+	if (waterlogged && !on)
+		return FALSE
+	var/first = !waterlogged
+	waterlogged = TRUE
+	run_generation++
+	on = FALSE
+	currentspeed = 0
+	currentpower = 0
+	power_off_connections()
+	update_icon()
+	if (first)
+		visible_message(SPAN_WARNING("Water floods \the [src]. It will need servicing once dry."))
+	return first
+
+/obj/structure/engine/proc/ship_engine_start_allowed(mob/user)
+	if (!waterlogged && !ship_engine_wet(src))
+		return TRUE
+	if (!waterlogged || on)
+		ship_waterlog()
+	if (user)
+		to_chat(user, SPAN_WARNING("\The [src] is waterlogged. Pump the water out or haul it clear, then service it with a wrench."))
+	return FALSE
+
+/obj/structure/engine/proc/dry_service(obj/item/W, mob/living/human/H)
+	if (!istype(H) || H.incapacitated() || persistence_admission_blocked())
+		return
+	if (ship_engine_wet(src))
+		to_chat(H, SPAN_WARNING("\The [src] is still in water. Pump it out or haul it clear first."))
+		return
+	var/turf/start = get_turf(src)
+	var/datum/admission = persistence_admission_identity
+	to_chat(H, SPAN_NOTICE("You start draining and servicing \the [src]."))
+	if (!do_after(H, trade_time(H, 120, "mechanic"), src))
+		return
+	if (QDELETED(src) || QDELETED(W) || QDELETED(H) || H.incapacitated() || !waterlogged || persistence_admission_changed(admission))
+		return
+	if (!start || get_turf(src) != start || start.z != H.z || get_dist(start, H) > 1 || (H.get_active_hand() != W && H.get_inactive_hand() != W) || !is_tool(W, TOOL_WRENCH) || ship_engine_wet(src))
+		return
+	waterlogged = FALSE
+	to_chat(H, SPAN_NOTICE("You finish servicing \the [src]."))
+	update_icon()
+
 /obj/structure/engine/attackby(obj/item/W as obj, mob/user as mob)
+	// A wet engine may still be unfastened by a diver for recovery.
+	if (waterlogged && is_tool(W, TOOL_WRENCH) && (!anchored || !ship_engine_wet(src)))
+		dry_service(W, user)
+		return TRUE
 	if (broken && is_tool(W, TOOL_WELDER))
 		visible_message("[user] starts repairing \the [src]...")
 		if (do_after(user, trade_time(user, 200, "mechanic"), src))

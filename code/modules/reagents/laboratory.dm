@@ -130,12 +130,17 @@ var/global/list/controlled_reactions_by_id = null
 	options["Make plastic storage bag"] = "polymer_bag"
 	options["Make polyethylene sheet"] = "polyethylene_sheet"
 	options["Make polypropylene sheet"] = "polypropylene_sheet"
+	if (ishuman(user) && map && map.ordinal_age >= 6 && crafting_node_allowed(user, "industrial_plastics"))
+		options["Granulate polyethylene into thermoplastic pellets"] = "polyethylene_pellets"
+		options["Granulate polypropylene into thermoplastic pellets"] = "polypropylene_pellets"
 	options["Make polypropylene cloth"] = "polypropylene_cloth"
 	options["Make plastic comb"] = "polypropylene_comb"
 	options["Make plastic play ball"] = "polyethylene_ball"
 	options["Make butyl adhesive tape"] = "butyl_tape"
 	options["Make butyl stopper"] = "butyl_stopper"
 	options["Make butyl gasket"] = "butyl_gasket"
+	var/obj/item/weapon/reagent_containers/glass/opened_beaker = collector
+	var/datum/admission = persistence_admission_identity
 	var/choice = player_input(user, "Choose a game reaction. All required inputs and catalysts must be present; the output must fit.", name, null, "anything", options, TRUE)
 	var/turf/user_turf = get_turf(user)
 	var/turf/bench_turf = get_turf(src)
@@ -147,6 +152,8 @@ var/global/list/controlled_reactions_by_id = null
 		succeeded = finish_wood_fiber("rayon_fiber")
 	else if(selected == "cloth_lyocell")
 		succeeded = finish_wood_fiber("lyocell_fiber")
+	else if(selected == "polyethylene_pellets" || selected == "polypropylene_pellets")
+		succeeded = !QDELETED(src) && collector == opened_beaker && !persistence_admission_changed(admission) && ishuman(user) && map && map.ordinal_age >= 6 && crafting_node_allowed(user, "industrial_plastics") && finish_polymer_product(selected)
 	else if(selected in list("polymer_bottle", "polymer_bag", "polyethylene_sheet", "polypropylene_sheet", "polypropylene_cloth", "polypropylene_comb", "polyethylene_ball", "butyl_tape", "butyl_stopper", "butyl_gasket"))
 		succeeded = finish_polymer_product(selected)
 	else
@@ -181,6 +188,14 @@ var/global/list/controlled_reactions_by_id = null
 /obj/structure/reaction_bench/proc/finish_polymer_product(product)
 	if(gcDestroyed || gc_destroyed || !collector || collector.gcDestroyed || collector.gc_destroyed || collector.loc != src || !(collector.flags & NOREACT) || !collector.reagents || !isturf(loc))
 		return FALSE
+	if(product == "polyethylene_pellets" || product == "polypropylene_pellets")
+		var/pellet_feed = product == "polyethylene_pellets" ? "polyethylene" : "polypropylene"
+		if(!collector.reagents.has_reagent(pellet_feed, 4))
+			return FALSE
+		if(!collector.reagents.remove_reagent(pellet_feed, 4, TRUE))
+			return FALSE
+		new /obj/item/stack/polymer_pellets(loc, 1)
+		return TRUE
 	if(product == "polymer_bottle")
 		if(!collector.reagents.has_reagent("polyethylene", 4) || !collector.reagents.has_reagent("butylrubber", 1))
 			return FALSE

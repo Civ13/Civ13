@@ -78,22 +78,131 @@ class Corrections(unittest.TestCase):
         for n,mutant in enumerate(mutations):
             with self.subTest(omission=n),self.assertRaises(AssertionError): correction_contract(**mutant)
 
-    def test_cave_rebuild_only_resolves_an_area_for_stray_membership(self):
+    def cave_restore_scene(self, levels, layout, existing=False, source=None):
+        """Execute the actual restore control flow with fake BYOND boundaries."""
+        source = source or read('code/modules/multiz/dug_underground.dm')
+        body = adapter.extract(source, '/map_storage/proc/restore_dug_underground')
+        body = body.replace('TICK_CHECK', 'tick()')
+        projected = '/map_storage/proc/restore_dug_underground()\n' + body + '\n'
+        events = []
+
+        class DMList(list):
+            @property
+            def len(self): return len(self)
+            def __iadd__(self, value):
+                self.append(value)
+                return self
+            def Cut(self): events.append('breaches cleared')
+
+        class Area:
+            def __init__(self, kind):
+                self.type = kind
+                self.contents = Members(self)
+
+        class Members:
+            def __init__(self, owner): self.owner = owner
+            def Add(self, turfs):
+                for turf in turfs:
+                    turf.loc = self.owner
+                events.append(('assigned', len(turfs)))
+
+        default, saved = Area('default'), Area('saved')
+        cave = Area('cave') if existing else None
+        holder = NS(cave=cave, created=0, lookups=[])
+        cells = {}
+        for z, kinds in layout.items():
+            cells[z] = [NS(loc={'default': default, 'saved': saved, 'cave': cave}[kind])
+                        for kind in kinds]
+
+        def lookup(create=True):
+            holder.lookups.append(create)
+            if not holder.cave and create:
+                holder.cave = Area('cave')
+                holder.created += 1
+            return holder.cave
+
+        def block(first, last):
+            self.assertEqual(first[2], last[2])
+            return cells.get(first[2], [])
+
+        env = dict(underground_levels_refresh=lambda: events.append('refresh'),
+                   tunnel_breaches=DMList(), underground_breach_scan=lambda z: events.append(('breach', z)),
+                   underground_level_z=lambda: 1, dug_underground_area=lookup,
+                   underground_levels=lambda: levels, building_base_maxz=lambda: 2,
+                   list=DMList, typed_iter=lambda values, _type: values,
+                   block=block, locate=lambda x, y, z: (x, y, z),
+                   world=NS(area='default', maxx=4, maxy=4), tick=lambda: None,
+                   dug_underground_light_level=lambda z: events.append(('light', z)))
+        adapter.project(projected, '/map_storage/proc/restore_dug_underground', '', env)()
+        return holder, cells, default, saved, events
+
+    def test_cave_lookup_respects_no_create_and_reuses_existing_area(self):
         source = read('code/modules/multiz/dug_underground.dm')
-        restore = adapter.extract(source, '/map_storage/proc/restore_dug_underground')
-        # A no-cave world, or an added cave whose membership is already
-        # correct, must not run the get-or-create constructor after publication.
-        self.assertEqual(restore.count('dug_underground_area()'), 1)
-        self.assertIn(
-            '\t\tif (strays.len)\n'
-            '\t\t\tif (!caves)\n'
-            '\t\t\t\tcaves = dug_underground_area()\n'
-            '\t\t\tcaves.contents.Add(strays)\n'
-            '\t\tdug_underground_light_level(z)',
-            re.sub(r'^[\t ]*//[^\n]*\n', '', restore, flags=re.M),
-        )
-        self.assertLess(restore.index('underground_breach_scan('), restore.index('for (var/z'))
-        self.assertLess(restore.index('z <= building_base_maxz()'), restore.index('strays += T'))
+        body = adapter.extract(source, '/proc/dug_underground_area')
+        expression = 'return create ? new /area/caribbean/void/caves : null'
+        self.assertIn(expression, body)
+        # Keep the helper's branches and loop; fake only the native constructor
+        # and path identity, which the Python source adapter cannot represent.
+        body = body.replace(expression, 'return make_cave() if create else None')
+        body = body.replace('A.type == /area/caribbean/void/caves', 'A.type == CAVE_TYPE')
+        projected = '/proc/dug_underground_area(create)\n' + body + '\n'
+        areas, made = [], []
+        def make_cave():
+            area = NS(type='cave')
+            made.append(area)
+            areas.append(area)
+            return area
+        env = dict(world=areas, CAVE_TYPE='cave', make_cave=make_cave,
+                   typed_iter=lambda values, _type: values)
+        lookup = adapter.project(projected, '/proc/dug_underground_area', 'create=True', env)
+        self.assertIsNone(lookup(False))
+        self.assertEqual(made, [])
+        cave = lookup(True)
+        self.assertEqual(len(made), 1)
+        self.assertIs(lookup(False), cave)
+        self.assertIs(lookup(True), cave)
+        self.assertEqual(len(made), 1)
+
+    def test_cave_restore_does_not_create_without_strays(self):
+        source = read('code/modules/multiz/dug_underground.dm')
+        for levels, layout, existing in [([], {}, False), ([1, 2], {1: ['default']}, False),
+                                         ([3], {3: ['saved']}, False),
+                                         ([3], {3: ['cave', 'saved']}, True)]:
+            with self.subTest(levels=levels, existing=existing):
+                holder, cells, _, saved, events = self.cave_restore_scene(levels, layout, existing, source)
+                self.assertEqual(holder.created, 0)
+                self.assertEqual(holder.lookups, [False])
+                self.assertNotIn('assigned', [e[0] for e in events if isinstance(e, tuple)])
+                if layout.get(3) == ['cave', 'saved']:
+                    self.assertIs(cells[3][0].loc, holder.cave)
+                    self.assertIs(cells[3][1].loc, saved)
+                self.assertLess(events.index(('breach', 1)), events.index(('light', 3)) if 3 in levels else len(events))
+        # Restoring the old eager constructor must fail the no-level case.
+        mutant = source.replace('dug_underground_area(FALSE)', 'dug_underground_area()', 1)
+        self.assertNotEqual(mutant, source)
+        holder, *_ = self.cave_restore_scene([], {}, source=mutant)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(holder.created, 0)
+
+    def test_cave_restore_moves_only_strays_and_reuses_one_cave(self):
+        source = read('code/modules/multiz/dug_underground.dm')
+        for existing in (False, True):
+            with self.subTest(existing=existing):
+                holder, cells, default, saved, events = self.cave_restore_scene(
+                    [1, 3, 4], {1: ['default'], 3: ['default', 'saved'], 4: ['default']}, existing, source)
+                self.assertEqual(holder.created, 0 if existing else 1)
+                self.assertIs(cells[1][0].loc, default)  # compiled level is excluded
+                self.assertIs(cells[3][0].loc, holder.cave)
+                self.assertIs(cells[4][0].loc, holder.cave)
+                self.assertIs(cells[3][1].loc, saved)
+                self.assertEqual([e for e in events if isinstance(e, tuple) and e[0] == 'light'],
+                                 [('light', 3), ('light', 4)])
+        # An omitted assignment must fail the same membership assertion.
+        mutant = source.replace('caves.contents.Add(strays)', 'tick()', 1)
+        self.assertNotEqual(mutant, source)
+        holder, cells, _, _, _ = self.cave_restore_scene([3], {3: ['default']}, source=mutant)
+        with self.assertRaises(AssertionError):
+            self.assertIs(cells[3][0].loc, holder.cave)
 
     def test_predicate_load_cannot_reuse_turf_for_the_next_callback(self):
         body=adapter.extract(AREAS.rsplit('#endif',1)[0],'/proc/persistence_area_predicates_true',defines={'CIV13_ZONE_PERSISTENCE':True})

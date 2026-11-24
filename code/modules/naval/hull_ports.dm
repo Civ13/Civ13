@@ -224,6 +224,39 @@
 	H.forceMove(B)
 	return TRUE
 
+// An escape path only through an actual opening on the matching commissioned
+// hull. Recheck at completion: a ship can move or its hatch can be shut meanwhile.
+/obj/structure/cargo_hatch/proc/up_destination(mob/living/human/H)
+	if (!open || !H || H.restrained() || H.travel_held())
+		return null
+	var/turf/T = get_turf(src)
+	var/turf/B = hold_below()
+	if (!B || !T || T.density || H.loc != B || multiz_level_above(B.z) != T.z)
+		return null
+	var/datum/hull_ledger/L = hull_ledger_at(T)
+	var/datum/craft_body/built/body = L?.craft?.body
+	if (!istype(body) || body.z != T.z || !body.contains(T) || !body.carries(B) || !persistence_movement_allowed(H, T))
+		return null
+	for (var/atom/movable/A in T)
+		if (A.density)
+			return null
+		if (istype(A, /obj/covers))
+			var/obj/covers/C = A
+			if (C.wall)
+				return null
+	return T
+
+/obj/structure/cargo_hatch/proc/climb_up(mob/living/human/H)
+	var/turf/T = up_destination(H)
+	if (!T)
+		to_chat(H, SPAN_WARNING("You cannot climb up through \the [src] from here."))
+		return FALSE
+	H.visible_message(SPAN_NOTICE("[H] starts climbing up through \the [src]."))
+	if (!do_after(H, HULL_HATCH_CLIMB_TIME, src) || QDELETED(src) || up_destination(H) != T)
+		return FALSE
+	H.forceMove(T)
+	return TRUE
+
 // Lowers a crate or anything loose dragged onto the open hatch to the hold.
 /obj/structure/cargo_hatch/proc/lower(atom/movable/A, mob/living/human/H)
 	var/turf/B = hold_below()
@@ -246,7 +279,7 @@
 
 /obj/structure/cargo_hatch/examine(mob/user)
 	. = ..()
-	to_chat(user, SPAN_NOTICE("It is [open ? "open: drag crates onto it to lower them, or stand on it and click it to climb down" : "battened down"]."))
+	to_chat(user, SPAN_NOTICE("It is [open ? "open: drag crates onto it to lower them, stand on it and click it to climb down, or click the hold floor directly below it to climb up" : "battened down"]."))
 
 #undef HULL_PORT_PER_MINUTE
 #undef HULL_PORT_KNOCK_COOLDOWN

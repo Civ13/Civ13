@@ -70,6 +70,8 @@ def annotate_research(records, files, canon):
         elif kind == 'Processor':
             if recipe.get('processor') == 'tablet_press':
                 required = ['pharmacology']
+            elif recipe.get('processor') == 'industrial_plastics':
+                required = ['industrial_plastics']
             else:
                 node = mappings.get(recipe.get('station'))
                 required = [node] if node else []

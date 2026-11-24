@@ -329,6 +329,9 @@
 /obj/structure/hull_tiller/proc/voyage_status_text()
 	if (!voyage)
 		return ""
+	if (voyage["storm_until"])
+		var/seconds = max(0, round((voyage["storm_until"] - world.time) / 10))
+		return "Squall ahead: stow loose deck cargo. Detour or press on; if no order is given, she detours in [seconds] second\s."
 	var/left = round((voyage["ends"] - world.time) / 600, 1)
 	if (left > 0)
 		return "The [craft.name] is at sea, bound for [voyage["label"]]: about [left] minute\s to go."
@@ -340,8 +343,20 @@
 	if (held)
 		WWinput(H, held, craft.name, "Cancel", list("Cancel"))
 		return
-	var/choice = WWinput(H, voyage_status_text(), craft.name, "Cancel", list("Turn back", "Cancel"))
-	if (choice != "Turn back" || !voyage || get_dist(H, src) > 1)
+	var/list/mine = voyage
+	if (!mine || !craft)
+		return
+	var/list/choices = list("Turn back", "Cancel")
+	if (voyage_storm_can_choose(H, mine))
+		choices.Insert(1, "Detour around the squall", "Press on through the squall")
+	var/choice = WWinput(H, voyage_status_text(), craft.name, "Cancel", choices)
+	if (QDELETED(src) || QDELETED(H) || !craft || voyage != mine || H.z != z || get_dist(H, src) > 1)
+		return
+	if (choice == "Detour around the squall" || choice == "Press on through the squall")
+		if (voyage_storm_can_choose(H, mine))
+			voyage_storm_resolve(mine, choice == "Press on through the squall")
+		return
+	if (choice != "Turn back")
 		return
 	var/reason = voyage_turn_back(H)
 	if (reason)
@@ -381,12 +396,15 @@
 			voyage_sea_stop()
 		return
 	voyage_sea_show() // Whoever is aboard now sees the sea go by.
-	if (world.time < mine["ends"])
+	if (world.time < mine["ends"] || mine["storm_until"])
 		// A course refused (no harbour free, a land opened too lately) turns her back
 		// within a minute or two, before she has sailed the whole way for nothing.
 		if (mine["kind"] == "course" && voyage_refused_under_way(mine))
 			return
-		if (world.time >= mine["minute"])
+		if (mine["storm_until"])
+			if (world.time >= mine["storm_until"])
+				voyage_storm_resolve(mine)
+		else if (world.time >= mine["minute"])
 			mine["minute"] = world.time + mine["tile"]
 			if (!voyage_event(mine))
 				craft.crew_message(SPAN_NOTICE(voyage_status_text()))

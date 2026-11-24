@@ -1041,7 +1041,7 @@ var/global/list/ship_draught_decks = list(
 		options.Insert(9, "Draw a railway on the sheet")
 		options.Insert(10, "Draw a harbor on the sheet")
 		options.Insert(11, "Draw waterworks on the sheet")
-		if (map && map.ordinal_age >= ORBIT_MIN_AGE)
+		if (draught_age_available(H, ORBIT_MIN_AGE))
 			options.Insert(12, "Draw a space station on the sheet")
 			options.Insert(13, "Draw a rocket on the sheet")
 	var/client/harbor_connection = H.client
@@ -1073,7 +1073,7 @@ var/global/list/ship_draught_decks = list(
 		open_harbor_designer(H)
 	else if (choice == "Draw a space station on the sheet" && !draught_code)
 		open_station_designer(H)
-	else if (choice == "Draw a rocket on the sheet" && !draught_code && map && map.ordinal_age >= ORBIT_MIN_AGE)
+	else if (choice == "Draw a rocket on the sheet" && !draught_code && draught_age_available(H, ORBIT_MIN_AGE))
 		open_rocket_designer(H)
 	else if (choice == DRAUGHT_EXPORT_LABEL && D)
 		draught_export(H, D.name)

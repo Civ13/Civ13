@@ -152,9 +152,55 @@ var/naval_runtime_error = FALSE
 	plan = hull_gangplank_plan(low)
 	naval_check(islist(plan) && plan.len == 2 && plan[1] == locate(35, 10, 2), "a gangway on her main deck still runs over water to a pier")
 
+// A genuine hold requires three linked levels: it cannot fit in a two-level
+// column or drill through the rock below a diveable shelf.
+/proc/hold_depth_checks()
+	for (var/x = 48 to 53)
+		for (var/y = 43 to 47)
+			var/turf/bottom = locate(x, y, 1)
+			bottom.ChangeTurf(/turf/floor/beach/water/deep/saltwater/underwater/sea_layer)
+			var/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/middle = locate(x, y, 2)
+			middle.ChangeTurf(/turf/floor/beach/water/deep/saltwater/underwater/sea_layer)
+			middle.depth_zone = SEA_ZONE_OPEN
+			var/turf/surface = locate(x, y, 3)
+			surface.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+			var/obj/covers/repairedfloor/ship/deck = new(surface)
+			deck.updateturf()
+
+	var/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/bottom_hold = locate(50, 44, 1)
+	bottom_hold.depth_zone = SEA_ZONE_DEEP
+	var/obj/covers/hold_cover = hull_hold_lay(locate(50, 44, 2))
+	var/obj/structure/hull_tiller/T = new(locate(48, 43, 3))
+	var/obj/structure/cargo_hatch/hatch = new(locate(50, 44, 3))
+	naval_check(hold_cover && isnull(T.commission("Sounder Hold", EAST)) && T.craft, "depth fixture has a commissioned hull on three linked levels")
+	if (!T.craft)
+		return
+	var/datum/craft_body/built/body = T.craft.body
+	var/obj/structure/closet/crate/chest = new(locate(50, 44, 2))
+	var/obj/item/stack/material/wood/manifest = new(chest)
+	var/mob/living/human/naval_probe/inside = new(locate(50, 44, 2))
+	bottom_hold.ChangeTurf(/turf/wall/rockwall)
+	naval_check(!body.shift_foundering_level(2, FALSE) && body.z == 3 && chest.z == 2 && hull_hold_cover(locate(50, 44, 2)) == hold_cover, "rock under the destination hold refuses descent without modifying cargo or deck")
+	bottom_hold.ChangeTurf(/turf/floor/beach/water/deep/saltwater/underwater/sea_layer)
+	bottom_hold.depth_zone = SEA_ZONE_DEEP
+	naval_check(body.shift_foundering_level(2, FALSE) && body.z == 2 && T.z == 2 && chest.z == 1 && inside.z == 1 && manifest.loc == chest, "main deck, hold floor, occupants and nested cargo descend as one assembly")
+	naval_check(hull_hold_cover(locate(50, 44, 1)) == hold_cover && hold_cover.hold_sea_zone == SEA_ZONE_DEEP && hull_depth_underwater(get_turf(chest)), "original hold floor retains the destination seabed type and depth")
+	naval_check(sea_layer_cell(locate(50, 44, 2)) && sea_zone_of(locate(50, 44, 2)) == SEA_ZONE_OPEN, "descent restores the old hold seabed under the new main deck")
+	naval_check(!hatch.up_destination(inside), "battened hatch is not an upward escape")
+	hatch.open = TRUE
+	naval_check(hatch.up_destination(inside) == get_turf(hatch), "open hatch carries its upward route to the matching submerged hull")
+	var/obj/covers/overhead_wall = new(get_turf(hatch))
+	overhead_wall.wall = TRUE
+	naval_check(!hatch.up_destination(inside), "a wall covering the hatch blocks upward travel")
+	qdel(overhead_wall)
+	naval_check(!body.shift_foundering_level(1, FALSE) && body.z == 2 && chest.z == 1, "no linked level under a hold stops descent without discarding it")
+	naval_check(body.shift_foundering_level(3, TRUE) && body.z == 3 && T.z == 3 && chest.z == 2 && inside.z == 2 && manifest.loc == chest, "refloat returns the original hull and lower-deck crew and cargo")
+	naval_check(hull_hold_cover(locate(50, 44, 2)) == hold_cover && hold_cover.hold_sea_zone == SEA_ZONE_OPEN && sea_zone_of(locate(50, 44, 1)) == SEA_ZONE_DEEP, "refloat restores the vacated seabed and its original depth")
+
 /proc/naval_run()
 	try
 		naval_checks()
+		hold_depth_checks()
 	catch(var/exception/e)
 		naval_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = naval_failures, "runtime_error" = naval_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")

@@ -1,8 +1,8 @@
 """Source checks: a properly sleeping, logged-off character is safe off Gaia.
 
 Val (2026-11-22): disconnected players are protected from harm while offline,
-only if they went to sleep on a bed and waited the two-minute Sleep wait, and
-only when not on Gaia. Reconnecting or an improper logout ends protection.
+only after completing Sleep on a bed, and only where the map and current
+territory qualify. Reconnecting or an improper logout ends protection.
 """
 import pathlib
 import re
@@ -51,7 +51,9 @@ class OfflineSleepProtection(unittest.TestCase):
     def test_inducedssd_only_set_after_sleep_wait(self):
         helpers = read("code/game/mob/living/carbon/human/human_helpers.dm")
         verb = proc(helpers, "/mob/living/human/verb/mob_sleep()")
-        wait = verb.index("do_after(src, 2 MINUTES")
+        wait = verb.index("do_after(src, sleep_delay")
+        self.assertLess(verb.index("var/protection_eligible = offline_sleep_protection_map_allowed() && offline_sleep_province_owned()"), wait)
+        self.assertLess(verb.index("sleep_delay = 10 SECONDS"), wait)
         self.assertLess(wait, verb.index("enter_saved_bed_sleep()"))
         self.assertLess(wait, verb.index("enter_bed_sleep()"))
         self.assertIn("offline_sleep_protection_map_allowed()", verb)

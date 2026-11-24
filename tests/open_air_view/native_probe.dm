@@ -46,6 +46,74 @@ var/list/open_air_probe_log = list()
 			return TRUE
 	return FALSE
 
+// Artificial fixed/proxy work lets the real process hit a deterministic
+// one-item scheduler budget without opening a port or making BYOND clients.
+var/list/open_air_probe_work_log = list()
+
+/obj/effect/open_air_view/open_air_work_probe
+	var/probe_label
+	var/pause_after = FALSE
+
+/obj/effect/open_air_view/open_air_work_probe/open_air_view_sync()
+	open_air_probe_work_log += probe_label
+	if (pause_after)
+		persistence_save_in_progress = TRUE
+
+/obj/effect/open_air_proxy/open_air_work_probe
+	var/probe_label
+
+/obj/effect/open_air_proxy/open_air_work_probe/open_air_proxy_check()
+	open_air_probe_work_log += probe_label
+
+/proc/open_air_probe_work_budget()
+	var/process/open_air_view/P = new
+	P.setup()
+	var/obj/effect/open_air_view/open_air_work_probe/first = new
+	var/obj/effect/open_air_view/open_air_work_probe/second = new
+	var/obj/effect/open_air_proxy/open_air_work_probe/stale = new
+	var/obj/effect/open_air_proxy/open_air_work_probe/last = new
+	first.probe_label = "first"
+	second.probe_label = "second"
+	stale.probe_label = "stale"
+	last.probe_label = "last"
+	open_air_views_fixed += list(first, second)
+	open_air_proxies += list(stale, last)
+	P.reset_current_list()
+	P.run_time_tick_usage = -100
+	P.run_time_tick_usage_allowance = 1
+	open_air_probe_check(P.fire() == PROCESS_TICK_CHECK_RETURNED_EARLY && open_air_probe_work_log.Join(",") == "first", "bounded_scan_yields_after_one_item")
+	open_air_probe_check(P.current_list && isnull(P.current_list[1]), "consumed_scan_slot_releases_entry")
+
+	// A removed proxy in the snapshot is never called. Starting a save in
+	// the next fixed view pauses before even looking at that stale slot.
+	open_air_proxies -= stale
+	qdel(stale)
+	second.pause_after = TRUE
+	P.priority = PROCESS_PRIORITY_VERY_HIGH
+	P.fire()
+	open_air_probe_check(open_air_probe_work_log.Join(",") == "first,second" && !P.current_list && P.paused_work, "busy_on_resume_pauses_without_consuming_suffix")
+	P.reset_current_list()
+	open_air_probe_check(!P.current_list && P.paused_work, "busy_pass_does_not_rebuild_snapshot")
+
+	var/obj/effect/open_air_proxy/open_air_work_probe/newcomer = new
+	newcomer.probe_label = "new"
+	open_air_proxies += newcomer
+	persistence_save_in_progress = FALSE
+	P.reset_current_list()
+	P.fire()
+	open_air_probe_check(open_air_probe_work_log.Join(",") == "first,second,last" && !P.current_list && !P.paused_work, "resume_skips_removed_slot_and_finishes_snapshot_once")
+	second.pause_after = FALSE
+	P.reset_current_list()
+	P.fire()
+	open_air_probe_check(open_air_probe_work_log.Join(",") == "first,second,last,first,second,last,new", "fresh_pass_adds_new_entries_once")
+	open_air_views_fixed -= list(first, second)
+	open_air_proxies -= list(last, newcomer)
+	qdel(first)
+	qdel(second)
+	qdel(last)
+	qdel(newcomer)
+	qdel(P)
+
 /proc/open_air_probe_run()
 	config = new
 	config.webhook_can_fire = FALSE
@@ -57,6 +125,7 @@ var/list/open_air_probe_log = list()
 	GLOB.stat_set_event = new
 	GLOB.name_set_event = new
 	map = new /obj/map_metadata/open_air_view_native
+	open_air_probe_work_budget()
 	for (var/tz in 2 to 3)
 		for (var/tx in 1 to 12)
 			for (var/ty in 1 to 12)

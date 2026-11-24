@@ -138,7 +138,14 @@ class LiftingMachines(unittest.TestCase):
         choices = proc_body(SOURCE, LEGS + '/proc/haul_choices(')
         self.assertIn('edge_open_air(locate(load.x, load.y, up))', choices)
         self.assertIn('landing_on(multiz_level_below(z), TRUE)', choices)
-        self.assertIn('edge_open_air(locate(T.x, T.y, z))', proc_body(SOURCE, LEGS + '/proc/loads_below('))
+        self.assertIn('edge_open_air(locate(source.x, source.y, z))',
+                      proc_body(SOURCE, LEGS + '/proc/haul_below_column('))
+        below = proc_body(SOURCE, LEGS + '/proc/loads_below(')
+        self.assertIn('if (!haul_below_column(T))', below)
+        self.assertIn('!sling_problem(O) && haul_below_load(O, T)', below)
+        route = proc_body(SOURCE, LEGS + '/proc/haul_route_valid(')
+        self.assertIn('source.z != multiz_level_below(z)', route)
+        self.assertIn('return haul_below_column(source) && haul_below_load(load, source)', route)
 
     def test_crane_is_the_same_hoist_with_a_longer_reach(self):
         crane = SOURCE[SOURCE.index('\n' + LEGS + '/crane\n'):]

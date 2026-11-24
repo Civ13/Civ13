@@ -176,7 +176,11 @@ var/global/list/factory_active_fabricators = list()
 	if (!recipe_name)
 		return null
 	var/list/recipes = factory_get_recipes()
-	return recipes[recipe_name]
+	var/datum/factory_recipe/R = recipes[recipe_name]
+	return recipe_medium_allowed(R) ? R : null
+
+/obj/structure/factory_fabricator/proc/recipe_medium_allowed(datum/factory_recipe/R)
+	return R && !factory_plastic_molding(R)
 
 /obj/structure/factory_fabricator/proc/cycle_time(datum/factory_recipe/R)
 	return max(FACTORY_FAB_STEP, round(R.time * work_speed))
@@ -187,7 +191,7 @@ var/global/list/factory_active_fabricators = list()
 	var/list/result = list()
 	for (var/name in factory_get_recipes())
 		var/datum/factory_recipe/R = factory_recipes[name]
-		if (R.tier > tier)
+		if (R.tier > tier || !recipe_medium_allowed(R))
 			continue
 		if (map && map.book_research_enabled())
 			if (!research_node_known(user, R.node))
@@ -272,8 +276,10 @@ var/global/list/factory_active_fabricators = list()
 		return
 	if (choice != "(clear recipe)")
 		var/datum/factory_recipe/R = factory_get_recipes()[choice]
-		if (!R || R.tier > tier || !crafting_node_allowed(H, R.node)) return
-	set_recipe(choice == "(clear recipe)" ? null : choice)
+		if (!R || R.tier > tier || !recipe_medium_allowed(R) || !crafting_node_allowed(H, R.node)) return
+	if (!set_recipe(choice == "(clear recipe)" ? null : choice))
+		to_chat(H, SPAN_WARNING("The selected recipe cannot be changed right now."))
+		return
 	to_chat(H, SPAN_NOTICE(recipe_name ? "\The [src] will now make [recipe_name]." : "You clear \the [src]'s recipe."))
 
 /obj/structure/factory_fabricator/attackby(obj/item/W, mob/user)
@@ -284,7 +290,7 @@ var/global/list/factory_active_fabricators = list()
 
 // Changing the recipe returns the old buffer to the floor and restarts the cycle.
 /obj/structure/factory_fabricator/proc/set_recipe(name)
-	if (name && !(name in factory_get_recipes()))
+	if (name && !recipe_medium_allowed(factory_get_recipes()[name]))
 		return FALSE
 	if (name == recipe_name)
 		return TRUE

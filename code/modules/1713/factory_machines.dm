@@ -5,7 +5,7 @@
 // powered. Both leave their output on their own tile, where arms can take it.
 // Hand use of these machines is unchanged.
 
-#define FACTORY_FURNACE_LIMIT 50 // ore units, and fuel units, a furnace takes from automation
+#define FACTORY_FURNACE_LIMIT 50 // ore units a furnace takes from automation; fuel covers a full firing
 #define FACTORY_MILL_HOPPER 20 // logs a powered saw mill holds for automation
 #define FACTORY_MILL_PLANKS 12 // planks per log, as when a person runs the powered mill
 #define FACTORY_OUTPUT_LIMIT 12 // loose items a machine leaves on its tile before it waits
@@ -77,7 +77,12 @@ var/global/list/factory_active_mills = list()
 	var/value = solid_fuel_unit_value(S, fuel_rates())
 	if (value <= 0)
 		return 0
-	return max(0, min(S.amount, round((FACTORY_FURNACE_LIMIT - fuel) / value)))
+	return max(0, min(S.amount, round((factory_fuel_limit() - fuel) / value)))
+
+// Automation tops fuel up to what the fullest load it can hold needs to fire,
+// so a bloomery filled with ore first never waits on fuel it cannot take.
+/obj/structure/furnace/proc/factory_fuel_limit()
+	return max(FACTORY_FURNACE_LIMIT, firing_fuel_cost_for(max(iron, FACTORY_FURNACE_LIMIT), iron_sand))
 
 /obj/structure/furnace/factory_insert(obj/item/I, from_dir = 0)
 	var/amount = factory_accepts(I, from_dir)

@@ -41,7 +41,10 @@ var/yield_high = FALSE
 /turf/mining_expedition_lode(mob/living/human/H)
 	return null
 // Cinnabar and lode ore (gold quartz, silver lode) roll with real prob() in
-// mercury.dm and lode.dm; tests/mercury and tests/lode cover them.
+// mercury.dm and lode.dm; tests/mercury and tests/lode cover them. Nickel, cobalt
+// and chromite roll with real prob() in alloy_steels.dm; tests/steelmaking covers them.
+/turf/mining_alloy_ores(mob/living/human/H)
+	return 0
 /turf/mining_cinnabar(mob/living/human/H)
 	return 0
 /turf/mining_lode(mob/living/human/H)

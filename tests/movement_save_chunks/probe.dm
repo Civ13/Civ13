@@ -1,8 +1,4 @@
 // Isolated native fixture source. Preparation does not execute this world.
-// This stripped world has no transformed mobs; the full game compiles the real hook.
-/proc/heteromorph_return_all(reason)
-	return
-
 world
 	maxx = 4
 	maxy = 1

@@ -17,8 +17,8 @@ Use one monitoring owner per PR. Reuse a shared record of the exact head,
 workflow/run/attempt and job outcomes while those identities remain unchanged;
 refresh on meaningful state changes and immediately before an authorized external
 action. Keep independent authorized work moving while a particular action is
-blocked, carrying scope, authorization limits and blocker state as CODEX.md
-describes. This does not authorize extra workers or bypass confirmations.
+blocked, carrying scope, authorization limits and blocker state as
+`civ13-pr-completion` describes. This does not authorize extra workers or bypass confirmations.
 
 Read only the reference needed:
 
@@ -26,7 +26,7 @@ Read only the reference needed:
 - [Actions and evidence problems](references/actions-and-evidence.md): wrong commits, skipped coverage, first pushes, manual dispatch, toolchains, and artifacts.
 
 For a verified hosted build infrastructure failure, apply the [local-build evidence procedure](references/actions-and-evidence.md#local-build-evidence-after-infrastructure-failure)
-and [repository policy](../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure).
+and [repository policy](../civ13-pr-preflight/SKILL.md#local-build-after-a-hosted-infrastructure-failure).
 Document successful equivalent local compilation of the exact revision so the
 hosted build alone does not hold otherwise authorized work. Keep the CI failure,
 other required checks, action-time requirements and denial rules intact.

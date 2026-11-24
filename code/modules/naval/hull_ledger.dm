@@ -312,15 +312,17 @@ var/global/hull_ledger_timer_off = FALSE
 
 // TRUE while she changes: under way, or with a player aboard.
 /datum/hull_ledger/proc/awake()
-	return crewed || under_way()
+	return crewed || under_way() || depth_disabled
 
-// TRUE when this turf is one of her deck tiles, on either deck.
+// TRUE when this turf is on one of her decks or in her hold.
 /datum/hull_ledger/proc/deck_holds(turf/T)
 	var/datum/craft_body/built/B = craft ? craft.body : null
 	if (!T || !istype(B) || !B.placed())
 		return FALSE
 	if (T.z == B.z)
 		return B.contains(T)
+	if (T.z == B.lower_z())
+		return B.carries(T)
 	if (T.z == B.upper_z() || T.z == B.top_z())
 		return B.contains(locate(T.x, T.y, B.z))
 	return FALSE
@@ -390,8 +392,16 @@ var/global/hull_ledger_timer_off = FALSE
 	step_ports(seconds)
 	// What her load lets over the side (hull_load.dm).
 	step_load(seconds)
+	if (step_storm(seconds))
+		return
+	step_waterlogged_engines()
 	// Her powered pumps answer the water (hull_pumps.dm).
 	pump_bilge(seconds)
+	if (depth_disabled)
+		if (pressure_air)
+			pressure_scan()
+		step_hull_depth()
+		return
 	check_founder()
 	// Unheld and crewed, she drifts (hull_anchors.dm).
 	step_drift()
@@ -421,6 +431,8 @@ var/global/hull_ledger_timer_off = FALSE
 	. += fouling_text()
 	. += rigging_text()
 	. += pumps_text()
+	if (depth_disabled)
+		. += " She cannot make way until patched and pumped below 40% of bilge capacity."
 	if (grounded)
 		. += " <b>She sits on the bottom.</b> Patch every hole and bail her below awash to float her."
 	else if (sink_left > 0)
@@ -434,11 +446,15 @@ var/global/hull_ledger_timer_off = FALSE
 
 // The ledger as plain numbers for a saved field, and back.
 /datum/hull_ledger/proc/to_list()
-	. = list("water" = round(water, 0.01), "holes" = holes, "patches" = patches, "grounded" = grounded ? 1 : 0, "seams" = round(seams, 0.001), "old_anchor" = old_anchor ? 1 : 0)
+	. = list("water" = round(water, 0.01), "holes" = holes, "patches" = patches, "grounded" = grounded ? 1 : 0, "depth_disabled" = depth_disabled ? 1 : 0, "seams" = round(seams, 0.001), "old_anchor" = old_anchor ? 1 : 0)
 	var/list/bays = bays_to_list()
 	if (bays)
 		.["bays"] = bays
 		.["bay_order_heading"] = bay_order_heading
+	if (depth_disabled)
+		var/list/air = pressure_to_list()
+		if (length(air))
+			.["pressure_air"] = air
 
 /datum/hull_ledger/proc/from_list(list/state)
 	if (!islist(state))
@@ -451,6 +467,7 @@ var/global/hull_ledger_timer_off = FALSE
 	if (isnum(state["patches"]))
 		patches = clamp(round(state["patches"]), 0, tiles)
 	grounded = state["grounded"] ? TRUE : FALSE
+	depth_disabled = state["depth_disabled"] ? TRUE : FALSE
 	// A record from before anchors were things: she keeps the one she had.
 	old_anchor = (isnull(state["old_anchor"]) || state["old_anchor"]) ? TRUE : FALSE
 	if (isnum(state["seams"]))
@@ -460,6 +477,7 @@ var/global/hull_ledger_timer_off = FALSE
 	if (state["bay_order_heading"] in cardinal)
 		bay_order_heading = state["bay_order_heading"]
 	bays_from_list(state["bays"])
+	pressure_from_list(depth_disabled ? state["pressure_air"] : null)
 
 // ---- The craft's side ----
 
@@ -485,17 +503,19 @@ var/global/hull_ledger_timer_off = FALSE
 // A hull that lists makes slow ahead at best, and one on the bottom none.
 /datum/craft/max_speed()
 	. = ..()
+	if (ledger?.depth_disabled)
+		return VESSEL_SPEED_STOP
 	if (ledger && ledger.fill() >= HULL_LISTING)
 		. = min(., VESSEL_SPEED_SLOW)
 
 /datum/craft/set_speed(new_speed)
-	if (ledger && ledger.grounded && new_speed > VESSEL_SPEED_STOP)
-		crew_message(SPAN_WARNING("The [name] sits on the bottom and will not move. Patch every hole and bail her below awash."))
+	if (ledger && (ledger.grounded || ledger.depth_disabled) && new_speed > VESSEL_SPEED_STOP)
+		crew_message(SPAN_WARNING("The [name] cannot make way. Check her bilge and patch her leaks."))
 		new_speed = VESSEL_SPEED_STOP
 	return ..(new_speed)
 
 /datum/craft/order_turn(heading)
-	if (ledger && ledger.grounded)
+	if (ledger && (ledger.grounded || ledger.depth_disabled))
 		last_refusal = "she sits on the bottom"
 		return FALSE
 	return ..()
@@ -642,7 +662,7 @@ var/global/hull_ledger_timer_off = FALSE
 	if (sinking || !craft || !craft.body || !craft.body.placed())
 		stop_sinking()
 		return FALSE
-	if (persistence_save_in_progress)
+	if (persistence_save_active() || persistence_active_operation || persistence_load_recovery_required)
 		return FALSE
 	if (!founders(0.98) || !over_deep())
 		stop_sinking()
@@ -652,76 +672,34 @@ var/global/hull_ledger_timer_off = FALSE
 	if (sink_left > 0)
 		craft.crew_message(SPAN_DANGER("<b>The [craft.name] is going down!</b> About [sink_left * HULL_LEDGER_STEP / 10] seconds are left to get ahead of the water or get off her."))
 		return FALSE
-	sink()
-	return TRUE
+	return sink()
 
-// She goes down: the hull and what is built on her are lost, her crew, loose
-// things and chests are left in the water where she was.
-/datum/hull_ledger/proc/sink()
-	var/datum/craft/C = craft
-	var/datum/craft_body/built/B = C ? C.body : null
-	if (!istype(B) || !B.placed() || sinking)
+// Loss of buoyancy stops travel, not the life of the hull or her crew.
+/datum/hull_ledger/proc/sink(storm_lee = 0)
+	var/datum/craft_body/built/B = craft ? craft.body : null
+	if (!istype(B) || !B.placed() || depth_disabled || persistence_save_active() || persistence_active_operation || persistence_load_recovery_required)
 		return FALSE
-	sinking = TRUE
+	var/obj/structure/hull_tiller/T = helm()
+	if (T && T.crossing_hold_current())
+		return FALSE
+	depth_disabled = TRUE
 	stop_sinking()
-	var/list/cells = B.cells()
-	var/list/upper = B.upper_cells(cells)
-	// Her second deck above comes down first, onto the tile under it.
-	var/list/top = B.top_cells(upper)
-	var/turf/pivot = locate(B.px, B.py, B.z)
-	C.crew_message(SPAN_DANGER("<b>The [C.name] goes down!</b> You are in the water."))
-	log_game("Built hull [C.name] ([cells.len] tiles) sank at [pivot.x],[pivot.y],[pivot.z].")
-	message_admins("The built hull [html_encode(C.name)] ([cells.len] tiles) sank at [pivot.x],[pivot.y],[pivot.z].")
-	// She is a ship no longer: her planks are plain planks, her voyage ends.
-	var/obj/structure/hull_tiller/helm = null
-	for (var/obj/structure/hull_tiller/T in pivot)
-		if (T.craft == C)
-			helm = T
-	if (helm)
-		helm.decommission()
-	// What stood on her decks above comes down to the water.
-	for (var/i = 1, i <= top.len, i++)
-		var/turf/U = top[i]
-		if (!U)
-			continue
-		for (var/atom/movable/M in U)
-			if (M.loc != U || QDELETED(M) || !M.craft_cargo())
-				continue
-			if (hull_floats_free(M))
-				M.forceMove(cells[i])
-			else if (istype(M, /obj))
-				qdel(M)
-	for (var/i = 1, i <= upper.len, i++)
-		var/turf/U = upper[i]
-		if (!U)
-			continue
-		for (var/atom/movable/M in U)
-			if (M.loc != U || QDELETED(M) || !M.craft_cargo())
-				continue
-			if (hull_floats_free(M))
-				M.forceMove(cells[i])
-			else if (istype(M, /obj))
-				qdel(M)
-	for (var/turf/T in cells)
-		for (var/atom/movable/M in T)
-			if (M.loc != T || QDELETED(M) || !istype(M, /obj) || hull_floats_free(M))
-				continue
-			if (istype(M, /obj/structure) || istype(M, /obj/covers) || istype(M, /obj/roof) || istype(M, /obj/machinery))
-				qdel(M)
-	// A few timbers come up.
-	for (var/n = 1, n <= clamp(round(cells.len / 10), 1, 5), n++)
-		new /obj/item/stack/material/wood(pick(cells))
+	craft.set_speed(VESSEL_SPEED_STOP)
+	craft.turning_to = 0
+	craft.clear_path()
+	if (T)
+		T.end_voyage(null)
+	if (storm_lee in cardinal)
+		// A roll ships water without assuming that it reached the roof of
+		// every intact compartment. Already-flooded bays stay flooded.
+		var/capsize_water = capacity() * 0.80
+		add_water(capsize_water - water, capsize_water)
+		craft.crew_message(SPAN_DANGER("The [craft.name] rolls to leeward in the beam seas!"))
+		apply_storm_roll(storm_lee)
+	craft.crew_message(SPAN_DANGER("The [craft.name] has lost buoyancy! Patch the leaks, pump her out, or abandon ship."))
+	log_game("Built hull [craft.name] lost buoyancy at [B.px],[B.py],[B.z].")
+	step_hull_depth()
 	return TRUE
-
-// TRUE for what a sinking hull leaves in the water: people, loose things and
-// closed chests.
-/proc/hull_floats_free(atom/movable/M)
-	if (ismob(M))
-		var/mob/living/L = M
-		if (istype(L) && L.buckled)
-			L.buckled.unbuckle_mob()
-		return TRUE
-	return istype(M, /obj/item) || istype(M, /obj/structure/closet)
 
 // ---- The step ----
 
@@ -759,6 +737,8 @@ var/global/hull_ledger_timer_off = FALSE
 	var/datum/craft/C = plank ? craft_at(plank) : null
 	if (!C || !C.ledger)
 		return "that is not a hull afloat"
+	if (sea_layer_cell(plank))
+		return "use a pump to move water out of a submerged hull"
 	if (!C.body.contains(get_turf(H)))
 		return "stand on her deck to bail her"
 	if (H.stat || H.lying || H.restrained())

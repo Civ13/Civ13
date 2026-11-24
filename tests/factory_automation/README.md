@@ -22,7 +22,7 @@ Production sources run in the shared resource-extraction constructor fixture wit
 - Saved switches: position is saved instead of the belt list, a reloaded switch shows its position and reapplies it to its belts, and an invalid position stops them.
 - Crate ports: closed crates accept items that fit, merge matching stacks, offer and release filtered items, and never take an item held by a person. Open crates have no port.
 - Stamp mill port: plain stone fills the hopper up to its limit, a partial insert splits the stack, and other materials are refused.
-- Cable reservations: a repeated draw less than a second after a traversal reuses the published reservation; an older reservation, an overloaded grid or a stopped source takes a full traversal and refuses or releases as before.
+- Cable reservations: a repeated draw less than a second after a traversal reuses the published reservation; an older reservation, an overloaded grid or a stopped source takes a full traversal and refuses or releases as before, and a traversal after a source loses capacity sheds the load it can no longer carry.
 
 Removing the belt load hook's direction rederivation makes three checks fail. Runtime fixture checks do not establish a full disk save and reload, graphical interaction or live balance.
 
@@ -48,11 +48,18 @@ Removing the belt power check makes five drive checks fail.
 
 `machines_probe.dm` (phase 2b) checks:
 
-- Bloomery: takes up to fifty iron ore and burnable fuel from automation, refuses other items and has no port while unanchored; ore alone waits, fuel starts the smelt and pays its two fuel; the finished sponge iron is offered from the bloomery's tile and can be taken; more ore restarts a fuelled bloomery. Clay kilns stay manual.
-- Blast furnace: loads ore and charcoal, starts, and offers only pig iron.
+- Bloomery: takes up to fifty iron ore and enough charcoal or wood to fire a full load from automation, refuses raw coal and other items and has no port while unanchored; ore alone waits, fuel for the whole firing starts the smelt and pays for it; the finished sponge iron is offered from the bloomery's tile and can be taken; fuel alone waits and more ore restarts a fuelled bloomery. Clay kilns stay manual.
+- Blast furnace: loads ore and charcoal but waits without a driven bellows; beside a turning prime mover it starts once a firing's fuel is loaded, and offers only pig iron.
 - Powered saw mill: a twenty-log hopper; nothing is cut without power or while unanchored; each powered step cuts one log into twelve planks that merge on the tile and are offered; load clamps and resumes the hopper, which is saved; removing the mill returns its logs.
 
 `fabricators_probe.dm` (phase 3a) checks:
+
+- Industrial plastics: two paid Bakelizer batches yield pellets that feed an
+  injection-molded tool handle, including short feed, stale timer, power loss,
+  legacy sheet mode, incompatible machines and a stopped Bakelizer after the
+  load hook. A separate laboratory route makes the same feedstock for an empty
+  blow-molded bottle. Ordinary gameplay, UI and actual disk save/reload remain
+  outside this fixture. See [Industrial plastics](../../docs/industrial-plastics.md).
 
 - Recipe list: the thirty-eight curated rows load with no errors and parse output, inputs, tier and node; every row names a real research node; a missing output, a zero input, a short row and a duplicate are reported and skipped.
 - Fabricators: no recipes without research, tier 1 lists only tier 1 recipes and tier 3 lists all; unknown recipes are refused; it takes only its recipe's inputs, up to two cycles each; nothing happens without power; powered steps add progress without spending inputs early; a finished cycle spends one cycle of inputs and leaves the output on the tile, which is offered (honouring arm filters) and can be taken; a power cut pauses the cycle without losing progress or inputs and restored power finishes it; an empty fabricator sleeps and new inputs wake it; a crowded tile makes it wait; an item recipe makes a screwdriver and offers it, and a stack recipe makes three rifle casings from one copper; the computerized tier runs at half time.
