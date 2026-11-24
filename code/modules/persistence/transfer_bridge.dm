@@ -129,6 +129,27 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	// way of leaving (trail, ship, aircraft, train, admin send, trade) passes
 	// through here, so nothing sets off for a held land.
 	if(shard_group.peer_transfers_held(peer)) return null
+	// All trips (including every passenger's payload) share this boundary. Do
+	// not record custody before the actual destination confirms it can keep
+	// the birth record: an older receiver would silently keep just the sign.
+	var/needs_birth_chart = FALSE
+	var/needs_immunization = FALSE
+	for(var/payload in payloads)
+		// Only authoritative world-created payloads reach this point.
+		if(!istext(payload))
+			continue
+		if(findtextEx(payload, "\"chart_record\""))
+			needs_birth_chart = TRUE
+		if(findtextEx(payload, "\"immunization_record\":"))
+			needs_immunization = TRUE
+		if(needs_birth_chart && needs_immunization)
+			break
+	if(needs_immunization)
+		if(!shard_group.peer_accepts_immunization_records(peer, needs_birth_chart) || shard_group.peer_transfers_held(peer))
+			return null
+	else if(needs_birth_chart)
+		if(!shard_group.peer_accepts_birth_chart_records(peer) || shard_group.peer_transfers_held(peer))
+			return null
 	return begin_effect("/escrow", list("peer" = peer, "payloads" = payloads, "fast" = fast ? 1 : 0))
 
 /datum/transfer_bridge/proc/begin_import(transfer_id, fast = FALSE)

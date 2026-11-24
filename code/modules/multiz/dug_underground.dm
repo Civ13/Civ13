@@ -237,11 +237,14 @@ var/global/multiz_column_practice = 0
 		return building_base_maxz()
 	return top
 
-/proc/dug_underground_area()
+// The shared cave area. create = FALSE only looks for it: an area made here
+// joins the area registry at once, so a caller with nothing to put in it must
+// not make one.
+/proc/dug_underground_area(create = TRUE)
 	for (var/area/caribbean/void/caves/A in world)
 		if (A.type == /area/caribbean/void/caves)
 			return A
-	return new /area/caribbean/void/caves
+	return create ? new /area/caribbean/void/caves : null
 
 // The rock that lies under one surface tile.
 // What lies on the surface straight above an underground cell, as far as the
@@ -587,6 +590,7 @@ var/global/dug_underground_forming = FALSE
 	marker.ChangeTurf(/turf/wall/rockwall/bedrock)
 	dug_underground_forming = FALSE
 	underground_levels_refresh()
+	practice_rooms.underground_added(target_z)
 	log_game("Underground level [depth] created at z [target_z] ([world.maxx]x[world.maxy]), unformed.")
 	return underground_z_at(depth) == target_z
 
@@ -603,7 +607,9 @@ var/global/dug_underground_forming = FALSE
 	// Open cells under lakes and rivers pour again (they are not saved).
 	tunnel_breaches.Cut()
 	underground_breach_scan(underground_level_z())
-	var/area/caves = dug_underground_area()
+	// A world without a dug level has no cave area, and a restore must not
+	// leave an empty unsaved one in the registry it just published.
+	var/area/caves = dug_underground_area(FALSE)
 	for (var/z in underground_levels())
 		if (z <= building_base_maxz())
 			continue
@@ -614,6 +620,8 @@ var/global/dug_underground_forming = FALSE
 				strays += T
 			TICK_CHECK
 		if (strays.len)
+			if (!caves)
+				caves = dug_underground_area()
 			caves.contents.Add(strays)
 		dug_underground_light_level(z)
 

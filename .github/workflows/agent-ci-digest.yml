@@ -18,6 +18,7 @@ name: Agent CI digest
 on:
   workflow_run:
     workflows:
+      - Admin Map browser layout
       - API documentation
       - Bounded moving-save correctness and memory
       - Changelog contracts

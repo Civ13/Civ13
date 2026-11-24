@@ -744,6 +744,7 @@ def region_config(group, region):
             'save_timeout_seconds': group['save_timeout_seconds'], 'start_timeout_seconds': group['start_timeout_seconds'],
             'backups_kept': group['backups_kept'], 'min_free_disk_mb': group['min_free_disk_mb'],
             'group_config': group['_path'], 'region': region['id'],
+            'lobby_gateway': group['persistent'] and region['kind'] == 'GATEWAY',
             'group': group['group'], 'python': group['python'], 'transfer_port': region.get('transfer_port'),
             'peers': [r['id'] for r in group['regions'] if r['id'] != region['id']],
             'systemd_scope': group.get('systemd_scope', ''),
@@ -883,7 +884,8 @@ class RegionPlatform(Platform):
         code = transfer_code()
         if self.listening(port):
             record = self.agent_record_now()
-            if not refresh or (record.get('code') == code and self.listener_pids(port) in ([], [record.get('pid')])):
+            if not refresh or (record.get('code') == code and self.listener_pids(port) in ([], [record.get('pid')])
+                               and record.get('lobby_gateway', False) == bool(self.config.get('lobby_gateway'))):
                 return False
             for pid in self.listener_pids(port):
                 try:
@@ -896,11 +898,13 @@ class RegionPlatform(Platform):
         argv = [self.config['python'], str(TRANSFER_TOOLS / 'agent.py'), '--db', str(Path(self.config['state_dir']) / 'transfers.sqlite'),
                 '--region', self.config['region'], '--group', self.config['group'], '--port', str(port),
                 '--token-file', str(path / 'config' / 'transfer-token.txt')]
+        if self.config.get('lobby_gateway'):
+            argv.append('--lobby-gateway')
         for peer in self.config['peers']:
             argv += ['--enroll', peer + ':out', '--enroll', peer + ':in']
         Path(self.config['state_dir']).mkdir(parents=True, exist_ok=True)
         pid = detach(argv, path, Path(self.config['state_dir']) / 'agent.log')
-        write_record(self.agent_record(), pid=pid, code=code)
+        write_record(self.agent_record(), pid=pid, code=code, lobby_gateway=bool(self.config.get('lobby_gateway')))
         return True
 
     def agent_record_now(self):
@@ -3370,6 +3374,7 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     # to the group restarts the coordinator like new code does.
     slots = [r['id'] for r in group['regions'] if r['kind'] == 'EXPEDITION']
     agents = {r['id']: r['transfer_port'] for r in group['regions']}
+    lobby_gateway = next((r['id'] for r in group['regions'] if r['kind'] == 'GATEWAY'), None) if group['persistent'] else None
     pid = coordinator_pid(group)
     if pid:
         record = read_record(root / 'coordinator.json')
@@ -3378,6 +3383,7 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
         # So does a region whose agent moved to another port (set-port --transfer-port).
         if not refresh or (record.get('code') == code and record.get('slots', []) == slots
                            and record.get('agents', agents) == agents
+                           and record.get('lobby_gateway') == lobby_gateway
                            and record.get('mainland', group['mainland']) == group['mainland']
                            and record.get('start_region', group['mainland']) == group['start_region']):
             return False
@@ -3393,6 +3399,8 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     database = root / 'coordinator.sqlite'
     argv = [group['python'], str(TRANSFER_TOOLS / 'coordinator.py'), '--db', str(database), '--group', group['group'],
             '--mainland', group['mainland'], '--start-region', group['start_region']]
+    if lobby_gateway:
+        argv += ['--lobby-gateway', lobby_gateway]
     if not database.exists() or coordinator_never_established(database):
         # A new group, or one a group Fresh world just cleared. The coordinator
         # still quarantines if any agent reports an earlier epoch or train custody.
@@ -3405,7 +3413,7 @@ def ensure_coordinator(group, start=detach, refresh=False, terminate=None):
     pid = start(argv, root, root / 'coordinator.log')
     (root / 'coordinator.pid').write_text('%d\n' % pid, encoding='utf-8')
     write_record(root / 'coordinator.json', pid=pid, code=code, slots=slots, mainland=group['mainland'],
-                 start_region=group['start_region'], agents=agents)
+                 start_region=group['start_region'], agents=agents, lobby_gateway=lobby_gateway)
     return True
 
 

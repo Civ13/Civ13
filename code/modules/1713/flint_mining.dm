@@ -4,6 +4,7 @@
 
 #define FLINT_NODULE_CHANCE 20
 #define FLINT_NODULE_CHANCE_SANDY 5
+#define FLINT_NODULE_CHANCE_SHALLOW_SANDY 10
 #define GUNFLINT_SHOTS_MIN 25
 #define GUNFLINT_SHOTS_MAX 40
 #define GUNFLINT_WORN_MISFIRE 50
@@ -11,14 +12,20 @@
 // Mined rock: one independent flint roll per wall, separate from the ore rolls,
 // so the ore table in docs/mining-drop-balance.md is unchanged.
 /turf/proc/mining_flint_nodules(mob/living/human/H, area/area_above)
+	var/sandy = istype(src, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert")
+	var/depth_factor = underground_ore_factor("flint", src) // underground_ores.dm
+	var/special_cave = istype(get_area(src), /area/caribbean/void/caves/special)
+	// Shallow sand gives smaller, more frequent finds at the same average yield.
+	var/shallow_sandy = sandy && depth_factor == 1 && !special_cave
 	var/chance = FLINT_NODULE_CHANCE
-	if (istype(src, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert"))
+	if (shallow_sandy)
+		chance = FLINT_NODULE_CHANCE_SHALLOW_SANDY
+	else if (sandy)
 		chance = FLINT_NODULE_CHANCE_SANDY
-	chance *= underground_ore_factor("flint", src) // underground_ores.dm
-	if (!prob(chance))
+	if (!prob(chance * depth_factor))
 		return 0
-	var/count = rand(1, 3)
-	if (istype(get_area(src), /area/caribbean/void/caves/special))
+	var/count = shallow_sandy ? 1 : rand(1, 3)
+	if (special_cave)
 		count *= 2
 	for (var/i = 1, i <= count, i++)
 		new /obj/item/weapon/flint(src)
@@ -288,3 +295,4 @@
 #undef GUNFLINT_WORN_MISFIRE
 #undef FLINT_NODULE_CHANCE
 #undef FLINT_NODULE_CHANCE_SANDY
+#undef FLINT_NODULE_CHANCE_SHALLOW_SANDY

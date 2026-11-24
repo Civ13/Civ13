@@ -195,6 +195,12 @@ var/global/list/plating_base_materials = list("iron", "steel", "bronze", "brass"
 	update_icon()
 	visible_message(SPAN_NOTICE("\The [src] hums down and \the [I] comes out [metal]-plated."))
 
+/obj/structure/plating_bath/can_dismantle_with_hammer(mob/user)
+	if (anode || workpiece())
+		to_chat(user, SPAN_WARNING("Remove the workpiece and any hung sheet from \the [src] first."))
+		return FALSE
+	return ..()
+
 /obj/structure/plating_bath/attackby(obj/item/W, mob/user)
 	if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(user, W)

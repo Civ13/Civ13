@@ -1,0 +1,48 @@
+name: Admin Map browser layout
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'code/modules/admin/player_panel_pages.dm'
+      - 'code/modules/admin/verbs/admin_map.dm'
+      - 'tests/admin_map/**'
+      - 'tgui/package.json'
+      - 'tgui/package-lock.json'
+      - '.github/workflows/admin-map-browser.yml'
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        timeout-minutes: 2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.22.1'
+          cache: npm
+          cache-dependency-path: tgui/package-lock.json
+      - name: Install integrity-locked browser tooling without lifecycle hooks
+        run: npm ci --ignore-scripts --prefix tgui
+      - name: Dry-run the synthetic Admin Map in runner Chromium
+        timeout-minutes: 2
+        env:
+          ADMIN_MAP_TEST_TMP: ${{ runner.temp }}/admin-map-browser
+        run: |
+          export CHROMIUM_PATH="$(command -v google-chrome || command -v chromium)"
+          test -n "$CHROMIUM_PATH"
+          node tests/admin_map/layout.browser.test.js
+      - name: Retain synthetic screenshots and layout evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: admin-map-layout-${{ github.event.pull_request.head.sha }}
+          path: |
+            ${{ runner.temp }}/admin-map-browser/admin-map-*.png
+            ${{ runner.temp }}/admin-map-browser/browser-fit.json
+          if-no-files-found: warn
+          retention-days: 7

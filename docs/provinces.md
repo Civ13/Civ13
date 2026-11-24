@@ -189,6 +189,9 @@ Code: `code/modules/provinces/province_siege.dm`.
   silver in its strongbox. A province besieged lately is immune for 3 days, a
   side whose siege failed waits 3 days, and on Gaia only a Town or City can be
   besieged. The siege begins in the first window at least 24 hours later.
+- **Misplaced banners.** Use a hammer to dismantle a banner that isn't
+  committed to a siege. You recover one unit of its building material. This
+  will not dismantle a siege banner between declaration and the siege ending.
 - **The siege.** In the window the attackers capture the seat by standing
   within 3 tiles of it with no connected defender there for 10, 15, 20 or 30
   minutes (unranked or Camp, Village, Town, City). If nobody comes the deposit

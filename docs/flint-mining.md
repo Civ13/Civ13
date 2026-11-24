@@ -17,11 +17,14 @@ Source: `code/modules/1713/flint_mining.dm`. Tests: `tests/flint_mining` (`run.p
 
 | Rock | Chance per wall | Nodules | Expected flint per wall |
 | --- | ---: | ---: | ---: |
-| Ordinary underground rock | 20% | 1-3 | 0.4 |
-| Sandy rock, or under a desert | 5% | 1-3 | 0.1 |
+| Ordinary rock, surface or depth 1 | 20% | 1-3 | 0.4 |
+| Sandy rock or rock under a desert, surface or depth 1 | 10% | 1 | 0.1 |
+| Sandy rock or rock under a desert, depth 2 | 2.5% | 1-3 | 0.05 |
 
-Special caves double the nodule count like other drops. The roll runs at every
-age. Unsupported galleries still cave in, so flint mines need mine supports.
+At depth 2 the chance for ordinary rock is halved to 10%. At depths 3 and
+deeper, rock yields no flint. Special caves use the 5% base chance for sandy
+rock and double the usual 1-3 nodule count for all rock. The roll runs at
+every age. Unsupported galleries still cave in, so flint mines need mine supports.
 
 ## Tools with no metal or flint prerequisite
 

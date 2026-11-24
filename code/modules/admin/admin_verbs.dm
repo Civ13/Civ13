@@ -23,6 +23,7 @@ var/list/admin_verbs_default = admin_verbs_default_table()
 	/client/proc/getruntimelog					 // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
+	/client/proc/recover_player_house,
 	/client/proc/player_memo_write,
 	/client/proc/player_memo_delete,
 	/client/proc/bug_reports_panel,
@@ -75,6 +76,7 @@ var/list/admin_verbs_admin = list(
 	/datum/admins/proc/toggleenter,		//toggles whether people can join the current game,
 	/datum/admins/proc/toggleguests,	//toggles whether guests can join the current game,
 	/client/proc/admin_ghost,			//allows us to ghost/reenter body at will,
+	/client/proc/toggle_admin_ghost_sight,	// change the admin ghost's light and wall occlusion
 	/client/proc/toggle_admin_ghost_hidden,	// hide the admin ghost from players and ghosts
 	/client/proc/admin_view_player,		// share a player's camera
 	/client/proc/admin_stop_player_view,

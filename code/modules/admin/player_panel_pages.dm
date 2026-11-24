@@ -6,8 +6,8 @@
 // - one player's panel ("Show Player Panel" and every PP link): who they are,
 //   their records from every region, hidden karma, then the actions grouped by
 //   what they are for.
-// Every action is the same link as before, so code/modules/admin/topic.dm still
-// checks the rights; only the pages changed. Text from players is
+// In-game actions still go through the existing rights checks in
+// code/modules/admin/topic.dm. Text from players is
 // html_encode()d here, and the list script reads text and data attributes only.
 
 // The shared look of the staff pages: dark green, the same palette as the
@@ -282,6 +282,15 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 
 	usr << browse(player_options_html(M, usr), "window=adminplayeropts;size=640x760")
 
+// A member profile takes the raw BYOND key, not its normalized ckey.
+/proc/admin_byond_profile_url(account_key)
+	if (!istext(account_key) || !ckey(account_key) || copytext(account_key, 1, 2) == "@")
+		return null
+	if (findtext(account_key, regex(@"^Guest-W?[0-9]+$", "i")))
+		return null
+	var/path_key = replacetext(url_encode(account_key), "+", "%20")
+	return "https://www.byond.com/members/[path_key]?format=text"
+
 /datum/admins/proc/player_options_html(mob/M, mob/user)
 	var/list/state = admin_player_state(M)
 	var/list/body = list("<html><head><meta charset='utf-8'><title>Options for [html_encode("[M.key]")]</title>[admin_panel_css()]</head><body>")
@@ -320,6 +329,9 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 	body += "<a href='?src=\ref[src];subtlemessage=\ref[M]'>Subtle message</a>"
 	body += "[admin_jump_link(M, src)]"
 	body += "<a href='?_src_=vars;Vars=\ref[M]'>View variables</a>"
+	var/profile = admin_byond_profile_url(M.key)
+	if (profile)
+		body += "<a href='[html_encode(profile)]' target='_blank' rel='noopener noreferrer'>BYOND Profile</a>"
 	if (!isnewplayer(M))
 		body += "<a href='?src=\ref[src];revive=\ref[M]'>Heal</a>"
 	body += "</div></div>"
@@ -338,6 +350,10 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 	body += "<div class='card'><h2>Moderation</h2><div class='btns'>"
 	if (rights & (R_MOD | R_ADMIN))
 		body += "<a class='danger' href='?src=\ref[src];boot2=\ref[M]'>Kick</a>"
+	if (has_quickBan_rights())
+		var/ban_account = quickBan_panel_account(M)
+		if (ban_account)
+			body += "<a class='danger' href='?src=\ref[src];panel_ban=\ref[M];ban_account=[html_encode(ban_account)]'>Ban&hellip;</a>"
 	body += "<a href='?_src_=holder;warn=[M.ckey]'>Warn</a>"
 	body += "<a href='?src=\ref[src];notes=show;mob=\ref[M]'>Notes</a>"
 	body += "</div>"
@@ -393,6 +409,10 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 		var/list/bodies = list("Default" = "default", "Gorilla" = "gorilla", "Werewolf" = "wolfman", "Ant" = "ant", "Orc" = "orc", "Droid" = "droid")
 		for (var/label in bodies)
 			body += "<a href='?src=\ref[src];simplemake=[bodies[label]];mob=\ref[M]'>[label]</a>"
+		if ((rights & R_ADMIN) && (rights & R_SPAWN) && ishuman(M))
+			var/mob/living/human/H = M
+			if (!H.heteromorph_id && !H.heteromorph_grant_problem(heteromorph_kind("dragonoid")))
+				body += "<a href='?src=\ref[src];grant_staff_form=1;mob=\ref[M]'>Dragonoid</a>"
 		body += "</div></details></div>"
 
 	body += "</body></html>"

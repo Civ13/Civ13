@@ -17,6 +17,8 @@ its deed.
 At a stone of a registered plot, the registrar can read the register, set the land tax (0-100
 silver a week), reissue the deed (the old one becomes void, for a lost deed or land taken back),
 rename the plot or strike it from the register. Anyone else reads who it belongs to.
+Use a hammer to dismantle a boundary stone. This removes the marker, not the plot or its deed.
+To unclaim the land, use the registrar's **Strike the plot from the register** action instead.
 
 ## Deeds
 

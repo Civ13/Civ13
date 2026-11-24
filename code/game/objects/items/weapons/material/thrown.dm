@@ -55,6 +55,24 @@
 	pixel_x = rand(-8, 8)
 	pixel_y = rand(-8, 8)
 
+/obj/item/weapon/material/thrown/chakram
+	name = "chakram"
+	desc = "A low, sharpened iron ring weighted for throwing."
+	icon = 'icons/obj/clothing/gloves.dmi'
+	icon_state = "silver_ring"
+	item_icons = list(
+		slot_l_hand_str = 'icons/obj/clothing/gloves.dmi',
+		slot_r_hand_str = 'icons/obj/clothing/gloves.dmi',
+	)
+	default_material = "iron"
+	force_divisor = 0.18
+	thrown_force_divisor = 0.9
+	throw_speed = 7
+	throw_range = 10
+	sharp = TRUE
+	edge = TRUE
+	w_class = ITEM_SIZE_SMALL
+
 /obj/item/weapon/material/thrown/tomahawk
 	name = "Tomahawk"
 	desc = "An axe made to be thrown!"

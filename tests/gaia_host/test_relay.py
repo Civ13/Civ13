@@ -1,11 +1,14 @@
 """Offline tests for scripts/gaia-host/relay.py: routes, control requests and the pipe."""
 import json
+import queue
 from pathlib import Path
 import socket
 import struct
 import sys
+import tempfile
 import threading
 import unittest
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'scripts' / 'gaia-host'))
 import relay  # noqa: E402
@@ -321,6 +324,184 @@ class PipeTest(unittest.TestCase):
             client.sendall(b'\x00\x83' + struct.pack('>H', len(query)) + query)
             data = client.recv(4096)
         self.assertEqual(data, frame(json.dumps({'ok': True, 'routes': 0, 'connections': 0}, separators=(',', ':'))))
+
+
+class DisconnectTest(unittest.TestCase):
+    def admission(self, log, close_side='world'):
+        port = 1716
+        client, relay_client = socket.socketpair()
+        relay_world, world = socket.socketpair()
+        for sock in (client, relay_client, relay_world, world):
+            self.addCleanup(sock.close)
+        for peer in (client, world):
+            peer.settimeout(1)
+        service = relay.Relay([port], TOKEN, connect=lambda _: relay_world,
+                              log=lambda _: None, disconnect_log=log)
+        self.assertTrue(service.routes.set('203.0.113.5', 'privatekey', port))
+        self.assertTrue(service.slots.acquire(blocking=False))
+        connection = threading.Thread(target=service.serve_player,
+                                      args=(relay_client, '203.0.113.5'), daemon=True)
+        connection.start()
+        login = b'\x00\x01\x00\x04abcd'
+        client.sendall(login)
+        self.assertEqual(relay._read(world, len(login)), login)
+        world.sendall(b'world')
+        self.assertEqual(relay._read(client, 5), b'world')
+        client.sendall(b'client')
+        self.assertEqual(relay._read(world, 6), b'client')
+        closer, other = (world, client) if close_side == 'world' else (client, world)
+        closer.shutdown(socket.SHUT_WR)
+        self.assertEqual(other.recv(1), b'')
+        connection.join(1)
+        self.assertFalse(connection.is_alive())
+        self.assertEqual(service.active, 0)
+
+    def test_world_and_client_eof_report_only_the_first_side(self):
+        rows = queue.Queue()
+        log = relay.DisconnectLog(rows.put)
+        for side in ('world', 'client'):
+            with self.subTest(side=side):
+                self.admission(log, side)
+                row = rows.get(timeout=1)
+                self.assertEqual(set(row), {'event', 'time', 'route_port', 'side', 'reason', 'duration_ms'})
+                self.assertEqual(row['event'], 'relay_disconnect')
+                self.assertEqual(row['route_port'], 1716)
+                self.assertEqual(row['side'], side)
+                self.assertEqual(row['reason'], 'eof')
+                self.assertGreaterEqual(row['duration_ms'], 0)
+        # FIFO barrier after both handlers finished: no synthetic EOF rows.
+        log.offer('done')
+        self.assertEqual(rows.get(timeout=1), 'done')
+
+    def test_recv_errors_name_source_and_send_errors_name_target(self):
+        class PipeEnd:
+            def __init__(self, recv_error=False, send_error=False):
+                self.recv_error = recv_error
+                self.send_error = send_error
+
+            def recv(self, count):
+                if self.recv_error:
+                    raise OSError('private read detail')
+                return b'private payload'
+
+            def sendall(self, data):
+                if self.send_error:
+                    raise OSError('private write detail')
+
+            def shutdown(self, how):
+                pass
+
+        for source, target, expected in (
+            (PipeEnd(recv_error=True), PipeEnd(), ('client', 'recv_error')),
+            (PipeEnd(), PipeEnd(send_error=True), ('world', 'send_error')),
+        ):
+            seen = []
+            relay.Relay.pump(source, target, 'client', 'world', lambda *args: seen.append(args))
+            self.assertEqual(seen, [expected])
+
+    def test_full_queue_with_blocked_sink_does_not_delay_traffic_or_close(self):
+        writing, release = threading.Event(), threading.Event()
+        rows = queue.Queue()
+
+        def write(row):
+            writing.set()
+            release.wait(5)
+            rows.put(row)
+
+        log = relay.DisconnectLog(write, capacity=1)
+        self.addCleanup(release.set)
+        log.offer('writing')
+        self.assertTrue(writing.wait(1))
+        log.offer('queued')
+
+        # Both directions transmit and the handler releases its slot while the
+        # diagnostic writer is blocked and its queue has no remaining space.
+        self.admission(log)
+        self.assertEqual(log.pending.qsize(), 1)
+        release.set()
+        self.assertEqual(rows.get(timeout=1), 'writing')
+        self.assertEqual(rows.get(timeout=1), 'queued')
+
+    def test_first_forward_error_is_recorded_for_the_admitted_route(self):
+        class RefusingWorld:
+            def setsockopt(self, *args):
+                pass
+
+            def sendall(self, data):
+                raise OSError('private wire error')
+
+            def close(self):
+                pass
+
+        rows = queue.Queue()
+        service = relay.Relay([1716], TOKEN, connect=lambda _: RefusingWorld(),
+                              disconnect_log=relay.DisconnectLog(rows.put))
+        service.routes.set('203.0.113.5', 'privatekey', 1716)
+        self.assertTrue(service.slots.acquire(blocking=False))
+        client, relay_client = socket.socketpair()
+        with client, relay_client:
+            client.sendall(b'\x00\x01\x00\x04abcd')
+            service.serve_player(relay_client, '203.0.113.5')
+        row = rows.get(timeout=1)
+        self.assertEqual((row['route_port'], row['side'], row['reason']), (1716, 'world', 'send_error'))
+        self.assertEqual(service.active, 0)
+
+    def test_worker_start_failure_does_not_prevent_traffic(self):
+        with patch.object(relay.threading.Thread, 'start', side_effect=RuntimeError):
+            log = relay.DisconnectLog(lambda row: self.fail('writer unavailable'))
+        self.assertIsNone(log.pending)
+        self.admission(log)
+
+    def test_cli_sink_is_lazy_separate_json_and_rotates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'relay-disconnects.log'
+            completed = threading.Event()
+            handlers = []
+            handler_type = relay.DisconnectFile
+
+            def handler_factory(*args, **kwargs):
+                handler = handler_type(*args, **kwargs)
+                handlers.append(handler)
+                return handler
+
+            with patch.object(relay, 'DISCONNECT_LOG_BYTES', 200), patch.object(
+                    relay, 'DisconnectFile', handler_factory):
+                log = relay.DisconnectLog.for_file(path)
+                self.assertFalse(path.exists())
+                actual_write = log.write
+
+                def signal_write(row):
+                    if row is None:
+                        for handler in handlers:
+                            handler.close()
+                        completed.set()
+                    else:
+                        actual_write(row)
+
+                log.write = signal_write
+                for sequence in range(12):
+                    log.offer({'event': 'relay_disconnect', 'duration_ms': sequence})
+                log.offer(None)
+                self.assertTrue(completed.wait(1))
+            files = sorted(Path(directory).iterdir())
+            self.assertEqual([file.name for file in files],
+                             [path.name, path.name + '.1', path.name + '.2'])
+            self.assertTrue(all(file.stat().st_size <= 200 for file in files))
+            rows = [json.loads(line) for line in path.read_text().splitlines()]
+            self.assertEqual(rows[-1], {'event': 'relay_disconnect', 'duration_ms': 11})
+
+    def test_io_failure_does_not_stop_later_diagnostics(self):
+        rows = queue.Queue()
+
+        def write(row):
+            if row == 'fail':
+                raise OSError('diagnostic sink failed')
+            rows.put(row)
+
+        log = relay.DisconnectLog(write)
+        log.offer('fail')
+        log.offer('recover')
+        self.assertEqual(rows.get(timeout=1), 'recover')
 
 
 if __name__ == '__main__':

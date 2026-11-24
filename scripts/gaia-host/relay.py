@@ -51,6 +51,9 @@ from __future__ import annotations
 import argparse
 import ipaddress
 import json
+import logging
+from logging.handlers import RotatingFileHandler
+import queue
 import re
 import socket
 import struct
@@ -71,6 +74,8 @@ MAX_CONTROL = 16
 FIRST_BYTES_SECONDS = 15     # a client that sends nothing is dropped
 HOLD_SECONDS = 20            # how long a connection waits for a thawing world
 CAPTURE_BYTES = 64
+DISCONNECT_QUEUE_SIZE = 256
+DISCONNECT_LOG_BYTES = 1024 * 1024
 CKEY = re.compile(r'^[a-z0-9]{1,64}$')
 HEX = re.compile(r'^[0-9a-f]{32,128}$')
 
@@ -222,9 +227,59 @@ class Routes:
             return len(self.by_ip)
 
 
+class DisconnectFile(RotatingFileHandler):
+    def handleError(self, record):
+        # Do not fall back to stderr: it shares the normal relay log when managed.
+        pass
+
+
+class DisconnectLog:
+    """Best-effort single writer. A blocked or full disk never holds a relay slot."""
+
+    def __init__(self, write, capacity=DISCONNECT_QUEUE_SIZE):
+        self.pending = queue.Queue(maxsize=capacity)
+        self.write = write
+        try:
+            threading.Thread(target=self._drain, name='relay-disconnect-log', daemon=True).start()
+        except RuntimeError:
+            self.pending = None  # A diagnostic-only worker must not prevent startup.
+
+    def offer(self, event):
+        if self.pending is None:
+            return
+        try:
+            self.pending.put_nowait(event)
+        except queue.Full:
+            pass  # Keep dispatching traffic; drop diagnostics under pressure.
+
+    def _drain(self):
+        while True:
+            event = self.pending.get()
+            try:
+                self.write(event)
+            except OSError:
+                pass  # The next event can still be written if the sink recovers.
+
+    @classmethod
+    def for_file(cls, path):
+        handler = None
+
+        def write(event):
+            nonlocal handler
+            if handler is None:
+                # Even opening the file happens off the connection and startup paths.
+                handler = DisconnectFile(path, maxBytes=DISCONNECT_LOG_BYTES, backupCount=2,
+                                         encoding='utf-8', delay=True)
+            record = logging.LogRecord('relay.disconnect', logging.INFO, '', 0,
+                                       json.dumps(event, separators=(',', ':')), (), None)
+            handler.emit(record)
+
+        return cls(write)
+
+
 class Relay:
     def __init__(self, ports, token, public=('0.0.0.0', 0), control=('127.0.0.1', 0), doorman_port=None,
-                 capture=False, clock=time.monotonic, log=None, wake=None, connect=None):
+                 capture=False, clock=time.monotonic, log=None, wake=None, connect=None, disconnect_log=None):
         if not HEX.match(token or ''):
             raise ValueError('relay token must be 32 to 128 lowercase hex characters')
         if not loopback(control[0]):
@@ -238,6 +293,7 @@ class Relay:
         self.capture = capture
         self.clock = clock
         self.log = log or (lambda values: print(json.dumps(dict(values, time=int(time.time()))), flush=True))
+        self.disconnect_log = disconnect_log
         self.wake = wake or self._wake
         self.connect = connect or self._connect
         self.slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
@@ -346,6 +402,7 @@ class Relay:
 
     def serve_player(self, connection, address):
         upstream = None
+        ended = None
         try:
             connection.settimeout(FIRST_BYTES_SECONDS)
             first = connection.recv(4096)
@@ -372,15 +429,33 @@ class Relay:
             # laggy and choppy (TDM Barracks, 2026-11-21). Send each frame at once.
             no_delay(connection)
             no_delay(upstream)
-            upstream.sendall(first)
+            started = self.clock()
+            end_lock = threading.Lock()
+
+            def note_end(side, reason):
+                nonlocal ended
+                # Record before shutdown, otherwise the other pump can report
+                # the synthetic EOF caused by our own shutdown as the first one.
+                with end_lock:
+                    if ended is None:
+                        ended = {'event': 'relay_disconnect', 'time': int(time.time()), 'route_port': port,
+                                 'side': side, 'reason': reason,
+                                 'duration_ms': max(0, int((self.clock() - started) * 1000))}
+
+            try:
+                upstream.sendall(first)
+            except OSError:
+                note_end('world', 'send_error')
+                raise
             connection.settimeout(None)
             upstream.settimeout(None)
             with self.lock:
                 self.active += 1
             try:
-                pump = threading.Thread(target=self.pump, args=(upstream, connection), daemon=True)
+                pump = threading.Thread(target=self.pump,
+                                        args=(upstream, connection, 'world', 'client', note_end), daemon=True)
                 pump.start()
-                self.pump(connection, upstream)
+                self.pump(connection, upstream, 'client', 'world', note_end)
                 pump.join()
             finally:
                 with self.lock:
@@ -392,18 +467,26 @@ class Relay:
                 upstream.close()
             connection.close()
             self.slots.release()
+            if ended is not None and self.disconnect_log is not None:
+                self.disconnect_log.offer(ended)
 
     @staticmethod
-    def pump(source, target):
+    def pump(source, target, source_side, target_side, note_end):
         """Copy source to target until either side closes, then close both directions."""
-        try:
-            while True:
+        while True:
+            try:
                 data = source.recv(65536)
-                if not data:
-                    break
+            except OSError:
+                note_end(source_side, 'recv_error')
+                break
+            if not data:
+                note_end(source_side, 'eof')
+                break
+            try:
                 target.sendall(data)
-        except OSError:
-            pass
+            except OSError:
+                note_end(target_side, 'send_error')
+                break
         for side in (source, target):
             try:
                 side.shutdown(socket.SHUT_RDWR)
@@ -459,7 +542,8 @@ def main(argv=None):
     try:
         token = Path(args.token_file).read_text(encoding='utf-8').strip()
         relay = Relay(args.region_port, token, (args.bind, args.port), ('127.0.0.1', args.control_port),
-                      args.doorman_port, args.capture)
+                      args.doorman_port, args.capture,
+                      disconnect_log=DisconnectLog.for_file(Path('relay-disconnects.log')))
         relay.run()
     except (OSError, ValueError) as error:
         print(json.dumps({'ok': False, 'error': 'relay: %s' % error}), flush=True)

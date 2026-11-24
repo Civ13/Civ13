@@ -12,6 +12,7 @@
 var/global/list/crafting_atlas_admin_only = list(
 	/obj/structure/practice_lesson_board = "Dedicated tutorial region lesson fixture; not available as a Nomads buildable.",
 	/obj/structure/practice_workshop_desk = "Dedicated tutorial region workshop fixture; not available as a Nomads buildable.",
+	/obj/structure/practice_stores = "Dedicated tutorial region materials store; not available as a Nomads buildable.",
 	/obj/item/weapon/book/divine = "A god's own book. Hidden divine mechanic; only an admin verb writes the original.",
 	/obj/item/cursedtreasure = "Cursed loot. Its effect is a discovery for players.",
 	/obj/item/weapon/moldy_ritual = "Event summoning scroll. Its effect is a discovery for players.",

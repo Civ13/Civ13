@@ -20,6 +20,15 @@ var/recovery_fixture_late_arrived = FALSE
 	var/playing_banned = FALSE
 	var/server_banned = FALSE
 	var/transfers = 0
+/datum/recovery_fixture_client/var/gateway_expected_slot = 0
+/datum/recovery_fixture_client/proc/open_character_sleep_picker()
+	return
+
+// The recovery fixture supplies a synthetic client with no gateway route.
+// The dedicated character-return fixture exercises the real slot predicate.
+/proc/recovery_fixture_expected_slot_ok(datum/recovery_fixture_client/C)
+	return C && !C.gateway_expected_slot
+
 /datum/recovery_fixture_client/proc/quickBan_isbanned(kind)
 	return kind == "Playing" ? playing_banned : server_banned
 /proc/recovery_fixture_client(account)

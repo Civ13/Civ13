@@ -231,6 +231,7 @@
 	original.loc = place
 	result.loc = place
 	qdel(stock)
+	tutorial_note_paper_copy(actor, src, original, result)
 	if (src && !src.gc_destroyed)
 		src.visible_message("The printing press finishes copying.")
 	return TRUE

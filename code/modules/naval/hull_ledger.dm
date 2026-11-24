@@ -394,12 +394,15 @@ var/global/hull_ledger_timer_off = FALSE
 	step_load(seconds)
 	if (step_storm(seconds))
 		return
+	// Flooding vents trapped air even if a powered pump drains that room
+	// again this step. A breath query may already have mapped the dry floor.
+	if (depth_disabled && length(pressure_air))
+		pressure_mapped_at = -1
+		pressure_scan()
 	step_waterlogged_engines()
 	// Her powered pumps answer the water (hull_pumps.dm).
 	pump_bilge(seconds)
 	if (depth_disabled)
-		if (pressure_air)
-			pressure_scan()
 		step_hull_depth()
 		return
 	check_founder()

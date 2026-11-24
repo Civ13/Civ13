@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '68ba284e7895f83bca0af5db82a831b831aa1c7c'
+WIKI_REVIEWED_REVISION = '4b75fcd2c4dba2fd6ee16e061f4459851364f45f'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('fb56f2f26a6d654a671e73447354e8d46b5397bd967a6c7421f50b4fd8151d0b', 'character skills traits languages'),
@@ -123,7 +123,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Chemistry.md': ('65dc1c21ac2f90de29fbd4f8e6e387336ad03d5fe0d6fcd90d6bd6f96e721da0', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
     'guides/Guide_to_Combat.md': ('da7579531503a7301a3ad2a865fc2fd717e79e5a5711c35b830b5936b3a7d2af', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
-    'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
+    'guides/Guide_to_Communications.md': ('20914b087ad030081f1dfd8e86e057c7f9b746b436d24ae28d06be1064508a75', 'communications radio transmit'),
     'guides/Guide_to_Construction.md': ('c5c34f60aa9001bb4803286f91b8bfc750e288c0ac13518c3ea9366b51352817', 'construction build building walls roof floor'),
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('75302a5ae7e493ab0104ca23548ca9992a6b817efd3b46c0da9f049588ad4291', 'cooking cook food meal ingredients'),
@@ -145,14 +145,14 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Research.md': ('49f0c849f99a56d530d4e6ec04ea626ad712c47fd078c4d4385b8eb3c536b84a', 'research unlock study technology research bench'),
     'guides/Guide_to_Resource_Extraction.md': ('041b3303d0be5737e6ab566e041aa0e28675845cc4a2015964a7e91a33d01332', 'resource extraction gathering oil petroleum well fracturing'),
     'guides/Guide_to_Survival.md': ('34251d517df8b0cf9e2daad566be261ae690910d23b40dd6c49b468a8b57c589', 'survival winter cold warm freezing hypothermia shelter debris footwear boots snowshoes shoes ice mud rain wet umbrella raincoat cape storm storms lightning thunder blizzard sandstorm heat wave weather fog mist dew frost wind chill humid humidity sun hat robe barometer thermometer hygrometer anemometer rain gauge weather station forecast fire fires wildfire firefighting beater flapper smother burning bucket blanket extinguish smoke signal signals hook firebreak pump engine nozzle hose jet reel extinguisher'),
-    'guides/Guide_to_Tanks.md': ('2231fe471034c5c44758d33928141f103a54a28bcdaccf6b436f23e7a5d429de', 'tank driving crew ammunition'),
+    'guides/Guide_to_Tanks.md': ('57958bb76726596c346c641c197eb7812e51fd64b84c4db66fd2646b35d7491a', 'tank driving crew ammunition'),
     'guides/Guide_to_Trains.md': ('24ae81ef09bf210b45e49be2567908270d8006067a8d26342b6b012477de28a9', 'train trains railway track locomotive station switcher rails wagon'),
     'guides/Guide_to_Weather.md': ('d3ae91b93e0899ebf0c128df972df17ce914d4288a5ad185f827624aad45d18a', 'weather climate forecast predict storm storms pressure hpa low lows high highs front fronts barometer hygrometer anemometer rain gauge weather station beaufort dew point sleet hail freezing rain rain shadow sea breeze land breeze'),
     'guides/Guide_to_Castles.md': ('478f47a0fb7fc8060e7912b7eabc2d71a406058026b01278ae4fc4b69562e75f', 'castle castles defend defending siege gatehouse portcullis murder hole arrow slit battlement caltrops trapdoor'),
     'guides/Guide_to_Trenches.md': ('ac2a6dab9b5aac3051a30f35809e9ddf770387219996f75df90aa90d438847a6', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Gunsmithing.md': ('ab4f1b431a1c13ac6b537c84b99cbe04624b65b157828a51ec2e7f3f4b00b23a', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket arquebus matchlock'),
     'guides/Guide_to_Weapons.md': ('91264132c8e516f6d6d48d67bd179d419ab630dd9decd1918f3c1f529c947631', 'weapons gun reload ammunition'),
-    'New_Player_Guide.md': ('4ca93ed2909c1b2188f6934d6a17b3e40263c1c4979221bb5ab0d0715ea8a27a', 'new player beginner start first round basics'),
+    'New_Player_Guide.md': ('f20d2dfdd2a77d54441eee2fb018f291614c9bc1ae93f925b02bc6cd61da791b', 'new player beginner start first round basics'),
     'Hotkeys.md': ('d7184103137b1ff83ffe7cd7ebc94878df8ed5a5c0a4b6a66447c9e25d4292fb', 'hotkeys hotkey keys keyboard controls key press'),
     'FAQ.md': ('cab868026765689adb0deded1f63892bcf5b75991961b4cb3acb2023a7bb003e', 'faq frequently asked questions common question quick answers'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
@@ -170,7 +170,7 @@ WIKI_REVIEWED_GUIDES = {
     'gamemodes/Prison_Roleplay.md': ('8da37041c99c23ab18012006e8afd8475acdd1485f8cb3eb48d23152f9cfb613', 'prison prisoner guard gulag nkvd'),
     'guides/Guide_to_Boats.md': ('ed69d036f8ec5f3319309b0e2d9aef011608626d9d35e2aa0553abac13e69bb3', 'boat boats ship sailing sail raft canoe rowing oars anchor swim swimming drown drowning current currents lifejacket naval torpedo torpedoes degaussing minesweeping'),
     'guides/Guide_to_Aircraft.md': ('0a42bcabcaf3efe8a77e6b0305714b8b0b72675101ab13cb533d4323e32024c5', 'aircraft airplane plane planes flying fly flight runway hangar pilot takeoff landing airship airships zeppelin gas cell'),
-    'guides/Guide_to_Aircraft_Carriers.md': ('3402b1e488a635eb74b172c9d0c2d62038fe192efcd7d12e9b3f5d297c655ce4', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
+    'guides/Guide_to_Aircraft_Carriers.md': ('d06a17fa43773f76e4af7c3700e67a994741facb9a218011d447da47da1a610b', 'carrier carriers aircraft carrier flight deck shipyard office arresting wires elevator bunkers'),
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('a1fdc4fc0d8417d0b45f023f9005d27929a0684950e20bb8d4ded4c3a49cbf95', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('22d1a00ffb280769e92f1d608e9172855d9373a10cfbcb2ba15e02b5eaa7bd43', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),

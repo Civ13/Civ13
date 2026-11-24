@@ -290,6 +290,8 @@ var/global/list/land_deeds = list()
 	density = FALSE
 	anchored = TRUE
 	flammable = FALSE
+	not_disassemblable = FALSE
+	dismantle_wood_fallback = FALSE
 
 /obj/structure/boundary_stone/New()
 	..()

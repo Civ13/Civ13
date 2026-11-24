@@ -63,6 +63,15 @@ class EdgeClimbing(unittest.TestCase):
         self.assertLess(entered.index('stairs_soft_descent(A, floorbelowz)'), entered.index('persistence_set_z(A.z - 1)'))
         self.assertIn('stairs_step_on(H, src, OL)', (ROOT / 'code/game/turfs/turf.dm').read_text())
 
+    def test_hole_rendering_skips_its_own_turf_without_changing_movement(self):
+        open_space = (ROOT / 'code/modules/multiz/open_space.dm').read_text()
+        render = open_space.split('/turf/floor/broken_floor/update_icon()\n', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (floorbelowz && floorbelowz != src)\n\t\ticon = floorbelowz.icon', render)
+        self.assertLess(render.index('overlays.Cut()'), render.index('floorbelowz != src'))
+        entered = open_space.split('/turf/floor/broken_floor/Entered(atom/movable/A)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (floorbelowz)', entered)
+        self.assertLess(entered.index('A.forceMove(get_step(src,push_dir))'), entered.index('persistence_set_z(A.z - 1)'))
+
     def test_stairs_cooldown_is_runtime_only(self):
         self.assertIn('/mob/living/human/var/tmp/stairs_moved_at', SOURCE)
         self.assertIn('key == "stairs_moved_at"', SOURCE)

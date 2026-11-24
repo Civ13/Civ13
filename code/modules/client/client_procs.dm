@@ -319,12 +319,22 @@
 		if (length(screen_loc_split) >= 2)
 			var/list/x_split = splittext(screen_loc_split[1], ":")
 			var/list/y_split = splittext(screen_loc_split[2], ":")
-			if (length(x_split) >= 2)
-				mouse_screen_x = text2num(x_split[1])
-				mouse_screen_pixel_x = text2num(x_split[2])
-			if (length(y_split) >= 2)
-				mouse_screen_y = text2num(y_split[1])
-				mouse_screen_pixel_y = text2num(y_split[2])
+			// "[map:]x:px,y:py": the tile and pixel are always the last two parts.
+			var/xn = length(x_split)
+			var/yn = length(y_split)
+			if (xn < 2 || yn < 2)
+				return
+			var/screen_x = text2num(x_split[xn - 1])
+			var/screen_y = text2num(y_split[yn - 1])
+			var/pixel_x = text2num(x_split[xn])
+			var/pixel_y = text2num(y_split[yn])
+			// Publish a complete pointer sample; never splice a new axis into an old pair.
+			if (!isnum(screen_x) || !isnum(screen_y) || !isnum(pixel_x) || !isnum(pixel_y))
+				return
+			mouse_screen_x = screen_x
+			mouse_screen_y = screen_y
+			mouse_screen_pixel_x = pixel_x
+			mouse_screen_pixel_y = pixel_y
 
 /client/MouseMove(object, location, control, params)
 	UpdateMouseScreenLoc(params)
@@ -512,6 +522,9 @@
 		// Nothing to do
 		return
 
+	// A splitter change can move the map under a stationary cursor.
+	clear_hover_name()
+
 	// Calculate and apply a best estimate
 	// +4 pixels are for the width of the splitter's handle
 	var/pct = 100 * (desired_width + 4) / split_width
@@ -574,6 +587,8 @@
 /client/verb/on_window_resize()
 	set name = "on-window-resize"
 	set hidden = TRUE
+	// A resize may not emit a mouse exit; wait for a fresh pointer event.
+	clear_hover_name()
 	fit_viewport_soon()
 
 // Icons menu: change the map icon size, then refit so no bars are left.
@@ -582,6 +597,7 @@
 	set hidden = TRUE
 	if (!(size in list(0, 32, 48, 64, 96, 128)))
 		size = 0
+	clear_hover_name()
 	winset(src, "mapwindow.map", "icon-size=[size]")
 	if (is_preference_enabled(/datum/client_preference/fit_viewport))
 		fit_viewport()

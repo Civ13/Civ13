@@ -16,6 +16,7 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	universal_speak = TRUE
 	var/atom/movable/following = null
 	var/admin_ghosted = FALSE
+	var/tmp/admin_sight_selected = FALSE
 	var/anonsay = FALSE
 	var/ghostvision = TRUE //is the ghost able to see things humans can't?
 	var/seedarkness = TRUE
@@ -145,6 +146,8 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	if (!client) return FALSE
 	if (client.admin_player_view) // the mirrored player's HUD images stay
 		return
+	if (admin_sight_selected && !check_rights(R_ADMIN, FALSE, src))
+		updateghostsight()
 
 	if (client.images.len)
 		for (var/image/hud in client.images)
@@ -335,6 +338,9 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 /mob/observer/ghost/verb/toggle_darkness()
 	set name = "Toggle Darkness"
 	set category = "Ghost"
+	if (admin_ghosted && client && check_rights(R_ADMIN, FALSE, src))
+		client.toggle_admin_ghost_sight()
+		return
 	if (is_spirit()) // spirit_observe.dm
 		spirit_refuse("see through the dark beyond a few steps")
 		return
@@ -342,6 +348,18 @@ var/global/list/image/ghost_sightless_images = list() //this is a list of images
 	updateghostsight()
 
 /mob/observer/ghost/proc/updateghostsight()
+	if (client && client.admin_player_view)
+		return
+	if (admin_sight_selected)
+		if (admin_ghosted && client && check_rights(R_ADMIN, FALSE, src))
+			// Removing these flags lets BYOND's normal wall opacity apply.
+			sight = seedarkness ? initial(sight) & ~(SEE_TURFS|SEE_MOBS|SEE_OBJS) : initial(sight)
+			see_in_dark = seedarkness ? 2 : 100
+		else
+			admin_sight_selected = FALSE
+			seedarkness = TRUE
+			sight = initial(sight)
+			see_in_dark = 100
 	if (!seedarkness)
 		see_invisible = SEE_INVISIBLE_OBSERVER_NOLIGHTING
 	else

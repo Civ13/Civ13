@@ -86,6 +86,8 @@ var/global/datum/shard_group/shard_group = new
 	var/doorman_answering = TRUE
 	// region id -> the direct poll still waiting on it (/datum/shard_peer_poll).
 	var/list/polls_waiting = null
+	// Successful reloads invalidate pending polls, including a move away and back.
+	var/directory_generation = 0
 
 /datum/shard_group/New()
 	..()
@@ -215,6 +217,7 @@ var/global/datum/shard_group/shard_group = new
 		seen_addresses += entry["address"]
 	if(!(region in found))
 		return "refused:another_region"
+	directory_generation++
 	for(var/list/entry in regions)
 		if(entry["id"] == region)
 			address = entry["address"]
@@ -230,6 +233,8 @@ var/global/datum/shard_group/shard_group = new
 			// Whatever answered on the old port was another world: ask again.
 			peer["state"] = "UNKNOWN"
 			peer["checked"] = null
+			peer["birth_chart_records"] = FALSE
+			peer["immunization_records"] = FALSE
 	if(istext(settings["mainland"]) && (settings["mainland"] in found))
 		mainland = settings["mainland"]
 	if(istext(settings["start_region"]) && (settings["start_region"] in found))
@@ -270,6 +275,9 @@ var/global/datum/shard_group/shard_group = new
 	if(map)
 		.["ordinal_age"] = map.ordinal_age
 	.["train_stations"] = train_route_advertisements()
+	// Decoder capability, independent of whether this world records new births.
+	.["birth_chart_records"] = TRUE
+	.["immunization_records"] = TRUE
 	// Nothing can arrive while the agent here is on hold (transfer_bridge.dm).
 	if(transfer_bridge && transfer_bridge.held())
 		.["transfers_held"] = 1
@@ -324,6 +332,8 @@ var/global/datum/shard_group/shard_group = new
 		peer["players"] = null
 		return FALSE
 	peer["state"] = "UP"
+	peer["birth_chart_records"] = (reply["birth_chart_records"] == TRUE)
+	peer["immunization_records"] = (reply["immunization_records"] == TRUE)
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
@@ -477,20 +487,44 @@ var/global/datum/shard_group/shard_group = new
 	var/list/peer = peers[id]
 	if(!peer)
 		return FALSE
+	var/polled_generation = directory_generation
+	var/polled_address = peer_address(peer)
 	var/datum/shard_peer_poll/waiting = polls_waiting ? polls_waiting[id] : null
 	if(waiting && !waiting.done)
 		return FALSE
 	var/datum/shard_peer_poll/poll = new
 	LAZYSET(polls_waiting, id, poll)
-	poll.ask("byond://[peer_address(peer)]?shard_region=1&format=json")
+	poll.ask("byond://[polled_address]?shard_region=1&format=json")
 	var/deadline = world.time + SHARD_POLL_TIMEOUT
 	while(!poll.done && world.time < deadline)
 		sleep(1)
 	if(!poll.done)
 		log_game("Region group: [id] did not answer a direct poll within [SHARD_POLL_TIMEOUT / 10] seconds; it keeps its last state.")
 		return FALSE
+	// Another poll may have replaced this completed one before we resumed.
+	if(!polls_waiting || polls_waiting[id] != poll)
+		return FALSE
 	LAZYREMOVE(polls_waiting, id)
+	var/list/current = peers[id]
+	if(current != peer || directory_generation != polled_generation || peer_address(current) != polled_address)
+		return FALSE
 	return record(id, poll.answer, world.time)
+
+// Only a fresh, identity-matched answer from the actual receiving world can
+// admit an escrow with a detailed birth chart. The doorman cache may outlive a
+// worker, and poll_peer keeps stale state on a timeout: neither is a receipt.
+/datum/shard_group/proc/peer_accepts_birth_chart_records(id)
+	if(!poll_peer(id))
+		return FALSE
+	var/list/peer = peers[id]
+	return islist(peer) && peer["state"] == "UP" && peer["birth_chart_records"] == TRUE
+
+// Poll once even if the travellers require both optional-record fields.
+/datum/shard_group/proc/peer_accepts_immunization_records(id, needs_birth_chart = FALSE)
+	if(!poll_peer(id))
+		return FALSE
+	var/list/peer = peers[id]
+	return islist(peer) && peer["state"] == "UP" && peer["immunization_records"] == TRUE && (!needs_birth_chart || peer["birth_chart_records"] == TRUE)
 
 // One world.Export to a peer, run apart so the caller can stop waiting.
 /datum/shard_peer_poll
