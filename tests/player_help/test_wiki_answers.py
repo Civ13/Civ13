@@ -134,10 +134,13 @@ class WikiAnswerTests(unittest.TestCase):
 
     def test_telegraph_answer_rejects_required_printer_claim(self):
         entry = next(item for item in QUESTIONS if item['id'] == 'telegraph')
-        for answer in ('A pole and printer are required.', 'You need a printer and a pole.'):
+        for answer in ('A pole and printer are required.', 'You need a printer and a pole.',
+                       'A telegraph within 2 tiles of a communications pole, and a telegraph printer with paper in it. It does not need power.'):
             with self.subTest(answer=answer):
                 self.assertFalse(wiki_eval.score_answer(entry, answer)['pass'])
-        for answer in ('Use a pole; a printer is optional.', 'Use a pole; you do not need a printer.'):
+        for answer in ('Use a pole; a printer is optional.', 'Use a pole; you do not need a printer.',
+                       'Use a telegraph within two tiles of a connected pole; it needs no power.',
+                       'Use a pole; no printer is needed.'):
             with self.subTest(answer=answer):
                 self.assertTrue(wiki_eval.score_answer(entry, answer)['pass'])
 
