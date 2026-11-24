@@ -228,10 +228,15 @@
 			to_chat(user, SPAN_NOTICE("You set \the [src] again."))
 		return TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts taking up \the [src]."), SPAN_NOTICE("You start taking up \the [src]."))
-	if (do_after(user, 30, src) && !QDELETED(src))
-		var/obj/item/K = new kit_type(get_turf(src))
-		user.put_in_hands(K)
-		qdel(src)
+	if (!do_after(user, 30, src) || QDELETED(src))
+		return TRUE
+	settle()
+	if (catch_type || !armed)
+		to_chat(user, SPAN_WARNING("The trap has sprung. Check it before taking it up."))
+		return TRUE
+	var/obj/item/K = new kit_type(get_turf(src))
+	user.put_in_hands(K)
+	qdel(src)
 	return TRUE
 
 /obj/structure/stone_age_trap/proc/take_catch(mob/user)
