@@ -1010,8 +1010,8 @@ bullet_act
 			if (O.loc == src && O.sharp) //Projectile is embedded and suitable for pinning.
 				var/turf/T = near_wall(dir,2)
 
-				if (T)
-					loc = T
+				// A refused move must not pin the victim at the old location.
+				if (T && (loc == T || forceMove(T)) && loc == T)
 					visible_message("<span class='warning'>[src] is pinned to the wall by [O]!</span>","<span class='warning'>You are pinned to the wall by [O]!</span>")
 					anchored = TRUE
 					pinned += O
