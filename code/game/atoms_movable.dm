@@ -220,6 +220,11 @@
 	var/list/los_move_contexts = root_tree_invalidate(src)
 	#endif
 	loc = destination
+	// Raw movement skips the lighting hooks in Entered()/Exited().
+	if (origin != loc && light_sources)
+		for (var/datum/light_source/L in light_sources)
+			if (L.source_atom)
+				L.source_atom.update_light()
 	#if CIV13_ROOT_TREE_PRESENTATION
 	los_invalidate(src)
 	los_refresh_moved_viewer(src, TRUE, los_move_contexts)
