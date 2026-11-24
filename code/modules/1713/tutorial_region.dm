@@ -10,8 +10,8 @@
 #define TUTORIAL_START_WAIT (2 MINUTES)
 
 /obj/map_metadata/tutorial
-	dig_down_underground = FALSE // no ground to dig under (dug_underground.dm)
-	building_levels = 0 // practice rooms own the added levels here (practice_rooms.dm)
+	// The rooms stand on this map's own ground (practice_rooms.dm), so it keeps
+	// the default underground and building levels for trainees to dig and build.
 	ID = MAP_TUTORIAL
 	title = "Tutorial"
 	description = "Guided practice rooms for new players."
