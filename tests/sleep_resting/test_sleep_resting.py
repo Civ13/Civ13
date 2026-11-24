@@ -69,9 +69,16 @@ class Actor:
 
 
 class Harness:
-    def __init__(self, actor, bridge=False, legacy_prefix=False):
+    def __init__(self, actor, bridge=False, legacy_prefix=False, *, registered=False, map_id='ordinary', holder=None, island=None, faction='our-faction', nation='our-nation', assigned=False, refusal=None):
         self.actor=actor;self.world=SimpleNamespace(time=0);self.hook=None
         self.bars=[];self.messages=[];self.wait_calls=[];self.bridge=bridge
+        self.prompts=[];self.confirm_hook=None;self.holder=holder;self.island=island
+        self.assigned=assigned;self.refusal=refusal
+        def answer(user, prompt, *args):
+            self.prompts.append(prompt)
+            if self.confirm_hook:
+                hook=self.confirm_hook;self.confirm_hook=None;hook()
+            return actor.answer
         def sleep(delay):
             self.world.time+=1
             if self.hook:
@@ -84,12 +91,23 @@ class Harness:
         self.env=dict(FLAGS, world=self.world, sleep=sleep, isnull=lambda v:v is None,
             istype=lambda value,kind:isinstance(value,kind), MINING_CONTEXT_TYPE=type('Mining',(),{}),
             LEASE_TYPE=type('Lease',(),{}), new_progressbar=bar, qdel=lambda v:setattr(v,'deleted',True),
-            MINUTES=600, HYGIENE_LEVEL_DIRTY=75, list=lambda *v:v, typed_iter=typed_iter, get_turf=lambda mob:mob.loc,
+            MINUTES=600, SECONDS=10, HYGIENE_LEVEL_DIRTY=75, list=lambda *v:v, typed_iter=typed_iter, get_turf=lambda mob:mob.loc,
             to_chat=lambda user,message:self.messages.append(message), SPAN_RED=lambda s:s,
             SPAN_NOTICE=lambda s:s, SPAN_WARNING=lambda s:s, WWalert=lambda *a:None,
-            WWinput=lambda *a:actor.answer, usr=actor, map=SimpleNamespace(ID='ordinary'),
-            MAP_VOYAGE='voyage', persistence_sleep_transfer_blocked=lambda:False,
-            persistence_bed_return_enabled=lambda:False, offline_sleep_protection_map_allowed=lambda:True)
+            WWinput=answer, usr=actor, map=SimpleNamespace(ID=map_id),
+            MAP_VOYAGE='voyage', MAP_NOMADS_GAIA='gaia', persistence_sleep_transfer_blocked=lambda:False,
+            persistence_bed_return_enabled=lambda:registered, saved_bed_taken_here=lambda:self.assigned,
+            saved_bed_sleep_refusal=lambda:self.refusal, log_game=lambda message:None)
+        policy=(ROOT/'code/modules/persistence/offline_sleep_protection.dm').read_text(encoding='utf-8-sig')
+        self.env['offline_sleep_protection_map_allowed']=A.project(policy,'/proc/offline_sleep_protection_map_allowed','',self.env)
+        # Project the production ownership predicate, with fake map/faction lookups.
+        ownership_env=dict(self.env, civilization=faction, x=1, y=1,
+            island_claim_parent=lambda:self.island, colony_faction_id=lambda body:faction,
+            province_holder_of=lambda cell:self.holder, province_group_of=lambda value:nation)
+        ownership_env['map']=SimpleNamespace(province_map=lambda:SimpleNamespace(char_at=lambda x,y:'province'))
+        ownership=policy.replace('c ? province_holder_of(c) : null', '(province_holder_of(c) if c else null)')
+        owns_province=A.project(ownership,'/mob/living/human/proc/offline_sleep_province_owned','src',ownership_env,method=True)
+        self.env['offline_sleep_province_owned']=lambda:owns_province(actor)
         source=(ROOT/'code/_helpers/mobs.dm').read_text(encoding='utf-8-sig')
         pattern=r'#ifdef CIV13_GAMEPLAY_BRIDGE\n(/proc/do_after[^\n]+)\n#else\n(/proc/do_after[^\n]+)\n#endif'
         source,count=re.subn(pattern,lambda m:m[1] if bridge else m[2],source)
@@ -121,10 +139,11 @@ class Harness:
             line=next(line for line in full.splitlines() if 'if (do_after(' in line)
             call=line.strip()[4:-1]
             prefix='/mob/living/human/verb/mob_sleep()\n'+full[:full.index(line)]+'\t\treturn '+call+'\n'
-        prefix=prefix.replace('2 MINUTES','2 * MINUTES')
+        prefix=prefix.replace('2 MINUTES','2 * MINUTES').replace('10 SECONDS','10 * SECONDS')
         self.prefix=A.project(prefix,'/mob/living/human/verb/mob_sleep','src',self.env,method=True)
         captured=re.search(r'var/client/(\w+) = client',full)[1]
-        guard=next(line.strip() for line in full.splitlines() if f'client != {captured}' in line)
+        completion=full[full.index('if (do_after('):]
+        guard=next(line.strip() for line in completion.splitlines() if f'client != {captured}' in line)
         guard_source='/proc/client_completion_guard()\n\t'+guard+'\n\t\treturn FALSE\n\treturn TRUE\n'
         self.guard=A.project(guard_source,'/proc/client_completion_guard','src,'+captured,self.env,method=True)
     def run(self):
@@ -142,6 +161,52 @@ class RestingSleep(unittest.TestCase):
                 self.assertTrue(h.run());self.assertEqual(h.world.time,1200)
                 self.assertEqual((actor.started,actor.finished,actor.may_do_after),(1,1,True))
                 self.assertTrue(h.bars[0].deleted)
+    def test_registered_bed_uses_the_actual_protection_policy_for_wait_and_messages(self):
+        cases=(
+            ('Gaia, even if held',dict(map_id='gaia',holder='our-nation'),100,'10 seconds',False),
+            ('unheld province',dict(),100,'10 seconds',False),
+            ('foreign province',dict(holder='foreign-nation'),100,'10 seconds',False),
+            ('no faction',dict(holder='our-nation',faction='none'),100,'10 seconds',False),
+            ('faction-held',dict(holder='our-faction',nation='our-faction'),1200,'two minutes',True),
+            ('nation-held',dict(holder='our-nation'),1200,'two minutes',True),
+            ('own island',dict(island='our-faction'),1200,'two minutes',True),
+            ('foreign island',dict(island='foreign-faction'),100,'10 seconds',False),
+        )
+        for bridge,(label,kw,delay,timing,protected) in itertools.product((False,True),cases):
+            with self.subTest(bridge=bridge,region=label):
+                actor=Actor(True);h=Harness(actor,bridge,registered=True,**kw)
+                self.assertTrue(h.run())
+                self.assertEqual(h.wait_calls[0][0][1],delay)
+                self.assertEqual(h.world.time,delay)
+                self.assertIn('This takes '+timing+'.',h.prompts[0])
+                self.assertIn('You will start sleeping in '+timing+'.',h.messages)
+                self.assertEqual('still qualifies when you log off' in h.prompts[0],protected)
+
+    def test_registered_wait_stays_fixed_when_ownership_flips(self):
+        for holder,flip,delay in ((None,'our-nation',100),('our-nation',None,1200)):
+            for moment in ('confirm_hook','hook'):
+                with self.subTest(holder=holder,flip=flip,moment=moment):
+                    actor=Actor(True);h=Harness(actor,registered=True,holder=holder)
+                    setattr(h,moment,lambda:setattr(h,'holder',flip))
+                    self.assertTrue(h.run())
+                    self.assertEqual(h.world.time,delay)
+
+    def test_registered_sleep_cannot_use_a_prompt_after_moving_to_another_bed(self):
+        actor=Actor(True);h=Harness(actor,registered=True)
+        def move_to_protected_bed():
+            actor.loc=Turf()
+            h.holder='our-nation'
+        h.confirm_hook=move_to_protected_bed
+        self.assertFalse(h.run())
+        self.assertEqual(h.wait_calls,[])
+        self.assertEqual(h.world.time,0)
+
+    def test_existing_registered_bed_admission_precedes_timer_and_prompt(self):
+        for result in (dict(assigned=True),dict(refusal='The bed is not available.')):
+            h=Harness(Actor(True),registered=True,**result)
+            self.assertFalse(h.run())
+            self.assertEqual((h.prompts,h.wait_calls),([],[]))
+
     def test_all_preexisting_mask_combinations_and_states_are_unchanged(self):
         self.assertEqual(DEFAULT,13);self.assertEqual(PERMISSION,64)
         actor=Actor()
