@@ -304,8 +304,36 @@ var/global/practice_probe_runtime_error = FALSE
 	var/obj/structure/rocket_works/practice/t_rocket = locate() in locate(t_shop[1] + 4, t_shop[2], tz)
 	practice_probe_check("tutorial/rocket_output", t_rocket && t_rocket.output_turf() && t_rocket.allowed(TH))
 	practice_probe_refit(R, TS)
+	var/sx = t_shop[1]
+	var/sy = t_shop[2]
 	text = TS.setup_workshop("sub")
-	practice_probe_check("tutorial/paper_exercise", findtext(text, "paper exercise") && !(locate(/obj/structure) in range(5, locate(t_bay[1] + 6, t_bay[2] + 6, tz))))
+	var/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/sub = locate() in locate(sx + 9, sy + 7, tz)
+	var/frames = 0
+	for (var/turf/T in block(locate(sx + 8, sy + 3, tz), locate(sx + 10, sy + 7, tz)))
+		if (locate(/obj/structure/vehicleparts/frame/ship/steel/submarine/section) in T)
+			frames++
+	practice_probe_check("workshop/submarine_hull", findtext(text, "five-row") && sub && frames == 15 && sub.session == TS && sub.depth_refusal(TRUE))
+	practice_probe_check("workshop/no_restock", isnull(TS.setup_workshop("water")) && TS.props["workshop_kind"] == "sub")
+	practice_probe_refit(R, TS)
+	text = TS.setup_workshop("harbor")
+	practice_probe_check("workshop/harbor_spans", findtext(text, "two-span") && istype(locate(sx + 9, sy + 6, tz), /turf/floor/beach/water/shallowsaltwater) && istype(locate(sx + 10, sy + 6, tz), /turf/floor/beach/water/shallowsaltwater) && (locate(/obj/structure/workshop_machine/pile_driver) in locate(sx + 8, sy + 7, tz)) && (locate(/obj/item/weapon/bridge_span/timber) in range(7, TH)))
+	practice_probe_refit(R, TS)
+	text = TS.setup_workshop("water")
+	practice_probe_check("workshop/aqueduct_stock", findtext(text, "fountain") && istype(locate(sx + 8, sy + 6, tz), /turf/floor/beach/water) && (locate(/obj/item/stack/material/stone) in range(7, TH)))
+	practice_probe_check("workshop/aqueduct_permission", tutorial_waterworks_recipe(TH, "/obj/structure/aqueduct_intake") && tutorial_waterworks_recipe(TH, "/obj/structure/aqueduct/channel") && tutorial_waterworks_recipe(TH, "/obj/structure/sink/aqueduct_fountain") && !tutorial_waterworks_recipe(TH, "/obj/structure/sewer_piece/drain/floor"))
+	practice_probe_refit(R, TS)
+	text = TS.setup_workshop("mech")
+	var/obj/structure/bell/t_bell = locate() in locate(sx + 9, sy + 7, tz)
+	practice_probe_check("workshop/bell_fixture", findtext(text, "ring it") && t_bell && (locate(/obj/item/stack/material/rope) in range(7, TH)))
+	practice_probe_check("workshop/cord_contained", t_bell && tutorial_workshop_pair(TH, TH.loc, t_bell) && !tutorial_workshop_pair(TH, t_bell, locate(TO[1] + 2, TO[2] + 2, tz)))
+	practice_probe_refit(R, TS)
+	text = TS.setup_workshop("station")
+	var/turf/centre = locate(sx + 10, sy + 6, tz)
+	practice_probe_check("workshop/station_stock", findtext(text, "four tiles north") && (locate(/obj/item/habitat_kit/workshop) in range(7, TH)) && (locate(/obj/item/habitat_kit/airlock) in range(7, TH)))
+	practice_probe_check("workshop/station_contained", centre && !habitat_module_refusal(centre, TH) && habitat_module_refusal(locate(sx + 2, sy + 7, tz), TH))
+	var/obj/item/habitat_kit/workshop/kit = locate() in range(7, TH)
+	var/obj/structure/habitat_core/core = centre && kit ? habitat_unfold(centre, kit.kind, kit.core_type) : null
+	practice_probe_check("workshop/station_unfolded", core && core.z == tz && istype(get_turf(core), /turf/floor/habitat))
 	TS.end(null)
 	practice_probe_check("tutorial/room_closes", !R.sessions.len && world.maxz == 1 && !practice_room_z)
 

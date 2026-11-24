@@ -121,14 +121,38 @@ class PracticeRoomSourceTests(unittest.TestCase):
         registry = read('code/modules/naval/draught_kinds.dm')
         workshop = read('code/modules/1713/practice_workshop.dm')
         kinds = set(re.findall(r'^\s+"([A-Z]+)" = list\("name"', registry, re.M))
-        offered = dict(re.findall(r'^\s+"((?:Build|Make|Draw|Plan) [^"]+)" = "([a-z]+)"', workshop, re.M))
+        offered = dict(re.findall(r'^\s+"((?:Build|Make|Assemble|Rig|Unfold) [^"]+)" = "([a-z]+)"', workshop, re.M))
         self.assertEqual(kinds, {('CAR' if key == 'plane' else key.upper()) for key in offered.values()})
-        self.assertEqual({'car', 'plane', 'air', 'train', 'rail', 'rocket', 'ship', 'house'},
-                         {key for label, key in offered.items() if label.startswith(('Build ', 'Make '))})
-        self.assertIn('This is a paper exercise', workshop)
+        self.assertEqual(13, len(offered))
+        self.assertEqual(set(offered.values()), set(re.findall(r'^\s+if \("([a-z]+)"\)', workshop.split('switch (exercise)', 1)[1].split('/proc/practice_workshop_stack', 1)[0], re.M)))
+        self.assertNotIn('This is a paper exercise', workshop)
+        self.assertIn('!owns_workshop(body) || !exercise || props["workshop_kind"]', workshop)
         self.assertIn('owner.sessions["[slot]"] != src', workshop)
         self.assertIn('T.z == practice_room_z', workshop)
         self.assertIn('desk.Adjacent(body) || props["workshop_selected"]', workshop)
+
+    def test_aqueduct_allowance_is_exact_and_private(self):
+        workshop = read('code/modules/1713/practice_workshop.dm')
+        scope = workshop.split('/proc/tutorial_waterworks_recipe', 1)[1].split('/obj/structure/vehicleparts/axis', 1)[0]
+        self.assertIn('P.practice.props["workshop_kind"] == "water" && P.practice.owns_workshop(P)', scope)
+        self.assertEqual({
+            '/obj/structure/aqueduct_intake',
+            '/obj/structure/aqueduct/channel',
+            '/obj/structure/sink/aqueduct_fountain',
+        }, set(re.findall(r'"(/obj/[^"]+)"', scope)))
+
+    def test_practice_submarine_cannot_leave_the_bay(self):
+        workshop = read('code/modules/1713/practice_workshop.dm').split(
+            '/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/assembly_refusal', 1)[1]
+        self.assertIn('S.min_x - 2', workshop)
+        self.assertIn('S.max_x + 2', workshop)
+        self.assertIn('not diving', workshop)
+        self.assertIn('stopmovementloop()', workshop)
+
+    def test_owned_cords_are_checked_before_consuming_stock(self):
+        code = read('code/modules/1713/mechanisms.dm')
+        at_wait = code.split('do_after(user, MECHANISM_TIE_TIME, trigger)', 1)[1].split('\n', 1)[0]
+        self.assertLess(at_wait.index('tutorial_workshop_pair'), at_wait.index('R.use(1)'))
 
     def test_marker_plans_check_private_footprint_before_commit(self):
         for path, handler, commit in (

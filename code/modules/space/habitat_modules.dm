@@ -403,6 +403,8 @@ var/global/list/habitat_cores = list()
 	if (!centre)
 		return "There is no room for a module there."
 	var/r = HABITAT_MODULE_RADIUS
+	if (!tutorial_station_module_site(user, centre, r))
+		return "Keep the entire module inside your practice workshop."
 	if (centre.x - r < 1 || centre.y - r < 1 || centre.x + r > world.maxx || centre.y + r > world.maxy)
 		return "The module would not fit here."
 	if (orbit_world() && !orbit_clear_of_seams(centre, r))
