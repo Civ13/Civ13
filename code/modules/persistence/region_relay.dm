@@ -318,7 +318,7 @@
 	if(region_gateway_here())
 		var/link = region_gateway_overview_link()
 		if(link && !client.gateway_character_lobby && !region_gateway_overview_session(client))
-			to_chat(src, SPAN_NOTICE("Browse the Persistence [link] by connecting through that link."))
+			to_chat(src, SPAN_NOTICE("Browse the [link]."))
 		region_gateway_forward(src)
 	else if(shard_group.relay_on() && shard_group.region == shard_group.gate)
 		region_gate_forward(src)
