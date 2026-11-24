@@ -105,6 +105,69 @@ class BirthChartTravel(unittest.TestCase):
                         admitted.index('peer["birth_chart_records"] == TRUE'))
         self.assertNotIn('refresh_peer', admitted)
 
+    def test_direct_poll_cannot_record_a_reply_from_a_stale_endpoint(self):
+        spec = importlib.util.spec_from_file_location('chart_poll_source_adapter',
+            Path(ROOT) / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        group = read('code/modules/persistence/shard_group.dm')
+        reload = proc(group, '/datum/shard_group/proc/reload_directory')
+        self.assertLess(reload.index('directory_generation++'),
+                        reload.index('address = entry["address"]'))
+        source = group.replace('polls_waiting ? polls_waiting[id] : null',
+                               'polls_waiting.get(id)')
+        source = source.replace(
+            '"byond://[polled_address]?shard_region=1&format=json"',
+            'direct_url(polled_address)').replace(
+            '"byond://[peer_address(peer)]?shard_region=1&format=json"',
+            'direct_url(peer_address(peer))')
+        # Replace only the scheduler wait with a deterministic simulated yield.
+        # The admission and publication logic is projected from poll_peer().
+        wait = '\twhile(!poll.done && world.time < deadline)\n\t\tsleep(1)'
+        self.assertEqual(source.count(wait), 1)
+        source = source.replace(wait, '\tschedule_reply(poll, deadline)')
+
+        class Entry(dict):
+            # A DM list identity comparison does not compare its values.
+            def __ne__(self, other):
+                return self is not other
+
+        for change in ('none', 'address', 'generation', 'entry', 'newer poll'):
+            with self.subTest(change=change):
+                entry = Entry(address='old:1000')
+                recorded = []
+                asked = []
+                waiting = {}
+                replacement = SimpleNamespace(done=False)
+                poll = SimpleNamespace(done=False, answer='capable', ask=asked.append)
+
+                def schedule_reply(pending, deadline):
+                    if change == 'address':
+                        entry['address'] = 'new:1000'
+                    if change == 'generation':
+                        env['directory_generation'] += 2  # moved away and back
+                    if change == 'entry':
+                        env['peers']['land'] = Entry(entry)
+                    if change == 'newer poll':
+                        waiting['land'] = replacement
+                    pending.done = True
+
+                env = dict(peers={'land': entry}, world=SimpleNamespace(time=1),
+                    directory_generation=0, polls_waiting=waiting,
+                    peer_address=lambda peer: peer['address'] if peer else None,
+                    direct_url=lambda endpoint: 'byond://' + endpoint,
+                    new_operation=lambda: poll, SHARD_POLL_TIMEOUT=10,
+                    LAZYSET=lambda mapping, k, v: mapping.__setitem__(k, v),
+                    LAZYREMOVE=lambda mapping, k: mapping.pop(k, None),
+                    log_game=lambda message: None, schedule_reply=schedule_reply,
+                    record=lambda *args: recorded.append(args) or True)
+                actual = adapter.project(source, '/datum/shard_group/proc/poll_peer',
+                                         'id', env)('land')
+                self.assertEqual(asked, ['byond://old:1000'])
+                self.assertEqual(actual, change == 'none')
+                self.assertEqual(recorded, [('land', 'capable', 1)] if change == 'none' else [])
+                self.assertEqual(waiting, {'land': replacement} if change == 'newer poll' else {})
+
     def test_mixed_or_unconfirmed_receiver_never_records_escrow_for_any_passenger(self):
         spec = importlib.util.spec_from_file_location('chart_custody_source_adapter',
             Path(ROOT) / 'tests/save_movement/source_adapter.py')

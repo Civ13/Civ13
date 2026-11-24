@@ -85,6 +85,8 @@ var/global/datum/shard_group/shard_group = new
 	var/doorman_answering = TRUE
 	// region id -> the direct poll still waiting on it (/datum/shard_peer_poll).
 	var/list/polls_waiting = null
+	// Successful reloads invalidate pending polls, including a move away and back.
+	var/directory_generation = 0
 
 /datum/shard_group/New()
 	..()
@@ -213,6 +215,7 @@ var/global/datum/shard_group/shard_group = new
 		seen_addresses += entry["address"]
 	if(!(region in found))
 		return "refused:another_region"
+	directory_generation++
 	for(var/list/entry in regions)
 		if(entry["id"] == region)
 			address = entry["address"]
@@ -228,6 +231,7 @@ var/global/datum/shard_group/shard_group = new
 			// Whatever answered on the old port was another world: ask again.
 			peer["state"] = "UNKNOWN"
 			peer["checked"] = null
+			peer["birth_chart_records"] = FALSE
 	if(istext(settings["mainland"]) && (settings["mainland"] in found))
 		mainland = settings["mainland"]
 	if(istext(settings["start_region"]) && (settings["start_region"] in found))
@@ -478,19 +482,27 @@ var/global/datum/shard_group/shard_group = new
 	var/list/peer = peers[id]
 	if(!peer)
 		return FALSE
+	var/polled_generation = directory_generation
+	var/polled_address = peer_address(peer)
 	var/datum/shard_peer_poll/waiting = polls_waiting ? polls_waiting[id] : null
 	if(waiting && !waiting.done)
 		return FALSE
 	var/datum/shard_peer_poll/poll = new
 	LAZYSET(polls_waiting, id, poll)
-	poll.ask("byond://[peer_address(peer)]?shard_region=1&format=json")
+	poll.ask("byond://[polled_address]?shard_region=1&format=json")
 	var/deadline = world.time + SHARD_POLL_TIMEOUT
 	while(!poll.done && world.time < deadline)
 		sleep(1)
 	if(!poll.done)
 		log_game("Region group: [id] did not answer a direct poll within [SHARD_POLL_TIMEOUT / 10] seconds; it keeps its last state.")
 		return FALSE
+	// Another poll may have replaced this completed one before we resumed.
+	if(!polls_waiting || polls_waiting[id] != poll)
+		return FALSE
 	LAZYREMOVE(polls_waiting, id)
+	var/list/current = peers[id]
+	if(current != peer || directory_generation != polled_generation || peer_address(current) != polled_address)
+		return FALSE
 	return record(id, poll.answer, world.time)
 
 // Only a fresh, identity-matched answer from the actual receiving world can
