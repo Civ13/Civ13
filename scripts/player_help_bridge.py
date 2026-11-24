@@ -115,10 +115,10 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '3ec9b4a2e1a0757873a789f5fb678529d6c694c6'
+WIKI_REVIEWED_REVISION = '448224dddc750090a7bad3054088f3e62a7de572'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
-    'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
+    'guides/Guide_to_Character.md': ('fb56f2f26a6d654a671e73447354e8d46b5397bd967a6c7421f50b4fd8151d0b', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('ec8abe24ffa48f2ac1f8a9d4ced3389392fcc46760acc24ddd7bf6195bcc096f', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
     'guides/Guide_to_Chemistry.md': ('65dc1c21ac2f90de29fbd4f8e6e387336ad03d5fe0d6fcd90d6bd6f96e721da0', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
@@ -190,7 +190,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Amalgamation.md': ('c6e59ac3698ec0e0e9fd671045c1cb68b981941f4f9fcd4fe4ca8901f877e937', 'amalgamation amalgam mercury gold silver ore recovery retort patio'),
     'guides/Guide_to_Armor.md': ('f1024c2c3032cbdbad66acae9a3fb5f05f4db9ba57cabbeffde1210e58dccc85', 'armor armour protection helmet cuirass plate mail chainmail shield padded gambeson body armor bullet proof vest dayfield layering'),
     'guides/Guide_to_Chat.md': ('88cdb4f258921f70eb5de9ce6e4337106ec948ad706c5c780bf46b7f66a6ef21', 'chat window tabs tab filter translate translation translated language ooc looc repeated messages history connection lost ghost ears'),
-    'guides/Guide_to_Factions.md': ('f4e36378a4f41227009573bfbae031dd7e9c3a70d463beaf35a84abc476b61c7', 'faction factions province provinces claim territory stake resident hall leader officer office recruit recruitment station island border visitor pass nation vassal siege war banner defence window sleep protection treasury tax'),
+    'guides/Guide_to_Factions.md': ('b7082ff99f8204dd20059434dd1c2544d986914bb2df64c945bdc3e80eb806c8', 'faction factions province provinces claim territory stake resident hall leader officer office recruit recruitment station island border visitor pass nation vassal siege war banner defence window sleep protection treasury tax'),
     'guides/Guide_to_Companies.md': ('57a38cc569849f5de5abb969a55f1fc1a74672390b3feb8da20383c6a4babcbd', 'company companies stock market shares shareholder stall stalls profits dividend business'),
     'guides/Guide_to_Computers.md': ('18a43fae4409a102f307b90632d49c701f707afbc464769cc003a1e1197515d0', 'computer computers minicomputer processor tape drive diskette terminal files program unga os electronic computing'),
     'guides/Guide_to_Electroplating.md': ('cb4d98759963fa316d4de487a7061b7cbf0b1a99255cfb2c3c8a53bea46230e2', 'electroplating plating plated gilding silver gold nickel chrome bath anode'),
@@ -215,7 +215,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Rockets.md': ('e3e66eecff3f412017c15c5d1c98d3b7d28c79878b9b29dbf9cdf4c12124287d', 'rocket rockets rocketry launch planner stage stages booster boosters capsule heat shield parachutes rocket works launch stand cargo bay probe lunar probe delta-v reuse wear inspect overhaul'),
     'guides/Guide_to_Tool_Materials.md': ('a9db37d2271c7bb2c6721c3fa7f1885c772e932454ba18de50bfe03307a5db27', 'tool tools material materials copper bronze iron steel pickaxe shovel hatchet sickle hoe wear durability machine parts lathe pipes cannon barrels sparks'),
     'guides/Guide_to_Trapping.md': ('cb69900d9bdc5cb81f6c47ab82fbf9320c7c86f89a0bc08441a67e4fb02bd4fc', 'trapping trap traps snare snares deadfall fish weir pit trap rabbit fox catch'),
-    'guides/Guide_to_Travel.md': ('bffeb4b02d999151bdd9e225e8dbe85d050159fed08318c34ad6bbb61663bb97', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
+    'guides/Guide_to_Travel.md': ('4a209fd4317571fbacbbd0118bb44c25d2c965bea24ae99a93c148cd1556b671', 'travel travelling trail trails land lands neighbouring walk walking edge leave home land party train rail yard freight raid worlds server'),
     'guides/Guide_to_Tribal_Life.md': ('9850870389868ec34eba898d67ed6bf2be045873230a5ae3f9dadb0e2f9f7a2c', 'tribe tribal totem pole deeds burial mound cairn feast feasts barter music'),
     'guides/Guide_to_the_Moon.md': ('417a712be4aa2c41f5cf78f776ba2b00ea33b5ffbb11ab43a331311c45d44e70', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
     'guides/Guide_to_Crafting.md': ('7befe794ff9dbe2c36dbb2cf5e02ac25c0071d16dd7a9c5abc9b21d7a0e800aa', 'crafting craft recipes workbench materials items make build vehicle designer'),
