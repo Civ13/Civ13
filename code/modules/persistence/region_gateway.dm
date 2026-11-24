@@ -140,7 +140,7 @@
 // kind is "current", "switch", "wait" or "locked". tabs is ready-made markup
 // placed above the heading.
 /proc/region_gateway_roster_page(list/rows, tabs = "")
-	var/list/cards = list("<html><head><title>Characters</title>[region_gateway_style()]</head><body><div class='gw'>[tabs]<div class='gw-eyebrow'>Private &middot; your account</div><h1>Your characters</h1><p class='gw-lede'>Choose who to continue as. Nobody wakes up here: each character stays asleep in their own land until you arrive.</p>")
+	var/list/cards = list("<html><head><title>Characters</title>[region_gateway_style()]</head><body><div class='gw'>[tabs]<div class='gw-eyebrow'>Private &middot; your account</div><h1>Your characters</h1><p class='gw-lede'>Choose a character to continue.</p>")
 	for(var/list/row in rows)
 		var/slot = row[1]
 		var/pill = ""
