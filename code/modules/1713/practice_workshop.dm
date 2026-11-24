@@ -84,6 +84,28 @@
 		return TRUE
 	return tutorial_workshop_access(H, source) && tutorial_workshop_access(H, target)
 
+// The first workshop is sealed. Check the supplied site, the airlock kit,
+// and its clear southward exit before and after the construction wait.
+/proc/tutorial_station_kit_refusal(mob/user, obj/item/habitat_kit/kit, turf/centre, spacing, radius)
+	if (!tutorial_region_here() || !istype(kit, /obj/item/habitat_kit/workshop))
+		return null
+	var/mob/living/human/practice/P = user
+	if (!istype(P) || !P.practice || P.practice.props["workshop_kind"] != "station")
+		return null
+	if (P.get_active_hand() != kit || !istype(P.get_inactive_hand(), /obj/item/habitat_kit/airlock))
+		return "Hold an airlock kit in your other hand before unfolding the workshop, so you can open a way out."
+	var/list/paved = P.practice.props["paved"]
+	if (!P.practice.owner || !paved || !centre || centre != get_turf(P) || centre != locate(paved[1] + 10, paved[2] + 10, P.practice.owner.room_z()))
+		return "Stand three tiles east of the marker to unfold the practice workshop."
+	var/turf/airlock_site = locate(centre.x, centre.y - spacing, centre.z)
+	var/turf/exit = locate(centre.x, centre.y - spacing - radius - 1, centre.z)
+	if (!airlock_site || !exit || !P.practice.owns_rect(exit, paved) || exit.density || istype(exit, /turf/floor/habitat) || habitat_module_refusal(airlock_site, P))
+		return "Keep the ground south of the workshop clear for the airlock and its exit."
+	for (var/atom/movable/A in exit)
+		if (A.density)
+			return "Keep the ground south of the workshop clear for the airlock and its exit."
+	return null
+
 /proc/draught_age_available(mob/living/human/H, age)
 	return (map && map.ordinal_age >= age) || tutorial_workshop_access(H, H)
 
@@ -243,11 +265,11 @@
 			new /obj/structure/bell(locate(px + 9, py + 7, z))
 			. += " Draw a lever and bell with a cord between them. Build the lever from the supplied wood within seven tiles of the actual bell, use rope on the lever to tie it to the bell, then throw the lever to ring it."
 		if ("station")
-			new /obj/effect/practice_marker(locate(px + 7, py + 6, z))
+			new /obj/effect/practice_marker(locate(px + 7, py + 10, z))
 			new /obj/item/habitat_kit/workshop(supply[3])
 			new /obj/item/habitat_kit/airlock(supply[4])
 			new /obj/item/habitat_kit/airlock(supply[4])
-			. += " Draw a command module with a keel airlock at one end and a docking airlock at the other. Unfold the workshop three tiles east of the marker, then unfold one airlock four tiles north and one four tiles south. This practice build does not allocate orbit, launch, or install a live docking port."
+			. += " Draw a command module with a keel airlock at one end and a docking airlock at the other. Hold an airlock kit in one hand and the workshop kit in the other. Unfold the workshop three tiles east of the marker. Inside, step one tile south of its core, swap hands, and unfold the airlock. Open the connecting hatch and outer hatch to leave, then fetch the second airlock and unfold it four tiles north of the workshop. Open its outer hatch and step north to leave. This practice build does not allocate orbit, launch, or install a live docking port."
 
 
 /proc/practice_workshop_stack(turf/T, path, count)
