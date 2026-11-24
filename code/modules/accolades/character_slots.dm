@@ -366,20 +366,15 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 // Text only, placed in the private window after exact slot ownership and
 // unique local body checks. Never publishes location or condition to a peer.
 /proc/character_local_body_summary(mob/living/human/H)
-	var/list/details = list()
 	if(H.stat == DEAD)
-		details += "Dead in this land."
-	else if(H.inducedSSD && H.sleeping > 0)
-		details += "Sleeping in this land."
-	else
-		details += "Awake in this land."
-	if(!islist(H.stats))
-		return jointext(details, " · ")
-	for(var/stat_name in list("strength", "dexterity", "stamina", "crafting", "medical", "philosophy", "farming"))
-		var/list/stat_data = H.stats[stat_name]
-		if(islist(stat_data) && length(stat_data) && isnum(stat_data[1]))
-			details += "[capitalize(stat_name)] [round(stat_data[1], 0.1)]"
-	return jointext(details, " · ")
+		return "Dead in this land."
+	if(H.inducedSSD && H.sleeping > 0)
+		return "Asleep in this land."
+	return "Awake in this land."
+
+// The base skills the picker lists, in its order.
+/proc/character_local_body_skills()
+	return list("strength", "dexterity", "stamina", "crafting", "medical", "philosophy", "farming")
 
 /client/proc/open_character_sleep_picker()
 	var/mob/living/human/H = character_lobby_sleep_body(src)
@@ -444,7 +439,7 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 	if(sleep_picker_body && (sleep_picker_body != user || character_lobby_sleep_body(owner) != user))
 		return
 	var/list/sections = sleep_picker_body ? sleep_picker_sections() : window_sections()
-	open_panel(user, sleep_picker_body ? "Sleeping Characters" : "Characters", 640, 700, sections, ui_key = ui_key, ui = ui, force_open = force_open, state = /datum/topic_state/character_slots)
+	open_panel(user, sleep_picker_body ? "Sleeping Characters" : "Characters", sleep_picker_body ? 560 : 640, 700, sections, ui_key = ui_key, ui = ui, force_open = force_open, state = /datum/topic_state/character_slots)
 
 // The panel (designed by Fable): the balance and who is played now, then one
 // line per slot with its state, its button and why a disabled button is
@@ -559,23 +554,42 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 			ambiguous["[slot]"] = TRUE
 		else
 			bodies["[slot]"] = H
+	// The picker (designed by Fable): who can be played from this bed and the
+	// one button that does it, then the local bodies' skills side by side.
 	var/list/items = list()
+	var/list/columns = list("Skill")
+	var/list/shown = list()
 	for(var/slot = 1 to character_slots_max)
 		if(!character_slot_open(state, slot) || (slot > 1 && !character_slots_verified(C)))
 			continue
 		var/mob/living/human/H = ambiguous["[slot]"] ? null : bodies["[slot]"]
 		var/name = H ? H.real_name : (islist(names["[slot]"]) ? names["[slot]"][1] : null)
-		var/detail = H ? character_local_body_summary(H) : "No unique local body confirmed. Check the gateway lobby."
+		var/detail = H ? character_local_body_summary(H) : "Not found in this land. The character lobby can take you to them."
 		var/list/buttons
 		if(slot == C.character_slot)
-			buttons = list(panel_button("Wake this character", "wake_local", disabled = sleep_picker_body.character_picker_waking))
-		items += list(panel_item("Character [slot][name ? " - [name]" : ""]", detail, buttons))
+			if(sleep_picker_body.character_picker_waking)
+				detail = "Waking up. This takes 30 seconds."
+			buttons = list(panel_button("Wake up", "wake_local", disabled = sleep_picker_body.character_picker_waking))
+		items += list(panel_item("Slot [slot][name ? " - [name]" : ""]", detail, buttons))
+		if(H && islist(H.stats))
+			columns += "[name ? name : "Slot [slot]"]"
+			shown += H
 	var/refusal = character_lobby_departure_refusal(C)
-	var/list/notes = list("Your body stays in its bed. Wake it here, or open the gateway lobby to select another character.")
+	var/list/notes = list("Your character stays asleep in their bed. Wake up here, or open the character lobby to continue as someone else.")
 	if(refusal)
 		notes += refusal
-	return list(panel_section("While you sleep", notes = notes, items = items,
-		buttons = list(panel_button("Open gateway lobby", "gateway_roster", disabled = !!refusal))))
+	var/list/sections = list(panel_section("While you sleep", notes = notes, items = items,
+		buttons = list(panel_button("Open the character lobby", "gateway_roster", disabled = !!refusal))))
+	if(shown.len)
+		var/list/rows = list()
+		for(var/stat_name in character_local_body_skills())
+			var/list/row = list(capitalize(stat_name))
+			for(var/mob/living/human/H in shown)
+				var/list/stat_data = H.stats[stat_name]
+				row += (islist(stat_data) && length(stat_data) && isnum(stat_data[1])) ? "[round(stat_data[1], 0.1)]" : "-"
+			rows += list(row)
+		sections += list(panel_section("Skills", table = panel_table(columns, rows)))
+	return sections
 
 /datum/character_slot_window/ui_act(action, list/params, mob/user, datum/nanoui/ui)
 	if(!owner || !user || user.client != owner)

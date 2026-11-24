@@ -109,6 +109,62 @@
 	var/account = accolade_client_ckey(C)
 	return region_home_enabled() && account && C.character_slot == C.gateway_expected_slot && region_gateway_active_slot(C, character_slot_state(account)) == C.gateway_expected_slot
 
+// The look of the gateway's own windows (layout and palette by Fable): the
+// house browns of the panel windows, one card per choice, one button per card.
+/proc/region_gateway_style()
+	return {"<meta charset='utf-8'><style>
+		html,body{margin:0;padding:0;background:#211c16;color:#eee5d3;font-family:Verdana,Geneva,sans-serif;font-size:13px;line-height:1.45}
+		.gw{padding:14px 16px 18px}
+		.gw-eyebrow{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#c9a25c}
+		.gw h1{font-family:Georgia,'Times New Roman',serif;font-weight:normal;font-size:26px;line-height:1.15;color:#f6ecd6;margin:2px 0}
+		.gw-lede{color:#bfae96;margin:0 0 12px}
+		.gw-card{display:flex;align-items:center;gap:12px;background:#30271e;border:1px solid #66513b;border-left:3px solid #66513b;border-radius:4px;padding:10px 12px;margin:0 0 8px}
+		.gw-card.gw-current{border-left-color:#6caa68;background:#342b20}
+		.gw-who{flex:1 1 auto;min-width:0}
+		.gw-slot{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#bfae96}
+		.gw-name{font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.25;color:#f6ecd6;overflow-wrap:anywhere}
+		.gw-detail{color:#bfae96;font-size:12px;margin-top:2px}
+		.gw-pill{display:inline-block;vertical-align:middle;margin-left:8px;border:1px solid #66513b;border-radius:10px;padding:0 8px;font-family:Verdana,Geneva,sans-serif;font-size:11px;line-height:17px;color:#c9b9a0;background:#443623}
+		.gw-pill.gw-good{border-color:#6caa68;color:#c4e8c0;background:#253b25}
+		.gw-pill.gw-info{border-color:#6fb3e0;color:#cfe6f7;background:#1f3342}
+		.gw-pill.gw-warn{border-color:#c77a39;color:#f3c79a;background:#3d2a18}
+		a.gw-btn{flex:0 0 auto;display:inline-block;border:1px solid #b48c4d;border-radius:3px;padding:6px 14px;color:#f3e2bd;text-decoration:none;white-space:nowrap;cursor:pointer}
+		a.gw-btn:hover{background:#443623}
+		a.gw-btn.gw-main{background:#b48c4d;color:#1c160f;font-weight:bold}
+		a.gw-btn.gw-main:hover{background:#c9a25c}
+		.gw-note{color:#a99b87;font-size:11.5px;margin:10px 2px 0}
+		.gw-note a{color:#9ed2ff}
+		</style>"}
+
+// One page of character cards. A row is list(slot, safe name, kind), where
+// kind is "current", "switch", "wait" or "locked". tabs is ready-made markup
+// placed above the heading.
+/proc/region_gateway_roster_page(list/rows, tabs = "")
+	var/list/cards = list("<html><head><title>Characters</title>[region_gateway_style()]</head><body><div class='gw'>[tabs]<div class='gw-eyebrow'>Private &middot; your account</div><h1>Your characters</h1><p class='gw-lede'>Choose who to continue as. Nobody wakes up here: each character stays asleep in their own land until you arrive.</p>")
+	for(var/list/row in rows)
+		var/slot = row[1]
+		var/pill = ""
+		var/detail = ""
+		var/button = ""
+		switch(row[3])
+			if("current")
+				pill = "<span class='gw-pill gw-good'>Current</span>"
+				detail = "The character you last played."
+				button = "<a class='gw-btn gw-main' href='byond://?gateway_character_slot=[slot]'>Continue</a>"
+			if("switch")
+				pill = "<span class='gw-pill gw-info'>Can switch</span>"
+				detail = "Takes you to your current character's land, where the switch is checked."
+				button = "<a class='gw-btn' href='byond://?gateway_character_slot=[slot]'>Switch</a>"
+			if("wait")
+				pill = "<span class='gw-pill gw-warn'>Resting</span>"
+				detail = "Not ready to play again yet. Your current land's Characters window shows the time left."
+			else
+				pill = "<span class='gw-pill'>Locked</span>"
+				detail = "Verify your account to play this character."
+		cards += "<div class='gw-card[row[3] == "current" ? " gw-current" : ""]'><div class='gw-who'><div class='gw-slot'>Slot [slot]</div><div class='gw-name'>[row[2]][pill]</div><div class='gw-detail'>[detail]</div></div>[button]</div>"
+	cards += "<p class='gw-note'>New characters are made with Join in the land itself, not here.[region_gateway_practice_link()]</p></div></body></html>"
+	return jointext(cards, "")
+
 /proc/region_gateway_show_roster(mob/new_player/lobby)
 	var/client/C = lobby?.client
 	if(!C || C.mob != lobby || !region_gateway_roster_enabled(C))
@@ -117,24 +173,21 @@
 	var/list/state = character_slot_state(account)
 	var/active = region_gateway_active_slot(C, state)
 	var/list/names = state["names"]
-	var/list/cards = list("<html><head><title>Characters</title></head><body>[region_gateway_tabs(C)]<h2>Your characters</h2><p>Choose how to continue. You can only switch after the land you are leaving checks your current character. No body wakes up on the gateway.</p>")
+	var/list/rows = list()
 	for(var/slot = 1 to character_slots_max)
 		if(slot != active && !character_slot_open(state, slot))
 			continue
 		var/list/entry = names["[slot]"]
 		var/name = islist(entry) && istext(entry[1]) ? html_encode(entry[1]) : "Character [slot]"
-		var/action = ""
+		var/kind = "locked"
 		if(slot == active)
-			action = "Current character. <a href='byond://?gateway_character_slot=[slot]'>Continue to their land</a>."
+			kind = "current"
 		else if(character_slot_return_wait(state, slot))
-			action = "Not ready to play again yet. Check the switch cooldown in your current land."
+			kind = "wait"
 		else if(region_gateway_roster_choice_allowed(C, state, slot))
-			action = "Another slot. <a href='byond://?gateway_character_slot=[slot]'>Switch on your current land</a>."
-		else
-			action = "Unavailable until you verify your account."
-		cards += "<h3>Slot [slot]: [name]</h3><p>[action]</p>"
-	cards += "<p>New characters are created through Join at the destination, not here.[region_gateway_practice_link()]</p></body></html>"
-	show_browse(C, jointext(cards, ""), "window=gateway_characters;size=510x430")
+			kind = "switch"
+		rows += list(list(slot, name, kind))
+	show_browse(C, region_gateway_roster_page(rows, region_gateway_tabs(C)), "window=gateway_characters;size=560x560")
 	return TRUE
 
 /proc/region_gateway_choose_character(mob/new_player/lobby, slot)
