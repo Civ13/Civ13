@@ -31,14 +31,14 @@ helpers are in `code/modules/persistence/player_reclaim.dm`.
 
 Completing Sleep in a valid assigned bed opens a private character picker.
 Reconnecting to that sleeper also opens it, after the usual saved-body
-ownership checks. Wake this character uses the usual 30-second Wake Up action;
+ownership checks. Its Wake up button uses the usual 30-second Wake Up action;
 opening the lobby does not wake, move, or protect a body. A normal awake
 reconnect still returns directly to the character.
 
-The picker shows the account's slots and a short status and base-stat summary
-for a uniquely identified local body. The optional gateway lobby lists the
-account's known names and slots without claiming a body. Use **Continue to
-their land** to route the active slot. The destination still checks admission;
+The picker shows the account's slots with a short status, and a Skills table
+of base stats for each uniquely identified local body. The optional gateway lobby lists the
+account's known names and slots without claiming a body. Use **Continue**
+on the current character's card to route the active slot. The destination still checks admission;
 an unavailable or travelling home does not send this choice to a substitute
 region. Opening the lobby from a bed does not bypass injury, restraint,
 warrant, jail, or save/recovery checks.
