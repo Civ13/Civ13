@@ -709,3 +709,11 @@ FACTORY: resin printed bearing|/obj/item/machine_part/bearing/printed|1|/obj/ite
 FACTORY: resin printed spring|/obj/item/machine_part/spring/printed|1|/obj/item/stack/photopolymer=1|30|4|additive_manufacturing
 FACTORY: resin printed chess set|/obj/item/game_board/chess|1|/obj/item/stack/photopolymer=2|60|4|additive_manufacturing
 FACTORY: resin printed dice|/obj/item/weapon/dice/d20|3|/obj/item/stack/photopolymer=1|20|4|additive_manufacturing
+
+// Industrial plastics: fitted tool and packaging dies are built into the dedicated molder.
+FACTORY: Extrusion - plastic sheet|/obj/item/stack/material/plastic|1|/obj/item/stack/polymer_pellets=1|30|1|industrial_plastics
+FACTORY: Injection - plastic tool handle|/obj/item/weapon/material/handle/molded|1|/obj/item/stack/polymer_pellets=2|40|1|industrial_plastics
+FACTORY: Injection - plastic comb|/obj/item/weapon/haircomb|1|/obj/item/stack/polymer_pellets=1|30|1|industrial_plastics
+FACTORY: Blow molding - empty plastic bottle|/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic|1|/obj/item/stack/polymer_pellets=1|30|1|industrial_plastics
+FACTORY: Blow molding - plastic play ball|/obj/item/weapon/basketball/plastic|1|/obj/item/stack/polymer_pellets=1|40|1|industrial_plastics
+FACTORY: Film forming - plastic bag|/obj/item/weapon/storage/bag/plasticbag|1|/obj/item/stack/polymer_pellets=1|30|1|industrial_plastics
