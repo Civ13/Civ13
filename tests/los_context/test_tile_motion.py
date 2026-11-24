@@ -44,6 +44,7 @@ class TileMotion(unittest.TestCase):
         owner.los_note_mover=lambda m:owner.noted.append(m)
         context=N(body=actor,owner=owner,retired=False,movement_turf=tile,movement_bucket='0,0',viewport_radii=lambda:P.DMList([7,7]))
         actor.client=owner;owner.los_context=context
+        actor.reconcile_laddervision=lambda:None
         geometry=P.projected_geometry()
         blocked=P.project(CORE,'/proc/los_target_blocked(',geometry)
         clients=[owner];contexts=Contexts([context])
@@ -206,7 +207,7 @@ class TileMotion(unittest.TestCase):
             s=self.scene(source,real_invalidation=True)
             other=s.clients[1];body=other.los_context.body
             vars(body).update(human=True,mob=True,opacity=False,loc=Tile(1),
-                step_x=0,step_y=0,client=other)
+                step_x=0,step_y=0,client=other,reconcile_laddervision=lambda:None)
             vars(other.los_context).update(retired=False,movement_turf=body.loc,movement_bucket='0,0')
             s.owner.los_dirty=True
             # 1px pulses stay inside one half-tile eye step.

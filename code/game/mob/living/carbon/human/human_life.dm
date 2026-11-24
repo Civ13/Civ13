@@ -1419,6 +1419,8 @@
 	if (client)
 		client.screen.Remove(global_hud.blurry, global_hud.druggy, global_hud.vimpaired, global_hud.darkMask, global_hud.nvg, global_hud.thermal)
 
+	if (laddervision)
+		reconcile_laddervision()
 	if (!laddervision)
 		if (using_object)
 			var/viewflags = using_object.check_eye(src)

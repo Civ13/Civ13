@@ -30,15 +30,22 @@ class LadderViewTests(unittest.TestCase):
                               'src, dropping, user', self.env)
         body = extract(source, '/mob/living/human/proc/update_laddervision')
         body = re.sub(r'(?<![\w.])client\b', 'src.client', body)
-        body = re.sub(r'(?<![\w.])laddervision\b', 'src.laddervision', body)
+        body = self.bind_ladder_fields(body)
         self.update = project('/update(ladder)\n' + body + '\n', '/update', 'src, ladder',
                               dict(istype=lambda value: isinstance(value, Ladder),
                                    EYE_PERSPECTIVE='eye', MOB_PERSPECTIVE='mob'))
+
+    @staticmethod
+    def bind_ladder_fields(body):
+        return re.sub(r'(?<![\w.])(z|laddervision|laddervision_origin_z|update_laddervision)\b',
+                      r'src.\1', body)
 
     def human(self, connected=True):
         human = Human()
         human.client = SimpleNamespace(perspective='mob', eye=human) if connected else None
         human.laddervision = None
+        human.z = 1
+        human.laddervision_origin_z = 0
         human.update_laddervision = lambda ladder: self.update(human, ladder)
         return human
 
@@ -70,6 +77,36 @@ class LadderViewTests(unittest.TestCase):
                 self.env['do_after'] = wait
                 self.action(ladder, actor, actor)
                 self.assertIsNot(actor.laddervision, peer)
+
+    def test_forced_floor_move_drops_only_ladder_owned_eye(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        body = self.bind_ladder_fields(extract(source, '/mob/living/human/proc/reconcile_laddervision'))
+        body = re.sub(r'(?<![\w.])client\b', 'src.client', body)
+        reconcile = project('/reconcile()\n' + body + '\n', '/reconcile', 'src', self.env)
+        for replacement in (False, True):
+            actor, peer = self.human(), Ladder()
+            self.update(actor, peer)
+            reconcile(actor)
+            self.assertIs(actor.client.eye, peer)
+            actor.z = 2
+            wanted = object() if replacement else actor
+            if replacement:
+                actor.client.eye = wanted
+            reconcile(actor)
+            self.assertIsNone(actor.laddervision)
+            self.assertEqual(actor.laddervision_origin_z, 0)
+            self.assertIs(actor.client.eye, wanted)
+            self.assertEqual(actor.client.perspective, 'eye' if replacement else 'mob')
+
+    def test_movement_reconciles_ladder_before_destination_los(self):
+        lifecycle = (ROOT / 'code/modules/visibility/los_lifecycle.dm').read_text(encoding='utf-8')
+        move = extract(lifecycle, '/proc/los_refresh_moved_viewer')
+        self.assertLess(move.index('H.reconcile_laddervision()'), move.index('H.client.reconcile_geometric_los()'))
+        for path, name in [('code/game/atoms_movable.dm', 'forceMove'),
+                           ('code/game/atoms_movable.dm', 'persistence_set_loc')]:
+            source = (ROOT / path).read_text(encoding='utf-8')
+            body = extract(source, f'/atom/movable/proc/{name}', defines={'CIV13_ROOT_TREE_PRESENTATION': True})
+            self.assertLess(body.index('loc = destination'), body.index('los_refresh_moved_viewer'))
 
     def test_clientless_clear_still_resets_state(self):
         actor = self.human(connected=False)
