@@ -128,7 +128,11 @@ class PracticeRoomSourceTests(unittest.TestCase):
         self.assertIn('This is a paper exercise', workshop)
         self.assertIn('owner.sessions["[slot]"] != src', workshop)
         self.assertIn('T.z == practice_room_z', workshop)
-        self.assertIn('desk.Adjacent(body) || props["workshop_selected"]', workshop)
+        # A stale menu cannot clear a hall that changed while it was open.
+        self.assertIn('desk.Adjacent(body) || props["workshop_selected"] != current', workshop)
+        clear = workshop.split('/datum/practice_session/proc/clear_workshop(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('AM == desk || AM == body', clear)
+        self.assertIn('props["shop"]', clear)
 
     def test_marker_plans_check_private_footprint_before_commit(self):
         for path, handler, commit in (

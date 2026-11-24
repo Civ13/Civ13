@@ -19,6 +19,6 @@ reopening a room replaces its turfs, the last player out removes the level, the 
 (hand-made group) refuses Join, returns players to the mainland, builds its own larger room
 (four spaces on one corridor line, every prop reachable on foot, the exit off the path, the
 workshop private to its trainee, and the press, airship, train, ship and rocket exercises
-fitting inside the building bay), holds 24 rooms on its 253 x 69 map, and other regions' lobbies send players there only while it is up, the save hook removes the level without
+fitting inside the building bay, and the desk clearing the hall for another exercise), holds 24 rooms on its 253 x 69 map, and other regions' lobbies send players there only while it is up, the save hook removes the level without
 stale turf registrations, and the level can be added again. No client joins: the
 lobby link, key transfer, HUD clicks and step messages are not driven.

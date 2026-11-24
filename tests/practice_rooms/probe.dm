@@ -306,6 +306,19 @@ var/global/practice_probe_runtime_error = FALSE
 	practice_probe_refit(R, TS)
 	text = TS.setup_workshop("sub")
 	practice_probe_check("tutorial/paper_exercise", findtext(text, "paper exercise") && !(locate(/obj/structure) in range(5, locate(t_bay[1] + 6, t_bay[2] + 6, tz))))
+	// Switching at the desk empties the hall and lays the next exercise out.
+	practice_probe_refit(R, TS)
+	t_desk = TS.props["workshop_desk"]
+	TS.setup_workshop("ship")
+	TS.props["workshop_selected"] = "Build a small ship"
+	var/turf/t_pool = locate(t_shop[1] + 8, t_shop[2] + 9, tz)
+	var/was_pool = istype(t_pool, /turf/floor/beach/water)
+	TS.clear_workshop(t_desk)
+	t_pool = locate(t_shop[1] + 8, t_shop[2] + 9, tz)
+	practice_probe_check("tutorial/switch_clears_hall", was_pool && istype(t_pool, /turf/floor/plating/concrete) && !TS.props["workshop_selected"] && !QDELETED(t_desk) && !QDELETED(TH) && TS.owns_workshop(TH) && !(locate(/obj/structure/slipway) in locate(t_shop[1] + 10, t_shop[2], tz)) && !(locate(/obj/item) in range(3, locate(t_shop[1] + 2, t_shop[2] + 3, tz))) && istype(locate(t_shop[1] + 2, t_shop[2] + 3, tz), /turf/floor/wood))
+	TS.setup_workshop("train")
+	t_works = locate() in locate(t_bay[1], t_shop[2] + 9, tz)
+	practice_probe_check("tutorial/switch_sets_up_next", t_works && rail_straight_along(t_works.centre(), WEST) && (locate(/obj/item/ship_draught) in locate(t_shop[1] + 1, t_shop[2] + 2, tz)))
 	TS.end(null)
 	practice_probe_check("tutorial/room_closes", !R.sessions.len && world.maxz == 1 && !practice_room_z)
 

@@ -84,18 +84,19 @@ through four spaces joined by doors on one line:
 
 ![The tutorial region's room](images/practice-rooms/tutorial-room.png)
 
-A source render of one built room (walls draw black; the two green glows are
-the walk marker and the exit marker). [The hall fitted out for each built
-exercise](images/practice-rooms/tutorial-room-exercises.png): empty, press,
-airship yard, train, ship and house, top to bottom.
+A source render of one trainee's whole room (walls draw black; the two green
+glows are the walk marker and the exit marker). Each trainee has one such room
+with one workshop hall. [The same hall as the desk fits it out for each built
+exercise](images/practice-rooms/tutorial-room-exercises.png).
 
 ### Workshop and extra lessons
 
 The workshop desk sets up one exercise in the trainee's private hall and lays
 blank draughts, a pencil and that exercise's materials on the office floor
 south of the desk. Use the ordinary designer, check the drawing, and save it
-to the sheet. To try a different lesson or get fresh stock, leave and open a
-new room.
+to the sheet. To try a different lesson or get fresh stock, use the desk
+again: choosing an exercise clears the hall, with everything built or left in
+it, and lays out a fresh kit. What the trainee carries stays with them.
 
 - **Build here:** cars, tanks and planes use a stocked press in the south of
   the hall and airships a stocked yard; both build on the bay to their

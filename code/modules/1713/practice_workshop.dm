@@ -68,9 +68,6 @@
 /datum/practice_session/proc/choose_workshop(obj/structure/practice_workshop_desk/desk)
 	if (!tutorial_workshop_access(body, desk) || !desk.Adjacent(body))
 		return
-	if (props["workshop_selected"])
-		to_chat(body, SPAN_NOTICE("[props["workshop_selected"]] is set up. To clear it and get a fresh kit, leave and open another practice room."))
-		return
 	var/list/exercises = list(
 		"Build a car or tank" = "car",
 		"Build a plane" = "plane",
@@ -87,11 +84,36 @@
 		"Plan a space station" = "station",
 	)
 	var/client/connection = body.client
-	var/choice = WWinput(body, "Choose an exercise. This workshop is yours alone. Only exercises marked Build or Make include physical construction; the others use the same designers as the live game.", desk.name, "Cancel", exercises + list("Cancel"))
-	if (!exercises[choice] || !connection || body?.client != connection || connection.mob != body || !tutorial_workshop_access(body, desk) || !desk.Adjacent(body) || props["workshop_selected"])
+	var/current = props["workshop_selected"]
+	var/choice = WWinput(body, "[current ? "\"[current]\" is set up. Choosing an exercise now clears the hall, with everything drawn, built or left in it, and lays out a fresh kit." : "Choose an exercise. This workshop is yours alone, and you can come back to the desk to switch to another."] Only exercises marked Build or Make include physical construction; the others use the same designers as the live game.", desk.name, "Cancel", exercises + list("Cancel"))
+	if (!exercises[choice] || !connection || body?.client != connection || connection.mob != body || !tutorial_workshop_access(body, desk) || !desk.Adjacent(body) || props["workshop_selected"] != current)
 		return
+	if (current)
+		clear_workshop(desk)
 	props["workshop_selected"] = choice
 	to_chat(body, SPAN_NOTICE(setup_workshop(exercises[choice])))
+
+// Empties the hall for the next exercise: everything in it goes except the
+// desk and connected players, and the floors are laid fresh, as when the room
+// was built. What the trainee carries is theirs to keep.
+/datum/practice_session/proc/clear_workshop(obj/structure/practice_workshop_desk/desk)
+	var/list/shop = props["shop"]
+	var/list/hall = block(locate(shop[1], shop[2], practice_room_z), locate(shop[3], shop[4], practice_room_z))
+	for (var/turf/T in hall)
+		for (var/atom/movable/AM in T)
+			if (AM == desk || AM == body || (ismob(AM) && AM:client) || istype(AM, /atom/movable/lighting_overlay))
+				continue
+			qdel(AM)
+	// The desk and the trainee beside it stand on office floor no exercise
+	// changes; those two tiles stay as they are.
+	hall -= get_turf(desk)
+	hall -= get_turf(body)
+	for (var/turf/T in hall)
+		if (T.x <= shop[1] + 4)
+			new /turf/floor/wood(T)
+		else
+			new /turf/floor/plating/concrete(T)
+	props["workshop_selected"] = null
 
 // Fits the hall out for one exercise and returns the instructions.
 /datum/practice_session/proc/setup_workshop(exercise)
