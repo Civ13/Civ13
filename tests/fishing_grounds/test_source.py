@@ -93,6 +93,13 @@ class FishingGrounds(unittest.TestCase):
         bait = self.source[self.source.index('/obj/item/weapon/fishing/attackby('):]
         self.assertLess(bait.index('/obj/item/weapon/fishing/net'), bait.index('bait_uses = FISH_BAIT_USES'))
 
+    def test_bait_lasts_four_casts_at_the_existing_bonus(self):
+        self.assertRegex(self.source, r'(?m)^#define FISH_BAIT_USES 4$')
+        self.assertRegex(self.source, r'(?m)^#define FISH_BAIT_BONUS 30$')
+        bait = self.source.split('/obj/item/weapon/fishing/attackby(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('bait_uses = FISH_BAIT_USES', bait)
+        self.assertIn('[FISH_BAIT_USES] casts', bait)
+
     def test_conditions_scale_the_cast_and_strandings_ride_the_flood_pass(self):
         cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]
         self.assertLess(cast.index('fish_condition_factor_at(src, kind)'), cast.index('prob(round(chance))'))

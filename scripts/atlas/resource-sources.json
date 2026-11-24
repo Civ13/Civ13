@@ -14850,7 +14850,7 @@
         "/obj/item/weapon/fishing/modern"
       ],
       "steps": [
-        "Use a fishing pole, net or rod on fresh water next to you and wait for a bite. Raw meat or raw fish used on the pole baits it for three casts."
+        "Use a fishing pole, net or rod on fresh water next to you and wait for a bite. Raw meat or raw fish used on the pole baits it for four casts."
       ],
       "conditions": "Random catch. The chance falls as the 16x16 stretch of water is fished down and fish grow back over time; a fished-out stretch gives nothing.",
       "map_notes": "Works on any map with this kind of water.",

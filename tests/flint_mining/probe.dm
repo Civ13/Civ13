@@ -103,6 +103,28 @@ var/global/flint_probe_depth_factor = 1
 	world.log << "gunflint life [life] worn misfires [misfires]/4000"
 	return failures
 
+/proc/check_nodules(turf/rock, area/above, label, min_rate, max_rate, min_count, max_count, expected_mean)
+	var/trials = 20000
+	var/hits = 0
+	var/total = 0
+	var/failures = 0
+	for (var/i = 1, i <= trials, i++)
+		var/count = rock.mining_flint_nodules(null, above)
+		if (count)
+			hits++
+			total += count
+			if (count < min_count || count > max_count)
+				failures++
+	for (var/obj/item/weapon/flint/F in rock)
+		del(F)
+	var/rate = hits / trials
+	var/mean = hits ? total / hits : 0
+	world.log << "[label]: hit rate [rate], mean per hit [mean]"
+	if (failures || rate < min_rate || rate > max_rate || abs(mean - expected_mean) > 0.2)
+		world.log << "FAIL [label] flint drop distribution"
+		return 1
+	return 0
+
 /world/New()
 	..()
 	var/failures = gunflint_checks()
@@ -110,45 +132,20 @@ var/global/flint_probe_depth_factor = 1
 	plain = new /turf/floor/dirt/underground(plain)
 	var/turf/sandy = locate(2, 1, 1)
 	sandy = new /turf/floor/dirt/underground/sandy(sandy)
+	var/turf/special_sandy = locate(3, 1, 1)
+	special_sandy = new /turf/floor/dirt/underground/sandy(special_sandy)
+	var/area/special = new /area/caribbean/void/caves/special
+	special.contents += special_sandy
 	var/area/desert = new /area/desert_test
-	var/trials = 20000
-	var/hits = 0
-	var/total = 0
-	for (var/i = 1, i <= trials, i++)
-		var/n = plain.mining_flint_nodules(null, null)
-		if (n)
-			hits++
-			total += n
-			if (n < 1 || n > 3)
-				failures++
-				world.log << "FAIL nodule count [n] outside 1-3"
-	for (var/obj/item/weapon/flint/F in plain)
-		del(F)
-	var/rate = hits / trials
-	if (rate < 0.18 || rate > 0.22)
-		failures++
-		world.log << "FAIL plain rock flint rate [rate], expected about 0.20"
-	if (hits && (total / hits < 1.8 || total / hits > 2.2))
-		failures++
-		world.log << "FAIL mean nodules [total / hits], expected about 2"
+	failures += check_nodules(plain, null, "plain rock", 0.18, 0.22, 1, 3, 2)
+	failures += check_nodules(sandy, null, "shallow sandy rock", 0.085, 0.115, 1, 1, 1)
+	failures += check_nodules(plain, desert, "shallow rock under desert", 0.085, 0.115, 1, 1, 1)
+	failures += check_nodules(special_sandy, null, "special cave sandy rock", 0.035, 0.065, 2, 6, 4)
+	flint_probe_depth_factor = 0.5
+	failures += check_nodules(sandy, null, "depth two sandy rock", 0.015, 0.035, 1, 3, 2)
 	flint_probe_depth_factor = 0
-	for (var/i = 1, i <= 2000, i++)
-		if (plain.mining_flint_nodules(null, null))
-			failures++
-			world.log << "FAIL flint found where the depth leaves none"
-			break
-	flint_probe_depth_factor = 1
-	var/sandy_hits = 0
-	var/desert_hits = 0
-	for (var/i = 1, i <= trials, i++)
-		if (sandy.mining_flint_nodules(null, null))
-			sandy_hits++
-		if (plain.mining_flint_nodules(null, desert))
-			desert_hits++
-	for (var/rate2 in list(sandy_hits / trials, desert_hits / trials))
-		if (rate2 < 0.035 || rate2 > 0.065)
-			failures++
-			world.log << "FAIL sandy/desert flint rate [rate2], expected about 0.05"
+	failures += check_nodules(plain, null, "deep plain rock", 0, 0, 1, 3, 0)
+	failures += check_nodules(sandy, null, "deep sandy rock", 0, 0, 1, 3, 0)
 	var/list/expect = list(
 		/mob/living/simple_animal/deer = 2,
 		/mob/living/simple_animal/deer/female = 0,
@@ -164,7 +161,6 @@ var/global/flint_probe_depth_factor = 1
 		if (D.antler_count() != 0)
 			failures++
 			world.log << "FAIL baby [path] grew antlers"
-	world.log << "flint rate [rate] mean [hits ? total / hits : 0] sandy [sandy_hits / trials] desert [desert_hits / trials]"
 	if (!failures)
 		world.log << "PASS flint mining probe"
 	del(world)
