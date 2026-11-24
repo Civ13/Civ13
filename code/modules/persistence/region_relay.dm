@@ -120,13 +120,15 @@
 // Sends a client to region id. Through the relay this needs the player's real
 // address; a local client (the host) is linked to the region's port directly.
 // Sleeps (the relay and, with wake, the doorman are asked). TRUE when linked.
-/datum/shard_group/proc/send_player(client/C, id, wake = TRUE)
+/datum/shard_group/proc/send_player(client/C, id, wake = TRUE, expected_slot = 0)
 	var/list/peer = peers[id]
 	if(!C || !peer || !peer["address"])
 		return FALSE
+	// This query can only make the receiving world deny a stale handoff.
+	var/slot_check = region_gateway_roster_enabled(C) && isnum(expected_slot) && expected_slot == round(expected_slot) && expected_slot >= 1 && expected_slot <= character_slots_max ? "?character_expected_slot=[expected_slot]" : ""
 	var/public = C.public_address()
 	if(!relay_on())
-		C << link("byond://[peer["address"]]")
+		C << link("byond://[peer["address"]][slot_check]")
 		return TRUE
 	// The gate's own port is public and players join it directly; going
 	// through the relay there left players from a relayed region waiting for a
@@ -144,13 +146,14 @@
 	// they join that, and are sent on from there.
 	if(kind == "GATEWAY" && gate == region && (!C.address || region_relay_ip_loopback(C.address)) && !C.local_connection() && gate_address())
 		to_chat(C, SPAN_NOTICE("Reconnecting you through the front door..."))
-		C << link("byond://[gate_address()]")
+		var/roster = slot_check ? "?character_lobby=1" : ""
+		C << link("byond://[gate_address()][roster]")
 		return TRUE
 	if(!public)
 		// Region ports are closed to the internet behind a relay; only a true
 		// local connection (the host) can use one directly.
 		if(C.local_connection())
-			C << link("byond://[peer["address"]]")
+			C << link("byond://[peer["address"]][slot_check]")
 			return TRUE
 		to_chat(C, SPAN_WARNING("The way to [html_encode(peer["name"])] cannot be found from here. Reconnect through [html_encode(gate_address())] and try again."))
 		return FALSE
@@ -188,7 +191,7 @@
 		return FALSE
 	if(!C)
 		return FALSE
-	C << link("byond://[relay]")
+	C << link("byond://[relay][slot_check]")
 	return TRUE
 
 // send_player without waking, without holding up the caller (a departure or reset).
@@ -223,6 +226,13 @@
 	return !shard_group.relay_on() || (relay_checked && world.host && key == world.host)
 
 /client/New(TopicData)
+	if(istext(TopicData) && length(TopicData) <= 4096)
+		var/list/options = params2list(TopicData)
+		if(region_gateway_here())
+			gateway_character_lobby = options["character_lobby"] == "1"
+		else if("character_expected_slot" in options)
+			var/expected = options["character_expected_slot"]
+			gateway_expected_slot = (expected in list("1", "2", "3", "4")) ? text2num(expected) : -1
 	// Before the bans and the login log read the address.
 	// The relay's connections arrive from loopback (or with no address at all).
 	if((!address || region_relay_ip_loopback(address)) && shard_group.relay_on())
@@ -232,6 +242,13 @@
 
 // Join, Go there and Refresh links of the Regions panel and the home notice.
 /client/Topic(href, href_list, hsrc)
+	if(href_list["gateway_character_slot"])
+		var/mob/new_player/lobby = mob
+		if(usr != mob || !istype(lobby) || !region_gateway_roster_enabled(src) || next_region_go > world.time)
+			return
+		next_region_go = world.time + 50
+		region_gateway_choose_character(lobby, text2num(href_list["gateway_character_slot"]))
+		return
 	if(href_list["region_go"])
 		if(usr != mob || !shard_group.enabled)
 			return
@@ -281,7 +298,8 @@
 	. = ..()
 	if(QDELETED(src) || !client || client.mob != src)
 		return
-	// A gateway (region_gateway.dm) sends everyone on, admins and new players too.
+	// The front door routes normal connections; an explicit Characters
+	// connection first shows its authenticated player's private roster.
 	if(region_gateway_here())
 		region_gateway_forward(src)
 	else if(shard_group.relay_on() && shard_group.region == shard_group.gate)

@@ -5,7 +5,11 @@ world save to list the transfer effects it contains, report them only after the
 completion marker, and reconcile on load. These checks keep that ordering and
 the default-off configuration honest.
 """
+import importlib.util
+import json
 import os
+from pathlib import Path
+from types import SimpleNamespace
 import re
 import unittest
 
@@ -72,6 +76,150 @@ class RoundState(unittest.TestCase):
         self.assertEqual(proc(FUNCTIONS, '/map_storage/proc/transfer_capture').strip().splitlines()[-1].strip(), 'return null')
         for name in ('transfer_saved', 'transfer_loaded'):
             self.assertEqual(proc(FUNCTIONS, '/map_storage/proc/' + name).strip().splitlines()[-1].strip(), 'return')
+
+
+class BirthChartTravel(unittest.TestCase):
+    def test_capture_is_staged_but_restore_never_discards_a_record(self):
+        config = read('code/datums/configuration.dm')
+        wheel = read('code/game/mob/living/carbon/human/birth_chart_wheel.dm')
+        travel = read('code/modules/persistence/region_travel.dm')
+        self.assertIn('var/birth_chart_records = FALSE', config)
+        capture = proc(wheel, '/mob/living/human/proc/record_birth_chart')
+        self.assertLess(capture.index('if (shard_group.enabled && !config.birth_chart_records)'),
+                        capture.index('birth_chart_record = record'))
+        self.assertNotIn('config.birth_chart_records', travel)
+        self.assertIn('P["chart_record"] = birth_chart_record.Copy()', travel)
+        self.assertIn('H.birth_chart_record = P["chart_record"].Copy()', travel)
+        self.assertIn('P["v"] in list(1, 2, 3)', travel)
+
+    def test_only_the_actual_current_receiving_world_admits_birth_records(self):
+        group = read('code/modules/persistence/shard_group.dm')
+        describe = proc(group, '/datum/shard_group/proc/describe')
+        self.assertIn('.["birth_chart_records"] = TRUE', describe)
+        self.assertNotIn('config.birth_chart_records', describe)
+        record = proc(group, '/datum/shard_group/proc/record')
+        self.assertLess(record.index('if(reply["group"] != group || reply["region"] != id)'),
+                        record.index('peer["birth_chart_records"] ='))
+        admitted = proc(group, '/datum/shard_group/proc/peer_accepts_birth_chart_records')
+        self.assertLess(admitted.index('if(!poll_peer(id))\n\t\treturn FALSE'),
+                        admitted.index('peer["birth_chart_records"] == TRUE'))
+        self.assertNotIn('refresh_peer', admitted)
+
+    def test_direct_poll_cannot_record_a_reply_from_a_stale_endpoint(self):
+        spec = importlib.util.spec_from_file_location('chart_poll_source_adapter',
+            Path(ROOT) / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        group = read('code/modules/persistence/shard_group.dm')
+        reload = proc(group, '/datum/shard_group/proc/reload_directory')
+        self.assertLess(reload.index('directory_generation++'),
+                        reload.index('address = entry["address"]'))
+        source = group.replace('polls_waiting ? polls_waiting[id] : null',
+                               'polls_waiting.get(id)')
+        source = source.replace(
+            '"byond://[polled_address]?shard_region=1&format=json"',
+            'direct_url(polled_address)').replace(
+            '"byond://[peer_address(peer)]?shard_region=1&format=json"',
+            'direct_url(peer_address(peer))')
+        # Replace only the scheduler wait with a deterministic simulated yield.
+        # The admission and publication logic is projected from poll_peer().
+        wait = '\twhile(!poll.done && world.time < deadline)\n\t\tsleep(1)'
+        self.assertEqual(source.count(wait), 1)
+        source = source.replace(wait, '\tschedule_reply(poll, deadline)')
+
+        class Entry(dict):
+            # A DM list identity comparison does not compare its values.
+            def __ne__(self, other):
+                return self is not other
+
+        for change in ('none', 'address', 'generation', 'entry', 'newer poll'):
+            with self.subTest(change=change):
+                entry = Entry(address='old:1000')
+                recorded = []
+                asked = []
+                waiting = {}
+                replacement = SimpleNamespace(done=False)
+                poll = SimpleNamespace(done=False, answer='capable', ask=asked.append)
+
+                def schedule_reply(pending, deadline):
+                    if change == 'address':
+                        entry['address'] = 'new:1000'
+                    if change == 'generation':
+                        env['directory_generation'] += 2  # moved away and back
+                    if change == 'entry':
+                        env['peers']['land'] = Entry(entry)
+                    if change == 'newer poll':
+                        waiting['land'] = replacement
+                    pending.done = True
+
+                env = dict(peers={'land': entry}, world=SimpleNamespace(time=1),
+                    directory_generation=0, polls_waiting=waiting,
+                    peer_address=lambda peer: peer['address'] if peer else None,
+                    direct_url=lambda endpoint: 'byond://' + endpoint,
+                    new_operation=lambda: poll, SHARD_POLL_TIMEOUT=10,
+                    LAZYSET=lambda mapping, k, v: mapping.__setitem__(k, v),
+                    LAZYREMOVE=lambda mapping, k: mapping.pop(k, None),
+                    log_game=lambda message: None, schedule_reply=schedule_reply,
+                    record=lambda *args: recorded.append(args) or True)
+                actual = adapter.project(source, '/datum/shard_group/proc/poll_peer',
+                                         'id', env)('land')
+                self.assertEqual(asked, ['byond://old:1000'])
+                self.assertEqual(actual, change == 'none')
+                self.assertEqual(recorded, [('land', 'capable', 1)] if change == 'none' else [])
+                self.assertEqual(waiting, {'land': replacement} if change == 'newer poll' else {})
+
+    def test_mixed_or_unconfirmed_receiver_never_records_escrow_for_any_passenger(self):
+        spec = importlib.util.spec_from_file_location('chart_custody_source_adapter',
+            Path(ROOT) / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        # Translate only DM association-list construction; the rest, including
+        # the network admission/escrow order, is projected from the real proc.
+        last = 'list("peer" = peer, "payloads" = payloads, "fast" = fast ? 1 : 0)'
+        self.assertEqual(BRIDGE.count(last), 1)
+        source = BRIDGE.replace(last, 'make_args(peer, payloads, fast)')
+        calls = []
+        supports = False
+        held = False
+        now_held = False
+
+        def poll(peer):
+            nonlocal held
+            calls.append(('poll', peer))
+            held = now_held
+            return supports
+
+        def effect(path, args):
+            calls.append((path, args))
+            return "recorded"
+
+        shard = SimpleNamespace(peer_transfers_held=lambda peer: held,
+                                peer_accepts_birth_chart_records=poll)
+        escrow = adapter.project(source, '/datum/transfer_bridge/proc/begin_escrow',
+            'peer, payloads, fast=False', dict(shard_group=shard, begin_effect=effect,
+                make_args=lambda peer, payloads, fast: (peer, payloads, fast),
+                istext=lambda v: isinstance(v, str), findtextEx=lambda s, x: x in s))
+        legacy = json.dumps({"kind": "character", "chart": "owl"})
+        detailed = json.dumps({"kind": "character", "chart": "owl",
+                               "chart_record": {"v": 1, "day": 0}})
+        fake_field_in_value = json.dumps({"kind": "character", "name": '"chart_record"'})
+        self.assertEqual(escrow("land", [legacy, fake_field_in_value]), "recorded")
+        self.assertEqual([x[0] for x in calls], ["/escrow"])
+        calls.clear()
+        self.assertIsNone(escrow("land", [legacy, detailed]))
+        self.assertEqual(calls, [("poll", "land")])
+        calls.clear()
+        supports = True
+        batch = [legacy, detailed, detailed]
+        self.assertEqual(escrow("land", batch, True), "recorded")
+        self.assertEqual(calls, [("poll", "land"), ("/escrow", ("land", batch, True))])
+        calls.clear()
+        now_held = True
+        self.assertIsNone(escrow("land", batch))
+        self.assertEqual(calls, [("poll", "land")])
+        calls.clear()
+        self.assertIsNone(escrow("land", batch))
+        self.assertEqual(calls, [])
 
 
 class Bridge(unittest.TestCase):

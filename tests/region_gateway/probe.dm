@@ -96,6 +96,31 @@ var/global/gateway_probe_runtime_error = FALSE
 	before = bridge.asked.len
 	where = region_gateway_destination("Guest-12345")
 	gateway_probe_check("guest/start_region_unasked", where["home"] == "gaia" && bridge.asked.len == before)
+	bridge.next_answer = list("ok" = TRUE, "result" = list("state" = "HOME", "region" = "northamerica"))
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	sent = bridge.asked[bridge.asked.len]
+	gateway_probe_check("roster/looks_up_exact_owner", where["home"] == "northamerica" && sent["path"] == "/lobby/home" && sent["body"]["ckey"] == "@3somebody" && isnull(sent["body"]["op"]))
+	bridge.next_answer["result"] = list("state" = "NO_HOME", "region" = "gaia")
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	gateway_probe_check("roster/directory_confirms_start", where["home"] == "gaia")
+	bridge.next_answer["result"] = list("state" = "NO_HOME", "region" = "northamerica")
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	gateway_probe_check("roster/refuses_false_start", isnull(where["home"]) && where["wait"])
+	bridge.next_answer["result"] = list("state" = "TRAVELLING", "region" = "northamerica")
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	gateway_probe_check("roster/escrow_no_handoff", isnull(where["home"]) && findtext(where["wait"], "on its way"))
+	bridge.next_answer = null
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	gateway_probe_check("roster/agent_unavailable_no_fallback", isnull(where["home"]) && findtext(where["wait"], "cannot confirm"))
+	bridge.next_answer = list("ok" = TRUE, "result" = list("state" = "PARKED", "home" = "land:4,6"))
+	before = bridge.asked.len
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	sent = bridge.asked[bridge.asked.len]
+	gateway_probe_check("roster/confirmed_parked_returns_no_route_or_wake", isnull(where["home"]) && where["parked"] == "land:4,6" && bridge.asked.len == before + 1 && sent["path"] == "/lobby/home" && sent["body"]["ckey"] == "@3somebody")
+	bridge.next_answer = gateway_probe_answer("ELSEWHERE", "northamerica")
+	where = region_gateway_destination("Somebody", 3)
+	sent = bridge.asked[bridge.asked.len]
+	gateway_probe_check("home/normal_connect_uses_exact_slot", where["home"] == "northamerica" && sent["path"] == "/account" && sent["body"]["ckey"] == "@3somebody")
 
 	// Nobody plays here, not even a guest.
 	var/mob/new_player/lobby = new

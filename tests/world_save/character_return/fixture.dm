@@ -46,6 +46,13 @@ var/turf/return_origin
 	var/ckey = "fixtureaccount"
 	var/mob/mob
 	var/transfers = 0
+	var/gateway_expected_slot = 0
+	var/character_slot = 1
+	var/fixture_region_home_enabled = TRUE
+	var/fixture_active_slot = 1
+/datum/character_return_client/proc/open_character_sleep_picker()
+	// This headless client has no HUD; production admission is still exercised.
+	return
 /datum/character_return_client/proc/quickBan_isbanned(kind)
 	return FALSE
 /datum/character_return_client/proc/owner_key()
@@ -143,6 +150,18 @@ var/turf/return_origin
 		L = character_return_lobby(C)
 		cross_check(map_storage.finish_player_restoration(), "disk player readiness failed")
 		character_return_success(C, L, get_turf(return_bed))
+		return
+	if(cross_case == "expected-slot")
+		C.gateway_expected_slot = 2
+		cross_check(!map_storage.reclaim_saved_player(L), "mismatched destination client slot accepted")
+		cross_check(!map_storage.allow_new_character(L), "mismatched destination client slot created a fresh body")
+		C.character_slot = 2
+		cross_check(!map_storage.reclaim_saved_player(L), "mismatched durable active slot accepted")
+		cross_check(!map_storage.allow_new_character(L), "mismatched durable active slot created a fresh body")
+		cross_check(!C.transfers && C.mob == L, "a stale hint transferred the client")
+		C.fixture_active_slot = 2
+		character_return_success(C, L, get_turf(return_bed))
+		cross_check(!C.gateway_expected_slot, "successful handoff did not clear expected slot")
 		return
 	if(cross_case == "repeat-return")
 		character_return_success(C, L, get_turf(return_bed))

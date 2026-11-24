@@ -110,9 +110,12 @@ var/global/list/region_home_summoned = list()
 			if(wait) to_chat(lobby, SPAN_NOTICE("Nobody plays here: this is the way in. You are being sent on to your land."))
 			region_gateway_forward(lobby)
 		return FALSE
+	var/client/C = lobby?.client
+	if(!region_gateway_expected_slot_ok(C))
+		if(wait) to_chat(lobby, SPAN_WARNING("This land has a different active character for your account. No body or new character was taken. Return to the gateway and try again."))
+		return FALSE
 	if(!region_home_enabled()) return TRUE
-	if(!lobby || !lobby.client) return FALSE
-	var/client/C = lobby.client
+	if(!C) return FALSE
 	if(train_escrow_account_held(C.owner_key()))
 		to_chat(lobby, SPAN_WARNING("Your train is still on its way. Wait for it to arrive before joining."))
 		return FALSE
@@ -123,6 +126,7 @@ var/global/list/region_home_summoned = list()
 	while(TRUE)
 		var/list/result = region_home_ask(C.owner_key())
 		if(!lobby || lobby.client != C) return FALSE
+		if(!region_gateway_expected_slot_ok(C)) return FALSE
 		if(!result)
 			if(wait) to_chat(lobby, SPAN_WARNING("This land cannot reach its world directory right now, so no character can start here. Try again in a minute."))
 			return FALSE
@@ -188,6 +192,7 @@ var/global/list/region_home_summoned = list()
 // home land. They must not wait; Join asks again (and waits) before
 // allow_new_character reclaims.
 /proc/region_home_reclaim_ok(mob/new_player/lobby)
+	if(!region_gateway_expected_slot_ok(lobby?.client)) return FALSE
 	if(!region_home_enabled() || !lobby || !lobby.client) return TRUE
 	var/account = lobby.client.owner_key()
 	var/has_body = FALSE
