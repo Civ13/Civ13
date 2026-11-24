@@ -74,6 +74,18 @@ Surviving your first day, in the camp behind the second door:
 18. Lie down in the bed by dragging your character onto it. If you fall ill, rest in a bed to recover faster and keep away from people who are coughing.
 19. Get up and walk onto the exit marker.
 
+#### Lesson board and workshop
+
+When the game sends you to the Tutorial land for your practice room, the room is larger: a controls room, a training room, an open camp and a workshop, joined by doors on one line. The steps are the same. The blue exit marker is in the south-east corner of the camp.
+
+- **Lesson board.** The notice board beside the camp path lets you reread any topic of the in-game tutorial, from moving and the HUD to the Crafting Atlas, chat and Help. The tree, tall grass and flint in the camp are there to try the branch, twine and whittling lessons.
+- **Workshop.** The door at the east end of the path leads to a workshop that is yours alone. Click the desk and choose one exercise. Blank draughts, a pencil and that exercise's materials appear on the floor south of the desk. Draw with the ordinary designer, run its checks and save the drawing to the sheet.
+  - Exercises marked **Build** or **Make** also give you somewhere to build: a stocked workshop for a car, tank or plane, a yard for an airship, a rail works and a short track for a train, a slipway and pool for a small single-deck ship (at most five tiles each way), sleepers and rails for a short railway, wood and stone for the ground floor of a house, and a works that makes rocket sections.
+  - Exercises marked **Draw** or **Plan** (submarine, harbor, waterworks, contraption, space station) are drawing practice only.
+  - One exercise per room. To try another or get fresh materials, leave and open a new practice room.
+
+Nothing you draw or build in the workshop is kept, and none of it counts towards your real character or its tutorial.
+
 When you reach the exit you return to the Lobby. To leave early, use any of these:
 
 - Click the **click here to leave** link on any step message in chat.
