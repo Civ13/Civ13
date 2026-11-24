@@ -62,7 +62,9 @@
 			icon_state = idlesprite
 			if (QDELETED(M) || !repair_ready(M, user))
 				return
-			M.repair_wear(repairamount, damageamount)
+			var/previous_health = M.health
+			if (M.repair_wear(repairamount, damageamount) && M.health > previous_health && istype(src, /obj/structure/repair/grindstone))
+				note_craftsman_head_work(user, M, "sharpen-head", 0.5)
 			visible_message("<span class='notice'>[user] finishes [actiontext]ing the [M.name].</span>")
 		else
 			visible_message("<span class='notice'>[user] stops [actiontext]ing the [M.name].</span>")
