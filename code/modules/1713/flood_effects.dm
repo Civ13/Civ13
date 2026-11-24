@@ -226,7 +226,9 @@ var/global/flood_items_revision = -1
 var/global/flood_draw_revision = 0
 
 /client
-	var/tmp/list/flood_images = null
+	var/tmp/list/flood_image_origins = null
+	var/tmp/list/water_overlay_images = null
+	var/tmp/water_overlay_geometric = FALSE
 	var/tmp/flood_drawn_revision = -1
 	var/tmp/flood_drawn_x = 0
 	var/tmp/flood_drawn_y = 0
@@ -238,10 +240,62 @@ var/global/flood_draw_revision = 0
 	var/datum/river_flood/F = map && map.river_flood()
 	return F && F.flooding
 
-/client/proc/flood_clear_images()
-	if (flood_images)
-		images -= flood_images
-		flood_images = null
+// Preserves vanilla visibility for remote cameras and users with geometric
+// LOS disabled. An ordinary viewer awaiting a context is not a remote viewer.
+/client/proc/water_overlay_uses_los()
+	return CIV13_GEOMETRIC_LOS_CORE && los_enabled && ishuman(mob) && eye == mob && !adminobs && isturf(mob.loc)
+
+/client/proc/clear_water_overlays()
+	if (water_overlay_images)
+		images -= water_overlay_images
+		water_overlay_images = null
+
+/datum/los_context/proc/water_overlay_tile_visible(turf/T, datum/los_snapshot/S, list/decisions)
+	if (!T)
+		return FALSE
+	var/visible = decisions[T]
+	if (isnull(visible))
+		// A seen opaque face is not visible water.
+		visible = decision_snapshot(T, S) == LOS_WORLD
+		decisions[T] = visible
+	return visible
+
+// The two producers own these additive images independently of atom masks.
+// Keep the bounded candidate sets and diff publication, without copying or
+// rescanning hydrology when only the observer or occlusion has changed.
+/client/proc/present_water_overlays(datum/los_snapshot/S)
+	water_overlay_geometric = water_overlay_uses_los()
+	if (!length(flood_image_origins) && !length(fish_sign_candidates))
+		clear_water_overlays()
+		return
+	var/datum/los_context/V = los_context
+	if (water_overlay_geometric && (!V || !V.begin_snapshot_pass(S)))
+		clear_water_overlays()
+		return
+	var/turf/centre = get_turf(eye)
+	var/list/next_images = list()
+	var/list/decisions = water_overlay_geometric ? list() : null
+	if (centre)
+		for (var/image/I in flood_image_origins)
+			var/turf/T = I.loc
+			var/turf/origin = flood_image_origins[I]
+			if (T && origin && T.z == centre.z && (!water_overlay_geometric || (V.water_overlay_tile_visible(origin, S, decisions) && V.water_overlay_tile_visible(T, S, decisions))))
+				next_images += I
+		for (var/image/I in fish_sign_candidates)
+			var/turf/T = I.loc
+			if (T && T.z == centre.z && (!water_overlay_geometric || V.water_overlay_tile_visible(T, S, decisions)))
+				next_images += I
+	if (water_overlay_geometric)
+		V.end_snapshot_pass()
+		if (S.revision != V.revision || S.policy != V.policy_key())
+			clear_water_overlays()
+			return
+	if (water_overlay_images)
+		images -= water_overlay_images - next_images
+		images += next_images - water_overlay_images
+	else if (next_images.len)
+		images += next_images
+	water_overlay_images = next_images.len ? next_images : null
 
 /proc/flood_image(turf/T, state, direction = SOUTH)
 	var/image/I = image('icons/effects/floodwater.dmi', T, state, FLOOD_LAYER, direction)
@@ -261,18 +315,19 @@ var/global/flood_draw_revision = 0
 	var/turf/centre = get_turf(eye)
 	var/datum/river_flood/F = map && map.river_flood()
 	if (!centre || !F || (!F.flooding && centre.z != F.cellar_z()))
-		flood_clear_images()
-		flood_drawn_revision = flood_draw_revision
-		return
+		var/had_candidates = !!length(flood_image_origins)
+		flood_image_origins = null
+		flood_drawn_revision = -1
+		return had_candidates
 	if (flood_drawn_revision == flood_draw_revision && flood_drawn_z == centre.z && abs(flood_drawn_x - centre.x) < FLOOD_VIEW_MOVE && abs(flood_drawn_y - centre.y) < FLOOD_VIEW_MOVE)
 		return
 	flood_drawn_revision = flood_draw_revision
 	flood_drawn_x = centre.x
 	flood_drawn_y = centre.y
 	flood_drawn_z = centre.z
-	flood_clear_images()
+	flood_image_origins = null
 	if (centre.z != F.z_level && centre.z != F.cellar_z())
-		return
+		return TRUE
 	// Bands over the view and a one-tile ring, so edges at the rim are right.
 	var/x0 = max(1, centre.x - FLOOD_VIEW_RADIUS - 1)
 	var/y0 = max(1, centre.y - FLOOD_VIEW_RADIUS - 1)
@@ -290,8 +345,8 @@ var/global/flood_draw_revision = 0
 				bands[(y - y0) * w + (x - x0) + 1] = band
 				any = TRUE
 	if (!any)
-		return
-	var/list/drawn = list()
+		return TRUE
+	var/list/candidates = list()
 	for (var/y in y0 + 1 to y1 - 1)
 		var/row_offset = (y - y0) * w
 		for (var/x in x0 + 1 to x1 - 1)
@@ -301,7 +356,7 @@ var/global/flood_draw_revision = 0
 			var/turf/T = locate(x, y, centre.z)
 			if (abs(x - centre.x) <= FLOOD_VIEW_RADIUS && abs(y - centre.y) <= FLOOD_VIEW_RADIUS)
 				flood_items_at(T, band)
-			drawn += flood_image(T, "flood[band]")
+			candidates[flood_image(T, "flood[band]")] = T
 			for (var/d in cardinal)
 				var/turf/D = get_step(T, d)
 				if (!D)
@@ -313,16 +368,24 @@ var/global/flood_draw_revision = 0
 					// The river's own water needs no waterline.
 					// Nor does solid rock below ground.
 					if (!istype(D, /turf/floor/beach/water) && (D.z != F.cellar_z() || cellar_holds_water(D)))
-						drawn += flood_image(D, "flood_edge[band]", d)
+						candidates[flood_image(D, "flood_edge[band]", d)] = T
 				else
-					drawn += flood_image(D, "flood_step[band]", d)
-	flood_images = drawn
-	images += drawn
+					candidates[flood_image(D, "flood_step[band]", d)] = T
+	flood_image_origins = candidates
+	return TRUE
 
 /mob/living/human/proc/flood_life_tick()
 	if (client)
-		client.flood_refresh_view()
-		client.fish_signs_refresh() // fish_signs.dm
+		var/flood_changed = client.flood_refresh_view()
+		var/signs_changed = client.fish_signs_refresh() // fish_signs.dm
+		var/geometric = client.water_overlay_uses_los()
+		if (flood_changed || signs_changed || geometric != client.water_overlay_geometric)
+			// Timer/data refreshes need one fresh snapshot for both producers;
+			// geometry changes use the presenter's existing capture instead.
+			var/datum/los_snapshot/S
+			if (geometric && client.los_context && (length(client.flood_image_origins) || length(client.fish_sign_candidates)))
+				S = client.los_context.capture(TRUE)
+			client.present_water_overlays(S)
 		client.scum_refresh_view() // river_foul.dm
 
 #undef FLOOD_VIEW_RADIUS
