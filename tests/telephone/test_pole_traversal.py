@@ -216,7 +216,8 @@ class PoleTraversalTests(unittest.TestCase):
         verb = extract(SOURCE, '/obj/structure/telegraph/verb/confirm_clinic_shipment')
         self.assertEqual(verb.count('!clinic_operator_valid(H, operator_client, terminal)'), 3)
         self.assertLess(verb.index('clinic_receiver(stations, destination)'), verb.index('receiver.receive('))
-        self.assertIn('PL.collect_clinic_stations(src, list(), stations)', verb)
+        self.assertIn('PL.collect_clinic_stations(src, visited, stations)', verb)
+        self.assertLess(verb.index('var/list/visited = list()'), verb.index('PL.collect_clinic_stations('))
         self.assertLess(verb.index('var/list/stations = list()'), verb.index('PL.collect_clinic_stations('))
         self.assertLess(verb.index('PL.collect_clinic_stations('), verb.index('clinic_receiver(stations, destination)'))
         self.assertNotIn('nomad_request(', verb)
@@ -303,6 +304,22 @@ class PoleTraversalTests(unittest.TestCase):
         messages = self.run_clinic_verb(grid, sender)
         self.assertEqual(len(near.received), 1)
         self.assertEqual(far.received, [])
+        self.assertTrue(any('reached' in message for message in messages))
+
+    def test_clinic_verb_checks_all_nearby_disconnected_pole_components(self):
+        grid = Grid()
+        Pole(grid, 8, 10)
+        Pole(grid, 12, 10)
+        sender = Telegraph(grid, 10, 10)
+        left, right = Telegraph(grid, 6, 10), Telegraph(grid, 14, 10)
+        left.name = right.name = 'Clinic'
+        messages = self.run_clinic_verb(grid, sender)
+        self.assertEqual((left.received, right.received), ([], []))
+        self.assertTrue(any('not sent' in message for message in messages))
+        left.name = 'Workshop'
+        messages = self.run_clinic_verb(grid, sender)
+        self.assertEqual(left.received, [])
+        self.assertEqual(len(right.received), 1)
         self.assertTrue(any('reached' in message for message in messages))
 
     def test_clinic_verb_does_not_deliver_without_pole_or_valid_operator(self):

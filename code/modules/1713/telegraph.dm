@@ -69,9 +69,9 @@
 		to_chat(H, SPAN_WARNING("Enter a station name and a request reference of 1 to 12 letters or digits."))
 		return
 	var/list/stations = list()
+	var/list/visited = list()
 	for (var/obj/structure/phoneline/PL in range(2, src))
-		PL.collect_clinic_stations(src, list(), stations)
-		break
+		PL.collect_clinic_stations(src, visited, stations)
 	var/obj/structure/telegraph/receiver = clinic_receiver(stations, destination)
 	if (!receiver)
 		to_chat(H, SPAN_WARNING("Shipment confirmation not sent: no unique, reachable station by that name. Check the line and station name, then try again."))
