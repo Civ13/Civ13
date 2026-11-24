@@ -245,6 +245,9 @@ var/global/list/region_travel_carry_types = list(
 		P["chart"] = birth_chart
 	if(birth_chart_record_valid(birth_chart_record))
 		P["chart_record"] = birth_chart_record.Copy()
+	var/list/immunizations = immunization_record_copy(immunization_record)
+	if(immunizations)
+		P["immunization_record"] = immunizations
 	// The martial school, its ranks and hardened hands travel too (martial_schools.dm).
 	var/list/martial = martial_travel_record()
 	if(martial)
@@ -317,6 +320,7 @@ var/global/list/region_travel_carry_types = list(
 	if(("traits" in P) && !region_travel_traits_valid(P["traits"])) return null
 	if(("chart" in P) && !birth_chart_valid(P["chart"])) return null
 	if(("chart_record" in P) && !birth_chart_record_valid(P["chart_record"])) return null
+	if(("immunization_record" in P) && !immunization_record_valid(P["immunization_record"])) return null
 	if(("martial" in P) && !martial_travel_valid(P["martial"])) return null
 	if(("study_field_lock" in P) && !isnum(P["study_field_lock"])) return null
 	if(("trade_lock" in P) && !isnum(P["trade_lock"])) return null
@@ -543,6 +547,7 @@ var/global/list/region_travel_carry_types = list(
 		H.birth_chart = P["chart"]
 	if(birth_chart_record_valid(P["chart_record"]))
 		H.birth_chart_record = P["chart_record"].Copy()
+	H.immunization_record = immunization_record_copy(P["immunization_record"])
 	if(islist(P["martial"]))
 		H.martial_travel_restore(P["martial"])
 	var/list/progress = accolade_progress_clean(P["accolades"])

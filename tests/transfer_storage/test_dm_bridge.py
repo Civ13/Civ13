@@ -168,6 +168,26 @@ class BirthChartTravel(unittest.TestCase):
                 self.assertEqual(recorded, [('land', 'capable', 1)] if change == 'none' else [])
                 self.assertEqual(waiting, {'land': replacement} if change == 'newer poll' else {})
 
+    def test_immunization_codec_and_capability_do_not_depend_on_activation(self):
+        travel = read('code/modules/persistence/region_travel.dm')
+        self.assertIn('P["immunization_record"] = immunizations', travel)
+        self.assertIn('H.immunization_record = immunization_record_copy(P["immunization_record"])', travel)
+        self.assertIn('("immunization_record" in P) && !immunization_record_valid(P["immunization_record"])', travel)
+        self.assertNotIn('shard_immunization_records', travel)
+        self.assertIn('P["v"] in list(1, 2, 3)', travel)
+        group = read('code/modules/persistence/shard_group.dm')
+        describe = proc(group, '/datum/shard_group/proc/describe')
+        self.assertIn('.["immunization_records"] = TRUE', describe)
+        self.assertNotIn('config.shard_immunization_records', describe)
+        record = proc(group, '/datum/shard_group/proc/record')
+        self.assertLess(record.index('if(reply["group"] != group || reply["region"] != id)'),
+                        record.index('peer["immunization_records"] ='))
+        admitted = proc(group, '/datum/shard_group/proc/peer_accepts_immunization_records')
+        self.assertLess(admitted.index('if(!poll_peer(id))'),
+                        admitted.index('peer["immunization_records"] == TRUE'))
+        self.assertIn('!needs_birth_chart || peer["birth_chart_records"] == TRUE', admitted)
+        self.assertNotIn('refresh_peer', admitted)
+
     def test_mixed_or_unconfirmed_receiver_never_records_escrow_for_any_passenger(self):
         spec = importlib.util.spec_from_file_location('chart_custody_source_adapter',
             Path(ROOT) / 'tests/save_movement/source_adapter.py')
@@ -193,8 +213,15 @@ class BirthChartTravel(unittest.TestCase):
             calls.append((path, args))
             return "recorded"
 
+        vaccine_support = False
+
+        def vaccine_poll(peer, needs_chart):
+            ready = poll(peer)
+            return vaccine_support and (ready or not needs_chart)
+
         shard = SimpleNamespace(peer_transfers_held=lambda peer: held,
-                                peer_accepts_birth_chart_records=poll)
+                                peer_accepts_birth_chart_records=poll,
+                                peer_accepts_immunization_records=vaccine_poll)
         escrow = adapter.project(source, '/datum/transfer_bridge/proc/begin_escrow',
             'peer, payloads, fast=False', dict(shard_group=shard, begin_effect=effect,
                 make_args=lambda peer, payloads, fast: (peer, payloads, fast),
@@ -220,6 +247,28 @@ class BirthChartTravel(unittest.TestCase):
         calls.clear()
         self.assertIsNone(escrow("land", batch))
         self.assertEqual(calls, [])
+        vaccine = json.dumps({"kind": "character", "immunization_record": {"cholera": [300, 660]}})
+        value_only = json.dumps({"kind": "character", "name": '"immunization_record'})
+        held = now_held = False
+        self.assertEqual(escrow("land", [legacy, value_only]), "recorded")
+        self.assertEqual([entry[0] for entry in calls], ["/escrow"])
+        calls.clear()
+        self.assertIsNone(escrow("land", [legacy, vaccine]))
+        self.assertEqual(calls, [("poll", "land")])
+        calls.clear()
+        vaccine_support = True
+        supports = False
+        self.assertIsNone(escrow("land", [vaccine, detailed]))
+        self.assertEqual(calls, [("poll", "land")])
+        calls.clear()
+        supports = True
+        both = [legacy, vaccine, detailed]
+        self.assertEqual(escrow("land", both), "recorded")
+        self.assertEqual(calls, [("poll", "land"), ("/escrow", ("land", both, False))])
+        calls.clear()
+        now_held = True
+        self.assertIsNone(escrow("land", [vaccine]))
+        self.assertEqual(calls, [("poll", "land")])
 
 
 class Bridge(unittest.TestCase):

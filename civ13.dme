@@ -1040,6 +1040,7 @@
 #include "code\modules\1713\dressmaking.dm"
 #include "code\modules\1713\drug_preparations.dm"
 #include "code\modules\1713\doctor_handbook.dm"
+#include "code\modules\1713\immunization_clinic.dm"
 #include "code\modules\1713\dentistry.dm"
 #include "code\modules\1713\elevation_climate.dm"
 #include "code\modules\1713\equip_box.dm"

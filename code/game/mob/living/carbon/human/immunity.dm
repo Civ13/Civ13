@@ -45,7 +45,7 @@
 /mob/living/human/proc/infection_chance_scale(kind)
 	if (disease || droid || orc || crab || inducedSSD || (status_flags & GODMODE))
 		return 0
-	if ((kind in disease_immunity) || resists_disease(kind))
+	if ((kind in disease_immunity) || resists_disease(kind) || immunization_protects(kind))
 		return 0
 	var/scale = disease_node_scale()
 	if (find_trait("Weak Immune System"))

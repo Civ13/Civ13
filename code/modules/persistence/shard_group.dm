@@ -232,6 +232,7 @@ var/global/datum/shard_group/shard_group = new
 			peer["state"] = "UNKNOWN"
 			peer["checked"] = null
 			peer["birth_chart_records"] = FALSE
+			peer["immunization_records"] = FALSE
 	if(istext(settings["mainland"]) && (settings["mainland"] in found))
 		mainland = settings["mainland"]
 	if(istext(settings["start_region"]) && (settings["start_region"] in found))
@@ -274,6 +275,7 @@ var/global/datum/shard_group/shard_group = new
 	.["train_stations"] = train_route_advertisements()
 	// Decoder capability, independent of whether this world records new births.
 	.["birth_chart_records"] = TRUE
+	.["immunization_records"] = TRUE
 	// Nothing can arrive while the agent here is on hold (transfer_bridge.dm).
 	if(transfer_bridge && transfer_bridge.held())
 		.["transfers_held"] = 1
@@ -329,6 +331,7 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	peer["state"] = "UP"
 	peer["birth_chart_records"] = (reply["birth_chart_records"] == TRUE)
+	peer["immunization_records"] = (reply["immunization_records"] == TRUE)
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
@@ -513,6 +516,13 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	var/list/peer = peers[id]
 	return islist(peer) && peer["state"] == "UP" && peer["birth_chart_records"] == TRUE
+
+// Poll once even if the travellers require both optional-record fields.
+/datum/shard_group/proc/peer_accepts_immunization_records(id, needs_birth_chart = FALSE)
+	if(!poll_peer(id))
+		return FALSE
+	var/list/peer = peers[id]
+	return islist(peer) && peer["state"] == "UP" && peer["immunization_records"] == TRUE && (!needs_birth_chart || peer["birth_chart_records"] == TRUE)
 
 // One world.Export to a peer, run apart so the caller can stop waiting.
 /datum/shard_peer_poll
