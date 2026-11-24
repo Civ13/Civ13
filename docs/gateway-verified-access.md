@@ -1,6 +1,6 @@
 # Gateway verified-access snapshots
 
-A persistent shard group with a dedicated relay gateway can opt in to one
+A Persistence or Barracks/Battle TDM group with a dedicated relay gateway can opt in to one
 durable, gateway-owned version of the normal approved and job-whitelist lists.
 These are the existing Discord-linked lists, not any other allowlist. The
 default is unchanged. This slice provides the private publication and game
@@ -18,6 +18,22 @@ whether publication changed; never send raw list contents in arguments, logs,
 chat or Topic requests. It accepts no caller-provided destination or region.
 Use a fresh, complete verification/role capture and keep the bot's existing
 authentication and empty-list safeguards.
+
+With `gateway_verified_access_inbox: true` (separately opt-in), only the
+protected gateway inbox is accepted: `front-door/access-inbox/proposal.json`.
+[CivilizationBot #127](https://github.com/Valgorithms/Civilizationbot/pull/127) supplies the complete pair plus the exact `group` ID;
+the producer cannot choose paths or allocate revisions. The existing
+host supervision checks this fixed inbox on its normal cadence. A local
+operator can also check it using `consume-verified-access`. A missing
+proposal does not revoke lists; an explicitly empty validated pair does.
+The direct stdin publisher refuses to run in inbox mode.
+
+Run only one authorized bot producer per group. Give it write access to
+its own private inbox, not to the gateway SQL directory. Do not roll back
+an inbox or authority file. TDM needs a configured dedicated gateway;
+the existing two-world configuration and its policy are unchanged by
+default. Approved access and TDM job whitelisting retain their original
+per-world enablement rules.
 
 The publisher locks the sequence, validates both halves before replacing
 anything, and writes one atomic, revisioned file under the persistent

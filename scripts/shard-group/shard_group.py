@@ -86,7 +86,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'expedition-grow', 'add-gateway',
-                 'players', 'send-players', 'publish-verified-access', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
+                 'players', 'send-players', 'publish-verified-access', 'consume-verified-access', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
                  'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status',
                  'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
@@ -485,10 +485,14 @@ def check_group(group, path):
         raise ValueError('persistent must be true or false')
     if type(group.setdefault('gateway_verified_access', False)) is not bool:
         raise ValueError('gateway_verified_access must be true or false')
+    if type(group.setdefault('gateway_verified_access_inbox', False)) is not bool:
+        raise ValueError('gateway_verified_access_inbox must be true or false')
+    if group['gateway_verified_access_inbox'] and not group['gateway_verified_access']:
+        raise ValueError('gateway access inbox requires gateway verified access')
     if group['gateway_verified_access'] and (
-            not group['persistent'] or not group.get('relay_port')
+            not (group['persistent'] or (barracks and battles)) or not group.get('relay_port')
             or not any(r['id'] == group.get('gate') and r['kind'] == 'GATEWAY' for r in regions)):
-        raise ValueError('gateway_verified_access needs a persistent group with a dedicated relay gateway')
+        raise ValueError('gateway_verified_access needs a dedicated relay gateway in a Persistence or TDM group')
 
     # A resetting raid world never saves; it reboots on a new map every
     # reset_minutes and sends everyone still inside home without their gear.
@@ -4121,6 +4125,16 @@ def supervise(group, start=detach):
     Returns what was started (empty when everything was already running).
     """
     started = {}
+    # Publish only under the ordinary private gateway host process. The legacy
+    # direct publisher is refused in inbox mode, so a queued proposal cannot
+    # restore policy over a newer publication from a second independent writer.
+    if group.get('gateway_verified_access_inbox') and not group_fresh_world.paused(group):
+        try:
+            receipt = verified_admission.publish(group, inbox=True)
+            if receipt.get('changed'):
+                started['gateway_verified_access'] = receipt['revision']
+        except (OSError, ValueError):
+            started['gateway_verified_access_error'] = 'gateway proposal refused'
     # A relay that cannot start must not keep the agents and the coordinator down.
     try:
         if refresh_relay(group):
@@ -4665,6 +4679,13 @@ def main(argv=None):
                 result = verified_admission.publish_input(group, wire)
             except (OSError, ValueError):
                 raise Refused('gateway verified access publication refused')
+        elif args.action == 'consume-verified-access':
+            if args.region:
+                raise Refused('gateway verified access is group-wide; leave out --region')
+            try:
+                result = verified_admission.publish(group, inbox=True)
+            except (OSError, ValueError):
+                raise Refused('gateway verified access proposal refused')
         elif args.action == 'magic-whitelist':
             if args.region:
                 raise Refused('the magic whitelist is shared by the whole group; leave out --region')

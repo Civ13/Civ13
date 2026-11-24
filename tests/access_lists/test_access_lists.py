@@ -6,6 +6,8 @@ from unittest import mock
 import importlib.util
 import json
 import re
+import subprocess
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -338,6 +340,113 @@ class GatewayPublisher(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.authority.publish(self.group, self.first, self.second)
         self.assertEqual(self.file.read_text(encoding="utf-8"), '{"schema": 1}')
+
+    def test_inbox_commits_only_complete_bound_tdm_and_persistence_proposals(self):
+        for name in ("earth", "tdm"):
+            root = self.folder.parent.parent / name
+            inbox = root / "front-door" / "access-inbox"
+            inbox.mkdir(parents=True)
+            output = root / "front-door" / "SQL"
+            output.mkdir()
+            group = dict(self.group, group=name, root=str(root), gateway_verified_access_inbox=True)
+            group["persistent"] = name == "earth"
+            if not group["persistent"]:
+                group["regions"] = [group["regions"][0], {"id": "barracks", "kind": "BARRACKS"},
+                                    {"id": "battle", "kind": "BATTLE"}]
+            path = inbox / "proposal.json"
+            target = output / "verified-access.json"
+            self.assertEqual(self.authority.publish(group, inbox=True), {"changed": False, "proposal": "absent"})
+            self.assertFalse(target.exists())
+            for invalid in ({"group": "other", "approved": self.first, "whitelist": self.second},
+                            {"group": name, "approved": self.first},
+                            {"group": name, "approved": self.first, "whitelist": "truncated"}):
+                path.write_text(json.dumps(invalid), encoding="utf-8")
+                with self.assertRaises(ValueError):
+                    self.authority.publish(group, inbox=True)
+                self.assertFalse(target.exists())
+            good = {"group": name, "approved": self.first, "whitelist": self.second}
+            path.write_text(json.dumps(good), encoding="utf-8")
+            self.assertEqual(self.authority.publish(group, inbox=True), {"revision": 1, "changed": True})
+            self.assertEqual(self.authority.publish(group, inbox=True), {"revision": 1, "changed": False})
+            with self.assertRaises(ValueError):
+                self.authority.publish(group, self.first, self.second)
+            reader = GatewayReader("test_wake_requires_valid_authority_pair_before_marking_ready")
+            reader.setUp()
+            reader.h.env["shard_group"].group = name
+            reader.h.files[reader.snapshot] = target.read_text(encoding="utf-8")
+            self.assertTrue(reader.refresh(reader.h.state, True))
+            self.assertEqual(reader.h.state.approved_list, ["alpha"])
+            self.assertEqual(reader.h.state.whitelist_list, ["beta"])
+            path.write_text(json.dumps(dict(good, approved="\n", whitelist="\n")), encoding="utf-8")
+            self.assertEqual(self.authority.publish(group, inbox=True), {"revision": 2, "changed": True})
+            reader.h.files[reader.snapshot] = target.read_text(encoding="utf-8")
+            self.assertTrue(reader.refresh(reader.h.state, True))
+            self.assertEqual(list(reader.h.state.approved_list), [])
+            self.assertEqual(list(reader.h.state.whitelist_list), [])
+
+    def test_inbox_supersession_preserves_authority_until_fresh_pair_commits(self):
+        group = dict(self.group, gateway_verified_access_inbox=True)
+        inbox = self.folder.parent / "access-inbox"
+        inbox.mkdir()
+        proposal = inbox / "proposal.json"
+        first = dict(group="sample", approved=self.first, whitelist=self.second)
+        proposal.write_text(json.dumps(first), encoding="utf-8")
+        self.assertEqual(self.authority.publish(group, inbox=True)["revision"], 1)
+        before = self.file.read_bytes()
+        proposal.write_text(json.dumps(dict(first, approved=self.second)), encoding="utf-8")
+        sync = self.authority.os.fsync
+
+        def supersede(fd):
+            sync(fd)
+            proposal.write_text(json.dumps(dict(first, approved="\n")), encoding="utf-8")
+
+        with mock.patch.object(self.authority.os, "fsync", side_effect=supersede):
+            with self.assertRaisesRegex(ValueError, "superseded"):
+                self.authority.publish(group, inbox=True)
+        self.assertEqual(self.file.read_bytes(), before)
+        self.assertEqual(list(self.folder.glob(".verified-access-*")), [])
+        self.assertEqual(self.authority.publish(group, inbox=True)["revision"], 2)
+        self.assertEqual(json.loads(self.file.read_bytes())["approved"], "\n")
+
+    def test_real_host_cli_accepts_scoped_configs_for_both_game_modes(self):
+        base = self.folder.parent.parent
+        source = ROOT / "scripts/shard-group"
+        repo = base / "fixture-repository"
+        repo.mkdir()
+        for name, stock, port in (("earth", "group.example.json", 6000), ("tdm", "tdm.example.json", 7000)):
+            root = base / name
+            inbox = root / "front-door" / "access-inbox"
+            inbox.mkdir(parents=True)
+            (root / "front-door" / "SQL").mkdir()
+            config = json.loads((source / stock).read_text(encoding="utf-8"))
+            config.update(group=name, root=str(root), repository=str(repo), live=False, public_host="localhost",
+                          gate="gateway", gateway_verified_access=True, gateway_verified_access_inbox=True,
+                          relay_port=port+40, relay_control_port=port+41, doorman_port=port+42)
+            for offset, region in enumerate(config["regions"]):
+                region.update(port=port+offset)
+            config["regions"].append(dict(id="gateway", name="Gateway", kind="GATEWAY", port=port+20,
+                                          map="maps/special/gateway.dmm"))
+            cfg = base / (name + ".json")
+            cfg.write_text(json.dumps(config), encoding="utf-8")
+
+            def run(action, expected=0, payload=None):
+                result = subprocess.run([sys.executable, str(source / "shard_group.py"), "--config", str(cfg), action],
+                                        input=payload, capture_output=True, text=True, timeout=12, check=False)
+                self.assertEqual(result.returncode, expected, (name, result.stdout, result.stderr))
+                return json.loads(result.stdout)
+
+            self.assertEqual(run("consume-verified-access")["proposal"], "absent")
+            path = inbox / "proposal.json"
+            pair = dict(approved=self.first, whitelist=self.second)
+            wrong = "tdm" if name == "earth" else "earth"
+            path.write_text(json.dumps(dict(pair, group=wrong)), encoding="utf-8")
+            self.assertFalse(run("consume-verified-access", 1)["ok"])
+            self.assertFalse((root / "front-door" / "SQL" / "verified-access.json").exists())
+            path.write_text(json.dumps(dict(pair, group=name)), encoding="utf-8")
+            self.assertEqual(run("consume-verified-access")["revision"], 1)
+            self.assertFalse(run("consume-verified-access")["changed"])
+            self.assertFalse(run("publish-verified-access", 1, json.dumps(pair))["ok"])
+            self.assertEqual(config, json.loads(cfg.read_text(encoding="utf-8")))
 
     def test_running_consumer_never_falls_back_when_gateway_enabled(self):
         body = adapter.extract(SOURCE, '/proc/reload_verified_access_list')
