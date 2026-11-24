@@ -163,6 +163,16 @@ var/global/item_pile_flush_pending = FALSE
 		options["[options.len + 1]. [display_name]"] = I
 	return options
 
+/proc/item_pile_has_choice(list/options)
+	if (options.len > 1)
+		return TRUE
+	if (!options.len)
+		return FALSE
+	// Its normal representative may be out of sight. Selection is still
+	// useful when the sole eligible item cannot be clicked directly.
+	var/obj/item/only_item = options[options[1]]
+	return only_item?.pile_hidden
+
 /mob/living/human/proc/item_pile_choose(turf/site, list/options)
 	var/client/chooser = client
 	if (chooser.item_pile_prompt_open)

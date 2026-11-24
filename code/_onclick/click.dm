@@ -63,7 +63,7 @@
 		var/turf/site = isturf(A) ? A : A.loc
 		if (isturf(site) && H.item_pile_can_choose(site))
 			var/list/options = item_pile_options(H, site)
-			if (options.len > 1)
+			if (item_pile_has_choice(options))
 				var/obj/item/selected = H.item_pile_choose(site, options)
 				if (!selected)
 					return

@@ -40,6 +40,15 @@ class ItemPileTargetingTest(unittest.TestCase):
         self.assertEqual(options.count('current.capture(FALSE, site)'), 1)
         self.assertIn('context.decision_snapshot(I, snapshot, "click")', eligible)
 
+    def test_a_single_eligible_but_pile_hidden_item_still_opens_the_chooser(self):
+        click = proc(CLICK, '/mob/proc/ClickOn(')
+        self.assertIn('if (item_pile_has_choice(options))', click)
+        gate = proc(PILES, '/proc/item_pile_has_choice(')
+        self.assertIn('if (options.len > 1)', gate)
+        self.assertIn('if (!options.len)', gate)
+        self.assertIn('only_item = options[options[1]]', gate)
+        self.assertIn('return only_item?.pile_hidden', gate)
+
     def test_prompt_result_rechecks_origin_intent_held_item_and_new_los(self):
         choose = proc(PILES, '/mob/living/human/proc/item_pile_choose(')
         self.assertIn('chooser.item_pile_prompt_open = TRUE', choose)
