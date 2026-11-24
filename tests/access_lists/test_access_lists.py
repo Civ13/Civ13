@@ -1,6 +1,8 @@
 """Complete helper-body projection; fake file/regex/ckey boundaries, no native engine."""
 from pathlib import Path
 from types import SimpleNamespace
+from tempfile import TemporaryDirectory
+from unittest import mock
 import importlib.util
 import json
 import re
@@ -42,6 +44,7 @@ class Harness:
             replacetext=lambda s,a,b:s.replace(a,b), findtext=lambda s,t:s.find(t)+1,
             copytext=lambda s,start,end=0:s[start-1:(end-1 if end else None)], islist=lambda x:isinstance(x,list), splittext=lambda s,d:DMList(s.split(d)),
             regex=Regex, ckey=lambda s:re.sub('[^a-z0-9]', '', s.lower()), trim=lambda s:s.strip(),
+            gateway_access_enabled=lambda:False, reload_gateway_verified_access=lambda:False,
             isnull=lambda x:x is None, fexists=lambda p:p in self.files, file2text=self.read)
         self.parse = adapter.project(PROJECTED_SOURCE, '/proc/parse_verified_access_text', 'access_text', self.env)
         self.env['parse_verified_access_text'] = self.parse
@@ -181,5 +184,177 @@ class AccessLists(unittest.TestCase):
         world=(ROOT/'code/world.dm').read_text(encoding='utf-8-sig')
         self.assertIn('var/global/approved_list_ready = FALSE',world)
         self.assertIn('var/global/whitelist_list_ready = FALSE',world)
+
+class GatewayReader(unittest.TestCase):
+    def setUp(self):
+        self.h = Harness()
+        self.h.state.next_read = 0
+        self.h.state.loaded_revision = 0
+        self.h.state.loaded_text = None
+        self.clock = SimpleNamespace(time=0)
+        self.h.env.update(world=self.clock, shard_group=SimpleNamespace(group="sample"),
+                          json_decode=lambda wire: self.as_list(json.loads(wire)),
+                          isnum=lambda x: isinstance(x, (int, float)),
+                          round=round, pack=lambda *args: self.as_list(dict(zip(args[::2], args[1::2]))))
+        projected = PROJECTED_SOURCE.replace('return list("revision" = revision, "approved" = staged_approved, "ids" = staged_ids, "whitelist" = staged_whitelist)',
+                                            'return pack("revision", revision, "approved", staged_approved, "ids", staged_ids, "whitelist", staged_whitelist)')
+        projected = re.sub(r'^\tvar/static/(?:next_read|loaded_revision|loaded_text).*\n', '', projected, flags=re.M)
+        projected = projected.replace('5 SECONDS', '50')
+        adapter.FIELDS += ("next_read", "loaded_revision", "loaded_text")
+        self.h.env['stage_gateway_verified_access'] = adapter.project(projected, '/proc/stage_gateway_verified_access',
+                'access_text,group,loaded_revision,loaded_text', self.h.env)
+        unavailable = adapter.project(projected, '/proc/gateway_access_unavailable', 'src', self.h.env, method=True)
+        projected = projected.replace('gateway_access_unavailable()', 'gateway_access_unavailable(src)')
+        self.h.env['gateway_access_unavailable'] = unavailable
+        self.refresh = adapter.project(projected, '/proc/reload_gateway_verified_access', 'src,force=False', self.h.env, method=True)
+        self.snapshot = '../front-door/SQL/verified-access.json'
+        self.left = "alpha=990000000000000001\n"
+        self.right = "beta=990000000000000002\n"
+
+    @staticmethod
+    def as_list(value):
+        if not isinstance(value, dict):
+            return value
+        result = DMList()
+        for key, entry in value.items():
+            result[key] = entry
+        return result
+
+    def supply(self, revision, **changes):
+        wire = json.dumps(dict({"schema": 1, "group": "sample", "revision": revision,
+                                "approved": self.left, "whitelist": self.right}, **changes))
+        self.h.files[self.snapshot] = wire
+        return wire
+
+    def test_wake_requires_valid_authority_pair_before_marking_ready(self):
+        self.h.files['SQL/approved.txt'] = self.left
+        self.h.files['SQL/whitelist.txt'] = self.right
+        self.assertFalse(self.refresh(self.h.state, True))
+        self.assertFalse(self.h.state.approved_list_ready or self.h.state.whitelist_list_ready)
+        self.supply(1, whitelist='broken')
+        self.assertFalse(self.refresh(self.h.state, True))
+        self.assertFalse(self.h.state.approved_list or self.h.state.whitelist_list)
+        self.supply(1)
+        self.assertTrue(self.refresh(self.h.state, True))
+        self.assertEqual(self.h.state.approved_discord_ids['alpha'], '990000000000000001')
+        self.assertEqual(self.h.state.whitelist_list, ['beta'])
+
+    def test_skipped_notification_recovers_and_lower_or_mutated_revision_fails_closed(self):
+        original = self.supply(2)
+        self.assertTrue(self.refresh(self.h.state))
+        self.supply(1)
+        self.clock.time += 50
+        self.assertFalse(self.refresh(self.h.state))
+        self.assertFalse(self.h.state.approved_list or self.h.state.whitelist_list)
+        self.supply(2, approved=self.right)
+        self.assertFalse(self.refresh(self.h.state, True))
+        self.h.files[self.snapshot] = original
+        self.assertTrue(self.refresh(self.h.state, True))
+        self.supply(3, approved="\n", whitelist=self.left)
+        self.clock.time += 100
+        self.assertTrue(self.refresh(self.h.state))
+        self.assertTrue(self.h.state.approved_list_ready and self.h.state.whitelist_list_ready)
+        self.assertEqual(self.h.state.approved_list, [])
+        self.assertEqual(self.h.state.whitelist_list, ['alpha'])
+
+    def test_warm_wake_refreshes_during_existing_poll_window(self):
+        self.supply(1)
+        self.assertTrue(self.refresh(self.h.state))
+        self.supply(2, approved="\n")
+        self.assertTrue(self.refresh(self.h.state))
+        self.assertEqual(self.h.state.approved_list, ['alpha'])
+        self.assertTrue(self.refresh(self.h.state, True))
+        self.assertEqual(self.h.state.approved_list, [])
+        source = (ROOT / 'code/modules/client/client_procs.dm').read_text(encoding='utf-8-sig')
+        connect = source.split('/client/New(TopicData)', 1)[1].split('/client/Del(', 1)[0]
+        self.assertLess(connect.index('if(!nomads_lifecycle.admit_client())'),
+                        connect.index('if (gateway_access_enabled())'))
+        self.assertLess(connect.index('reload_gateway_verified_access(TRUE)'),
+                        connect.index('. = ..()'))
+
+    def test_wrong_group_bad_revision_and_read_exception_do_not_grant(self):
+        for revision, fields in [(1, {"group": "other"}), (1.5, {}), (0, {}), (8000001, {}),
+                                 (1, {"extra": True}), (1, {"whitelist": None})]:
+            self.supply(revision, **fields)
+            self.assertFalse(self.refresh(self.h.state, True))
+        self.h.files[self.snapshot] = OSError('fixture')
+        self.assertFalse(self.refresh(self.h.state, True))
+
+
+class GatewayPublisher(unittest.TestCase):
+    def setUp(self):
+        spec = importlib.util.spec_from_file_location("gateway_admission", ROOT / "scripts/shard-group/verified_admission.py")
+        self.authority = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(self.authority)
+        fixture = TemporaryDirectory()
+        self.addCleanup(fixture.cleanup)
+        root = Path(fixture.name)
+        self.folder = root / "front-door" / "SQL"
+        self.folder.mkdir(parents=True)
+        self.file = self.folder / "verified-access.json"
+        self.group = {"root": str(root), "group": "sample", "gateway_verified_access": True,
+                      "relay_port": 1764, "gate": "gate",
+                      "regions": [{"id": "gate", "kind": "GATEWAY"}, {"id": "other", "kind": "SURFACE"}]}
+        self.first = "alpha=990000000000000001\n"
+        self.second = "beta=990000000000000002\n"
+
+    def test_one_atomic_pair_and_noop_does_not_broadcast_revision(self):
+        self.assertEqual(self.authority.publish(self.group, self.first, self.second), {"revision": 1, "changed": True})
+        prior = self.file.read_bytes()
+        self.assertEqual(self.authority.publish(self.group, self.first, self.second), {"revision": 1, "changed": False})
+        self.assertEqual(self.file.read_bytes(), prior)
+        self.assertEqual(self.authority.publish(self.group, self.second, "\n"), {"revision": 2, "changed": True})
+        self.assertEqual(json.loads(self.file.read_bytes()), {"schema": 1, "group": "sample", "revision": 2,
+                         "approved": self.second, "whitelist": "\n"})
+
+    def test_invalid_second_half_or_replace_error_keeps_previous_pair(self):
+        self.authority.publish(self.group, self.first, self.second)
+        prior = self.file.read_bytes()
+        for malformed in ("", "bad", self.first + self.first):
+            with self.assertRaises(ValueError):
+                self.authority.publish(self.group, self.second, malformed)
+            self.assertEqual(self.file.read_bytes(), prior)
+        with mock.patch.object(self.authority.os, "replace", side_effect=OSError("fixture")):
+            with self.assertRaises(OSError):
+                self.authority.publish(self.group, self.second, self.first)
+        self.assertEqual(self.file.read_bytes(), prior)
+        self.assertEqual(list(self.folder.glob(".verified-access-*")), [])
+
+    def test_pipe_accepts_paired_content_only(self):
+        with self.assertRaises(ValueError):
+            self.authority.publish_input(self.group, b'{"approved":"discard","root":"untrusted"}')
+        with self.assertRaises(ValueError):
+            self.authority.publish_input(self.group, b'{"approved":"first","approved":"last","whitelist":"\\n"}')
+        self.assertFalse(self.file.exists())
+        value = json.dumps({"approved": self.first, "whitelist": self.second}).encode()
+        self.assertEqual(self.authority.publish_input(self.group, value), {"revision": 1, "changed": True})
+
+    def test_disabled_wrong_gate_and_corrupt_authority_refuse(self):
+        for group in (dict(self.group, gateway_verified_access=False), dict(self.group, gate="other")):
+            with self.assertRaises(ValueError):
+                self.authority.publish(group, self.first, self.second)
+            self.assertFalse(self.file.exists())
+        self.file.write_text('{"schema": 1}', encoding="utf-8")
+        with self.assertRaises(ValueError):
+            self.authority.publish(self.group, self.first, self.second)
+        self.assertEqual(self.file.read_text(encoding="utf-8"), '{"schema": 1}')
+
+    def test_running_consumer_never_falls_back_when_gateway_enabled(self):
+        body = adapter.extract(SOURCE, '/proc/reload_verified_access_list')
+        self.assertLess(body.index('if (gateway_access_enabled())'), body.index('access_filename = null'))
+        consumer = adapter.extract(SOURCE, '/proc/reload_gateway_verified_access')
+        self.assertIn('var/path = "../front-door/SQL/verified-access.json"', consumer)
+        stage = adapter.extract(SOURCE, '/proc/stage_gateway_verified_access')
+        self.assertIn('bundle["group"] != group', stage)
+        self.assertIn('revision < loaded_revision', stage)
+        self.assertIn('revision == loaded_revision && access_text != loaded_text', stage)
+        self.assertLess(consumer.index('if (!islist(staged))'), consumer.index('approved_list = staged["approved"]'))
+        unavailable = adapter.extract(SOURCE, '/proc/gateway_access_unavailable')
+        for removal in ('approved_list = list()', 'whitelist_list = list()', 'approved_discord_ids = list()'):
+            self.assertIn(removal, unavailable)
+        watch = adapter.extract(SOURCE, '/proc/watch_verified_access_lists')
+        self.assertIn('reload_gateway_verified_access()', watch)
+        self.assertIn('sleep(5 SECONDS)', watch)
+
 
 if __name__ == '__main__': unittest.main()

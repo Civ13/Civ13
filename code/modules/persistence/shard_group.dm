@@ -48,6 +48,7 @@ var/global/datum/shard_group/shard_group = new
 
 /datum/shard_group
 	var/enabled = FALSE
+	var/gateway_verified_access = FALSE
 	var/group = null
 	var/region = null
 	var/name = null
@@ -177,6 +178,7 @@ var/global/datum/shard_group/shard_group = new
 		peers[entry["id"]] = list("name" = entry["name"], "kind" = entry["kind"], "address" = entry["address"], "state" = "UNKNOWN", "players" = null, "map" = null, "checked" = null)
 	// The routing relay (region_relay.dm) is optional; a bad setting turns only it off.
 	configure_relay(settings)
+	gateway_verified_access = settings["gateway_verified_access"] == TRUE
 	enabled = TRUE
 	last_error = null
 	return TRUE

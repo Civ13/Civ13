@@ -79,13 +79,14 @@ import agent_runs  # noqa: E402
 import group_ports  # noqa: E402
 import underground_migration  # noqa: E402
 import daily_maintenance  # noqa: E402
+import verified_admission  # noqa: E402
 from shard_map_selection import select_map_block  # noqa: E402
 
 GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freeze', 'thaw', 'adopt', 'check-update',
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'expedition-grow', 'add-gateway',
-                 'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
+                 'players', 'send-players', 'publish-verified-access', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
                  'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status',
                  'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
@@ -482,6 +483,13 @@ def check_group(group, path):
             raise ValueError('relay_capture must be true or false')
     if type(group.setdefault('persistent', True)) is not bool:
         raise ValueError('persistent must be true or false')
+    if type(group.setdefault('gateway_verified_access', False)) is not bool:
+        raise ValueError('gateway_verified_access must be true or false')
+    if group['gateway_verified_access'] and (
+            not group['persistent'] or not group.get('relay_port')
+            or not any(r['id'] == group.get('gate') and r['kind'] == 'GATEWAY' for r in regions)):
+        raise ValueError('gateway_verified_access needs a persistent group with a dedicated relay gateway')
+
     # A resetting raid world never saves; it reboots on a new map every
     # reset_minutes and sends everyone still inside home without their gear.
     for r in regions:
@@ -2836,6 +2844,8 @@ def write_region_files(group, region, path):
                 # The host service's doorman on this machine; regions ask it which peers
                 # sleep (a direct poll would wake them) and to wake one for a traveller.
                 'doorman': '127.0.0.1:%d' % group.get('doorman_port', gaia_host.FREEZE_DEFAULTS['doorman_port'])}
+    if group.get('gateway_verified_access'):
+        settings['gateway_verified_access'] = True
     if group['relay_port']:
         settings.update(relay_settings(group))
         (config / 'relay-token.txt').write_text(relay_token(group) + '\n', encoding='utf-8')
@@ -4645,6 +4655,16 @@ def main(argv=None):
             if not args.region or not args.players or not args.to:
                 parser.error('send-players needs --region, --players and --to')
             result = send_players(group, args.region, args.players, args.to, args.landing, args.at, args.ship, not args.send)
+        elif args.action == 'publish-verified-access':
+            # Operator-local stdin only: do not add a remote administration,
+            # Topic or chat route. Content never appears in a result or log.
+            if args.region:
+                raise Refused('gateway verified access is group-wide; leave out --region')
+            try:
+                wire = sys.stdin.buffer.read(verified_admission.MAX_WIRE + 1)
+                result = verified_admission.publish_input(group, wire)
+            except (OSError, ValueError):
+                raise Refused('gateway verified access publication refused')
         elif args.action == 'magic-whitelist':
             if args.region:
                 raise Refused('the magic whitelist is shared by the whole group; leave out --region')
