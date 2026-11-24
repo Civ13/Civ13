@@ -133,6 +133,15 @@
 		return null
 	return B
 
+// Petroleum output below the chemical minimum cannot be added by a batch.
+// Treat that barrel as full throughout the factory port, so an arm can take it.
+/obj/structure/refinery/proc/factory_output_unusable(datum/reagents/R)
+	return !R || R.get_free_space() < MINIMUM_CHEMICAL_VOLUME
+
+// Preserve the biofuel port's existing full-barrel threshold.
+/obj/structure/refinery/biofuel/factory_output_unusable(datum/reagents/R)
+	return !R || R.get_free_space() <= 0
+
 /obj/structure/refinery/factory_accepts(obj/item/I, from_dir = 0)
 	if (!isturf(loc) || !factory_reagent_barrel(I))
 		return 0
@@ -140,7 +149,7 @@
 	if (factory_feed_amount(R) > 0)
 		// Drained barrels wait on the tile; take more feed only with room for both.
 		return factory_feed_room() > 0 && !factory_waiting_barrel(src) ? 1 : 0
-	if (!factory_output_barrel() && R.get_free_space() > 0)
+	if (!factory_output_barrel() && !factory_output_unusable(R))
 		return 1
 	return 0
 
@@ -166,7 +175,7 @@
 	if (refine_scheduled || !isturf(loc))
 		return FALSE
 	var/obj/item/weapon/reagent_containers/glass/barrel/B = factory_output_barrel()
-	if (!B || B.reagents.get_free_space() <= 0 || !factory_has_feed() || !powersource || !powersource.powered)
+	if (!B || factory_output_unusable(B.reagents) || !factory_has_feed() || !powersource || !powersource.powered)
 		return FALSE
 	if (!draw_cable_power())
 		return FALSE
@@ -180,7 +189,7 @@
 	if (waiting && (!filter_type || istype(waiting, filter_type)))
 		return waiting
 	var/obj/item/weapon/reagent_containers/glass/barrel/B = factory_output_barrel()
-	if (B && B.reagents.get_free_space() <= 0 && (!filter_type || istype(B, filter_type)))
+	if (B && factory_output_unusable(B.reagents) && (!filter_type || istype(B, filter_type)))
 		return B
 	return null
 
@@ -190,7 +199,7 @@
 	if (I.loc == get_turf(src))
 		I.forceMove(destination)
 		return I.loc == destination
-	if (I != factory_output_barrel() || I.reagents.get_free_space() > 0)
+	if (I != factory_output_barrel() || !factory_output_unusable(I.reagents))
 		return FALSE
 	// A full barrel has already stopped the refine loop; release its power.
 	barrel -= I

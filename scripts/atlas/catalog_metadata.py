@@ -214,3 +214,23 @@ def add_plastics(files, add, records):
             'In a secured bench beaker; learn Industrial Plastics (WW2). Only the selected purified polymer is spent.')
         records[-1].update(processor='industrial_plastics', processor_name='Laboratory reaction bench',
                           station='/obj/structure/reaction_bench')
+
+
+def add_kerosene(files, add, records):
+    path = 'code/modules/1713/modern_items.dm'
+    source = files.get(path, '')
+    anchor = '/obj/structure/refinery/proc/refine_petroleum_batch('
+    if anchor not in source:
+        return
+    batch = source.split(anchor, 1)[1].split('/obj/structure/refinery/proc/refine()', 1)[0]
+    if ('if (product == "gasoline" || product == "kerosene")\n\t\trate = 0.8' not in batch
+            or 'min(10, volume) * rate' not in batch):
+        raise ValueError('Kerosene refinery source contract changed; review quantities')
+    add('Refine crude petroleum into kerosene', 'Processor', [('petroleum', 10)],
+        [('kerosene', 8)], path, source[:source.index(anchor)].count('\n') + 1,
+        'Cable power and a petroleum refinery (Combustion Engine). Fit a collection barrel, '
+        'feed crude petroleum, and select Kerosene under Set Output. Each full 60-second batch '
+        'converts 10 units into 8; the feed spent is limited by the room in the barrel. '
+        'Use a container of kerosene on a wick lantern to refuel it.')
+    records[-1].update(processor='petroleum_refinery', processor_name='Petroleum refinery',
+                      station='/obj/structure/refinery')
