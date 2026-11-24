@@ -307,12 +307,17 @@ var/global/datum/admin_map_controller/admin_maps = new
 
 /datum/admin_map_controller/proc/page_html(client/C, z, list/base, scale, select = null)
 	var/list/html = list("<html><head><meta charset='utf-8'><title>Admin map</title>[admin_panel_css()]<style>")
-	html += "canvas{border:2px solid #4c5f4a;image-rendering:pixelated;display:block;cursor:crosshair}"
+	html += "body{box-sizing:border-box;height:100vh;min-height:260px;display:flex;flex-direction:column}"
+	html += "canvas{border:2px solid #4c5f4a;box-sizing:content-box;image-rendering:pixelated;display:block;cursor:crosshair}"
 	html += "button,select{background:#33402f;color:#d8e2d0;border:1px solid #5d7358;border-radius:3px;margin:2px 2px 2px 0;padding:3px 8px;cursor:pointer;font-family:inherit;font-size:12px}"
 	html += "button:hover{background:#465a41;color:#fff}"
 	html += "label{white-space:nowrap;margin-right:8px;cursor:pointer}"
-	html += "#top{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-bottom:6px}"
-	html += "#wrap{display:flex;gap:10px;align-items:flex-start}#side{width:300px;max-height:[max(560, base[3] * scale)]px;overflow-y:auto}"
+	html += "#top{flex:none;display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-bottom:6px}"
+	html += "#wrap{display:flex;flex:1;min-height:0}"
+	html += "#mapcol{display:flex;flex-direction:column;flex:1;min-width:0;min-height:0}"
+	html += "#mapframe{position:relative;flex:1;min-height:0;overflow:hidden}"
+	html += "#m{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}"
+	html += "#legend,#s{flex:none}#side{flex:0 0 30%;min-width:115px;max-width:300px;min-height:0;margin-left:10px;overflow:auto}"
 	html += "#sel{min-height:64px}"
 	html += ".rows div{padding:2px 4px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rows div:hover,.rows div.on{background:#33402f}"
 	html += "input.q{width:100%;box-sizing:border-box;margin-bottom:4px}"
@@ -327,7 +332,7 @@ var/global/datum/admin_map_controller/admin_maps = new
 	html += "<label><input type='checkbox' id='lwf' onclick='draw()'>Wind</label>"
 	html += "</span><span>Air <select id='lay' onchange='LAY=this.value;draw()'><option value=''>off</option><option value='t'>temperature</option><option value='h'>humidity</option><option value='p'>pressure</option><option value='c'>cloud</option><option value='f'>fog</option></select></span>"
 	html += "<span class='dim'>North is up. Refreshes every [AMAP_REFRESH / 10] seconds.</span></div>"
-	html += "<div id='wrap'><div><canvas id='m' width='[base[2] * scale]' height='[base[3] * scale]'></canvas>"
+	html += "<div id='wrap'><div id='mapcol'><div id='mapframe'><canvas id='m' width='[base[2] * scale]' height='[base[3] * scale]'></canvas></div>"
 	html += "<div id='legend' style='margin:6px 0 2px'></div><div id='s' class='dim'></div></div>"
 	html += "<div id='side'><div class='card' id='sel'></div><div class='card' id='sky'></div>"
 	html += "<div class='card'><h2 id='wh'>Weather</h2><div class='rows' id='wl'></div></div>"
@@ -352,6 +357,11 @@ var cv=document.getElementById('m'),g=cv.getContext('2d'),bg=document.createElem
 PAL=['#e0302a','#3d7fe0','#3fbf4f','#f0d81c','#c050e0','#f08a1c','#30d0c8','#ff7fb0','#a0e060','#b08060'],
 SN={y:'you',a:'alive',d:'down',x:'dead',s:'disconnected',g:'ghost',n:'NPC',m:'player mob',p:'player'};
 bg.width=cv.width;bg.height=cv.height;
+// Fit the existing bitmap. Do not resize either backing buffer or redraw on window resize.
+function fitMap(){var frame=document.getElementById('mapframe'),w=frame.clientWidth-2*cv.clientLeft,h=frame.clientHeight-2*cv.clientTop;
+var f=Math.max(0,Math.min(w/cv.width,h/cv.height)),x=cv.width*f+'px',y=cv.height*f+'px';
+if(cv.style.width!=x)cv.style.width=x;
+if(cv.style.height!=y)cv.style.height=y;}
 (function(){var b=bg.getContext('2d');for(var y=0;y<H;y++){for(var x=0;x<W;x++){b.fillStyle=COL[T.charAt(y*W+x)]||COL['0'];b.fillRect(x*K,(H-1-y)*K,K,K);}}})();
 function px(tx){return (tx-0.5)/CELL*K;}
 function py(ty){return (H-(ty-0.5)/CELL)*K;}
@@ -418,7 +428,7 @@ if(sel){var r=Math.max(9,K*2.5);g.strokeStyle='#fff';g.lineWidth=2;g.beginPath()
 if(AT){g.strokeStyle='#fff';g.lineWidth=1;g.beginPath();g.moveTo(px(AT[0])-8,py(AT[1]));g.lineTo(px(AT[0])+8,py(AT[1]));g.moveTo(px(AT[0]),py(AT[1])-8);g.lineTo(px(AT[0]),py(AT[1])+8);g.stroke();}
 legend();sky();panel(sel);wlist();list(v);
 var n=0;for(i=0;i<D.b.length;i++)if('adxsyp'.indexOf(D.b[i][2])>=0)n++;
-document.getElementById('s').textContent=n+' players on this level, '+v.length+' markers shown.';}
+document.getElementById('s').textContent=n+' players on this level, '+v.length+' markers shown.';fitMap();}
 function key(l,c,t){var sw=el('span');sw.className='k';sw.style.background=c;l.appendChild(sw);l.appendChild(document.createTextNode(t));}
 function legend(){var l=document.getElementById('legend'),c={},k;clear(l);
 for(var i=0;i<D.b.length;i++){var s=D.b[i][3];if(s&&D.b[i][2]!='n'){sideCol(s);c[s]=(c[s]||0)+1;}}
@@ -468,7 +478,13 @@ function pick(r){SEL=r;SYS=null;AT=null;draw();}
 function pickSys(id){SYS=id;SEL=null;AT=null;draw();}
 function lvl(z){go('am=z&z='+z);}
 function upd(s){try{D=JSON.parse(s);}catch(e){return;}levels();draw();}
-cv.onclick=function(e){var rc=cv.getBoundingClientRect(),cx=e.clientX-rc.left,cy=e.clientY-rc.top,v=D.who?vis():[],best=null,bd=Math.max(12,K*2)*Math.max(12,K*2),i;
+// Mouse coordinates are CSS pixels; all layers and hit tests use bitmap pixels.
+function mapPoint(e){var r=cv.getBoundingClientRect(),bx=cv.clientLeft,by=cv.clientTop,w=r.width-2*bx,h=r.height-2*by;
+var x=e.clientX-r.left-bx,y=e.clientY-r.top-by;
+if(w<=0||h<=0||x<0||y<0||x>=w||y>=h)return null;
+return [x*cv.width/w,y*cv.height/h];}
+cv.onclick=function(e){var pt=mapPoint(e);if(!pt)return;
+var cx=pt[0],cy=pt[1],v=D.who?vis():[],best=null,bd=Math.max(12,K*2)*Math.max(12,K*2),i;
 for(i=0;i<v.length;i++){var dx=px(v[i][0])-cx,dy=py(v[i][1])-cy,d=dx*dx+dy*dy;if(d<=bd){bd=d;best=v[i];}}
 if(best){pick(best[6]);return;}
 var tx=Math.max(1,Math.round(cx/K*CELL+0.5)),ty=Math.max(1,Math.round((H-cy/K)*CELL+0.5)),hit=null;
@@ -476,6 +492,7 @@ if(on('lw'))for(i=0;i<D.s.length;i++){var s=D.s[i],ex=(tx-s[3])/(s[5]*0.4),ey=(t
 if(hit!==null){pickSys(hit);return;}
 SEL=null;SYS=null;AT=[tx,ty];draw();};
 document.getElementById('q').onkeyup=draw;
+window.onresize=fitMap;
 levels();draw();
 "}
 
