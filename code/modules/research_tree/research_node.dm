@@ -1982,7 +1982,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (10) ---
+		// --- iron_smithing (11) ---
+		"/obj/item/weapon/material/thrown/chakram" = "iron_smithing",
 		"/obj/item/weapon/grapnel" = "iron_smithing",
 		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/structure/bollard/iron" = "iron_smithing",
