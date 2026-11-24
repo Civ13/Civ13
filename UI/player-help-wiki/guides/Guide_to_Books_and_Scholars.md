@@ -301,7 +301,15 @@ You can also train a discipline by hand. Hold its practice tool and use it in ha
 | Agriculture | **Seed tray** | 2 soft wood (Basic Toolmaking) |
 | Military Science | **War game board** | 2 soft wood (Basic Toolmaking) |
 
-Practice is a way to get started, not a way to the top. Practice teaches a little, less as you improve, and practice stops at level 24, enough to research two ages past a discipline's first and to earn the Apprentice title. Beyond that, only research, hands-on work, study and tutoring teach you more.
+Practice is a way to get started, not a way to the top. Practice teaches a little, less as you improve, and practice stops at level 24, enough to research two ages past a discipline's first and to earn the Apprentice title. Beyond that, only research, hands-on work, study and tutoring teach you more, plus [investigations](#natural-science-investigations) for Natural Science.
+
+### Natural Science investigations
+
+From Natural Science 24 to 60 you can keep learning by studying real samples. You need no bench, active chapter or Swimming skill.
+
+- **From 24 to 36, compare samples.** Hold one sample in each hand and use **Investigate Samples** (IC tab). Compare two different ores (such as iron ore and copper ore), two open containers holding different kinds of water (fresh, salty or dirty), or an unfired clay piece and the same piece fired. It uses one unit of each ore or water, or the unfired clay piece; the fired piece is kept.
+- **From 36 to 60, compare raw and processed material.** Use the same verb with an ore and what it smelts into (iron ore and a bloom or pig iron, a bloom and wrought iron, copper, tin, zinc, lead, silver or gold ore and its ingot, iron sand and kera) or with sand and a glass sheet. It uses one unit of each. You can also secure a beaker of reaction inputs on a reaction bench and use **Investigate Reaction** on the bench. Only a reaction that actually completes counts.
+- Each investigation takes 12 seconds of uninterrupted work, with a 30 second break before the next. A comparison or reaction you have not investigated before teaches up to 1.8 levels; repeating one teaches up to 0.6. Swapping hands does not make a comparison new. Investigations teach only Natural Science, not Basic Mathematics, and stop at 60.
 
 ## The scholar's trade
 
