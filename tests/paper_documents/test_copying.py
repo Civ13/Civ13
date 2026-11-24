@@ -303,21 +303,23 @@ class Copies(unittest.TestCase):
     self.assertEqual(len(calls),expected)
  def test_teleprinter_legacy_positive_and_classified_deleted_lost_custody_negative(self):
   env=self.env
-  env.update(isemptylist=lambda x:not x,strip_html_properly=lambda x:re.sub('<[^>]*>','',x),format_telegram=lambda text:'<b>Telegram fixture: '+text+'</b><br>')
-  vm.ALLOWED |= {'isemptylist','strip_html_properly','format_telegram'}
-  code=TELE.replace('for(var/obj/item/weapon/paper/C in inpaper)','for (var/C in paper_inputs(src.inpaper))').replace('isemptylist(inpaper)','isemptylist(src.inpaper)')
-  marker='new_text = "<b><font face=\'Courier New\'>Telegram at [roundduration2text_days()]: [new_text]</b></font><br>"'
+  env.update(isemptylist=lambda x:not x,strip_html_properly=lambda x:re.sub('<[^>]*>','',x),max=max,format_telegram=lambda text:'<b>Telegram fixture: '+text+'</b><br>')
+  vm.ALLOWED |= {'isemptylist','strip_html_properly','format_telegram','max'}
+  code=TELE.replace('for (var/obj/item/weapon/paper/C in inpaper)','for (var/C in paper_inputs(src.inpaper))').replace('isemptylist(inpaper)','isemptylist(src.inpaper)')
+  marker='var/entry = "<b><font face=\'Courier New\'>Telegram at [roundduration2text_days()]: [new_text]</b></font><br>"'
   self.assertEqual(code.count(marker),1,'Clock/format seam drift')
-  code=code.replace(marker,'new_text = format_telegram(new_text)')
+  code=code.replace(marker,'var/entry = format_telegram(new_text)')
   printer=vm.project(code,'/obj/structure/teleprinter/proc/print','src,new_text',env)
-  for case in ('legacy','classified','deleted','moved','full'):
+  for case in ('legacy','classified','deleted','moved','full','partial'):
    with self.subTest(case=case):
     p=self.Paper();p.loc=None
     if case=='classified':p.document_record={'schema_version':999}
     elif case=='deleted':p.gc_destroyed=True
     elif case=='moved':p.loc=self.actor
     elif case=='full':p.free_space=21
-    before=(p.info,p.free_space);self.machine.inpaper=[p];printer(self.machine,'TEST')
+    elif case=='partial':p.free_space=22
+    before=(p.info,p.free_space);self.machine.inpaper=[p];printed=printer(self.machine,'LONG SHIPMENT RECORD')
+    self.assertEqual(bool(printed),case=='legacy')
     self.assertEqual((p.info,p.free_space)!=before,case=='legacy')
 
 if __name__=='__main__':unittest.main()
