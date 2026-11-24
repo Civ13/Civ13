@@ -23,6 +23,11 @@ def formula(expression, **values):
     """Translate only the fixed arithmetic in the checked-in DM expressions."""
     ops = {ast.Add: operator.add, ast.Sub: operator.sub, ast.Mult: operator.mul, ast.Div: operator.truediv}
     functions = {"round": math.floor, "world_calendar_fmod": operator.mod}
+    # Evaluate the shared, pure arithmetic helpers without permitting other DM calls.
+    for name, params in (("birth_chart_moon_angle", ("day", "minute")),
+                         ("birth_chart_rising_angle", ("local_minute",))):
+        expr = re.search(r"^\s*return (.+)$", body(MODEL, f"/proc/{name}("), re.M)[1]
+        functions[name] = lambda *args, expr=expr, params=params: formula(expr, **dict(zip(params, args)))
 
     def calculate(node):
         if isinstance(node, ast.Constant) and type(node.value) is int:

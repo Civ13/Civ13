@@ -319,6 +319,7 @@
 #include "code\game\mob\living\carbon\human\appearance.dm"
 #include "code\game\mob\living\carbon\human\body_build.dm"
 #include "code\game\mob\living\carbon\human\birth_chart_wheel.dm"
+#include "code\game\mob\living\carbon\human\star_chart.dm"
 #include "code\game\mob\living\carbon\human\birth_charts.dm"
 #include "code\game\mob\living\carbon\human\body_motion.dm"
 #include "code\game\mob\living\carbon\human\corpse.dm"
