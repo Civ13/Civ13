@@ -2,10 +2,12 @@
 
 Open **IC > Birth Chart** on your living character to see your private chart.
 It shows where and when the character was born if recorded. The outer ring uses
-the twelve Civ13 signs. The inner ring has houses 1–12 starting at the Rising
-cusp. The **Sun**, **Moon**, and **Rising** cards below the wheel read left to
-right, showing the sign, its degree and absolute longitude, and the house. The colors of the
-cards identify the markers; lines between them appear only for listed aspects.
+the twelve Civ13 signs, with the character's Sun sign lit. The inner ring has
+houses 1-12 starting at the Rising line. The wheel marks the **Sun**, **Moon**
+and **Rising** with the letters S, M and R; the three cards below it read left
+to right, showing each one's degree and sign, its house and its absolute
+longitude. A line joins two markers only for a listed aspect, and each kind of
+aspect has its own colour and line pattern, repeated in the Aspects list.
 
 - **Birth date, time and place:** New Nomads and Civilizations characters record
   their region at creation. Regions with the shared world calendar also record
