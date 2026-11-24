@@ -70,3 +70,24 @@ Flu no longer applies drowsiness (which could put a character to sleep or
 paralyse it for several ticks at random): `flu_haze` only blurs the eyes. The
 high fever floors a character at most once per illness, for 2 ticks
 (`flu_knockdown`, `FLU_MAX_DOWNS`, `FLU_DOWN_TIME`), and says so in chat.
+
+## Cholera immunization, from the 1903 epoch
+
+Study the Medicine chapter **Immunization** after Germ Theory and
+Pharmacology, then build an immunization clinic from the glass crafting menu.
+A glass sheet stocks three abstract supply doses; the desk holds at most
+twelve. The desk's doses are not a recipe for real medicine, and no samples
+from ill characters are needed. With an empty hand choose yourself or a
+nearby patient; another player must explicitly consent. A refusal, movement
+out of reach, or a previously scheduled dose leaves the stock untouched.
+
+The dose prevents new cholera after about ten real-time minutes, for about
+six hours. It does not treat active cholera or stop worms from dirty water.
+Use **IC > Check Immunizations** privately to see the time remaining, even if
+there is no medic nearby. The timer is attached to that character and uses
+the real clock, so it does not reset on save/load or reconnect. A new dose
+can be given after the record expires.
+
+Initial rollout is single-world only: sharded worlds cannot stock or offer a
+dose until the cross-region handoff can guarantee a receiving peer preserves
+the character's record. This is not a change to clean-water or treatment rules.
