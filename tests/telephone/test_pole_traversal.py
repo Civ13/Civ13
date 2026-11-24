@@ -50,6 +50,10 @@ class Telegraph(Thing):
     def __init__(self, grid, x, y):
         super().__init__(grid, '/obj/structure/telegraph', x, y)
         self.received = []
+        self.name = 'telegraph'
+
+    def clinic_station_label(self):
+        return self.name
 
     def receive(self, msg, stripmsg):
         self.received.append(msg)
@@ -78,8 +82,10 @@ class Grid:
         env = {'world': World, 'locate': lambda x, y, z: (x, y, z),
                'get_turf': lambda turf: turf, 'range': self.range,
                'typed_iter': self.typed_iter, 'list': DMList,
-               'isnull': lambda value: value is None}
-        self.transmit = self.load('transmit', 'src,msg,stripmsg,TL,origin,reached=None', env)
+               'isnull': lambda value: value is None, 'lowertext': str.lower}
+        self.transmit = self.load('transmit', 'src,msg,stripmsg,TL,origin,reached=None,collect_only=False', env)
+        self.receiver = project(SOURCE, '/obj/structure/telegraph/proc/clinic_receiver',
+                                'src,stations,destination', dict(env))
         self.ring = self.load('ring_phone', 'src,target,origin,originphone', env)
 
     @staticmethod
@@ -140,8 +146,32 @@ class PoleTraversalTests(unittest.TestCase):
         sender = extract(SOURCE, '/obj/structure/telegraph/proc/transmit')
         self.assertIn('PL.transmit(msg,stripmsg,src,PL,list())', sender)
         body = extract(SOURCE, BASE + 'transmit')
-        self.assertEqual(body.count('PL.transmit(msg,stripmsg,TL,src,reached)'), 5)
+        self.assertEqual(body.count('PL.transmit(msg,stripmsg,TL,src,reached,collect_only)'), 5)
         self.assertLess(body.index('reached += TLG'), body.index('TLG.receive(msg,stripmsg)'))
+
+    def test_clinic_collection_delivers_nothing_until_one_named_receiver_is_resolved(self):
+        grid = Grid()
+        left, right = Pole(grid, 10, 10), Pole(grid, 13, 10)
+        sender = Telegraph(grid, 8, 10)
+        target = Telegraph(grid, 11, 10)  # within range of two poles
+        other = Telegraph(grid, 15, 10)
+        far = Telegraph(grid, 30, 10)  # no path
+        target.name, other.name, far.name = 'Clinic', 'Workshop', 'Clinic'
+        reached = DMList()
+        left.transmit('clinic shipment', '72A', sender, left, reached, True)
+        self.assertCountEqual(reached, [target, other])
+        self.assertEqual([node.received for node in (sender, target, other, far)], [[], [], [], []])
+        self.assertIs(grid.receiver(sender, reached, 'clinic'), target)
+        self.assertIsNone(grid.receiver(sender, reached, 'invalid'))
+        other.name = 'CLINIC'
+        self.assertIsNone(grid.receiver(sender, reached, 'clinic'))
+
+    def test_shipment_command_has_no_default_broadcast_and_rechecks_client_after_both_prompts(self):
+        verb = extract(SOURCE, '/obj/structure/telegraph/verb/confirm_clinic_shipment')
+        self.assertEqual(verb.count('!clinic_operator_valid(H, operator_client, terminal)'), 3)
+        self.assertLess(verb.index('clinic_receiver(stations, destination)'), verb.index('receiver.receive('))
+        self.assertIn('PL.transmit("clinic shipment", reference, src, PL, stations, TRUE)', verb)
+        self.assertNotIn('nomad_request(', verb)
 
     def test_pole_stays_quiet_until_marker_expires(self):
         grid = Grid()
