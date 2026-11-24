@@ -11,6 +11,10 @@ HELPERS = 'code/game/mob/living/carbon/human/human_helpers.dm'
 DAMAGE = 'code/game/mob/mob_damage.dm'
 
 
+class LightSource(NS):
+    """Fixture for the engine-managed datum and its registered emitter."""
+
+
 class Area:
     def __init__(self, admin=False):
         self.admin = admin
@@ -24,6 +28,7 @@ class Atom:
     """Engine boundary: ancestry, contents, raw loc, Entered/Exited callbacks."""
     def __init__(self, loc=None, turf=False, xyz=(0, 0, 0), human=False):
         self.contents, self._loc = [], None
+        self.light_sources = None
         self.loc = loc
         self.turf, self.xyz, self.human = turf, xyz, human
         self.gcDestroyed = self.gc_destroyed = False
@@ -105,7 +110,8 @@ class Fixture:
                         list=lambda *args: args, EXCEPTION=RuntimeError,
                         typed_iter=lambda values, kind: [a for a in values if kind == '/atom/movable' or
                                                         (kind == '/obj' and not a.human) or
-                                                        (kind == '/mob' and a.human)],
+                                                        (kind == '/mob' and a.human) or
+                                                        (kind == '/datum/light_source' and isinstance(a, LightSource))],
                         CONSCIOUS=0, UNCONSCIOUS=1, DEAD=2, world=NS(time=42, timeofday=42),
                         to_chat=lambda *args: None, SPAN_WARNING=lambda text: text,
                         paper_authoring_notify=lambda source, reason: self.paper_notifications.append((source, reason, source.loc)),
@@ -648,6 +654,31 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(human.persistence_set_loc(f.same))
         self.assertEqual(f.paper_notifications, [(human, 'relocated', f.same)])
         self.assertIs(human.loc, f.same)
+        operation.finish(True)
+
+    def test_raw_floor_move_refreshes_carried_and_self_lights_after_new_location(self):
+        f = Fixture()
+        human = f.actor()
+        portable = f.actor(human, human=False)
+        updates = []
+        human.update_light = lambda: updates.append((human, get_turf(human)))
+        portable.update_light = lambda: updates.append((portable, get_turf(portable)))
+        human.light_sources = [LightSource(source_atom=human), None,
+                               LightSource(source_atom=portable), LightSource(source_atom=None)]
+        # Raw movement must not call normal callbacks as a shortcut.
+        f.home.Exited = f.other.Entered = lambda *_: self.fail('raw move fired a turf callback')
+        self.assertTrue(human.persistence_set_z(3))
+        self.assertEqual(updates, [(human, f.other), (portable, f.other)])
+
+    def test_refused_and_same_location_raw_moves_do_not_refresh_emitters(self):
+        f = Fixture()
+        human = f.actor()
+        human.update_light = lambda: self.fail('unchanged movement queued a light')
+        human.light_sources = [LightSource(source_atom=human)]
+        operation = f.begin(f.store, 'save')
+        self.assertFalse(human.persistence_set_loc(f.other))
+        self.assertTrue(human.persistence_set_loc(f.home))
+        self.assertIs(human.loc, f.home)
         operation.finish(True)
 
     def test_legacy_z_setter_uses_physical_container_turf_and_rejects_invalid_target(self):
