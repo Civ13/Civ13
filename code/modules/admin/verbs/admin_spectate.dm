@@ -74,6 +74,25 @@ var/global/list/datum/admin_player_view/admin_player_views = list()
 		to_chat(src, SPAN_NOTICE("Your ghost is visible again."))
 	log_admin("[key_name(src)] [admin_ghost_hidden ? "hid" : "unhid"] their admin ghost")
 
+// Keep the mode on this aghost only, never on the account or the living mob.
+/client/proc/toggle_admin_ghost_sight()
+	set category = "Admin"
+	set name = "Toggle Aghost Sight"
+	set desc = "Switch between world lighting with wall occlusion and full-bright sight through walls."
+	if (!check_rights(R_ADMIN, TRUE, mob))
+		return
+	var/mob/observer/ghost/G = mob
+	if (!istype(G) || !G.admin_ghosted)
+		to_chat(src, SPAN_WARNING("Use Aghost before changing your ghost sight."))
+		return
+	if (admin_player_view)
+		to_chat(src, SPAN_WARNING("Stop viewing the player before changing your ghost sight."))
+		return
+	G.admin_sight_selected = TRUE
+	G.seedarkness = !G.seedarkness
+	G.updateghostsight()
+	to_chat(src, SPAN_NOTICE(G.seedarkness ? "Aghost sight: world lighting and wall occlusion." : "Aghost sight: full brightness through walls."))
+
 /client/proc/admin_view_player()
 	set category = "Admin"
 	set name = "View As Player"
