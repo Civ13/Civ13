@@ -284,7 +284,9 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 
 // A member profile takes the raw BYOND key, not its normalized ckey.
 /proc/admin_byond_profile_url(account_key)
-	if (!istext(account_key) || !ckey(account_key) || IsGuestKey(account_key) || copytext(account_key, 1, 2) == "@")
+	if (!istext(account_key) || !ckey(account_key) || copytext(account_key, 1, 2) == "@")
+		return null
+	if (findtext(account_key, regex(@"^Guest-W?[0-9]+$", "i")))
 		return null
 	var/path_key = replacetext(url_encode(account_key), "+", "%20")
 	return "https://www.byond.com/members/[path_key]?format=text"
