@@ -51,6 +51,21 @@ Electricity prototype; connected engines provide aggregate cable capacity.
 Combustion unlocks the existing petroleum refinery. These machines reuse that
 progression and do not introduce plant, nutrient or engine infrastructure.
 
+### Kerosene lamp fuel
+
+With Combustion Engine research, build a petroleum refinery and connect it
+to cable power. Insert a collection barrel first, then use a separate barrel
+of crude petroleum on the refinery. While it is off, choose **Set Output >
+Kerosene**, then click the refinery to turn it on. A full one-minute game
+batch turns 10 units of crude petroleum into 8 units of kerosene. The refinery
+uses only as much crude as its collection barrel has room to receive.
+
+Switch the refinery off before removing its output barrel. Use a container
+of kerosene on a wick lantern (including the copper lamp and bronze etsy lamp)
+to add six minutes of burn time per unit, up to the lamp's usual capacity.
+Existing lamp oils and crude petroleum still work; gasoline and diesel are
+not wick lantern fuels. Stone fat lamps and torches still use their own fuels.
+
 Production mining endpoint regressions cover eras 0-8. Destructive mineral
 batches shared with trace gathering exceed its one-unit manual and two-unit
 powered batches. Fossils remain exclusively nonrenewable. These checks establish

@@ -69,6 +69,17 @@ class HouseControl(unittest.TestCase):
         for economic_field in ('custom_company', 'sales_registry', 'company_move_stake'):
             self.assertNotIn(economic_field, attach)
 
+    def test_buyer_rechecked_after_yield_and_when_completing_payment(self):
+        vending = proc(VENDING, '/obj/structure/vending/sales/ui_act(', '\n/')
+        after_quantity = vending.index('company_sales_buyer_disqualified(user)', vending.index('player_input('))
+        self.assertLess(after_quantity, vending.index('vend(R, user, inp)'))
+        self.assertLess(after_quantity, vending.index('complete_purchase(R, user, inp)'))
+        pending = proc(VENDING, '/obj/structure/vending/sales/proc/finish_pending_purchase(', '\n/')
+        self.assertLess(pending.index('company_sales_buyer_disqualified(user)'), pending.index('complete_purchase('))
+        self.assertNotIn('moneyin =', pending)
+        guard = proc(VENDING, '/obj/structure/vending/sales/proc/company_sales_buyer_disqualified(', '\n/')
+        self.assertIn('company_may_operate(user, owner) || find_company_member(user, owner)', guard)
+
     def test_company_craft_revalidates_at_commit(self):
         final_gate = self.craft.index('if (customvar && !company_may_operate(H, customvar))')
         self.assertLess(self.craft.index('do_after(user, buildtime'), final_gate)

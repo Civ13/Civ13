@@ -69,7 +69,17 @@ class MapSchemaMigration(unittest.TestCase):
         rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
         death = (ROOT/'code/game/mob/living/carbon/human/death.dm').read_text()
         runtime = (ROOT/'code/game/mob/living/carbon/human/nomads_adoption.dm').read_text()
-        for field in ("custom_company", "sales_registry", "faction_perms", "adoption_surname"):
+        # The company companion may read the registry to select and revalidate a
+        # charter target. Require each reference to be an explicit read; house
+        # authority still cannot alter shares, balances, listings, or permissions.
+        for line in rules.splitlines():
+            if "custom_company" in line:
+                self.assertTrue(
+                    line.strip() == "for (var/company in land.custom_company_nr)"
+                    or line.strip().endswith("|| !(company in land.custom_company_nr))"),
+                    line,
+                )
+        for field in ("sales_registry", "faction_perms", "adoption_surname"):
             self.assertNotIn(field, rules)
         role = rules.split('/obj/map_metadata/proc/player_house_role(', 1)[1].split('\n/', 1)[0]
         self.assertIn('roster[H.player_house_life_id]', role)
@@ -88,7 +98,7 @@ class MapSchemaMigration(unittest.TestCase):
 
     def test_house_recovery_requires_named_charter_consent_and_admin_reason(self):
         rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
-        recovery = rules.split('/client/proc/recover_player_house()', 1)[1]
+        recovery = rules.split('/client/proc/recover_player_house()', 1)[1].split('\n/', 1)[0]
         assignment = recovery.index('roster[life] = "steward"')
         for required in ('check_rights(R_ADMIN)', 'player_house_has_active_steward(id)',
                          'persistence_admission_changed(save_identity)', 'land != map',

@@ -342,7 +342,7 @@
 	if ((user.contents.Find(src) || (in_range(src, user) && istype(loc, /turf))))
 		if ((action == "vend") && (vend_ready) && (!currently_vending))
 
-			if (company_may_operate(user, owner) || find_company_member(user, owner))
+			if (company_sales_buyer_disqualified(user))
 				to_chat(user, "<span class='warning'>You can't buy from a company you operate or hold shares in.</span>")
 				status_error = FALSE
 				currently_vending = null
@@ -361,6 +361,10 @@
 						inp = R.amount
 					else if (inp<=1)
 						inp = 1
+
+				if (company_sales_buyer_disqualified(user))
+					to_chat(user, SPAN_WARNING("You can't buy from a company you operate or hold shares in."))
+					return
 
 				if (R.price <= 0)
 					vend(R, user, inp)
@@ -411,6 +415,9 @@
 		GLOB.nanomanager.update_uis(src)
 
 
+/obj/structure/vending/sales/proc/company_sales_buyer_disqualified(mob/user)
+	return company_may_operate(user, owner) || find_company_member(user, owner)
+
 // A buyer who pressed Buy before depositing enough finishes the purchase by
 // depositing the rest.
 /obj/structure/vending/sales/proc/finish_pending_purchase(mob/user)
@@ -418,7 +425,7 @@
 		GLOB.nanomanager.update_uis(src)
 		return FALSE
 	var/datum/data/vending_product/R = currently_vending
-	if (!(R in product_records) || R.amount < pending_amount || pending_amount < 1)
+	if (!(R in product_records) || R.amount < pending_amount || pending_amount < 1 || company_sales_buyer_disqualified(user))
 		currently_vending = null
 		pending_buyer = null
 		pending_amount = 0

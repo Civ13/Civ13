@@ -358,6 +358,14 @@
 	reagent_state = LIQUID
 	color = "#985b10"
 
+/datum/reagent/kerosene
+	name = "Kerosene"
+	id = "kerosene"
+	description = "A pale lamp fuel refined from crude petroleum."
+	taste_description = "oil"
+	reagent_state = LIQUID
+	color = "#f6e9c8"
+
 /datum/reagent/biodiesel
 	name = "Biodiesel"
 	id = "biodiesel"

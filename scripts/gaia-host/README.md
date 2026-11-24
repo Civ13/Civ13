@@ -319,6 +319,17 @@ until a group sets `relay_port`; until then nothing changes.
   region and holds the player up to 20 seconds until it reports `awake`. A
   frozen world still accepts TCP and the freeze watcher ignores loopback, so it
   never relies on a connection to thaw it.
+- `relay-disconnects.log` in the relay working directory (the group root
+  under the launcher) records one best-effort JSON row per finished routed
+  connection: Unix time, route port, observed socket side (`client` or
+  `world`), operation (`eof`, `recv_error`, or `send_error`), and elapsed
+  milliseconds after connecting to the world. The first observed socket event
+  wins, before the relay shuts both directions. A socket error identifies the
+  failing operation's socket, not necessarily the root cause.
+  No addresses, account keys, payloads or raw error text are included.
+  One background writer keeps up to two 1 MiB rotated files in addition to
+  the current log. Full queues or unavailable storage discard diagnostics,
+  not game traffic. Existing route and capture logging is unchanged.
 - `--capture` logs the first 64 bytes of every public connection as hex, to
   measure the real client login on the host. It may contain the player's key.
 
