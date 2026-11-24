@@ -61,6 +61,7 @@ var/global/list/persistence_world_time_stamps = persistence_world_time_stamps_ta
 	"next_calculate_run_delay" = list(/mob/living/human),
 	"next_calculate_tally" = list(/mob/living/human),
 	"next_emote" = list(/mob/living/human),
+	"player_house_offer_next" = list(/mob/living/human),
 	"next_look_at" = list(/mob/living/human),
 	"barracks_course_start" = list(/mob/living/human),
 	"revival_clock" = list(/mob/living/human),
