@@ -2634,7 +2634,9 @@ SUITES = {
                               'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
         'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
         'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
-        'code/processes/throwing.dm', 'code/modules/persistence/functions.dm')},
+        'code/processes/throwing.dm', 'code/modules/persistence/functions.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/human_defense.dm',
+                         'code/game/mob/living/living_defense.dm')},
     'los_context': {'files': ('tests/los_context/test_offline.py',
                               'tests/los_context/test_production.py',
                               'tests/los_context/test_tile_motion.py',

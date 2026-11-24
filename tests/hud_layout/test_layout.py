@@ -176,5 +176,15 @@ class HudLayoutWiring(unittest.TestCase):
             self.assertIn('/datum/preferences/proc/save_preferences', production)
 
 
+class AimingCrossBoundsTest(unittest.TestCase):
+    def test_both_cursor_axes_are_bounded_by_the_current_view(self):
+        body = read('code/_onclick/hud/base_screen_objects.dm').split(
+            '/obj/screen/aiming_cross/update_icon()', 1)[1].split('/obj/screen/aiming_cross/proc/update()', 1)[0]
+        self.assertIn('getviewsize(usr.client.view)', body)
+        for axis, dimension in (('x', 1), ('y', 2)):
+            with self.subTest(axis=axis):
+                self.assertIn(f'var/cross_{axis} = max(1, min(view_size[{dimension}], usr.client.mouse_screen_{axis}))', body)
+                self.assertIn(f'[cross_{axis}]:[usr.client.mouse_screen_pixel_{axis} - 16]', body)
+
 if __name__ == '__main__':
     unittest.main()
