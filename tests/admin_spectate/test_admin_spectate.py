@@ -106,6 +106,30 @@ class AdminSpectateTests(unittest.TestCase):
         life = proc_body(read('code/game/mob/observer/ghost/ghost.dm'), '/mob/observer/ghost/Life()')
         self.assertLess(life.index('client.admin_player_view'), life.index('client.images.Remove'))
 
+    def test_start_requires_same_live_player_before_and_after_aghost_wait(self):
+        start = proc_body(self.text, '/client/proc/admin_start_player_view(')
+        self.assertLess(start.index('!player_client || player_client.mob != M'), start.index('admin_ghost()'))
+        post_wait_guard = 'if (!player_client || QDELETED(M) || M.client != player_client || player_client.mob != M'
+        self.assertLess(start.index('sleep(2)'), start.index(post_wait_guard))
+        self.assertLess(start.index(post_wait_guard), start.index('admin_player_view.stop('))
+
+    def test_view_ends_instead_of_substituting_an_unoccupied_camera(self):
+        sync = proc_body(self.text, '/datum/admin_player_view/proc/sync()')
+        self.assertLess(sync.index('follow_player_client()'), sync.index('var/client/T = target_client'))
+        guard = sync.index('if (!T || T.mob != target || target.client != T)\n\t\treturn FALSE')
+        self.assertLess(guard, sync.index('viewer.eye = eye'))
+        self.assertLess(guard, sync.index('T.screen'))
+        self.assertLess(guard, sync.index('T.images'))
+        self.assertNotIn('plane_masters', sync)
+        follow = proc_body(self.text, '/datum/admin_player_view/proc/follow_player_client()')
+        self.assertIn('var/mob/M = target_client.mob', follow)
+        self.assertIn('ghost.ManualFollow(M)', follow)
+        tick = proc_body(self.text, '/datum/admin_player_view/proc/tick()')
+        self.assertIn('if (active && !sync())\n\t\tstop(TRUE, TRUE)', tick)
+        stop = proc_body(self.text, '/datum/admin_player_view/proc/stop(')
+        self.assertLess(stop.index('put_back('), stop.index('if (live_view_unavailable)'))
+        self.assertIn('Returned to your ghost view.', stop)
+
     def test_admin_map_view_button(self):
         text = read('code/modules/admin/verbs/admin_map.dm')
         self.assertIn("btn('View',function(){go('am=view&m='", text)
