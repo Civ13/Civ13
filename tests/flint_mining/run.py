@@ -20,6 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 FLINT = 'code/modules/1713/flint_mining.dm'
+NODULE_DEFINES = ('FLINT_NODULE_CHANCE 20', 'FLINT_NODULE_CHANCE_SANDY 5',
+                  'FLINT_NODULE_CHANCE_SHALLOW_SANDY 10')
 
 
 def read(path):
@@ -89,7 +91,7 @@ def source_checks():
         failures.append('mining_proc must roll flint nodules')
     elif call > mining.find('if (prob(copper_chance))'):
         failures.append('the flint roll must come before the ore rolls so every mined wall gets it')
-    if '#define FLINT_NODULE_CHANCE 20' not in flint or '#define FLINT_NODULE_CHANCE_SANDY 5' not in flint:
+    if any(f'#define {name}' not in flint.splitlines() for name in NODULE_DEFINES):
         failures.append('flint nodule chances changed; update docs/flint-mining.md with them')
     harvest = block(flint, '/mob/living/simple_animal/deer/harvest_products(')
     if '..()' not in harvest or '/obj/item/weapon/material/pickaxe/antler' not in harvest:
@@ -142,7 +144,7 @@ def source_checks():
 
 def native(byond_bin):
     flint = read(FLINT)
-    defines = ('FLINT_NODULE_CHANCE 20', 'FLINT_NODULE_CHANCE_SANDY 5', 'GUNFLINT_SHOTS_MIN 25',
+    defines = (*NODULE_DEFINES, 'GUNFLINT_SHOTS_MIN 25',
                'GUNFLINT_SHOTS_MAX 40', 'GUNFLINT_WORN_MISFIRE 50')
     gun = '/obj/item/weapon/gun/projectile/flintlock'
     procs = '\n'.join(['#define ' + name for name in defines] + [
