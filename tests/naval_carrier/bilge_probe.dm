@@ -270,15 +270,31 @@ var/naval_runtime_error = FALSE
 	var/went = FALSE
 	for (var/i = 1, i <= HULL_SINK_WARNINGS, i++)
 		went = H.sink_tick()
-	naval_check(went, "four half minutes later she goes down")
+	naval_check(went && H.depth_disabled, "four half minutes later the flooded hull cannot sail")
 	var/left = 0
 	for (var/x = 25, x <= 27, x++)
 		for (var/y = 30, y <= 39, y++)
 			left += hull_planks(locate(x, y, 2))
-	naval_check(left == 0 && QDELETED(cog_tiller) && QDELETED(cog_mast) && QDELETED(gun), "her floors, tiller, masts and gun are lost")
-	naval_check(!QDELETED(mate) && mate.z == 2 && mate.x == 25 && !QDELETED(carpenter) && !QDELETED(pail) && !QDELETED(chest) && !QDELETED(timber), "her crew, a bucket, a chest and loose wood are left in the water")
+	naval_check(left > 0 && !QDELETED(cog_tiller) && !QDELETED(cog_mast) && !QDELETED(gun), "without a valid lower level the complete hull stays in place")
+	naval_check(!QDELETED(mate) && mate.z == 2 && mate.x == 25 && !QDELETED(carpenter) && !QDELETED(pail) && !QDELETED(chest) && !QDELETED(timber), "the same crew and cargo are preserved")
 	var/turf/was_deck = locate(26, 36, 2)
-	naval_check(was_deck.water_level > 0 && !craft_at(was_deck) && !(H in hull_ledgers), "the sea closes over where she was and no ledger is left")
+	naval_check(craft_at(was_deck) == cog_tiller.craft && (H in hull_ledgers), "the existing hull retains its ledger and occupancy")
+	var/datum/craft_body/built/cog_body = cog_tiller.body()
+	for (var/turf/cog_surface in cog_body.cells())
+		var/turf/cog_seabed = locate(cog_surface.x, cog_surface.y, 1)
+		cog_seabed.ChangeTurf(/turf/floor/beach/water/deep/saltwater/underwater/sea_layer)
+	var/obj/structure/probe_rock/blocker = new(locate(27, 38, 1))
+	naval_check(!H.step_hull_depth() && cog_tiller.z == 2 && chest.z == 2, "one blocked destination prevents the whole descent")
+	qdel(blocker)
+	naval_check(H.step_hull_depth() && cog_tiller.z == 1 && chest.z == 1 && mate.z == 1 && cog_tiller.craft == G, "the complete ship, crew and cargo descend as the same objects")
+	cog_tiller.before_save()
+	var/list/saved_hull = json_decode(cog_tiller.hull_state)
+	var/list/saved_depth = saved_hull["ledger"]
+	naval_check(saved_depth["depth_disabled"] && saved_depth["water"] >= 119, "the existing tiller saves depth disablement and bilge")
+	H.holes = 0 // Assume an outside repair for this traversal-only fixture.
+	H.remove_water(H.capacity())
+	naval_check(H.step_hull_depth() && cog_tiller.z == 2 && mate.z == 2 && chest.z == 2 && !H.depth_disabled, "a patched and pumped hull refloats with contents intact")
+
 
 	// ---- Grounding in the shallows ----
 	for (var/x = 50, x <= 56, x++)
@@ -326,6 +342,7 @@ var/naval_runtime_error = FALSE
 	naval_check(hull_ledgers.len == count - 1 && !(S in hull_ledgers), "a struck hull gives up her ledger")
 	qdel(steamer)
 	qdel(tiller)
+	qdel(cog_tiller) // a foundered hull now stays afloat with her ledger
 	naval_check(!hull_ledgers.len, "no ledger outlives its tiller")
 
 // Small craft (naval/small_craft_leaks.dm): a raft or canoe stove in below

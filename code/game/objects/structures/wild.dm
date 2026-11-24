@@ -223,23 +223,21 @@ var/list/seed_list_jungle
 
 /obj/structure/wild/attackby(obj/item/W as obj, mob/user as mob)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
-	var/timed_chop = FALSE
 	if (is_tool(W, TOOL_HATCHET) || istype(W,/obj/item/weapon/material/boarding_axe) || istype(W,/obj/item/weapon/material/machete) || istype(W,/obj/item/weapon/material/machete1) || istype(W,/obj/item/weapon/material/twohanded/fireaxe) || istype(W,/obj/item/weapon/material/sword/kukri) || istype(W,/obj/item/weapon/material/sword/bolo) || istype(W,/obj/item/weapon/material/thrown/tomahawk) || istype(W,/obj/item/weapon/material/thrown/throwing_axe) || istype(W, /obj/item/weapon/material/shovel/trench/foldable/etool))
 		var/obj/item/weapon/material/HT = W
-		timed_chop = TRUE
 		user.visible_message(SPAN_DANGER("[user] begins to chop down \the [src]!"), SPAN_DANGER("You begin to chop down \the [src]!"))
 		playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
 		var/datum/resource_work_animation/work_animation = user.prepare_resource_work_animation(HT, src, work_delay(user, CHOP_TREE_TIME, WORK_CHOP, HT))
 		var/completed
 		try
-			completed = do_after(user, work_delay(user, CHOP_TREE_TIME, WORK_CHOP, HT), user.loc)
+			completed = do_after(user, work_delay(user, CHOP_TREE_TIME, WORK_CHOP, HT), src)
 		catch (var/exception/chopping_error)
 			if (work_animation)
 				work_animation.stop()
 			throw chopping_error
 		if (work_animation)
 			work_animation.stop()
-		if (completed)
+		if (completed && !QDELETED(user) && !QDELETED(src) && !QDELETED(HT) && loc && health > 0 && Adjacent(user) && HT.loc == user && (user.l_hand == HT || user.r_hand == HT))
 			health = 0
 			var/turf/fell_at = get_turf(src)
 			var/was_tree = istype(src, /obj/structure/wild/tree)
@@ -250,7 +248,7 @@ var/list/seed_list_jungle
 				H.adaptStat("strength", 1)
 				if (was_tree && QDELETED(src))
 					H.arcane_felled_tree(fell_at)
-			return
+		return
 	else
 		switch(W.damtype)
 			if ("fire")
@@ -261,8 +259,7 @@ var/list/seed_list_jungle
 				else
 					health -= W.force * 0.20
 	playsound(get_turf(src), 'sound/effects/wood_cutting.ogg', 100)
-	if (!timed_chop)
-		user.do_attack_animation(src)
+	user.do_attack_animation(src)
 	try_destroy()
 	..()
 
@@ -1429,10 +1426,13 @@ var/list/seed_list_jungle
 			if (src && branches >= 1)
 				to_chat(user, SPAN_NOTICE("You break off a branch from \the [src]."))
 				tutorial_event_for(user, "branch")
+				var/obj/structure/branch/B
 				if (icon == 'icons/obj/flora/deadtrees.dmi' || icon == 'icons/obj/flora/deadtrees_winter.dmi' || findtext(icon_state, "dead"))
-					new /obj/structure/branch/cleared(get_turf(src))
+					B = new /obj/structure/branch/cleared(get_turf(src))
 				else
-					new /obj/structure/branch(get_turf(src))
+					B = new /obj/structure/branch(get_turf(src))
+				// Bare seasonal art also belongs to living broadleaf trees.
+				B.cutting_viable = (type == /obj/structure/wild/tree/live_tree || type == /obj/structure/wild/tree/live_tree/snow) && health > 0 && radiation < 15
 				branches--
 				grow_branch()
 				return

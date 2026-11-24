@@ -57,6 +57,7 @@ Polymers from the bench can be made into useful items:
 
 - **Polyethylene and butyl rubber:** a closed plastic bottle. **Polypropylene:** a reusable storage bag. Either polymer makes a plastic sheet.
 - **Polypropylene** also makes cloth or a plastic comb; **polyethylene** makes a throwable play ball.
+- With **Industrial Plastics** (World War II), 4 units of either polymer granulate into a measure of thermoplastic pellets for the [plastics molding machine](Guide_to_Factory_Automation.md#plastics-molding-machine).
 - **Butyl** makes adhesive tape, stoppers and gaskets. Tape repairs drones and wraps a copper ingot into an insulated power cable; stoppers and gaskets seal small vials and drink bottles.
 - Using a copper ingot on a plastic sheet makes one piece of insulated power cable.
 - Plastic sheets also craft decorative plastic pipes, elbows and junctions. These are decoration only and do not carry liquids.

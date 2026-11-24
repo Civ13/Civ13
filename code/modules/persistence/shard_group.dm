@@ -268,6 +268,8 @@ var/global/datum/shard_group/shard_group = new
 	if(map)
 		.["ordinal_age"] = map.ordinal_age
 	.["train_stations"] = train_route_advertisements()
+	// Decoder capability, independent of whether this world records new births.
+	.["birth_chart_records"] = TRUE
 	// Nothing can arrive while the agent here is on hold (transfer_bridge.dm).
 	if(transfer_bridge && transfer_bridge.held())
 		.["transfers_held"] = 1
@@ -322,6 +324,7 @@ var/global/datum/shard_group/shard_group = new
 		peer["players"] = null
 		return FALSE
 	peer["state"] = "UP"
+	peer["birth_chart_records"] = (reply["birth_chart_records"] == TRUE)
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
@@ -489,6 +492,15 @@ var/global/datum/shard_group/shard_group = new
 		return FALSE
 	LAZYREMOVE(polls_waiting, id)
 	return record(id, poll.answer, world.time)
+
+// Only a fresh, identity-matched answer from the actual receiving world can
+// admit an escrow with a detailed birth chart. The doorman cache may outlive a
+// worker, and poll_peer keeps stale state on a timeout: neither is a receipt.
+/datum/shard_group/proc/peer_accepts_birth_chart_records(id)
+	if(!poll_peer(id))
+		return FALSE
+	var/list/peer = peers[id]
+	return islist(peer) && peer["state"] == "UP" && peer["birth_chart_records"] == TRUE
 
 // One world.Export to a peer, run apart so the caller can stop waiting.
 /datum/shard_peer_poll

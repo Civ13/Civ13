@@ -19,6 +19,17 @@ On Nomads maps a few ripe wild crops grow on their own in open countryside, away
 
 Chopping down a tree on a Nomads map leaves a **tree stump**. Outside winter, a stump slowly grows back into the same kind of tree, usually over a few hours, while nobody is nearby. To keep cleared land clear, dig the stump out with any shovel or chop it with a hatchet. Either way the roots give you 2 wood logs.
 
+### Planting trees
+
+You can grow new timber trees on a ploughed plot under open sky, away from roofs, walls and other crops.
+
+- **From seed:** forage tree seeds from small bushes with a kitchen knife on Help intent, then use them on the plot.
+- **From a cutting:** with an empty hand on Harm intent, break a branch off a living broadleaf tree. Switch to Help intent and click the fallen branch to pick it up as a **tree cutting**, then use it on the plot. Dead trees, pines and palms do not give cuttings. A plot that is not suitable does not use up the seed or cutting.
+
+Water and fertilise the seedling like any crop. It grows through six stages, about a minute each while the season suits it, and then becomes an ordinary tree you can chop for logs. Winter, drought, snowstorms and sandstorms stop or kill it. A shovel or spade uproots a seedling, and gives nothing back.
+
+If you would rather have a stick, click the cutting in your hand to set it down, Grab to strip its leaves and Harm to trim it. A trimmed stick can no longer be planted.
+
 To farm, you will require some basic tools.
 
 <table>

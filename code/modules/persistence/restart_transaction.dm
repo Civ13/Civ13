@@ -321,7 +321,7 @@ var/global/list/persistence_freeze_notified = list()
 	var/called_off = FALSE
 	if(handover)
 		handover_state = "saving"
-		if(countdown && !call(countdown)("update", clients.len && isnum(warn_seconds) ? warn_seconds : 0, "moving to an updated build"))
+		if(countdown && !call(countdown)("update", clients.len && isnum(warn_seconds) ? warn_seconds : 0, "moving to an updated build", TRUE, TRUE, TRUE))
 			called_off = TRUE
 		// The standby's load validates this save; see validation_record_matches.
 		map_storage.handover_candidate = !called_off
@@ -331,7 +331,7 @@ var/global/list/persistence_freeze_notified = list()
 	// busy already blocks other saves.
 	else if(countdown && !prewarned)
 		var/kind = (!isnull(expected_persistence) && expected_persistence == 0) ? "fresh" : (stay_down ? "shutdown" : (shutdown ? "maintenance" : "restart"))
-		if(!call(countdown)(kind, clients.len ? (isnum(warn_seconds) ? warn_seconds : 60) : 0, stopped_by ? "requested by [stopped_by]" : null))
+		if(!call(countdown)(kind, clients.len ? (isnum(warn_seconds) ? warn_seconds : 60) : 0, stopped_by ? "requested by [stopped_by]" : null, TRUE, TRUE, TRUE))
 			called_off = TRUE
 		else if(clients.len)
 			to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will [stay_down || shutdown ? "shut down" : "restart"] when the save completes.</b></font>")
@@ -346,6 +346,10 @@ var/global/list/persistence_freeze_notified = list()
 		to_chat(world, "<font color='yellow' size=4><b>Saving the world now. The server will [stay_down ? "shut down" : "restart"] when the save completes.</b></font>")
 	try
 		if(called_off) throw EXCEPTION("The planned restart was called off by an admin; the server keeps running")
+		// A host may have announced maintenance separately before sending the operation.
+		if(prewarned && !handover)
+			var/vehicle_wait = text2path("/proc/persistence_wait_for_safe_vehicle_state")
+			if(vehicle_wait) call(vehicle_wait)()
 		if(!isnull(expected_persistence) && expected_persistence != !!persistence_round_active()) throw EXCEPTION("Persistence mode changed before save")
 		diagnostic_phase = "save"
 		if(!save_generation_settled()) throw EXCEPTION("World save failed; server remains running")
@@ -391,7 +395,7 @@ var/global/list/persistence_freeze_notified = list()
 	catch(var/exception/e)
 		diagnostic_phase = "failure_cleanup"
 		var/clear_notice = text2path("/proc/planned_shutdown_clear")
-		if(clear_notice) call(clear_notice)()
+		if(clear_notice && !called_off) call(clear_notice)() // a newer notice may have replaced ours
 		if(handover)
 			handover_state = null
 			map_storage.handover_candidate = FALSE

@@ -11,6 +11,7 @@
 	flammable = TRUE
 	var/leaves = TRUE
 	var/branched = TRUE
+	var/cutting_viable = FALSE
 
 /obj/structure/branch/cleared
 	name = "cleared branch"
@@ -18,7 +19,30 @@
 	icon_state = "cleared_stick"
 	leaves = FALSE
 
+/obj/structure/branch/examine(mob/user, distance = -1)
+	. = ..()
+	if (cutting_viable && branched)
+		to_chat(user, SPAN_NOTICE("Pick it up with an empty hand on Help intent to plant it as a cutting. Removing its small twigs makes it unusable for planting."))
+
+/obj/structure/branch/proc/pick_up_cutting(mob/living/human/H)
+	if (QDELETED(src) || !cutting_viable || !branched || !istype(H) || H.incapacitated() || H.get_active_hand() || !isturf(H.loc) || !isturf(loc) || !H.Adjacent(src))
+		return FALSE
+	if (persistence_active_operation || persistence_save_in_progress || persistence_load_recovery_required)
+		return FALSE
+	var/obj/item/tree_cutting/C = new(loc)
+	C.leaves = leaves
+	if (!leaves)
+		C.icon_state = "cleared_stick"
+	if (!H.put_in_active_hand(C))
+		qdel(C)
+		return FALSE
+	qdel(src)
+	return TRUE
+
 /obj/structure/branch/attack_hand(mob/living/human/H)
+	if (H.a_intent == I_HELP && cutting_viable)
+		pick_up_cutting(H)
+		return
 	if (H.a_intent == I_GRAB && leaves)
 		if (!H.may_do_after)
 			return
@@ -52,6 +76,51 @@
 		return
 	else
 		..()
+
+// The portable form is not a crafted stick. Setting it down preserves the
+// original leaf/wood processing path without making finished sticks plantable.
+/obj/item/tree_cutting
+	name = "tree cutting"
+	desc = "An intact broadleaf branch. Use it on an open ploughed plot to plant it, or click it in your active hand to set it down for stripping."
+	icon = 'icons/obj/old_weapons.dmi'
+	icon_state = "leaved_stick"
+	item_state = "debranched_stick"
+	w_class = ITEM_SIZE_SMALL
+	flammable = TRUE
+	var/leaves = TRUE
+
+/obj/item/tree_cutting/attack_self(mob/user)
+	if (!can_handle_cutting(user))
+		return
+	var/obj/structure/branch/B
+	if (leaves)
+		B = new /obj/structure/branch(user.loc)
+	else
+		B = new /obj/structure/branch/cleared(user.loc)
+	B.cutting_viable = TRUE
+	qdel(src)
+	to_chat(user, SPAN_NOTICE("You set down the branch. Grab to strip any leaves, then Harm to trim it into a stick."))
+
+/obj/item/tree_cutting/proc/can_handle_cutting(mob/user)
+	return !QDELETED(src) && ishuman(user) && !user.incapacitated() && isturf(user.loc) && loc == user && user.get_active_hand() == src && !persistence_active_operation && !persistence_save_in_progress && !persistence_load_recovery_required
+
+/obj/item/tree_cutting/afterattack(atom/target, mob/user, proximity_flag, params)
+	if (proximity_flag && isturf(target))
+		plant_cutting(target, user)
+
+/obj/item/tree_cutting/proc/plant_cutting(turf/T, mob/user)
+	if (!can_handle_cutting(user) || !T || !user.Adjacent(T))
+		return FALSE
+	var/site_error = tree_planting_error(T)
+	if (site_error)
+		to_chat(user, SPAN_WARNING(site_error))
+		return FALSE
+	new /obj/structure/farming/plant/tree(T)
+	var/mob/living/human/H = user
+	H.adaptStat("farming", 1)
+	qdel(src)
+	to_chat(user, SPAN_NOTICE("You plant the tree cutting. Keep it watered as it grows."))
+	return TRUE
 
 /obj/item/weapon/branch
 	name = "stick"
@@ -124,16 +193,23 @@
 	if (!completed || !axe_actor_connected(user) || !axe_parts_valid(user, head, binding))
 		return
 	var/weak_binding = istype(binding, /obj/item/stack/crude_twine)
+	var/recovered_head_max = head.recovered_hatchet_head_max
+	var/recovered_head_hp = head.recovered_hatchet_head_hp
 	if (!binding.use(1))
 		return
 	// Invalidate the reusable head before creating the completed tool.
 	head.sharpened = FALSE
 	qdel(head)
 	var/obj/item/weapon/material/hatchet/tribal/flint/axe = new(get_turf(user))
+	axe.init_hatchet_wear()
 	if (weak_binding)
-		axe.maxhealth = max(1, axe.maxhealth * 0.25)
-		axe.health = axe.maxhealth
+		axe.hatchet_handle_max = max(1, axe.hatchet_handle_max * 0.25)
+		axe.hatchet_handle_hp = axe.hatchet_handle_max
 		axe.desc += " Its crude grass binding wears out quickly."
+	if (recovered_head_max)
+		axe.hatchet_head_max = recovered_head_max
+		axe.hatchet_head_hp = recovered_head_hp
+	axe.sync_hatchet_wear()
 	to_chat(user, SPAN_NOTICE("You finish making the bound flint axe."))
 	qdel(src)
 	offer_crafted_axe_to_active_hand(user, axe)

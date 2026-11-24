@@ -96,7 +96,7 @@
 // adds none, while the shelf still releases the load.
 /mob/living/human/proc/scuba_nitrogen_step(turf/T, breathing = TRUE)
 	var/before = nitrogen_load
-	if (sea_zone_of(T) >= SEA_ZONE_OPEN)
+	if (hull_depth_zone(T) >= SEA_ZONE_OPEN)
 		if (!breathing)
 			return
 		nitrogen_load = min(SCUBA_NITROGEN_MAX, nitrogen_load + SCUBA_NITROGEN_OPEN)

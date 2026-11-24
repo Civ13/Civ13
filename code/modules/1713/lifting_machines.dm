@@ -201,6 +201,23 @@ var/global/list/wheeled_load_types = list(
 		choices["Lower it to the level below"] = bottom
 	return choices
 
+// Powered cranes can admit a narrower recovery route without changing ordinary hoists.
+/obj/structure/workshop_machine/shear_legs/proc/haul_below_column(turf/source)
+	return edge_open_air(locate(source.x, source.y, z))
+
+/obj/structure/workshop_machine/shear_legs/proc/haul_below_load(obj/load, turf/source)
+	return TRUE
+
+/obj/structure/workshop_machine/shear_legs/proc/haul_route_valid(obj/load, turf/destination)
+	var/turf/source = load.loc
+	if (!istype(source))
+		return FALSE
+	if (destination.z != z || source.z == z)
+		return TRUE
+	if (source.z != multiz_level_below(z) || abs(source.x - x) > reach || abs(source.y - y) > reach || abs(destination.x - x) > reach || abs(destination.y - y) > reach)
+		return FALSE
+	return haul_below_column(source) && haul_below_load(load, source)
+
 // Unfastened objects on the level below, under open air within reach.
 /obj/structure/workshop_machine/shear_legs/proc/loads_below()
 	var/list/found = list()
@@ -209,10 +226,10 @@ var/global/list/wheeled_load_types = list(
 	if (!centre)
 		return found
 	for (var/turf/T in range(reach, centre))
-		if (!edge_open_air(locate(T.x, T.y, z)))
+		if (!haul_below_column(T))
 			continue
 		for (var/obj/O in T)
-			if (!sling_problem(O))
+			if (!sling_problem(O) && haul_below_load(O, T))
 				found["[O.name] ([length(found) + 1])"] = O
 	return found
 
@@ -262,6 +279,9 @@ var/global/list/wheeled_load_types = list(
 	var/obj/load = choice ? loads[choice] : null
 	if (!load || busy || !hauler_ready(H) || QDELETED(load) || sling_problem(load))
 		return
+	var/turf/source = load.loc
+	if (!istype(source) || source.z != multiz_level_below(z) || !haul_route_valid(load, landing))
+		return
 	haul(H, load, landing)
 
 /obj/structure/workshop_machine/shear_legs/attackby(obj/item/I, mob/living/human/H)
@@ -273,7 +293,7 @@ var/global/list/wheeled_load_types = list(
 
 // One haul: the load leaves its tile only when the whole wait succeeds.
 /obj/structure/workshop_machine/shear_legs/proc/haul(mob/living/human/H, obj/load, turf/destination)
-	if (busy || !hauler_ready(H) || !destination || !persistence_movement_allowed(load, destination))
+	if (busy || !hauler_ready(H) || !destination || !haul_route_valid(load, destination) || !persistence_movement_allowed(load, destination))
 		return FALSE
 	var/turf/start = load.loc
 	busy = TRUE
@@ -285,7 +305,7 @@ var/global/list/wheeled_load_types = list(
 	if (QDELETED(src))
 		return FALSE
 	icon_state = base_state
-	if (!done || !hauler_ready(H) || QDELETED(load) || load.loc != start || sling_problem(load) || !ledge_landing_clear(destination))
+	if (!done || !hauler_ready(H) || QDELETED(load) || load.loc != start || sling_problem(load) || !haul_route_valid(load, destination) || !ledge_landing_clear(destination))
 		to_chat(H, SPAN_WARNING("The load settles back where it was."))
 		return FALSE
 	if (load.pulledby)

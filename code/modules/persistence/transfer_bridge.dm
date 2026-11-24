@@ -129,6 +129,16 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	// way of leaving (trail, ship, aircraft, train, admin send, trade) passes
 	// through here, so nothing sets off for a held land.
 	if(shard_group.peer_transfers_held(peer)) return null
+	// All trips (including every passenger's payload) share this boundary. Do
+	// not record custody before the actual destination confirms it can keep
+	// the birth record: an older receiver would silently keep just the sign.
+	for(var/payload in payloads)
+		// Authoritative world-generated JSON uses this literal field name. A
+		// false positive fails safe; ordinary transfers need no extra poll.
+		if(istext(payload) && findtextEx(payload, "\"chart_record\""))
+			if(!shard_group.peer_accepts_birth_chart_records(peer) || shard_group.peer_transfers_held(peer))
+				return null
+			break
 	return begin_effect("/escrow", list("peer" = peer, "payloads" = payloads, "fast" = fast ? 1 : 0))
 
 /datum/transfer_bridge/proc/begin_import(transfer_id, fast = FALSE)

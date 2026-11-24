@@ -139,30 +139,50 @@
 	// would refuse forever; the player is evidently awake, so clear it.
 	if (inducedSSD)
 		inducedSSD = FALSE
+	var/turf/sleep_turf = get_turf(src)
 	var/found = FALSE
-	for (var/obj/structure/bed/B in get_turf(src))
+	for (var/obj/structure/bed/B in sleep_turf)
 		if (B)
 			found = TRUE
 	if (!found)
 		to_chat(src, SPAN_RED("You need to be over a bed."))
 		return
-	if (persistence_bed_return_enabled() && saved_bed_taken_here())
+	var/registered_bed_sleep = persistence_bed_return_enabled()
+	if (registered_bed_sleep && saved_bed_taken_here())
 		to_chat(src, SPAN_RED("This bed is assigned to someone else. Sleep in an unassigned bed or your own."))
 		return
-	if (persistence_bed_return_enabled())
+	if (registered_bed_sleep)
 		var/refusal = saved_bed_sleep_refusal()
 		if (refusal)
 			to_chat(src, SPAN_RED(refusal))
 			log_game("Sleep refused for [key_name(src)] at [x],[y],[z]: [refusal]")
 			return
+	var/sleep_delay = 2 MINUTES
+	var/sleep_delay_text = "two minutes"
 	var/sleep_message = "Are you sure you want to sleep for a while? This takes two minutes. Your body stays here and can be harmed, but you get hungry much more slowly."
-	if (persistence_bed_return_enabled())
-		sleep_message = "Sleep here and assign this bed for saved-character returns? You can have only one bed, so any bed assigned to you before is released. This takes two minutes. Your body stays here and can be harmed. Only a completed world save preserves it on disk."
-	if (offline_sleep_protection_map_allowed())
+	if (registered_bed_sleep)
+		// Admission above already requires an eligible stationary bed. Choose
+		// the wait now; the existing live logout protection remains separate.
+		var/protection_eligible = offline_sleep_protection_map_allowed() && offline_sleep_province_owned()
+		if (!protection_eligible)
+			sleep_delay = 10 SECONDS
+			sleep_delay_text = "10 seconds"
+		sleep_message = "Sleep here and assign this bed for saved-character returns? You can have only one bed, so any bed assigned to you before is released. This takes " + sleep_delay_text + ". Your body stays here. Only a completed world save preserves it on disk."
+		if (protection_eligible)
+			sleep_message += " Your body can be harmed while connected. If this location still qualifies when you log off after falling asleep, nobody can harm, rob or move you while you are protected."
+		else
+			sleep_message += " This location does not currently grant offline protection. Your body can still be harmed here after you log off."
+	else if (offline_sleep_protection_map_allowed())
 		sleep_message += " If you belong to a faction and this bed is in a province your faction holds, logging off once you are asleep keeps your body safe here: nobody can harm, rob or move it until you come back."
 	if (WWinput(src, sleep_message, "Sleep", "Yes", list("Yes","No")) == "Yes")
-		to_chat(src, SPAN_NOTICE("You will start sleeping in two minutes."))
-		if (do_after(src, 2 MINUTES, src, FALSE, incapacitation_flags = (INCAPACITATION_DEFAULT & ~INCAPACITATION_DISABLED) | INCAPACITATION_DISABLED_NO_REST))
+		if (registered_bed_sleep)
+			if (!sleeping_client || client != sleeping_client || sleeping_client.mob != src)
+				return
+			if (get_turf(src) != sleep_turf)
+				to_chat(src, SPAN_NOTICE("You are no longer at the bed where you started. Use Sleep again."))
+				return
+		to_chat(src, SPAN_NOTICE("You will start sleeping in " + sleep_delay_text + "."))
+		if (do_after(src, sleep_delay, src, FALSE, incapacitation_flags = (INCAPACITATION_DEFAULT & ~INCAPACITATION_DISABLED) | INCAPACITATION_DISABLED_NO_REST))
 			if (!sleeping_client || client != sleeping_client || sleeping_client.mob != src)
 				return
 			if (sleeping)
@@ -497,8 +517,28 @@
 		bends_tick() // decompression sickness (scuba.dm)
 	var/turf/T = get_turf(src)
 	if (!T) return // nowhere to drown or redraw: a body between places (persistence_load_holds_life)
+	// A flooded built deck is open sea, not a pressure hull. Crew carried
+	// down with it can swim clear on their remaining breath, including after
+	// loading a saved hull. Never refill an active breath budget here.
+	var/on_sunken_deck = submerged_built_hull_deck(T)
+	if (on_sunken_deck && stat != DEAD && !seabed_diving_rating() && sunken_hull_pressure_breath(T, TRUE))
+		free_diving = FALSE
+		drowning = FALSE
+		water_overlay = FALSE
+		if (plane == FLOOR_PLANE)
+			plane = GAME_PLANE
+		if (!on_fire)
+			overlays_standing[25] = null
+		swim_rest()
+		life_water_refresh()
+		return
+	var/exposed_seabed = on_sunken_deck || (sea_layer_cell(T) && !T.iscovered())
+	if (on_sunken_deck && !free_diving && !seabed_diving_rating() && stat != DEAD)
+		free_diving = TRUE
+		if (swim_breath < 0)
+			swim_breath = max(1, round(swim_breath_max() / 2))
 	// A sealed diver walks the seabed (seabed.dm) and breathes from the bottle.
-	if (sea_layer_cell(T) && !T.iscovered() && seabed_diving_rating())
+	if (exposed_seabed && seabed_diving_rating())
 		drowning = FALSE
 		if (water_overlay)
 			water_overlay = FALSE
@@ -510,7 +550,7 @@
 		return
 	// A free diver on the seabed, on a held breath (free_diving.dm).
 	if (free_diving)
-		if (sea_layer_cell(T) && !T.iscovered() && !seabed_diving_rating())
+		if (exposed_seabed && !seabed_diving_rating())
 			free_dive_tick(T)
 			life_water_refresh()
 			return

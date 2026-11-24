@@ -8,11 +8,12 @@
 	desc = "A basic engine."
 	weight = 30
 	var/defaultmaxpower = 0
-	var/tmp/run_generation = 0
 	starting_snd = 'sound/machines/steam_starting.ogg'
 	running_snd = 'sound/machines/steam_loop.ogg'
 	ending_snd = 'sound/machines/steam_ending.ogg'
 /obj/structure/engine/external/turn_on(var/mob/user = null)
+	if (!ship_engine_start_allowed(user))
+		return
 	var/pwd=0
 	var/hts=0
 	for(var/obj/structure/heatsource/HS in range(1,src))
@@ -25,10 +26,11 @@
 			playsound(loc, starting_snd, 35, FALSE, 3)
 			on = TRUE
 			run_generation++
+			var/generation = run_generation
 			update_icon()
 			running()
 			spawn(40)
-				running_sound()
+				running_sound(generation)
 			return
 	else if (pwd && !hts)
 		to_chat(user, "<span class = 'notice'>You need to light the heat source first.</span>")
@@ -41,6 +43,9 @@
 
 /obj/structure/engine/external/running()
 	if (!on)
+		return
+	if (waterlogged)
+		ship_waterlog()
 		return
 	var/pwd=0
 	for(var/obj/structure/heatsource/HSI in range(1,src))

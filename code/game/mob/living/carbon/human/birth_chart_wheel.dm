@@ -21,6 +21,10 @@
 /mob/living/human/proc/record_birth_chart()
 	if (birth_chart_record || persistence_restored || !map || !(map.nomads || map.civilizations))
 		return
+	// Stage shared-world capture until the region group is running compatible receivers.
+	// Reading and restoring an existing record do not depend on the capture flag.
+	if (shard_group.enabled && !config.birth_chart_records)
+		return
 	var/region = shard_group.region ? shard_group.name : map.title
 	region = istext(region) && length(region) && length(region) <= 64 ? region : null
 	var/day = null

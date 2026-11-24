@@ -58,9 +58,12 @@ The bakelizer cooks petroleum into plastic sheets. Use its **Change Setting** ve
 | --- | --- | --- | --- |
 | Plastic | Always | Plastic sheets | Comes out as sheets |
 | Phenolic resin | Always | 10 units of liquid resin | Click with an empty container |
+| Thermoplastic pellets | World War II, needs Industrial Plastics | 1 measure of pellets | Remove verb |
 | Nylon thread | World War II | 2 skeins of nylon thread | Remove verb |
 | Epoxy | Cold War | 10 units of epoxy | Click with an empty container |
 | Photopolymer | Digital Age | 2 bottles of photopolymer resin | Remove verb |
+
+Turn the bakelizer off before changing its setting. Each batch takes a minute and needs cable power. Thermoplastic pellets feed the plastics molding machine; see the [Guide to Factory Automation](Guide_to_Factory_Automation.md#plastics-molding-machine).
 
 ## Resin laminate
 

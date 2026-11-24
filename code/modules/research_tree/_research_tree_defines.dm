@@ -62,6 +62,7 @@
 // and the skill gained per bench tick worked and per chapter studied.
 #define SCHOLAR_LEVEL_PER_TIER 12
 #define SCHOLAR_MAX_LEVEL 100
+#define SCHOLAR_RELATED_SHARE 0.5 // what a subject teaches its related discipline (scholar_node_related)
 #define SCHOLAR_RESEARCH_GAIN 0.02 // per bench tick the researcher works
 // Research process interval (the pace every research estimate assumes), and
 // the most intervals one bench visit may catch up after a slow scheduler pass.

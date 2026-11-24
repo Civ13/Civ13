@@ -76,11 +76,35 @@ var/global/planned_shutdown_serial = 0 // bumped by every new countdown and by a
 	catch
 		world.log << "Shutdown notice could not be queued."
 
+// Providers report a present hazard that needs an active pilot to respond,
+// not vehicle movement alone. Isolated lifecycle fixtures omit the vehicle systems.
+/proc/vehicle_scheduled_save_risk()
+	var/static/capsize_risk = text2path("/proc/any_crew_at_capsize_risk")
+	var/static/flight_risk = text2path("/proc/any_flight_at_disconnect_risk")
+	if(flight_risk && call(flight_risk)()) return TRUE
+	return capsize_risk && call(capsize_risk)()
+
+// Take at most two more minutes so even a second vehicle entering danger cannot
+// keep a routine save or shutdown waiting indefinitely. Call before any freeze.
+/proc/persistence_wait_for_safe_vehicle_state(notice_serial = null)
+	if(!vehicle_scheduled_save_risk()) return TRUE
+	var/deadline = world.time + 1200
+	if(!isnull(notice_serial))
+		planned_shutdown_at = deadline
+	to_chat(world, "<font color='yellow'><b>Waiting up to two minutes for actively piloted vehicles to clear immediate danger before saving. Reach safety now.</b></font>")
+	while(world.time < deadline)
+		sleep(min(50, deadline - world.time))
+		if(!isnull(notice_serial) && planned_shutdown_serial != notice_serial) return FALSE
+		if(!vehicle_scheduled_save_risk()) break
+	if(!isnull(notice_serial))
+		planned_shutdown_at = world.time
+	return TRUE
+
 // Counts down seconds and returns TRUE when the time is up, FALSE when it was called off
 // (planned_shutdown_cancel) or replaced by a newer countdown. With nobody online the
 // caller passes 0: Discord still hears of it and the stop goes ahead at once.
 // warn_players FALSE leaves the chat to the caller (the maintenance request has its own).
-/proc/planned_shutdown_countdown(kind, seconds, reason = null, warn_players = TRUE, cancellable = TRUE)
+/proc/planned_shutdown_countdown(kind, seconds, reason = null, warn_players = TRUE, cancellable = TRUE, defer_for_vehicle_risk = FALSE)
 	seconds = planned_shutdown_seconds(seconds, 0)
 	var/serial = ++planned_shutdown_serial
 	var/at = world.time + seconds * 10
@@ -89,10 +113,10 @@ var/global/planned_shutdown_serial = 0 // bumped by every new countdown and by a
 	planned_shutdown_cancellable = cancellable
 	world.log << "Planned [planned_shutdown_noun(kind)] ([kind]) in [seconds] s[istext(reason) ? ": [reason]" : ""]."
 	planned_shutdown_webhook("scheduled", kind, seconds, reason)
-	if(!seconds)
+	if(!seconds && !defer_for_vehicle_risk)
 		planned_shutdown_cancellable = FALSE
 		return TRUE
-	if(warn_players) planned_shutdown_say(kind, seconds, TRUE)
+	if(warn_players && seconds) planned_shutdown_say(kind, seconds, TRUE)
 	for(var/mark in list(1800, 900, 600, 300, 120, 60, 30, 10, 0))
 		if(mark >= seconds) continue
 		// Wake every second, so a called-off countdown hands back at once.
@@ -101,6 +125,7 @@ var/global/planned_shutdown_serial = 0 // bumped by every new countdown and by a
 			if(planned_shutdown_serial != serial) return FALSE
 		if(planned_shutdown_serial != serial) return FALSE
 		if(warn_players && mark) planned_shutdown_say(kind, mark)
+	if(defer_for_vehicle_risk && !persistence_wait_for_safe_vehicle_state(serial)) return FALSE
 	planned_shutdown_cancellable = FALSE // the stop is under way now
 	return TRUE
 

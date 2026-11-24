@@ -76,12 +76,23 @@
 /obj/item/weapon/material/part/proc/is_work_tool_head()
 	return result == /obj/item/weapon/material/pickaxe || result == /obj/item/weapon/material/shovel || result == /obj/item/weapon/material/hatchet
 
+// Shared whitelist for newly forged and genuinely restored work-tool heads.
+/proc/note_craftsman_head_work(mob/user, obj/item/item, lesson, effort)
+	var/obj/item/weapon/material/part/P = item
+	var/mob/living/human/H = user
+	if (!istype(H) || !istype(P) || QDELETED(P) || !P.material || P.health <= 0 || !P.is_work_tool_head())
+		return
+	H.note_craftsman_work(lesson, P.result, effort)
+
 // No waits or prompts between validation and consumption: a second callback
 // cannot reuse a queued-for-deletion ingredient or produce another output.
 /obj/item/weapon/material/part/proc/assemble_work_tool(obj/item/weapon/material/handle/HANDLE, mob/living/human/H)
 	if (!is_work_tool_head() || QDELETED(src) || QDELETED(HANDLE) || !istype(HANDLE) || !istype(H))
 		return
 	if (!crafting_recipe_allowed(H, "[result]")) return
+	if (istype(src, /obj/item/weapon/material/part/axehead/hatchet) && health <= 0)
+		to_chat(H, SPAN_WARNING("Sharpen the worn head before fitting a new handle."))
+		return
 	if (!material || !HANDLE.material || health <= 0 || maxhealth <= 0 || HANDLE.health <= 0 || HANDLE.maxhealth <= 0)
 		return
 	if (HANDLE.loc != H || (H.l_hand != HANDLE && H.r_hand != HANDLE) || get_dist(H, src) > 1)
@@ -98,3 +109,15 @@
 	qdel(HANDLE)
 	qdel(src)
 	return M
+
+// A recoverable head can always be honed at least once, without restoring
+// material already lost to earlier sharpenings or giving it a new ceiling.
+/obj/item/weapon/material/part/axehead/hatchet/too_worn_to_repair(strain = 0)
+	if (material && !material.is_brittle() && material.name != "flint" && health <= 0 && maxhealth >= 1)
+		return FALSE
+	return ..()
+
+/obj/item/weapon/material/part/axehead/hatchet/repair_wear(amount, strain = 0)
+	if (material && !material.is_brittle() && material.name != "flint" && health <= 0 && maxhealth >= 1)
+		strain = min(strain, maxhealth - 1)
+	return ..(amount, strain)

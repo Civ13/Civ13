@@ -362,7 +362,7 @@ its compiler/test artifacts. A previous green SHA or a missing local compiler is
 not acceptance. Do not install native tools or run held smoke just to fill this
 gap. Publication, deployment and merge remain separate authorization decisions.
 
-For a verified hosted build infrastructure failure, the [local-build policy](../CODEX.md#local-build-after-a-hosted-infrastructure-failure)
+For a verified hosted build infrastructure failure, the [local-build policy](../.agents/skills/civ13-pr-preflight/SKILL.md#local-build-after-a-hosted-infrastructure-failure)
 allows documented successful equivalent local compilation of the exact revision
 to satisfy compilation evidence. This does not change selection, receipt or
 aggregate verdicts: failed CI stays failed. Other required checks, integrity

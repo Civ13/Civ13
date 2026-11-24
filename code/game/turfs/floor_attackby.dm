@@ -970,7 +970,7 @@
 			var/material/M = get_material_by_name("zinc")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>calamine</font></b> (zinc ore)!"))
 		found_ore = TRUE
-	if (prob(coal_chance))
+	if (prob(coal_chance) && coal_chance)
 		var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
 		mineral.amount = rand(24,32)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -978,7 +978,7 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#A9A9A9><b>coal</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(saltpeter_chance))
+	if (prob(saltpeter_chance) && saltpeter_chance)
 		var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -986,7 +986,7 @@
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(sulphur_chance))
+	if (prob(sulphur_chance) && sulphur_chance)
 		var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -995,7 +995,7 @@
 			if (H)
 				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
 		found_ore = TRUE
-	if (prob(lead_chance))
+	if (prob(lead_chance) && lead_chance)
 		var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
 		mineral.amount = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))

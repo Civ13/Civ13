@@ -79,8 +79,8 @@ class Uprooting(unittest.TestCase):
         self.assertIn('qdel(src)\n\t\treturn',body)
         ordinary=proc(FARM,'/obj/structure/farming/plant/attackby(')
         self.assertIn('/obj/item/weapon/material/hatchet',ordinary)
-        self.assertIn('spawn_seeds()',ordinary)
-        self.assertIn('spawn_produce()',ordinary)
+        self.assertIn('spawn_seeds(bonus)', ordinary)
+        self.assertIn('spawn_produce(bonus)', ordinary)
 
     def test_declared_open_and_folded_hierarchy_is_distinct(self):
         for path in ('/obj/item/weapon/material/shovel/spade/wood',
