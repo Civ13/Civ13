@@ -91,6 +91,19 @@ class AdminPlayerPanelTests(unittest.TestCase):
                     if raw in row and 'html_encode(' not in row and '!=' not in row:
                         self.fail(row.strip())
 
+    def test_profile_link_uses_raw_account_key_and_escapes_the_path(self):
+        text = SOURCE.read_text(encoding='utf-8-sig')
+        panel = body(text, '/datum/admins/proc/player_options_html(')
+        self.assertRegex(panel, r"admin_byond_profile_url\(M\.key\)\n\tif \(profile\)\n\t\tbody \+= .*href='\[html_encode\(profile\)\]'")
+        self.assertIn("rel='noopener noreferrer'>BYOND Profile</a>", panel)
+        self.assertNotIn('admin_byond_profile_url(', body(text, '/datum/admins/proc/player_list_html('))
+        helper = body(text, '/proc/admin_byond_profile_url(')
+        self.assertIn('!istext(account_key) || !ckey(account_key) || IsGuestKey(account_key)', helper)
+        self.assertIn('copytext(account_key, 1, 2) == "@"', helper)
+        self.assertIn('replacetext(url_encode(account_key), "+", "%20")', helper)
+        self.assertIn('https://www.byond.com/members/[path_key]?format=text', helper)
+        self.assertNotIn('world.Export', helper + panel)
+
     def test_script_has_no_interpolation_or_html_writes(self):
         script = client_script()
         self.assertNotIn('innerHTML', script)

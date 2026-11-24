@@ -282,6 +282,13 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 
 	usr << browse(player_options_html(M, usr), "window=adminplayeropts;size=640x760")
 
+// A member profile takes the raw BYOND key, not its normalized ckey.
+/proc/admin_byond_profile_url(account_key)
+	if (!istext(account_key) || !ckey(account_key) || IsGuestKey(account_key) || copytext(account_key, 1, 2) == "@")
+		return null
+	var/path_key = replacetext(url_encode(account_key), "+", "%20")
+	return "https://www.byond.com/members/[path_key]?format=text"
+
 /datum/admins/proc/player_options_html(mob/M, mob/user)
 	var/list/state = admin_player_state(M)
 	var/list/body = list("<html><head><meta charset='utf-8'><title>Options for [html_encode("[M.key]")]</title>[admin_panel_css()]</head><body>")
@@ -320,6 +327,9 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 	body += "<a href='?src=\ref[src];subtlemessage=\ref[M]'>Subtle message</a>"
 	body += "[admin_jump_link(M, src)]"
 	body += "<a href='?_src_=vars;Vars=\ref[M]'>View variables</a>"
+	var/profile = admin_byond_profile_url(M.key)
+	if (profile)
+		body += "<a href='[html_encode(profile)]' target='_blank' rel='noopener noreferrer'>BYOND Profile</a>"
 	if (!isnewplayer(M))
 		body += "<a href='?src=\ref[src];revive=\ref[M]'>Heal</a>"
 	body += "</div></div>"
