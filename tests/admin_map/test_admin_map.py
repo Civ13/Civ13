@@ -42,7 +42,8 @@ function ctx(){return {fillRect:function(){fills++;},drawImage:function(){},begi
  save:function(){},restore:function(){},translate:function(){},scale:function(){ovals++;}};}
 function node(tag){var n={tag:tag,children:[],style:{},className:'',checked:false,value:'',textContent:'',
  appendChild:function(c){this.children.push(c);return c;},removeChild:function(c){this.children.splice(this.children.indexOf(c),1);},
- getContext:ctx,getBoundingClientRect:function(){return {left:0,top:0};}};
+ getContext:ctx,clientLeft:0,clientTop:0,
+ getBoundingClientRect:function(){return {left:0,top:0,width:this.width,height:this.height};}};
  Object.defineProperty(n,'firstChild',{get:function(){return n.children[0]||null;}});
  Object.defineProperty(n,'innerHTML',{set:function(){html++;}});return n;}
 var nodes={};
@@ -75,7 +76,10 @@ def page_data(who=1, edit=1):
 
 def run(data, probe, pick='null'):
     prelude = ('var REF="[0x21000001]",Z=1,CELL=%d,W=%d,H=%d,K=%d,PICK=%s,T=%s,COL={"0":"#000","g":"#0f0"},'
-               'LV=["Gaia","Gaia caves"],D=%s;') % (CELL, COLS, ROWS, K, pick, json.dumps(TERRAIN), json.dumps(data))
+               'LV=["Gaia","Gaia caves"],D=%s;'
+               'document.getElementById("m").width=W*K;document.getElementById("m").height=H*K;'
+               'document.getElementById("mapframe").clientWidth=W*K;document.getElementById("mapframe").clientHeight=H*K;') % (
+                   CELL, COLS, ROWS, K, pick, json.dumps(TERRAIN), json.dumps(data))
     helper = 'function tile(tx,ty){var x=(tx-0.5)/CELL*K,y=(H-(ty-0.5)/CELL)*K;cv.onclick({clientX:x,clientY:y});}var out={};'
     out = subprocess.run(['node', '-e', STUB + prelude + client_script() + helper + '\n'.join(probe)
                           + 'out.clicks=clicks;out.html=html;console.log(JSON.stringify(out));'],
@@ -189,6 +193,50 @@ class AdminMapTests(unittest.TestCase):
         self.assertIn('not on this level', result['panelGone'])
         self.assertEqual(result['status'], '0 players on this level, 0 markers shown.')
         self.assertIn('The sky is clear.', result['sky'])
+
+    @unittest.skipUnless(shutil.which('node'), 'node not installed')
+    def test_resize_fits_width_or_height_without_redrawing(self):
+        result = run(page_data(), [
+            'out.initial=[cv.style.width,cv.style.height];pick("[0x3000001]");var before=fills;',
+            'function resize(w,h){nodes.mapframe.clientWidth=w;nodes.mapframe.clientHeight=h;'
+            'window.onresize();return [cv.style.width,cv.style.height];}',
+            'cv.clientLeft=2;cv.clientTop=2;',
+            'out.wide=resize(1204,644);out.narrow=resize(204,824);',
+            'out.short=resize(804,164);out.wideAgain=resize(1204,644);',
+            'out.selection=SEL;out.resizeFills=fills-before;'
+            'out.bitmap=[cv.width,cv.height,bg.width,bg.height];',
+            'nodes.mapframe.clientHeight=324;LAY="t";draw();'
+            'out.afterDraw=[cv.style.width,cv.style.height];',
+        ])
+        self.assertEqual(result['initial'], ['400px', '320px'])
+        self.assertEqual(result['wide'], ['800px', '640px'])
+        self.assertEqual(result['narrow'], ['200px', '160px'])
+        self.assertEqual(result['short'], ['200px', '160px'])
+        self.assertEqual(result['wideAgain'], result['wide'])
+        self.assertEqual(result['selection'], '[0x3000001]')
+        self.assertEqual(result['resizeFills'], 0)
+        self.assertEqual(result['bitmap'], [400, 320, 400, 320])
+        self.assertEqual(result['afterDraw'], ['400px', '320px'])
+
+    @unittest.skipUnless(shutil.which('node'), 'node not installed')
+    def test_scaled_canvas_hit_testing_preserves_layers_and_tiles(self):
+        result = run(page_data(), [
+            'var r;function size(w,h){r={left:120,top:45,width:w+4,height:h+4};'
+            'cv.clientLeft=2;cv.clientTop=2;cv.getBoundingClientRect=function(){return r;};}',
+            'function at(tx,ty){cv.onclick({clientX:r.left+2+(r.width-4)*px(tx)/cv.width,'
+            'clientY:r.top+2+(r.height-4)*py(ty)/cv.height});}',
+            'size(800,640);at(11,21);out.large=SEL;',
+            'size(200,160);at(64,43);out.small=SYS;',
+            'at(90,10);out.ground=AT;out.filtered=nodes.og.checked;',
+            'cv.onclick({clientX:r.left+1,clientY:r.top+10});out.border=AT;',
+            'size(0,0);cv.onclick({clientX:r.left+2,clientY:r.top+2});out.hidden=AT;',
+        ])
+        self.assertEqual(result['large'], '[0x3000001]')
+        self.assertEqual(result['small'], 7)
+        self.assertEqual(result['ground'], [90, 10])
+        self.assertEqual(result['border'], [90, 10])
+        self.assertEqual(result['hidden'], [90, 10])
+        self.assertFalse(result['filtered'])
 
     @unittest.skipUnless(shutil.which('node'), 'node not installed')
     def test_weather_pick_send_and_end(self):
