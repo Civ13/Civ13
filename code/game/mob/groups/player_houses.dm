@@ -204,6 +204,69 @@
 	message_admins("[key_name_admin(src)] recovered House [label] to [key_name_admin(recipient)]. Reason: [html_encode(reason)]")
 	to_chat(recipient, SPAN_NOTICE("You are now a steward of House [label]."))
 
+// Operations and company stock are separate. Historical unchartered
+// companies keep their shareholder-operated workflow until explicitly bound.
+/obj/map_metadata/proc/company_controlling_house(company)
+	if (!company || company == "Global")
+		return null
+	for (var/id in player_houses_state)
+		var/list/house = player_houses_state[id]
+		if (!islist(house))
+			continue
+		var/list/charters = house["companies"]
+		if (islist(charters) && charters[company] == TRUE)
+			return id
+	return null
+
+/obj/map_metadata/proc/company_attach_house(company, id)
+	if (src != map || !player_house_feature() || !company || company == "Global" || company_controlling_house(company) || persistence_admission_blocked())
+		return FALSE
+	var/list/house = player_houses_state[id]
+	if (!islist(house))
+		return FALSE
+	var/list/charters = house["companies"]
+	if (!islist(charters))
+		charters = list()
+		house["companies"] = charters
+	charters[company] = TRUE
+	return TRUE
+
+/proc/company_may_operate(mob/living/human/H, company)
+	if (!map)
+		return FALSE
+	var/id = map.company_controlling_house(company)
+	if (!id)
+		return find_company_member(H, company)
+	return player_house_actor(H) && map.player_house_role(H, id) == "steward"
+
+/mob/living/human/proc/charter_existing_company()
+	set category = "Faction"
+	set name = "Charter Existing Company"
+	if (!player_house_feature() || !player_house_actor(src) || persistence_admission_blocked())
+		return
+	var/obj/map_metadata/land = map
+	var/datum/save_identity = persistence_admission_identity
+	var/house_id = land.player_house_of(src)
+	if (!house_id || land.player_house_role(src, house_id) != "steward")
+		return
+	var/list/eligible = list()
+	for (var/company in land.custom_company_nr)
+		if (!land.company_controlling_house(company) && company_has_stake(company, src, 100))
+			eligible += company
+	if (!eligible.len)
+		to_chat(src, SPAN_NOTICE("You have no unchartered companies in which you hold all the stock."))
+		return
+	var/company = WWinput(src, "Which company do you want your house to control?", "Company Charter", "Cancel", eligible + "Cancel")
+	if (!(company in eligible) || land != map || !player_house_actor(src) || land.player_house_role(src, house_id) != "steward" || persistence_admission_changed(save_identity) || !company_has_stake(company, src, 100))
+		return
+	var/list/house = land.player_houses_state[house_id]
+	if (WWinput(src, "Give House [house["name"]] control of [company]'s operations? This does not transfer its stock or any balances.", "Company Charter", "No", list("Yes", "No")) != "Yes")
+		return
+	if (land != map || persistence_admission_changed(save_identity) || !player_house_actor(src) || land.player_house_role(src, house_id) != "steward" || !company_has_stake(company, src, 100) || !(company in land.custom_company_nr))
+		return
+	if (land.company_attach_house(company, house_id))
+		to_chat(src, SPAN_NOTICE("Your house now controls [company]'s operations. No shares changed hands."))
+
 #undef PLAYER_HOUSE_LIMIT
 #undef PLAYER_HOUSE_ROSTER_LIMIT
 #undef PLAYER_HOUSE_INVITE_RANGE

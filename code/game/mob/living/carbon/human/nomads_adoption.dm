@@ -52,9 +52,9 @@
 
 /mob/living/human/proc/adoption_refresh_verbs()
 	if (player_house_feature())
-		verbs |= /mob/living/human/proc/player_houses_menu
+		verbs |= list(/mob/living/human/proc/player_houses_menu, /mob/living/human/proc/charter_existing_company)
 	else
-		verbs -= /mob/living/human/proc/player_houses_menu
+		verbs -= list(/mob/living/human/proc/player_houses_menu, /mob/living/human/proc/charter_existing_company)
 	if (!adoption_enabled())
 		verbs -= /mob/living/human/proc/offer_adoption
 		verbs -= /mob/living/human/proc/unadopt

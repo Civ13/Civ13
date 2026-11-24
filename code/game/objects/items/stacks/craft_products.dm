@@ -66,9 +66,8 @@ var/global/list/craft_products = null
 	if (!H || !map)
 		return found
 	for (var/i in map.custom_company_nr)
-		for (var/list/L in map.custom_company[i])
-			if (L[1] == H)
-				found += i
+		if (company_may_operate(H, i))
+			found += i
 	return found
 
 // One answer, from options when given there, otherwise asked. Returns null to stop the build.
@@ -91,6 +90,8 @@ var/global/list/craft_products = null
 			if (!given)
 				answer = WWinput(user, question, title, "Cancel", companies + "Cancel")
 			if (!(answer in companies))
+				return null
+			if (!company_may_operate(H, answer))
 				return null
 			return answer
 		if ("color")

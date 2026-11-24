@@ -108,12 +108,16 @@ class ManagementPriceTests(unittest.TestCase):
             branch = '\n'.join(line[1:] if line.startswith('\t') else line
                                for line in branch.splitlines())
             branch = branch.replace('if (unlocked)', 'if (pump.unlocked)')
+            branch = branch.replace('QDELETED(src)', 'QDELETED(pump)').replace('in_range(src, user)', 'in_range(pump, user)').replace('company_may_operate(user, owner)', 'company_may_operate(user, pump.owner)')
             run = adapter.project('/proc/projected()\n' + branch + '\n', '/proc/projected',
-                                  'pump, user, href_list, player_input, text2num, update_management_price, to_chat', {})
+                                  'pump, user, href_list, player_input, text2num, update_management_price, to_chat',
+                                  {'QDELETED': lambda pump: pump.removed,
+                                   'in_range': lambda pump, user: pump.in_range,
+                                   'company_may_operate': lambda user, owner: owner == 'authorized'})
             for unlocked in (False, True):
                 for value, expected in ((None, None), (-1, 0), (0, 0), (12.5, 12.5), (50, 50), (51, 50)):
                     with self.subTest(action=action, unlocked=unlocked, value=value):
-                        pump = SimpleNamespace(unlocked=unlocked, price=7)
+                        pump = SimpleNamespace(unlocked=unlocked, price=7, removed=False, in_range=True, owner="authorized")
                         user = object()
                         events = []
 
@@ -149,6 +153,19 @@ class ManagementPriceTests(unittest.TestCase):
                             wanted.extend((('description', expected), ('ui', user, expected)))
                         self.assertEqual(events, wanted)
                         self.assertEqual(pump.price, 7 if expected is None else expected)
+
+            for state in ({'owner': 'revoked'}, {'removed': True}, {'in_range': False}):
+                with self.subTest(state=state):
+                    pump = SimpleNamespace(unlocked=False, price=7, removed=False, in_range=True, owner='authorized')
+                    calls = []
+                    def prompt_then_change(*args):
+                        calls.append('prompt')
+                        vars(pump).update(state)
+                        return 25
+                    run(pump, object(), {}, prompt_then_change, None,
+                        lambda *args: calls.append('mutation'), lambda *args: calls.append('notice'))
+                    self.assertEqual(calls, ['prompt'])
+                    self.assertEqual(pump.price, 7)
 
 
 if __name__ == '__main__':
