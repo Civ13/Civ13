@@ -85,7 +85,10 @@
 	)
 	var/client/connection = body.client
 	var/current = props["workshop_selected"]
-	var/choice = WWinput(body, "[current ? "\"[current]\" is set up. Choosing an exercise now clears the hall, with everything drawn, built or left in it, and lays out a fresh kit." : "Choose an exercise. This workshop is yours alone, and you can come back to the desk to switch to another."] Only exercises marked Build or Make include physical construction; the others use the same designers as the live game.", desk.name, "Cancel", exercises + list("Cancel"))
+	var/prompt = "Choose an exercise. This workshop is yours alone, and you can come back to the desk to switch to another."
+	if (current)
+		prompt = "\"[current]\" is set up. Choosing an exercise now clears the hall, with everything drawn, built or left in it, and lays out a fresh kit."
+	var/choice = WWinput(body, "[prompt] Only exercises marked Build or Make include physical construction; the others use the same designers as the live game.", desk.name, "Cancel", exercises + list("Cancel"))
 	if (!exercises[choice] || !connection || body?.client != connection || connection.mob != body || !tutorial_workshop_access(body, desk) || !desk.Adjacent(body) || props["workshop_selected"] != current)
 		return
 	if (current)
