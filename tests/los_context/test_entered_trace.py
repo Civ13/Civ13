@@ -52,6 +52,7 @@ class IdentityTrace:
         self.mover.type = '/mob/living/human'
         self.mover.loc = self.old
         self.mover.client = self.models[0].C
+        self.mover.reconcile_laddervision = lambda: None
         self.mover.dir = 4
         self.mover.riding = False
         self.mover.riding_mob = self.mover.pulling = None

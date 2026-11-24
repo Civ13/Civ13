@@ -268,6 +268,8 @@
 	var/tile_changed = FALSE
 	if(ishuman(A))
 		var/mob/living/human/H = A
+		// Drop a stale ladder camera before admitting the destination LOS frame.
+		H.reconcile_laddervision()
 		if(H.client && H.client.los_context)
 			var/datum/los_context/V = H.client.los_context
 			var/turf/T = get_turf(H)

@@ -3,7 +3,7 @@
 /mob/living/human/var/tmp/persistence_restored = FALSE
 
 /mob/living/human/persistence_runtime_var(key)
-	return key == "persistence_restored" || key == "laddervision" || ..()
+	return key == "persistence_restored" || key == "laddervision" || key == "laddervision_origin_z" || ..()
 
 // All restored bodies, including legacy unowned ones, await final world state.
 var/global/list/persistence_restored_characters = list()
