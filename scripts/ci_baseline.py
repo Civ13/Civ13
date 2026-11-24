@@ -2075,6 +2075,10 @@ SUITES = {
         'code/modules/persistence/region_relay.dm'), 'shared_paths': (
             'code/modules/persistence/region_home.dm', 'code/modules/persistence/region_event.dm',
             'code/modules/persistence/player_reclaim.dm', 'code/modules/accolades/character_slots.dm')},
+    'gateway_world_overview': {'files': ('tests/region_gateway/test_overview.py',), 'paths': (
+        'tests/region_gateway/test_overview.py', 'code/modules/persistence/region_gateway_overview.dm',
+        'code/modules/persistence/region_gateway.dm', 'code/modules/persistence/region_relay.dm',
+        'code/modules/persistence/world_links.dm', 'tools/world_links/world_links.json')},
     'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py',
         'tests/character_slots/test_structuring.py',
         'tests/character_slots/test_account_summary.py'),

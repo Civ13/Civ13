@@ -230,6 +230,7 @@
 		var/list/options = params2list(TopicData)
 		if(region_gateway_here())
 			gateway_character_lobby = options["character_lobby"] == "1"
+			gateway_public_overview = options["world_overview"] == "1" && region_gateway_overview_allowed(src)
 		else if("character_expected_slot" in options)
 			var/expected = options["character_expected_slot"]
 			gateway_expected_slot = (expected in list("1", "2", "3", "4")) ? text2num(expected) : -1
@@ -242,6 +243,19 @@
 
 // Join, Go there and Refresh links of the Regions panel and the home notice.
 /client/Topic(href, href_list, hsrc)
+	if(href_list["gateway_tab"])
+		var/mob/new_player/gateway_lobby = mob
+		if(usr != mob || !istype(gateway_lobby) || !region_gateway_overview_allowed(src) || next_gateway_tab > world.time)
+			return
+		next_gateway_tab = world.time + 5
+		if(href_list["gateway_tab"] == "overview")
+			region_gateway_show_overview(gateway_lobby)
+		else if(href_list["gateway_tab"] == "characters" && !region_gateway_overview_session(src))
+			region_gateway_show_roster(gateway_lobby)
+		return
+	// A public overview connection grants no gateway routes or private UI.
+	if(region_gateway_overview_session(src))
+		return
 	if(href_list["gateway_character_slot"])
 		var/mob/new_player/lobby = mob
 		if(usr != mob || !istype(lobby) || !region_gateway_roster_enabled(src) || next_region_go > world.time)
@@ -289,6 +303,7 @@
 		return
 	return ..()
 
+/client/var/tmp/next_gateway_tab = 0
 /client/var/next_region_go = 0
 /client/var/next_region_refresh = 0
 
@@ -301,6 +316,9 @@
 	// The front door routes normal connections; an explicit Characters
 	// connection first shows its authenticated player's private roster.
 	if(region_gateway_here())
+		var/link = region_gateway_overview_link()
+		if(link && !client.gateway_character_lobby && !region_gateway_overview_session(client))
+			to_chat(src, SPAN_NOTICE("Browse the [link]."))
 		region_gateway_forward(src)
 	else if(shard_group.relay_on() && shard_group.region == shard_group.gate)
 		region_gate_forward(src)

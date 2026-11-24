@@ -134,6 +134,10 @@
 		a.gw-btn.gw-main:hover{background:#c9a25c}
 		.gw-note{color:#a99b87;font-size:11.5px;margin:10px 2px 0}
 		.gw-note a{color:#9ed2ff}
+		.gw-tabs{display:flex;gap:18px;border-bottom:1px solid #66513b;margin:0 0 14px}
+		.gw-tabs a,.gw-tabs strong{display:block;padding:0 1px 7px;margin-bottom:-1px;font-size:14px;font-weight:normal;color:#c9b9a0;text-decoration:none;border-bottom:2px solid transparent}
+		.gw-tabs a:hover{color:#f6ecd6}
+		.gw-tabs strong{color:#ffd985;font-weight:bold;border-bottom-color:#ffd985}
 		</style>"}
 
 // One page of character cards. A row is list(slot, safe name, kind), where
@@ -187,7 +191,7 @@
 		else if(region_gateway_roster_choice_allowed(C, state, slot))
 			kind = "switch"
 		rows += list(list(slot, name, kind))
-	show_browse(C, region_gateway_roster_page(rows), "window=gateway_characters;size=520x480")
+	show_browse(C, region_gateway_roster_page(rows, region_gateway_tabs(C)), "window=gateway_characters;size=560x560")
 	return TRUE
 
 /proc/region_gateway_choose_character(mob/new_player/lobby, slot)
@@ -277,6 +281,8 @@
 	var/client/C = lobby ? lobby.client : null
 	if(!C || C.mob != lobby || lobby.gateway_forwarding)
 		return FALSE
+	if(region_gateway_overview_session(C))
+		return region_gateway_show_overview(lobby)
 	var/roster = region_gateway_roster_enabled(C)
 	var/choice = lobby.gateway_character_choice
 	if(roster && !choice)
