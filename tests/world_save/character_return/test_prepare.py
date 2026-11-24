@@ -89,36 +89,46 @@ class PreparationTests(unittest.TestCase):
             self.prepare('weaken-everything')
         self.assertFalse(self.output.exists())
 
-    def test_reclaim_adaptation_is_exactly_reversible_and_keeps_five_accesses(self):
+    def test_reclaim_adaptation_is_exactly_reversible_and_keeps_seven_accesses(self):
         base = PREP.load_helpers(SOURCE)
         original = (SOURCE / 'code/modules/persistence/player_reclaim.dm').read_text()
         adapted, before, after = PREP.adapt_reclaim(original, base)
-        self.assertEqual(before.count('lobby.client'), 5)
-        self.assertEqual(after.count('lobby.claim_client'), 5)
+        self.assertEqual(before.count('lobby.client'), 7)
+        self.assertEqual(after.count('lobby.claim_client'), 7)
         inverted = adapted.replace('lobby.claim_client', 'lobby.client').replace(
             'var/datum/character_return_client/C', 'var/client/C').replace(
             'character_return_transfer(C, H)', 'H.key = C.key')
         self.assertEqual(inverted, original)
         for guard in ('persistence_player_claims[owner] != lobby', 'C.mob != lobby',
                       'H.persistence_owner_ckey != owner', 'H.client || H.key',
-                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(owner)'):
+                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(owner)',
+                      'gateway_expected_slot = 0', 'open_character_sleep_picker()'):
             self.assertIn(guard, after)
 
     def test_admission_adaptation_is_exactly_reversible(self):
         base = PREP.load_helpers(SOURCE)
         original = (SOURCE / 'code/modules/persistence/bed_return.dm').read_text()
         adapted, before, after = PREP.adapt_bed(original, base)
-        self.assertEqual(before.count('lobby.client'), 5)
-        self.assertEqual(after.count('lobby.claim_client'), 5)
+        self.assertEqual(before.count('lobby.client'), 6)
+        self.assertEqual(after.count('lobby.claim_client'), 6)
         self.assertEqual(adapted.replace('lobby.claim_client', 'lobby.client'), original)
 
     def test_changed_adapter_anchor_is_rejected_not_relaxed(self):
         base = PREP.load_helpers(SOURCE)
         original = (SOURCE / 'code/modules/persistence/player_reclaim.dm').read_text()
         with self.assertRaisesRegex(ValueError, 'Exact reclaim IO anchor changed'):
-            PREP.adapt_reclaim(original.replace('lobby.client != C', 'FALSE'), base)
+            PREP.adapt_reclaim(original.replace('lobby.client != C', 'FALSE', 1), base)
 
-    def test_recovery_adapter_preserves_all_five_client_rechecks(self):
+    def test_gateway_adapter_preserves_independent_slot_comparisons(self):
+        base = PREP.load_helpers(SOURCE)
+        original = (SOURCE / 'code/modules/persistence/region_gateway.dm').read_text()
+        before, after = PREP.adapt_gateway(original, base)
+        self.assertIn('C.character_slot == C.gateway_expected_slot', before)
+        self.assertIn('C.character_slot == C.gateway_expected_slot', after)
+        self.assertIn('C.fixture_active_slot == C.gateway_expected_slot', after)
+        self.assertIn('if(!C || !C.gateway_expected_slot)', after)
+
+    def test_recovery_adapter_preserves_all_client_rechecks(self):
         # Execute only the read/adapt block, not its CLI, build or run paths.
         source = (SOURCE / 'tests/world_save/run-durable-world.py').read_text()
         start = source.index("            relative = 'code/modules/persistence/player_reclaim.dm'", source.index('        if args.recovery_reconnect:\n'))
@@ -129,10 +139,11 @@ class PreparationTests(unittest.TestCase):
              patch('subprocess.run', side_effect=AssertionError('process forbidden')):
             exec(compile(block, 'recovery-adapter-excerpt', 'exec'), namespace)
         adapted = namespace['replacements']['code/modules/persistence/player_reclaim.dm']
-        self.assertEqual(adapted.count('lobby.claim_client'), 5)
+        self.assertEqual(adapted.count('lobby.claim_client'), 7)
         for guard in ('persistence_player_claims[owner] != lobby', 'C.mob != lobby',
                       'H.persistence_owner_ckey != owner', 'H.client || H.key',
-                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(owner)'):
+                      'if(C.mob != H)', 'persistence_restored_bodies.Remove(owner)',
+                      'gateway_expected_slot = 0', 'open_character_sleep_picker()'):
             self.assertIn(guard, adapted)
 
     def test_only_dedicated_disabled_stubs_removed(self):
@@ -163,7 +174,7 @@ class PreparationTests(unittest.TestCase):
         self.assertIn('/world/OpenPort(port)\n\treturn ..("none")', combined)
         self.assertIn('/client/New()\n\tdel(src)', combined)
         self.assertIn('#define SPAN_WARNING(X)', combined)
-        self.assertEqual(len(receipt['cases']), 11)
+        self.assertEqual(len(receipt['cases']), 12)
 
     def test_receipt_hashes_bind_every_generated_dm_file(self):
         receipt = self.prepare()

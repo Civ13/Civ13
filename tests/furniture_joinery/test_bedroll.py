@@ -21,6 +21,7 @@ from source_adapter import block,expr,compile_body
 SOURCE=(ROOT/'code/game/objects/items/weapons/nomadstuff.dm').read_text()
 BED=(ROOT/'code/game/objects/structures/stool_bed_chair_nest/bed.dm').read_text()
 STRUCTURE=(ROOT/'code/game/objects/structures.dm').read_text()
+PLATING=(ROOT/'code/modules/1713/electroplating.dm').read_text()
 ITEM='/obj/item/weapon/bedroll'
 UNROLLED='/obj/structure/bed/bedroll'
 FIELDS=('loc','used','running','unrolled_type','rolled_type','not_disassemblable','contents')
@@ -66,12 +67,17 @@ def procedure(signature,env,hammer=False):
             line='for '+match[1]+' in '+expr(match[2],FIELDS)+':'
         elif line.startswith('return '):line='return '+expr(line[7:],FIELDS)
         else:line=expr(line,FIELDS)
+        if hammer:
+            line=line.replace('can_dismantle_with_hammer(user)', 'can_dismantle_with_hammer(self,user)')
         output.append('    '*depth+line)
     # Furniture has no part slots: handing back fitted machine parts does nothing here.
     # crafted_refund_stack (dismantle_refund.dm) reads the loaded recipe lists;
     # these fixtures load none, so it returns its no-recipe fallback.
     namespace=dict(env);namespace.setdefault('machine_drop_fitted_parts',lambda obj:None)
     namespace.setdefault('QDELETED',lambda obj:obj.deleted)
+    if hammer:
+        guard,_=compile_body(STRUCTURE,'/obj/structure/proc/can_dismantle_with_hammer(', 'self,user', {})
+        namespace.setdefault('can_dismantle_with_hammer',guard)
     namespace.setdefault('crafted_refund_stack',lambda path,fallback=None:fallback);exec(compile('\n'.join(output)+'\n','<production bedroll>','exec'),namespace)
     return namespace['action']
 
@@ -204,6 +210,58 @@ class BedrollContracts(unittest.TestCase):
             if kind==b'zTXt':metadata+=zlib.decompress(data.split(b'\0',1)[1][1:]).decode()
             elif kind==b'tEXt':metadata+=data.decode(errors='replace')
         for state in ('bedroll_r','bedroll_o','bedroll_w'):self.assertIn('state = "'+state+'"',metadata)
+
+
+class LoadedBathHammerContracts(unittest.TestCase):
+    def hammer_case(self, start, insert):
+        f = Bedding()
+        piece = NS(type='/obj/item/workpiece')
+        bath = NS(type='/obj/structure/plating_bath', loc='floor', contents=[],
+                  deleted=False, not_disassemblable=False, anode=None)
+        bath.workpiece = lambda: next(iter(bath.contents), None)
+        waits = []
+
+        def put(kind):
+            if kind == 'anode':
+                bath.anode = 'silver'
+            elif kind == 'workpiece':
+                bath.contents.append(piece)
+
+        def during_wait(*_):
+            waits.append(True)
+            put(insert)
+            return True
+
+        body = block(PLATING, '/obj/structure/plating_bath/can_dismantle_with_hammer(')
+        base_guard,_ = compile_body(STRUCTURE, '/obj/structure/proc/can_dismantle_with_hammer(',
+                                   'self,user', {})
+        guard,_ = compile_body(body.replace('return ..()', 'return parent_guard(self,user)'),
+                               '/obj/structure/plating_bath/can_dismantle_with_hammer(',
+                               'self,user', dict(parent_guard=base_guard, to_chat=lambda *_: None,
+                                                 SPAN_WARNING=lambda text: text), ('anode', 'workpiece'))
+        f.env.update(do_ship_fixture_after=during_wait, can_dismantle_with_hammer=guard)
+        put(start)
+        procedure('', f.env, hammer=True)(bath, None, NS(type='/obj/item/weapon/hammer'))
+        return bath, piece, waits, f.objects
+
+    def test_either_paid_input_is_preserved_even_if_inserted_during_wait(self):
+        for kind in ('anode', 'workpiece'):
+            for late in (False, True):
+                with self.subTest(kind=kind, late=late):
+                    bath, piece, waits, outputs = self.hammer_case(None if late else kind, kind if late else None)
+                    self.assertEqual(waits, [True] if late else [])
+                    self.assertFalse(bath.deleted)
+                    self.assertEqual(outputs, [])
+                    if kind == 'anode':
+                        self.assertEqual(bath.anode, 'silver')
+                    else:
+                        self.assertIs(bath.workpiece(), piece)
+
+    def test_empty_bath_preserves_ordinary_dismantle_and_refund_path(self):
+        bath, _, waits, outputs = self.hammer_case(None, None)
+        self.assertEqual(waits, [True])
+        self.assertTrue(bath.deleted)
+        self.assertEqual([item.type for item in outputs], ['/obj/item/stack/material/wood'])
 
 
 class HammockContracts(unittest.TestCase):

@@ -148,28 +148,15 @@
 		)
 		playsound(loc, 'sound/effects/ladder.ogg', 50, TRUE, -1)
 		// pulling/grabbing people with you
-		if (istop)
-			if (M.pulling != null)
-				M.pulling.persistence_set_z(destination_z)
-				M.pulling.x = src.x
-				M.pulling.y = src.y
-			M.persistence_set_z(destination_z)
-			M.x = src.x
-			M.y = src.y
-			for (var/obj/item/I in M)
-				I.update_light()
-			return
-		else
-			if (M.pulling != null)
-				M.pulling.persistence_set_z(destination_z)
-				M.pulling.x = src.x
-				M.pulling.y = src.y
-			M.persistence_set_z(destination_z)
-			M.x = src.x
-			M.y = src.y
-			for (var/obj/item/I in M)
-				I.update_light()
-			return
+		// Move straight to the ladder's turf on the other level. Changing z first
+		// and then writing x/y bypassed every movement hook, so the line-of-sight
+		// renderer and lighting kept the climber's pre-ladder column.
+		if (M.pulling != null)
+			M.pulling.persistence_set_loc(destination)
+		M.persistence_set_loc(destination)
+		for (var/obj/item/I in M)
+			I.update_light()
+		return
 
 /mob/living/human/var/laddervision = null
 

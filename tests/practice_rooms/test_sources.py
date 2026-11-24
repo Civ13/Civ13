@@ -85,7 +85,7 @@ class PracticeRoomSourceTests(unittest.TestCase):
         dmm = read('maps/special/tutorial.dmm')
         self.assertIn('/obj/map_metadata/tutorial,', dmm)
         rows = dmm.split('{"\n', 1)[1].split('\n"}', 1)[0].splitlines()
-        self.assertEqual((253, 69), (len(rows[0]), len(rows)))
+        self.assertEqual((397, 257), (len(rows[0]), len(rows)))
 
     def test_workshop_keeps_twenty_four_private_slots(self):
         rooms = read('code/modules/1713/practice_rooms.dm')
@@ -109,10 +109,14 @@ class PracticeRoomSourceTests(unittest.TestCase):
                 self.assertTrue(all(1 < tx < width and 1 < ty < height for tx, ty in slot))
                 self.assertFalse(footprints.intersection(slot))
                 footprints.update(slot)
-        # The workshop hall's interior is recorded by the room builder and is
-        # the only rectangle the workshop checks trust.
-        self.assertIn('props["shop"] = list(x + 22, y + 1, x + 38, y + 13)', rooms)
+        # The plot's rectangles are recorded by the room builder and are the
+        # only ones the workshop checks trust.
+        self.assertIn('props["plot"] = list(x + 1, y + 1, x + 62, y + 60)', rooms)
+        self.assertIn('props["shop"] = list(x + 22, y + 1, x + 30, y + 13)', rooms)
+        self.assertIn('props["paved"] = list(x + 32, y + 1, x + 62, y + 60)', rooms)
+        self.assertIn('props["field"] = list(x + 1, y + 15, x + 62, y + 60)', rooms)
         self.assertIn('return owns_rect(A, props["shop"])', read('code/modules/1713/practice_workshop.dm'))
+        self.assertIn('return owns_rect(A, props["plot"])', read('code/modules/1713/practice_workshop.dm'))
         # The fallback room on other regions keeps its own builder.
         self.assertIn('if (tutorial_region_here())\n\t\treturn build_tutorial_room(slot)', rooms)
         self.assertIn('get_turf(A)', read('code/modules/1713/practice_workshop.dm'))
@@ -126,20 +130,61 @@ class PracticeRoomSourceTests(unittest.TestCase):
         self.assertEqual(13, len(offered))
         self.assertEqual(set(offered.values()), set(re.findall(r'^\s+if \("([a-z]+)"\)', workshop.split('switch (exercise)', 1)[1].split('/proc/practice_workshop_stack', 1)[0], re.M)))
         self.assertNotIn('This is a paper exercise', workshop)
-        self.assertIn('!owns_workshop(body) || !exercise || props["workshop_kind"]', workshop)
+        self.assertIn('!owns_room(body) || !exercise || props["workshop_kind"]', workshop)
         self.assertIn('owner.sessions["[slot]"] != src', workshop)
-        self.assertIn('T.z == practice_room_z', workshop)
-        self.assertIn('desk.Adjacent(body) || props["workshop_selected"]', workshop)
+        # A stale menu cannot clear yards that changed while it was open.
+        self.assertIn('desk.Adjacent(body) || props["workshop_selected"] != current', workshop)
+        clear = workshop.split('/datum/practice_session/proc/clear_workshop(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('for (var/key in list("paved", "field"))', clear)
+        self.assertIn('owner.clear_column(props[key], stores)', clear)
+        self.assertIn('owner.lay_tutorial_ground(slot, props[key])', clear)
+
+    def test_tutorial_plot_uses_the_map_levels(self):
+        rooms = read('code/modules/1713/practice_rooms.dm')
+        region = read('code/modules/1713/tutorial_region.dm')
+        metadata = region.split('/obj/map_metadata/tutorial\n', 1)[1].split('\n/', 1)[0]
+        # The map keeps the default underground and building levels.
+        self.assertNotIn('dig_down_underground', metadata)
+        self.assertNotIn('building_levels', metadata)
+        self.assertIn('return tutorial_region_here() ? 1 : practice_room_z', rooms)
+        self.assertIn('if (practice_room_z || tutorial_region_here())\n\t\treturn TRUE', rooms)
+        # A new underground level is walled to each plot before anything forms.
+        create = read('code/modules/multiz/dug_underground.dm').split('/proc/underground_create(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertLess(create.index('underground_levels_refresh()'), create.index('practice_rooms.underground_added(target_z)'))
+        # Every level is cleared when a plot opens or closes.
+        wipe = rooms.split('/datum/practice_rooms/proc/wipe_room(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('clear_column(slot_rect(slot))', wipe)
+        clear = rooms.split('/datum/practice_rooms/proc/clear_column(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('for (var/z = world.maxz, z >= 1, z--)', clear)
+        self.assertIn('T.ChangeTurf(/turf/sky/building/unformed)', clear)
+        # The trainee cannot walk off their plot on any level.
+        self.assertIn('/mob/living/human/practice/Move(a, b, flag)\n\tif (practice && isturf(a) && !practice.may_stand(a))\n\t\treturn FALSE', rooms)
+        self.assertIn('if (!may_stand(get_turf(body)))\n\t\tbody.forceMove(props["start"])', rooms)
+
+    def test_stores_serve_only_the_plot_trainee(self):
+        workshop = read('code/modules/1713/practice_workshop.dm')
+        usable = workshop.split('/obj/structure/practice_stores/proc/usable_by(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('H.practice.owns_room(H) && H.practice.owns_room(src) && Adjacent(H)', usable)
+        hand_out = workshop.split('/obj/structure/practice_stores/proc/hand_out(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (!path || !usable_by(H))', hand_out)
+        self.assertIn('should_save = FALSE', workshop.split('/obj/structure/practice_stores\n', 1)[1].split('\n/', 1)[0])
 
     def test_aqueduct_allowance_is_exact_and_private(self):
         workshop = read('code/modules/1713/practice_workshop.dm')
         scope = workshop.split('/proc/tutorial_waterworks_recipe', 1)[1].split('/obj/structure/vehicleparts/axis', 1)[0]
-        self.assertIn('P.practice.props["workshop_kind"] == "water" && P.practice.owns_workshop(P)', scope)
+        self.assertIn('P.practice.props["workshop_kind"] == "water" && P.practice.owns_rect(P, P.practice.props["paved"]) && P.z == P.practice.owner.room_z()', scope)
         self.assertEqual({
             '/obj/structure/aqueduct_intake',
             '/obj/structure/aqueduct/channel',
             '/obj/structure/sink/aqueduct_fountain',
         }, set(re.findall(r'"(/obj/[^"]+)"', scope)))
+
+    def test_station_modules_stay_on_the_ground_in_the_paved_yard(self):
+        workshop = read('code/modules/1713/practice_workshop.dm')
+        scope = workshop.split('/proc/tutorial_station_module_site', 1)[1].split('/proc/tutorial_workshop_pair', 1)[0]
+        self.assertIn('centre.z != P.practice.owner.room_z()', scope)
+        self.assertIn('var/list/paved = P.practice.props["paved"]', scope)
+        self.assertEqual(2, scope.count('P.practice.owns_rect('))
 
     def test_practice_submarine_cannot_leave_the_bay(self):
         workshop = read('code/modules/1713/practice_workshop.dm').split(
@@ -147,6 +192,11 @@ class PracticeRoomSourceTests(unittest.TestCase):
         self.assertIn('S.min_x - 2', workshop)
         self.assertIn('S.max_x + 2', workshop)
         self.assertIn('not diving', workshop)
+        source = read('code/modules/1713/practice_workshop.dm')
+        site = source.split('/controls/practice/proc/practice_site()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('z == session.owner.room_z()', site)
+        self.assertIn('session.owns_rect(src, session.props["paved"])', site)
+        self.assertIn('!practice_site()', workshop)
         self.assertIn('stopmovementloop()', workshop)
 
     def test_owned_cords_are_checked_before_consuming_stock(self):
@@ -178,7 +228,7 @@ class PracticeRoomSourceTests(unittest.TestCase):
     def test_tutorial_fixtures_stay_out_of_public_atlas(self):
         public = read('UI/crafting-atlas.json')
         admin_only = read('code/game/mob/crafting_atlas_admin.dm')
-        for path in ('/obj/structure/practice_lesson_board', '/obj/structure/practice_workshop_desk'):
+        for path in ('/obj/structure/practice_lesson_board', '/obj/structure/practice_workshop_desk', '/obj/structure/practice_stores'):
             self.assertNotIn(path, public)
             self.assertIn(path + ' = ', admin_only)
 

@@ -195,11 +195,15 @@
 	var/list/size = getviewsize(C.view)
 	var/view_w = size[1] * 32
 	var/view_h = size[2] * 32
-	var/mx = (C.mouse_screen_x - 1) * 32 + C.mouse_screen_pixel_x
-	var/my = (C.mouse_screen_y - 1) * 32 + C.mouse_screen_pixel_y
+	// Oversized art (tree canopies, vehicles) can report a pointer position
+	// outside the view. Clamp it, and keep the whole panel inside the view: a
+	// screen object past the view edge makes the client grow the map, which
+	// drags the viewport around while the pointer moves.
+	var/mx = max(0, min(view_w - 1, (C.mouse_screen_x - 1) * 32 + C.mouse_screen_pixel_x))
+	var/my = max(0, min(view_h - 1, (C.mouse_screen_y - 1) * 32 + C.mouse_screen_pixel_y))
 	var/x = max(1, min(mx + 10, view_w - hover_text_width + 1))
 	// The panel hangs below the pointer; near the bottom edge it flips above.
-	var/top = my - 20
+	var/top = min(view_h, my - 20)
 	if (top < hover_text_height)
 		top = min(view_h, my + 8 + hover_text_height)
 	var/y = max(1, top - hover_text_height + 1)

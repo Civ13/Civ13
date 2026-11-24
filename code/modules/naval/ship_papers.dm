@@ -9,7 +9,7 @@
 //     steer as before;
 //   - anyone else can force the wheel, slowly and with the crew warned, but
 //     only while one of her owners is in the world to defend her. With no
-//     owner about the wheel is chained.
+//     owner about the wheel is chained, except on Gaia.
 //
 // The elevator and catapult levers and the radar follow the same rule
 // without the delay: crew always, strangers only while an owner is about.
@@ -18,15 +18,19 @@
 
 #define VESSEL_FORCE_WHEEL_TIME 150
 
+// Gaia has no absolute offline lock. Keep online-owner rules and role checks.
+/datum/craft/proc/online_owner_or_gaia()
+	return (map && map.ID == MAP_NOMADS_GAIA) || (register && register.owners_online())
+
 // Whether this mob may take the helm: freely, by force, or not at all.
 /datum/craft/proc/helm_access(mob/user)
 	if (!register || !register.party || register.may_steer(user))
 		return CRAFT_HELM_FREE
-	return register.owners_online() ? CRAFT_HELM_FORCE : CRAFT_HELM_CHAINED
+	return online_owner_or_gaia() ? CRAFT_HELM_FORCE : CRAFT_HELM_CHAINED
 
 // Why this mob may not work the ship's fittings, or null.
 /datum/craft/proc/fitting_refusal(mob/user)
-	if (!register || !register.party || register.is_crew(user) || register.owners_online())
+	if (!register || !register.party || register.is_crew(user) || online_owner_or_gaia())
 		return null
 	return "It is locked. The [name] belongs to [party_train_party_name(register.party)] and none of them are about."
 
