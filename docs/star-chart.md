@@ -1,8 +1,12 @@
 # Star Chart and Astrological Almanac
 
-Open **IC > Star Chart** on your own living character. The wheel and table
-show the current fictional Sun, Moon and local Rising point. The almanac
-lists the next sign changes for the Sun and Moon in game time. Reopen the
+Open **IC > Star Chart** on your own living character. The wheel and the
+three cards under it show the current fictional Sun, Moon and local Rising
+point, marked S, M and R, with the Sun's present sign lit on the ring. The
+Sun and Moon cards give the next sign change in game time. When the birth
+chart has recorded placements, they appear as outlined markers inside the
+dotted ring, and a line joins a moving body to a birth point for each listed
+transit, in that aspect's colour and line pattern. Reopen the
 window for a fresh reading; it does not run a client or server timer.
 
 The **Astrology** section compares the current Sun and Moon with the
@@ -34,5 +38,5 @@ transits or houses. Unknown or unsupported current calendars show no reading.
   **birthplace** Rising, even after moving to another region.
 
 This is informational roleplay. Viewing or reopening the chart cannot modify
-a birth record, trained stats, spell access/effects or world state. It adds no
+a birth record, trained stats or world state. It adds no
 new navigation controls, observations, recipes, art assets, or saved data.
