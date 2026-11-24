@@ -88,6 +88,11 @@ there is no medic nearby. The timer is attached to that character and uses
 the real clock, so it does not reset on save/load or reconnect. A new dose
 can be given after the record expires.
 
-Initial rollout is single-world only: sharded worlds cannot stock or offer a
-dose until the cross-region handoff can guarantee a receiving peer preserves
-the character's record. This is not a change to clean-water or treatment rules.
+In a region group, every receiving game build must understand the optional
+immunization field before operators set `SHARD_IMMUNIZATION_RECORDS 1` (default
+off) to enable stocking and dosing. An existing record is still read and sent
+when the switch is off. Before taking custody of any traveler or party with a
+record, the departure world checks the actual destination afresh. Older,
+unreachable, or held destinations cannot take custody and silently lose it.
+Keep the decoder deployed across rollbacks after any doses are issued. This is
+not a change to clean-water or treatment rules.

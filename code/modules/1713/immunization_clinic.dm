@@ -5,15 +5,28 @@
 #define CLINIC_DOSE_CAPACITY 12
 #define CLINIC_CHOLERA_ONSET_MINUTES 10
 #define CLINIC_CHOLERA_PROTECTION_MINUTES 360
+#define CLINIC_CLOCK_EPOCH 6311520000 // BYOND deciseconds at 2020-01-01 UTC.
+#define CLINIC_MAX_EXACT_MINUTE 16777216 // Largest consecutive integer in BYOND numbers.
 
 // Changed-field world saves retain this on the body, not the client's prefs.
 /mob/living/human/var/list/immunization_record = null
 
 /proc/immunization_now()
-	return round(world.realtime / (1 MINUTES))
+	// Do not use game time, uptime, timezone presentation, or client input.
+	return round((world.realtime - CLINIC_CLOCK_EPOCH) / (1 MINUTES))
 
 /proc/immunization_entry_valid(kind, list/entry)
-	return kind == "cholera" && islist(entry) && entry.len == 2 && isnum(entry[1]) && isnum(entry[2]) && entry[1] > 0 && entry[2] > entry[1] && entry[2] - entry[1] == CLINIC_CHOLERA_PROTECTION_MINUTES
+	return kind == "cholera" && islist(entry) && entry.len == 2 && isnum(entry[1]) && isnum(entry[2]) && entry[1] > 0 && entry[1] == round(entry[1]) && entry[2] == round(entry[2]) && entry[2] <= CLINIC_MAX_EXACT_MINUTE && entry[2] > entry[1] && entry[2] - entry[1] == CLINIC_CHOLERA_PROTECTION_MINUTES
+
+// Wire data for a character never contains arbitrary disease keys or nested objects.
+/proc/immunization_record_valid(list/record)
+	return islist(record) && record.len == 1 && ("cholera" in record) && immunization_entry_valid("cholera", record["cholera"])
+
+/proc/immunization_record_copy(list/record)
+	if (!immunization_record_valid(record))
+		return null
+	var/list/entry = record["cholera"]
+	return list("cholera" = entry.Copy())
 
 /mob/living/human/proc/immunization_protects(kind, now = null)
 	if (kind != "cholera" || !islist(immunization_record))
@@ -28,15 +41,13 @@
 // Accepting a dose never edits active illness, treatment, or ordinary immunity.
 // An unexpired scheduled dose also prevents repeatedly spending stock.
 /mob/living/human/proc/receive_clinic_immunization(kind, now)
-	if (kind != "cholera" || !isnum(now) || now <= 0 || (disease && disease_type == kind))
+	if (kind != "cholera" || !isnum(now) || now <= 0 || now != round(now) || now > CLINIC_MAX_EXACT_MINUTE - CLINIC_CHOLERA_ONSET_MINUTES - CLINIC_CHOLERA_PROTECTION_MINUTES || (disease && disease_type == kind))
 		return FALSE
 	var/list/entry = islist(immunization_record) ? immunization_record[kind] : null
 	if (immunization_entry_valid(kind, entry) && now < entry[2])
 		return FALSE
-	if (!islist(immunization_record))
-		immunization_record = list()
 	var/starts = now + CLINIC_CHOLERA_ONSET_MINUTES
-	immunization_record[kind] = list(starts, starts + CLINIC_CHOLERA_PROTECTION_MINUTES)
+	immunization_record = list("cholera" = list(starts, starts + CLINIC_CHOLERA_PROTECTION_MINUTES))
 	return TRUE
 
 /mob/living/human/verb/check_immunizations()
@@ -64,10 +75,10 @@
 	icon_state = "mixer0b"
 	var/clinic_doses = 0
 
-// Single-world release only until every receiving world can preserve the
-// optional record. Never produce a record that an old peer would silently lose.
+// Standalone worlds need no compatibility rollout. In a region group, enable
+// dosing only after all eligible receivers understand the optional field.
 /obj/structure/workshop_machine/immunization_clinic/proc/clinic_active()
-	return map && map.ordinal_age >= CLINIC_IMMUNIZATION_EPOCH && (!shard_group || !shard_group.enabled)
+	return map && map.ordinal_age >= CLINIC_IMMUNIZATION_EPOCH && (!shard_group || !shard_group.enabled || (config && config.shard_immunization_records))
 
 /obj/structure/workshop_machine/immunization_clinic/proc/clinic_present(mob/living/human/H)
 	return !QDELETED(src) && anchored && isturf(loc) && !QDELETED(H) && istype(H) && H.client && H.client.mob == H && !H.incapacitated() && !H.inducedSSD && !H.droid && !H.orc && !H.crab && isturf(H.loc) && H.z == z && get_dist(src, H) <= 1 && Adjacent(H) && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
@@ -144,3 +155,5 @@
 #undef CLINIC_DOSE_CAPACITY
 #undef CLINIC_CHOLERA_ONSET_MINUTES
 #undef CLINIC_CHOLERA_PROTECTION_MINUTES
+#undef CLINIC_MAX_EXACT_MINUTE
+#undef CLINIC_CLOCK_EPOCH

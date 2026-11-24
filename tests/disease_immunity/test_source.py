@@ -209,10 +209,12 @@ class ImmunizationClinic(unittest.TestCase):
             self.assertLess(stock.index(guard), stock.index("S.use(1)"))
         self.assertLess(stock.index("S.use(1)"), stock.index("clinic_doses += CLINIC_BATCH_DOSES"))
 
-    def test_single_world_rollout_and_save_shape(self):
+    def test_staged_rollout_and_save_shape(self):
         active = self.proc(self.clinic, "proc/clinic_active()")
         self.assertIn("map.ordinal_age >=", active)
         self.assertIn("!shard_group.enabled", active)
+        self.assertIn("config.shard_immunization_records", active)
+        self.assertIn("var/shard_immunization_records = FALSE", read("code/datums/configuration.dm"))
         self.assertIn("/mob/living/human/var/list/immunization_record = null", self.clinic)
         self.assertNotIn("var/tmp/immunization_record", self.clinic)
         self.assertIn("world.realtime", self.proc(self.clinic, "proc/immunization_now()"))
