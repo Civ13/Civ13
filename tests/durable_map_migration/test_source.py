@@ -17,6 +17,10 @@ class MapSchemaMigration(unittest.TestCase):
         v5 = json.loads((HERE/'map-schema-v5.json').read_text())
         v6 = json.loads((HERE/'map-schema-v6.json').read_text())
         v7 = json.loads((HERE/'map-schema-v7.json').read_text())
+        v8 = json.loads((HERE/'map-schema-v8.json').read_text())
+        self.assertEqual(len(v8), 138)
+        self.assertEqual(set(v8)-set(v7), {'player_houses_state'})
+        self.assertEqual({k:v for k,v in v8.items() if k!='player_houses_state'}, v7)
         self.assertEqual(len(old), 131)
         self.assertEqual(len(mid), 132)
         self.assertEqual(len(new), 133)
@@ -40,7 +44,7 @@ class MapSchemaMigration(unittest.TestCase):
         body = source.split('/proc/durable_metadata_map_schema()',1)[1].split('/proc/durable_metadata_area_schema()',1)[0]
         actual = {key:kind for kind,keys in re.findall(r'"([a-z_]+)" = list\(([^\n]+)\)',body)
                   for key in re.findall(r'"([a-zA-Z0-9_]+)"',keys)}
-        self.assertEqual(actual,v7)
+        self.assertEqual(actual,v8)
 
     def test_default_matches_source_and_is_only_added_after_validation(self):
         source = (ROOT/'code/game/mob/groups/faction_creation.dm').read_text(encoding='utf-8')
@@ -58,8 +62,41 @@ class MapSchemaMigration(unittest.TestCase):
         contract=(ROOT/'code/modules/persistence/durable_contract.dm').read_text(encoding='utf-8')
         body=contract.split('/proc/durable_metadata_default_map_fields(',1)[1].split('\n/proc/',1)[0]
         self.assertLess(body.index('durable_metadata_validate_fields(fields, schema)'),body.index('fields.Copy()'))
-        self.assertEqual(re.findall(r'result\["(\w+)"\] = list\(\)',body),['faction_renames','faction_recruitment','river_flood_state','fishing_grounds_state','language_lineage_state','era_records_state'])
+        self.assertEqual(re.findall(r'result\["(\w+)"\] = list\(\)',body),['faction_renames','faction_recruitment','river_flood_state','fishing_grounds_state','language_lineage_state','era_records_state','player_houses_state'])
         self.assertNotIn('state[',body)
+
+    def test_house_roles_use_life_tokens_and_do_not_mutate_economic_rows(self):
+        rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
+        death = (ROOT/'code/game/mob/living/carbon/human/death.dm').read_text()
+        runtime = (ROOT/'code/game/mob/living/carbon/human/nomads_adoption.dm').read_text()
+        for field in ("custom_company", "sales_registry", "faction_perms", "adoption_surname"):
+            self.assertNotIn(field, rules)
+        role = rules.split('/obj/map_metadata/proc/player_house_role(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('roster[H.player_house_life_id]', role)
+        self.assertNotIn('owner_key', role)
+        self.assertNotIn('real_name', role)
+        self.assertIn('H.stat == DEAD', role)
+        discard = rules.split('/mob/living/human/proc/lose_player_house_authority()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('player_house_life_id = null', discard)
+        self.assertLess(death.index('lose_player_house_authority()'), death.index('company_return_stake('))
+        self.assertIn('player_house_runtime_var(key)', runtime)
+        states = rules.split('/proc/player_house_runtime_var(key)', 1)[1].split('\n/', 1)[0]
+        self.assertNotIn('player_house_life_id', states)
+        commit = rules[rules.index('var/answer = WWinput(target'):]
+        self.assertLess(commit.index('persistence_admission_changed(save_identity)'), commit.index('roster[life] = offer_role'))
+        self.assertLess(commit.index('invitee_life_generation != target.player_house_life_generation'), commit.index('roster[life] = offer_role'))
+
+    def test_house_recovery_requires_named_charter_consent_and_admin_reason(self):
+        rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
+        recovery = rules.split('/client/proc/recover_player_house()', 1)[1]
+        assignment = recovery.index('roster[life] = "steward"')
+        for required in ('check_rights(R_ADMIN)', 'player_house_has_active_steward(id)',
+                         'persistence_admission_changed(save_identity)', 'land != map',
+                         'life_generation != recipient.player_house_life_generation',
+                         'Staff are offering you stewardship', 'if(!reason'):
+            self.assertLess(recovery.rindex(required, 0, assignment), assignment)
+        self.assertIn('log_admin(', recovery[assignment:])
+        self.assertNotIn('custom_company', recovery)
 
     def test_encoded_preflight_keeps_exact_inventory_and_root_types(self):
         source=(ROOT/'code/modules/persistence/durable_world.dm').read_text(encoding='utf-8')
@@ -73,7 +110,7 @@ class MapSchemaMigration(unittest.TestCase):
 
     def test_writer_versions_fields_independently_and_restorer_normalizes(self):
         source=(ROOT/'code/modules/persistence/durable_world.dm').read_text(encoding='utf-8')
-        self.assertIn('"schema" = 2, "map_fields_version" = 7',source)
+        self.assertIn('"schema" = 2, "map_fields_version" = 8',source)
         self.assertIn('if("map_fields_version" in state) keys += "map_fields_version"',source)
         restore=source.split('/map_storage/proc/restore_durable_world()',1)[1]
         self.assertLess(restore.index('durable_metadata_default_map_fields(fields, durable_state)'),

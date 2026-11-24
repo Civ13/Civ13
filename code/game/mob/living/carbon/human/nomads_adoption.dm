@@ -18,6 +18,8 @@
 /mob/living/human/persistence_runtime_var(key)
 	if (key == "adoption_offer_pending" || key == "adoption_offer_next")
 		return TRUE
+	if (player_house_runtime_var(key))
+		return TRUE
 	return ..()
 
 /proc/adoption_enabled()
@@ -49,6 +51,10 @@
 	adoption_refresh_verbs()
 
 /mob/living/human/proc/adoption_refresh_verbs()
+	if (player_house_feature())
+		verbs |= /mob/living/human/proc/player_houses_menu
+	else
+		verbs -= /mob/living/human/proc/player_houses_menu
 	if (!adoption_enabled())
 		verbs -= /mob/living/human/proc/offer_adoption
 		verbs -= /mob/living/human/proc/unadopt

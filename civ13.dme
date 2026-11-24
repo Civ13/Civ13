@@ -263,6 +263,7 @@
 #include "code\game\mob\update_icons.dm"
 #include "code\game\mob\vision_cone.dm"
 #include "code\game\mob\groups\companies.dm"
+#include "code\game\mob\groups\player_houses.dm"
 #include "code\game\mob\groups\faction_creation.dm"
 #include "code\game\mob\groups\faction_membership.dm"
 #include "code\game\mob\groups\faction_recruitment.dm"

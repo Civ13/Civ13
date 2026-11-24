@@ -23,6 +23,7 @@ var/list/admin_verbs_default = admin_verbs_default_table()
 	/client/proc/getruntimelog					 // allows us to access runtime logs to somebody,
 	)
 var/list/admin_verbs_admin = list(
+	/client/proc/recover_player_house,
 	/client/proc/player_memo_write,
 	/client/proc/player_memo_delete,
 	/client/proc/bug_reports_panel,
