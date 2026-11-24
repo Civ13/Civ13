@@ -6,11 +6,11 @@ description: Pre-push checks for Civ13 PRs that avoid the CI failures agents kee
 # Civ13 PR preflight
 
 Run these before the first source or config push. Documentation-only changes
-use the focused documentation checks in AGENTS.md. Reuse recorded passing local
+need only focused documentation checks (AGENTS.md). Reuse recorded passing local
 checks while their tested inputs and dependencies are unchanged; inspect hosted
 results for each new head, including any documented local-build exception below.
 Inspect existing branch ownership and use
-CODEX.md's handoff rules if an action is blocked.
+the handoff rules in `civ13-pr-completion` if an action is blocked.
 
 PR body: fill `Changelog:` with player-facing text only when players see the
 change. Otherwise leave the line blank; never write `none (...)`, `n/a` or an
@@ -40,7 +40,7 @@ The script installs i386 libraries and fetches the pinned archive from the
 repository-release mirror, which the agent proxy allows. On Windows use
 `dm.exe civ13.dme`. A local compile is still not hosted CI evidence.
 If the hosted build fails for a verified infrastructure reason, that local
-result may satisfy compilation evidence under the [shared policy](../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure)
+result may satisfy compilation evidence under the [local-build policy](#local-build-after-a-hosted-infrastructure-failure)
 and [evidence procedure](../github-workflow-troubleshooting/references/actions-and-evidence.md#local-build-evidence-after-infrastructure-failure).
 Document the exact clean revision and equivalent full build; keep GitHub's
 failure visible. Do not hold an otherwise authorized push or source PR solely
@@ -159,7 +159,29 @@ appears about 10 minutes after CI finishes, read CI directly as before. See
   authorized bounded rerun or the documented exact-revision local-build
   exception. Do not change source code merely to make infrastructure green.
 
-### When hosted CI is down: documented local build
+### Local build after a hosted infrastructure failure
+
+A verified GitHub infrastructure failure, such as an unavailable BYOND
+download, does not by itself block an otherwise authorized push or source-PR
+readiness when a documented successful local build covers the exact revision
+and intended build target. Read the failed job log first; an unknown failure
+is not an infrastructure exception. Record the exact clean commit, pinned
+compiler version, OS, build target, configuration and generated inputs, full
+command/log, exit status and diagnostic counts. Explain any platform or
+build-input differences and what the local build actually covers. Preserve the
+failed GitHub run/job/attempt and its cause, and report "hosted build failed;
+local compilation passed" rather than marking CI passed. A fixture compile
+cannot replace a required full-game build.
+
+This covers compilation evidence only. Source/compiler/test failures,
+checksum or toolchain-integrity failures, conflicts, other required checks,
+reviews and explicit holds still apply, and it grants no merge, deployment,
+history-rewriting force-push, security-setting or branch-protection authority.
+If a protected gate requires an override, use only an already authorized
+action permitted by the environment and its action-time requirements;
+otherwise report that gate. Never bypass an approval denial or manufacture a
+successful check.
+
 
 A GitHub build that fails for infrastructure reasons is not a hard merge
 blocker (maintainer policy, 2026-11-03). Rerun the failed jobs once. If they
@@ -189,18 +211,11 @@ in master's order with yours appended, then run `python3 scripts/agent_preflight
 
 ## 7. Player Help wiki pins
 
-`scripts/player_help_bridge.py` pins civ13-wiki guides by LF-normalized
-SHA-256 and silently drops a page whose hash changes. After any civ13-wiki
-merge that edits a pinned guide, re-pin in Civ13:
-
-```bash
-python3 scripts/agent_preflight.py wiki-pins --wiki-root ../civ13-wiki --write
-```
-
-Review the changed guides, then commit with the new revision.
+After any civ13-wiki merge that edits a guide the in-game Help pins, re-pin
+in Civ13 with `python3 scripts/agent_preflight.py wiki-pins --wiki-root ../civ13-wiki --write`
+(details in `civ13-wiki-and-help-pins`).
 
 ## 8. Report
 
-Keep the PR comment short: what changed, the exact commands above and their
-results, the CI run link, and what stays unverified. Do not restate unchanged
-"not run" items in every comment.
+Post the dated PR comment described in `civ13-pr-completion`, with the exact
+commands above and their results.

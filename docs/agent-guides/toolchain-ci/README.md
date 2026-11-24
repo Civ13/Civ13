@@ -4,7 +4,7 @@ Read only the entries relevant to the paths or behavior being changed.
 Code paths and commands below are relative to the repository root unless
 shown as Markdown links. These dated notes preserve subsystem contracts
 and historical evidence; they are not a task-wide completion checklist.
-Use the root [PR completion policy](../../../CODEX.md) for the finish line.
+Use the [PR completion skill](../../../.agents/skills/civ13-pr-completion/SKILL.md) for the finish line.
 
 Explicit restrictions on live actions, held runners, credentials and feature
 activation still apply to those actions. Missing native, graphical or
@@ -167,11 +167,11 @@ fails the same way, the PR may be admin-merged with Val's merge approval once a
 dated PR comment documents the local compile, the preflight results and the
 failing log line for its exact head. Say in that comment what stays unverified
 (native, in-game, save/load). A real compile or test failure still blocks. See
-"When hosted CI is down" in `.agents/skills/civ13-pr-preflight/SKILL.md`.
+"Local build after a hosted infrastructure failure" in `.agents/skills/civ13-pr-preflight/SKILL.md`.
 
 <!-- 2026-11-03: verified hosted infrastructure failure and exact-revision local evidence -->
 If hosted compilation fails for a verified infrastructure reason, apply the
-[local-build policy](../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure).
+[local-build policy](../../../.agents/skills/civ13-pr-preflight/SKILL.md#local-build-after-a-hosted-infrastructure-failure).
 A documented successful equivalent local build of the exact revision may cover
 compilation evidence; the hosted build alone is not a source-publication hold.
 Keep the failed CI/aggregate status visible. Other checks, integrity failures,

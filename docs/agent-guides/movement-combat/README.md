@@ -52,7 +52,7 @@ Read only the entries relevant to the paths or behavior being changed.
 Code paths and commands below are relative to the repository root unless
 shown as Markdown links. These dated notes preserve subsystem contracts
 and historical evidence; they are not a task-wide completion checklist.
-Use the root [PR completion policy](../../../CODEX.md) for the finish line.
+Use the [PR completion skill](../../../.agents/skills/civ13-pr-completion/SKILL.md) for the finish line.
 
 Explicit restrictions on live actions, held runners, credentials and feature
 activation still apply to those actions. Missing native, graphical or
