@@ -70,7 +70,7 @@
 		return
 	var/list/stations = list()
 	for (var/obj/structure/phoneline/PL in range(2, src))
-		PL.transmit("clinic shipment", reference, src, PL, stations, TRUE)
+		PL.collect_clinic_stations(src, list(), stations)
 		break
 	var/obj/structure/telegraph/receiver = clinic_receiver(stations, destination)
 	if (!receiver)
@@ -215,7 +215,7 @@
 
 // reached holds the telegraphs this transmission has already delivered to, so
 // a telegraph within reach of two poles prints the message once (#6235).
-/obj/structure/phoneline/proc/transmit(var/msg, var/stripmsg, var/obj/structure/telegraph/TL, var/obj/structure/phoneline/origin, var/list/reached = null, collect_only = FALSE)
+/obj/structure/phoneline/proc/transmit(var/msg, var/stripmsg, var/obj/structure/telegraph/TL, var/obj/structure/phoneline/origin, var/list/reached = null)
 	if (!msg || !TL)
 		return
 	if (world.time <= lastproc)
@@ -228,33 +228,52 @@
 		//left
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x-3,y,z)))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src,reached,collect_only)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		//right
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x+3,y,z)))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src,reached,collect_only)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		//up
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x,y+3,z)))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src,reached,collect_only)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		//down
 		for (var/obj/structure/phoneline/PL in get_turf(locate(x,y-3,z)))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src,reached,collect_only)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		//right next to it
 		for (var/obj/structure/phoneline/PL in range(1,src))
 			if (PL != origin && PL != src)
-				PL.transmit(msg,stripmsg,TL,src,reached,collect_only)
+				PL.transmit(msg,stripmsg,TL,src,reached)
 
 		for (var/obj/structure/telegraph/TLG in range(2,src))
 			if (TLG != TL && !(TLG in reached))
 				reached += TLG
-				if (!collect_only)
-					TLG.receive(msg,stripmsg)
+				TLG.receive(msg,stripmsg)
+// A lookup must inspect the whole connected network without consuming the
+// shared transmission cooldown. Keep traversal state local to this lookup.
+/obj/structure/phoneline/proc/collect_clinic_stations(obj/structure/telegraph/TL, list/visited, list/reached)
+	if (src in visited)
+		return
+	visited += src
+	for (var/obj/structure/phoneline/PL in get_turf(locate(x-3,y,z)))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/phoneline/PL in get_turf(locate(x+3,y,z)))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/phoneline/PL in get_turf(locate(x,y+3,z)))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/phoneline/PL in get_turf(locate(x,y-3,z)))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/phoneline/PL in range(1,src))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/telegraph/TLG in range(2,src))
+		if (TLG != TL && !(TLG in reached))
+			reached += TLG
+
 /obj/structure/phoneline/proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone)
 	if (!origin || !target)
 		return

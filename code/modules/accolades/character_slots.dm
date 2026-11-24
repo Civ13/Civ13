@@ -168,8 +168,19 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 		return "was hurt in the last ten minutes"
 	return null
 
+// The assigned bed must still be valid when used to leave a durable body.
+/mob/living/human/proc/character_lobby_assigned_bed(owner)
+	if(!owner || stat == DEAD || !inducedSSD || sleeping <= 0 || !isturf(loc))
+		return null
+	for(var/obj/structure/bed/B in loc)
+		if(B.persistence_bed_owner_ckey == owner && (!buckled || buckled == B) && B.valid_sleep_bed(src))
+			return B
+	return null
+
 // TRUE when this body rests asleep in its own bed (Sleep in a bed).
 /mob/living/human/proc/character_slot_resting(owner)
+	if(persistence_bed_return_enabled())
+		return !!character_lobby_assigned_bed(owner)
 	if(!inducedSSD || !isturf(loc))
 		return FALSE
 	for(var/obj/structure/bed/B in loc)
@@ -215,6 +226,10 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 
 // Why the client cannot play slot now, or null.
 /proc/character_slot_switch_refusal(client/C, slot)
+	if(region_gateway_here())
+		return "Use the gateway character lobby. A switch must be admitted in your character's land."
+	if(!region_gateway_expected_slot_ok(C))
+		return "Your selected character changed. Reconnect through the gateway before switching."
 	var/ckey = accolade_client_ckey(C)
 	if(!ckey)
 		return "Extra characters belong to a signed-in BYOND account."
@@ -324,9 +339,57 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 		else
 			H.character_idle_minutes++
 
+// -- the local sleep picker ------------------------------------------------------
+
+// This is narrower than the legacy switch/idle admission. Only a living,
+// actually sleeping body on its own valid assigned bed can enter this picker.
+/proc/character_lobby_sleep_body(client/C)
+	if(!accolade_client_ckey(C) || !persistence_bed_return_enabled())
+		return null
+	var/mob/living/human/H = C.mob
+	var/owner = C.owner_key()
+	if(!istype(H) || QDELETED(H) || H.gcDestroyed || H.client != C || H.persistence_owner_ckey != owner)
+		return null
+	return H.character_lobby_assigned_bed(owner) ? H : null
+
+/proc/character_lobby_departure_refusal(client/C)
+	var/mob/living/human/H = character_lobby_sleep_body(C)
+	if(!H)
+		return "Your character must still be asleep in their own assigned bed."
+	if(H.character_picker_waking)
+		return "You are already waking this character."
+	if(persistence_sleep_transfer_blocked() || map_storage.character_recovery_unready())
+		return "Wait for the world save or recovery to finish."
+	var/reason = H.character_slot_body_refusal()
+	return reason ? "You cannot leave while your character [reason]." : null
+
+// Text only, placed in the private window after exact slot ownership and
+// unique local body checks. Never publishes location or condition to a peer.
+/proc/character_local_body_summary(mob/living/human/H)
+	if(H.stat == DEAD)
+		return "Dead in this land."
+	if(H.inducedSSD && H.sleeping > 0)
+		return "Asleep in this land."
+	return "Awake in this land."
+
+// The base skills the picker lists, in its order.
+/proc/character_local_body_skills()
+	return list("strength", "dexterity", "stamina", "crafting", "medical", "philosophy", "farming")
+
+/client/proc/open_character_sleep_picker()
+	var/mob/living/human/H = character_lobby_sleep_body(src)
+	if(!H)
+		return FALSE
+	if(!character_sleep_picker || character_sleep_picker.owner != src)
+		character_sleep_picker = new /datum/character_slot_window(src)
+	character_sleep_picker.sleep_picker_body = H
+	character_sleep_picker.ui_interact(H)
+	return TRUE
+
 // -- the window ------------------------------------------------------------------
 
 /client/var/datum/character_slot_window/character_slot_window = null
+/client/var/datum/character_slot_window/character_sleep_picker = null
 
 /client/verb/characters_window()
 	set name = "Characters"
@@ -341,6 +404,7 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 
 /datum/character_slot_window
 	var/client/owner = null
+	var/mob/living/human/sleep_picker_body = null
 
 /datum/character_slot_window/New(client/C)
 	..()
@@ -350,6 +414,9 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 	GLOB.nanomanager.close_uis(src)
 	if(owner && owner.character_slot_window == src)
 		owner.character_slot_window = null
+	if(owner && owner.character_sleep_picker == src)
+		owner.character_sleep_picker = null
+	sleep_picker_body = null
 	owner = null
 	return ..()
 
@@ -357,15 +424,22 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 	var/datum/character_slot_window/W = src_object
 	if(!istype(W) || !W.owner || !user || user.client != W.owner)
 		return STATUS_CLOSE
+	if(W.sleep_picker_body && (W.sleep_picker_body != user || character_lobby_sleep_body(W.owner) != user))
+		return STATUS_CLOSE
 	return STATUS_INTERACTIVE
 
 /datum/character_slot_window/ui_actions(ui_key)
+	if(sleep_picker_body)
+		return list("wake_local", "gateway_roster")
 	return list("unlock", "switch")
 
 /datum/character_slot_window/ui_interact(mob/user, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
 	if(!owner || !user || user.client != owner)
 		return
-	open_panel(user, "Characters", 640, 700, window_sections(), ui_key = ui_key, ui = ui, force_open = force_open, state = /datum/topic_state/character_slots)
+	if(sleep_picker_body && (sleep_picker_body != user || character_lobby_sleep_body(owner) != user))
+		return
+	var/list/sections = sleep_picker_body ? sleep_picker_sections() : window_sections()
+	open_panel(user, sleep_picker_body ? "Sleeping Characters" : "Characters", sleep_picker_body ? 560 : 640, 700, sections, ui_key = ui_key, ui = ui, force_open = force_open, state = /datum/topic_state/character_slots)
 
 // The panel (designed by Fable): the balance and who is played now, then one
 // line per slot with its state, its button and why a disabled button is
@@ -463,10 +537,77 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 		panel_section("Character slots", notes = slot_notes, items = items),
 		panel_section("Rules", notes = rules))
 
+/datum/character_slot_window/proc/sleep_picker_sections()
+	var/client/C = owner
+	var/list/state = character_slot_state(accolade_client_ckey(C))
+	var/list/names = state["names"]
+	var/list/bodies = list()
+	var/list/ambiguous = list()
+	// Only this client's exact durable owner keys can enter the local roster.
+	for(var/mob/living/human/H in human_mob_list)
+		if(QDELETED(H) || H.gcDestroyed || !H.loc)
+			continue
+		var/slot = owner_key_slot(H.persistence_owner_ckey)
+		if(slot < 1 || H.persistence_owner_ckey != owner_key_for(C.ckey, slot))
+			continue
+		if((H.client && H.client != C) || bodies["[slot]"])
+			ambiguous["[slot]"] = TRUE
+		else
+			bodies["[slot]"] = H
+	// The picker (designed by Fable): who can be played from this bed and the
+	// one button that does it, then the local bodies' skills side by side.
+	var/list/items = list()
+	var/list/columns = list("Skill")
+	var/list/shown = list()
+	for(var/slot = 1 to character_slots_max)
+		if(!character_slot_open(state, slot) || (slot > 1 && !character_slots_verified(C)))
+			continue
+		var/mob/living/human/H = ambiguous["[slot]"] ? null : bodies["[slot]"]
+		var/name = H ? H.real_name : (islist(names["[slot]"]) ? names["[slot]"][1] : null)
+		var/detail = H ? character_local_body_summary(H) : "Not found in this land. The character lobby can take you to them."
+		var/list/buttons
+		if(slot == C.character_slot)
+			if(sleep_picker_body.character_picker_waking)
+				detail = "Waking up. This takes 30 seconds."
+			buttons = list(panel_button("Wake up", "wake_local", disabled = sleep_picker_body.character_picker_waking))
+		items += list(panel_item("Slot [slot][name ? " - [name]" : ""]", detail, buttons))
+		if(H && islist(H.stats))
+			columns += "[name ? name : "Slot [slot]"]"
+			shown += H
+	var/refusal = character_lobby_departure_refusal(C)
+	var/list/notes = list("Your character stays asleep in their bed. Wake up here, or open the character lobby to continue as someone else.")
+	if(refusal)
+		notes += refusal
+	var/list/sections = list(panel_section("While you sleep", notes = notes, items = items,
+		buttons = list(panel_button("Open the character lobby", "gateway_roster", disabled = !!refusal))))
+	if(shown.len)
+		var/list/rows = list()
+		for(var/stat_name in character_local_body_skills())
+			var/list/row = list(capitalize(stat_name))
+			for(var/mob/living/human/H in shown)
+				var/list/stat_data = H.stats[stat_name]
+				row += (islist(stat_data) && length(stat_data) && isnum(stat_data[1])) ? "[round(stat_data[1], 0.1)]" : "-"
+			rows += list(row)
+		sections += list(panel_section("Skills", table = panel_table(columns, rows)))
+	return sections
+
 /datum/character_slot_window/ui_act(action, list/params, mob/user, datum/nanoui/ui)
 	if(!owner || !user || user.client != owner)
 		return TRUE
 	var/client/C = owner
+	if(sleep_picker_body)
+		if(sleep_picker_body != user || character_lobby_sleep_body(C) != user)
+			return TRUE
+		switch(action)
+			if("wake_local")
+				sleep_picker_body.request_character_picker_wake(C)
+			if("gateway_roster")
+				var/why = character_lobby_departure_refusal(C)
+				if(why)
+					to_chat(C, SPAN_WARNING(why))
+				else if(!region_gateway_open_roster(C))
+					to_chat(C, SPAN_WARNING("The gateway lobby is not available right now. Your character is still asleep here."))
+		return TRUE
 	switch(action)
 		if("unlock")
 			var/result = character_slot_unlock(C)

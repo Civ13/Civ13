@@ -135,5 +135,46 @@ class ScannerTest(unittest.TestCase):
         self.assertNotIn('new /obj/item/stack/material/wood(', generic)
 
 
+class LoadedPlatingBathTest(unittest.TestCase):
+    """Source contracts for #7030: refuse paid inputs before teardown."""
+
+    @classmethod
+    def setUpClass(cls):
+        structure = (scan.ROOT / 'code/game/objects/structures.dm').read_text(encoding='utf-8')
+        plating = (scan.ROOT / 'code/modules/1713/electroplating.dm').read_text(encoding='utf-8')
+        cls.attack = structure.split('/obj/structure/attackby(', 1)[1].split('\n/', 1)[0]
+        cls.base_guard = structure.split('/obj/structure/proc/can_dismantle_with_hammer(', 1)[1].split('\n/', 1)[0]
+        cls.bath_guard = plating.split('/obj/structure/plating_bath/can_dismantle_with_hammer(', 1)[1].split('\n/', 1)[0]
+        cls.bath_attack = plating.split('/obj/structure/plating_bath/attackby(', 1)[1].split('\n/', 1)[0]
+
+    def test_hammer_dispatch_still_uses_shared_teardown(self):
+        self.assertIn(
+            'if (is_tool(W, TOOL_WRENCH) || is_tool(W, TOOL_HAMMER))\n\t\treturn ..()',
+            self.bath_attack,
+        )
+        self.assertEqual(self.base_guard.splitlines()[1], '\treturn TRUE')
+
+    def test_refuses_loaded_attempt_before_starting_the_wait(self):
+        self.assertIn(
+            'else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)\n'
+            '\t\tif (!can_dismantle_with_hammer(user))\n\t\t\treturn\n\t\tplaysound',
+            self.attack,
+        )
+
+    def test_rechecks_new_inputs_after_wait_before_any_refund_or_delete(self):
+        wait = self.attack.index('if (do_ship_fixture_after(user, 25, src) && !QDELETED(src))')
+        after_wait = self.attack[wait:]
+        self.assertTrue(after_wait.startswith(
+            'if (do_ship_fixture_after(user, 25, src) && !QDELETED(src))\n'
+            '\t\t\tif (!can_dismantle_with_hammer(user))\n\t\t\t\treturn\n'
+        ))
+        self.assertLess(after_wait.index('can_dismantle_with_hammer'), after_wait.index('crafted_refund_stack'))
+        self.assertLess(after_wait.index('crafted_refund_stack'), after_wait.index('qdel(src)'))
+
+    def test_either_paid_input_refuses_but_empty_bath_uses_default(self):
+        self.assertIn('\n\tif (anode || workpiece())\n', self.bath_guard)
+        self.assertIn('\n\t\treturn FALSE\n\treturn ..()\n', self.bath_guard)
+
+
 if __name__ == '__main__':
     unittest.main()

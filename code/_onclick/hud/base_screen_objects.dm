@@ -530,7 +530,12 @@
 	if (istype(usr.get_active_hand(), /obj/item/weapon/gun))
 		var/obj/item/weapon/gun/GN = usr.get_active_hand()
 		icon_state = "cross[clamp(round(GN.get_dispersion_range(usr), 3), 3, 30)]"
-	screen_loc = "[usr.client.mouse_screen_x]:[usr.client.mouse_screen_pixel_x - 16],[usr.client.mouse_screen_y]:[usr.client.mouse_screen_pixel_y - 16]"
+	// Oversized art can report a pointer outside the view. A screen object past
+	// the view edge makes the client grow the map, so keep the cross inside it.
+	var/list/view_size = getviewsize(usr.client.view)
+	var/cross_x = max(1, min(view_size[1], usr.client.mouse_screen_x))
+	var/cross_y = max(1, min(view_size[2], usr.client.mouse_screen_y))
+	screen_loc = "[cross_x]:[usr.client.mouse_screen_pixel_x - 16],[cross_y]:[usr.client.mouse_screen_pixel_y - 16]"
 
 /obj/screen/aiming_cross/proc/update()
 	update_icon()

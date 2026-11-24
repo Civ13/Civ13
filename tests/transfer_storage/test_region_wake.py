@@ -52,7 +52,10 @@ class RegionWakeTests(unittest.TestCase):
         # two minutes; the once-a-minute poll through the public host got the
         # rail yard banned from Gaia for the round (2026-11-05).
         body = proc(GROUP, '/datum/shard_group/proc/poll_peer')
-        self.assertIn('byond://[peer_address(peer)]?shard_region=1', body)
+        destination = body.index('var/polled_address = peer_address(peer)')
+        ask = body.index('byond://[polled_address]?shard_region=1')
+        self.assertLess(destination, ask)
+        self.assertLess(ask, body.index('sleep(1)'))
         self.assertNotIn('byond://[peer["address"]]', body)
         helper = proc(GROUP, '/datum/shard_group/proc/peer_address')
         self.assertIn('"127.0.0.1:[shard_address_port(target)]"', helper)
@@ -266,7 +269,11 @@ class RegionWakeTests(unittest.TestCase):
         self.assertLess(send.index('if(id == gate)'), front)
         self.assertLess(front, send.index('ask_relay(route)'))
         self.assertLess(front, send.index('if(!public)'))
-        self.assertIn('C << link("byond://[gate_address()]")', send)
+        # Preserve the normal front-door redirect; an explicit roster
+        # handoff must re-open its chooser rather than auto-forwarding.
+        self.assertIn('var/roster = slot_check ? "?character_lobby=1" : ""', send)
+        self.assertIn('C << link("byond://[gate_address()][roster]")', send)
+        self.assertNotIn('C << link("byond://[gate_address()][slot_check]")', send)
         gateway = read('code/modules/persistence/region_gateway.dm')
         loop = proc(gateway, '/proc/region_gateway_status_loop')
         self.assertIn('region_gateway_tell_relay()', loop)

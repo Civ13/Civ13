@@ -104,6 +104,13 @@ var/papers_owners_about = FALSE
 	W.attack_self(bob)
 	naval_check(A.engine && !was_on && !A.engine.on && !A.moving && A.currentspeed == 0, "and the wheel in a stranger's hands starts nothing")
 	naval_check(!W.turndir(bob, "left"), "nor turns it")
+	var/old_map_id = map.ID
+	map.ID = MAP_NOMADS_GAIA
+	naval_check(C.helm_access(bob) == CRAFT_HELM_FORCE && !A.papers_steer(bob), "Gaia allows forcing the controls without an online owner, not free steering")
+	C.forced_by = "Bob"
+	naval_check(A.papers_allow(bob, seat) && A.papers_steer(bob), "a Gaia driver who took the controls can continue driving with the owners offline")
+	C.forced_by = null
+	map.ID = old_map_id
 	papers_owners_about = TRUE
 	naval_check(C.helm_access(bob) == CRAFT_HELM_FORCE && !A.papers_steer(bob), "while an owner is about the controls can be forced, but are not his yet")
 	C.forced_by = "Bob"

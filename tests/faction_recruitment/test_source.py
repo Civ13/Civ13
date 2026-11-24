@@ -175,14 +175,89 @@ class ColonyCharterSource(unittest.TestCase):
 
     def test_planting_rechecks_after_the_prompt_and_only_counts_standing_charters(self):
         attack = run.proc_text(self.colony, '/obj/structure/colony_charter/attack_hand(')
-        self.assertEqual(2, attack.count('plant_block(user)'))
-        self.assertLess(attack.index('WWinput('), attack.rindex('plant_block(user)'))
+        self.assertEqual(1, attack.count('plant_block(user)'))
+        self.assertLess(attack.index('WWinput('), attack.index('\n\tplant(user)'))
+        plant = run.proc_text(self.colony, '/obj/structure/colony_charter/proc/plant(')
+        self.assertLess(plant.index('plant_block(user)'), plant.index('map.colony_found('))
+        self.assertLess(plant.index('return FALSE'), plant.index('faction = name'))
         block = run.proc_text(self.colony, '/obj/structure/colony_charter/proc/plant_block(')
         for need in ('user.colony_origin_leader', 'civ:[shard_group.region]:', 'faction_name_taken(name)'):
             self.assertIn(need, block)
         for name in ('/obj/map_metadata/proc/colony_home_faction(', '/obj/map_metadata/proc/colony_report('):
             self.assertIn('colony_charter_of(', run.proc_text(self.colony, name))
         self.assertIn('"colonies" = colonies', read('code/modules/persistence/land_stage.dm'))
+
+    def test_first_continent_foothold_only(self):
+        block = run.proc_text(self.colony, '/obj/structure/colony_charter/proc/plant_block(')
+        gate = '!existing && !expedition_land_key() && continent_home() && !continent_founders_ready(user, origin)'
+        self.assertEqual(1, self.colony.count(gate))
+        self.assertLess(block.index('var/existing = map.colony_named_for(origin)'), block.index(gate))
+        self.assertLess(block.index('var/claimed = island_claim_leader_parent(user)'), block.index(gate))
+        self.assertNotIn('continent_founders_ready(', self.travel)
+
+
+    def test_founders_count_active_distinct_accounts_at_the_same_charter(self):
+        # Project the production guards; replace only BYOND engine operations.
+        from importlib.util import module_from_spec, spec_from_file_location
+        from types import SimpleNamespace as NS
+        spec = spec_from_file_location('colony_source_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+        adapter = module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        tag = '/obj/structure/colony_charter/proc/'
+        source = self.colony.replace('10 MINUTES', '6000')
+        charter = NS(z=1, x=10, y=10)
+        actors = []
+
+        def body(account, slot='', faction='none', origin='civ:gaia:union'):
+            H = NS(stat=0, sleeping=False, deleted=False, civilization=faction,
+                   colony_origin=origin, loc='turf', z=1, x=10, y=10,
+                   persistence_owner_ckey=slot + account)
+            C = NS(mob=H, key=account, ckey=account, inactivity=0,
+                   owner_key=lambda: slot + account)
+            H.client = C
+            return H
+
+        env = dict(istype=lambda H: hasattr(H, 'civilization'), QDELETED=lambda H: H.deleted,
+                   IsGuestKey=lambda key: key.startswith('guest'), isturf=lambda loc: loc == 'turf',
+                   get_dist=lambda H, post: max(abs(H.x-post.x), abs(H.y-post.y)),
+                   colony_faction_id=lambda H: 'civ:mainland:' + H.civilization)
+        account = adapter.project(source, tag + 'continent_founder_account', 'src,H,origin', env, method=True)
+        ready = adapter.project(source, tag + 'continent_founders_ready', 'user,origin',
+                                dict(clients=actors, typed_iter=lambda items, _kind: items,
+                                     continent_founder_account=lambda H, origin: account(charter, H, origin)))
+        leader, ally = body('captain'), body('sailor', '@2')
+        faction_id = leader.colony_origin
+        actors[:] = [leader.client]
+        self.assertFalse(ready(leader, faction_id))  # no roster-only vote
+        actors[:] = [leader.client, body('captain', '@2').client]
+        self.assertFalse(ready(leader, faction_id))  # same BYOND account, second character
+        actors[:] = [leader.client, ally.client]
+        self.assertTrue(ready(leader, faction_id))
+        for reason, change in (
+            ('walked away', {'x': 12}), ('different floor', {'z': 2}),
+            ('contained', {'loc': 'locker'}), ('asleep', {'sleeping': True}), ('dead', {'stat': 2}),
+            ('deleted', {'deleted': True}), ('signed out', {'client': None}),
+            ('different faction', {'colony_origin': 'civ:africa:union'}),
+            ('joined a local faction', {'civilization': 'settlers'}),
+            ('not their own body', {'persistence_owner_ckey': 'someoneelse'}),
+        ):
+            with self.subTest(reason=reason):  # support changes after initial eligibility
+                old = {name: getattr(ally, name) for name in change}
+                for name, value in change.items():
+                    setattr(ally, name, value)
+                self.assertFalse(ready(leader, faction_id))
+                for name, value in old.items():
+                    setattr(ally, name, value)
+        ally.client.inactivity = 6000
+        self.assertFalse(ready(leader, faction_id))
+        ally.client.inactivity = 0
+        ally.client.mob = None
+        self.assertFalse(ready(leader, faction_id))
+        actors[:] = [leader.client, body('guest123').client]
+        self.assertFalse(ready(leader, faction_id))
+        actors[:] = [leader.client, body('sailor').client]
+        leader.client = None
+        self.assertFalse(ready(leader, faction_id))
 
 
 class FactionHallSource(unittest.TestCase):

@@ -61,7 +61,7 @@
 // Hook for each piece the anvil makes, from sheet metal (after its stock
 // grade) or from poured mold metal: quench_tub.dm clay-hardens and quenches it.
 /obj/structure/anvil/proc/finish_forged_piece(obj/item/made, mob/user, mob/living/human/H, material_name)
-	return
+	note_craftsman_head_work(H, made, "forge-head", 1)
 
 // Poured mold metal pays anvil_mold_cost(); the menu, wait and payment mirror forge_stack_recipe.
 /obj/structure/anvil/proc/forge_mold_recipe(obj/item/weapon/clay/mold/ML, mob/user, mob/living/human/H, category, list/materials = null)

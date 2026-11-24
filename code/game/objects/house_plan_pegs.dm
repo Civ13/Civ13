@@ -146,6 +146,10 @@
 		return
 	var/origin_x = fresh ? here.x - box[1] : peg_x
 	var/origin_y = fresh ? here.y + box[4] : peg_y
+
+	if ((practice_room_z && here.z == practice_room_z && s != 1) || !tutorial_workshop_footprint(H, origin_x + box[1], origin_y - box[4], origin_x + box[3], origin_y - box[2], here.z))
+		to_chat(H, SPAN_WARNING("Keep the plan inside your practice workshop on this level."))
+		return
 	var/set_id = fresh ? "house-[H.ckey]-[world.realtime]-[rand(1000, 9999)]" : peg_set
 	var/list/result = house_plan_peg_out(D, s, origin_x, origin_y, here.z, set_id)
 	if (!result)
