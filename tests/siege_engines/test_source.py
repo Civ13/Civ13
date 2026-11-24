@@ -18,6 +18,16 @@ def dmi_states(path):
 
 
 class SiegeSource(unittest.TestCase):
+    def test_hot_container_examine_keeps_the_glass_range_result(self):
+        pour = (ROOT / 'code/modules/1713/siege/castle_pour.dm').read_text(encoding='utf-8')
+        glass = (ROOT / 'code/modules/reagents/reagent_containers/glass.dm').read_text(encoding='utf-8')
+        examine = pour.split('/obj/item/weapon/reagent_containers/examine(', 1)[1].split('\n//', 1)[0]
+        self.assertTrue(examine.startswith('mob/user, distance = -1)\n'))
+        self.assertIn('\t. = ..(user, distance)\n', examine)
+        self.assertIn('\tif (is_hot())\n\t\tto_chat(user, SPAN_WARNING("It is hot."))', examine)
+        detail = glass.split('/glass/examine(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertLess(detail.index('if (!..(user, 2))'), detail.index('reagents.total_volume'))
+
     def test_states_exist(self):
         states = dmi_states('icons/obj/siege_engines.dmi')
         for s in ('ram', 'ram_swing', 'ballista', 'ballista_loaded', 'ballista_bolt', 'bolt_flight', 'winch',
