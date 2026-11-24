@@ -834,7 +834,21 @@ class BaselinePolicyTests(unittest.TestCase):
             'code/game/mob/living/carbon/human/playstyle_traits.dm',
             'code/game/mob/living/carbon/human/sight_traits.dm',
         }
-        self.assertEqual(set(suite['shared_paths']), expected_sources)
+        chart_inputs = {
+            'code/game/mob/living/carbon/human/birth_chart_wheel.dm',
+            'code/game/mob/living/carbon/human/birth_charts.dm',
+            'code/game/mob/new_player/new_player.dm',
+            'code/modules/persistence/region_travel.dm',
+        }
+        self.assertEqual(set(suite['shared_paths']), expected_sources | chart_inputs)
+        previous = dict(ci.SUITES, character_traits=dict(suite, shared_paths=tuple(expected_sources)))
+        for path in chart_inputs:
+            with self.subTest(chart_input=path):
+                with patch.object(ci, 'SUITES', previous):
+                    merged_fallback = ci.impact([path])['fallback_reasons']
+                    selected = self.selected([path])
+                self.assertEqual(ci.impact([path])['fallback_reasons'], merged_fallback)
+                self.assertEqual(self.selected([path]), selected | {'character_traits'})
         for path in expected_sources:
             with self.subTest(shared=path):
                 self.assertIn('Unmapped impact: ' + path, ci.impact([path])['fallback_reasons'])

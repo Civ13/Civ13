@@ -52,7 +52,10 @@ class RegionWakeTests(unittest.TestCase):
         # two minutes; the once-a-minute poll through the public host got the
         # rail yard banned from Gaia for the round (2026-11-05).
         body = proc(GROUP, '/datum/shard_group/proc/poll_peer')
-        self.assertIn('byond://[peer_address(peer)]?shard_region=1', body)
+        destination = body.index('var/polled_address = peer_address(peer)')
+        ask = body.index('byond://[polled_address]?shard_region=1')
+        self.assertLess(destination, ask)
+        self.assertLess(ask, body.index('sleep(1)'))
         self.assertNotIn('byond://[peer["address"]]', body)
         helper = proc(GROUP, '/datum/shard_group/proc/peer_address')
         self.assertIn('"127.0.0.1:[shard_address_port(target)]"', helper)
