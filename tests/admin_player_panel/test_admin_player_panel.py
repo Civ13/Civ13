@@ -104,6 +104,30 @@ class AdminPlayerPanelTests(unittest.TestCase):
         self.assertIn('https://www.byond.com/members/[path_key]?format=text', helper)
         self.assertNotIn('world.Export', helper + panel)
 
+    def test_staff_form_link_and_action_share_existing_eligibility(self):
+        topic = read('code/modules/admin/topic.dm')
+        action = topic.split('else if (href_list["grant_staff_form"])', 1)[1].split('else if (href_list["simplemake"])', 1)[0]
+        self.assertLess(topic.index('usr.client != owner || !check_rights(0)'), topic.index('href_list["grant_staff_form"]'))
+        grant_call = action.index('H.heteromorph_grant(K, null, usr.ckey)')
+        for guard in ('!check_rights(R_ADMIN) || !check_rights(R_SPAWN)', '!ishuman(H)',
+                      'QDELETED(H)', '!H.client', 'H.client.mob != H', '|| H.heteromorph_id',
+                      'heteromorph_kind("dragonoid")'):
+            self.assertLess(action.index(guard), grant_call)
+        self.assertNotIn('change_mob_type(', action)
+        self.assertNotIn('href_list["species"]', action)
+        panel = body(SOURCE.read_text(encoding='utf-8-sig'), '/datum/admins/proc/player_options_html(')
+        match = panel.index('grant_staff_form=1')
+        for guard in ('if (M.client && !isnewplayer(M))', '(rights & R_ADMIN) && (rights & R_SPAWN) && ishuman(M)',
+                      '!H.heteromorph_id && !H.heteromorph_grant_problem(heteromorph_kind("dragonoid"))'):
+            self.assertLess(panel.index(guard), match)
+        forms = read('code/modules/divine/heteromorph.dm')
+        grant = body(forms, '/mob/living/human/proc/heteromorph_grant(')
+        self.assertLess(grant.index('heteromorph_grant_problem(K)'), grant.index('heteromorph_id = K.id'))
+        eligibility = body(forms, '/mob/living/human/proc/heteromorph_grant_problem(')
+        for guard in ('stat == DEAD', 'K.staff_only && !heteromorph_staff_run()', 'K.origin != heteromorph_world_origin()'):
+            self.assertIn(guard, eligibility)
+        self.assertIn('heteromorph_log(', grant)
+
     def test_script_has_no_interpolation_or_html_writes(self):
         script = client_script()
         self.assertNotIn('innerHTML', script)

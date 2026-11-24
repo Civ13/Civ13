@@ -6,8 +6,8 @@
 // - one player's panel ("Show Player Panel" and every PP link): who they are,
 //   their records from every region, hidden karma, then the actions grouped by
 //   what they are for.
-// Every action is the same link as before, so code/modules/admin/topic.dm still
-// checks the rights; only the pages changed. Text from players is
+// In-game actions still go through the existing rights checks in
+// code/modules/admin/topic.dm. Text from players is
 // html_encode()d here, and the list script reads text and data attributes only.
 
 // The shared look of the staff pages: dark green, the same palette as the
@@ -403,6 +403,10 @@ document.getElementById('q').onkeyup=apply;document.getElementById('q').focus();
 		var/list/bodies = list("Default" = "default", "Gorilla" = "gorilla", "Werewolf" = "wolfman", "Ant" = "ant", "Orc" = "orc", "Droid" = "droid")
 		for (var/label in bodies)
 			body += "<a href='?src=\ref[src];simplemake=[bodies[label]];mob=\ref[M]'>[label]</a>"
+		if ((rights & R_ADMIN) && (rights & R_SPAWN) && ishuman(M))
+			var/mob/living/human/H = M
+			if (!H.heteromorph_id && !H.heteromorph_grant_problem(heteromorph_kind("dragonoid")))
+				body += "<a href='?src=\ref[src];grant_staff_form=1;mob=\ref[M]'>Dragonoid</a>"
 		body += "</div></details></div>"
 
 	body += "</body></html>"
