@@ -164,6 +164,37 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 		// The claimed island's border (island_access.dm).
 		to_chat(user, island_access_status_text(row[1]))
 
+// A founder must be playing their own signed-in BYOND character beside the
+// charter. Overseas visitors keep their home faction in colony_origin until
+// there is a local branch to join; a current local faction takes precedence.
+// Use the same ten-minute active-client window as province stake.
+/obj/structure/colony_charter/proc/continent_founder_account(mob/living/human/H, origin)
+	if (!istype(H) || QDELETED(H) || H.stat || H.sleeping)
+		return null
+	var/client/C = H.client
+	if (!C || C.mob != H || !C.ckey || IsGuestKey(C.key) || C.inactivity >= 10 MINUTES)
+		return null
+	if (H.persistence_owner_ckey != C.owner_key() || !isturf(H.loc) || H.z != z || get_dist(H, src) > 1)
+		return null
+	if (H.civilization && H.civilization != "none")
+		if (colony_faction_id(H) != origin)
+			return null
+	else if (H.colony_origin != origin)
+		return null
+	return C.ckey
+
+/obj/structure/colony_charter/proc/continent_founders_ready(mob/living/human/user, origin)
+	var/account = continent_founder_account(user, origin)
+	if (!account)
+		return FALSE
+	for (var/client/C in clients)
+		if (C == user.client)
+			continue
+		var/other = continent_founder_account(C.mob, origin)
+		if (other && other != account)
+			return TRUE
+	return FALSE
+
 // Why user cannot plant a charter here now, or null.
 /obj/structure/colony_charter/proc/plant_block(mob/living/human/user)
 	if (!map || !shard_group.enabled || !map.allows_custom_factions())
@@ -198,6 +229,8 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 		return "[existing] already has a colony in this land. Members who arrive join it."
 	if (!existing && map.faction_name_taken(name))
 		return "A faction called [name] already lives in this land."
+	if (!existing && !expedition_land_key() && continent_home() && !continent_founders_ready(user, origin))
+		return "To found a colony on this continent, you and another active member of your faction must stand beside the charter on separate signed-in BYOND accounts."
 	return null
 
 /obj/structure/colony_charter/attack_hand(mob/living/human/user)
@@ -216,13 +249,14 @@ var/global/list/colony_charters = list() // every colony charter, bound or not
 	var/answer = WWinput(user, "Plant the charter of [name] here, founding a colony of your faction in this land? Members of [name] who arrive here will join it.", "Colony Charter", "Cancel", list("Plant the charter", "Cancel"))
 	if (answer != "Plant the charter")
 		return
-	block = plant_block(user)
-	if (block)
-		to_chat(user, SPAN_WARNING(block))
-		return
 	plant(user)
 
 /obj/structure/colony_charter/proc/plant(mob/living/human/user)
+	// Recheck after the prompt, immediately before changing charter or faction.
+	var/block = plant_block(user)
+	if (block)
+		to_chat(user, SPAN_WARNING(block))
+		return FALSE
 	var/origin = island_claim_leader_parent(user) || user.colony_origin
 	var/name = map.colony_named_for(origin)
 	if (name)

@@ -74,6 +74,20 @@ Surviving your first day, in the camp behind the second door:
 18. Lie down in the bed by dragging your character onto it. If you fall ill, rest in a bed to recover faster and keep away from people who are coughing.
 19. Get up and walk onto the exit marker.
 
+#### Lesson board, workshop and yards
+
+When the game sends you to the Tutorial land for your practice room, you get a whole plot of your own instead of one room: a controls room, a training room, an open camp and a drawing office, joined by doors on one line, with two large yards behind them. The steps are the same. The blue exit marker is in the south-east corner of the camp.
+
+- **Lesson board.** The notice board beside the camp path lets you reread any topic of the in-game tutorial, from moving and the HUD to the Crafting Atlas, chat and Help. The tree, tall grass and flint in the camp are there to try the branch, twine and whittling lessons.
+- **Yards.** The camp's north door opens onto a soil yard, and the office's east door onto a paved yard; the two join in the north. You can dig down and build up here just as in the live game, through every underground level and storey. Soil carries two storeys; build taller on the paving. Everything stays inside your own plot.
+- **Practice stores.** The open crates in the office and in each yard hand out building materials, rail parts and tools: wood, planks, stone, bricks, glass, metals, cloth, rope, a shovel, a pickaxe, a hammer and more. Click one and choose; a full stack is put at your feet, and it never runs out.
+- **Workshop desk.** Click the desk in the office and choose one exercise. Blank draughts and a pencil appear on the floor south of the desk. Draw with the ordinary designer, run its checks and save the drawing to the sheet.
+  - Exercises marked **Build** or **Make** also fit out the paved yard: a stocked workshop for a car, tank or plane, a yard for an airship of any size, a rail works with sixty tiles of track for a train, a slipway and a large pool for a ship of any size the sheet allows (up to 29 tiles wide), and a works that makes rocket sections. Houses, with as many storeys as the sheet holds, and railways are pegged out in either yard and built with materials from the stores.
+  - Exercises marked **Draw** or **Plan** (submarine, harbor, waterworks, contraption, space station) are drawing practice only.
+  - To try another exercise, click the desk again and choose one. This clears both yards, above and below ground, including anything you built, dug or left in them, and lays out the new exercise. The lesson rooms and what you are carrying stay.
+
+Nothing you draw, dig or build in your plot is kept, and none of it counts towards your real character or its tutorial.
+
 When you reach the exit you return to the Lobby. To leave early, use any of these:
 
 - Click the **click here to leave** link on any step message in chat.

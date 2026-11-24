@@ -76,6 +76,14 @@
 /obj/item/weapon/material/part/proc/is_work_tool_head()
 	return result == /obj/item/weapon/material/pickaxe || result == /obj/item/weapon/material/shovel || result == /obj/item/weapon/material/hatchet
 
+// Shared whitelist for newly forged and genuinely restored work-tool heads.
+/proc/note_craftsman_head_work(mob/user, obj/item/item, lesson, effort)
+	var/obj/item/weapon/material/part/P = item
+	var/mob/living/human/H = user
+	if (!istype(H) || !istype(P) || QDELETED(P) || !P.material || P.health <= 0 || !P.is_work_tool_head())
+		return
+	H.note_craftsman_work(lesson, P.result, effort)
+
 // No waits or prompts between validation and consumption: a second callback
 // cannot reuse a queued-for-deletion ingredient or produce another output.
 /obj/item/weapon/material/part/proc/assemble_work_tool(obj/item/weapon/material/handle/HANDLE, mob/living/human/H)

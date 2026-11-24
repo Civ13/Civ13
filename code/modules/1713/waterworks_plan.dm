@@ -279,6 +279,8 @@
 	var/list/missing = list()
 	for (var/list/cell in route)
 		var/turf/T = waterworks_turf(origin, cell)
+		if ((tutorial_region_here() || (practice_room_z && origin.z == practice_room_z)) && (!T || !tutorial_workshop_footprint(H, T.x, T.y, T.x, T.y, origin.z)))
+			return null
 		if (!build_marker_built("waterworks_[cell[3]]", T))
 			missing += list(cell)
 	if (length(build_marker_registry()) - length(build_markers_of(set_id)) + missing.len > BUILD_MARKER_WORLD_MAX)

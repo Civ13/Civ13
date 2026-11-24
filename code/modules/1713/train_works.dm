@@ -112,6 +112,8 @@
 
 /obj/structure/rail_works/proc/missing_research(mob/living/human/H, datum/train_draught/D)
 	. = list()
+	if ((istype(src, /obj/structure/rail_works/practice)) && tutorial_workshop_access(H, src))
+		return
 	for (var/node_id in D.nodes())
 		if (!H || !map || !research_node_known(H, node_id))
 			var/datum/research_node/N = get_research_node(node_id)
@@ -126,6 +128,8 @@
 
 // Why the works will not take on this sheet at all, or null.
 /obj/structure/rail_works/proc/sheet_refusal(mob/living/human/H, datum/train_draught/D)
+	if (istype(src, /obj/structure/rail_works/practice) && !tutorial_workshop_access(H, src))
+		return "Only your own practice rail works can build here."
 	if (!D)
 		return "The sheet cannot be read."
 	var/list/errors = D.problems()

@@ -491,5 +491,19 @@ class LaunchTests(unittest.TestCase):
         self.assertIs(item.thrower, actor)
 
 
+class PinningMovementTest(unittest.TestCase):
+    def test_both_impact_paths_pin_only_after_reaching_the_wall_turf(self):
+        for path, proc in (
+            ('code/game/mob/living/carbon/human/human_defense.dm', '/mob/living/human/hitby'),
+            ('code/game/mob/living/living_defense.dm', '/mob/living/hitby'),
+        ):
+            with self.subTest(path=path):
+                body = ADAPTER.extract((ROOT / path).read_text(encoding='utf-8-sig'), proc)
+                movement = body.split('near_wall(dir,2)', 1)[1]
+                self.assertNotRegex(movement, r'(?m)^\s*loc\s*=')
+                self.assertIn('if (T && (loc == T || forceMove(T)) && loc == T)', movement)
+                self.assertLess(movement.index('loc == T)'), movement.index('anchored = TRUE'))
+                self.assertIn('pinned += O', movement)
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

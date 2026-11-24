@@ -7,9 +7,28 @@ allocate ports, or change any live routing.
 [Gateway world](../scripts/shard-group/README.md#gateway-world). It reuses the
 existing relay, gate and `set-gate` port swap rather than a separate supervisor
 or a dynamic port pool; Gaia moves to the gateway's chosen port once, behind the
-relay. The read-only `lobby_home` lookup below is not used by it: the gateway asks
-its own transfer agent the Join check's question, which claims nothing in a world
-that is neither a home nor the start region.
+relay. The opt-in Characters lobby uses the coordinator's authenticated
+read-only home lookup. Ordinary reconnects retain their existing routing path.
+
+## Public World Overview
+
+The opt-in Characters lobby has a separate **World Overview** tab. To
+browse without entering the game, connect to the usual public Persistence
+front-door BYOND address with `?world_overview=1` appended. Guests can use
+this view; it does not expose any character slots. To play from that
+connection, reopen the ordinary Persistence address. Normal connections
+still continue to the player's land.
+
+This view displays the configured lands and oceans from the fixed
+[world links atlas](world-links.md), not the expedition chart. The map is a
+schematic, not navigation. The table shows each public region's display
+name, coarse status, confirmed online player count (including zero), and
+a land’s current epoch and public settlement stage when available. A dash
+means a count or epoch is unavailable or does not apply. It uses the existing sampled status and treats samples older than
+two minutes as unknown. Opening or changing tabs does not poll, wake, join
+or change a world. Private events, service worlds, and procedural or parked
+expeditions are not shown, nor are addresses, player lists or undiscovered
+map information.
 
 ## Goal
 

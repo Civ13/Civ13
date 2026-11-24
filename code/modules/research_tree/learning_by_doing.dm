@@ -168,6 +168,13 @@ var/global/list/skill_master_stats = list("crafting", "medical", "farming", "hun
 /mob/living/human/proc/skill_master_mult(statname)
 	return skill_master_nearby(statname) ? SKILL_MASTER_GAIN : 1
 
+// The Craftsman pilot teaches the existing Crafting skill, not a new skill
+// or a benefit of selecting a trade. Call only after the useful work commits.
+/mob/living/human/proc/note_craftsman_work(lesson, result_type, effort)
+	if (!learning_by_doing_enabled() || stat != CONSCIOUS || !ispath(result_type) || effort <= 0)
+		return
+	adaptStat("crafting", effort, "craftsman:[lesson]:[result_type]")
+
 // ---------- Mastery: body skills teach their scholarship ----------
 // Player suggestion (Localbox, relayed by Val 2026-11-14): reaching a milestone
 // in a body skill, or maxing it, gives a large piece of the scholarship that

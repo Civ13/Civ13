@@ -39,6 +39,7 @@ var/bc_runtime_error = FALSE
 		movementMachine = new
 		map = new /obj/map_metadata/bc_probe
 		birth_chart_checks()
+		star_chart_checks()
 	catch(var/exception/e)
 		bc_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = bc_failures, "runtime_error" = bc_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -155,3 +156,38 @@ var/bc_runtime_error = FALSE
 	N.traits = list()
 	N.traits_dirty = TRUE
 	bc_check(N.trait_skill_gain_mult("philosophy") == 1, "no sign: no calling")
+
+
+// Compare the actual calendar entry point, not simply the arithmetic helpers.
+/proc/star_chart_checks()
+	config = new
+	config.daynight_on = TRUE
+	map.title = "Fixture West"
+	map.world_longitude = -30
+	world_calendar_test_now = list(1, 0)
+	var/list/west = star_chart_now()
+	var/list/west_angles = star_chart_angles(west)
+	bc_check(west["day"] == 12 && west["local_day"] == 11 && west["minute"] == 0 && west["local_minute"] == 1320, "star chart negative-zone midnight")
+	var/list/natal_record = list("v" = 1, "day" = 12, "minute" = 400, "zone" = -2, "region" = "Fixture Birth")
+	var/list/natal = birth_chart_angles("serpent", natal_record)
+	bc_check(natal["Sun"] == 222 && natal["Rising"] == 70, "fixed recorded natal chart is independent of current sky")
+	map.world_longitude = 10
+	map.title = "Fixture East"
+	var/list/east = star_chart_now()
+	var/list/east_angles = star_chart_angles(east)
+	bc_check(west_angles["Sun"] == 12 && west_angles["Sun"] == east_angles["Sun"] && west_angles["Moon"] == east_angles["Moon"], "moving regions preserves the same shared sky and never substitutes natal Sun")
+	bc_check(east["local_minute"] == 60 && east_angles["Rising"] == 15 && west_angles["Rising"] == 330, "only current local Rising shifts with a region move")
+	bc_check(birth_chart_angles("serpent", natal_record)["Rising"] == 70 && natal_record["region"] == "Fixture Birth", "moving view cannot change natal data")
+	var/list/sun_crossing = star_chart_next_sign("Sun", 359, 1439, 359)
+	var/list/moon_crossing = star_chart_next_sign("Moon", 276, 1439, 359)
+	bc_check(sun_crossing["sign_id"] == "ox" && sun_crossing["minutes"] == 1 && star_chart_sun_angle(360) == 0, "live solar wrap is deterministic")
+	bc_check(moon_crossing["sign_id"] == "ox" && moon_crossing["minutes"] == 1 && birth_chart_moon_angle(277, 0) == 1, "lunar midnight jump reports the first sign crossing")
+	var/list/transits = star_chart_transits(list("Sun" = 7, "Moon" = null, "Rising" = 70), natal)
+	bc_check(transits.len == 1 && transits[1]["moving"] == "Sun" && transits[1]["fixed"] == "Rising" && transits[1]["orb"] == 3, "current local Rising is never a moving transit body")
+	var/list/legacy = birth_chart_angles("serpent", null)
+	bc_check(!star_chart_transits(west_angles, legacy).len, "legacy sign alone cannot create personal transits")
+	bc_check(!star_chart_moment(list(1, 864000), 10, "Fixture East"), "invalid shared instant is refused")
+	bc_check(!star_chart_moment(list(1, 0), null, "Fixture East"), "unknown longitude is refused")
+	config.daynight_on = FALSE
+	bc_check(!star_chart_now(), "disabled shared calendar is refused at the current-sky entry point")
+	world_calendar_test_now = null
