@@ -343,6 +343,32 @@ var/global/practice_probe_runtime_error = FALSE
 	practice_probe_check("tutorial/switch_clears_yards", QDELETED(t_press) && !TS.props["workshop_selected"] && !QDELETED(t_desk) && !QDELETED(TH) && !QDELETED(t_board) && !QDELETED(t_stores[2]) && !QDELETED(t_stores[3]) && !(locate(/obj/item/ship_draught) in range(7, t_desk)) && istype(locate(px, py, tz), /turf/floor/plating/concrete))
 	practice_probe_check("tutorial/switch_fills_tunnels", dug_underground_unformed(t_dug) && !(locate(/obj/item) in t_dug) && istype(locate(TO[1], t_dug.y, cave), /turf/wall/rockwall/bedrock) && underground_depth_of(cave) == 1)
 	practice_probe_check("tutorial/switch_clears_storeys", istype(t_up, /turf/sky/building) && !(locate(/obj/item) in t_up) && istype(locate(t_beyond.x, t_beyond.y, air), /turf/floor/wood))
+	// Paper lesson: setup and completion stay on this plot and reset with the yard.
+	var/paper_text = TS.setup_workshop("paper")
+	var/obj/structure/printingpress/paper_press = locate() in locate(px, py, tz)
+	var/list/paper_supply = TS.supply_floor()
+	var/paper_count = 0
+	for (var/obj/item/weapon/paper/sheet in paper_supply[1])
+		paper_count++
+	practice_probe_check("paper/setup", findtext(paper_text, "quill") && paper_press && TS.props["practice_press"] == paper_press && paper_count == 8 && TS.owns_rect(paper_press, t_paved))
+	var/obj/item/weapon/paper/paper_original = new(get_turf(paper_press))
+	var/obj/item/weapon/paper/paper_result = new(get_turf(paper_press))
+	paper_original.info = ""
+	tutorial_note_paper_copy(TH, paper_press, paper_original, paper_result)
+	practice_probe_check("paper/blank_rejected", !TS.props["practice_paper_done"])
+	paper_original.info = "notice"
+	paper_result.forceMove(locate(TO2[1] + 35, TO2[2] + 20, tz))
+	tutorial_note_paper_copy(TH, paper_press, paper_original, paper_result)
+	practice_probe_check("paper/other_plot_rejected", !TS.props["practice_paper_done"])
+	paper_result.forceMove(get_turf(paper_press))
+	tutorial_note_paper_copy(TH, paper_press, paper_original, paper_result)
+	practice_probe_check("paper/complete", TS.props["practice_paper_done"])
+	TS.clear_workshop(t_desk)
+	practice_probe_check("paper/switch_resets", QDELETED(paper_press) && QDELETED(paper_original) && QDELETED(paper_result) && !TS.props["practice_press"] && !TS.props["practice_paper_done"])
+	TS.setup_workshop("paper")
+	var/obj/structure/printingpress/paper_again = locate() in locate(px, py, tz)
+	practice_probe_check("paper/reselect", paper_again && TS.props["practice_press"] == paper_again && !TS.props["practice_paper_done"])
+	TS.clear_workshop(t_desk)
 	TS.setup_workshop("air")
 	var/obj/structure/car_workshop/airship_yard/practice/t_yard = locate() in locate(px, py, tz)
 	practice_probe_check("tutorial/airship_bay", t_yard && t_yard.bay_clear(AIR_DRAUGHT_MAX) && TS.owns_rect(locate(t_yard.x + AIR_DRAUGHT_MAX, t_yard.y + AIR_DRAUGHT_MAX, tz), t_paved))

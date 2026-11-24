@@ -130,6 +130,7 @@
 	if (!tutorial_workshop_access(body, desk) || !desk.Adjacent(body))
 		return
 	var/list/exercises = list(
+		"Write and print a notice" = "paper",
 		"Build a car or tank" = "car",
 		"Build a plane" = "plane",
 		"Build an airship" = "air",
@@ -149,7 +150,7 @@
 	var/prompt = "Choose an exercise. This workshop is yours alone, and you can come back to the desk to switch to another."
 	if (current)
 		prompt = "\"[current]\" is set up. Choosing an exercise now clears both yards on every level, with everything built, dug or left in them, and lays out the new one."
-	var/choice = WWinput(body, "[prompt] Every exercise provides a kit for a small physical build using the live game's designer.", desk.name, "Cancel", exercises + list("Cancel"))
+	var/choice = WWinput(body, "[prompt] The writing lesson uses a press; the other exercises provide small physical builds with the live game's designers.", desk.name, "Cancel", exercises + list("Cancel"))
 	if (!exercises[choice] || !connection || body?.client != connection || connection.mob != body || !tutorial_workshop_access(body, desk) || !desk.Adjacent(body) || props["workshop_selected"] != current)
 		return
 	if (current)
@@ -161,6 +162,9 @@
 // level, tunnels fill and the ground is laid fresh, as when the plot was
 // built. The lesson rooms and what the trainee carries stay as they are.
 /datum/practice_session/proc/clear_workshop(obj/structure/practice_workshop_desk/desk)
+	// Revoke the active lesson before clearing its press or its contents.
+	props["practice_press"] = null
+	props["practice_paper_done"] = null
 	var/list/stores = props["stores"]
 	for (var/key in list("paved", "field"))
 		owner.clear_column(props[key], stores)
@@ -187,6 +191,8 @@
 	var/py = paved[2]
 	var/z = owner.room_z()
 	var/list/supply = supply_floor()
+	if (exercise == "paper")
+		return setup_practice_paper(supply[1], locate(px, py, z))
 	new /obj/item/ship_draught(supply[1])
 	new /obj/item/ship_draught(supply[1])
 	new /obj/item/weapon/pen/pencil(supply[2])
