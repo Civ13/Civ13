@@ -199,7 +199,7 @@ Changes reach every land within a minute or two. Recruitment stations on the isl
 
 ## Colonies in other lands
 
-A faction lives in the land where it was founded, but its leader can found a **colony** in another land by carrying a **colony charter** (8 planks) there and planting it. The faction then exists in that land under the same name. Members arriving there join the colony, each colony adds room for 5 members, and members can start new characters at a settled colony. A colony on the mainland stands only while its charter does; a claimed island is the exception. See [Factions and colonies](Guide_to_Travel.md#factions-and-colonies).
+A faction lives in the land where it was founded, but its leader can found a **colony** in another land by carrying a **colony charter** (8 planks) there and planting it. For the faction's first colony on another continent, the leader needs another active member of the faction beside the charter, signed into a separate BYOND account. This is a founding rule, not a requirement for solo travel or for rebuilding an existing charter. The faction then exists in that land under the same name. Members arriving there join the colony, each colony adds room for 5 members, and members can start new characters at a settled colony. A colony on the mainland stands only while its charter does; a claimed island is the exception. See [Factions and colonies](Guide_to_Travel.md#factions-and-colonies).
 
 ## Sleeping safely
 

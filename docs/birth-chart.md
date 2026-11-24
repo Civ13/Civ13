@@ -57,3 +57,20 @@ grants no new effects.
 
 Open [Star Chart](star-chart.md) for an up-to-date sky reading and a private
 comparison with the recorded parts of your fixed natal chart.
+
+## Region group rollout
+
+Standalone worlds continue to record new births. In a region group, the
+detailed record is not captured for new characters until the operator sets
+`BIRTH_CHART_RECORDS 1` after all receiving worlds (including sleepers and
+their wake images) have the compatible decoder. The existing Sun sign still
+works throughout the rollout. No old or skipped birth moment is backfilled.
+
+A world with the updated decoder can receive and show a recorded chart even
+with capture disabled. A character or party carrying a record does not enter
+transfer escrow unless the receiving world answers a fresh capability check.
+An old, unavailable, or unconfirmed receiver cannot silently drop the new data.
+Legacy sign-only travel is unchanged. After enabling capture, keep a
+compatible decoder through any rollback: older builds cannot retain the
+record in pending transfers or in restored saves. Pause travel and settle
+any in-flight transfers before a fleet downgrade.

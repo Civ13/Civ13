@@ -44,6 +44,8 @@
 // Surveys the floors around the tiller and makes (or remakes) the craft.
 // Returns null when done, else the reason.
 /obj/structure/hull_tiller/proc/commission(hull_name = null, heading = null, list/crossing_offsets = null)
+	if (craft?.ledger?.depth_disabled)
+		return "Refloat her before refitting or recommissioning."
 	var/turf/T = get_turf(src)
 	// A refit would survey a holed tile out of her hull: patch her first.
 	// A floor lifted from her edge is cut away from her shape, and at a
@@ -298,6 +300,7 @@
 			if (!craft.order_turn(heading))
 				to_chat(H, SPAN_WARNING("She cannot come about here: [craft.last_refusal]."))
 				return
+			craft.ledger?.note_storm_pilot(H)
 			if (craft.turning_to)
 				craft.crew_message(SPAN_NOTICE("[H] at the tiller: coming about to the [dir2text(heading)]. Stand clear of the marked water."))
 			return
@@ -319,12 +322,19 @@
 				report_refit(H, mark_refit(), FALSE)
 			return
 		if ("Strike the hull")
-			if (WWinput(H, "Strike the [craft.name]? Her floors stay where they are, but she is no longer a ship and her papers are lost.", name, "No", list("Yes", "No")) != "Yes" || !craft || get_dist(H, src) > 1)
+			if (craft.ledger?.depth_disabled)
+				to_chat(H, SPAN_WARNING("Refloat her before striking the hull."))
+				return
+			if (WWinput(H, "Strike the [craft.name]? Her floors stay where they are, but she is no longer a ship and her papers are lost.", name, "No", list("Yes", "No")) != "Yes" || !craft || craft.ledger?.depth_disabled || get_dist(H, src) > 1)
 				return
 			log_game("[key_name(H)] struck the built hull [craft.name] at [x],[y],[z].")
 			craft.crew_message(SPAN_NOTICE("[H] strikes the [craft.name]. She is a raft of planks again."))
 			decommission()
 			return
+	if (choice in list("Full ahead", "Half ahead", "Slow ahead", "Weigh anchor"))
+		craft.ledger?.note_storm_pilot(H)
+	else if (choice in list("All stop", "Drop anchor"))
+		craft.ledger?.note_storm_pilot(null)
 	craft.crew_message(SPAN_NOTICE("[H] at the tiller: [choice]. [status_text()]"))
 
 /obj/structure/hull_tiller/proc/commission_menu(mob/living/human/H)

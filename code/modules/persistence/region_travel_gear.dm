@@ -71,6 +71,10 @@
 
 /proc/region_travel_gear_kind(obj/item/weapon/material/G)
 	if(!istype(G) || QDELETED(G) || !G.material || length(G.contents)) return null
+	// The narrow transport record cannot retain independent head/handle
+	// ceilings and grade. The existing whole-item fallback carries all of it.
+	var/obj/item/weapon/material/hatchet/H = G
+	if((istype(H) && H.component_wear) || istype(G, /obj/item/weapon/material/part/axehead/hatchet)) return null
 	if(G.health <= 0 || G.maxhealth <= 0) return null
 	var/list/record = list("t" = "[G.type]", "m" = G.material.name, "q" = round(G.crafting_quality, 0.01),
 		"mh" = round(G.maxhealth, 0.01), "h" = round(min(G.health, G.maxhealth), 0.01))

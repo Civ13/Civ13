@@ -634,7 +634,7 @@ var/global/persistence_reboot_due = FALSE
 
 /proc/persistence_maintenance_reboot()
 	// Five minutes' countdown in chat, on the Status tab and to Discord (shutdown_notice.dm).
-	if (!planned_shutdown_countdown("restart", 300, "scheduled maintenance reboot"))
+	if (!planned_shutdown_countdown("restart", 300, "scheduled maintenance reboot", defer_for_vehicle_risk = TRUE))
 		message_admins("Scheduled maintenance reboot called off. It is tried again after the next restart.")
 		return
 	nextsave = world.realtime + 216000 // suppress the periodic save around the reboot

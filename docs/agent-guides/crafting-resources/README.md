@@ -4,7 +4,7 @@ Read only the entries relevant to the paths or behavior being changed.
 Code paths and commands below are relative to the repository root unless
 shown as Markdown links. These dated notes preserve subsystem contracts
 and historical evidence; they are not a task-wide completion checklist.
-Use the root [PR completion policy](../../../CODEX.md) for the finish line.
+Use the [PR completion skill](../../../.agents/skills/civ13-pr-completion/SKILL.md) for the finish line.
 
 Explicit restrictions on live actions, held runners, credentials and feature
 activation still apply to those actions. Missing native, graphical or
@@ -294,6 +294,15 @@ material stats with isolated startup, then checks rejection, bounded properties,
 wear/provenance and current-format native entry save/load. Use BYOND 516.1681.
 The legacy `QDELETED` macro reads `gc_destroyed`, while legacy qdel uses
 `gcDestroyed`/null locations; ingredient accessibility must also be validated.
+
+<!-- 2026-11-23: hatchet component wear -->
+Hafted work hatchets track head and handle separately. A failed handle drops
+the head with its remaining condition; an exhausted metal or other nonbrittle
+head must be sharpened on a grindstone before refitting. A failed brittle head
+leaves only debris. Bound flint retains its existing branch-and-binding recipe.
+Native saves keep the part fields, and region travel uses the existing
+whole-item codec for these tools. Keep combat axes, adzes and unhafted tools
+on their existing wear path.
 
 <!-- 2026-10-11: chemistry verification -->
 Chemical recipe IDs do not register reagents: each product needs a matching

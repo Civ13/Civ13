@@ -1047,6 +1047,8 @@ var/global/list/sea_crossing_marked = list()
 
 // Why she cannot leave the map now, or null.
 /obj/structure/hull_tiller/proc/crossing_refusal(mob/living/human/H)
+	if (craft?.ledger?.depth_disabled)
+		return "She has lost buoyancy and must be refloated before leaving these waters."
 	if (!craft)
 		return "She is not commissioned."
 	var/datum/craft_body/built/B = craft.body

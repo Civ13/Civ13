@@ -98,7 +98,7 @@
 
 /datum/craft_drive/fitted/engine/ready()
 	var/obj/structure/engine/E = source
-	return ..() && istype(E) && E.on && !E.broken
+	return ..() && istype(E) && E.on && !E.broken && !E.waterlogged
 
 // An engine pushes what it puts out now: a steam engine with one fire lit
 // under it pushes less than one with three.
@@ -217,3 +217,43 @@
 	if (sails && body)
 		var/turf/at = body.origin()
 		. += " Her sails are [point_of_sail_name(body.heading(), at ? weather_wind_dir_at(at) : null)]."
+
+// Afloat, bilge exposure is local to the engine's compartment. A loose
+// engine in uncovered sea-layer water is wet without a ledger. Built decks
+// need their own check because iscovered() also considers their floor.
+#define HULL_ENGINE_FLOOD_SHARE 0.75
+/proc/ship_engine_wet(obj/structure/engine/E, datum/hull_ledger/L = null)
+	if (QDELETED(E))
+		return FALSE
+	var/turf/T = get_turf(E)
+	if (!T)
+		return FALSE
+	if (!L)
+		for (var/datum/hull_ledger/candidate in hull_ledgers)
+			var/datum/craft_body/built/check = candidate.craft?.body
+			if (istype(check) && check.carries(T))
+				L = candidate
+				break
+	var/datum/craft_body/built/B = L?.craft?.body
+	if (!istype(B))
+		// A pressure hull admits sea water through its own lock-out cycle,
+		// not just because it is operating at depth.
+		return sea_layer_cell(T) && !T.iscovered() && !submarine_at(T)
+	if (L.depth_disabled && hull_depth_underwater(T) && !sunken_hull_pressure_sheltered(T))
+		return TRUE
+	if (T.z == B.upper_z() || T.z == B.top_z())
+		return FALSE
+	var/bay = L.bay_at(T)
+	var/cap = bay ? L.bay_capacity(bay) : L.capacity()
+	return cap > 0 && L.water_at(T) >= cap * HULL_ENGINE_FLOOD_SHARE
+
+// No new world scan or process. Only the existing awake ledger considers
+// its own engines, and a dry hull at the surface needs no cargo walk.
+/datum/hull_ledger/proc/step_waterlogged_engines()
+	var/datum/craft_body/built/B = craft?.body
+	if (!istype(B) || !B.placed() || (!water && !depth_disabled))
+		return
+	for (var/obj/structure/engine/E in B.aboard())
+		if ((!E.waterlogged || E.on) && ship_engine_wet(E, src))
+			E.ship_waterlog()
+#undef HULL_ENGINE_FLOOD_SHARE

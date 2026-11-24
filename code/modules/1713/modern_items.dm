@@ -692,17 +692,17 @@
 	var/volume = 0
 	var/active = FALSE
 	var/plastic = 0
+	var/tmp/refine_epoch = 0
 	powerneeded = 10
 
 /obj/structure/bakelizer/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
 		var/obj/item/weapon/reagent_containers/C = W
-		if (C.reagents.has_reagent("petroleum",1))
-			var/barrelamt = C.reagents.get_reagent_amount("petroleum")
-			C.reagents.remove_reagent("petroleum",barrelamt)
-			volume += barrelamt
+		if (!C.reagents || persistence_admission_blocked())
+			return
+		var/barrelamt = bakelizer_load_petroleum(C)
+		if (barrelamt)
 			H.visible_message("[H] pours \the [W] into \the [src].", "You pour [barrelamt] units of petroleum from \the [W] into \the [src].")
-			bakelizer_desc()
 			return
 		else if (bakelizer_fill(C, H)) // resin_laminate.dm: draw off liquid resins
 			return
@@ -715,68 +715,98 @@
 		..()
 
 
+/obj/structure/bakelizer/proc/bakelizer_load_petroleum(obj/item/weapon/reagent_containers/C)
+	if (QDELETED(C) || !C.reagents || !isturf(loc) || persistence_admission_blocked())
+		return 0
+	var/amount = C.reagents.get_reagent_amount("petroleum")
+	if (amount < 1)
+		return 0
+	if (!C.reagents.remove_reagent("petroleum", amount, TRUE))
+		return 0
+	volume += amount
+	bakelizer_desc()
+	return amount
+
 /obj/structure/bakelizer/attack_hand(var/mob/living/human/H)
+	if (!istype(H) || H.incapacitated() || H.restrained() || !H.Adjacent(src) || persistence_admission_blocked())
+		return
 	if (active)
-		active = FALSE
-		powered = FALSE
-		powersource.update_power(-powerneeded,1,src)
-		to_chat(H, "You power off the [src].")
-		update_icon()
-		return
-	if (volume < 1)
-		to_chat(H, SPAN_NOTICE("The bakelizer is empty! Put some crude petroleum in first."))
-		return
-
-	if (!active && !powersource.powered)
-		to_chat(H, SPAN_NOTICE("There is not enough power to start the [src]."))
-		update_icon()
-		return
-	else if (!active && draw_cable_power())
-		active = TRUE
-		powered = TRUE
-		power_on()
-		to_chat(H, "You power the [src].")
-		update_icon()
-		return
-	else
-		to_chat(H, SPAN_NOTICE("There is not enough power to start the [src]."))
-		return
-/obj/structure/bakelizer/proc/power_on()
-	if (powered && active)
-		update_icon()
-		spawn(600) // 1 minute
-			refine()
-	else
-		update_icon()
-		return
-
-
-/obj/structure/bakelizer/proc/refine()
-	if (!powered || !active)
+		stop_refining()
+		to_chat(H, SPAN_NOTICE("You power off the [src]."))
 		return
 	if (volume < 5)
-		if (volume < 0)
-			volume = 0
-		active = FALSE
-		powered = FALSE
-		if (powersource)
-			powersource.update_power(-powerneeded,1,src)
-		update_icon()
-		bakelizer_desc()
+		to_chat(H, SPAN_NOTICE("The bakelizer needs at least five units of crude petroleum for one batch."))
 		return
-	else
-		volume-=5
-		bakelizer_make() // resin_laminate.dm: plastic or the chosen resin
-		bakelizer_desc()
-		spawn(600) // 1 minute
-			refine()
+	if (!bakelizer_setting_allowed(setting, H))
+		to_chat(H, SPAN_WARNING("You don't have the research or era for this setting."))
 		return
+	if (!isturf(loc) || !draw_cable_power())
+		to_chat(H, SPAN_WARNING("There is not enough cable power to start the [src]."))
+		return
+	active = TRUE
+	powered = TRUE
+	update_icon()
+	queue_refine(++refine_epoch)
+	to_chat(H, SPAN_NOTICE("You start the [src]. The first batch takes one minute."))
+
+/obj/structure/bakelizer/proc/stop_refining()
+	refine_epoch++
+	active = FALSE
+	powered = FALSE
+	if (powersource)
+		powersource.update_power(-powerneeded, 1, src)
+	update_icon()
+	bakelizer_desc()
+
+/obj/structure/bakelizer/proc/bakelizer_refine_batch()
+	if (volume < 5 || !(setting in bakelizer_settings()) || (map && map.ordinal_age < bakelizer_setting_age(setting)) || persistence_admission_blocked())
+		return FALSE
+	volume -= 5
+	bakelizer_make()
+	bakelizer_desc()
+	return TRUE
+
+/obj/structure/bakelizer/proc/queue_refine(epoch)
+	addtimer(CALLBACK(src, PROC_REF(refine), epoch), 1 MINUTE)
+
+/obj/structure/bakelizer/proc/refine(epoch)
+	// An old timer may not refine after a stop, restart or restored state.
+	if (QDELETED(src) || !active || epoch != refine_epoch)
+		return
+	if (persistence_admission_blocked())
+		queue_refine(epoch)
+		return
+	if (!isturf(loc) || volume < 5 || !draw_cable_power() || !bakelizer_refine_batch())
+		stop_refining()
+		return
+	powered = TRUE
+	if (volume < 5)
+		stop_refining()
+		return
+	queue_refine(epoch)
+
+/obj/structure/bakelizer/persistence_runtime_var(key)
+	if (key == "refine_epoch" || key == "active" || key == "powered")
+		return TRUE
+	return ..()
+
+/obj/structure/bakelizer/after_load()
+	. = ..()
+	stop_refining()
+
+/obj/structure/bakelizer/Destroy()
+	stop_refining()
+	return ..()
+
 /obj/structure/bakelizer/verb/empty()
 	set category = null
 	set name = "Remove Plastic"
 	set src in range(1)
 
-	var/ejected = bakelizer_eject_nylon(usr) // resin_laminate.dm
+	if (!ishuman(usr) || usr.incapacitated() || usr.restrained() || !usr.Adjacent(src) || persistence_admission_blocked())
+		return
+	var/ejected = bakelizer_eject_pellets(usr) // resin_laminate.dm
+	ejected = bakelizer_eject_nylon(usr) || ejected
 	ejected = bakelizer_eject_photopolymer(usr) || ejected // resin_printer.dm
 	if (ejected && !plastic)
 		return

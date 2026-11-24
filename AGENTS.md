@@ -1,62 +1,84 @@
 # Civ13 - Agent guide
 
-<!-- 2026-10-28: short always-on guidance and scoped references -->
-State a one-sentence stopping rule for each task. Follow [Completing a PR task](CODEX.md)
-for findings, verification, committing/pushing, the dated PR update and CI checks.
-Keep subsystem notes in the scoped READMEs below; read the relevant entries only
-when that area is touched, rather than loading every guide for every task.
+These rules apply to every task. Step-by-step procedures live in the skills
+listed below; subsystem notes live in the scoped guides at the end. Read a
+skill or guide when its trigger matches, not for every task.
 
-<!-- 2026-11-03: ownership and useful work during blockers -->
-Use one owner per branch/PR for edits, publication and CI monitoring. Inspect
-existing ownership and local changes before editing; use an isolated checkout
-when the intended branch is in use. Follow [handoffs and blockers](CODEX.md#ownership-handoffs-and-blockers)
-to continue independent authorized work and preserve exact scope and permissions.
+## Every task
+
+- Start with one sentence naming the task's scope, deliverable and stopping
+  point, and respect any narrower or broader authority the user gave.
+- A source task is done when the change is committed and pushed, local checks
+  ran and are reported, a dated PR comment is posted and CI on the new head is
+  checked. Analysis alone is not done; fix a valid in-scope issue in the same
+  turn. Follow `civ13-pr-completion`.
+- One owner per branch/PR for edits, pushes and CI follow-up. Inspect the
+  checkout, branch and existing ownership before editing, preserve unrelated
+  work, and use a separate checkout when another worker owns the branch.
+- Ask the user only for decisions that are theirs: merging, deploying,
+  restarting servers, changing scope. Pushing to your assigned PR branch needs
+  no approval. Finish independent authorized work before raising a blocker,
+  and ask one question with a recommended answer.
+- Verification order: compile, focused tests for the touched area,
+  `python3 scripts/agent_preflight.py all --write`, then push. Report exact
+  commands and results. Unverified native, in-game, graphical or save/load
+  behavior is a report note, never a reason to block a source fix.
 
 ## Build, test and conventions
 
-- DM sources enter through `civ13.dme`. The canonical BYOND pin is in
-  `tools/byond/version.json`; code, dependencies and active tests target that pin.
-- Once the pin advances, older-engine compatibility is not required. Retire
-  obsolete version-specific modes/tests and port valuable behavior regressions
-  to the current pin. Keep old evidence labelled historical; do not use floating
-  latest downloads or silently skip failed current-pin validation.
-- Compile before focused tests: Windows console `dm.exe civ13.dme`; Linux
-  `DreamMaker -max_errors 0 civ13.dme`. Linux and cloud sessions without a
-  compiler install the pin with `bash scripts/cloud_byond_setup.sh`. Use the
-  matching existing test runner and its README for the touched area. Report
-  exact commands and results.
-- For a verified hosted infrastructure failure, an exact-revision successful
-  local build may satisfy compilation evidence under the [local-build policy](CODEX.md#local-build-after-a-hosted-infrastructure-failure).
-  Keep failed CI labelled failed and preserve other checks and action permissions.
-- Before the first source or config push, follow `.agents/skills/civ13-pr-preflight/SKILL.md`:
-  `python3 scripts/agent_preflight.py all --write` finds byte-pinned tests for
-  touched files, regenerates the crafting atlas and recipe audit index, and runs
-  every offline CI suite.
+- DM sources enter through `civ13.dme`. The BYOND pin is
+  `tools/byond/version.json`; code, dependencies and active tests target it.
+  Once the pin advances, older-engine compatibility is not required: retire
+  obsolete version-specific modes/tests, port valuable regressions to the
+  current pin, keep old evidence labelled historical, never use floating
+  latest downloads or silently skip a failed current-pin validation.
+- Compile: Windows console `dm.exe civ13.dme`; Linux
+  `DreamMaker -max_errors 0 civ13.dme`. Before the first source or config push
+  follow `civ13-pr-preflight`.
 - Documentation-only changes need focused documentation checks; compilation
-  and gameplay checks are not applicable. CI selection in
-  [docs/ci-selection.md](docs/ci-selection.md) also skips docs-only compilation.
-- Include order: the Dream Maker IDE re-sorts `civ13.dme` alphabetically when it
-  saves, so the build must not depend on the listed order. A define used by any
-  other file, or tested with `#if`/`#ifdef`, goes in `code/__defines/` (file-local
-  defines are `#undef`'d at the end of their file). Extend a proc through a hook
-  the base proc calls, not a same-type override in another file, which runs in
-  include order. `tests/dme_order` checks defines in both orders.
-- Lint with `dreamchecker.exe` when relevant; config is `SpacemanDMM.toml`.
-  Keep existing formatting, use "-" instead of em dashes, and preserve unrelated work.
+  and gameplay checks are not applicable ([CI selection](docs/ci-selection.md)).
+- Include order must not matter (the Dream Maker IDE re-sorts `civ13.dme`). A
+  define used by another file or tested with `#if`/`#ifdef` goes in
+  `code/__defines/`; file-local defines are `#undef`'d at the end of their
+  file. Extend a proc through a hook the base proc calls, never a same-type
+  override in another file.
+- The world's global initialiser is at BYOND's proc size limit: never add an
+  eagerly initialised global list. Follow `civ13-global-init-limit`.
+- Lint with `dreamchecker` when relevant (`SpacemanDMM.toml`). Keep existing
+  formatting, use "-" instead of em dashes, and preserve unrelated work.
 - `_compile_options.dm` controls test/debug flags. Compiled outputs, logs and
-  runtime `data/` stay out of source commits. Reuse existing art; use graphic
-  tools for new art rather than image generation.
+  runtime `data/` stay out of commits.
+- Art, sprites, animations and UI layout follow `civ13-art-and-ui`: reuse
+  existing art, never image generation.
 - On Windows use a verified full Python executable or working `py -3`, never
   the Store alias. In Git Bash, use relative or drive-letter paths.
 
 ## Live-server and security boundary
 
 Source PR work does not authorize merging, deployment, live-server restarts,
-save/import operations, feature activation, credential changes or security-setting
-changes. Honor any authorization already given. DreamDaemon runs use `-trusted`
+save/import operations, feature activation, credential changes or
+security-setting changes; honor authorization already given and keep existing
+action-time confirmations. Servers and bots the launcher manages start and
+stop only through it, never ad-hoc scripts. DreamDaemon runs use `-trusted`
 with maintainer authorization and the existing isolated runner's controls.
-Keep operational restrictions distinct from missing evidence: unverified native,
-in-game, graphical and save/load items go in the report and never block a source fix.
+Keep operational restrictions distinct from missing evidence. Follow
+`civ13-server-ops` before any server work.
+
+## Skills
+
+| Skill | Use when |
+| --- | --- |
+| `civ13-pr-preflight` | Before the first push of any source or config change, and whenever CI goes red |
+| `civ13-pr-completion` | Opening, updating or finishing a PR: findings triage, PR comments, CI follow-up, handoffs and blockers |
+| `civ13-merge-and-changelog` | Writing a PR's `Changelog:` line, merging, and the post-merge wiki, atlas, roadmap and master-CI follow-ups |
+| `civ13-wiki-and-help-pins` | Editing civ13-wiki guides or the in-game Help pins |
+| `civ13-tests-and-probes` | Writing or running offline tests, native probes or fixtures |
+| `civ13-compile-skill` | Diagnosing compile errors in isolated BYOND fixtures |
+| `civ13-global-init-limit` | Adding global or static variables, or "Procedure is too large" |
+| `civ13-art-and-ui` | Any sprite, icon, animation, visual or UI layout change |
+| `civ13-map-renders` | Any `.dmm` change or map rotation change |
+| `civ13-server-ops` | Launcher, server, bot or deployment work |
+| `github-workflow-troubleshooting` | Ambiguous PR, branch, permission or Actions state |
 
 ## Scoped reading index
 

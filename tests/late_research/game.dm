@@ -1144,6 +1144,32 @@ var/late_wait_result = TRUE
 	for (var/list/P in places)
 		late_check(P[2] in scholar_disciplines, "a place find belongs to a discipline")
 
+// Related subjects also teach Natural Science (scholarship.dm, 2026-11-23).
+/proc/late_test_related_disciplines()
+	var/mob/living/human/late_fixture/mason = new(locate(1,5,1))
+	mason.name = "Hutton"
+	mason.real_name = "Hutton"
+	mason.scholarship = list()
+	late_check(node_discipline("stone_masonry") == "engineering" && node_related_discipline("stone_masonry") == "natural_science", "Stone Masonry is Engineering and also teaches Natural Science")
+	late_check(isnull(node_related_discipline("early_cells")) && isnull(node_related_discipline("archery")), "a Natural Science subject and an unrelated one teach no second discipline")
+	late_check(node_teaches_discipline("stone_masonry", "natural_science") && node_teaches_discipline("stone_masonry", "engineering") && !node_teaches_discipline("archery", "natural_science"), "a subject counts for its own and its related discipline only")
+	mason.scholarship = list("engineering" = 12, "mathematics" = 6)
+	late_check(node_scholar_requirement("stone_masonry") == 12 && mason.meets_scholar_requirement("stone_masonry"), "the related discipline adds no requirement")
+	mason.scholarship = list()
+	mason.gain_scholarship("stone_masonry", 4)
+	var/eng = mason.scholar_level("engineering")
+	var/nat = mason.scholar_level("natural_science")
+	var/math = mason.scholar_level("mathematics")
+	late_check(eng == 4 && nat == 4 * SCHOLAR_RELATED_SHARE && math == 2, "studying Stone Masonry teaches Engineering, half as much Natural Science and the usual Basic Mathematics ([eng], [nat], [math])")
+	mason.gain_scholarship("archery", 4)
+	late_check(mason.scholar_level("natural_science") == nat, "an unrelated subject teaches no Natural Science")
+	var/mob/living/human/late_fixture/scholar/nat_finder = new(locate(2,5,1))
+	nat_finder.prepare("stone_masonry", 0)
+	var/obj/item/weapon/book/B = new(nat_finder)
+	late_check("stone_masonry" in find_subjects(nat_finder, "natural_science", B, "/obj/item/stack/ore/copper"), "a Natural Science find can go to a related subject")
+	qdel(mason)
+	qdel(nat_finder)
+
 // Reaching a milestone in a body skill teaches its scholarship (learning_by_doing.dm).
 /proc/late_test_skill_mastery()
 	var/mob/living/human/late_fixture/hand = new(locate(1,1,1))
@@ -1299,6 +1325,7 @@ var/late_wait_result = TRUE
 		late_test_compare_notes()
 		late_test_naturalist_finds()
 		late_test_natural_science_work()
+		late_test_related_disciplines()
 		late_test_subject_deeds()
 		late_test_skill_mastery()
 		late_test_teams()

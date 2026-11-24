@@ -119,6 +119,21 @@ The **3D printer** (12 electronics) prints plastic goods. Wrench it down, cable 
 | Gas mask | 1 | 3, plus 1 glass |
 | Traffic cone | 1 | 2 |
 
+### Plastics molding machine
+
+**Industrial Plastics** (World War II) follows Assembly Line, Combustion Engine and Electricity. It unlocks the **plastics molding machine** (15 steel, production category). Wrench it down, cable it and click it to pick a die, then load thermoplastic pellets by hand or with arms and belts. It holds pellets for two runs. Products are left on its tile. It only runs its own dies, and losing power pauses it without using up pellets. Clearing the recipe gives back buffered pellets.
+
+Make pellets in a [bakelizer](Guide_to_Resins_and_Fabrics.md#the-bakelizer-and-its-resins) from crude petroleum, or at the laboratory reaction bench from polyethylene or polypropylene.
+
+| Die | Makes | Pellets |
+| --- | --- | --- |
+| Extrusion | Plastic sheet | 1 |
+| Injection | Plastic tool handle (fits tool heads like a wooden handle) | 2 |
+| Injection | Plastic comb | 1 |
+| Blow molding | Empty plastic bottle | 1 |
+| Blow molding | Plastic play ball | 1 |
+| Film forming | Reusable plastic bag | 1 |
+
 ## Factory monitor
 
 The **factory monitor** is a terminal that lists every arm, fabricator, belt drive and belt within seven tiles, with what each one is doing (running, waiting, unpowered) and how many items it moves or makes a minute. Use it to find the bottleneck in a line.

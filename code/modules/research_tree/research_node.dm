@@ -339,6 +339,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("optics_instruments", "Optics & Instruments", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("glassworking"), 3))
 	register_research_node(new /datum/research_node("factories", "Factories", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("workshops","steam_power"), 4))
 	register_research_node(new /datum/research_node("assembly_line", "Assembly Line", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("factories"), 5))
+	register_research_node(new /datum/research_node("industrial_plastics", "Industrial Plastics", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("assembly_line","combustion","electricity"), 6))
 	register_research_node(new /datum/research_node("automation", "Automation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("assembly_line","electricity"), 7))
 	// Prototype: an early electronic device (gated on assembly_line, era5, well
 	// before this node's era8 -- assembly_line is baseline-granted by then).
@@ -956,6 +957,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/conveyor_construct" = "assembly_line",
 		"/obj/item/conveyor_switch_construct" = "assembly_line",
 		"/obj/structure/factory_fabricator" = "assembly_line",
+		"/obj/structure/factory_fabricator/plastic_molder" = "industrial_plastics",
 		"/obj/item/weapon/flame/lighter/random" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/zippo" = "assembly_line",
 		"/obj/item/weapon/radio/walkietalkie" = "assembly_line",

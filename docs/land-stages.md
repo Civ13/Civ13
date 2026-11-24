@@ -97,6 +97,10 @@ start new characters with a faction only after joining it in play.
   there, plants it: that founds the faction in this land under the same name,
   led by them, with this land's research (knowledge travels in books). If the
   colony already exists but lost its charter, planting a new one puts it back.
+  Founding a new colony on a continent requires the leader and one other active
+  member of the same faction to stand beside the charter on separate signed-in
+  BYOND accounts. This does not restrict travel or trade, change expedition-island
+  claims, or revoke an existing colony when only one member remains.
 - **Standing.** A colony counts only while a charter bound to it stands, so
   raiders can take it down. Each world reports its standing colonies (parent,
   name, age in hours, living members) with its population sample; the

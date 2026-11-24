@@ -124,5 +124,95 @@ class ItemWearTest(unittest.TestCase):
         self.assertLessEqual(count, HAND_PLATED_CEILING)
 
 
+class HatchetWearTest(unittest.TestCase):
+    @staticmethod
+    def project(name, args, namespace):
+        source = (ROOT / 'code/game/objects/items/weapons/material/misc.dm').read_text()
+        source = source.replace('return ..()', 'return parent()')
+        source = re.sub(
+            r'(?<![./\w])\b(health|maxhealth|component_wear|material|loc|hatchet_(?:head|handle)_(?:hp|max)|tool_(?:head|handle)_condition)\b',
+            r'src.\1', source,
+        )
+        for call in ('init_hatchet_wear', 'sync_hatchet_wear', 'plating_wear', 'finish_wear',
+                     'break_hatchet', 'too_worn_to_repair'):
+            # Only indent-level statements are relevant; leave DM declarations alone.
+            source = re.sub(r'(?<![/\.\w])' + call + r'\(', 'src.' + call + '(', source)
+        declaration = '/obj/item/weapon/material/hatchet/' + name
+        env = dict(namespace, QDELETED=lambda obj: not obj.loc, WEAR_BLOW='blow', parent=lambda: 'unchanged')
+        return adapter.project(source, declaration, args, env)
+
+    def hatchet(self, head_hp, handle_hp, head_max=35, handle_max=35):
+        from types import SimpleNamespace
+        item = SimpleNamespace(hatchet_head_hp=head_hp, hatchet_handle_hp=handle_hp,
+                               hatchet_head_max=head_max, hatchet_handle_max=handle_max,
+                               component_wear=True, material=True, loc=True, failures=[])
+        item.init_hatchet_wear = lambda: None
+        sync = self.project('proc/sync_hatchet_wear', 'src', {})
+        item.sync_hatchet_wear = lambda: sync(item)
+        item.plating_wear = lambda amount: amount / 2
+        item.finish_wear = lambda amount: amount
+        item.break_hatchet = lambda consumed: (item.failures.append((item.hatchet_head_hp, consumed)),
+                                               setattr(item, 'loc', False))
+        worn = self.project('too_worn_to_repair', 'src, strain', {})
+        item.too_worn_to_repair = lambda strain: worn(item, strain)
+        return item
+
+    def test_handle_failure_keeps_the_worn_head_and_cannot_pay_twice(self):
+        wear = self.project('apply_wear', 'src, amount, cause, consumed', {})
+        axe = self.hatchet(18, .25)
+        self.assertTrue(wear(axe, .25, 'work', False))
+        self.assertEqual(axe.failures, [(17.75, False)])
+        self.assertTrue(wear(axe, .25, 'work', False))
+        self.assertEqual(len(axe.failures), 1)
+
+    def test_head_failure_does_not_restore_the_head_or_ignore_blow_plating(self):
+        wear = self.project('apply_wear', 'src, amount, cause, consumed', {})
+        axe = self.hatchet(.25, 20)
+        self.assertFalse(wear(axe, .25, 'blow', False))
+        self.assertTrue(wear(axe, .25, 'work', True))
+        self.assertEqual(axe.hatchet_handle_hp, 19.625)
+        self.assertEqual(axe.failures, [(0, True)])
+
+    def test_sharpen_only_changes_head_and_never_restores_handle(self):
+        repair = self.project('repair_wear', 'src, amount, strain', {})
+        axe = self.hatchet(10, 3)
+        self.assertTrue(repair(axe, 8, 2))
+        self.assertEqual((axe.hatchet_head_hp, axe.hatchet_head_max), (18, 33))
+        self.assertEqual((axe.hatchet_handle_hp, axe.hatchet_handle_max), (3, 35))
+        self.assertAlmostEqual(axe.health, 3)
+
+    def test_recovery_keeps_material_grade_condition_and_binding(self):
+        misc = (ROOT / 'code/game/objects/items/weapons/material/misc.dm').read_text()
+        body = adapter.extract(misc, '/obj/item/weapon/material/hatchet/proc/break_hatchet')
+        self.assertIn('if (hatchet_head_hp > 0 || !hatchet_brittle_head())', body)
+        self.assertIn('P.hatchet_stock_grade = hatchet_stock_grade', body)
+        self.assertIn('P.health = hatchet_head_hp', body)
+        self.assertIn('P.maxhealth = hatchet_head_max', body)
+        self.assertIn('F.recovered_hatchet_head_hp = hatchet_head_hp', body)
+        self.assertIn('material.place_shard(T)', body)
+        assembly = (ROOT / 'code/game/objects/items/weapons/material/ooga_booga_weapons.dm').read_text()
+        bind = adapter.extract(assembly, '/obj/item/weapon/branch/proc/assemble_flint_axe')
+        self.assertLess(bind.index('binding.use(1)'), bind.index('new(get_turf(user))'))
+        self.assertIn('axe.hatchet_head_hp = recovered_head_hp', bind)
+
+    def test_spent_head_must_be_sharpened_and_parts_travel_whole(self):
+        parts = (ROOT / 'code/game/objects/structures/blacksmithing/parts.dm').read_text()
+        assembly = adapter.extract(parts, '/obj/item/weapon/material/part/proc/assemble_work_tool')
+        self.assertLess(assembly.index('&& health <= 0'), assembly.index('new result'))
+        repair = adapter.extract(parts, '/obj/item/weapon/material/part/axehead/hatchet/repair_wear')
+        self.assertIn('strain = min(strain, maxhealth - 1)', repair)
+        travel = (ROOT / 'code/modules/persistence/region_travel_gear.dm').read_text()
+        body = adapter.extract(travel, '/proc/region_travel_gear_kind')
+        self.assertIn('H.component_wear) || istype(G, /obj/item/weapon/material/part/axehead/hatchet)) return null', body)
+        self.assertIn('return region_travel_generic_kind(I)', travel)
+
+    def test_interrupted_or_stale_chop_cannot_spend_wear(self):
+        wild = (ROOT / 'code/game/objects/structures/wild.dm').read_text()
+        body = adapter.extract(wild, '/obj/structure/wild/attackby')
+        self.assertIn('WORK_CHOP, HT), src)', body)
+        for guard in ('!QDELETED(src)', '!QDELETED(HT)', 'health > 0', 'Adjacent(user)', 'HT.loc == user'):
+            self.assertIn(guard, body[:body.index('HT.apply_wear')])
+
+
 if __name__ == '__main__':
     unittest.main()

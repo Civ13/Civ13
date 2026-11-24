@@ -21,7 +21,7 @@ Classify docs-only changes from the full diff and the repository's CI rules, inc
 
 ## Local build evidence after infrastructure failure
 
-Apply the [repository policy](../../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure)
+Apply the [repository policy](../../civ13-pr-preflight/SKILL.md#local-build-after-a-hosted-infrastructure-failure)
 when GitHub cannot obtain or run the toolchain for a verified infrastructure
 reason and successful equivalent local compilation is available:
 

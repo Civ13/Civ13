@@ -2322,6 +2322,7 @@ RECIPE: /material/steel/,belt splitter,/obj/item/factory_belt_assembly/splitter,
 RECIPE: /material/steel/,belt tunnel entrance,/obj/item/factory_belt_assembly/tunnel,8,150,1,1,production,125,0,0,8,null
 RECIPE: /material/steel/,belt tunnel exit,/obj/item/factory_belt_assembly/tunnel_exit,8,150,1,1,production,125,0,0,8,null
 RECIPE: /material/steel/,assembly fabricator,/obj/structure/factory_fabricator,15,250,1,1,production,95,0,0,8,null
+RECIPE: /material/steel/,plastics molding machine,/obj/structure/factory_fabricator/plastic_molder,15,250,1,1,production,120,0,0,8,null
 
 RECIPE: /material/steel/,IV drip,/obj/structure/iv_drip,6,140,0,1,production,95,0,95,8,null
 

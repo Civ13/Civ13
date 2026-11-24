@@ -71,17 +71,16 @@
 
 // The bakelizer.
 
-// setting id = what the bakelizer makes on it. "plastic" makes sheets; every
-// other id is a reagent it stores as a liquid.
+// Settings make solid products or store a liquid reagent for later draw-off.
 // Built per call: proc-static and global lists add to the world's global
 // initialiser, which is at the compiler's size limit.
 /proc/bakelizer_settings()
-	return list("plastic" = "plastic sheets", "phenolic_resin" = "phenolic resin", "nylon_thread" = "nylon thread", "epoxy" = "epoxy", "photopolymer" = "photopolymer resin")
+	return list("plastic" = "plastic sheets", "polymer_pellets" = "thermoplastic pellets", "phenolic_resin" = "phenolic resin", "nylon_thread" = "nylon thread", "epoxy" = "epoxy", "photopolymer" = "photopolymer resin")
 
 // The earliest ordinal age (research_faction.dm) a setting can be chosen in.
 /proc/bakelizer_setting_age(id)
 	switch (id)
-		if ("nylon_thread")
+		if ("nylon_thread", "polymer_pellets")
 			return 6 // WW2
 		if ("epoxy")
 			return 7 // Cold War (fiberglass.dm)
@@ -91,9 +90,10 @@
 
 // Settings that make solid goods, drawn out with the Remove verb, not poured.
 /proc/bakelizer_solid_setting(id)
-	return id == "plastic" || id == "nylon_thread" || id == "photopolymer"
+	return id == "plastic" || id == "polymer_pellets" || id == "nylon_thread" || id == "photopolymer"
 
 /obj/structure/bakelizer/var/setting = "plastic"
+/obj/structure/bakelizer/var/polymer_pellets = 0
 /obj/structure/bakelizer/var/list/stock = null // reagent id = units ready to draw off
 /obj/structure/bakelizer/var/nylon_thread = 0 // skeins of nylon thread made (nylon.dm)
 
@@ -103,6 +103,9 @@
 		setting = "plastic"
 	if (setting == "plastic")
 		plastic += 1
+		return
+	if (setting == "polymer_pellets")
+		polymer_pellets += 1
 		return
 	if (setting == "nylon_thread")
 		nylon_thread += BAKELIZER_NYLON_SKEINS
@@ -116,6 +119,8 @@
 
 /obj/structure/bakelizer/proc/bakelizer_desc()
 	var/list/parts = list("[plastic] plastic sheets")
+	if (polymer_pellets)
+		parts += "[polymer_pellets] measures of thermoplastic pellets"
 	if (nylon_thread)
 		parts += "[nylon_thread] skeins of nylon thread"
 	if (photopolymer)
@@ -148,24 +153,51 @@
 	to_chat(user, SPAN_NOTICE("You draw [drawn] units off \the [src] into \the [C]."))
 	return TRUE
 
+/obj/structure/bakelizer/proc/bakelizer_setting_allowed(id, mob/living/human/H)
+	return (!map || map.ordinal_age >= bakelizer_setting_age(id)) && (id != "polymer_pellets" || crafting_node_allowed(H, "industrial_plastics"))
+
 /obj/structure/bakelizer/verb/change_setting()
 	set category = null
 	set name = "Change Setting"
 	set src in range(1)
-	if (!ishuman(usr) || usr.stat || usr.restrained())
+	var/mob/living/human/H = usr
+	if (!istype(H) || H.incapacitated() || H.restrained() || !H.Adjacent(src) || persistence_admission_blocked())
 		return
+	var/datum/admission = persistence_admission_identity
+	var/was_active = active
+	var/run_at_prompt = refine_epoch
 	var/list/settings = bakelizer_settings()
 	var/list/choices = list()
 	for (var/id in settings)
-		if (map && map.ordinal_age < bakelizer_setting_age(id))
+		if (!bakelizer_setting_allowed(id, H))
 			continue
 		choices[settings[id]] = id
-	var/choice = WWinput(usr, "What should \the [src] make?", "Bakelizer", settings[setting], choices)
-	if (!choice || !(choice in choices) || get_dist(usr, src) > 1)
+	var/choice = WWinput(H, "What should \the [src] make? Turn it off before changing products.", "Bakelizer", settings[setting], choices)
+	if (!choice || !(choice in choices) || QDELETED(src) || QDELETED(H) || H.incapacitated() || H.restrained() || !H.Adjacent(src) || persistence_admission_changed(admission))
 		return
-	setting = choices[choice]
+	if (was_active || active || run_at_prompt != refine_epoch)
+		to_chat(H, SPAN_WARNING("Turn the bakelizer off before changing its product."))
+		return
+	var/id = choices[choice]
+	if (!bakelizer_setting_allowed(id, H))
+		return
+	setting = id
 	bakelizer_desc()
 	to_chat(usr, SPAN_NOTICE("You set \the [src] to make [choice]."))
+
+// Eject at most one legal stack; remaining stock can be collected again.
+/obj/structure/bakelizer/proc/bakelizer_eject_pellets(mob/user)
+	var/turf/site = get_turf(src)
+	var/obj/item/stack/pellet_type = /obj/item/stack/polymer_pellets
+	if (!site || polymer_pellets < 1 || persistence_admission_blocked())
+		return FALSE
+	var/amount = min(initial(pellet_type.max_amount), polymer_pellets)
+	polymer_pellets -= amount
+	new /obj/item/stack/polymer_pellets(site, amount)
+	bakelizer_desc()
+	if (user)
+		to_chat(user, SPAN_NOTICE("You collect [amount] [amount == 1 ? "measure" : "measures"] of thermoplastic pellets."))
+	return TRUE
 
 // Hand out the nylon thread (the Remove verb, modern_items.dm). TRUE if any.
 /obj/structure/bakelizer/proc/bakelizer_eject_nylon(mob/user)

@@ -23,7 +23,8 @@ rolls for zero-chance ores still must fail their eligibility guards.
 The ore table holds copper, tin, iron, calamine (zinc), coal, saltpeter,
 sulphur, lead, uranium, silver, gold, diamond and bauxite, in that roll order.
 Jungle walls give plain stone; obsidian now comes only from rock near lava.
-Flint nodules, gem pockets, volcanic obsidian and expedition lodes are separate
+Flint nodules, gem pockets, volcanic obsidian, expedition lodes, cinnabar, lode
+ore and nickel, cobalt and chromite are separate
 native rolls with their own tests, so the fixture stubs them out.
 
 A seeded million-draw check calls the native built-in `prob(0.33516)` outside the

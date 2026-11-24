@@ -185,3 +185,32 @@ def add_organ_uses(files, add, records):
         source[:source.index(catgut)].count('\n') + 1,
         'Use a sausage casing in hand. Catgut clamps bleeders and mends torn veins in surgery.')
     records[-1].update(interaction=True)
+
+
+def add_plastics(files, add, records):
+    # Minimal detached catalog fixtures do not contain the plastics module.
+    if 'code/modules/1713/plastic_molding.dm' not in files:
+        return
+    bakelizer = 'code/modules/1713/modern_items.dm'
+    settings = 'code/modules/1713/resin_laminate.dm'
+    lab = 'code/modules/reagents/laboratory.dm'
+    pellets = '/obj/item/stack/polymer_pellets'
+    bulk = 'volume -= 5'
+    bench = 'collector.reagents.remove_reagent(pellet_feed, 4, TRUE)'
+    start = files[bakelizer].index('/obj/structure/bakelizer/proc/bakelizer_refine_batch()')
+    batch = files[bakelizer][start:].split('/obj/structure/bakelizer/proc/queue_refine(', 1)[0]
+    if bulk not in batch or 'polymer_pellets += 1' not in files[settings] or bench not in files[lab]:
+        raise ValueError('Industrial plastics source contract changed; review pellet costs and yields')
+    add('Bakelizer: polymerize petroleum into thermoplastic pellets', 'Processor',
+        [('petroleum', 5)], [(pellets, 1)], bakelizer,
+        files[bakelizer][:files[bakelizer].index(bulk, start)].count('\n') + 1,
+        'Cable power; choose thermoplastic pellets after learning Industrial Plastics (WW2). Each batch takes 60 seconds. Use Remove Plastic to collect the pellets.')
+    records[-1].update(processor='industrial_plastics', processor_name='Bakelizer',
+                      station='/obj/structure/bakelizer')
+    for reagent in ('polyethylene', 'polypropylene'):
+        add(f'Reaction bench: granulate {reagent}', 'Processor',
+            [(reagent, 4)], [(pellets, 1)], lab,
+            files[lab].split(bench, 1)[0].count('\n') + 1,
+            'In a secured bench beaker; learn Industrial Plastics (WW2). Only the selected purified polymer is spent.')
+        records[-1].update(processor='industrial_plastics', processor_name='Laboratory reaction bench',
+                          station='/obj/structure/reaction_bench')

@@ -78,8 +78,8 @@ You don't have to wait at the bench for the whole time. From the Stone Age on, t
 - **Record a find.** Hold paper, parchment or a book with a pen or pencil in your other hand and use **Record a Find** (Object tab) within two tiles of something wild. After about twenty seconds your record is written down.
   - Living animals count for Agriculture, wild plants for Medicine, ores and rocks for Natural Science, and the night sky, seen outdoors at night, for Basic Mathematics. The sky can be recorded once each season.
   - Weather and water count for Natural Science too. Stand outdoors in rain, a monsoon, snow, a blizzard, a sandstorm, a gale or a heat wave to record it, once per kind each season. Stand within two tiles of the sea, fresh water, a jungle river, a swamp, floodwater or frozen water to record that water.
-  - In a book, the record adds a twentieth of a chapter to a subject of that discipline whose groundwork you know. If more than one fits, you choose.
-  - On a sheet it becomes naturalist's notes. Use them on a bench researching any subject of that discipline.
+  - In a book, the record adds a twentieth of a chapter to a subject of that discipline whose groundwork you know. Natural Science finds can also go to a subject that [also teaches Natural Science](#scholarship). If more than one fits, you choose.
+  - On a sheet it becomes naturalist's notes. Use them on a bench researching any subject of that discipline, or one that also teaches it.
   - A book takes each kind of find once, and finds can fill three tenths of a chapter at most, so look for different animals, plants and stones.
   - A **preserved specimen** on an **anatomy table** counts for Medicine. To make one, hold a whole raw organ in one hand and an open preserve jar holding at least 10 units of spirits or vinegar in the other, then use the organ on the anatomy table. The specimen can't be eaten or transplanted afterwards. Each specimen can be recorded three times. Every kind of organ is a different find, and an animal's heart is the same find as a human heart.
 - **Compare notes.** When two books on the same bench each hold part of the same chapter, two scholars who could both research that subject can stand beside the bench and use **Compare Notes** (right-click the bench). The fuller book gains half of what the other one holds, and the other book keeps its own work. You need light, and both of you must be able to read both books. Each book can be compared once per subject. Both scholars learn from it.
@@ -281,6 +281,7 @@ Research trains six disciplines, from 0 to 100: **Basic Mathematics, Engineering
 - Stone Age research needs no training. Each later age needs 12 more levels in the chapter's discipline, plus half that in Basic Mathematics. A Bronze Age chapter needs 12 and 6; an Imperial Age chapter needs 36 and 18.
 - Skill above the requirement makes research faster, up to twice as fast.
 - You gain skill by working at a bench, by studying chapters, by writing them and by [hands-on work](#learning-by-doing) that goes into a book. Work far below your level teaches you less, and half of what you learn also goes to Basic Mathematics.
+- **Some subjects also teach Natural Science.** Work on them teaches their own discipline as usual and half as much again in Natural Science. They are Pottery & Cookware, Herbalism, Stone Masonry, Resource Processing, Bronze Working, Brickmaking, Ore Dressing, Iron Smithing, Crucible Steel, Tatara Smelting, Apothecary, Irrigation, Amalgamation, Blast Furnaces & Coke, Pharmacology, Germ Theory, Open Hearth Steel, Aluminium Refining, Soil Science, Crop Breeding, Planetary Survey, Off-world Mining and Local Resources. Researching them still needs only their own discipline. Natural Science finds can go into their books too.
 - **Mastering a body skill teaches its discipline.** When one of your skills reaches 150 you become skilled and gain 4 levels; at 200 you become an expert and gain 8; at 250, the most a skill can reach, you are a master and gain 12. Medical teaches Medicine, crafting teaches Engineering, farming and hunting teach Agriculture, philosophy teaches Basic Mathematics, and swords, bows, rifles, pistols, machine guns and throwing teach Military Science. Each step pays a discipline once, so a second weapon skill does not pay Military Science again.
 
 ### Fields of study
@@ -300,7 +301,15 @@ You can also train a discipline by hand. Hold its practice tool and use it in ha
 | Agriculture | **Seed tray** | 2 soft wood (Basic Toolmaking) |
 | Military Science | **War game board** | 2 soft wood (Basic Toolmaking) |
 
-Practice is a way to get started, not a way to the top. Practice teaches a little, less as you improve, and practice stops at level 24, enough to research two ages past a discipline's first and to earn the Apprentice title. Beyond that, only research, hands-on work, study and tutoring teach you more.
+Practice is a way to get started, not a way to the top. Practice teaches a little, less as you improve, and practice stops at level 24, enough to research two ages past a discipline's first and to earn the Apprentice title. Beyond that, only research, hands-on work, study and tutoring teach you more, plus [investigations](#natural-science-investigations) for Natural Science.
+
+### Natural Science investigations
+
+From Natural Science 24 to 60 you can keep learning by studying real samples. You need no bench, active chapter or Swimming skill.
+
+- **From 24 to 36, compare samples.** Hold one sample in each hand and use **Investigate Samples** (IC tab). Compare two different ores (such as iron ore and copper ore), two open containers holding different kinds of water (fresh, salty or dirty), or an unfired clay piece and the same piece fired. It uses one unit of each ore or water, or the unfired clay piece; the fired piece is kept.
+- **From 36 to 60, compare raw and processed material.** Use the same verb with an ore and what it smelts into (iron ore and a bloom or pig iron, a bloom and wrought iron, copper, tin, zinc, lead, silver or gold ore and its ingot, iron sand and kera) or with sand and a glass sheet. It uses one unit of each. You can also secure a beaker of reaction inputs on a reaction bench and use **Investigate Reaction** on the bench. Only a reaction that actually completes counts.
+- Each investigation takes 12 seconds of uninterrupted work, with a 30 second break before the next. A comparison or reaction you have not investigated before teaches up to 1.8 levels; repeating one teaches up to 0.6. Swapping hands does not make a comparison new. Investigations teach only Natural Science, not Basic Mathematics, and stop at 60.
 
 ## The scholar's trade
 
