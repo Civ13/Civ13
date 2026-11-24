@@ -324,7 +324,7 @@ class WoodworkingContracts(unittest.TestCase):
         self.assertIn('should_save = FALSE',block(TEXT,PREFIX+'\n'))
 
     def test_balances_atlas_and_hosted_wiring_are_source_bound(self):
-        self.assertEqual((SPECS['plank']['cost'],SPECS['plank']['count'],SPECS['plank']['delay']),(2,1,240))
+        self.assertEqual((SPECS['plank']['cost'],SPECS['plank']['count'],SPECS['plank']['delay']),(2,1,180))
         self.assertEqual(SPECS['pieces']['cost'],SPECS['pieces']['count'])
         self.assertEqual(SPECS['mallet']['cost'],5)
         self.assertEqual(SPECS['mallet']['output'],'/obj/item/weapon/hammer/tribalhammer')
@@ -347,7 +347,7 @@ class WoodworkingContracts(unittest.TestCase):
 
     def test_crude_planks_require_flattening_and_never_charge_tool_wear(self):
         self.assertEqual(SPECS['plank']['output'],'/obj/item/stack/material/crude_plank')
-        self.assertEqual((SPECS['flatten']['cost'],SPECS['flatten']['count']),(1,1))
+        self.assertEqual((SPECS['flatten']['cost'],SPECS['flatten']['count'],SPECS['flatten']['delay']),(1,1,60))
         f=Fixture('flatten')
         f.tool.check_health=lambda:self.fail('flattening must not charge axe wear')
         self.assertTrue(f.action.perform())

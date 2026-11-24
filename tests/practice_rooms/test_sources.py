@@ -125,11 +125,12 @@ class PracticeRoomSourceTests(unittest.TestCase):
         registry = read('code/modules/naval/draught_kinds.dm')
         workshop = read('code/modules/1713/practice_workshop.dm')
         kinds = set(re.findall(r'^\s+"([A-Z]+)" = list\("name"', registry, re.M))
-        offered = dict(re.findall(r'^\s+"((?:Build|Make|Draw|Plan) [^"]+)" = "([a-z]+)"', workshop, re.M))
+        offered = dict(re.findall(r'^\s+"((?:Build|Make|Assemble|Rig|Unfold) [^"]+)" = "([a-z]+)"', workshop, re.M))
         self.assertEqual(kinds, {('CAR' if key == 'plane' else key.upper()) for key in offered.values()})
-        self.assertEqual({'car', 'plane', 'air', 'train', 'rail', 'rocket', 'ship', 'house'},
-                         {key for label, key in offered.items() if label.startswith(('Build ', 'Make '))})
-        self.assertIn('This is a paper exercise', workshop)
+        self.assertEqual(13, len(offered))
+        self.assertEqual(set(offered.values()), set(re.findall(r'^\s+if \("([a-z]+)"\)', workshop.split('switch (exercise)', 1)[1].split('/proc/practice_workshop_stack', 1)[0], re.M)))
+        self.assertNotIn('This is a paper exercise', workshop)
+        self.assertIn('!owns_room(body) || !exercise || props["workshop_kind"]', workshop)
         self.assertIn('owner.sessions["[slot]"] != src', workshop)
         # A stale menu cannot clear yards that changed while it was open.
         self.assertIn('desk.Adjacent(body) || props["workshop_selected"] != current', workshop)
@@ -167,6 +168,63 @@ class PracticeRoomSourceTests(unittest.TestCase):
         hand_out = workshop.split('/obj/structure/practice_stores/proc/hand_out(', 1)[1].split('\n/', 1)[0]
         self.assertIn('if (!path || !usable_by(H))', hand_out)
         self.assertIn('should_save = FALSE', workshop.split('/obj/structure/practice_stores\n', 1)[1].split('\n/', 1)[0])
+
+    def test_aqueduct_allowance_is_exact_and_private(self):
+        workshop = read('code/modules/1713/practice_workshop.dm')
+        scope = workshop.split('/proc/tutorial_waterworks_recipe', 1)[1].split('/obj/structure/vehicleparts/axis', 1)[0]
+        self.assertIn('P.practice.props["workshop_kind"] == "water" && P.practice.owns_rect(P, P.practice.props["paved"]) && P.z == P.practice.owner.room_z()', scope)
+        self.assertEqual({
+            '/obj/structure/aqueduct_intake',
+            '/obj/structure/aqueduct/channel',
+            '/obj/structure/sink/aqueduct_fountain',
+        }, set(re.findall(r'"(/obj/[^"]+)"', scope)))
+
+    def test_station_modules_stay_on_the_ground_in_the_paved_yard(self):
+        workshop = read('code/modules/1713/practice_workshop.dm')
+        scope = workshop.split('/proc/tutorial_station_module_site', 1)[1].split('/proc/tutorial_workshop_pair', 1)[0]
+        self.assertIn('centre.z != P.practice.owner.room_z()', scope)
+        self.assertIn('var/list/paved = P.practice.props["paved"]', scope)
+        self.assertEqual(2, scope.count('P.practice.owns_rect('))
+
+    def test_station_workshop_requires_an_airlock_before_and_after_wait(self):
+        workshop = read('code/modules/1713/practice_workshop.dm')
+        guard = workshop.split('/proc/tutorial_station_kit_refusal', 1)[1].split('\n/', 1)[0]
+        self.assertIn('P.get_active_hand() != kit', guard)
+        self.assertIn('centre != get_turf(P)', guard)
+        self.assertIn('centre != locate(paved[1] + 10, paved[2] + 10', guard)
+        self.assertIn('habitat_module_refusal(airlock_site, P)', guard)
+        self.assertIn('!P.practice.owns_rect(exit, paved) || exit.density', guard)
+        self.assertIn('istype(exit, /turf/floor/habitat)', guard)
+        self.assertIn('P.get_inactive_hand(), /obj/item/habitat_kit/airlock', guard)
+        self.assertIn('swap hands, and unfold the airlock', workshop)
+        self.assertIn('step one tile south of its core', workshop)
+        self.assertIn('four tiles north of the workshop', workshop)
+        source = read('code/modules/space/habitat_modules.dm')
+        attack = source.split('/obj/item/habitat_kit/attack_self(', 1)[1].split('\n/proc/habitat_unfold(', 1)[0]
+        first = attack.index('tutorial_station_kit_refusal(user, src, centre, HABITAT_MODULE_SPACING, HABITAT_MODULE_RADIUS)')
+        wait = attack.index('do_after(user, 100, user)')
+        second = attack.index('tutorial_station_kit_refusal(user, src, centre, HABITAT_MODULE_SPACING, HABITAT_MODULE_RADIUS)', first + 1)
+        self.assertLess(first, wait)
+        self.assertLess(wait, second)
+        self.assertLess(second, attack.index('habitat_unfold('))
+
+    def test_practice_submarine_cannot_leave_the_bay(self):
+        workshop = read('code/modules/1713/practice_workshop.dm').split(
+            '/obj/structure/vehicleparts/axis/ship/submarine/controls/practice/assembly_refusal', 1)[1]
+        self.assertIn('S.min_x - 2', workshop)
+        self.assertIn('S.max_x + 2', workshop)
+        self.assertIn('not diving', workshop)
+        source = read('code/modules/1713/practice_workshop.dm')
+        site = source.split('/controls/practice/proc/practice_site()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('z == session.owner.room_z()', site)
+        self.assertIn('session.owns_rect(src, session.props["paved"])', site)
+        self.assertIn('!practice_site()', workshop)
+        self.assertIn('stopmovementloop()', workshop)
+
+    def test_owned_cords_are_checked_before_consuming_stock(self):
+        code = read('code/modules/1713/mechanisms.dm')
+        at_wait = code.split('do_after(user, MECHANISM_TIE_TIME, trigger)', 1)[1].split('\n', 1)[0]
+        self.assertLess(at_wait.index('tutorial_workshop_pair'), at_wait.index('R.use(1)'))
 
     def test_marker_plans_check_private_footprint_before_commit(self):
         for path, handler, commit in (

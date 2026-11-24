@@ -24,7 +24,7 @@
 #define FISH_GROUND_MAX_STEPS 600
 // Fish a minute that drift in from neighbouring grounds, whatever the stock.
 #define FISH_GROUND_SPILL 0.0625
-#define FISH_BAIT_USES 3
+#define FISH_BAIT_USES 4
 #define FISH_BAIT_BONUS 30
 // A thin ground still gives this share of a tool's chance.
 #define FISH_THIN_SHARE 0.25

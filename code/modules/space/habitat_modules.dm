@@ -403,6 +403,8 @@ var/global/list/habitat_cores = list()
 	if (!centre)
 		return "There is no room for a module there."
 	var/r = HABITAT_MODULE_RADIUS
+	if (!tutorial_station_module_site(user, centre, r))
+		return "Keep the entire module inside your practice workshop."
 	if (centre.x - r < 1 || centre.y - r < 1 || centre.x + r > world.maxx || centre.y + r > world.maxy)
 		return "The module would not fit here."
 	if (orbit_world() && !orbit_clear_of_seams(centre, r))
@@ -437,6 +439,10 @@ var/global/list/habitat_cores = list()
 	if (orbit_kit_offer_pod(src, user))
 		return
 	var/turf/centre = habitat_module_site(get_turf(user))
+	var/kit_refusal = tutorial_station_kit_refusal(user, src, centre, HABITAT_MODULE_SPACING, HABITAT_MODULE_RADIUS)
+	if (kit_refusal)
+		to_chat(user, SPAN_WARNING(kit_refusal))
+		return
 	var/reason = habitat_module_refusal(centre, user)
 	if (reason)
 		to_chat(user, SPAN_WARNING(reason))
@@ -446,6 +452,10 @@ var/global/list/habitat_cores = list()
 		return
 	// The wait slept: check again.
 	centre = habitat_module_site(get_turf(user))
+	kit_refusal = tutorial_station_kit_refusal(user, src, centre, HABITAT_MODULE_SPACING, HABITAT_MODULE_RADIUS)
+	if (kit_refusal)
+		to_chat(user, SPAN_WARNING(kit_refusal))
+		return
 	reason = habitat_module_refusal(centre, user)
 	if (reason)
 		to_chat(user, SPAN_WARNING(reason))

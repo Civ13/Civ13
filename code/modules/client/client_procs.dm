@@ -518,6 +518,9 @@
 		// Nothing to do
 		return
 
+	// A splitter change can move the map under a stationary cursor.
+	clear_hover_name()
+
 	// Calculate and apply a best estimate
 	// +4 pixels are for the width of the splitter's handle
 	var/pct = 100 * (desired_width + 4) / split_width
@@ -580,6 +583,8 @@
 /client/verb/on_window_resize()
 	set name = "on-window-resize"
 	set hidden = TRUE
+	// A resize may not emit a mouse exit; wait for a fresh pointer event.
+	clear_hover_name()
 	fit_viewport_soon()
 
 // Icons menu: change the map icon size, then refit so no bars are left.
@@ -588,6 +593,7 @@
 	set hidden = TRUE
 	if (!(size in list(0, 32, 48, 64, 96, 128)))
 		size = 0
+	clear_hover_name()
 	winset(src, "mapwindow.map", "icon-size=[size]")
 	if (is_preference_enabled(/datum/client_preference/fit_viewport))
 		fit_viewport()
