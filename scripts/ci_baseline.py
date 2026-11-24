@@ -2107,7 +2107,8 @@ SUITES = {
                                 'tests/crafting_loader/test_supplied_item_recipes.py',
                                 'tests/crafting_loader/test_basic_clothing.py',
                                 'tests/crafting_loader/test_production_machines.py',
-                                'tests/crafting_loader/test_radio_headset.py'),
+                                'tests/crafting_loader/test_radio_headset.py',
+                                'tests/crafting_loader/test_chakram.py'),
         'paths': ('tests/crafting_loader/',), 'shared_paths': (
             'code/setup.dm', 'tests/save_movement/source_adapter.py',
             'code/modules/research_tree/research_node.dm',

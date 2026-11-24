@@ -428,7 +428,8 @@ class BaselinePolicyTests(unittest.TestCase):
                                           'tests/crafting_loader/test_supplied_item_recipes.py',
                                           'tests/crafting_loader/test_basic_clothing.py',
                                           'tests/crafting_loader/test_production_machines.py',
-                                          'tests/crafting_loader/test_radio_headset.py'))
+                                          'tests/crafting_loader/test_radio_headset.py',
+                                          'tests/crafting_loader/test_chakram.py'))
         self.assertEqual(self.selected(list(suite['files'])),
             {'policy', 'bootstrap', 'progress', 'movement_save_inventory', 'dismantle_refunds', 'crafting_loader'})
         previous = {name: spec for name, spec in ci.SUITES.items() if name != 'crafting_loader'}

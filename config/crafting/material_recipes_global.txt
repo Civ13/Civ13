@@ -3190,6 +3190,7 @@ RECIPE: /material/iron/,mechanical trap,/obj/item/weapon/beartrap,5,140,0,1,weap
 RECIPE: /material/iron/,snap mousetrap,/obj/item/weapon/mousetrap,1,40,0,1,tools,0,0,0,8,null
 RECIPE: /material/iron/,shuriken,/obj/item/weapon/material/thrown/star,2,15,0,1,weapons,0,39,0,8,iron
 RECIPE: /material/iron/,kunai,/obj/item/weapon/material/thrown/kunai_normal,3,20,0,1,weapons,0,39,0,8,iron
+RECIPE: /material/iron/,chakram,/obj/item/weapon/material/thrown/chakram,3,25,0,1,weapons,0,39,0,8,iron
 
 RECIPE: /material/iron/,bayonet,/obj/item/weapon/attachment/bayonet,2,30,0,1,weapons,0,90,0,8,null
 RECIPE: /material/steel/,bipod,/obj/item/weapon/attachment/under/bipod,2,60,0,1,weapons,0,0,0,8,null

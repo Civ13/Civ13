@@ -6,7 +6,7 @@
     "material_recipes_camp.txt": 227,
     "material_recipes_carib.txt": 1286,
     "material_recipes_crustacean.txt": 1341,
-    "material_recipes_global.txt": 2523,
+    "material_recipes_global.txt": 2524,
     "material_recipes_gorilla.txt": 1300,
     "material_recipes_kwai.txt": 204,
     "material_recipes_pygmy.txt": 1280,
@@ -85,7 +85,7 @@
     "vehicle parts": 153,
     "wall coverings & stucco": 6,
     "weapon accessories": 87,
-    "weapons": 207
+    "weapons": 208
   },
   "audited_on": "2026-10-29",
   "existing_furniture_candidates": 545,
