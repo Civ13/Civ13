@@ -1722,6 +1722,7 @@ var/global/redirect_all_players = null
 	new_character.update_eyes()
 	new_character.regenerate_icons()
 	faction_start_apply(new_character)
+	new_character.record_birth_chart()
 	new_character.key = key		//Manually transfer the key to log them in
 
 	return new_character
