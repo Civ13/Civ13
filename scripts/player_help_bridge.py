@@ -115,12 +115,12 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'df7207c861819dfa7fedea1ea70873999dbac410'
+WIKI_REVIEWED_REVISION = 'db0cf5572c15ff35debbce509f2e6d048955e7e8'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
     'guides/Guide_to_Peoples_and_Languages.md': ('ec8abe24ffa48f2ac1f8a9d4ced3389392fcc46760acc24ddd7bf6195bcc096f', 'peoples people origin ethnicity language languages learn teach lesson mother tongue translate accent'),
-    'guides/Guide_to_Chemistry.md': ('fb527ebaebe20838f780b4d8ec3e6e4ec5b18d26ed4900fb3b12e1e770567fa8', 'chemistry chemicals reactions reagents'),
+    'guides/Guide_to_Chemistry.md': ('65dc1c21ac2f90de29fbd4f8e6e387336ad03d5fe0d6fcd90d6bd6f96e721da0', 'chemistry chemicals reactions reagents'),
     'guides/Guide_to_Drugs.md': ('e9808a197e9c418291d5bce335ab6c065cdfd5e8889984f78aeff8f648589b71', 'drugs opium tobacco cocaine addiction overdose'),
     'guides/Guide_to_Combat.md': ('da7579531503a7301a3ad2a865fc2fd717e79e5a5711c35b830b5936b3a7d2af', 'combat fight fighting intent aim shoot melee grenade cover stance arrest'),
     'guides/Guide_to_Communications.md': ('f1169a2790f99d29365f4f778cf3e37fd4b4f1c993b69905c1670d2b42086d5a', 'communications radio transmit'),
@@ -128,7 +128,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Homes.md': ('26214a91bec63c00ed8ce03290e651bb306b0ef83eaec133f177f110b492e358', 'home house room comfort decorate limewash paint whitewash stain dye furniture well rested judge nudge pottery glaze vase amphora rug carpet tapestry weave loom'),
     'guides/Guide_to_Cooking.md': ('75302a5ae7e493ab0104ca23548ca9992a6b817efd3b46c0da9f049588ad4291', 'cooking cook food meal ingredients'),
     'guides/Guide_to_Exercise.md': ('9bc778ebfcf154ac5b1b9c962a16272cd507e57ad06a052c39759238f6ab9057', 'exercise training strength weights running fatigue'),
-    'guides/Guide_to_Factory_Automation.md': ('15339c4ec92b80d6d2ef614fc995c2994ea8428f410eb7d277265ad463b84e2c', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill saw sawmill logs'),
+    'guides/Guide_to_Factory_Automation.md': ('0a24e7212b3e5e8c5a977e3a5c899b497ed9bbb7565165e0c54c78a1ab7c77e3', 'factory automation belt belts conveyor arm arms fabricator fabricators pipe pipes pump tank bottler monitor crusher stamp mill saw sawmill logs plastics molding molder pellets'),
     'guides/Guide_to_Farming.md': ('9011ce042f01c538c5b16c352635c2d36d34fe716df9b86c455140c01f4bb0ad', 'farming farm plant crops soil water frost mulch cloche'),
     'guides/Guide_to_Fishing.md': ('bf8032bff6af977f89793883b0c4565f2f87f4497d18dee75ea5efe816898375', 'fishing fish rod bait'),
     'guides/Guide_to_Hygiene.md': ('080dd944b749689126577ad4c5b903e50ecbb544b5ae66ed24ef3a39cb5d949d', 'hygiene clean washing soap detergent laundry'),
@@ -210,7 +210,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Placer_Mining.md': ('a667fd0c066a2d8368de2ee8f260393a2c24c5314dcd89acf443395de54bdcf0', 'placer mining pan panning gold tin pay dirt river bank gravel sluice rocker wash'),
     'guides/Guide_to_Pottery_and_Lime.md': ('a2011da6650c69805f700235d90f1e9ca64e448fc85e2de2d6f1d16bdaba5df3', 'pottery potter wheel brick bricks mould bench lime kiln quicklime bellows glassblowing glass mason saw line shaft gear box clutch steam engine hopper'),
     'guides/Guide_to_Quicksilver_Crafts.md': ('5c47dd936fed9b4fb97b0ab3f734844ec44dfb659731e6383afd22b5c19b6666', 'quicksilver mercury barometer thermometer mirror silvering felt hat'),
-    'guides/Guide_to_Resins_and_Fabrics.md': ('30b69a95d41215329b5dccc68bbb43d4206ff72020ff10cde6355e36fc192066', 'resin resins pitch tar turpentine rubber latex silk silkworm fabric fabrics waxed cloth oilcloth laminate'),
+    'guides/Guide_to_Resins_and_Fabrics.md': ('72bdb148444488e5bef3f1122df2074260fba12ce88cc84b801ad9c5e1204c45', 'resin resins pitch tar turpentine rubber latex silk silkworm fabric fabrics waxed cloth oilcloth laminate'),
     'guides/Guide_to_Space_Stations.md': ('1ebdae9ea1287f3d66e296e6894c85545b07dd06a831af82e19e1c8abfea4ab1', 'space station stations orbit orbital module rocket launch dock docking airlock spacesuit satellite'),
     'guides/Guide_to_Rockets.md': ('e3e66eecff3f412017c15c5d1c98d3b7d28c79878b9b29dbf9cdf4c12124287d', 'rocket rockets rocketry launch planner stage stages booster boosters capsule heat shield parachutes rocket works launch stand cargo bay probe lunar probe delta-v reuse wear inspect overhaul'),
     'guides/Guide_to_Tool_Materials.md': ('a9db37d2271c7bb2c6721c3fa7f1885c772e932454ba18de50bfe03307a5db27', 'tool tools material materials copper bronze iron steel pickaxe shovel hatchet sickle hoe wear durability machine parts lathe pipes cannon barrels sparks'),
