@@ -15,10 +15,9 @@ accesses without deleting the extra guards. The dedicated packet adds bed-specif
 cases; it does not substitute an older production reclaim implementation.
 
 The preparer checks the first-return/ownership lifecycle procedure contracts
-before helper import/output. It records hashes of all twenty current inputs;
+before helper import/output. It records hashes of all twenty-one current inputs;
 unrelated maintenance no longer has to match whole files from the historical
-commit. The original twenty hashes remain as reference data, not current-source
-claims. Any executable change to the scoped lifecycle procedures requires review;
+commit. Historical file hashes are reference data, not current-source claims. Any executable change to the scoped lifecycle procedures requires review;
 comments are ignored in those procedure snapshots. Receipt source-tree digests
 change whenever any actual input bytes change.
 It reuses `run-cross-level.py` extraction, unique-replacement and stub-adaptation
@@ -31,20 +30,23 @@ not establish active throwing or enabled tree-presentation behavior.
 
 Only the generated dedicated packet removes the six disabled bed-return stubs.
 It includes complete production `bed_return.dm`. The sole policy-file adaptation
-replaces the five `allow_new_character` lobby-client accesses with the inert
-client field. The complete reclaim procedure similarly adapts all five accesses,
+replaces the six `allow_new_character` lobby-client accesses with the inert
+client field. The complete reclaim procedure similarly adapts all seven accesses,
 one client declaration and the key-transfer expression. Reversing these exact
 substitutions reproduces the original files byte-for-byte. Reservations, owner
 checks, post-hook rechecks, readiness gates, claim consumption and customization
-suppression are unchanged. All other generic harness and production files remain
-untouched.
+suppression are unchanged. The gateway refusal predicate is extracted from
+production with synthetic account, region-mode and durable-slot inputs; both
+slot comparisons remain intact. The synthetic client has no browser picker.
 
 ## Scope and cases
 
-Eleven scenarios are prepared: disk ownership/state round trip; first versus later
+Twelve scenarios are prepared: disk ownership/state round trip; first versus later
 return; failed handoff/retry; occupied and destroyed bed fallback; refused and
 redirected movement; pre-existing reservation; recovery hold; dead-only admission;
-and disabled-profile/TDM-policy preservation.
+disabled-profile/TDM-policy preservation; and mismatched live/durable gateway
+slots refusing both reclaim and new admission, followed by successful handoff
+clearing the hint.
 
 The disk case uses real version-2 Save_World, preflight, ClearMap, Load_World,
 durable graph decoding, restored-body registration and final readiness release.

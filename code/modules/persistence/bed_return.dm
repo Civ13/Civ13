@@ -267,6 +267,8 @@
 	return FALSE
 
 /map_storage/proc/allow_new_character(mob/new_player/lobby)
+	// A stale gateway handoff is not permission to create a fresh body.
+	if(lobby && !region_gateway_expected_slot_ok(lobby.client)) return FALSE
 	if(!persistence_bed_return_enabled()) return TRUE
 	if(!lobby || !lobby.client || lobby.client.mob != lobby) return FALSE
 	if(reclaim_saved_player(lobby)) return FALSE

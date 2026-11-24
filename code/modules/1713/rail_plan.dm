@@ -444,10 +444,14 @@
 	H.visible_message(SPAN_NOTICE("[H] starts pegging a railway out on the ground."), SPAN_NOTICE("You start pegging the line out."))
 	if (!do_after(H, min(RAIL_PEG_TIME_MAX, RAIL_PEG_TIME_BASE + D.tile_count() * RAIL_PEG_TIME_TILE), src) || QDELETED(src) || loc != H || get_turf(H) != here)
 		return
-	if (length(peg_set))
-		build_markers_pull(peg_set)
 	var/origin_x = here.x - box[1]
 	var/origin_y = here.y + box[4]
+
+	if (!tutorial_workshop_footprint(H, origin_x + box[1], origin_y - box[4], origin_x + box[3], origin_y - box[2], here.z))
+		to_chat(H, SPAN_WARNING("Keep the line inside your practice workshop."))
+		return
+	if (length(peg_set))
+		build_markers_pull(peg_set)
 	var/set_id = "rail-[H.ckey]-[world.realtime]-[rand(1000, 9999)]"
 	var/list/result = rail_plan_peg_out(D, origin_x, origin_y, here.z, set_id)
 	if (!result)

@@ -223,7 +223,8 @@ class RoundtripCompatibilityTests(unittest.TestCase):
             _adapter.extract(altered,
                              '/datum/controller/gameticker/proc/loadmap')
         pins = json.loads((HERE / 'character_return/inputs.json').read_text())['reference_sha256']
-        self.assertEqual(len(pins), 20)
+        self.assertEqual(len(pins), 21)
+        self.assertIn('code/modules/persistence/region_gateway.dm', pins)
         self.assertNotIn('tests/world_save/roundtrip.dm', pins)
         self.assertNotIn('tests/world_save/roundtrip_compat.dm', pins)
 

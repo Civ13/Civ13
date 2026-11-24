@@ -81,6 +81,8 @@
 
 /obj/structure/car_workshop/airship_yard/proc/air_missing_research(mob/living/human/H, datum/air_draught/D)
 	. = list()
+	if ((istype(src, /obj/structure/car_workshop/airship_yard/practice)) && tutorial_workshop_access(H, src))
+		return
 	for (var/node_id in D.nodes())
 		if (node_id in required_nodes())
 			continue

@@ -99,6 +99,8 @@
 
 /obj/structure/car_workshop/proc/sheet_missing_research(mob/living/human/H, datum/vehicle_draught/D)
 	. = list()
+	if ((istype(src, /obj/structure/car_workshop/practice) || istype(src, /obj/structure/car_workshop/hangar/practice)) && tutorial_workshop_access(H, src))
+		return
 	for (var/node_id in vehicle_sheet_nodes(D))
 		if (node_id in required_nodes())
 			continue

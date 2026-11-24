@@ -2070,6 +2070,11 @@ SUITES = {
             'code/modules/nomad_raids/nomad_visit.dm')},
 
     # Character slot owner keys (docs/character-slots.md); source checks only.
+    'gateway_character_roster': {'files': ('tests/region_gateway/test_roster.py',), 'paths': (
+        'tests/region_gateway/test_roster.py', 'code/modules/persistence/region_gateway.dm',
+        'code/modules/persistence/region_relay.dm'), 'shared_paths': (
+            'code/modules/persistence/region_home.dm', 'code/modules/persistence/region_event.dm',
+            'code/modules/persistence/player_reclaim.dm', 'code/modules/accolades/character_slots.dm')},
     'character_slots': {'files': ('tests/character_slots/test_owner_keys.py', 'tests/character_slots/test_switching.py',
         'tests/character_slots/test_structuring.py',
         'tests/character_slots/test_account_summary.py'),
@@ -2666,7 +2671,7 @@ SUITES = {
         'tests/save_movement/', 'code/modules/persistence/player_reclaim.dm', 'code/modules/persistence/bed_return.dm',
         'code/game/mob/new_player/', 'code/game/mob/living/carbon/human/human_helpers.dm'),
         'shared_paths': ('code/game/gameticker.dm', 'code/modules/persistence/functions.dm',
-            'code/game/mob/living/carbon/carbon_defines.dm',
+            'code/modules/persistence/region_gateway.dm', 'code/game/mob/living/carbon/carbon_defines.dm',
             'code/game/mob/living/carbon/human/nomads_spawn.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/objects/structures.dm', 'code/modules/chat/chat.dm',
