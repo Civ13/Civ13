@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = 'db0cf5572c15ff35debbce509f2e6d048955e7e8'
+WIKI_REVIEWED_REVISION = '7d437b99da4880b8df79190660da91910f2e4323'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('9efed6e77fea25472aa03317d153abaa1b08f29100cf061774582cbf3ec4a9a6', 'character skills traits languages'),
@@ -174,7 +174,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Races.md': ('46ef1bf361c519e71acbd679119429e838348827e25dbcac27282f67bee51097', 'race races species human humans'),
     'guides/Guide_to_Slang.md': ('a1fdc4fc0d8417d0b45f023f9005d27929a0684950e20bb8d4ded4c3a49cbf95', 'slang terms jargon abbreviation meaning mean word words'),
     'guides/Guide_to_Books_and_Scholars.md': ('59a203e8940e7c619e0d261ff00c2f6a15c782e82cd23ca363a52bbb7150f961', 'books scholars scholarship study chapter research bench apprentice tutor library writing slate abacus'),
-    'guides/Guide_to_Your_First_Day.md': ('3f330952da3837978a5d965f7e29013be6a223fdd90b198e146b782cbfc7c41f', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
+    'guides/Guide_to_Your_First_Day.md': ('eb097f3dae6d9701c57dc60cd7db7dd31f23a8658d991a70dbc0bc9ccb2c7163', 'first day new character start starting survive survival research book study chapter food water shelter bag bags carry carrying basket travois storage chest jar pit window dump take all move moving container inventory search searching loot crate crates closet gather'),
     'guides/Guide_to_Paperwork.md': ('2fd1ea8cc4c7b121e7fd2c6cb288209b139c974e371b427dd5234706dbbbcc53', 'paper paperwork writing write pen book sign signature stamp'),
     'Crafting_Skill_Level_Requirements.md': ('2fca6dcd694c88a8c7c06dc16738beb7e84ba71a38dfecbed62110e7c48b81ea', 'crafting skill level levels requirement requirements unlock'),
     'Food_Decay_Times.md': ('f5c43032ed26fac5c67b066093ee584f00a3bf0046a459c063bcf483cda44e22', 'food decay rot spoil spoils spoiled expire expires lasts preserve storage'),
@@ -220,7 +220,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_the_Moon.md': ('417a712be4aa2c41f5cf78f776ba2b00ea33b5ffbb11ab43a331311c45d44e70', 'moon mars lunar lander rocket launch pad habitat probe survey space airless'),
     'guides/Guide_to_Crafting.md': ('7befe794ff9dbe2c36dbb2cf5e02ac25c0071d16dd7a9c5abc9b21d7a0e800aa', 'crafting craft recipes workbench materials items make build vehicle designer'),
     'guides/Guide_to_Metallurgy.md': ('506ddd8ed495e8120aa3c0a4032be216bf478cb1ece0711180a83e24677df02e', 'metallurgy metal smelting smelt ore ingot furnace bloomery iron copper tin bronze steel alloy anvil forge'),
-    'Starter_Guide.md': ('54c0022fa9016aacc58e7b411ac84da421057dcb80a9f47bd70d3d9c2833e5dd', 'starter guide beginner basics first steps controls interface intents'),
+    'Starter_Guide.md': ('974c0a04fc148a9ae58026d8763bbc444cbf503eaf168cd32b7833f11fe06bef', 'starter guide beginner basics first steps controls interface intents'),
     'Music.md': ('049a85fd6517277b3abffa464c88c43dbda8d3060307b13491cd595a7a541c1d', 'music instrument instruments song songs play sheet notes piano'),
     'Paper_Templates.md': ('27495905153f4d0ac91d18dc9daccfa4cc533144234766ee8e800c47adcc9408', 'paper templates template forms document documents'),
     'rules/Rules.md': ('167e92e5b1d2b9f601f73fe29cd4348728fbaa8c4b33da17245dc7918663ff11', 'rules rule allowed banned ban griefing grief metagaming roleplay rp ooc ick ock behaviour conduct'),
