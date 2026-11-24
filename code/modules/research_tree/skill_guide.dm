@@ -30,7 +30,7 @@ var/global/list/discipline_guide_rows = discipline_guide_rows_table()
 	return list(
 	"mathematics" = "Half of everything you learn in any other discipline also goes here. Mastering Philosophy adds to it.",
 	"engineering" = "Research, study and writing of building, tool and machine subjects, prototypes, and mastering Crafting.",
-	"natural_science" = "Recording rocks, ores, weather and waters you have not recorded, its practice tool, mining, smelting and firing clay or glass written into a book, syntheses at a reaction bench, research on its subjects (metals, alloys and chemistry), and mastering Swimming.",
+	"natural_science" = "Practise with a specimen box up to 24. From 24 to 36, hold two different ores, two open containers with different water, or matching unfired and fired pottery. Use IC &gt; Investigate Samples. From 36 to 60, compare an ore with its smelted product or sand with a glass sheet, or use Investigate Reaction at a laboratory reaction bench after securing its inputs. New comparisons teach more than repeats. No research bench, active chapter or Swimming skill is required. Recording finds, chapter fieldwork and mastering Swimming are separate ways to learn.",
 	"medicine" = "Research, study and writing of medical subjects, surgery written into a book, and mastering Medical.",
 	"agriculture" = "Research, study and writing of farming subjects, foraging and butchering written into a book, and mastering Farming or Hunting.",
 	"military" = "Research, study and writing of weapon subjects, shooting written into a book, and mastering a weapon skill.")
