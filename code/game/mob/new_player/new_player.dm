@@ -1724,6 +1724,8 @@ var/global/redirect_all_players = null
 	faction_start_apply(new_character)
 	new_character.record_birth_chart()
 	new_character.key = key		//Manually transfer the key to log them in
+	if (new_character.client?.mob == new_character)
+		new_character.client.gateway_expected_slot = 0
 
 	return new_character
 

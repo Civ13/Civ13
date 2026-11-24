@@ -269,7 +269,11 @@ class RegionWakeTests(unittest.TestCase):
         self.assertLess(send.index('if(id == gate)'), front)
         self.assertLess(front, send.index('ask_relay(route)'))
         self.assertLess(front, send.index('if(!public)'))
-        self.assertIn('C << link("byond://[gate_address()]")', send)
+        # Preserve the normal front-door redirect; an explicit roster
+        # handoff must re-open its chooser rather than auto-forwarding.
+        self.assertIn('var/roster = slot_check ? "?character_lobby=1" : ""', send)
+        self.assertIn('C << link("byond://[gate_address()][roster]")', send)
+        self.assertNotIn('C << link("byond://[gate_address()][slot_check]")', send)
         gateway = read('code/modules/persistence/region_gateway.dm')
         loop = proc(gateway, '/proc/region_gateway_status_loop')
         self.assertIn('region_gateway_tell_relay()', loop)

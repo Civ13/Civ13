@@ -156,24 +156,35 @@ character lives, with a join link.
 - A world's agent unreachable means no character can start there (the player
   is asked to retry). Guests are not tracked; they cannot travel.
 
-### Private lobby lookup foundation
+### Private gateway home lookup
 
-`Coordinator.lobby_home(ckey)` is an internal read-only decision for a future
-redirect-only lobby. It returns `HOME` (an existing region) or `NO_HOME`
-(the configured start region) only when the coordinator is ready, its
+In a Persistence group, the shard host enables an ephemeral lookup mailbox
+only on the configured gateway's agent and names that agent to the
+coordinator. The authenticated gateway derives the current character owner
+key (including the slot) from the player session and POSTs it to
+`/lobby/home` over the existing token-authenticated loopback agent. The
+first request returns `PENDING`. The coordinator takes at most one request
+per relay iteration and calls `lobby_home(owner)`. This is a read-only
+directory lookup, not `/account op=claim`.
+
+The coordinator returns `HOME` with the existing home, or `NO_HOME` with
+the configured start region, only when its recovery state is ready, its
 roster is complete, and each enrolled transfer agent confirms the exact
-home epoch/revision and no outstanding custody barrier. Otherwise it
-returns `PENDING`, `TRAVELLING`, or `UNAVAILABLE` with no destination.
-A reply is a routing hint, not admission or a lease on custody; the
-destination still checks admission after any handoff.
+home epoch/revision and no outstanding custody barrier. A separately
+verified parked land returns `PARKED` with its exact land ID for the existing
+owner-checked summon action, never a playable region. Pending, travelling,
+unavailable, and expired results provide no destination. The gateway agent
+checks the result against its current home epoch/revision and local custody
+barrier again at consumption. Each answer is consumed once; pending requests
+expire after 15 seconds, answers after at most 5 seconds, and the mailbox
+holds at most 32 requests. It is not saved or replayed after an agent restart.
 
-This uses `POST /lobby/account-status` on the already loopback-only,
-token-authenticated region agent. It reports only the requested account's
-local pending/travel barrier and the store's snapshot identity. The
-coordinator does not call `/account op=claim`, modify homes, drain a queue,
-wake a world, or return network addresses. No coordinator listener or
-game-facing caller is installed by this foundation. See the
-[Hub lobby design and migration plan](../../docs/persistence-hub-lobby.md).
+The query does not establish custody, wake a world, mint a connection
+credential, reveal network addresses, or grant a character switch. A
+successful answer is a routing hint, not an admission lease; the destination
+must still check current custody before attaching or creating a body. TDM
+and agents outside the Persistence gateway do not expose this mailbox.
+See the [Hub lobby design and migration plan](../../docs/persistence-hub-lobby.md).
 
 ## Player-built trails
 

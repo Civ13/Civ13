@@ -41,6 +41,10 @@ var/building_allocating_z = 0
 	return FALSE // Ordinary legacy fixtures never expand a level.
 #endif
 // Practice rooms (code/modules/1713/practice_rooms.dm) never exist in fixtures.
+// No one is shape-changed in a fixture (code/modules/divine/heteromorph_form.dm).
+/proc/heteromorph_return_all(reason)
+	return 0
+
 #ifndef PRACTICE_ROOM_WIDTH
 var/practice_room_z = 0
 /proc/practice_rooms_close_for_save()
@@ -113,6 +117,16 @@ var/datum/fixture_processes/processes = new
 /proc/trim(value)
 	var/list/lines = splittext(value, "\n")
 	return lines[1]
+// Standalone storage fixtures have no gateway or browser picker. The
+// dedicated character-return fixture supplies an adapted real predicate.
+#ifndef CHARACTER_RETURN_GATEWAY_FIXTURE
+/client/var/gateway_expected_slot = 0
+/proc/region_gateway_expected_slot_ok(client/C)
+	return !C || !C.gateway_expected_slot
+/client/proc/open_character_sleep_picker()
+	return
+#endif
+
 /client/proc/quickBan_isbanned(kind)
 	return FALSE
 // The raw-key form used by client/New, including web guests.
@@ -256,6 +270,7 @@ var/list/mutate_on_tick = null
 /mob
 	var/stat = FALSE // Production mob_defines.dm default; states from predefines.dm.
 	var/real_name = null // Named in player_reclaim.dm's ownership log lines.
+	var/inducedSSD = FALSE
 	var/datum/hud/hud_used
 	var/list/HUDneed = list()
 	var/list/HUDinventory = list()
