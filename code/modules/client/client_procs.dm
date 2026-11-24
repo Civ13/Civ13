@@ -315,12 +315,22 @@
 		if (length(screen_loc_split) >= 2)
 			var/list/x_split = splittext(screen_loc_split[1], ":")
 			var/list/y_split = splittext(screen_loc_split[2], ":")
-			if (length(x_split) >= 2)
-				mouse_screen_x = text2num(x_split[1])
-				mouse_screen_pixel_x = text2num(x_split[2])
-			if (length(y_split) >= 2)
-				mouse_screen_y = text2num(y_split[1])
-				mouse_screen_pixel_y = text2num(y_split[2])
+			// "[map:]x:px,y:py": the tile and pixel are always the last two parts.
+			var/xn = length(x_split)
+			var/yn = length(y_split)
+			if (xn < 2 || yn < 2)
+				return
+			var/screen_x = text2num(x_split[xn - 1])
+			var/screen_y = text2num(y_split[yn - 1])
+			var/pixel_x = text2num(x_split[xn])
+			var/pixel_y = text2num(y_split[yn])
+			// Publish a complete pointer sample; never splice a new axis into an old pair.
+			if (!isnum(screen_x) || !isnum(screen_y) || !isnum(pixel_x) || !isnum(pixel_y))
+				return
+			mouse_screen_x = screen_x
+			mouse_screen_y = screen_y
+			mouse_screen_pixel_x = pixel_x
+			mouse_screen_pixel_y = pixel_y
 
 /client/MouseMove(object, location, control, params)
 	UpdateMouseScreenLoc(params)
