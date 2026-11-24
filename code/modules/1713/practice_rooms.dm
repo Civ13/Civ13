@@ -12,7 +12,7 @@
 // for Civ13 without signals, tgui or turf reservations; no CM code is copied.
 //
 // The rooms live on one extra level appended above the world while anyone
-// practises. That level is never saved or built on: a save closes every room
+// practises. That level is never saved: a save closes every room
 // and removes the level first (begin_persistence_operation), the level is
 // removed as soon as the last player leaves, and while it exists world_z_budget
 // refuses every other new level, so it is always world.maxz and can be removed
@@ -25,7 +25,7 @@
 #define PRACTICE_ROOM_PITCH_Y 14
 #define PRACTICE_MAX_ROOMS 8
 // A tutorial region (tutorial_region.dm) only runs rooms, so it holds more
-// (its 116 x 60 map fits 24 of the wider camp rooms).
+// (its 223 x 69 map fits 24 camp-and-workshop rooms).
 #define PRACTICE_MAX_ROOMS_TUTORIAL 32
 // Retry while a save holds the level (a save removes it itself).
 #define PRACTICE_IDLE_DROP (30 SECONDS)
@@ -50,9 +50,15 @@ var/global/datum/practice_rooms/practice_rooms = new
 	var/idle_timer
 	var/last_error
 
+/datum/practice_rooms/proc/pitch_x()
+	return tutorial_region_here() ? 37 : PRACTICE_ROOM_PITCH_X
+
+/datum/practice_rooms/proc/pitch_y()
+	return tutorial_region_here() ? 17 : PRACTICE_ROOM_PITCH_Y
+
 /datum/practice_rooms/proc/capacity()
-	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH_X)
-	var/rows = round((world.maxy - 1) / PRACTICE_ROOM_PITCH_Y)
+	var/cols = round((world.maxx - 1) / pitch_x())
+	var/rows = round((world.maxy - 1) / pitch_y())
 	return max(0, min(tutorial_region_here() ? PRACTICE_MAX_ROOMS_TUTORIAL : PRACTICE_MAX_ROOMS, cols * rows))
 
 // Why a lobby player cannot enter now, or null.
@@ -76,14 +82,14 @@ var/global/datum/practice_rooms/practice_rooms = new
 	return 0
 
 /datum/practice_rooms/proc/slot_origin(slot)
-	var/cols = round((world.maxx - 1) / PRACTICE_ROOM_PITCH_X)
+	var/cols = round((world.maxx - 1) / pitch_x())
 	var/col = (slot - 1) % cols
 	var/row = round((slot - 1) / cols)
-	return list(2 + col * PRACTICE_ROOM_PITCH_X, 2 + row * PRACTICE_ROOM_PITCH_Y)
+	return list(2 + col * pitch_x(), 2 + row * pitch_y())
 
 /datum/practice_rooms/proc/slot_turfs(slot)
 	var/list/O = slot_origin(slot)
-	return block(locate(O[1], O[2], practice_room_z), locate(O[1] + PRACTICE_ROOM_WIDTH - 1, O[2] + PRACTICE_ROOM_HEIGHT - 1, practice_room_z))
+	return block(locate(O[1], O[2], practice_room_z), locate(O[1] + pitch_x() - 3, O[2] + pitch_y() - 3, practice_room_z))
 
 // Adds the level through the shared budget. No sleeps between admission and
 // publication, like the other level owners.
@@ -188,7 +194,12 @@ var/global/datum/practice_rooms/practice_rooms = new
 	wall_bulk_placement = TRUE
 	for (var/turf/T in slot_turfs(slot))
 		// Always a fresh turf: blood, footprints and other marks on the old one go.
-		if (T.x == x1 || T.x == x2 || T.y == y1 || T.y == y2 || ((T.x == split || T.x == camp) && T.y != y1 + 5))
+		if (tutorial_region_here() && T.x > x2)
+			if (T.x == x1 + 34 || T.y == y1 || T.y == y1 + 14)
+				new /turf/wall/indestructable(T)
+			else
+				new /turf/floor/plating/concrete(T)
+		else if (T.y > y2 || T.x == x1 || (T.x == x2 && (!tutorial_region_here() || T.y != y1 + 5)) || T.y == y1 || T.y == y2 || ((T.x == split || T.x == camp) && T.y != y1 + 5))
 			new /turf/wall/indestructable(T)
 		else
 			new /turf/floor/wood(T)
@@ -213,6 +224,14 @@ var/global/datum/practice_rooms/practice_rooms = new
 	props["soap"] = new /obj/item/weapon/soap(locate(x1 + 15, y1 + 2, z))
 	props["bed"] = new /obj/structure/bed/wood(locate(x1 + 13, y1 + 1, z))
 	props["exit"] = new /obj/effect/practice_marker/exit(locate(x1 + 15, y1 + 6, z))
+	if (tutorial_region_here())
+		var/obj/structure/practice_workshop_desk/workshop_desk = new(locate(x1 + 18, y1 + 5, z))
+		props["workshop_desk"] = workshop_desk
+		new /obj/structure/practice_lesson_board(locate(x1 + 18, y1 + 7, z))
+		new /obj/structure/wild/tree/live_tree(locate(x1 + 14, y1 + 10, z))
+		new /obj/structure/wild/tallgrass(locate(x1 + 13, y1 + 10, z))
+		new /obj/item/weapon/flint(locate(x1 + 12, y1 + 10, z))
+		new /obj/item/weapon/flint(locate(x1 + 12, y1 + 10, z))
 	props["split"] = split
 	props["camp"] = camp
 	return props
@@ -317,7 +336,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 		"wash" = "Now wash yourself: while undressed, stand in the puddle, pick up the soap and click yourself with it. Being dirty sours your mood and makes your clothes dirty faster.",
 		"dress" = "Put your clean shirt back on (click your uniform slot on the HUD, or use it in hand).",
 		"rest" = "If you fall ill, rest in a bed: you recover faster, and you should keep away from people who are coughing. Drag yourself onto the bed (click-drag your character onto it) to lie down.",
-		"exit" = "Well done! You know how to survive your first day. Get up (click the bed), then walk onto the exit marker, or use the Leave Practice Room verb, to return to the lobby.")
+		"exit" = "Well done! You know how to survive your first day. Get up (click the bed). If there is a workshop east of camp you can try it now, or walk onto the exit marker to return to the lobby.")
 
 /datum/practice_session/New(datum/practice_rooms/rooms, room_slot, list/room_props)
 	..()
@@ -340,7 +359,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 	lobby << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE)
 	body.key = lobby.key
 	qdel(lobby)
-	to_chat(body, "<span class='notice'><b>Welcome to your practice room.</b> Nothing here affects your real character. Follow the steps below. To go back to the lobby at any time, [leave_link()], press Esc and pick <b>Leave practice room</b>, or click the blue exit marker.</span>")
+	to_chat(body, "<span class='notice'><b>Welcome to your practice room.</b> Nothing here affects your real character. Follow the steps below. [props["workshop_desk"] ? "Visit the workshop east of camp to practise drawing and building." : ""] To go back to the lobby at any time, [leave_link()], press Esc and pick <b>Leave practice room</b>, or click the blue exit marker.</span>")
 	advance()
 	timer = addtimer(CALLBACK(src, PROC_REF(tick)), 1 SECOND, TIMER_LOOP | TIMER_STOPPABLE)
 	return TRUE

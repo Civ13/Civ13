@@ -197,14 +197,15 @@ var/global/practice_probe_runtime_error = FALSE
 	shard_group.region = "tutorial"
 	shard_group.kind = "TUTORIAL"
 	shard_group.mainland = "gaia"
+	shard_group.start_region = "gaia"
 	shard_group.peers = list("gaia" = list("name" = "Gaia", "kind" = "SURFACE", "address" = "127.0.0.1:1714", "state" = "UP"))
 	shard_group.order = list("gaia")
 	practice_probe_check("tutorial/here", tutorial_region_here() && isnull(tutorial_region_peer()))
 	practice_probe_check("tutorial/returns_to_mainland", tutorial_region_return_id() == "gaia" && tutorial_region_return_name() == "Gaia")
 	var/mob/new_player/lobby = new
 	practice_probe_check("tutorial/join_refused", tutorial_region_refuse_join(lobby))
-	world.maxx = 116
-	world.maxy = 60
+	world.maxx = 223
+	world.maxy = 69
 	practice_probe_check("tutorial/more_rooms", R.capacity() == 24)
 	shard_group.region = "gaia"
 	shard_group.kind = "SURFACE"

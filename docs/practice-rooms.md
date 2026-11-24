@@ -1,6 +1,6 @@
 # Practice rooms
 
-A lobby link, **Practice Room**, puts a player in a private 17 x 12 room with a
+A lobby link, **Practice Room**, puts a player in a private room (17 x 12 for the fallback on other regions) with a
 throwaway "Trainee" body. Nineteen steps appear in chat one at a time. The
 controls part: walk to a marker, pick up a knife, swap hands, wear a straw hat
 and open a door. The middle part: hit a practice dummy on Harm intent and
@@ -42,7 +42,7 @@ purpose `practice`) only while someone practises:
 
 A region group can run the rooms on a world of their own, like the TDM
 Barracks: a region of kind `TUTORIAL` on the blank map
-`maps/special/tutorial.dmm` (116 x 60, up to 32 rooms). Code:
+`maps/special/tutorial.dmm` (223 x 69, up to 24 occupied rooms). Code:
 `code/modules/1713/tutorial_region.dm`.
 
 - It never saves: `shard_group.py` gives it `save_minutes` 0 and a config with
@@ -66,6 +66,34 @@ Barracks: a region of kind `TUTORIAL` on the blank map
   a player whose land cannot be reached yet, and leaving them brings the player
   back to the gateway, which sends them on again. The gateway never opens rooms
   of its own.
+
+### Workshop and extra lessons
+
+On the dedicated Tutorial region, walk east of the camp to the workshop desk.
+It sets up one exercise in your private bay and provides blank draughts and a
+pencil. Use the ordinary designer, check the drawing, and save it to the sheet.
+To try a different lesson or get fresh stock, leave and open a new room.
+
+- **Build here:** cars, tanks and planes use a stocked press; airships use the
+  stocked yard; trains use the stocked rail works and up to eight tiles of
+  straight track (choose south-facing); a short railway exercise supplies
+  sleepers, rails and a hammer to lay track over your plan’s pegs; a\n  ground-floor house bay supplies wood, stone and a hammer for floors,\n  walls and doors (not roofs or upper levels); a small single-deck ship uses the
+  slipway and four kinds of loose material by the desk. Keep its drawing at
+  most five tiles wide and five long. The basin supports launching that hull,
+  not voyages. Rocket works fabricates the pieces; the bay does not stack,
+  fuel or launch a rocket.
+- **Design here:** submarine, harbor, waterworks,
+  contraption and space station. These lessons use the actual designers,
+  but do not provision the matching physical construction site.
+- **Lesson board:** all in-game character tutorial topics (including the
+  HUD, Crafting Atlas, book research, chat and Help) can be reread here.
+  Camp adds a tree, grass and flint for the branch, twine and whittling
+  lessons. Book research is explained rather than enabled.
+
+Workshop supplies and builds disappear with the room. Nothing carries over
+to a real character or contributes to its tutorial progress. Workshop power
+and construction access belong to the fixed practice fixtures; nothing is
+unlocked in the live game.
 
 Add one to a group config like any region, for example
 `{"id": "tutorial", "name": "Tutorial", "kind": "TUTORIAL", "port": 1760, "transfer_port": 1770, "map": "maps/special/tutorial.dmm"}`
