@@ -413,7 +413,22 @@ class InventoryHoverName(unittest.TestCase):
                           ('MouseDrag','src_object, over_object, src_location=None, over_location=None, src_control="map", over_control="map", params=""')]:
             f=method(callbacks,'/client/'+name,args,['mouse_x','mouse_y','update_hover_name','UpdateMouseScreenLoc'])
             setattr(C,name,lambda *a,_f=f:_f(C,*a))
-        C.UpdateMouseScreenLoc=lambda p:None
+        from urllib.parse import parse_qsl
+        class Parts(list):
+            def __getitem__(self, index):
+                return super().__getitem__(index - 1)
+        def text2num(value):
+            try:
+                return int(value)
+            except (TypeError, ValueError):
+                return None
+        class Params(dict):
+            __missing__=lambda self,key:None
+        env.update(params2list=lambda p:Params(parse_qsl(p, keep_blank_values=True)),
+                   splittext=lambda t,d:Parts(t.split(d)), text2num=text2num, isnum=lambda n:isinstance(n,int))
+        f=method(callbacks,'/client/proc/UpdateMouseScreenLoc','params',
+                 ['mouse_screen_x','mouse_screen_y','mouse_screen_pixel_x','mouse_screen_pixel_y'])
+        C.UpdateMouseScreenLoc=lambda params,_f=f:_f(C,params)
         f=method(source,'/client/MouseExited','object, location=None, control="map", params=""',['hover_name_widget'])
         C.MouseExited=lambda *a:f(C,*a)
         def slot(item=None,slot_id=1):
@@ -423,6 +438,19 @@ class InventoryHoverName(unittest.TestCase):
                 item.loc=body;item.screen_loc=S.screen_loc;C.screen.append(item);readable.add(item)
             body.slots[slot_id]=item;return S
         return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,on_screen=on_screen,readable=readable,reads=read_calls,source=source,env=env)
+
+    def test_mouse_callbacks_publish_only_complete_pointer_samples(self):
+        m=self.model()
+        def state():
+            return (m.C.mouse_screen_x,m.C.mouse_screen_y,m.C.mouse_screen_pixel_x,m.C.mouse_screen_pixel_y)
+        m.C.MouseEntered(None,None,"map","screen-loc=mapwindow.map:14:20,3:5")
+        self.assertEqual(state(), (14,3,20,5))
+        m.C.MouseMove(None,None,"map","screen-loc=1:0,-2:8")
+        self.assertEqual(state(), (1,-2,0,8))
+        for invalid in ["screen-loc=9:6,bad:7","screen-loc=9:6,2:bad","screen-loc=9:6,2",
+                        "screen-loc=bad:8,2:7","icon-x=4"]:
+            m.C.MouseMove(None,None,"map",invalid)
+            self.assertEqual(state(), (1,-2,0,8), invalid)
 
     def test_hover_reads_tree_canopy_hidden_from_view(self):
         m=self.model();T=m.atom('/turf/grass',name='grass')
@@ -493,6 +521,12 @@ class InventoryHoverName(unittest.TestCase):
         self.assertEqual(m.W.screen_loc,'5:16,1:5')
         m.C.view=5;pointer(11,20,8,10);m.C.MouseMove(I)  # a smaller live view clamps earlier: 352-68+1
         self.assertEqual(m.W.screen_loc,'9:29,7:3')
+        # Oversized art can report a pointer outside the 352px view. The whole
+        # panel must stay inside it, or the client grows the map and drags it.
+        pointer(13,5,13,5);m.C.MouseMove(I)  # (389, 389): clamped to (351, 351)
+        self.assertEqual(m.W.screen_loc,'9:29,10:24')  # box bottom 331-20+1=312, top edge 331 <= 352
+        pointer(-1,0,-1,0);m.C.MouseMove(I)  # below/left of the view: clamped to (0, 0)
+        self.assertEqual(m.W.screen_loc,'1:10,1:9')
         # A measured size replaces the estimate for that text and size.
         class Assoc(dict):
             __missing__=lambda self,key:None  # a missing DM associative key reads null

@@ -316,16 +316,20 @@
 		return
 
 	if (!target || target.density)
+		climbers -= user
 		return
 
 	for (var/obj/structure/S in target)
 		if (S.density)
+			climbers -= user
 			return
 
-	usr.loc = target.loc
+	// target is the turf itself; target.loc is its area. Move through
+	// forceMove so line-of-sight and lighting follow the climber.
+	user.forceMove(target)
 
-	if (get_turf(user) == get_turf(src))
-		usr.visible_message(SPAN_WARNING("[user] climbs onto \the [src]!"))
+	if (user.loc == target && get_turf(user) == get_turf(src))
+		user.visible_message(SPAN_WARNING("[user] climbs onto \the [src]!"))
 	climbers -= user
 
 /obj/item/weapon/gun/projectile/automatic/stationary/proc/can_touch(var/mob/user)

@@ -4,8 +4,9 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 80
-	maxy = 40
+	// The tutorial map's own size (maps/special/tutorial.dmm).
+	maxx = 397
+	maxy = 257
 	maxz = 1
 	// Production default: a plane added at runtime starts as open air.
 	turf = /turf/sky/building
@@ -31,13 +32,9 @@ var/global/practice_probe_runtime_error = FALSE
 	if (!passed)
 		practice_probe_failed += label
 
-// A fresh room for the next exercise. Rebuilding wipes every clientless mob,
-// so the trainee steps out of the world for it.
-/proc/practice_probe_refit(datum/practice_rooms/R, datum/practice_session/S)
-	var/turf/stood = get_turf(S.body)
-	S.body.loc = null
-	S.props = R.build_room(S.slot)
-	S.body.forceMove(locate(stood.x, stood.y, stood.z))
+// The tutorial map, without its startup.
+/obj/map_metadata/tutorial/practice_probe/New()
+	return
 
 /proc/practice_probe_run()
 	makeDatumRefLists()
@@ -212,32 +209,43 @@ var/global/practice_probe_runtime_error = FALSE
 	practice_probe_check("tutorial/returns_to_mainland", tutorial_region_return_id() == "gaia" && tutorial_region_return_name() == "Gaia")
 	var/mob/new_player/lobby = new
 	practice_probe_check("tutorial/join_refused", tutorial_region_refuse_join(lobby))
-	// The tutorial region's own room: four spaces on one corridor line.
-	R.ensure_level()
+	// The tutorial region's own plot, on the map's ground level: lesson rooms on
+	// one corridor line along the south, and two yards to dig and build in.
+	map = new /obj/map_metadata/tutorial/practice_probe
+	practice_probe_check("tutorial/levels_enabled", map.dig_down_underground && map.building_levels == 10 && underground_depth_limit() == 4 && R.room_z() == 1 && R.ensure_level() && !practice_room_z && world.maxz == 1)
 	var/list/TP = R.build_room(1)
 	var/list/TO = R.slot_origin(1)
-	var/tz = practice_room_z
+	var/list/TO2 = R.slot_origin(2)
+	var/tz = R.room_z()
 	var/turf/t_start = TP["start"]
 	var/obj/t_door = TP["door"]
 	var/obj/t_camp_door = TP["camp_door"]
 	var/obj/t_shop_door = TP["workshop_door"]
+	var/obj/t_paved_door = TP["paved_door"]
+	var/obj/t_yard_door = TP["yard_door"]
 	var/obj/t_exit = TP["exit"]
 	var/obj/structure/practice_workshop_desk/t_desk = TP["workshop_desk"]
 	var/obj/structure/practice_lesson_board/t_board = TP["lesson_board"]
 	var/obj/t_fire = TP["fire"]
 	var/list/t_shop = TP["shop"]
-	var/list/t_bay = TP["bay"]
-	practice_probe_check("tutorial/room_spaces", istype(t_start, /turf/floor/wood) && istype(get_turf(t_fire), /turf/floor/dirt) && istype(get_turf(TP["bed"]), /turf/floor/grass) && istype(get_turf(t_desk), /turf/floor/wood) && istype(locate(t_bay[1], t_bay[2], tz), /turf/floor/plating/concrete))
-	practice_probe_check("tutorial/doors_on_one_line", t_door.y == TO[2] + 7 && t_camp_door.y == t_door.y && t_shop_door.y == t_door.y && t_door.x == TP["split"] && t_camp_door.x == TP["camp"] && t_shop_door.x == t_shop[1] - 1 && istype(locate(t_shop_door.x, t_shop_door.y + 1, tz), /turf/wall/indestructable))
-	practice_probe_check("tutorial/ring_walled", istype(locate(TO[1], TO[2], tz), /turf/wall/indestructable) && istype(locate(TO[1] + 39, TO[2] + 14, tz), /turf/wall/indestructable) && t_shop[3] == TO[1] + 38 && t_shop[4] == TO[2] + 13)
+	var/list/t_paved = TP["paved"]
+	var/list/t_field = TP["field"]
+	var/list/t_plot = TP["plot"]
+	var/list/t_stores = TP["stores"]
+	var/px = t_paved[1]
+	var/py = t_paved[2]
+	practice_probe_check("tutorial/room_spaces", istype(t_start, /turf/floor/wood) && istype(get_turf(t_fire), /turf/floor/dirt) && istype(get_turf(TP["bed"]), /turf/floor/grass) && istype(get_turf(t_desk), /turf/floor/wood) && istype(locate(px, py, tz), /turf/floor/plating/concrete) && istype(locate(t_paved[3], t_paved[4], tz), /turf/floor/plating/concrete) && istype(locate(t_field[1], t_field[2], tz), /turf/floor/grass))
+	practice_probe_check("tutorial/doors_on_one_line", t_door.y == TO[2] + 7 && t_camp_door.y == t_door.y && t_shop_door.y == t_door.y && t_paved_door.y == t_door.y && t_door.x == TP["split"] && t_camp_door.x == TP["camp"] && t_shop_door.x == t_shop[1] - 1 && t_paved_door.x == px - 1 && t_yard_door.y == t_field[2] - 1 && istype(locate(t_shop_door.x, t_shop_door.y + 1, tz), /turf/wall/indestructable))
+	practice_probe_check("tutorial/ring_walled", istype(locate(TO[1], TO[2], tz), /turf/wall/indestructable) && istype(locate(TO[1] + 63, TO[2] + 61, tz), /turf/wall/indestructable) && t_plot[1] == TO[1] + 1 && t_plot[3] == TO[1] + 62 && t_plot[4] == TO[2] + 60 && TO2[1] - TO[1] == 66)
+	practice_probe_check("tutorial/yards_are_large", t_paved[3] - px + 1 == 31 && t_paved[4] - py + 1 == 60 && t_field[3] - t_field[1] + 1 == 62 && t_field[4] - t_field[2] + 1 == 46)
 	practice_probe_check("tutorial/exit_off_the_path", t_exit.y != t_door.y && get_dist(t_exit, t_shop_door) >= 4 && t_exit.x < t_shop_door.x)
 	// Every prop can be walked to: flood from the start over open floor and doors.
 	var/list/reached = list()
 	reached[t_start] = TRUE
 	var/list/frontier = list(t_start)
-	while (frontier.len)
-		var/turf/here = frontier[1]
-		frontier.Cut(1, 2)
+	var/at = 1
+	while (at <= frontier.len)
+		var/turf/here = frontier[at++]
 		for (var/d in cardinal)
 			var/turf/next = get_step(here, d)
 			if (!next || reached[next] || next.density)
@@ -254,64 +262,162 @@ var/global/practice_probe_runtime_error = FALSE
 	for (var/key in list("marker", "knife", "hat", "gauze", "firewood", "meat", "pot", "soap", "exit", "lesson_board"))
 		if (!reached[get_turf(TP[key])])
 			walkable = FALSE
-	for (var/key in list("dummy", "fire", "puddle", "bed", "workshop_desk"))
+	for (var/atom/fixture in list(TP["dummy"], TP["fire"], TP["puddle"], TP["bed"], t_desk) + t_stores)
 		var/near = FALSE
 		for (var/d in cardinal)
-			if (reached[get_step(TP[key], d)])
+			if (reached[get_step(fixture, d)])
 				near = TRUE
 		if (!near)
 			walkable = FALSE
-	practice_probe_check("tutorial/everything_reachable", walkable && reached[locate(t_bay[3], t_bay[4], tz)])
+	practice_probe_check("tutorial/everything_reachable", walkable && reached[locate(t_paved[3], t_paved[4], tz)] && reached[locate(t_field[1], t_field[4], tz)])
 
 	var/datum/practice_session/TS = new(R, 1, TP)
 	R.sessions["1"] = TS
 	TS.body = new /mob/living/human/practice(get_step(t_desk, SOUTH))
 	TS.body.practice = TS
 	var/mob/living/human/practice/TH = TS.body
-	practice_probe_check("tutorial/workshop_private", TS.owns_workshop(t_desk) && TS.owns_workshop(TH) && !TS.owns_workshop(t_start) && !TS.owns_workshop(t_board) && tutorial_workshop_access(TH, t_desk))
+	practice_probe_check("tutorial/workshop_private", TS.owns_workshop(t_desk) && TS.owns_workshop(TH) && !TS.owns_workshop(t_start) && TS.owns_room(t_start) && !TS.owns_workshop(t_board) && tutorial_workshop_access(TH, t_desk))
 	TH.forceMove(get_step(t_board, EAST))
-	practice_probe_check("tutorial/board_in_camp", t_board.readable_by(TH) && TS.owns_room(t_board) && !TS.owns_room(locate(TO[1] + 40, TO[2], tz)))
+	practice_probe_check("tutorial/board_in_camp", t_board.readable_by(TH) && TS.owns_room(t_board) && !TS.owns_room(locate(TO[1] + 63, TO[2] + 5, tz)) && !TS.owns_room(locate(TO2[1] + 5, TO2[2] + 5, tz)))
+
+	// The stores hand out full stacks without limit, to the plot's trainee only.
+	var/obj/structure/practice_stores/t_store = t_stores[1]
+	TH.forceMove(get_step(t_store, SOUTH))
+	var/obj/item/stack/material/wood/t_wood = t_store.hand_out(TH, "Wood")
+	var/obj/item/t_shovel = t_store.hand_out(TH, "Shovel")
+	var/mob/living/human/practice/stranger = new(get_step(t_store, WEST))
+	practice_probe_check("tutorial/stores_hand_out", istype(t_wood) && t_wood.amount == t_wood.max_amount && t_wood.loc == TH.loc && istype(t_shovel, /obj/item/weapon/material/shovel) && istype(t_store.hand_out(TH, "Wood"), /obj/item/stack/material/wood) && isnull(t_store.hand_out(TH, "Crown jewels")))
+	practice_probe_check("tutorial/stores_private", t_stores.len == 3 && t_store.usable_by(TH) && !t_store.usable_by(stranger) && isnull(t_store.hand_out(stranger, "Wood")) && TS.owns_workshop(t_stores[1]) && TS.owns_rect(t_stores[2], t_paved) && TS.owns_rect(t_stores[3], t_field))
+	var/every_kind = TRUE
+	var/list/t_stock = practice_stores_stock()
+	for (var/label in t_stock)
+		if (!ispath(t_stock[label], /obj/item))
+			every_kind = FALSE
+	practice_probe_check("tutorial/stores_stock", every_kind && t_stock.len >= 25 && t_stock["Stone"] && t_stock["Steel"] && t_stock["Pickaxe"] && t_stock["Rail lengths"])
+	qdel(stranger)
 	TH.forceMove(get_step(t_desk, SOUTH))
 
-	// Each built exercise fits its fixtures inside the bay.
+	// Digging: the map's own underground, walled to the plot by bedrock.
+	practice_probe_check("tutorial/dig_admitted", isnull(underground_dig_error(1)) && underground_create(1) && world.maxz == 2)
+	var/cave = underground_z_at(1)
+	var/turf/t_dug = locate(t_field[1] + 4, t_field[2] + 10, cave)
+	practice_probe_check("tutorial/underground_walled", cave == 2 && multiz_level_below(tz) == cave && istype(locate(TO[1], TO[2], cave), /turf/wall/rockwall/bedrock) && istype(locate(TO[1] + 63, TO[2] + 30, cave), /turf/wall/rockwall/bedrock) && istype(locate(TO[1] + 20, TO[2] + 61, cave), /turf/wall/rockwall/bedrock) && dug_underground_unformed(t_dug) && dug_underground_unformed(locate(TO2[1], TO2[2], cave)))
+	t_dug = dug_underground_form(t_dug)
+	t_dug = t_dug.ChangeTurf(/turf/floor/dirt)
+	dug_underground_form_around(t_dug)
+	new /obj/item/weapon/flint(t_dug)
+	var/turf/t_rim = locate(t_plot[1], t_field[2] + 10, cave)
+	t_rim = dug_underground_form(t_rim)
+	t_rim = t_rim.ChangeTurf(/turf/floor/dirt)
+	dug_underground_form_around(t_rim)
+	practice_probe_check("tutorial/tunnels_stay_inside", !dug_underground_unformed(t_dug) && istype(locate(TO[1], t_rim.y, cave), /turf/wall/rockwall/bedrock) && istype(locate(TO[1], t_rim.y + 1, cave), /turf/wall/rockwall/bedrock) && dug_underground_unformed(locate(TO[1] - 1, t_rim.y, cave)))
+	practice_probe_check("tutorial/deeper_levels", isnull(underground_dig_error(2)) && underground_create(2) && world.maxz == 3 && istype(locate(TO[1], TO[2], underground_z_at(2)), /turf/wall/rockwall/bedrock) && findtext(underground_dig_error(5), "bedrock"))
+
+	// Building up: the map's own open-air levels, held to the plot by the
+	// trainee's own reach.
+	practice_probe_check("tutorial/build_up_admitted", building_stack_room(tz) && building_allocate_level(world.maxz + 1) && world.maxz == 4 && multiz_level_above(tz) == 4 && building_levels_built() == 1)
+	var/air = 4
+	var/turf/t_up = locate(px + 5, py + 20, air)
+	t_up = t_up.ChangeTurf(/turf/floor/wood)
+	new /obj/item/weapon/flint(t_up)
+	var/turf/t_edge = locate(t_plot[3], py + 20, air)
+	t_edge = t_edge.ChangeTurf(/turf/floor/wood)
+	var/turf/t_beyond = locate(t_plot[3] + 1, py + 20, air)
+	t_beyond = t_beyond.ChangeTurf(/turf/floor/wood)
+	TH.forceMove(t_edge)
+	var/refused = !TH.Move(t_beyond, EAST)
+	practice_probe_check("tutorial/kept_to_plot", refused && TH.loc == t_edge && TS.may_stand(t_edge) && TS.may_stand(t_dug) && !TS.may_stand(t_beyond) && !TS.may_stand(locate(TO2[1] + 5, TO2[2] + 5, tz)))
+	TH.forceMove(get_step(t_desk, SOUTH))
+	// Plans peg out in either yard on any level, never across the rooms or the wall.
+	practice_probe_check("tutorial/plans_fit_yards", tutorial_workshop_footprint(TH, t_field[1], t_field[2], t_field[1] + 19, t_field[2] + 19, tz) && tutorial_workshop_footprint(TH, px, py, px + 19, py + 19, air) && tutorial_workshop_footprint(TH, px + 1, py + 1, px + 29, py + 40, tz) && !tutorial_workshop_footprint(TH, t_field[1], t_field[2] - 5, t_field[1] + 19, t_field[2] + 14, tz) && !tutorial_workshop_footprint(TH, t_plot[3] - 5, py, t_plot[3] + 1, py + 5, air) && !tutorial_workshop_footprint(TH, TO2[1] + 40, TO2[2] + 5, TO2[1] + 45, TO2[2] + 10, tz))
+
+	// Each built exercise fits its fixtures inside the paved yard.
 	var/text = TS.setup_workshop("car")
-	var/obj/structure/car_workshop/practice/t_press = locate() in locate(t_shop[1] + 4, t_shop[2], tz)
+	var/obj/structure/car_workshop/practice/t_press = locate() in locate(px, py, tz)
 	practice_probe_check("tutorial/press_bay", findtext(text, "automobile workshop") && t_press && t_press.bay_clear(VEHICLE_DRAUGHT_MAX) && t_press.allowed(TH) && (locate(/obj/item/ship_draught) in range(7, t_desk)))
-	practice_probe_refit(R, TS)
+	// Switching at the desk empties both yards on every level and keeps the rest.
+	TS.props["workshop_selected"] = "Build a car or tank"
+	TS.clear_workshop(t_desk)
+	t_dug = locate(t_dug.x, t_dug.y, cave)
+	t_up = locate(t_up.x, t_up.y, air)
+	practice_probe_check("tutorial/switch_clears_yards", QDELETED(t_press) && !TS.props["workshop_selected"] && !QDELETED(t_desk) && !QDELETED(TH) && !QDELETED(t_board) && !QDELETED(t_stores[2]) && !QDELETED(t_stores[3]) && !(locate(/obj/item/ship_draught) in range(7, t_desk)) && istype(locate(px, py, tz), /turf/floor/plating/concrete))
+	practice_probe_check("tutorial/switch_fills_tunnels", dug_underground_unformed(t_dug) && !(locate(/obj/item) in t_dug) && istype(locate(TO[1], t_dug.y, cave), /turf/wall/rockwall/bedrock) && underground_depth_of(cave) == 1)
+	practice_probe_check("tutorial/switch_clears_storeys", istype(t_up, /turf/sky/building) && !(locate(/obj/item) in t_up) && istype(locate(t_beyond.x, t_beyond.y, air), /turf/floor/wood))
+	// Paper lesson: setup and completion stay on this plot and reset with the yard.
+	var/paper_text = TS.setup_workshop("paper")
+	var/obj/structure/printingpress/paper_press = locate() in locate(px, py, tz)
+	var/list/paper_supply = TS.supply_floor()
+	var/paper_count = 0
+	for (var/obj/item/weapon/paper/sheet in paper_supply[1])
+		paper_count++
+	practice_probe_check("paper/setup", findtext(paper_text, "quill") && paper_press && TS.props["practice_press"] == paper_press && paper_count == 8 && TS.owns_rect(paper_press, t_paved))
+	var/obj/item/weapon/paper/paper_original = new(get_turf(paper_press))
+	var/obj/item/weapon/paper/paper_result = new(get_turf(paper_press))
+	paper_original.info = ""
+	tutorial_note_paper_copy(TH, paper_press, paper_original, paper_result)
+	practice_probe_check("paper/blank_rejected", !TS.props["practice_paper_done"])
+	paper_original.info = "notice"
+	paper_result.forceMove(locate(TO2[1] + 35, TO2[2] + 20, tz))
+	tutorial_note_paper_copy(TH, paper_press, paper_original, paper_result)
+	practice_probe_check("paper/other_plot_rejected", !TS.props["practice_paper_done"])
+	paper_result.forceMove(get_turf(paper_press))
+	tutorial_note_paper_copy(TH, paper_press, paper_original, paper_result)
+	practice_probe_check("paper/complete", TS.props["practice_paper_done"])
+	TS.clear_workshop(t_desk)
+	practice_probe_check("paper/switch_resets", QDELETED(paper_press) && QDELETED(paper_original) && QDELETED(paper_result) && !TS.props["practice_press"] && !TS.props["practice_paper_done"])
+	TS.setup_workshop("paper")
+	var/obj/structure/printingpress/paper_again = locate() in locate(px, py, tz)
+	practice_probe_check("paper/reselect", paper_again && TS.props["practice_press"] == paper_again && !TS.props["practice_paper_done"])
+	TS.clear_workshop(t_desk)
 	TS.setup_workshop("air")
-	var/obj/structure/car_workshop/airship_yard/practice/t_yard = locate() in locate(t_shop[1] + 4, t_shop[2], tz)
-	practice_probe_check("tutorial/airship_bay", t_yard && t_yard.bay_clear(AIR_DRAUGHT_MAX) && TS.owns_workshop(locate(t_yard.x + AIR_DRAUGHT_MAX, t_yard.y + AIR_DRAUGHT_MAX, tz)))
-	practice_probe_refit(R, TS)
+	var/obj/structure/car_workshop/airship_yard/practice/t_yard = locate() in locate(px, py, tz)
+	practice_probe_check("tutorial/airship_bay", t_yard && t_yard.bay_clear(AIR_DRAUGHT_MAX) && TS.owns_rect(locate(t_yard.x + AIR_DRAUGHT_MAX, t_yard.y + AIR_DRAUGHT_MAX, tz), t_paved))
+	TS.clear_workshop(t_desk)
 	TS.setup_workshop("train")
-	var/obj/structure/rail_works/practice/t_works = locate() in locate(t_bay[1], t_shop[2] + 9, tz)
+	var/obj/structure/rail_works/practice/t_works = locate() in locate(px + 27, py, tz)
 	var/track = 0
 	var/turf/rail = t_works ? t_works.centre() : null
-	while (rail && rail_straight_along(rail, WEST) && TS.owns_workshop(rail))
+	while (rail && rail_straight_along(rail, SOUTH) && TS.owns_rect(rail, t_paved))
 		track++
-		rail = get_step(rail, EAST)
-	practice_probe_check("tutorial/train_track", t_works && (WEST in t_works.headings()) && track == 12)
-	practice_probe_refit(R, TS)
+		rail = get_step(rail, NORTH)
+	practice_probe_check("tutorial/train_track", t_works && (SOUTH in t_works.headings()) && track == 60)
+	TS.clear_workshop(t_desk)
+	practice_probe_check("tutorial/switch_lifts_track", !(locate(/obj/structure/rails) in locate(px + 29, py + 30, tz)) && !(locate(/obj/structure/rail_works) in locate(px + 27, py, tz)))
 	TS.setup_workshop("ship")
-	var/obj/structure/slipway/practice/t_slip = locate() in locate(t_shop[1] + 10, t_shop[2], tz)
+	var/obj/structure/slipway/practice/t_slip = locate() in locate(px + 15, py, tz)
 	var/list/t_berth = t_slip ? block(locate(t_slip.x - 2, t_slip.y + 1, tz), locate(t_slip.x + 2, t_slip.y + 5, tz)) : list()
 	var/dry = TRUE
 	for (var/turf/T in t_berth)
 		if (!slipway_ground(T) || istype(T, /turf/floor/beach/water))
 			dry = FALSE
 	practice_probe_check("tutorial/ship_launches", t_slip && t_slip.dir == NORTH && t_berth.len == 25 && dry && t_slip.draught_landing(t_berth, 5) > 0)
-	practice_probe_refit(R, TS)
+	// The largest hull a sheet holds, built out over the pool.
+	var/list/t_long = t_slip ? block(locate(px + 1, py + 1, tz), locate(px + 29, py + 40, tz)) : list()
+	var/list/t_wide = t_slip ? block(locate(px, py + 1, tz), locate(px + 30, py + 40, tz)) : list()
+	practice_probe_check("tutorial/large_ship_launches", t_slip && t_slip.draught_landing(t_long, 40) > 0 && t_slip.draught_landing(t_wide, 40) < 0 && istype(locate(px + 1, t_paved[4], tz), /turf/floor/beach/water) && istype(locate(px, t_paved[4], tz), /turf/floor/plating/concrete))
+	TS.clear_workshop(t_desk)
+	practice_probe_check("tutorial/switch_drains_pool", istype(locate(px + 10, py + 30, tz), /turf/floor/plating/concrete) && !(locate(/obj/structure/slipway) in locate(px + 15, py, tz)))
 	TS.setup_workshop("rocket")
-	var/obj/structure/rocket_works/practice/t_rocket = locate() in locate(t_shop[1] + 4, t_shop[2], tz)
+	var/obj/structure/rocket_works/practice/t_rocket = locate() in locate(px, py, tz)
 	practice_probe_check("tutorial/rocket_output", t_rocket && t_rocket.output_turf() && t_rocket.allowed(TH))
-	practice_probe_refit(R, TS)
+	TS.clear_workshop(t_desk)
+	text = TS.setup_workshop("house")
+	practice_probe_check("tutorial/house_exercise", findtext(text, "as many storeys") && !(locate(/obj/structure) in locate(px, py, tz)) && (locate(/obj/item/ship_draught) in range(7, t_desk)))
+	TS.clear_workshop(t_desk)
 	text = TS.setup_workshop("sub")
-	practice_probe_check("tutorial/paper_exercise", findtext(text, "paper exercise") && !(locate(/obj/structure) in range(5, locate(t_bay[1] + 6, t_bay[2] + 6, tz))))
+	practice_probe_check("tutorial/paper_exercise", findtext(text, "paper exercise") && !(locate(/obj/structure) in locate(px, py, tz)))
+	// Leaving empties the whole plot on every level; the levels stay for the next trainee.
+	var/turf/t_under_camp = locate(TO[1] + 15, TO[2] + 5, cave)
+	t_under_camp = dug_underground_form(t_under_camp)
+	t_under_camp.ChangeTurf(/turf/floor/dirt)
 	TS.end(null)
-	practice_probe_check("tutorial/room_closes", !R.sessions.len && world.maxz == 1 && !practice_room_z)
+	practice_probe_check("tutorial/room_closes", !R.sessions.len && world.maxz == 4 && !practice_room_z && QDELETED(t_desk) && QDELETED(t_stores[1]) && dug_underground_unformed(locate(TO[1] + 15, TO[2] + 5, cave)))
+	// The next trainee's plot is walled on the levels that already exist.
+	R.build_room(2)
+	practice_probe_check("tutorial/next_plot_walled", istype(locate(TO2[1], TO2[2], cave), /turf/wall/rockwall/bedrock) && istype(locate(TO2[1] + 63, TO2[2] + 61, underground_z_at(2)), /turf/wall/rockwall/bedrock) && dug_underground_unformed(locate(TO2[1] + 5, TO2[2] + 5, cave)))
+	R.wipe_room(2)
 
-	world.maxx = 253
-	world.maxy = 69
-	practice_probe_check("tutorial/more_rooms", R.capacity() == 24)
+	practice_probe_check("tutorial/more_rooms", R.capacity() == 24 && isnull(world_z_budget.error(world.maxz + 1, "roof")) && world_z_budget.building_admitted(building_base_maxz() + 14) && !world_z_budget.building_admitted(building_base_maxz() + 15))
 	shard_group.region = "gaia"
 	shard_group.kind = "SURFACE"
 	shard_group.peers = list("tutorial" = list("name" = "Tutorial", "kind" = "TUTORIAL", "address" = "127.0.0.1:1760", "state" = "UP"))

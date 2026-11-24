@@ -3,18 +3,20 @@
 The short Practice Room course still covers first-day movement, items, basic
 combat, bandaging, cooking, clean water, hygiene and rest. The dedicated
 Tutorial region also offers optional hands-on lessons at its workshop desk.
-They do not award any progression to your real character. Choose one workshop
-per visit. If you run out of materials or want to switch lessons, leave and
-open another room. Your old practice items and builds are cleared.
+They do not award any progression to your real character. Choose an exercise
+at the desk. To switch lessons or restock, choose another exercise, or choose
+the same one again. Both yards are cleared; items you are carrying stay with
+you.
 
 ## Write and print a notice
 
 1. Pick up the quill and a blank sheet from the supply spot. Use the quill on
    the paper to write a short notice.
-2. Hold the notice in your active hand, use it on the press and choose
+2. Take the notice to the printing press just inside the paved yard, through
+   the office east door. Hold it in your active hand, use it on the press and choose
    **Original**. Load a second sheet the same way and choose **Copy**.
 3. Click the press with an empty hand. Stay beside it until it finishes. Pick
-   up both the original and the copy. You get eight sheets per visit, so you
+   up both the original and the copy. You get eight sheets per setup, so you
    can write a second notice or print more copies.
 
 This uses the ordinary printing press and player-written papers. A finished

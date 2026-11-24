@@ -54,5 +54,16 @@ class SendMobAreaTest(unittest.TestCase):
         self.assertTrue(destination_problems(OLD_BODY))
 
 
+class CoordinateJumpTest(unittest.TestCase):
+    def test_coordinate_jump_does_not_mutate_axes_or_report_failed_moves(self):
+        body = adapter.extract(SOURCE.read_text(encoding='utf-8'), '/client/proc/jumptocoord')
+        self.assertNotRegex(body, r'A\.[xyz]\s*=')
+        self.assertIn('if (!A || !T)\n\t\t\tto_chat(src, "No turf at those coordinates.")\n\t\t\treturn', body)
+        steps = ('locate(tx, ty, tz)', 'persistence_movement_allowed(A, T)',
+                 'A.on_mob_jump()', '!A.forceMove(T)', 'if (A.loc != T)\n\t\t\treturn',
+                 'message_admins(')
+        offsets = [body.index(step) for step in steps]
+        self.assertEqual(offsets, sorted(offsets))
+
 if __name__ == '__main__':
     unittest.main()

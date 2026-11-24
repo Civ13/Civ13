@@ -706,7 +706,8 @@ people, set how she takes new crew and write a memo. `craft.helm_access(user)`
 answers `CRAFT_HELM_FREE` for owners and steering crew, `CRAFT_HELM_FORCE`
 for anyone else while an owner is in the world (the wheel can be forced,
 slowly, with the crew warned) and `CRAFT_HELM_CHAINED` when no owner is
-about. `craft.fitting_refusal(user)` guards levers and the radar the same
+about. Gaia always uses the owner-present rules: outsiders can still force
+the helm, but never gain crew access just because the owners are offline. `craft.fitting_refusal(user)` guards levers and the radar the same
 way without the delay. The wheel saves the register in `register_state`.
 
 The menu is one for every kind of craft. A craft type that is not a ship
@@ -730,7 +731,8 @@ vehicle's words (commander, driver, mechanic, gunner, crewman). The steering
 wheel item asks `axis.papers_allow()` before it starts the engine or changes
 up and `axis.papers_steer()` before it turns: crew drive freely, a stranger
 must force the controls while an owner is in the world (remembered in
-`forced_by` until the crew take it back) and is locked out otherwise.
+`forced_by` until the crew take it back) and is locked out otherwise, except
+on Gaia where forcing remains available.
 Slowing and stopping are never locked. This sits beside the vehicle key, it
 does not replace it. The axis saves the register in `register_state`.
 Turret controls ask `vehicle_fitting_refusal(turret, user)` before they fire:

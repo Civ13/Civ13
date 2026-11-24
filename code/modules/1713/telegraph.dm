@@ -44,14 +44,86 @@
 		PL.transmit(msg,stripmsg,src,PL,list())
 		return
 
+// A clinic notice and its copies carry a short reference. This sends only an
+// acknowledgement for that reference, not the request's paper text or metadata.
+/obj/structure/telegraph/verb/confirm_clinic_shipment()
+	set category = null
+	set name = "Confirm Clinic Shipment"
+	set src in view(1)
+	var/mob/living/human/H = usr
+	if (!istype(H))
+		return
+	var/client/operator_client = H.client
+	var/turf/terminal = get_turf(src)
+	if (!clinic_operator_valid(H, operator_client, terminal))
+		return
+	var/destination = player_input(H, "Name of the receiving telegraph (from the posted request):", "Confirm Clinic Shipment", "", "text", null, FALSE)
+	if (!destination || !clinic_operator_valid(H, operator_client, terminal))
+		return
+	var/reference = player_input(H, "Request reference (1 to 12 letters or digits):", "Confirm Clinic Shipment", "", "text", null, FALSE)
+	if (!reference || !clinic_operator_valid(H, operator_client, terminal))
+		return
+	destination = lowertext(sanitize(destination, 20))
+	reference = clinic_reference(reference)
+	if (!destination || !reference)
+		to_chat(H, SPAN_WARNING("Enter a station name and a request reference of 1 to 12 letters or digits."))
+		return
+	var/list/stations = list()
+	var/list/visited = list()
+	for (var/obj/structure/phoneline/PL in range(2, src))
+		PL.collect_clinic_stations(src, visited, stations)
+	var/obj/structure/telegraph/receiver = clinic_receiver(stations, destination)
+	if (!receiver)
+		to_chat(H, SPAN_WARNING("Shipment confirmation not sent: no unique, reachable station by that name. Check the line and station name, then try again."))
+		return
+	var/origin_label = html_encode(html_decode(name))
+	var/payload = "Clinic shipment dispatched. Request [reference]. From [origin_label]."
+	var/printed = receiver.receive("<b>[origin_label] to [receiver.clinic_station_label()]:</b> [payload]", payload)
+	if (printed)
+		to_chat(H, SPAN_NOTICE("Shipment confirmation reached [receiver.clinic_station_label()] and was printed."))
+	else
+		to_chat(H, SPAN_NOTICE("Shipment confirmation reached [receiver.clinic_station_label()], but no teleprinter recorded it."))
+
+/obj/structure/telegraph/proc/clinic_operator_valid(mob/living/human/H, client/operator_client, turf/terminal)
+	return !QDELETED(src) && !QDELETED(H) && operator_client && H.client == operator_client && operator_client.mob == H && !H.incapacitated() && terminal && loc == terminal && isturf(H.loc) && H.z == terminal.z && get_dist(H, src) <= 1
+
+/obj/structure/telegraph/proc/clinic_station_label()
+	return html_encode(html_decode(name))
+
+/obj/structure/telegraph/proc/clinic_reference(value)
+	if (!istext(value) || !length(value) || length(value) > 12)
+		return null
+	var/result = ""
+	for (var/i = 1, i <= length(value), i++)
+		var/character = text2ascii(value, i)
+		switch (character)
+			if (48 to 57, 65 to 90)
+				result += ascii2text(character)
+			if (97 to 122)
+				result += ascii2text(character - 32)
+			else
+				return null
+	return result
+
+/obj/structure/telegraph/proc/clinic_receiver(list/stations, destination)
+	var/obj/structure/telegraph/match = null
+	for (var/obj/structure/telegraph/candidate in stations)
+		if (candidate != src && lowertext(candidate.clinic_station_label()) == destination)
+			if (match)
+				return null
+			match = candidate
+	return match
+
 /obj/structure/telegraph/proc/receive(var/msg, var/stripmsg)
 	if (!msg || !stripmsg)
 		return
 	playsound(loc, 'sound/machines/telegraph.ogg', 65)
 	visible_message(msg)
+	var/printed = FALSE
 	for (var/obj/structure/teleprinter/TP in range(1,src))
-		TP.print(stripmsg)
-	return
+		if (TP.print(stripmsg))
+			printed = TRUE
+	return printed
 
 /obj/structure/telegraph/attack_hand(var/mob/user as mob)
 	var/message = player_input(usr, "Write a word. Up to 10 characters, no spaces, symbols or numbers.", null, null, "text", null, FALSE)
@@ -110,15 +182,18 @@
 
 /obj/structure/teleprinter/proc/print(var/new_text)
 	if (isemptylist(inpaper))
-		return
-	else
-		for(var/obj/item/weapon/paper/C in inpaper)
-			if (C.gc_destroyed || !isnull(C.loc) || !isnull(C.document_record))
-				continue
-			if (C.free_space >= 22)
-				new_text = "<b><font face='Courier New'>Telegram at [roundduration2text_days()]: [new_text]</b></font><br>"
-				C.info += new_text
-				C.free_space -= length(strip_html_properly(new_text))
+		return FALSE
+	var/entry = "<b><font face='Courier New'>Telegram at [roundduration2text_days()]: [new_text]</b></font><br>"
+	var/cost = length(strip_html_properly(entry))
+	var/printed = FALSE
+	for (var/obj/item/weapon/paper/C in inpaper)
+		if (C.gc_destroyed || !isnull(C.loc) || !isnull(C.document_record))
+			continue
+		if (C.free_space >= max(22, cost))
+			C.info += entry
+			C.free_space -= cost
+			printed = TRUE
+	return printed
 
 /obj/structure/phoneline
 	name = "utility pole"
@@ -179,6 +254,26 @@
 			if (TLG != TL && !(TLG in reached))
 				reached += TLG
 				TLG.receive(msg,stripmsg)
+// A lookup must inspect the whole connected network without consuming the
+// shared transmission cooldown. Keep traversal state local to this lookup.
+/obj/structure/phoneline/proc/collect_clinic_stations(obj/structure/telegraph/TL, list/visited, list/reached)
+	if (src in visited)
+		return
+	visited += src
+	for (var/obj/structure/phoneline/PL in get_turf(locate(x-3,y,z)))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/phoneline/PL in get_turf(locate(x+3,y,z)))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/phoneline/PL in get_turf(locate(x,y+3,z)))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/phoneline/PL in get_turf(locate(x,y-3,z)))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/phoneline/PL in range(1,src))
+		PL.collect_clinic_stations(TL, visited, reached)
+	for (var/obj/structure/telegraph/TLG in range(2,src))
+		if (TLG != TL && !(TLG in reached))
+			reached += TLG
+
 /obj/structure/phoneline/proc/ring_phone(var/target, var/origin, var/obj/item/weapon/telephone/originphone)
 	if (!origin || !target)
 		return

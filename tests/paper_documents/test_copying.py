@@ -208,6 +208,17 @@ class Copies(unittest.TestCase):
     self.state['wait']=wait;self.assertFalse(self.press(self.machine,self.actor))
     self.assertFalse(self.paper.gc_destroyed);self.assertFalse(self.stock.gc_destroyed);self.assertFalse(self.state['created']);self.assertFalse(self.state["practice_copies"])
     if change!='delete':self.assertFalse(self.machine.copying);self.assertEqual(self.machine.icon_state,'printingpress0')
+ def test_press_reset_during_wait_ejects_inputs_and_cannot_publish(self):
+  self.classified();self.loaded_press()
+  def reset():
+   self.destroy(self.machine)
+   return True
+  self.state['wait']=reset
+  self.assertFalse(self.press(self.machine,self.actor))
+  self.assertTrue(self.machine.gc_destroyed)
+  self.assertIs(self.paper.loc,self.place);self.assertIs(self.stock.loc,self.place)
+  self.assertFalse(self.stock.gc_destroyed)
+  self.assertFalse(self.state['created']);self.assertFalse(self.state['practice_copies'])
  def test_press_constructor_callback_rechecks_stock_and_owns_failed_output(self):
   self.classified();self.loaded_press();self.state['create_hook']=lambda p:setattr(self.stock,'info','changed')
   self.assertFalse(self.press(self.machine,self.actor));self.assertFalse(self.stock.gc_destroyed)
@@ -305,21 +316,23 @@ class Copies(unittest.TestCase):
     self.assertEqual(len(calls),expected)
  def test_teleprinter_legacy_positive_and_classified_deleted_lost_custody_negative(self):
   env=self.env
-  env.update(isemptylist=lambda x:not x,strip_html_properly=lambda x:re.sub('<[^>]*>','',x),format_telegram=lambda text:'<b>Telegram fixture: '+text+'</b><br>')
-  vm.ALLOWED |= {'isemptylist','strip_html_properly','format_telegram'}
-  code=TELE.replace('for(var/obj/item/weapon/paper/C in inpaper)','for (var/C in paper_inputs(src.inpaper))').replace('isemptylist(inpaper)','isemptylist(src.inpaper)')
-  marker='new_text = "<b><font face=\'Courier New\'>Telegram at [roundduration2text_days()]: [new_text]</b></font><br>"'
+  env.update(isemptylist=lambda x:not x,strip_html_properly=lambda x:re.sub('<[^>]*>','',x),max=max,format_telegram=lambda text:'<b>Telegram fixture: '+text+'</b><br>')
+  vm.ALLOWED |= {'isemptylist','strip_html_properly','format_telegram','max'}
+  code=TELE.replace('for (var/obj/item/weapon/paper/C in inpaper)','for (var/C in paper_inputs(src.inpaper))').replace('isemptylist(inpaper)','isemptylist(src.inpaper)')
+  marker='var/entry = "<b><font face=\'Courier New\'>Telegram at [roundduration2text_days()]: [new_text]</b></font><br>"'
   self.assertEqual(code.count(marker),1,'Clock/format seam drift')
-  code=code.replace(marker,'new_text = format_telegram(new_text)')
+  code=code.replace(marker,'var/entry = format_telegram(new_text)')
   printer=vm.project(code,'/obj/structure/teleprinter/proc/print','src,new_text',env)
-  for case in ('legacy','classified','deleted','moved','full'):
+  for case in ('legacy','classified','deleted','moved','full','partial'):
    with self.subTest(case=case):
     p=self.Paper();p.loc=None
     if case=='classified':p.document_record={'schema_version':999}
     elif case=='deleted':p.gc_destroyed=True
     elif case=='moved':p.loc=self.actor
     elif case=='full':p.free_space=21
-    before=(p.info,p.free_space);self.machine.inpaper=[p];printer(self.machine,'TEST')
+    elif case=='partial':p.free_space=22
+    before=(p.info,p.free_space);self.machine.inpaper=[p];printed=printer(self.machine,'LONG SHIPMENT RECORD')
+    self.assertEqual(bool(printed),case=='legacy')
     self.assertEqual((p.info,p.free_space)!=before,case=='legacy')
 
 def curriculum_read(path):
@@ -327,21 +340,82 @@ def curriculum_read(path):
 
 
 class TestPracticeCurriculum(unittest.TestCase):
+    def test_completion_uses_current_press_and_owned_written_outputs(self):
+        lesson = curriculum_read("code/modules/1713/practice_curriculum.dm")
+        lesson = lesson.replace("istype(H)", "is_practice(H)")
+        lesson = re.sub(r'(?m)^\tto_chat\(H, SPAN_NOTICE\([^\n]*\)\)$',
+                        '\tpractice_notice(H)', lesson)
+        env, *_ = environment()
+        class PressSession:
+            def __init__(self, yard, press):
+                self.yard = yard
+                self.owner = self
+                self.props = {"practice_press": press, "practice_paper_done": False, "paved": yard}
+            def room_z(self): return 1
+            def owns_rect(self, atom, rect):
+                return atom is not None and getattr(getattr(atom, "loc", None), "plot", None) is rect
+        yard, other, nearby = Turf(), Turf(), Turf()
+        yard.plot, other.plot, nearby.plot = yard, other, yard
+        press, stranger = Machine(yard), Machine(yard)
+        actor = vm.Actor(); actor.kind = "practice"; actor.practice = PressSession(yard, press)
+        class Document(vm.Ref):
+            def __init__(self, loc, info="", record=None):
+                self.loc, self.info, self.document_record = loc, info, record
+        notices = []
+        env.update(is_practice=lambda x: getattr(x, "kind", None) == "practice",
+                   tutorial_workshop_access=lambda a, p: a.practice is not None and p.loc is yard,
+                   get_turf=lambda x: getattr(x, "loc", None),
+                   practice_notice=lambda x: notices.append(x),
+                   length=lambda x: len(x or []))
+        vm.ALLOWED |= {"is_practice", "tutorial_workshop_access", "get_turf", "practice_notice", "tutorial_paper_has_writing"}
+        vm.METHODS |= {"owns_rect", "room_z"}
+        env["tutorial_paper_has_writing"] = vm.project(lesson, "/proc/tutorial_paper_has_writing", "P", env)
+        complete = vm.project(lesson, "/proc/tutorial_note_paper_copy", "actor,press,original,result", env)
+        written, result = Document(yard, "notice"), Document(yard)
+        def reset():
+            actor.practice.props.update(practice_press=press, practice_paper_done=False)
+            press.z = 1
+            notices.clear()
+        for case in ("legacy", "classified", "blank", "wrong_press", "null_press", "other_plot", "other_yard_tile", "other_level", "same_paper", "after_switch", "already_done", "real_actor"):
+            with self.subTest(case=case):
+                reset(); actor.kind = "practice"; written.loc = result.loc = yard
+                written.info = "notice"; written.document_record = None
+                selected, output = press, result
+                if case == "classified":
+                    written.info = ""; written.document_record = {"sections": [{"kind": "body", "text": "notice"}]}
+                elif case == "blank": written.info = ""
+                elif case == "wrong_press": selected = stranger
+                elif case == "null_press": selected = None; actor.practice.props["practice_press"] = None
+                elif case == "other_plot": result.loc = other
+                elif case == "other_yard_tile": result.loc = nearby
+                elif case == "other_level": press.z = 2
+                elif case == "same_paper": output = written
+                elif case == "after_switch": actor.practice.props["practice_press"] = None
+                elif case == "already_done": actor.practice.props["practice_paper_done"] = True
+                elif case == "real_actor": actor.kind = "human"
+                complete(actor, selected, written, output)
+                self.assertEqual(bool(notices), case in ("legacy", "classified"))
+                if case not in ("legacy", "classified", "already_done"):
+                    self.assertFalse(actor.practice.props["practice_paper_done"])
+
     def test_station_provisions_reusable_real_stock_once_inside_the_room(self):
         workshop = curriculum_read("code/modules/1713/practice_workshop.dm")
         lesson = curriculum_read("code/modules/1713/practice_curriculum.dm")
         self.assertIn('"Write and print a notice" = "paper"', workshop)
         choose = workshop.split("/datum/practice_session/proc/choose_workshop(", 1)[1]
         selection = choose.index('if (exercise == "paper")')
-        self.assertLess(choose.index('|| props["workshop_selected"])'), selection)
+        self.assertLess(choose.index('|| props["workshop_selected"] != current)'), selection)
         self.assertLess(choose.index('setup_practice_paper(supply[1], locate('), choose.index("new /obj/item/ship_draught(supply[1])"))
         provision = lesson.split("/proc/tutorial_note_paper_copy(", 1)[0]
         guard, spawn = provision.split("var/obj/structure/printingpress/press = new(worksite)", 1)
-        for gate in ('props["practice_press"]', "owns_workshop(supply)", "owns_workshop(worksite)", "tutorial_workshop_access(body, worksite)"):
+        for gate in ("supply.z != owner.room_z()", "worksite.z != owner.room_z()", 'props["practice_press"]', "owns_workshop(supply)", 'owns_rect(worksite, props["paved"])', "tutorial_workshop_access(body, worksite)"):
             self.assertIn(gate, guard)
         for stocking in ("new /obj/item/weapon/pen(supply)", "for (var/sheet in 1 to 8)", "new /obj/item/weapon/paper(supply)", "press.should_save = FALSE"):
             self.assertIn(stocking, spawn)
         self.assertNotIn("mailbox", lesson)
+        clear = workshop.split("/datum/practice_session/proc/clear_workshop(", 1)[1].split("/datum/practice_session/proc/supply_floor(", 1)[0]
+        self.assertLess(clear.index('props["practice_press"] = null'), clear.index('owner.clear_column('))
+        self.assertLess(clear.index('props["practice_paper_done"] = null'), clear.index('owner.clear_column('))
 
     def test_only_successful_local_transfer_of_written_document_completes(self):
         source = curriculum_read("code/modules/paperwork/copy.dm").split("/obj/structure/printingpress/proc/copy_paper_document(", 1)[1].split("/obj/structure/mailbox/proc", 1)[0]
@@ -352,7 +426,7 @@ class TestPracticeCurriculum(unittest.TestCase):
             self.assertLess(source.index(action), notice)
         completion = lesson.split("/proc/tutorial_note_paper_copy(", 1)[1].split("/proc/tutorial_paper_has_writing(", 1)[0]
         check, done = completion.split('H.practice.props["practice_paper_done"] = TRUE', 1)
-        for gate in ('H.practice.props["practice_press"] != press', 'H.practice.props["practice_paper_done"]', "tutorial_workshop_access(H, press)", "owns_workshop(original)", "owns_workshop(result)", "!tutorial_paper_has_writing(original)"):
+        for gate in ("press.z != H.practice.owner.room_z()", 'H.practice.props["practice_press"] != press', 'H.practice.props["practice_paper_done"]', "tutorial_workshop_access(H, press)", 'owns_rect(original, H.practice.props["paved"])', 'owns_rect(result, H.practice.props["paved"])', "get_turf(original) != get_turf(press)", "get_turf(result) != get_turf(press)", "!tutorial_paper_has_writing(original)"):
             self.assertIn(gate, check)
         self.assertIn("Practice complete", done)
         writing = lesson.split("/proc/tutorial_paper_has_writing(", 1)[1]
