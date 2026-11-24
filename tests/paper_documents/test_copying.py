@@ -34,7 +34,7 @@ class Machine(vm.Ref):
 def environment(source=None,paper_source=None):
  source=SOURCE if source is None else source;paper_source=PAPER if paper_source is None else paper_source
  env,Base,Reader,langs,render=views.environment()
- state=dict(created=[],all_papers=[],deleted=[],world=[],prompt=lambda:'Original',wait=lambda:True,create_hook=lambda p:None,transfer_hook=lambda p:None)
+ state=dict(created=[],all_papers=[],deleted=[],world=[],practice_copies=[],prompt=lambda:'Original',wait=lambda:True,create_hook=lambda p:None,transfer_hook=lambda p:None)
  class Paper(vm.Paper):
   def __init__(self,owner=None,legacy=None):
    super().__init__(owner,legacy or views.LEGACY)
@@ -71,12 +71,13 @@ def environment(source=None,paper_source=None):
   machine.gc_destroyed=True;return True
  env.update(istype=istype,MAX_FIELDS=50,new_copy_paper=factory,qdel=qdel,
   notice=lambda user:None,
+  tutorial_note_paper_copy=lambda actor,machine,original,result:state["practice_copies"].append((actor,machine,original,result,original.loc,result.loc,len(state["deleted"]))),
   get_turf=lambda a:a.loc if a and isinstance(a.loc,Turf) else None,
   remove_input=remove_input,append_input=append_input,unique_input=unique_input,
   paper_inputs=lambda items:[x for x in (items or []) if isinstance(x,Paper)],
   press_documents=lambda items:[x for x in (items or []) if isinstance(x,(Paper,Book))],
   do_after=wait,WWinput=prompt,parent_destroy=parent_destroy,world=state['world'])
- names={'paper_document_copy_metadata_valid','paper_document_copy_metadata','paper_document_copy_snapshot','paper_document_copy_current','paper_document_create_copy','paper_document_copy_actor_valid','new_copy_paper','qdel','get_turf','remove_input','append_input','unique_input','paper_inputs','press_documents','notice','do_after','WWinput','parent_destroy'}
+ names={'paper_document_copy_metadata_valid','paper_document_copy_metadata','paper_document_copy_snapshot','paper_document_copy_current','paper_document_create_copy','paper_document_copy_actor_valid','new_copy_paper','qdel','get_turf','remove_input','append_input','unique_input','paper_inputs','press_documents','notice','do_after','WWinput','parent_destroy','tutorial_note_paper_copy'}
  vm.ALLOWED |= names
  vm.METHODS |= {'document_copy_legacy_valid','copy_drawings_from','updateinfolinks','update_icon','visible_message','transfer_held_item_to','eject_press_documents','refund_printing_sheets'}
  Paper.document_copy_legacy_valid=vm.project(paper_source,'/obj/item/weapon/paper/proc/document_copy_legacy_valid','self,legacy',env)
@@ -190,6 +191,7 @@ class Copies(unittest.TestCase):
     self.assertTrue(self.press(self.machine,self.actor));self.assertEqual(self.state['delay'],90)
     self.assertIs(self.paper.loc,self.place);self.assertFalse(self.paper.gc_destroyed);self.assertTrue(self.stock.gc_destroyed)
     self.assertIs(self.state['created'][0].loc,self.place);self.assertFalse(self.machine.copying);self.assertEqual(self.machine.base,[]);self.assertEqual(self.machine.copy,[])
+    self.assertEqual(self.state["practice_copies"], [(self.actor,self.machine,self.paper,self.state["created"][0],self.place,self.place,1)])
  def test_cancel_or_stale_press_wait_keeps_inputs_and_resets_busy(self):
   for change in ('cancel','source','stock','custody','client','page','range','delete'):
    with self.subTest(change=change):
@@ -204,7 +206,7 @@ class Copies(unittest.TestCase):
      elif change=='delete':self.machine.gc_destroyed=True
      return change!='cancel'
     self.state['wait']=wait;self.assertFalse(self.press(self.machine,self.actor))
-    self.assertFalse(self.paper.gc_destroyed);self.assertFalse(self.stock.gc_destroyed);self.assertFalse(self.state['created'])
+    self.assertFalse(self.paper.gc_destroyed);self.assertFalse(self.stock.gc_destroyed);self.assertFalse(self.state['created']);self.assertFalse(self.state["practice_copies"])
     if change!='delete':self.assertFalse(self.machine.copying);self.assertEqual(self.machine.icon_state,'printingpress0')
  def test_press_constructor_callback_rechecks_stock_and_owns_failed_output(self):
   self.classified();self.loaded_press();self.state['create_hook']=lambda p:setattr(self.stock,'info','changed')
@@ -319,5 +321,43 @@ class Copies(unittest.TestCase):
     elif case=='full':p.free_space=21
     before=(p.info,p.free_space);self.machine.inpaper=[p];printer(self.machine,'TEST')
     self.assertEqual((p.info,p.free_space)!=before,case=='legacy')
+
+def curriculum_read(path):
+    return (vm.ROOT / path).read_text(encoding="utf-8")
+
+
+class TestPracticeCurriculum(unittest.TestCase):
+    def test_station_provisions_reusable_real_stock_once_inside_the_room(self):
+        workshop = curriculum_read("code/modules/1713/practice_workshop.dm")
+        lesson = curriculum_read("code/modules/1713/practice_curriculum.dm")
+        self.assertIn('"Write and print a notice" = "paper"', workshop)
+        choose = workshop.split("/datum/practice_session/proc/choose_workshop(", 1)[1]
+        selection = choose.index('if (exercise == "paper")')
+        self.assertLess(choose.index('|| props["workshop_selected"])'), selection)
+        self.assertLess(choose.index('setup_practice_paper(supply[1], locate('), choose.index("new /obj/item/ship_draught(supply[1])"))
+        provision = lesson.split("/proc/tutorial_note_paper_copy(", 1)[0]
+        guard, spawn = provision.split("var/obj/structure/printingpress/press = new(worksite)", 1)
+        for gate in ('props["practice_press"]', "owns_workshop(supply)", "owns_workshop(worksite)", "tutorial_workshop_access(body, worksite)"):
+            self.assertIn(gate, guard)
+        for stocking in ("new /obj/item/weapon/pen(supply)", "for (var/sheet in 1 to 8)", "new /obj/item/weapon/paper(supply)", "press.should_save = FALSE"):
+            self.assertIn(stocking, spawn)
+        self.assertNotIn("mailbox", lesson)
+
+    def test_only_successful_local_transfer_of_written_document_completes(self):
+        source = curriculum_read("code/modules/paperwork/copy.dm").split("/obj/structure/printingpress/proc/copy_paper_document(", 1)[1].split("/obj/structure/mailbox/proc", 1)[0]
+        lesson = curriculum_read("code/modules/1713/practice_curriculum.dm")
+        self.assertEqual(1, source.count("tutorial_note_paper_copy("))
+        notice = source.index("tutorial_note_paper_copy(actor, src, original, result)")
+        for action in ("original.loc = place", "result.loc = place", "qdel(stock)"):
+            self.assertLess(source.index(action), notice)
+        completion = lesson.split("/proc/tutorial_note_paper_copy(", 1)[1].split("/proc/tutorial_paper_has_writing(", 1)[0]
+        check, done = completion.split('H.practice.props["practice_paper_done"] = TRUE', 1)
+        for gate in ('H.practice.props["practice_press"] != press', 'H.practice.props["practice_paper_done"]', "tutorial_workshop_access(H, press)", "owns_workshop(original)", "owns_workshop(result)", "!tutorial_paper_has_writing(original)"):
+            self.assertIn(gate, check)
+        self.assertIn("Practice complete", done)
+        writing = lesson.split("/proc/tutorial_paper_has_writing(", 1)[1]
+        self.assertIn("length(P.info)", writing)
+        self.assertIn('section["kind"] == "body" && length(section["text"])', writing)
+
 
 if __name__=='__main__':unittest.main()

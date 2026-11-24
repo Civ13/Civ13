@@ -50,7 +50,7 @@
 
 /obj/structure/practice_workshop_desk
 	name = "practice workshop desk"
-	desc = "Choose a workshop exercise here. Each one comes with clean drawing sheets, a pencil, and the fixtures and materials for that lesson."
+	desc = "Choose a workshop exercise here. Each one comes with the equipment and supplies for that lesson."
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "workbench"
 	anchored = TRUE
@@ -72,6 +72,7 @@
 		to_chat(body, SPAN_NOTICE("[props["workshop_selected"]] is set up. To clear it and get a fresh kit, leave and open another practice room."))
 		return
 	var/list/exercises = list(
+		"Write and print a notice" = "paper",
 		"Build a car or tank" = "car",
 		"Build a plane" = "plane",
 		"Build an airship" = "air",
@@ -87,7 +88,7 @@
 		"Plan a space station" = "station",
 	)
 	var/client/connection = body.client
-	var/choice = WWinput(body, "Choose an exercise. This workshop is yours alone. Only exercises marked Build or Make include physical construction; the others use the same designers as the live game.", desk.name, "Cancel", exercises + list("Cancel"))
+	var/choice = WWinput(body, "Choose an exercise. This workshop is yours alone. For draughts, Build and Make choices include physical construction. Draw and Plan use the ordinary designers.", desk.name, "Cancel", exercises + list("Cancel"))
 	if (!exercises[choice] || !connection || body?.client != connection || connection.mob != body || !tutorial_workshop_access(body, desk) || !desk.Adjacent(body) || props["workshop_selected"])
 		return
 	props["workshop_selected"] = choice
@@ -101,6 +102,8 @@
 	var/z = practice_room_z
 	// Each kind of supply lies on its own tile of the office floor.
 	var/list/supply = block(locate(sx + 1, sy + 2, z), locate(sx + 3, sy + 3, z))
+	if (exercise == "paper")
+		return setup_practice_paper(supply[1], locate(sx + 4, sy, z))
 	new /obj/item/ship_draught(supply[1])
 	new /obj/item/ship_draught(supply[1])
 	new /obj/item/weapon/pen/pencil(supply[2])
