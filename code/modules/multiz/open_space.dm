@@ -27,7 +27,8 @@ var/process/open_space/OS_controller = null
 	overlays.Cut()
 	if (!isturf(floorbelowz))
 		floorbelowz = GetBelow(src)
-	if (floorbelowz)
+	// The bottom-level self-reference preserves horizontal push floors but is not a view below.
+	if (floorbelowz && floorbelowz != src)
 		icon = floorbelowz.icon
 		icon_state = floorbelowz.icon_state
 		dir = floorbelowz.dir
