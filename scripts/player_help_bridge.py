@@ -115,7 +115,7 @@ def evidence_budget(num_ctx):
 
 # Additional public player guides reviewed from civ13-wiki at this revision.
 # Hashes are over UTF-8 text with line endings normalized to LF; paths are exact.
-WIKI_REVIEWED_REVISION = '68ba284e7895f83bca0af5db82a831b831aa1c7c'
+WIKI_REVIEWED_REVISION = '48381d4ee5f742e2334688db46e02941bbd1dfb2'
 WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Animals.md': ('8e75f80b9be4f692c33889ff538e1bc715851b0e595242e0ec53d6187a36432e', 'animals dog dogs taming tame mount riding horse carriage'),
     'guides/Guide_to_Character.md': ('fb56f2f26a6d654a671e73447354e8d46b5397bd967a6c7421f50b4fd8151d0b', 'character skills traits languages'),
@@ -152,7 +152,7 @@ WIKI_REVIEWED_GUIDES = {
     'guides/Guide_to_Trenches.md': ('ac2a6dab9b5aac3051a30f35809e9ddf770387219996f75df90aa90d438847a6', 'trench trenches fortification sandbag dig shovel'),
     'guides/Guide_to_Gunsmithing.md': ('ab4f1b431a1c13ac6b537c84b99cbe04624b65b157828a51ec2e7f3f4b00b23a', 'gunsmithing gunsmith make gun making guns build gun assemble gun receiver gun parts blueprint rechamber flintlock musket arquebus matchlock'),
     'guides/Guide_to_Weapons.md': ('91264132c8e516f6d6d48d67bd179d419ab630dd9decd1918f3c1f529c947631', 'weapons gun reload ammunition'),
-    'New_Player_Guide.md': ('4ca93ed2909c1b2188f6934d6a17b3e40263c1c4979221bb5ab0d0715ea8a27a', 'new player beginner start first round basics'),
+    'New_Player_Guide.md': ('f20d2dfdd2a77d54441eee2fb018f291614c9bc1ae93f925b02bc6cd61da791b', 'new player beginner start first round basics'),
     'Hotkeys.md': ('d7184103137b1ff83ffe7cd7ebc94878df8ed5a5c0a4b6a66447c9e25d4292fb', 'hotkeys hotkey keys keyboard controls key press'),
     'FAQ.md': ('cab868026765689adb0deded1f63892bcf5b75991961b4cb3acb2023a7bb003e', 'faq frequently asked questions common question quick answers'),
     'role_guides.md': ('4117070c23ff3cfd2581b612cd08ae70ee170637381972cffebdf9c0161d78d5', 'role roles job jobs responsibilities'),
