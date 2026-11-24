@@ -73,8 +73,23 @@
 	player_houses_state[house_id] = list("name" = house_name, "roster" = list("[life]" = "steward"))
 	return TRUE
 
-/proc/player_house_offer_valid(mob/living/human/H, mob/living/human/target, id)
-	return player_house_feature() && !persistence_admission_blocked() && player_house_actor(H) && player_house_actor(target) && H != target && H.z == target.z && get_dist(H, target) <= PLAYER_HOUSE_INVITE_RANGE && map.player_house_role(H, id) == "steward" && !map.player_house_of(target)
+// An offer's mode must remain the same through consent: a promotion can
+// update a full roster, but it must never silently enroll a former member.
+/proc/player_house_offer_mode(mob/living/human/H, mob/living/human/target, id, offer_role)
+	if(!player_house_feature() || persistence_admission_blocked() || !player_house_actor(H) || !player_house_actor(target) || H == target || H.z != target.z || get_dist(H, target) > PLAYER_HOUSE_INVITE_RANGE || map.player_house_role(H, id) != "steward")
+		return null
+	var/list/house = map.player_houses_state[id]
+	var/list/roster = house["roster"]
+	if(!islist(roster))
+		return null
+	var/target_house = map.player_house_of(target)
+	if(target_house)
+		if(offer_role == "steward" && target_house == id && map.player_house_role(target, id) == "member")
+			return "promote"
+		return null
+	if(roster.len < PLAYER_HOUSE_ROSTER_LIMIT)
+		return "enroll"
+	return null
 
 /mob/living/human/proc/player_houses_menu()
 	set name = "Player Houses"
@@ -107,30 +122,43 @@
 		roster -= player_house_life_id
 		to_chat(src, SPAN_NOTICE("You leave the house. Its charter remains in force."))
 		return
-	if(role != "steward" || !(choice in list("Invite Member", "Appoint Co-steward")) || roster.len >= PLAYER_HOUSE_ROSTER_LIMIT)
+	if(role != "steward" || !(choice in list("Invite Member", "Appoint Co-steward")))
 		return
+	var/offer_role = choice == "Appoint Co-steward" ? "steward" : "member"
 	var/list/candidates = list()
+	var/list/candidate_modes = list()
 	for(var/mob/living/human/target in oview(PLAYER_HOUSE_INVITE_RANGE, src))
-		if(player_house_offer_valid(src, target, id) && !target.player_house_offer_pending)
+		var/candidate_mode = player_house_offer_mode(src, target, id, offer_role)
+		if(candidate_mode && !target.player_house_offer_pending)
 			candidates += target
+			candidate_modes[target] = candidate_mode
 	if(!candidates.len)
 		return
 	var/mob/living/human/target = WWinput(src, "Choose a nearby character:", "Player Houses", null, candidates)
-	if(land != map || persistence_admission_changed(save_identity) || !player_house_offer_valid(src, target, id) || target.player_house_offer_pending || world.time < player_house_offer_next)
+	if(land != map || persistence_admission_changed(save_identity) || !target || !(target in candidates))
 		return
-	var/offer_role = choice == "Appoint Co-steward" ? "steward" : "member"
+	var/offer_mode = candidate_modes[target]
+	if(player_house_offer_mode(src, target, id, offer_role) != offer_mode || target.player_house_offer_pending || world.time < player_house_offer_next)
+		return
 	var/inviter_life = player_house_life_id
+	var/invitee_life = target.player_house_life_id
 	var/client/invitee = target.client
 	var/invitee_life_generation = target.player_house_life_generation
 	player_house_offer_next = world.time + 100
 	target.player_house_offer_pending = TRUE
-	var/answer = WWinput(target, "Join House [house["name"]] as a [offer_role]?", "House Invitation", "No", list("Yes", "No"))
+	var/offer_text = offer_mode == "promote" ? "Become a co-steward of House [house["name"]]?" : "Join House [house["name"]] as a [offer_role]?"
+	var/answer = WWinput(target, offer_text, "House Invitation", "No", list("Yes", "No"))
 	if(!target || QDELETED(target))
 		return
 	target.player_house_offer_pending = FALSE
 	if(answer != "Yes" || land != map || persistence_admission_changed(save_identity) || inviter_life != player_house_life_id || invitee != target.client || invitee_life_generation != target.player_house_life_generation)
 		return
-	if(!player_house_offer_valid(src, target, id) || roster.len >= PLAYER_HOUSE_ROSTER_LIMIT)
+	if(land.player_houses_state[id] != house || house["roster"] != roster || invitee_life != target.player_house_life_id || player_house_offer_mode(src, target, id, offer_role) != offer_mode)
+		return
+	if(offer_mode == "promote")
+		roster[invitee_life] = "steward"
+		to_chat(target, SPAN_NOTICE("You are now a co-steward of the house."))
+		to_chat(src, SPAN_NOTICE("[target] is now a co-steward of the house."))
 		return
 	var/life = target.ensure_player_house_life()
 	roster[life] = offer_role

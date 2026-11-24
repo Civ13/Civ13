@@ -86,6 +86,31 @@ class MapSchemaMigration(unittest.TestCase):
         self.assertLess(commit.index('persistence_admission_changed(save_identity)'), commit.index('roster[life] = offer_role'))
         self.assertLess(commit.index('invitee_life_generation != target.player_house_life_generation'), commit.index('roster[life] = offer_role'))
 
+    def test_existing_house_member_can_accept_promotion_at_capacity(self):
+        rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
+        mode = rules.split('/proc/player_house_offer_mode(', 1)[1].split('\n/', 1)[0]
+        self.assertLess(mode.index('player_house_role(H, id) != "steward"'), mode.index('return "promote"'))
+        self.assertIn('offer_role == "steward" && target_house == id && map.player_house_role(target, id) == "member"', mode)
+        self.assertLess(mode.index('return "promote"'), mode.index('roster.len < PLAYER_HOUSE_ROSTER_LIMIT'))
+        self.assertLess(mode.index('roster.len < PLAYER_HOUSE_ROSTER_LIMIT'), mode.index('return "enroll"'))
+
+    def test_promotion_revalidates_same_life_and_mode_without_enrolling(self):
+        rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
+        menu = rules.split('/mob/living/human/proc/player_houses_menu()', 1)[1].split('\n/', 1)[0]
+        prompt = menu.index('var/answer = WWinput(target')
+        commit = menu.index('roster[invitee_life] = "steward"')
+        self.assertIn('candidate_modes[target] = candidate_mode', menu[:prompt])
+        self.assertIn('var/offer_mode = candidate_modes[target]', menu[:prompt])
+        self.assertIn('var/invitee_life = target.player_house_life_id', menu[:prompt])
+        for guard in ('answer != "Yes"', 'inviter_life != player_house_life_id',
+                      'invitee != target.client', 'invitee_life_generation != target.player_house_life_generation',
+                      'invitee_life != target.player_house_life_id',
+                      'house["roster"] != roster',
+                      'player_house_offer_mode(src, target, id, offer_role) != offer_mode'):
+            self.assertIn(guard, menu[prompt:commit])
+        enroll = menu.index('target.ensure_player_house_life()', commit)
+        self.assertIn('return', menu[commit:enroll])
+
     def test_house_recovery_requires_named_charter_consent_and_admin_reason(self):
         rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
         recovery = rules.split('/client/proc/recover_player_house()', 1)[1]

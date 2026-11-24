@@ -2,8 +2,9 @@
 
 In a persistent Nomads or Civilizations region, use **Faction → House → Player
 Houses**. A character without a house can register a local charter. A steward
-can invite nearby living characters as members or co-stewards. Invitations
-require the character's explicit acceptance. Appoint a co-steward before you
+can invite nearby living characters as members or co-stewards. **Appoint
+Co-steward** can promote an existing member without leaving the house, even
+when the roster is full. Both actions require the character's explicit consent. Appoint a co-steward before you
 need succession: a steward's death ends that life's authority, even after
 revival, and does not dissolve the charter. If no steward can act, an administrator can use **Recover Player House** on
 the existing charter after verifying the intended successor. The successor
