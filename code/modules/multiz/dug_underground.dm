@@ -590,6 +590,7 @@ var/global/dug_underground_forming = FALSE
 	marker.ChangeTurf(/turf/wall/rockwall/bedrock)
 	dug_underground_forming = FALSE
 	underground_levels_refresh()
+	practice_rooms.underground_added(target_z)
 	log_game("Underground level [depth] created at z [target_z] ([world.maxx]x[world.maxy]), unformed.")
 	return underground_z_at(depth) == target_z
 
