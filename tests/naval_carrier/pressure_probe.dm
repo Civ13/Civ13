@@ -142,6 +142,20 @@
 	D.state = FALSE
 	D.door_closed()
 	pressure_probe_check(!D.state && L.pressure_room_intact(A) && !sunken_hull_pressure_breath(A) && !sunken_hull_pressure_sheltered(A), "resealing repairs the shell but does not generate fresh air")
+	// An earlier query cached a dry pocket this tick, but a full bilge
+	// before the pump ran must still vent it. Block the next depth move so
+	// we cannot mistake a change of deck for a loss of air.
+	L.pressure_from_list(saved)
+	pressure_probe_check(sunken_hull_pressure_breath(A), "dry look caches a pocket with real air before the flooding")
+	var/bay = L.bay_at(A)
+	var/brim = L.bay_capacity(bay)
+	L.add_water(brim, L.capacity(), A)
+	pressure_probe_check(brim > 0 && L.water_at(A) >= brim * 0.98, "submerged compartment really reaches the vent threshold")
+	new /obj/structure/roof_support(locate(5, 5, 1))
+	var/obj/structure/cellar_pump/sump/P = new(A)
+	L.step_ledger(30)
+	pressure_probe_check(P.running && H.z == 2 && L.depth_disabled && L.water_at(A) < brim * 0.98, "a real powered pump lowers the water on the same submerged deck")
+	pressure_probe_check(!sunken_hull_pressure_breath(A) && !sunken_hull_pressure_sheltered(A), "same-step pumping cannot restore air that flooding displaced")
 
 /world/New()
 	OpenPort("none")

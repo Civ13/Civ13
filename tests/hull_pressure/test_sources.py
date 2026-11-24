@@ -15,6 +15,7 @@ def proc(text, signature):
 
 
 PRESSURE = source("code/modules/naval/hull_pressure.dm")
+LEDGER = source("code/modules/naval/hull_ledger.dm")
 DEPTH = source("code/modules/naval/hull_depth.dm")
 COMPARTMENTS = source("code/modules/naval/hull_compartments.dm")
 HELPERS = source("code/game/mob/living/carbon/human/human_helpers.dm")
@@ -57,6 +58,14 @@ class PressureSource(unittest.TestCase):
                 "/obj/structure/simple_door/key_door/anyone/fire_door/steel/watertight/door_" + state + "()"))
         self.assertIn("hull_pressure_changed(T)", COMPARTMENTS)
         self.assertIn("L.pressure_mapped_at = -1\n\t\tL.pressure_scan()", PRESSURE)
+
+    def test_ledger_vents_after_inflow_but_before_powered_pumping(self):
+        step = proc(LEDGER, "/datum/hull_ledger/proc/step_ledger(seconds)")
+        order = ("flood_holes(", "step_ports(", "step_load(", "step_storm(",
+                 "if (depth_disabled && length(pressure_air))",
+                 "pressure_mapped_at = -1", "pressure_scan()", "pump_bilge(seconds)")
+        self.assertEqual([step.index(s) for s in order], sorted(step.index(s) for s in order))
+        self.assertEqual(step.count("pressure_scan()"), 1)
 
     def test_budget_spent_by_active_breath_not_ambient_query_or_reclosing(self):
         breathe = proc(PRESSURE, "/datum/hull_ledger/proc/pressure_breath(turf/T, consume = FALSE)")
