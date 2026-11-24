@@ -44,6 +44,23 @@ class FitViewportWiring(unittest.TestCase):
         resize = source[source.index('/client/verb/on_window_resize()'):source.index('/client/verb/set_map_icon_size(')]
         self.assertIn('fit_viewport_soon()', resize)
 
+    def test_resize_clears_hover_before_any_preference_gated_refit(self):
+        source = read(PROCS)
+        resize = source[source.index('/client/verb/on_window_resize()'):source.index('/client/verb/set_map_icon_size(')]
+        self.assertLess(resize.index('clear_hover_name()'), resize.index('fit_viewport_soon()'))
+
+    def test_icon_zoom_clears_hover_before_remapping_the_pointer(self):
+        source = read(PROCS)
+        zoom = source[source.index('/client/verb/set_map_icon_size('):]
+        self.assertLess(zoom.index('clear_hover_name()'), zoom.index('winset(src, "mapwindow.map"'))
+        self.assertLess(zoom.index('clear_hover_name()'), zoom.index('if (is_preference_enabled('))
+
+    def test_fit_that_changes_the_splitter_clears_hover(self):
+        source = read(PROCS)
+        fit = source[source.index('/client/verb/fit_viewport()'):source.index('#define FIT_VIEWPORT_MIN_RPANE')]
+        self.assertLess(fit.index('return', fit.index('if (!desired_width')), fit.index('clear_hover_name()'))
+        self.assertLess(fit.index('clear_hover_name()'), fit.index('winset(src, "mainwindow.mainvsplit"'))
+
     def test_connect_and_login_refit_once_the_layout_settles(self):
         # A reconnect (region switch) runs client/New, the lobby Login and the
         # mob Login within a few ticks while the skin is still restoring its
