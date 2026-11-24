@@ -78,7 +78,12 @@ var/global/list/discipline_guide_rows = discipline_guide_rows_table()
 				if (stats[statname][1] < M[1] - 0.01)
 					next_lines += "At [M[1]] you become [M[3]] and gain [M[2]] levels of [scholar_disciplines[discipline]]."
 					break
-		html += "<tr><td><b>[capitalize(statname == "machinegun" ? "machine gun" : statname)]</b><br><span class='lvl'>[level]</span></td><td>[row[1]]<br><b>Raise it by:</b> [row[2]][next_lines.len ? "<br><span class='dim'>[jointext(next_lines, " ")]</span>" : ""]</td></tr>"
+		var/raise_text = row[2]
+		if (book_world && statname == "crafting")
+			raise_text += "<br><b>Smith:</b> Forge usable pickaxe, shovel or hatchet heads. Fit handles to finish the tools, or restore a worn hatchet head on a grindstone. Re-fitting a recovered head does not add Crafting."
+			raise_text += "<br><b>Carpenter:</b> Build wooden doors and other structures. Permanently replace a temporary hull patch with wood at a berth. Re-fitting removable door hardware does not add Crafting."
+			raise_text += "<br>These jobs use the same Crafting skill. Choosing a trade changes the time for its work, not who can do the job."
+		html += "<tr><td><b>[capitalize(statname == "machinegun" ? "machine gun" : statname)]</b><br><span class='lvl'>[level]</span></td><td>[row[1]]<br><b>Raise it by:</b> [raise_text][next_lines.len ? "<br><span class='dim'>[jointext(next_lines, " ")]</span>" : ""]</td></tr>"
 	html += "</table>"
 	html += "<div class='dim'>Working within 2 tiles of someone at least a quarter better than you at a skill teaches you double.</div>"
 	if (book_world)

@@ -464,6 +464,9 @@ var/global/list/fishing_grounds_published = null
 		return
 	..()
 
+/proc/fish_cast_water_open(turf/T)
+	return !T.iscovered() && !(locate(/obj/structure/vehicleparts/frame) in T) && !(locate(/obj/structure/vehicleparts/axis) in T)
+
 /turf/floor/beach/water/proc/fish_cast(obj/item/W, mob/living/human/H)
 	var/list/profile = fishing_tool_profile(W)
 	if (!profile)
@@ -490,7 +493,7 @@ var/global/list/fishing_grounds_published = null
 	if (spear && deep)
 		to_chat(H, SPAN_WARNING("The water is too deep to spear fish here. Try the shallows."))
 		return
-	if (iscovered() || (locate(/obj/structure/vehicleparts/frame) in src) || (locate(/obj/structure/vehicleparts/axis) in src))
+	if (!fish_cast_water_open(src))
 		to_chat(H, SPAN_WARNING("[spear ? "Strike" : "Cast"] into open water."))
 		return
 	if (!H.fishing_footing())
@@ -514,6 +517,11 @@ var/global/list/fishing_grounds_published = null
 	var/done = do_after(H, profile[1], src)
 	H.ocean_fishing = FALSE
 	if (!done || QDELETED(W) || W.loc != H || !Adjacent(H) || !H.fishing_footing())
+		return
+	// Turf refs follow the location through ChangeTurf; the cast may now face
+	// ice, a different ground, or cover that was not here before the wait.
+	if (fish_water_kind(src) != kind || fish_water_deep(src) != deep || !fish_cast_water_open(src))
+		to_chat(H, SPAN_WARNING("The water where you were fishing has changed."))
 		return
 	if (baited && line.bait_uses > 0)
 		line.bait_uses--

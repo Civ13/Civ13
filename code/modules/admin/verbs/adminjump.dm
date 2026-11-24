@@ -48,12 +48,18 @@
 		return
 
 	if (config.allow_admin_jump)
-		if (mob)
-			var/mob/A = mob
-			A.on_mob_jump()
-			A.x = tx
-			A.y = ty
-			A.z = tz
+		var/mob/A = mob
+		var/turf/T = locate(tx, ty, tz)
+		if (!A || !T)
+			to_chat(src, "No turf at those coordinates.")
+			return
+		if (!persistence_movement_allowed(A, T))
+			return
+		A.on_mob_jump()
+		if (A.loc != T && !A.forceMove(T))
+			return
+		if (A.loc != T)
+			return
 
 		message_admins("[key_name_admin(usr)] jumped to coordinates [tx], [ty], [tz]", key_name_admin(usr))
 

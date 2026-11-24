@@ -41,16 +41,25 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 /client/proc/quickBan_person()
 	set category = "Bans"
 
+	var/datum/admins/acting_holder = holder
+	if (!quickBan_actor_current(acting_holder))
+		return
 	var/option = input(src, "Do you wish to ban by client or by manual input? (Necessary to ban an offline client)") in list("Client", "Manual Input", "Cancel")
-	if (option == "Cancel")
+	if ((option != "Client" && option != "Manual Input") || !quickBan_actor_current(acting_holder))
 		return
 
 	var/list/fields = list() // as much storage as we need
 
 	if (option == "Manual Input")
 		fields["ckey"] = input(src, "What is the person's ckey? (optional)") as null|text
+		if (!quickBan_actor_current(acting_holder))
+			return
 		fields["cID"] = input(src, "What is the person's cID? (optional)") as null|text
+		if (!quickBan_actor_current(acting_holder))
+			return
 		fields["ip"] = input(src, "What is the person's IP? (optional)") as null|text
+		if (!quickBan_actor_current(acting_holder))
+			return
 		fields["ckey"] = ckey(fields["ckey"])
 		if (!fields["ckey"] && !fields["cID"] && !fields["ip"])
 			return
@@ -112,18 +121,71 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 
 	else if (option == "Client")
 		var/client/C = input(src, "Which client?") in clients + "Cancel"
-		if (C == "Cancel")
+		if (!istype(C) || !quickBan_actor_current(acting_holder))
 			return
 		fields["ckey"] = C.ckey
 		fields["cID"] = C.computer_id
 		fields["ip"] = C.public_address()
 		fields["ckey"] = ckey(fields["ckey"])
 
-	if (trying_to_quickBan_admin(fields["ckey"], fields["cID"], fields["ip"]))
+	quickBan_details(fields, acting_holder, null)
+
+// Match the existing Bans tab's moderator and trial-admin verb categories.
+/datum/admins/proc/has_quickBan_rights()
+	return rights & (R_MOD | R_TRIALADMIN)
+
+/client/proc/quickBan_actor_current(datum/admins/acting_holder)
+	return acting_holder && holder == acting_holder && acting_holder.owner == src && acting_holder.has_quickBan_rights()
+
+// A panel action binds the actual account, not the character name or login history.
+/proc/quickBan_panel_account(mob/target)
+	if (!ismob(target) || QDELETED(target) || !target.ckey)
+		return null
+	if (target.client)
+		if (target.client.mob != target || target.client.ckey != target.ckey)
+			return null
+	if (target.key && findtext(target.key, regex(@"^@?Guest-W?[0-9]+$", "i")))
+		return null
+	return target.ckey
+
+/client/proc/quickBan_from_panel(mob/target, expected_account)
+	var/datum/admins/acting_holder = holder
+	if (!quickBan_actor_current(acting_holder))
+		return
+	var/account = quickBan_panel_account(target)
+	// The href account is only a stale-panel check, never the source of identity.
+	if (!account || account != expected_account)
+		to_chat(src, SPAN_WARNING("This target changed. Reopen their player panel."))
+		return
+	// Use only the selected account. Do not silently attach network identifiers
+	// from another session or the disconnected body's login history.
+	var/list/selection = list("target" = target, "account" = account,
+		"client" = target.client, "connected" = !!target.client)
+	quickBan_details(list("ckey" = account), acting_holder, selection)
+
+/proc/quickBan_panel_selection_current(list/selection)
+	var/mob/target = selection["target"]
+	return target && quickBan_panel_account(target) == selection["account"] && (!!target.client) == selection["connected"] && target.client == selection["client"]
+
+/client/proc/quickBan_dialog_current(datum/admins/acting_holder, list/selection)
+	if (!quickBan_actor_current(acting_holder))
+		return FALSE
+	if (selection && !quickBan_panel_selection_current(selection))
+		to_chat(src, SPAN_WARNING("This target changed. Reopen their player panel."))
+		return FALSE
+	return TRUE
+
+/client/proc/quickBan_details(list/fields, datum/admins/acting_holder, list/selection)
+	if (!quickBan_dialog_current(acting_holder, selection))
+		return
+	if (quickBan_protected_target(fields))
 		return
 
-	fields["type"] = input(src, "What type of ban will this be?") in ban_types + "Cancel"
-	if (fields["type"] == "Cancel")
+	var/ban_target = fields["ckey"]
+	if (!ban_target)
+		ban_target = fields["cID"] ? "computer ID [fields["cID"]]" : "IP [fields["ip"]]"
+	fields["type"] = input(src, "What type of ban for [ban_target]?") as null|anything in ban_types
+	if (!fields["type"] || !quickBan_dialog_current(acting_holder, selection))
 		return
 
 	fields["type"] = replacetext(fields["type"], " Ban", "")
@@ -131,20 +193,27 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 	switch (fields["type"])
 		if ("Job")
 			var/list/possibilities = job_master.occupations
-			var/datum/job/J = input("What job?") in possibilities
+			var/datum/job/J = input(src, "What job?") as null|anything in possibilities
+			if (!J || !quickBan_dialog_current(acting_holder, selection))
+				return
 			fields["type_specific_info"] = J.title
 		if ("Faction")
-			var/faction = input("What faction?") in list(BRITISH, PIRATES, CIVILIAN, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, ITALIAN, GREEK, ROMAN, ARAB, JAPANESE, RUSSIAN, GERMAN, AMERICAN, VIETNAMESE, FINNISH, NORWEGIAN, SWEDISH, DANISH, CHECHEN, FILIPINO, CHINESE, POLISH, BLUEFACTION, REDFACTION, CAFR, TSFSR)
+			var/faction = input(src, "What faction?") as null|anything in list(BRITISH, PIRATES, CIVILIAN, INDIANS, PORTUGUESE, SPANISH, FRENCH, DUTCH, ITALIAN, GREEK, ROMAN, ARAB, JAPANESE, RUSSIAN, GERMAN, AMERICAN, VIETNAMESE, FINNISH, NORWEGIAN, SWEDISH, DANISH, CHECHEN, FILIPINO, CHINESE, POLISH, BLUEFACTION, REDFACTION, CAFR, TSFSR)
+			if (!faction || !quickBan_dialog_current(acting_holder, selection))
+				return
 			fields["type_specific_info"] = faction
 
 	reenter_bantime:
 
-	var/duration_in_x_units = input(src, "How long do you want the ban to last ('5 hours', '4 days': the default unit is days)") as text
-	var/duration_in_days = text2num(ckey(splittext(duration_in_x_units, " ")[1]))
-	duration_in_days = max(0,min(duration_in_days,10000))
+	var/duration_in_x_units = input(src, "How long do you want the ban to last ('5 hours', '4 days': the default unit is days)") as null|text
+	if (isnull(duration_in_x_units) || !quickBan_dialog_current(acting_holder, selection))
+		return
+	var/list/duration_parts = splittext(duration_in_x_units, " ")
+	var/duration_in_days = duration_parts.len ? text2num(ckey(duration_parts[1])) : null
 	if (!isnum(duration_in_days))
 		to_chat(src, "<span class = 'warning'>Invalid amount.</span>")
 		goto reenter_bantime
+	duration_in_days = max(0,min(duration_in_days,10000))
 
 	if (findtext(duration_in_x_units, "year"))
 		duration_in_days *= 365
@@ -158,34 +227,47 @@ var/list/ban_types = list("Faction Ban", "Job Ban", "Server Ban", "Playing Ban",
 		duration_in_days /= 1440
 	else if (findtext(duration_in_x_units, "second"))
 		duration_in_days /= 86400
-	else if (!findtext(duration_in_x_units, "day"))
+	else if (!findtext(duration_in_x_units, "day") && duration_parts.len > 1)
 		to_chat(src, "<span class = 'warning'>Invalid unit.</span>")
 		goto reenter_bantime
 
-	fields["until"] = shared_records.unix_add(shared_records.now_unix(), round(duration_in_days * 86400))
-
 	switch (duration_in_days)
-		if (0 to 0.99) // count in hours
+		if (0 to 0.99)
 			fields["expire_info"] = "Expires in [duration_in_days*24] hour(s)"
-		if (0.99 to 6.99) // count in days
+		if (0.99 to 6.99)
 			fields["expire_info"] = "Expires in [duration_in_days] day(s)"
-		if (6.99 to 29.99) // count in weeks
+		if (6.99 to 29.99)
 			fields["expire_info"] = "Expires in [duration_in_days/7] week(s)"
-		if (29.99 to 364.99) // count in months
+		if (29.99 to 364.99)
 			fields["expire_info"] = "Expires in [duration_in_days/30] month(s)"
-		if (364.99 to INFINITY) // count in years
+		if (364.99 to INFINITY)
 			fields["expire_info"] = "Expires in [duration_in_days/365] year(s)"
 
-	fields["ban_date"] = replacetext(time2text(world.realtime, "DDD MMM DD hh:mm:ss YYYY"), ":", ".")
-
 	reenter_reason:
-	fields["reason"] = input(src, "Provide a reason for the ban.") as text
+	fields["reason"] = input(src, "Provide a reason for the ban.") as null|text
+	if (isnull(fields["reason"]) || !quickBan_dialog_current(acting_holder, selection))
+		return
 	if (!fields["reason"])
 		goto reenter_reason
 
-	fields["banned_by"] = key
+	var/detail = fields["type_specific_info"] ? " ([fields["type_specific_info"]])" : ""
+	if (alert(src, "Ban [ban_target] on every region?\n[fields["type"]][detail]: [fields["expire_info"]]\nReason: [fields["reason"]]", "Confirm ban", "Ban", "Cancel") != "Ban")
+		return
+	if (!quickBan_dialog_current(acting_holder, selection) || quickBan_protected_target(fields))
+		return
 
+	fields["until"] = shared_records.unix_add(shared_records.now_unix(), round(duration_in_days * 86400))
+	fields["ban_date"] = replacetext(time2text(world.realtime, "DDD MMM DD hh:mm:ss YYYY"), ":", ".")
+	fields["banned_by"] = key
 	quickBan_ban(fields, src)
+
+/client/proc/quickBan_protected_target(list/fields)
+	// Also protect staff who gained their role while a dialog was open.
+	var/target_account = fields["ckey"]
+	if (target_account && admin_datums[target_account])
+		to_chat(src, SPAN_WARNING("You can't ban admins!"))
+		return TRUE
+	return trying_to_quickBan_admin(target_account, fields["cID"], fields["ip"])
 
 /* helpers */
 /proc/quickBan_sanitize_fields(var/list/fields)

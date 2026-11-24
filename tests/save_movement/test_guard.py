@@ -893,6 +893,16 @@ class SourcePathTests(unittest.TestCase):
                 self.assertNotRegex(source, r'(?:\.|\b)loc\s*=(?!=)')
             self.assertIn('persistence_set_', source)
 
+    def test_ladder_relocates_directly_to_the_admitted_link_tile(self):
+        ladder = extract(read('code/modules/multiz/structures.dm'), '/obj/structure/multiz/ladder/attack_hand')
+        self.assertIn('locate(src.x, src.y, destination_z)', ladder)
+        self.assertEqual(ladder.count('M.persistence_set_loc(destination)'), 1)
+        self.assertEqual(ladder.count('M.pulling.persistence_set_loc(destination)'), 1)
+        self.assertLess(ladder.index('persistence_movement_allowed(M.pulling, destination)'),
+                        ladder.index('M.pulling.persistence_set_loc(destination)'))
+        self.assertNotIn('persistence_set_z(', ladder)
+        self.assertNotRegex(ladder, r'\.(?:x|y)\s*=(?!=)')
+
     def test_delayed_transfers_check_at_callback_time(self):
         for path in ('code/game/objects/effects/bump_teleporter.dm',
                      'code/game/objects/controls.dm', 'code/modules/1713/transporter/lever.dm'):

@@ -502,6 +502,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("herbalism", "Herbalism", "Health", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("apothecary", "Apothecary", "Health", 130, 1, RESEARCH_MODE_ANALYSIS, list("herbalism"), 2))
 	register_research_node(new /datum/research_node("pharmacology", "Pharmacology", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("apothecary"), 5))
+	register_research_node(new /datum/research_node("immunization", "Immunization", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("germ_theory", "pharmacology"), 5))
 	register_research_node(new /datum/research_node("modern_medicine", "Modern Medicine", "Health", 305, 6, RESEARCH_MODE_ANALYSIS, list("pharmacology"), 7))
 	// --- Health: Surgery ---
 	register_research_node(new /datum/research_node("field_surgery", "Field Surgery", "Health", 95, 0, RESEARCH_MODE_ANALYSIS, list("herbalism"), 1))
@@ -1813,6 +1814,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/converter/acid_bath" = "germ_theory",
 		"/obj/structure/shower/bathtub/big/steel" = "germ_theory",
 		"/obj/structure/shower/bathtub/steel" = "germ_theory",
+		// --- immunization (1) ---
+		"/obj/structure/workshop_machine/immunization_clinic" = "immunization",
 		// --- glassworking (12) ---
 		// Corrective eyewear follows the first glass (Nearsighted/Farsighted traits).
 		"/obj/item/clothing/glasses/monocle" = "glassworking",

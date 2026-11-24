@@ -94,7 +94,7 @@ var/global/list/swallowed_germs = list("cholera", "typhus", "plague", "worm_eggs
 	for (var/germ in swallowed_germs)
 		var/amount = swallowed.get_reagent_amount(germ)
 		var/kind = germ_reagent_disease[germ]
-		if (amount <= 0 || (kind in disease_immunity) || resists_disease(kind))
+		if (amount <= 0 || (kind in disease_immunity) || resists_disease(kind) || immunization_protects(kind))
 			continue
 		if (prob(min(amount * 25 * dmod, 100)))
 			catch_disease(kind)
@@ -121,7 +121,7 @@ var/global/list/swallowed_germs = list("cholera", "typhus", "plague", "worm_eggs
 		chance *= 2
 	if (find_trait("Strong Immune System"))
 		chance *= 0.2
-	if (prob(chance) && !resists_disease("cholera") && !("cholera" in disease_immunity))
+	if (prob(chance) && !resists_disease("cholera") && !("cholera" in disease_immunity) && !immunization_protects("cholera"))
 		catch_disease("cholera")
 		return "cholera"
 	if (prob(chance * DIRTY_WATER_WORMS) && !("worms" in disease_immunity))

@@ -79,6 +79,28 @@ class StoneAgeTrapsSource(unittest.TestCase):
         self.assertIn('TRAP_MAX_ROLLS', settle)
         self.assertNotIn('addtimer', settle)
 
+    def test_takeup_settles_after_wait_before_creating_kit(self):
+        takeup = proc_body(self.text, '/obj/structure/stone_age_trap/attack_hand(mob/user)')
+        self.assertIn(
+            '\tif (!do_after(user, 30, src) || QDELETED(src))\n'
+            '\t\treturn TRUE\n'
+            '\tsettle()\n',
+            takeup,
+        )
+
+    def test_takeup_preserves_catch_or_sprung_trap_and_still_recovers_empty_kit(self):
+        takeup = proc_body(self.text, '/obj/structure/stone_age_trap/attack_hand(mob/user)')
+        completion = takeup.split('do_after(user, 30, src)', 1)[1]
+        self.assertRegex(
+            completion,
+            r'\n\tif \(catch_type \|\| !armed\)\n'
+            r'\t\tto_chat\(user, [^\n]+\)\n'
+            r'\t\treturn TRUE\n'
+            r'\tvar/obj/item/K = new kit_type\(get_turf\(src\)\)\n'
+            r'\tuser.put_in_hands\(K\)\n'
+            r'\tqdel\(src\)',
+        )
+
     def test_pit_hold_not_saved(self):
         self.assertIn('key == "buckled_mob" || ..()', self.text)
         self.assertIn('unbuckle_mob()', proc_body(self.text, '/obj/structure/stone_age_trap/pit/after_load()'))
