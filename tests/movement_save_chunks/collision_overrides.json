@@ -503,16 +503,6 @@
       ]
     },
     {
-      "path": "code/modules/1713/practice_workshop.dm",
-      "declarations": [
-        {
-          "owner": "/obj/structure/practice_lesson_board",
-          "declaration": "parent_type = /obj/structure/practice_workshop_desk",
-          "sha256_body": "7a3a79ab2fec6fcec1e340e2395821cc2c0afc5c28365eb2957d729fcbcfe353"
-        }
-      ]
-    },
-    {
       "path": "code/modules/1713/siege/castle_defences.dm",
       "declarations": [
         {

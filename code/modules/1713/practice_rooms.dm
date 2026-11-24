@@ -25,8 +25,10 @@
 #define PRACTICE_ROOM_PITCH_Y 14
 #define PRACTICE_MAX_ROOMS 8
 // A tutorial region (tutorial_region.dm) only runs rooms, so it holds more
-// (its 223 x 69 map fits 24 camp-and-workshop rooms).
+// (its 253 x 69 map fits 24 of the larger rooms build_tutorial_room lays out).
 #define PRACTICE_MAX_ROOMS_TUTORIAL 32
+#define PRACTICE_TUTORIAL_WIDTH 40
+#define PRACTICE_TUTORIAL_HEIGHT 15
 // Retry while a save holds the level (a save removes it itself).
 #define PRACTICE_IDLE_DROP (30 SECONDS)
 // A practice level is Gaia-sized at most. A 500 x 350 open-air plane measured
@@ -51,10 +53,10 @@ var/global/datum/practice_rooms/practice_rooms = new
 	var/last_error
 
 /datum/practice_rooms/proc/pitch_x()
-	return tutorial_region_here() ? 37 : PRACTICE_ROOM_PITCH_X
+	return tutorial_region_here() ? PRACTICE_TUTORIAL_WIDTH + 2 : PRACTICE_ROOM_PITCH_X
 
 /datum/practice_rooms/proc/pitch_y()
-	return tutorial_region_here() ? 17 : PRACTICE_ROOM_PITCH_Y
+	return tutorial_region_here() ? PRACTICE_TUTORIAL_HEIGHT + 2 : PRACTICE_ROOM_PITCH_Y
 
 /datum/practice_rooms/proc/capacity()
 	var/cols = round((world.maxx - 1) / pitch_x())
@@ -190,16 +192,13 @@ var/global/datum/practice_rooms/practice_rooms = new
 		A = new /area/caribbean/admin/practice
 	A.contents.Add(slot_turfs(slot))
 	wipe_room(slot)
+	if (tutorial_region_here())
+		return build_tutorial_room(slot)
 	var/old_bulk = wall_bulk_placement
 	wall_bulk_placement = TRUE
 	for (var/turf/T in slot_turfs(slot))
 		// Always a fresh turf: blood, footprints and other marks on the old one go.
-		if (tutorial_region_here() && T.x > x2)
-			if (T.x == x1 + 34 || T.y == y1 || T.y == y1 + 14)
-				new /turf/wall/indestructable(T)
-			else
-				new /turf/floor/plating/concrete(T)
-		else if (T.y > y2 || T.x == x1 || (T.x == x2 && (!tutorial_region_here() || T.y != y1 + 5)) || T.y == y1 || T.y == y2 || ((T.x == split || T.x == camp) && T.y != y1 + 5))
+		if (T.x == x1 || T.x == x2 || T.y == y1 || T.y == y2 || ((T.x == split || T.x == camp) && T.y != y1 + 5))
 			new /turf/wall/indestructable(T)
 		else
 			new /turf/floor/wood(T)
@@ -224,16 +223,80 @@ var/global/datum/practice_rooms/practice_rooms = new
 	props["soap"] = new /obj/item/weapon/soap(locate(x1 + 15, y1 + 2, z))
 	props["bed"] = new /obj/structure/bed/wood(locate(x1 + 13, y1 + 1, z))
 	props["exit"] = new /obj/effect/practice_marker/exit(locate(x1 + 15, y1 + 6, z))
-	if (tutorial_region_here())
-		var/obj/structure/practice_workshop_desk/workshop_desk = new(locate(x1 + 18, y1 + 5, z))
-		props["workshop_desk"] = workshop_desk
-		new /obj/structure/practice_lesson_board(locate(x1 + 18, y1 + 7, z))
-		new /obj/structure/wild/tree/live_tree(locate(x1 + 14, y1 + 10, z))
-		new /obj/structure/wild/tallgrass(locate(x1 + 13, y1 + 10, z))
-		new /obj/item/weapon/flint(locate(x1 + 12, y1 + 10, z))
-		new /obj/item/weapon/flint(locate(x1 + 12, y1 + 10, z))
 	props["split"] = split
 	props["camp"] = camp
+	return props
+
+// The tutorial region's room. The same course runs west to east through four
+// purpose-built spaces on one corridor line (row y + 7), each behind a door:
+//
+//   x + 1..5    controls room (wood, 5 x 9)
+//   x + 7..10   training room (wood, 4 x 9)
+//   x + 12..20  open camp (grass, 9 x 13): a dirt path along the corridor
+//               line, fire, water and wash place north of it; bed, lesson
+//               board, tree, grass, flint and the exit south of it
+//   x + 22..38  workshop hall (17 x 13): a wooden drawing office (x + 22..26)
+//               with the desk and supply floor, and a concrete building bay
+//               (x + 27..38) that practice_workshop.dm fits out per exercise
+//
+// The exit marker stands in the camp's south-east corner, off every walking
+// line, so nobody leaves by accident on the way to the workshop.
+/datum/practice_rooms/proc/build_tutorial_room(slot)
+	var/list/O = slot_origin(slot)
+	var/x = O[1]
+	var/y = O[2]
+	var/z = practice_room_z
+	var/old_bulk = wall_bulk_placement
+	wall_bulk_placement = TRUE
+	for (var/turf/T in slot_turfs(slot))
+		var/dx = T.x - x
+		var/dy = T.y - y
+		var/kind = /turf/wall/indestructable
+		if (dy >= 1 && dy <= 13 && dx >= 22 && dx <= 38)
+			kind = dx <= 26 ? /turf/floor/wood : /turf/floor/plating/concrete
+		else if (dy >= 1 && dy <= 13 && dx >= 12 && dx <= 20)
+			// Bare earth on the path and around the campfire.
+			kind = (dy == 7 || (abs(dx - 15) <= 1 && abs(dy - 10) <= 1)) ? /turf/floor/dirt : /turf/floor/grass
+		else if (dy >= 3 && dy <= 11 && ((dx >= 1 && dx <= 5) || (dx >= 7 && dx <= 10)))
+			kind = /turf/floor/wood
+		else if (dy == 7 && (dx == 6 || dx == 11 || dx == 21))
+			kind = /turf/floor/wood
+		new kind(T)
+	wall_bulk_placement = old_bulk
+	var/list/props = list()
+	props["start"] = locate(x + 2, y + 4, z)
+	props["marker"] = new /obj/effect/practice_marker(locate(x + 4, y + 10, z))
+	props["knife"] = new /obj/item/weapon/material/kitchen/utensil/knife(locate(x + 2, y + 10, z))
+	props["hat"] = new /obj/item/clothing/head/strawhat(locate(x + 4, y + 5, z))
+	props["door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 6, y + 7, z))
+	props["dummy"] = new /obj/structure/practice_dummy/indestructible/practice_room(locate(x + 9, y + 10, z))
+	props["gauze"] = new /obj/item/stack/medical/bruise_pack(locate(x + 8, y + 5, z))
+	props["camp_door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 11, y + 7, z))
+	// North of the path: fire, food and water.
+	props["fire"] = new /obj/structure/oven/fireplace/practice(locate(x + 15, y + 10, z))
+	var/obj/item/stack/material/wood/firewood = new(locate(x + 13, y + 9, z))
+	firewood.amount = 10
+	props["firewood"] = firewood
+	props["meat"] = new /obj/item/weapon/reagent_containers/food/snacks/meat(locate(x + 13, y + 10, z))
+	props["pot"] = new /obj/item/weapon/reagent_containers/glass/small_pot(locate(x + 17, y + 11, z))
+	props["puddle"] = new /obj/structure/sink/puddle/practice(locate(x + 18, y + 12, z))
+	props["soap"] = new /obj/item/weapon/soap(locate(x + 19, y + 11, z))
+	// South of the path: rest, the extra lessons and the way out.
+	props["bed"] = new /obj/structure/bed/wood(locate(x + 13, y + 2, z))
+	props["lesson_board"] = new /obj/structure/practice_lesson_board(locate(x + 14, y + 6, z))
+	new /obj/structure/wild/tree/live_tree(locate(x + 18, y + 3, z))
+	new /obj/structure/wild/tallgrass(locate(x + 17, y + 4, z))
+	new /obj/structure/wild/tallgrass(locate(x + 19, y + 4, z))
+	new /obj/item/weapon/flint(locate(x + 16, y + 3, z))
+	new /obj/item/weapon/flint(locate(x + 16, y + 3, z))
+	props["exit"] = new /obj/effect/practice_marker/exit(locate(x + 20, y + 1, z))
+	props["workshop_door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 21, y + 7, z))
+	props["workshop_desk"] = new /obj/structure/practice_workshop_desk(locate(x + 24, y + 9, z))
+	// Interior corners of the workshop hall and of its building bay.
+	props["shop"] = list(x + 22, y + 1, x + 38, y + 13)
+	props["bay"] = list(x + 27, y + 1, x + 38, y + 13)
+	props["split"] = x + 6
+	props["camp"] = x + 11
 	return props
 
 // Lobby entry. Returns TRUE when the player is now in a room.
@@ -336,7 +399,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 		"wash" = "Now wash yourself: while undressed, stand in the puddle, pick up the soap and click yourself with it. Being dirty sours your mood and makes your clothes dirty faster.",
 		"dress" = "Put your clean shirt back on (click your uniform slot on the HUD, or use it in hand).",
 		"rest" = "If you fall ill, rest in a bed: you recover faster, and you should keep away from people who are coughing. Drag yourself onto the bed (click-drag your character onto it) to lie down.",
-		"exit" = "Well done! You know how to survive your first day. Get up (click the bed). If there is a workshop east of camp you can try it now, or walk onto the exit marker to return to the lobby.")
+		"exit" = "Well done! You know how to survive your first day. Get up (click the bed), then walk onto the blue exit marker, or use the Leave Practice Room verb, to return to the lobby.")
 
 /datum/practice_session/New(datum/practice_rooms/rooms, room_slot, list/room_props)
 	..()
@@ -359,7 +422,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 	lobby << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE)
 	body.key = lobby.key
 	qdel(lobby)
-	to_chat(body, "<span class='notice'><b>Welcome to your practice room.</b> Nothing here affects your real character. Follow the steps below. [props["workshop_desk"] ? "Visit the workshop east of camp to practise drawing and building." : ""] To go back to the lobby at any time, [leave_link()], press Esc and pick <b>Leave practice room</b>, or click the blue exit marker.</span>")
+	to_chat(body, "<span class='notice'><b>Welcome to your practice room.</b> Nothing here affects your real character. Follow the steps below. [props["workshop_desk"] ? "When you reach the camp, its lesson board repeats the character tutorial, and the door at the east end of the path leads to a workshop where you can practise drawing and building. " : ""]To go back to the lobby at any time, [leave_link()], press Esc and pick <b>Leave practice room</b>, or click the blue exit marker.</span>")
 	advance()
 	timer = addtimer(CALLBACK(src, PROC_REF(tick)), 1 SECOND, TIMER_LOOP | TIMER_STOPPABLE)
 	return TRUE
@@ -382,7 +445,7 @@ var/global/datum/practice_rooms/practice_rooms = new
 /datum/practice_session/proc/show_step()
 	var/id = step_id()
 	if (body && id)
-		to_chat(body, "<span class='notice'><b>Practice step [step] of [steps.len]:</b> [steps[id]] <span style='font-size:85%'>([leave_link()] to the lobby)</span></span>")
+		to_chat(body, "<span class='notice'><b>Practice step [step] of [steps.len]:</b> [steps[id]][id == "exit" && props["workshop_desk"] ? " Before you go, you can read the lesson board by the path or try the workshop through the east door." : ""] <span style='font-size:85%'>([leave_link()] to the lobby)</span></span>")
 
 /datum/practice_session/proc/advance()
 	step++
@@ -627,4 +690,6 @@ var/global/datum/practice_rooms/practice_rooms = new
 #undef PRACTICE_ROOM_PITCH_Y
 #undef PRACTICE_MAX_ROOMS
 #undef PRACTICE_MAX_ROOMS_TUTORIAL
+#undef PRACTICE_TUTORIAL_WIDTH
+#undef PRACTICE_TUTORIAL_HEIGHT
 #undef PRACTICE_IDLE_DROP

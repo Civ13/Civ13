@@ -85,7 +85,7 @@ class PracticeRoomSourceTests(unittest.TestCase):
         dmm = read('maps/special/tutorial.dmm')
         self.assertIn('/obj/map_metadata/tutorial,', dmm)
         rows = dmm.split('{"\n', 1)[1].split('\n"}', 1)[0].splitlines()
-        self.assertEqual((223, 69), (len(rows[0]), len(rows)))
+        self.assertEqual((253, 69), (len(rows[0]), len(rows)))
 
     def test_workshop_keeps_twenty_four_private_slots(self):
         rooms = read('code/modules/1713/practice_rooms.dm')
@@ -94,8 +94,10 @@ class PracticeRoomSourceTests(unittest.TestCase):
         width, height = len(rows[0]), len(rows)
         self.assertTrue(all(len(row) == width for row in rows))
         self.assertEqual(1, sum(row.count('b') for row in rows))
-        pitch_x = int(re.search(r'tutorial_region_here\(\) \? (\d+) : PRACTICE_ROOM_PITCH_X', rooms)[1])
-        pitch_y = int(re.search(r'tutorial_region_here\(\) \? (\d+) : PRACTICE_ROOM_PITCH_Y', rooms)[1])
+        self.assertIn('tutorial_region_here() ? PRACTICE_TUTORIAL_WIDTH + 2 : PRACTICE_ROOM_PITCH_X', rooms)
+        self.assertIn('tutorial_region_here() ? PRACTICE_TUTORIAL_HEIGHT + 2 : PRACTICE_ROOM_PITCH_Y', rooms)
+        pitch_x = int(re.search(r'#define PRACTICE_TUTORIAL_WIDTH (\d+)', rooms)[1]) + 2
+        pitch_y = int(re.search(r'#define PRACTICE_TUTORIAL_HEIGHT (\d+)', rooms)[1]) + 2
         cols, rows = (width - 1) // pitch_x, (height - 1) // pitch_y
         self.assertEqual((6, 4), (cols, rows))
         footprints = set()
@@ -107,7 +109,12 @@ class PracticeRoomSourceTests(unittest.TestCase):
                 self.assertTrue(all(1 < tx < width and 1 < ty < height for tx, ty in slot))
                 self.assertFalse(footprints.intersection(slot))
                 footprints.update(slot)
-        self.assertIn('T.x == x1 + 34 || T.y == y1 || T.y == y1 + 14', rooms)
+        # The workshop hall's interior is recorded by the room builder and is
+        # the only rectangle the workshop checks trust.
+        self.assertIn('props["shop"] = list(x + 22, y + 1, x + 38, y + 13)', rooms)
+        self.assertIn('return owns_rect(A, props["shop"])', read('code/modules/1713/practice_workshop.dm'))
+        # The fallback room on other regions keeps its own builder.
+        self.assertIn('if (tutorial_region_here())\n\t\treturn build_tutorial_room(slot)', rooms)
         self.assertIn('get_turf(A)', read('code/modules/1713/practice_workshop.dm'))
 
     def test_every_registered_draught_has_an_explicit_lesson(self):
