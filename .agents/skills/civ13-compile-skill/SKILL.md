@@ -15,7 +15,7 @@ Separate production defects from fixture defects before changing code. An isolat
 - If hosted regression evidence is intended, follow the [PR preflight selection check](../civ13-pr-preflight/SKILL.md#verify-hosted-selection-as-well-as-local-execution). Confirm the exact event/base/head selects this fixture; a local compile cannot establish hosted execution.
 - Use the authorized environment for an expensive native compile. This skill does not authorize extra services, environment changes, or external publication.
 
-For a verified hosted infrastructure failure, use the [shared local-build policy](../../../CODEX.md#local-build-after-a-hosted-infrastructure-failure)
+For a verified hosted infrastructure failure, use the [shared local-build policy](../civ13-pr-preflight/SKILL.md#local-build-after-a-hosted-infrastructure-failure)
 and [evidence procedure](../github-workflow-troubleshooting/references/actions-and-evidence.md#local-build-evidence-after-infrastructure-failure).
 A successful exact-revision local compile can cover the equivalent build target;
 a fixture result covers that fixture only. Preserve the failed CI result and
@@ -46,4 +46,4 @@ The historical study fixture reported 50 errors and 11 warnings; identified root
 
 If blocked, report the exact action, target, reason, and whether access was denied, approval is pending, or the result is uncertain. Do not retry through another environment to evade a restriction.
 Keep this blocker with the owned branch/PR and continue independent authorized
-projection checks or source work under CODEX.md's handoff rules.
+projection checks or source work under the handoff rules in `civ13-pr-completion`.

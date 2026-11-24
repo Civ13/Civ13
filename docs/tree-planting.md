@@ -31,6 +31,22 @@ a world tree. Fruit crops and decorative pots keep their existing behavior.
    for the normal seven logs. Uprooting a seedling with a shovel returns no
    logs or seeds and does not refund the planted seed. Forage bushes again for replacement seeds.
 
+## Planting a cutting instead of a seed
+
+1. With an empty active hand on **Harm** intent, break a branch from a living
+   ordinary broadleaf tree (including the snowy variant). A healthy broadleaf
+   can yield a cutting even when its seasonal sprite has bare branches.
+   Dead trees, pines, palms and other vegetation are not cutting sources.
+2. Switch to **Help** and click the fallen branch with an empty active hand.
+   Use the carried cutting on a clear, open-sky ploughed plot. An unsuitable
+   plot does not use up the cutting. The resulting seedling needs the same
+   care and time as one planted from a seed.
+3. To make a woodworking stick instead, leave the branch on the ground (or
+   click the carried cutting in your active hand to set it back down). Use
+   **Grab** to pick off any leaves and then **Harm** to remove the small twigs.
+   Removing the twigs makes a regular non-plantable stick. Sharpening it does
+   not restore that ability.
+
 ## Implementation and compatibility
 
 Only `/obj/structure/farming/plant/tree` uses the existing `processing_objects`

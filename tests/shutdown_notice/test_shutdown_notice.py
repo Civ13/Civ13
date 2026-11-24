@@ -4,6 +4,7 @@ The native countdown probe is developer evidence, outside the offline suite (it 
 about 40 seconds): python3 tests/shutdown_notice/run.py
 """
 from pathlib import Path
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -35,10 +36,44 @@ class ShutdownNoticeSources(unittest.TestCase):
     def test_every_planned_restart_path_uses_the_countdown(self):
         self.assertIn('planned_shutdown_countdown("reboot", delay, "restart by an admin")', read('code/modules/admin/admin.dm'))
         self.assertIn('planned_shutdown_countdown("reboot", 0, "immediate reboot by an admin")', read('code/modules/admin/admin.dm'))
-        self.assertIn('planned_shutdown_countdown("restart", 300, "scheduled maintenance reboot")', read('code/world.dm'))
+        self.assertIn('planned_shutdown_countdown("restart", 300, "scheduled maintenance reboot", defer_for_vehicle_risk = TRUE)', read('code/world.dm'))
         self.assertIn('planned_shutdown_countdown("reboot", delay,', read('code/modules/agent_control/agent_actions.dm'))
         self.assertIn('warn_seconds = warn_seconds)', read('code/modules/persistence/admin.dm'))
         self.assertIn('planned_shutdown_status_text()', read('code/game/mob/mob.dm'))
+
+    def test_vehicle_risk_gate_is_bounded_and_rechecks_live_piloting(self):
+        notice = read('code/modules/persistence/shutdown_notice.dm')
+        wait = notice.split('/proc/persistence_wait_for_safe_vehicle_state(', 1)[1].split('\n/proc/', 1)[0]
+        limit = int(re.search(r'var/deadline = world.time \+ (\d+)', wait)[1])
+        interval = int(re.search(r'sleep\(min\((\d+), deadline - world.time\)\)', wait)[1])
+        self.assertEqual((limit, interval), (1200, 50))
+        first, then = wait.split('while(world.time < deadline)', 1)
+        self.assertIn('if(!vehicle_scheduled_save_risk()) return TRUE', first)
+        self.assertNotIn('deadline =', then)
+        self.assertIn('if(!vehicle_scheduled_save_risk()) break', then)
+        self.assertIn('planned_shutdown_serial != notice_serial) return FALSE', then)
+        provider = notice.split('/proc/vehicle_scheduled_save_risk()', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('text2path("/proc/any_crew_at_capsize_risk")', provider)
+        self.assertIn('text2path("/proc/any_flight_at_disconnect_risk")', provider)
+
+    def test_countdown_retains_cancel_during_wait_but_not_forced_reboot(self):
+        notice = read('code/modules/persistence/shutdown_notice.dm')
+        body = notice.split('/proc/planned_shutdown_countdown(', 1)[1].split('\n/proc/', 1)[0]
+        wait = body.index('persistence_wait_for_safe_vehicle_state(serial)')
+        self.assertIn('defer_for_vehicle_risk = FALSE', body)
+        self.assertLess(body.index('while(world.time < at - mark * 10)'), wait)
+        self.assertGreater(body.index('planned_shutdown_cancellable = FALSE // the stop is under way'), wait)
+        immediate = read('code/modules/admin/admin.dm')
+        self.assertIn('planned_shutdown_countdown("reboot", 0, "immediate reboot by an admin")', immediate)
+
+    def test_routine_restart_and_handover_wait_before_save_or_world_moving(self):
+        transaction = read('code/modules/persistence/restart_transaction.dm').split('/proc/execute(', 1)[1]
+        self.assertLess(transaction.index('"moving to an updated build", TRUE, TRUE, TRUE'),
+                        transaction.index('set_world_moving(TRUE)'))
+        self.assertIn('stopped_by ? "requested by [stopped_by]" : null, TRUE, TRUE, TRUE', transaction)
+        self.assertLess(transaction.index('if(prewarned && !handover)'), transaction.index('if(!save_generation_settled())'))
+        self.assertLess(transaction.index('call(vehicle_wait)()'), transaction.index('if(!save_generation_settled())'))
+        self.assertIn('if(clear_notice && !called_off)', transaction)
 
     def test_host_shutdown_completion_does_not_promise_restart(self):
         transaction = read('code/modules/persistence/restart_transaction.dm')

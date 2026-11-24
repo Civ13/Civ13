@@ -87,7 +87,7 @@ var/global/list/draught_kinds = draught_kinds_list()
 	if (!D)
 		to_chat(H, SPAN_WARNING(design_code_refusal(typed, K ? kind : "SHIP")))
 		return null
-	if (K["age"] && (!map || map.ordinal_age < K["age"]))
+	if (K["age"] && !draught_age_available(H, K["age"]))
 		to_chat(H, SPAN_WARNING("Nobody in this age could build [design_code_kind_name(kind)]."))
 		qdel(D)
 		return null

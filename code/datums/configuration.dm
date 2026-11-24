@@ -153,6 +153,7 @@
 	var/recruitment_queue_limit = 50 // Pending applications per faction.
 	var/recruitment_cooldown_minutes = 5 // Between one player's applications.
 	var/recruitment_station_limit = 3 // Stations one faction may have designated in a world (recruitment_station.dm).
+	var/birth_chart_records = FALSE // Enable new birth records only after upgrading all worlds in a region group.
 	var/skip_persistence_saving = FALSE
 	var/persistence_reboot_hour = -1 // server-clock hour (0-23) at which a persistent world saves and reboots to reclaim memory. -1 disables.
 	var/persistence_memory_limit_mb = 0 // world saves/loads switch to segmented low-memory levels when projected memory passes this; 0 disables.
@@ -513,6 +514,9 @@
 
 				if ("redirect_all_players")
 					redirect_all_players = value
+
+				if ("birth_chart_records")
+					config.birth_chart_records = (value == "1")
 
 				if ("skip_persistence_saving")
 					config.skip_persistence_saving = TRUE

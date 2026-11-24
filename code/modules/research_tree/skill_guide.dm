@@ -30,7 +30,7 @@ var/global/list/discipline_guide_rows = discipline_guide_rows_table()
 	return list(
 	"mathematics" = "Half of everything you learn in any other discipline also goes here. Mastering Philosophy adds to it.",
 	"engineering" = "Research, study and writing of building, tool and machine subjects, prototypes, and mastering Crafting.",
-	"natural_science" = "Recording rocks, ores, weather and waters you have not recorded, its practice tool, mining, smelting and firing clay or glass written into a book, syntheses at a reaction bench, research on its subjects (metals, alloys and chemistry), and mastering Swimming.",
+	"natural_science" = "Practise with a specimen box up to 24. From 24 to 36, hold two different ores, two open containers with different water, or matching unfired and fired pottery. Use IC &gt; Investigate Samples. From 36 to 60, compare an ore with its smelted product or sand with a glass sheet, or use Investigate Reaction at a laboratory reaction bench after securing its inputs. New comparisons teach more than repeats. No research bench, active chapter or Swimming skill is required. Recording finds, chapter fieldwork and mastering Swimming are separate ways to learn.",
 	"medicine" = "Research, study and writing of medical subjects, surgery written into a book, and mastering Medical.",
 	"agriculture" = "Research, study and writing of farming subjects, foraging and butchering written into a book, and mastering Farming or Hunting.",
 	"military" = "Research, study and writing of weapon subjects, shooting written into a book, and mastering a weapon skill.")
@@ -78,7 +78,12 @@ var/global/list/discipline_guide_rows = discipline_guide_rows_table()
 				if (stats[statname][1] < M[1] - 0.01)
 					next_lines += "At [M[1]] you become [M[3]] and gain [M[2]] levels of [scholar_disciplines[discipline]]."
 					break
-		html += "<tr><td><b>[capitalize(statname == "machinegun" ? "machine gun" : statname)]</b><br><span class='lvl'>[level]</span></td><td>[row[1]]<br><b>Raise it by:</b> [row[2]][next_lines.len ? "<br><span class='dim'>[jointext(next_lines, " ")]</span>" : ""]</td></tr>"
+		var/raise_text = row[2]
+		if (book_world && statname == "crafting")
+			raise_text += "<br><b>Smith:</b> Forge usable pickaxe, shovel or hatchet heads. Fit handles to finish the tools, or restore a worn hatchet head on a grindstone. Re-fitting a recovered head does not add Crafting."
+			raise_text += "<br><b>Carpenter:</b> Build wooden doors and other structures. Permanently replace a temporary hull patch with wood at a berth. Re-fitting removable door hardware does not add Crafting."
+			raise_text += "<br>These jobs use the same Crafting skill. Choosing a trade changes the time for its work, not who can do the job."
+		html += "<tr><td><b>[capitalize(statname == "machinegun" ? "machine gun" : statname)]</b><br><span class='lvl'>[level]</span></td><td>[row[1]]<br><b>Raise it by:</b> [raise_text][next_lines.len ? "<br><span class='dim'>[jointext(next_lines, " ")]</span>" : ""]</td></tr>"
 	html += "</table>"
 	html += "<div class='dim'>Working within 2 tiles of someone at least a quarter better than you at a skill teaches you double.</div>"
 	if (book_world)

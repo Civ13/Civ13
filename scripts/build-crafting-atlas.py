@@ -1,7 +1,7 @@
 """Generate current-source recipes and genuine isolated BYOND icon previews."""
 from pathlib import Path
 import subprocess, re, json, hashlib, argparse, sys
-from atlas.catalog_metadata import add_processors, add_tablet_press, annotate_eras, add_intestine_casings, add_organ_uses
+from atlas.catalog_metadata import add_plastics, add_processors, add_tablet_press, annotate_eras, add_intestine_casings, add_organ_uses
 from atlas.tanning import add_tanning
 from atlas.rope_making import add_rope_making
 from atlas.dressmaking import add_dressmaking
@@ -152,7 +152,12 @@ for p,s in files.items():
                 if len(cols)!=7: issues.append(dict(file=p,line=ln,reason='Expected 7 factory fields',raw=row));continue
                 n,b,c,ins,t,tier,node=cols
                 ingredients=[tuple(e.split('=',1)) for e in ins.split(';') if '=' in e]
-                add(n,'Factory fabricator',ingredients,[(b,c)],p,ln,f'Fabricator tier {tier} or higher; research node {node}; {int(t)/10:g} s per cycle at tier 1, needs cable power.',row)
+                molding = any(item == '/obj/item/stack/polymer_pellets' for item, _ in ingredients)
+                if molding:
+                    conditions = f'Plastics molding machine only; research node {node}; {int(t)/10:g} s per powered cycle.'
+                else:
+                    conditions = f'Fabricator tier {tier} or higher; research node {node}; {int(t)/10:g} s per cycle at tier 1, needs cable power.'
+                add(n,'Factory fabricator',ingredients,[(b,c)],p,ln,conditions,row)
                 continue
             if 'RECIPE: ' not in row or '//' in row: continue
             cols=row.split('RECIPE: ',1)[1].strip().split(',')
@@ -447,6 +452,7 @@ for route in add_interactions(files, add, records, set(acquisition)):
     for resource in route['outputs']:
         acquisition.setdefault(canon(resource),[]).append(route)
 add_processors(files, add, records)
+add_plastics(files, add, records)
 add_tablet_press(files, add, records)
 add_intestine_casings(files, add, records)
 add_organ_uses(files, add, records)

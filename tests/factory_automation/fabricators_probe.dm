@@ -67,6 +67,7 @@ var/machine_runtime_error = FALSE
 		machine_recipe_checks()
 		machine_fabricator_checks()
 		machine_fabricator_lifecycle_checks()
+		machine_plastics_checks()
 		machine_stack_arm_checks()
 	catch(var/exception/e)
 		machine_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -86,7 +87,7 @@ var/machine_runtime_error = FALSE
 
 /proc/machine_recipe_checks()
 	var/list/recipes = factory_load_recipes()
-	machine_check(recipes.len == 698 && !factory_recipe_errors.len, "the curated factory recipe list loads six hundred and ninety-eight recipes without errors ([english_list(factory_recipe_errors)])")
+	machine_check(recipes.len == 704 && !factory_recipe_errors.len, "the curated factory recipe list loads seven hundred and four recipes without errors ([english_list(factory_recipe_errors)])")
 	var/datum/factory_recipe/R = recipes["electronic circuits"]
 	machine_check(R && R.output_type == /obj/item/stack/material/electronics && R.output_amount == 3 && R.inputs[/obj/item/stack/material/copper] == 2 && R.inputs[/obj/item/stack/material/plastic] == 1 && R.tier == 2 && R.node == "automation", "recipe rows parse output, inputs, tier and node")
 	for (var/name in recipes)
@@ -96,7 +97,7 @@ var/machine_runtime_error = FALSE
 	var/list/bad = factory_load_recipes("bad_recipes.txt")
 	machine_check(bad.len == 1 && factory_recipe_errors.len == 4, "invalid and duplicate rows are reported and skipped")
 	factory_load_recipes()
-	machine_check(factory_get_recipes().len == 698, "the real list reloads")
+	machine_check(factory_get_recipes().len == 704, "the real list reloads")
 	var/datum/factory_recipe/SL = factory_get_recipes()["synthetic leather"]
 	machine_check(SL && SL.output_type == /obj/item/stack/material/leather/synthetic && SL.output_amount == 2 && SL.inputs[/obj/item/stack/material/cloth] == 1 && SL.inputs[/obj/item/stack/material/plastic] == 1 && SL.tier == 1 && SL.node == "synthetics", "synthetic leather is two sheets from one cloth and one plastic, with Synthetic Fabrics")
 	var/obj/item/stack/material/leather/synthetic/fake = new(locate(16, 16, 1), 2, FALSE)
@@ -311,3 +312,98 @@ var/machine_runtime_error = FALSE
 	machine_check(G && G.precise && RP.buffered(/obj/item/stack/photopolymer) == 1 && RP.icon_state == "resin_printer_on", "a powered resin 3D printer prints a precise gear set from one bottle")
 	for (var/obj/O in rpower + list(RP, bottles, G))
 		qdel(O)
+
+// Keep real production logic and omit only the 60-second wall-time
+// timer. The probe calls that same callback at each simulated due batch.
+/obj/structure/bakelizer/plastics_probe/queue_refine(epoch)
+	return
+
+/proc/machine_plastics_checks()
+	var/turf/pellet_site = locate(4, 15, 1)
+	var/turf/mold_site = locate(7, 15, 1)
+	var/obj/structure/bakelizer/plastics_probe/K = new(pellet_site)
+	var/obj/structure/factory_fabricator/plastic_molder/M = new(mold_site)
+	var/obj/structure/factory_fabricator/F = new(locate(9, 15, 1))
+	var/obj/structure/factory_fabricator/printer/P = new(locate(11, 15, 1))
+	var/obj/structure/factory_fabricator/printer/resin/RP = new(locate(12, 15, 1))
+	var/recipe = "Injection - plastic tool handle"
+	var/pellets = /obj/item/stack/polymer_pellets
+	var/handle = /obj/item/weapon/material/handle/molded
+	map.faction_baseline_era["plastics_probe"] = 1
+	machine_check(!M.available_recipes("plastics_probe").len, "the molder does not list products before Industrial Plastics")
+	machine_done("plastics_probe", "industrial_plastics")
+	var/list/modes = M.available_recipes("plastics_probe")
+	machine_check(modes.len == 6 && ("Extrusion - plastic sheet" in modes) && ("Blow molding - empty plastic bottle" in modes) && ("Film forming - plastic bag" in modes) && (recipe in modes), "all six products at the dedicated molder use Industrial Plastics")
+	machine_check(recipe_node_requirements["/obj/structure/factory_fabricator/plastic_molder"] == "industrial_plastics", "construction shares the new knowledge gate")
+	machine_check(!F.set_recipe(recipe) && !P.set_recipe(recipe) && !RP.set_recipe(recipe) && !M.set_recipe("printed screwdriver"), "ordinary fabricators and both printers refuse molding, and the molder refuses old recipes")
+	F.recipe_name = recipe
+	F.after_load()
+	machine_check(!F.current_recipe() && !F.recipe_name, "load cannot admit a molding recipe on an ordinary fabricator")
+
+	K.setting = "polymer_pellets"
+	K.volume = 4
+	machine_check(!K.bakelizer_refine_batch() && K.volume == 4 && !K.polymer_pellets, "short crude stock makes no pellets and pays nothing")
+	K.volume = 0
+	var/turf/well_site = locate(3, 15, 1)
+	var/obj/structure/oil_spring/spring = new(well_site)
+	var/obj/item/weapon/reagent_containers/glass/barrel/barrel = new(well_site)
+	var/obj/structure/oilwell/well = new(well_site)
+	spring.counter = 2
+	well.load_barrel()
+	well.pump_batch()
+	well.unload_barrel()
+	machine_check(!well.work_barrel && barrel.loc == well_site && barrel.reagents.get_reagent_amount("petroleum") == 10 && spring.counter == 1, "an actual oil-well batch fills and releases one petroleum barrel")
+	machine_check(K.bakelizer_load_petroleum(barrel) == 10 && K.volume == 10 && !barrel.reagents.total_volume, "the same oil-well barrel transfers exactly ten crude units to the Bakelizer")
+	K.active = TRUE
+	K.refine(K.refine_epoch - 1)
+	machine_check(K.volume == 10 && !K.polymer_pellets, "a stale timed run cannot take petroleum")
+	K.refine(K.refine_epoch)
+	machine_check(!K.active && !K.powered && K.volume == 10 && !K.polymer_pellets, "uncabled timed run stops without consumption")
+	machine_power(K, 4, 16)
+	K.active = TRUE
+	K.refine(K.refine_epoch)
+	K.refine(K.refine_epoch)
+	machine_check(!K.active && !K.volume && K.polymer_pellets == 2 && !K.plastic && !K.stock, "ten oil-well crude units become exactly two solid pellet measures in two powered callbacks")
+	well.load_barrel()
+	well.pump_batch()
+	well.unload_barrel()
+	K.bakelizer_load_petroleum(barrel)
+	K.active = TRUE
+	K.after_load()
+	machine_check(!K.active && K.polymer_pellets == 2 && K.volume == 10 && K.persistence_runtime_var("refine_epoch") && !K.persistence_runtime_var("polymer_pellets"), "load stops the Bakelizer but preserves feed and paid pellets")
+	K.setting = "plastic"
+	machine_check(K.bakelizer_refine_batch() && K.plastic == 1 && K.volume == 5 && K.polymer_pellets == 2, "old sheet output is still independent and keeps its yield")
+	machine_check(K.bakelizer_eject_pellets(null) && !K.bakelizer_eject_pellets(null), "paid pellet stock is ejected once")
+	var/obj/item/stack/polymer_pellets/feed = locate() in pellet_site
+	machine_check(feed && feed.amount == 2 && M.set_recipe(recipe) && M.factory_insert(feed) == 2 && M.buffered(pellets) == 2, "the same two paid pellets enter the injection machine")
+	var/obj/item/stack/material/plastic/wrong = new(locate(6, 15, 1), 1, FALSE)
+	machine_check(!M.factory_insert(wrong) && wrong.amount == 1, "plastic sheets cannot be mistaken for feedstock")
+	M.fab_step()
+	machine_check(!M.progress && M.buffered(pellets) == 2 && isnull(locate(handle) in mold_site), "unpowered molder makes nothing and keeps the feed")
+	var/list/power = machine_power(M, 7, 16)
+	M.fab_step()
+	M.fab_step()
+	var/obj/structure/engine/E = power[2]
+	E.on = FALSE
+	M.fab_step()
+	machine_check(M.progress == 20 && M.buffered(pellets) == 2, "power loss pauses molding before any debit")
+	E.on = TRUE
+	M.fab_step()
+	M.fab_step()
+	var/obj/item/weapon/material/handle/molded/H = locate() in mold_site
+	machine_check(H && H.get_material_name() == "plastic" && !M.buffered(pellets) && M.factory_offer() == H, "two paid pellets yield one functional plastic handle, available to automation")
+
+	var/obj/structure/reaction_bench/B = new(locate(13, 15, 1))
+	var/obj/item/weapon/reagent_containers/glass/beaker/glass = new(locate(13, 15, 1))
+	machine_check(B.install_beaker(glass, null), "the old chemistry bench accepts a beaker for the alternate pellet batch")
+	glass.reagents.add_reagent("polyethylene", 3)
+	glass.reagents.add_reagent("polypropylene", 4)
+	machine_check(!B.finish_polymer_product("polyethylene_pellets") && glass.reagents.get_reagent_amount("polyethylene") == 3, "the bench will not spend a short or wrong polymer batch")
+	machine_check(B.finish_polymer_product("polypropylene_pellets") && !glass.reagents.has_reagent("polypropylene", 1) && glass.reagents.get_reagent_amount("polyethylene") == 3, "the bench granulates only the selected polymer")
+	var/obj/item/stack/polymer_pellets/bench_stock = locate() in get_turf(B)
+	var/bottle = /obj/item/weapon/reagent_containers/food/drinks/bottle/plastic
+	machine_check(bench_stock && bench_stock.amount == 1 && M.set_recipe("Blow molding - empty plastic bottle") && M.factory_insert(bench_stock) == 1, "bench pellets are interchangeable with the bulk feed")
+	for (var/i in 1 to 3)
+		M.fab_step()
+	var/obj/item/weapon/reagent_containers/food/drinks/bottle/plastic/bottle_out = locate(bottle) in mold_site
+	machine_check(bottle_out && !bottle_out.reagents.total_volume && !M.buffered(pellets), "blow molding makes an empty bottle, not free drink contents")

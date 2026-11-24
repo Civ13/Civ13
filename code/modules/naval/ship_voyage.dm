@@ -14,7 +14,6 @@
 // ============================================================
 
 #define VOYAGE_TICK 100 // deciseconds between looks at the voyage
-#define VOYAGE_MIN_CREW 2
 #define VOYAGE_SCOUT_RANGE 4 // chart tiles out; she comes back the same way
 #define VOYAGE_WAIT_MAX 18000 // deciseconds she waits off an unready coast before turning back
 // Deciseconds a ship lies at anchor after a landfall before her next voyage or
@@ -143,9 +142,9 @@
 		if (H.client && H.stat == CONSCIOUS)
 			. += H
 
-// Why she cannot set out on a voyage now, or null. min_crew: the crew a
-// voyage needs aboard; a sea lane to a known land (sea_lanes.dm) needs one.
-/obj/structure/hull_tiller/proc/voyage_refusal(mob/living/human/H, min_crew = VOYAGE_MIN_CREW)
+// Why she cannot set out on a voyage now, or null. One sailor aboard and
+// awake is crew enough; she may carry as many as she holds.
+/obj/structure/hull_tiller/proc/voyage_refusal(mob/living/human/H)
 	if (voyage)
 		return "She is already on a voyage."
 	if (!shard_group || !shard_group.enabled)
@@ -156,8 +155,8 @@
 	craft.fit_drives()
 	if (craft.max_speed() < VESSEL_SPEED_SLOW)
 		return "She cannot make a voyage without a way to sail: rig a mast or fit a running engine."
-	if (length(voyage_crew()) < min_crew)
-		return min_crew > 1 ? "A voyage needs at least [min_crew] of her crew aboard and awake." : "Somebody must be aboard and awake to sail her."
+	if (!length(voyage_crew()))
+		return "Somebody must be aboard and awake to sail her."
 	// Whatever would stop her crossing at landfall stops her setting out (ship_crossing.dm).
 	var/load = sea_crossing_load(src)
 	if (istext(load))
@@ -165,10 +164,10 @@
 	return null
 
 /obj/structure/hull_tiller/proc/voyage_menu(mob/living/human/H)
-	// Known lands across the sea (sea_lanes.dm) need no chart and one sailor.
+	// Known lands across the sea (sea_lanes.dm) need no chart.
 	// Over the map edges the continents are reached by sailing off them (ship_edge_crossing.dm).
 	var/list/known = sea_edge_travel_on() ? list() : sea_lane_destinations()
-	var/reason = voyage_refusal(H, length(known) ? 1 : VOYAGE_MIN_CREW)
+	var/reason = voyage_refusal(H)
 	if (reason)
 		to_chat(H, SPAN_WARNING(reason))
 		return
@@ -199,7 +198,7 @@
 		return
 	if (choice in known)
 		var/list/lane = known[choice]
-		reason = landfall_rest_refusal() || voyage_refusal(H, 1)
+		reason = landfall_rest_refusal() || voyage_refusal(H)
 		if (reason)
 			to_chat(H, SPAN_WARNING(reason))
 			return
@@ -330,6 +329,9 @@
 /obj/structure/hull_tiller/proc/voyage_status_text()
 	if (!voyage)
 		return ""
+	if (voyage["storm_until"])
+		var/seconds = max(0, round((voyage["storm_until"] - world.time) / 10))
+		return "Squall ahead: stow loose deck cargo. Detour or press on; if no order is given, she detours in [seconds] second\s."
 	var/left = round((voyage["ends"] - world.time) / 600, 1)
 	if (left > 0)
 		return "The [craft.name] is at sea, bound for [voyage["label"]]: about [left] minute\s to go."
@@ -341,8 +343,20 @@
 	if (held)
 		WWinput(H, held, craft.name, "Cancel", list("Cancel"))
 		return
-	var/choice = WWinput(H, voyage_status_text(), craft.name, "Cancel", list("Turn back", "Cancel"))
-	if (choice != "Turn back" || !voyage || get_dist(H, src) > 1)
+	var/list/mine = voyage
+	if (!mine || !craft)
+		return
+	var/list/choices = list("Turn back", "Cancel")
+	if (voyage_storm_can_choose(H, mine))
+		choices.Insert(1, "Detour around the squall", "Press on through the squall")
+	var/choice = WWinput(H, voyage_status_text(), craft.name, "Cancel", choices)
+	if (QDELETED(src) || QDELETED(H) || !craft || voyage != mine || H.z != z || get_dist(H, src) > 1)
+		return
+	if (choice == "Detour around the squall" || choice == "Press on through the squall")
+		if (voyage_storm_can_choose(H, mine))
+			voyage_storm_resolve(mine, choice == "Press on through the squall")
+		return
+	if (choice != "Turn back")
 		return
 	var/reason = voyage_turn_back(H)
 	if (reason)
@@ -382,12 +396,15 @@
 			voyage_sea_stop()
 		return
 	voyage_sea_show() // Whoever is aboard now sees the sea go by.
-	if (world.time < mine["ends"])
+	if (world.time < mine["ends"] || mine["storm_until"])
 		// A course refused (no harbour free, a land opened too lately) turns her back
 		// within a minute or two, before she has sailed the whole way for nothing.
 		if (mine["kind"] == "course" && voyage_refused_under_way(mine))
 			return
-		if (world.time >= mine["minute"])
+		if (mine["storm_until"])
+			if (world.time >= mine["storm_until"])
+				voyage_storm_resolve(mine)
+		else if (world.time >= mine["minute"])
 			mine["minute"] = world.time + mine["tile"]
 			if (!voyage_event(mine))
 				craft.crew_message(SPAN_NOTICE(voyage_status_text()))
@@ -493,7 +510,6 @@
 	return FALSE
 
 #undef VOYAGE_TICK
-#undef VOYAGE_MIN_CREW
 #undef VOYAGE_SCOUT_RANGE
 #undef VOYAGE_WAIT_MAX
 #undef VOYAGE_LANDFALL_REST

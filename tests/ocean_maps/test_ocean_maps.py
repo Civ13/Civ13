@@ -225,12 +225,16 @@ class ShipEdgeCrossingTests(unittest.TestCase):
         for line in ('sea_edge_seaworthy_refusal()', 'crossing_refusal(H)', 'sea_crossing_load(src)', 'landfall_rest_refusal()'):
             self.assertIn(line, refusal)
         seaworthy = dm_body(edge, '/obj/structure/hull_tiller/proc/sea_edge_seaworthy_refusal()')
-        for line in ('craft.max_speed() < VESSEL_SPEED_SLOW', 'length(voyage_crew()) < SEA_EDGE_MIN_CREW'):
+        for line in ('craft.max_speed() < VESSEL_SPEED_SLOW', '!length(voyage_crew())'):
             self.assertIn(line, seaworthy)
         # Round the world in the same ocean: only the seaworthy checks, and no crossing.
         self.assertLess(refusal.index('route[1] == shard_group.region'), refusal.index('crossing_refusal(H)'))
         self.assertIn('wraps ? sea_edge_wrap(now) : cross(', dm_body(edge, '/obj/structure/hull_tiller/proc/sea_edge_menu(mob/living/human/H)'))
-        self.assertIn('#define SEA_EDGE_MIN_CREW 2', edge)
+        # One sailor is crew enough: no two-player minimum for the open sea or a voyage.
+        self.assertNotIn('MIN_CREW', edge)
+        self.assertNotIn('MIN_CREW', read('code/modules/naval/ship_voyage.dm'))
+        voyage = dm_body(read('code/modules/naval/ship_voyage.dm'), '/obj/structure/hull_tiller/proc/voyage_refusal(mob/living/human/H)')
+        self.assertIn('if (!length(voyage_crew()))', voyage)
         self.assertIn('shard_group.edge_travel_oceans', dm_body(edge, '/proc/sea_edge_travel_on()'))
         group = read('code/modules/persistence/shard_group.dm')
         self.assertIn('var/edge_travel_oceans = FALSE', group)

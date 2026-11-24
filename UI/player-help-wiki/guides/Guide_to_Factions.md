@@ -179,7 +179,7 @@ Higher ranks also need wells, roofed beds, guest beds, plots, a market stall, a 
 
 Every faction can claim **one island across the sea** as its own. Unlike a province, nobody can take it by stake or siege.
 
-1. Your **leader** sails a ship with a mast or engine and at least 2 crew from the coast to a land across the sea (the tiller's voyage menu; see [Boats](Guide_to_Boats.md#settle-claim-or-abandon)).
+1. Your **leader** sails a ship with a mast or engine from the coast to a land across the sea (the tiller's voyage menu; see [Boats](Guide_to_Boats.md#settle-claim-or-abandon)).
 2. The leader plants a **colony charter** (8 planks) there. The land becomes your faction's claimed island.
 3. Keep at least **3 members** with a fastened bed of their own there. If the island has fewer than 3 such members for **14 days** in a row, the claim lapses and any faction may claim it.
 
@@ -199,7 +199,7 @@ Changes reach every land within a minute or two. Recruitment stations on the isl
 
 ## Colonies in other lands
 
-A faction lives in the land where it was founded, but its leader can found a **colony** in another land by carrying a **colony charter** (8 planks) there and planting it. The faction then exists in that land under the same name. Members arriving there join the colony, each colony adds room for 5 members, and members can start new characters at a settled colony. A colony on the mainland stands only while its charter does; a claimed island is the exception. See [Factions and colonies](Guide_to_Travel.md#factions-and-colonies).
+A faction lives in the land where it was founded, but its leader can found a **colony** in another land by carrying a **colony charter** (8 planks) there and planting it. For the faction's first colony on another continent, the leader needs another active member of the faction beside the charter, signed into a separate BYOND account. This is a founding rule, not a requirement for solo travel or for rebuilding an existing charter. The faction then exists in that land under the same name. Members arriving there join the colony, each colony adds room for 5 members, and members can start new characters at a settled colony. A colony on the mainland stands only while its charter does; a claimed island is the exception. See [Factions and colonies](Guide_to_Travel.md#factions-and-colonies).
 
 ## Sleeping safely
 

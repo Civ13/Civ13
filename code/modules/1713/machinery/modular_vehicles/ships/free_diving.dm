@@ -33,11 +33,11 @@
 /mob/living/human/seabed_zone_allowed(turf/T)
 	if (!free_diving || seabed_diving_rating())
 		return TRUE
-	return sea_zone_of(T) <= free_dive_zone_limit()
+	return hull_depth_zone(T) <= free_dive_zone_limit()
 
 // Breathing down here is the held breath (handle_drowning), not the open air.
 /mob/living/human/outside_exposure_step(turf/T)
-	if (free_diving && sea_layer_cell(T) && !T.iscovered() && !pressure_suit_sealed())
+	if ((submerged_built_hull_deck(T) || (free_diving && sea_layer_cell(T) && !T.iscovered())) && !pressure_suit_sealed())
 		return FALSE
 	return ..()
 
@@ -49,7 +49,7 @@
 	if (!below)
 		return null
 	var/turf/B = locate(T.x, T.y, below)
-	if (!sea_layer_cell(B) || B.iscovered())
+	if (!sea_layer_cell(B) || (B.iscovered() && !submerged_built_hull_deck(B)))
 		return null
 	return B
 
@@ -99,6 +99,10 @@
 // Swims back up to the open sea above. forced: the breath has run out.
 /mob/living/human/proc/free_dive_surface(forced = FALSE)
 	var/turf/T = get_turf(src)
+	if (free_diving && submerged_built_hull_deck(T) && !sea_layer_cell(T))
+		if (!forced)
+			to_chat(src, SPAN_WARNING("The deck over the hold blocks a direct ascent. Get clear of the hull first."))
+		return FALSE
 	if (!free_diving || !sea_layer_cell(T))
 		free_diving = FALSE
 		return FALSE
@@ -180,7 +184,11 @@
 // Surface verb and the HUD up button (multiz/floor_buttons.dm).
 /mob/living/human/proc/surface_from_seabed()
 	if (!free_diving)
-		if (sea_layer_cell(get_turf(src)) && seabed_diving_rating())
+		var/turf/T = get_turf(src)
+		if (submerged_built_hull_deck(T) && !sea_layer_cell(T))
+			to_chat(src, SPAN_WARNING("The deck over the hold blocks a direct ascent. Get clear of the hull first."))
+			return FALSE
+		if (sea_layer_cell(T) && seabed_diving_rating())
 			return seabed_ascend()
 		to_chat(src, SPAN_WARNING("You are not under the water."))
 		return FALSE
@@ -192,7 +200,7 @@
 /mob/living/human/proc/sea_updown_offer(direction)
 	var/turf/T = get_turf(src)
 	if (direction == UP)
-		if (free_diving || (sea_layer_cell(T) && seabed_diving_rating()))
+		if (free_diving || ((sea_layer_cell(T) || submerged_built_hull_deck(T)) && seabed_diving_rating()))
 			return "Surface"
 		return null
 	if (direction == DOWN && !free_diving && can_swim_deep() && free_dive_target(T))

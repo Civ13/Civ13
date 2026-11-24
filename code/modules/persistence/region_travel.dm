@@ -207,6 +207,9 @@ var/global/list/region_travel_carry_types = list(
 	if(learned.len)
 		P["v"] = 3
 		P["scholarship"] = learned
+		var/list/investigated = clean_science_investigations(science_investigations)
+		if(investigated.len)
+			P["science_investigations"] = investigated
 	// Chapters read part-way (study_progress.dm) travel too, so a reader
 	// continues them in the next region. Optional: absent means none.
 	var/list/reading = clean_study_progress(study_progress)
@@ -240,6 +243,8 @@ var/global/list/region_travel_carry_types = list(
 	// The sign they were born under travels too (birth_charts.dm).
 	if(birth_chart_valid(birth_chart))
 		P["chart"] = birth_chart
+	if(birth_chart_record_valid(birth_chart_record))
+		P["chart_record"] = birth_chart_record.Copy()
 	// The martial school, its ranks and hardened hands travel too (martial_schools.dm).
 	var/list/martial = martial_travel_record()
 	if(martial)
@@ -307,9 +312,11 @@ var/global/list/region_travel_carry_types = list(
 		if(!region_travel_scholarship_valid(P["scholarship"])) return null
 	else if("scholarship" in P)
 		return null
+	if(("science_investigations" in P) && (P["v"] != 3 || !science_investigations_valid(P["science_investigations"]))) return null
 	if(("tongues" in P) && !region_travel_tongues_valid(P["tongues"])) return null
 	if(("traits" in P) && !region_travel_traits_valid(P["traits"])) return null
 	if(("chart" in P) && !birth_chart_valid(P["chart"])) return null
+	if(("chart_record" in P) && !birth_chart_record_valid(P["chart_record"])) return null
 	if(("martial" in P) && !martial_travel_valid(P["martial"])) return null
 	if(("study_field_lock" in P) && !isnum(P["study_field_lock"])) return null
 	if(("trade_lock" in P) && !isnum(P["trade_lock"])) return null
@@ -526,6 +533,7 @@ var/global/list/region_travel_carry_types = list(
 	H.known_recipe_nodes = P["v"] >= 2 ? P["known_recipe_nodes"].Copy() : list()
 	H.recipe_knowledge_initialized = P["v"] >= 2 ? P["recipe_knowledge_initialized"] : FALSE
 	H.scholarship = P["v"] == 3 ? clean_scholarship(P["scholarship"]) : list()
+	H.science_investigations = clean_science_investigations(P["science_investigations"])
 	H.study_progress = clean_study_progress(P["reading"])
 	H.region_travel_restore_tongues(P["tongues"])
 	if(islist(P["traits"]))
@@ -533,6 +541,8 @@ var/global/list/region_travel_carry_types = list(
 		H.traits_dirty = TRUE
 	if(birth_chart_valid(P["chart"]))
 		H.birth_chart = P["chart"]
+	if(birth_chart_record_valid(P["chart_record"]))
+		H.birth_chart_record = P["chart_record"].Copy()
 	if(islist(P["martial"]))
 		H.martial_travel_restore(P["martial"])
 	var/list/progress = accolade_progress_clean(P["accolades"])

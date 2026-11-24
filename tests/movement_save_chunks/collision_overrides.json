@@ -488,7 +488,7 @@
         {
           "owner": "",
           "declaration": "/turf/floor/beach/water/deep/saltwater/underwater/sea_layer/CanPass(atom/movable/mover)",
-          "sha256_body": "f770d52aa7b7f0acde4903bd16830813d9f2bc8fe4fecaf3fba73d11432e35e5"
+          "sha256_body": "bd31c150cd50c133bc7f656e74cfd02d9c6dcfa50a48567107b6538ca43cb7bb"
         }
       ]
     },

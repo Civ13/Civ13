@@ -28,6 +28,8 @@
 	var/tool_handle_quality
 	var/tool_head_condition
 	var/tool_handle_condition
+	// Stock grade survives fitting, recovery and persistence for hatchets.
+	var/hatchet_stock_grade = 1
 
 	dropsound = 'sound/effects/drop_knife.ogg'
 
@@ -178,6 +180,10 @@
 	tool_head_quality = max(0.5, min(2, head_part.crafting_quality))
 	tool_head_condition = max(0, min(1, head_part.health / head_part.maxhealth))
 	apply_tool_handle(src, HANDLE.material.name, HANDLE.crafting_quality, HANDLE.health / HANDLE.maxhealth)
+	fit_recovered_head(head_part)
+
+/obj/item/weapon/material/proc/fit_recovered_head(obj/item/weapon/material/part/head_part)
+	return
 
 // How a handle of this material changes a tool against a plain wood handle:
 // list(durability multiplier, work speed multiplier). Tougher wood lasts

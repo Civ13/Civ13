@@ -41,6 +41,18 @@ POLICY_FILES = tuple('tests/' + name for name in (
 # Review the complete imports/call graph before adding files. No wildcard test
 # discovery: test_native.py and newly added runners must never enter implicitly.
 SUITES = {
+    'hull_depth': {'files': ('tests/hull_depth/test_sources.py', 'tests/hull_depth/test_offline_runner.py'), 'paths': ('tests/hull_depth/', 'code/modules/naval/hull_depth.dm')},
+    'hull_pressure': {'files': ('tests/hull_pressure/test_sources.py',), 'paths': ('tests/hull_pressure/', 'code/modules/naval/hull_pressure.dm')},
+    'hull_roll': {'files': ('tests/hull_roll/test_hull_roll.py',), 'paths': ('tests/hull_roll/', 'code/modules/naval/hull_roll.dm')},
+    'hull_storm': {'files': ('tests/hull_storm/test_storm.py',), 'paths': ('tests/hull_storm/', 'code/modules/naval/hull_storm.dm')},
+    'hull_waterlogging': {'files': ('tests/hull_waterlogging/test_sources.py',), 'paths': ('tests/hull_waterlogging/', 'code/modules/naval/hull_drives.dm')},
+    'flight_save_risk': {'files': ('tests/flight_save_risk/test_sources.py',), 'paths': ('tests/flight_save_risk/', 'code/modules/naval/flight_save_risk.dm')},
+    'voyage_storm': {'files': ('tests/voyage_storm/test_source.py',), 'paths': ('tests/voyage_storm/', 'code/modules/naval/voyage_provisions.dm')},
+    'science_investigations': {'files': ('tests/science_investigations/test_source.py',),
+        'paths': ('tests/science_investigations/', 'code/modules/research_tree/science_investigations.dm'),
+        'shared_paths': ('code/modules/research_tree/scholarship.dm', 'code/modules/research_tree/skill_guide.dm',
+                         'code/modules/persistence/region_travel.dm', 'code/modules/reagents/laboratory.dm',
+                         'tests/save_movement/source_adapter.py')},
     'npc_friendly_fire_line': {'files': ('tests/getline2/test_friendly_fire.py',),
         'paths': ('tests/getline2/test_friendly_fire.py',), 'shared_paths': (
             'code/game/mob/living/simple_animal/hostile/tactical_ai.dm',
@@ -902,6 +914,18 @@ SUITES = {
         'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
             'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
             'tests/save_movement/source_adapter.py')},
+    # Generated Atlas and dedicated molding recipe ingress contracts.
+    'industrial_plastics': {'files': ('tests/factory_automation/test_industrial_plastics.py',),
+        'paths': ('tests/factory_automation/test_industrial_plastics.py',
+                  'code/modules/1713/plastic_molding.dm',
+                  'docs/industrial-plastics.md'),
+        'shared_paths': ('code/modules/1713/modern_items.dm',
+                         'code/modules/1713/factory_fabricators.dm',
+                         'code/modules/1713/resin_laminate.dm',
+                         'code/modules/reagents/laboratory.dm',
+                         'scripts/atlas/catalog_metadata.py',
+                         'config/crafting/factory_recipes.txt',
+                         'UI/crafting-atlas.json')},
     # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
     'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
         'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
@@ -2419,7 +2443,8 @@ SUITES = {
     # test_foundations specification helper. No native runner or network import.
     # Shared production sources retain their conservative all-suite fallback.
     'character_traits': {'files': ('tests/character_traits/test_foundations.py',
-                                   'tests/character_traits/test_random.py'),
+                                   'tests/character_traits/test_random.py',
+                                   'tests/character_traits/test_birth_chart_wheel.py'),
         'paths': ('tests/character_traits/',), 'shared_paths': (
             'code/game/mob/living/carbon/human/traits.dm',
             'code/modules/client/preferencesSQLite/character_setup_ui.dm',
@@ -2430,7 +2455,11 @@ SUITES = {
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/game/mob/living/carbon/human/human_stats.dm',
             'code/game/mob/living/carbon/human/playstyle_traits.dm',
-            'code/game/mob/living/carbon/human/sight_traits.dm')},
+            'code/game/mob/living/carbon/human/sight_traits.dm',
+            'code/game/mob/living/carbon/human/birth_chart_wheel.dm',
+            'code/game/mob/living/carbon/human/birth_charts.dm',
+            'code/game/mob/new_player/new_player.dm',
+            'code/modules/persistence/region_travel.dm')},
     # Stdlib-only source contracts for the character setup window; the shared
     # sources keep the character_traits fallback above.
     'character_setup': {'files': ('tests/character_setup/test_setup_window.py',),

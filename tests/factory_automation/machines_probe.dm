@@ -41,6 +41,13 @@ var/machine_runtime_error = FALSE
 		if (S.type == type)
 			total += S.amount
 	return total
+// A probe-only prime mover that always drives its neighbours at half hand time.
+/obj/structure/workshop_machine/mover/machine_probe_drive
+	anchored = TRUE
+	drive_factor = 0.5
+	drive_capacity = 10
+/obj/structure/workshop_machine/mover/machine_probe_drive/idle_reason()
+	return null
 /proc/belt_closed_crate(turf/T, capacity = 20)
 	var/obj/structure/closet/crate/C = new(T)
 	C.opened = FALSE
@@ -87,6 +94,7 @@ var/machine_runtime_error = FALSE
 	F.smelt_time = 5 // the probe's daemon has thirty seconds
 	var/obj/item/stack/ore/iron/ore = new(locate(1, 2, 1), 60)
 	var/obj/item/stack/ore/coal/coal = new(locate(1, 3, 1), 5)
+	var/obj/item/stack/ore/charcoal/charcoal = new(locate(1, 6, 1), 30)
 	var/obj/item/stack/material/stone/stone = new(locate(1, 4, 1), 5, FALSE)
 	machine_check(F.factory_accepts(ore) == 50, "a bloomery takes up to fifty iron ore from automation")
 	machine_check(!F.factory_accepts(stone), "a bloomery refuses what it cannot smelt or burn")
@@ -95,7 +103,8 @@ var/machine_runtime_error = FALSE
 	F.anchored = TRUE
 	machine_check(F.factory_insert(ore) == 50 && F.iron == 50 && ore.amount == 10 && !F.on, "ore alone loads without starting a smelt and the rest stays behind")
 	machine_check(!F.factory_accepts(ore), "a full bloomery refuses more ore")
-	machine_check(F.factory_insert(coal) == 5 && QDELETED(coal) && F.on && F.fuel == 13, "fuel from automation starts the smelt and pays its two fuel")
+	machine_check(!F.factory_accepts(coal) && coal.amount == 5, "a bloomery refuses raw coal from automation")
+	machine_check(F.factory_insert(charcoal) == 26 && charcoal.amount == 4 && F.on && F.fuel == 0, "charcoal from automation covers a full load's firing, starts the smelt and pays for it")
 	machine_check(!F.factory_offer(), "a smelting bloomery offers nothing yet")
 	sleep(10)
 	var/obj/item/stack/ore/iron_sponge/sponge = locate() in F.loc
@@ -104,11 +113,12 @@ var/machine_runtime_error = FALSE
 	var/obj/structure/closet/crate/C = belt_closed_crate(locate(3, 2, 1))
 	machine_check(F.factory_take(sponge, C) && sponge.loc == C, "an arm can take the sponge iron away")
 	var/obj/item/stack/ore/iron/more = new(locate(1, 7, 1), 5)
-	machine_check(F.factory_insert(more) == 5 && F.on, "a loaded bloomery restarts when more ore arrives")
+	machine_check(F.factory_insert(charcoal) == 4 && QDELETED(charcoal) && !F.on && F.fuel == 8, "fuel alone loads without starting a smelt")
+	machine_check(F.factory_insert(more) == 5 && F.on && F.fuel == 1, "a fuelled bloomery restarts when more ore arrives")
 	var/obj/structure/furnace/kiln/K = new(locate(5, 2, 1))
 	var/obj/item/stack/ore/iron/kiln_ore = new(locate(1, 8, 1), 5)
 	machine_check(!K.factory_accepts(kiln_ore) && !K.factory_offer(), "clay kilns stay manual")
-	for (var/obj/O in list(ore, stone, C, K, kiln_ore))
+	for (var/obj/O in list(ore, coal, charcoal, stone, C, K, kiln_ore))
 		qdel(O)
 	F.on = FALSE
 
@@ -116,7 +126,12 @@ var/machine_runtime_error = FALSE
 	var/obj/structure/furnace/blast_furnace/B = new(locate(2, 5, 1))
 	var/obj/item/stack/ore/iron/ore = new(locate(1, 5, 1), 10)
 	var/obj/item/stack/ore/charcoal/charcoal = new(locate(1, 6, 1), 2)
-	machine_check(B.factory_insert(ore) == 10 && B.factory_insert(charcoal) == 2 && B.on && B.fuel == 3, "a blast furnace loads ore and charcoal and starts")
+	machine_check(B.factory_insert(ore) == 10 && B.factory_insert(charcoal) == 2 && !B.on && B.fuel == 4, "a blast furnace without a driven bellows loads ore and charcoal but waits")
+	var/obj/structure/workshop_machine/mover/machine_probe_drive/drive = new(locate(3, 5, 1))
+	var/obj/item/stack/ore/charcoal/more_charcoal = new(locate(1, 7, 1), 4)
+	machine_check(B.factory_insert(more_charcoal) == 4 && QDELETED(more_charcoal) && B.on && B.fuel == 0, "a driven blast furnace starts once a firing's fuel is loaded")
+	qdel(drive)
+	qdel(more_charcoal)
 	var/obj/item/stack/ore/iron_sponge/wrong = new(B.loc, 1)
 	var/obj/item/stack/ore/iron_pig/pig = new(B.loc, 3)
 	machine_check(B.factory_offer() == pig, "a blast furnace offers pig iron, not other stacks on its tile")

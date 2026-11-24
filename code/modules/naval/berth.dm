@@ -163,7 +163,10 @@
 		return null
 	if (berth_plank_refusal(H, W, P))
 		return null
-	return berth_plank_lay(C, W, P)
+	var/obj/covers/deck = berth_plank_lay(C, W, P)
+	if (deck && !QDELETED(deck) && deck.type == /obj/covers/repairedfloor/ship)
+		H.note_craftsman_work("plank-hull", /obj/covers/repairedfloor/ship, 1)
+	return deck
 
 /obj/covers/repairedfloor/ship/patch/attackby(obj/item/W as obj, mob/user as mob)
 	if (ishuman(user) && user.a_intent != I_HARM && berth_plank_path(W))

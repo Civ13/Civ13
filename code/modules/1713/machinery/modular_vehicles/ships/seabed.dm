@@ -146,12 +146,24 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 	if (!iscovered())
 		return FALSE
 	var/obj/structure/vehicleparts/axis/ship/submarine/B = submarine_at(src)
-	return B ? B.air_breathable() : TRUE
+	if (B)
+		return B.air_breathable()
+	return !submerged_built_hull_deck(src) || sunken_hull_pressure_breath(src)
 
 /turf/floor/beach/water/deep/saltwater/underwater/sea_layer/outside_ambient_c()
-	if (iscovered())
+	if (iscovered() && (!submerged_built_hull_deck(src) || sunken_hull_pressure_sheltered(src)))
 		return null
 	return sea_zone_temperature_c(sea_zone_of(src))
+
+// The hold interior is represented by a carved plating turf, but the
+// surrounding water and depth come from the saved sea-layer origin.
+/turf/floor/plating/ship_hold/outside_air_breathable()
+	return submerged_built_hull_deck(src) ? sunken_hull_pressure_breath(src) : ..()
+
+/turf/floor/plating/ship_hold/outside_ambient_c()
+	if (submerged_built_hull_deck(src) && !sunken_hull_pressure_sheltered(src))
+		return sea_zone_temperature_c(hull_depth_zone(src))
+	return ..()
 
 // Whatever is dropped down here comes to rest on the seabed.
 /turf/floor/beach/water/deep/saltwater/underwater/sea_layer/check_sinking(atom/movable/A)
@@ -182,10 +194,11 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 // One life tick out on the seabed: depth news and the squeeze on a suit
 // that is not built for this deep.
 /mob/living/human/proc/seabed_exposure_step(turf/T)
-	if (!sea_layer_cell(T) || T.iscovered() || stat == DEAD)
+	var/submerged_hull = submerged_built_hull_deck(T)
+	if (stat == DEAD || (!submerged_hull && (!sea_layer_cell(T) || T.iscovered())) || (submerged_hull && sunken_hull_pressure_sheltered(T)))
 		seabed_last_zone = 0
 		return
-	var/zone = sea_zone_of(T)
+	var/zone = hull_depth_zone(T)
 	if (zone != seabed_last_zone)
 		if (seabed_last_zone)
 			to_chat(src, zone > seabed_last_zone ? SPAN_WARNING("The seabed falls away: you are in [sea_zone_name(zone)] now.") : SPAN_NOTICE("The seabed rises: you are back in [sea_zone_name(zone)]."))
@@ -206,7 +219,7 @@ var/global/list/seabed_zone_counts = list(0, 0, 0, 0)
 // Drops the weights and swims up to the open sea straight above.
 /mob/living/human/proc/seabed_ascend()
 	var/turf/T = get_turf(src)
-	if (!sea_layer_cell(T) || T.iscovered())
+	if (!sea_layer_cell(T) || (T.iscovered() && !submerged_built_hull_deck(T)))
 		to_chat(src, SPAN_WARNING("You are not out on the seabed."))
 		return FALSE
 	var/turf/up = locate(T.x, T.y, multiz_level_above(T.z))
