@@ -92,6 +92,12 @@ var/papers_owners_about = FALSE
 	papers_owners_about = FALSE
 	naval_check(helm.steer_access(bob) == CRAFT_HELM_CHAINED, "with no owner about the wheel is chained to a stranger")
 	naval_check(findtext(vessel_fitting_refusal(S, bob), "belongs to Reds"), "and so are her levers and radar ([vessel_fitting_refusal(S, bob)])")
+	var/old_map_id = map.ID
+	map.ID = MAP_NOMADS_GAIA
+	naval_check(helm.steer_access(bob) == CRAFT_HELM_FORCE && isnull(vessel_fitting_refusal(S, bob)), "Gaia uses the forceable helm and open fitting rules even with the owners offline")
+	naval_check(helm.steer_access(ann) == CRAFT_HELM_FREE, "Gaia keeps owners' free helm access")
+	map.ID = old_map_id
+	naval_check(helm.steer_access(bob) == CRAFT_HELM_CHAINED && !isnull(vessel_fitting_refusal(S, bob)), "the offline chain returns on a non-Gaia map")
 	papers_owners_about = TRUE
 	naval_check(helm.steer_access(bob) == CRAFT_HELM_FORCE, "while an owner is about a stranger can force the wheel")
 	naval_check(isnull(vessel_fitting_refusal(S, bob)), "and work her fittings")

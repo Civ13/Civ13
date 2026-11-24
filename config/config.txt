@@ -254,6 +254,9 @@ DISABLE_FOV
 #if uncommented, does not automatically save persistence rounds to file
 SKIP_PERSISTENCE_SAVING
 
+#Enable new detailed birth records on a region-group world only after all receivers support them.
+#BIRTH_CHART_RECORDS 1
+
 #server-clock hour (0-23) at which a persistence server saves the map and reboots
 #to reclaim memory (BYOND never returns freed memory to the OS). The world resumes
 #from the save automatically after the restart. Comment out to disable.

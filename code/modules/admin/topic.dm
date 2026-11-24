@@ -429,6 +429,10 @@
 	else if (href_list["warn"])
 		usr.client.warn(href_list["warn"])
 
+	else if (href_list["panel_ban"])
+		var/mob/target = locate(href_list["panel_ban"])
+		usr.client.quickBan_from_panel(target, href_list["ban_account"])
+
 	else if (href_list["boot2"])
 		var/client/kick_actor = usr.client
 		if (!check_rights(R_MOD | R_ADMIN))

@@ -96,6 +96,31 @@ var/global/gateway_probe_runtime_error = FALSE
 	before = bridge.asked.len
 	where = region_gateway_destination("Guest-12345")
 	gateway_probe_check("guest/start_region_unasked", where["home"] == "gaia" && bridge.asked.len == before)
+	bridge.next_answer = list("ok" = TRUE, "result" = list("state" = "HOME", "region" = "northamerica"))
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	sent = bridge.asked[bridge.asked.len]
+	gateway_probe_check("roster/looks_up_exact_owner", where["home"] == "northamerica" && sent["path"] == "/lobby/home" && sent["body"]["ckey"] == "@3somebody" && isnull(sent["body"]["op"]))
+	bridge.next_answer["result"] = list("state" = "NO_HOME", "region" = "gaia")
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	gateway_probe_check("roster/directory_confirms_start", where["home"] == "gaia")
+	bridge.next_answer["result"] = list("state" = "NO_HOME", "region" = "northamerica")
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	gateway_probe_check("roster/refuses_false_start", isnull(where["home"]) && where["wait"])
+	bridge.next_answer["result"] = list("state" = "TRAVELLING", "region" = "northamerica")
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	gateway_probe_check("roster/escrow_no_handoff", isnull(where["home"]) && findtext(where["wait"], "on its way"))
+	bridge.next_answer = null
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	gateway_probe_check("roster/agent_unavailable_no_fallback", isnull(where["home"]) && findtext(where["wait"], "cannot confirm"))
+	bridge.next_answer = list("ok" = TRUE, "result" = list("state" = "PARKED", "home" = "land:4,6"))
+	before = bridge.asked.len
+	where = region_gateway_destination("Somebody", 3, TRUE)
+	sent = bridge.asked[bridge.asked.len]
+	gateway_probe_check("roster/confirmed_parked_returns_no_route_or_wake", isnull(where["home"]) && where["parked"] == "land:4,6" && bridge.asked.len == before + 1 && sent["path"] == "/lobby/home" && sent["body"]["ckey"] == "@3somebody")
+	bridge.next_answer = gateway_probe_answer("ELSEWHERE", "northamerica")
+	where = region_gateway_destination("Somebody", 3)
+	sent = bridge.asked[bridge.asked.len]
+	gateway_probe_check("home/normal_connect_uses_exact_slot", where["home"] == "northamerica" && sent["path"] == "/account" && sent["body"]["ckey"] == "@3somebody")
 
 	// Nobody plays here, not even a guest.
 	var/mob/new_player/lobby = new
@@ -145,6 +170,28 @@ var/global/gateway_probe_runtime_error = FALSE
 	shard_group.record_sleeping("northamerica", list("state" = "asleep", "cold" = TRUE), world.time)
 	shard_group.record_sleeping("tutorial", list("state" = "stopped"), world.time)
 	gateway_probe_check("hub/confirmed_zero", findtext(region_gateway_hub_status(), "Players across regions:</b> 0<br>"))
+
+	// The public overview is a projection of cached fixed-world peers.
+	var/list/public_gaia = shard_group.peers["gaia"]
+	gateway_probe_check("overview/confirmed_zero", region_gateway_public_players(public_gaia, region_gateway_public_state(public_gaia, world.time)) == "0")
+	var/list/stale = list("checked" = world.time - (3 MINUTES), "state" = "UP", "players" = 71)
+	gateway_probe_check("overview/stale_not_zero", region_gateway_public_state(stale, world.time) == "Unknown" && region_gateway_public_players(stale, "Unknown") == "&mdash;")
+	gateway_probe_check("overview/rejects_invalid_count", region_gateway_public_players(list("players" = 1.5), "Online") == "&mdash;")
+	public_gaia["ordinal_age"] = 0
+	gateway_probe_check("overview/online_epoch", region_gateway_public_epoch(public_gaia, "Online") == "Stone Age")
+	gateway_probe_check("overview/invalid_or_stale_epoch", region_gateway_public_epoch(list("ordinal_age" = 1000), "Online") == "&mdash;" && region_gateway_public_epoch(public_gaia, "Unknown") == "&mdash;")
+	public_gaia["name"] = "Gaia <public>"
+	shard_group.peers["pacific"] = list("name" = "Pacific Ocean", "kind" = "OCEANIC", "checked" = world.time, "state" = "UP", "players" = 1, "address" = "private-host.example:1791", "train_stations" = list("Private Platform"))
+	shard_group.peers["test_private_expedition"] = list("name" = "Private Expedition", "kind" = "EXPEDITION", "address" = "private-host.example:1792")
+	shard_group.order += "pacific"
+	shard_group.order += "test_private_expedition"
+	before = bridge.asked.len
+	var/chart = region_gateway_overview_html(null)
+	gateway_probe_check("overview/land_and_ocean", findtext(chart, "Gaia") && findtext(chart, "Pacific Ocean") && findtext(chart, "Ocean"))
+	gateway_probe_check("overview/escapes_name", findtext(chart, "Gaia &lt;public&gt;") && !findtext(chart, "Gaia <public>"))
+	gateway_probe_check("overview/suppresses_private_and_service", !findtext(chart, "Private Expedition") && !findtext(chart, ">Tutorial<") && !findtext(chart, ">Gateway<"))
+	gateway_probe_check("overview/no_addresses_stations_or_travel", !findtext(chart, "private-host.example") && !findtext(chart, "Private Platform") && !findtext(chart, "region_go="))
+	gateway_probe_check("overview/no_agent_queries", before == bridge.asked.len)
 
 	// Seen from a land: no Join link, no trail, nobody sent there.
 	gateway_probe_check("config/land_view", shard_group.configure(gateway_probe_group("gaia")) && !region_gateway_here())

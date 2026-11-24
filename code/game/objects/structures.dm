@@ -54,9 +54,13 @@
 			toggle_anchor(user)
 			return
 	else if (istype(O, /obj/item/weapon/hammer) && !not_disassemblable)
+		if (!can_dismantle_with_hammer(user))
+			return
 		playsound(loc, 'sound/items/Screwdriver.ogg', 75, TRUE)
 		to_chat(user, SPAN_NOTICE("You begin dismantling \the [src]."))
 		if (do_ship_fixture_after(user, 25, src) && !QDELETED(src))
+			if (!can_dismantle_with_hammer(user))
+				return
 			var/bed_notice_owner
 			// Recover bed upholstery only after the wait, before frame output/deletion.
 			if (istype(src, /obj/structure/bed))
@@ -77,6 +81,10 @@
 			if (bed_notice_owner && QDELETED(src))
 				persistence_queue_bed_notice(bed_notice_owner, user.real_name)
 			return
+
+// Called before the hammer wait and again before any refund or deletion.
+/obj/structure/proc/can_dismantle_with_hammer(mob/user)
+	return TRUE
 
 // Called after a wrench fastens or unfastens the structure.
 /obj/structure/proc/anchor_changed()
