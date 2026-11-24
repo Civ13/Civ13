@@ -63,7 +63,7 @@ var/global/list/study_field_focus_rate = list(
 	var/tmp/adhd_bench_last = -ADHD_BENCH_BREAK
 
 /mob/living/human/persistence_runtime_var(key)
-	return key == "adhd_read_start" || key == "adhd_read_last" || key == "adhd_bench_start" || key == "adhd_bench_last" || ..()
+	return key == "next_science_investigation" || key == "adhd_read_start" || key == "adhd_read_last" || key == "adhd_bench_start" || key == "adhd_bench_last" || ..()
 
 // The discipline this character focuses on, or null.
 /mob/living/human/proc/study_field()

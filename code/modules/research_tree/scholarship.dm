@@ -187,15 +187,20 @@ var/global/list/scholar_entry_tiers = null
 /mob/living/human/persistence_import_fields(list/saved_fields)
 	. = ..()
 	scholarship = clean_scholarship(scholarship)
+	science_investigations = clean_science_investigations(science_investigations)
+	next_science_investigation = 0
 	if (!istext(scholar_master) || length(scholar_master) > 200)
 		scholar_master = null
 	if (stat == DEAD)
 		scholarship = list()
+		science_investigations = null
 		scholar_master = null
 
 /mob/living/human/forget_recipe_knowledge()
 	..()
 	scholarship = list()
+	science_investigations = null
+	next_science_investigation = 0
 	scholar_master = null
 
 /mob/living/human/proc/scholar_requirement_text(node_id)
