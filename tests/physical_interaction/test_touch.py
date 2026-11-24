@@ -92,5 +92,18 @@ class PhysicalInteractionTests(unittest.TestCase):
         self.assertFalse(self.check(user(lying=True)))
 
 
+class StationaryClimbTest(unittest.TestCase):
+    def test_completed_climb_moves_the_actor_to_the_turf_and_releases_the_wait(self):
+        path, _ = WRAPPERS[-1]
+        body = adapter.extract((ROOT / path).read_text(),
+                               '/obj/item/weapon/gun/projectile/automatic/stationary/proc/do_climb')
+        late = body.split('post_climb_check = TRUE)', 1)[1]
+        self.assertNotRegex(late, r'(?:forceMove\(|=\s*)target\.loc')
+        self.assertNotIn('usr.loc', late)
+        self.assertIn('user.forceMove(target)', late)
+        self.assertIn('if (user.loc == target && get_turf(user) == get_turf(src))', late)
+        self.assertEqual(late.count('climbers -= user'), 4)
+        self.assertTrue(late.rstrip().endswith('climbers -= user'))
+
 if __name__ == '__main__':
     unittest.main()

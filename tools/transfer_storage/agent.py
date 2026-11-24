@@ -18,6 +18,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 if __package__ in (None, ''):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from tools.transfer_storage.lobby import LobbyMailbox  # noqa: E402
 from tools.transfer_storage.radio import RadioError, RadioRelay  # noqa: E402
 from tools.transfer_storage.region import RegionHeld, RegionStore, TransferError  # noqa: E402
 
@@ -40,8 +41,8 @@ def _fast(body):
     return body.get('fast') in (True, 1)
 
 
-def _routes(store, radio):
-    return {
+def _routes(store, radio, lobby=None):
+    routes = {
         # Cross-region radio: ephemeral, never in the ledger (radio.py).
         '/radio/send': lambda body: {'id': radio.send(body.get('envelope'))},
         '/radio/send_batch': lambda body: radio.send_batch(body.get('envelopes')),
@@ -115,12 +116,20 @@ def _routes(store, radio):
                                                            body.get('owner'), body.get('voyage'), body.get('data')),
         '/chart/pass-result': lambda body: store.chart_pass_result(body.get('id'), body.get('actor')),
     }
+    if lobby is not None:
+        routes.update({
+            '/lobby/home': lambda body: lobby.ask(body['ckey']),
+            '/lobby/home-pending': lambda body: lobby.pending(),
+            '/lobby/home-result': lambda body: lobby.publish(body['owner'], body['id'], body['answer']),
+        })
+    return routes
 
 
-def make_server(store, token, port=0, radio=None):
+def make_server(store, token, port=0, radio=None, lobby_gateway=False):
     if not isinstance(token, str) or len(token) < 32:
         raise ValueError('the agent token must be at least 32 characters')
-    routes = _routes(store, radio or RadioRelay(store.region, store.group))
+    routes = _routes(store, radio or RadioRelay(store.region, store.group),
+                     LobbyMailbox(store) if lobby_gateway else None)
     lock = threading.Lock()
 
     class Handler(BaseHTTPRequestHandler):
@@ -191,6 +200,7 @@ def main(argv=None):
     parser.add_argument('--group', required=True)
     parser.add_argument('--port', type=int, required=True)
     parser.add_argument('--token-file', required=True)
+    parser.add_argument('--lobby-gateway', action='store_true', help='enable read-only home query mailbox')
     parser.add_argument('--enroll', action='append', default=[], metavar='PEER:DIRECTION',
                         help='permit one direction (out or in) with a peer; repeatable, kept in the store')
     args = parser.parse_args(argv)
@@ -205,7 +215,7 @@ def main(argv=None):
     store = RegionStore(args.db, args.region, args.group)
     for peer, direction in enrollments:
         store.enroll(peer, direction)
-    server = make_server(store, token, args.port)
+    server = make_server(store, token, args.port, lobby_gateway=args.lobby_gateway)
     try:
         server.serve_forever()
     finally:

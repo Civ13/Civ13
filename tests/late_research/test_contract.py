@@ -485,7 +485,7 @@ class NaturalistFinds(unittest.TestCase):
             self.assertIn(guard, room)
     def test_gates(self):
         subjects = proc(self.src, "/proc/find_subjects")
-        for guard in ("map.book_research_enabled()", "node_discipline(node_id) != discipline", "H.knows_recipe_node(node_id) || !H.knows_research_prereqs(node_id)"):
+        for guard in ("map.book_research_enabled()", "!node_teaches_discipline(node_id, discipline)", "H.knows_recipe_node(node_id) || !H.knows_research_prereqs(node_id)"):
             self.assertIn(guard, subjects)
         verb = proc(self.src, "/mob/living/human/proc/record_a_find")
         for guard in ("held_writing_pen()", "do_reading(", "player_input("):
@@ -493,6 +493,37 @@ class NaturalistFinds(unittest.TestCase):
         self.assertIn('gain_active_scholarship(node_id, ., "find:[kind]")', proc(self.src, "/proc/commit_find"))
     def test_bench_takes_notes(self):
         self.assertIn("take_find_notes(W, user)", read("code/modules/research_tree/book_research.dm"))
+
+class RelatedDisciplines(unittest.TestCase):
+    """Subjects that also teach Natural Science (player suggestion, 2026-11-23)."""
+    def setUp(self):
+        self.src = read("code/modules/research_tree/scholarship.dm")
+        self.nodes = read("code/modules/research_tree/research_node.dm")
+    def related(self):
+        block = self.src[self.src.index("var/global/list/scholar_node_related = list("):]
+        block = block[:block.index(")\n")]
+        return re.findall(r'"(\w+)" = "(\w+)"', block)
+    def test_rows_name_real_subjects_of_another_discipline(self):
+        rows = self.related()
+        self.assertGreaterEqual(len(rows), 20)
+        own = dict(re.findall(r'^\t"(\w+)" = "(\w+)"[,)]', self.src[self.src.index("scholar_node_disciplines"):self.src.index("scholar_node_related")], re.M))
+        for node, discipline in rows:
+            self.assertIn('research_node("%s", ' % node, self.nodes)
+            self.assertIn('"%s" = ' % discipline, self.src[:self.src.index("scholar_node_disciplines")])
+            self.assertNotEqual(own.get(node), discipline, node)
+            self.assertNotEqual(discipline, "mathematics", node)
+        self.assertIn(("stone_masonry", "natural_science"), rows)
+    def test_share_never_gates_or_pays_mathematics_twice(self):
+        self.assertIn("#define SCHOLAR_RELATED_SHARE 0.5", read("code/modules/research_tree/_research_tree_defines.dm"))
+        gain = proc(self.src, "/mob/living/human/proc/gain_scholarship")
+        related = gain[gain.index("var/related = node_related_discipline(node_id)"):]
+        self.assertIn("base_amount * SCHOLAR_RELATED_SHARE", related)
+        self.assertNotIn("mathematics", related)
+        self.assertNotIn("related", proc(self.src, "/mob/living/human/proc/meets_scholar_requirement"))
+        self.assertNotIn("related", proc(self.src, "/proc/scholar_entry_tier"))
+    def test_finds_follow_related_subjects(self):
+        finds = read("code/modules/research_tree/naturalist_finds.dm")
+        self.assertIn("!node_teaches_discipline(assigned_node, P.find_discipline)", finds)
 
 class NaturalScienceWork(unittest.TestCase):
     def test_included(self):

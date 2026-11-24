@@ -339,6 +339,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("optics_instruments", "Optics & Instruments", "Industrial", 165, 2, RESEARCH_MODE_ANALYSIS, list("glassworking"), 3))
 	register_research_node(new /datum/research_node("factories", "Factories", "Industrial", 200, 3, RESEARCH_MODE_ANALYSIS, list("workshops","steam_power"), 4))
 	register_research_node(new /datum/research_node("assembly_line", "Assembly Line", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("factories"), 5))
+	register_research_node(new /datum/research_node("industrial_plastics", "Industrial Plastics", "Industrial", 270, 5, RESEARCH_MODE_ANALYSIS, list("assembly_line","combustion","electricity"), 6))
 	register_research_node(new /datum/research_node("automation", "Automation", "Industrial", 305, 6, RESEARCH_MODE_ANALYSIS, list("assembly_line","electricity"), 7))
 	// Prototype: an early electronic device (gated on assembly_line, era5, well
 	// before this node's era8 -- assembly_line is baseline-granted by then).
@@ -501,6 +502,7 @@ var/global/list/node_grid_col_cache = null
 	register_research_node(new /datum/research_node("herbalism", "Herbalism", "Health", 60, 0, RESEARCH_MODE_ANALYSIS, null, 0))
 	register_research_node(new /datum/research_node("apothecary", "Apothecary", "Health", 130, 1, RESEARCH_MODE_ANALYSIS, list("herbalism"), 2))
 	register_research_node(new /datum/research_node("pharmacology", "Pharmacology", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("apothecary"), 5))
+	register_research_node(new /datum/research_node("immunization", "Immunization", "Health", 235, 4, RESEARCH_MODE_ANALYSIS, list("germ_theory", "pharmacology"), 5))
 	register_research_node(new /datum/research_node("modern_medicine", "Modern Medicine", "Health", 305, 6, RESEARCH_MODE_ANALYSIS, list("pharmacology"), 7))
 	// --- Health: Surgery ---
 	register_research_node(new /datum/research_node("field_surgery", "Field Surgery", "Health", 95, 0, RESEARCH_MODE_ANALYSIS, list("herbalism"), 1))
@@ -956,6 +958,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/conveyor_construct" = "assembly_line",
 		"/obj/item/conveyor_switch_construct" = "assembly_line",
 		"/obj/structure/factory_fabricator" = "assembly_line",
+		"/obj/structure/factory_fabricator/plastic_molder" = "industrial_plastics",
 		"/obj/item/weapon/flame/lighter/random" = "assembly_line",
 		"/obj/item/weapon/flame/lighter/zippo" = "assembly_line",
 		"/obj/item/weapon/radio/walkietalkie" = "assembly_line",
@@ -1811,6 +1814,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/converter/acid_bath" = "germ_theory",
 		"/obj/structure/shower/bathtub/big/steel" = "germ_theory",
 		"/obj/structure/shower/bathtub/steel" = "germ_theory",
+		// --- immunization (1) ---
+		"/obj/structure/workshop_machine/immunization_clinic" = "immunization",
 		// --- glassworking (12) ---
 		// Corrective eyewear follows the first glass (Nearsighted/Farsighted traits).
 		"/obj/item/clothing/glasses/monocle" = "glassworking",
@@ -1977,7 +1982,8 @@ var/global/list/node_grid_col_cache = null
 		"/obj/structure/simple_door/key_door/anyone/doubledoor/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marble" = "imperial_architecture",
 		"/obj/structure/window_frame/marblefull" = "imperial_architecture",
-		// --- iron_smithing (10) ---
+		// --- iron_smithing (11) ---
+		"/obj/item/weapon/material/thrown/chakram" = "iron_smithing",
 		"/obj/item/weapon/grapnel" = "iron_smithing",
 		"/obj/structure/lighthouse_beacon" = "iron_smithing",
 		"/obj/structure/bollard/iron" = "iron_smithing",

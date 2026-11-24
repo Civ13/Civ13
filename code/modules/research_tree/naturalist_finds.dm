@@ -197,7 +197,7 @@ var/global/list/find_not_animals = list(
 	if (!istype(H) || !istype(B) || !map || !map.book_research_enabled())
 		return found
 	for (var/node_id in research_nodes)
-		if (node_discipline(node_id) != discipline)
+		if (!node_teaches_discipline(node_id, discipline))
 			continue
 		if (H.knows_recipe_node(node_id) || !H.knows_research_prereqs(node_id))
 			continue
@@ -351,7 +351,7 @@ var/global/list/find_not_animals = list(
 		return FALSE
 	var/obj/item/weapon/book/B = placed_book()
 	var/datum/research_node/N = get_research_node(assigned_node)
-	if (!B || !N || node_discipline(assigned_node) != P.find_discipline)
+	if (!B || !N || !node_teaches_discipline(assigned_node, P.find_discipline))
 		to_chat(user, SPAN_WARNING("These notes belong to [scholar_disciplines[P.find_discipline]]. Put a book on the bench and research a subject of that discipline first."))
 		return TRUE
 	if (B.find_room(N.id, P.find_kind, P.find_double) <= 0)

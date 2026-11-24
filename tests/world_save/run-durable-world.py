@@ -294,8 +294,10 @@ def main():
                                   ('waiting.client', 'waiting.claim_client'),
                                   ('var/client/C', 'var/datum/recovery_fixture_client/C'),
                                   ('H.key = C.key', 'recovery_fixture_transfer(C, H)'),
+                                  ('region_gateway_expected_slot_ok(C)', 'recovery_fixture_expected_slot_ok(C)'),
                                   (' in clients)', ' in recovery_fixture_clients)')):
-                expected = {'var/client/C': 2, 'waiting.client': 2, 'lobby.client': 5}.get(before, 1)
+                expected = {'var/client/C': 2, 'waiting.client': 2, 'lobby.client': 7,
+                            'region_gateway_expected_slot_ok(C)': 2}.get(before, 1)
                 if body.count(before) != expected:
                     raise RuntimeError('Reclaim client IO adapter anchor changed: ' + before)
                 body = body.replace(before, after)

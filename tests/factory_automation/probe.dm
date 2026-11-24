@@ -179,7 +179,7 @@ var/factory_runtime_error = FALSE
 	factory_check(consumer.draw_cable_power() && C.rebuild_time == world.time, "a reservation older than a second takes a fresh traversal")
 	E.maxpower = 30
 	C.rebuild_supply()
-	factory_check(C.currentflow > C.powerflow, "a source traversal publishes the overload")
+	factory_check(C.currentflow <= C.powerflow && !C.power_consumers[consumer] && !consumer.powered, "a source traversal sheds the load it can no longer carry")
 	factory_check(!consumer.draw_cable_power() && C.currentflow == 0, "an overloaded grid refuses and releases the reservation")
 	E.maxpower = 100
 	C.rebuild_supply()

@@ -156,5 +156,72 @@ class PoisonTolerance(unittest.TestCase):
             previous = current
 
 
+
+
+class ImmunizationClinic(unittest.TestCase):
+    def setUp(self):
+        self.clinic = read("code/modules/1713/immunization_clinic.dm")
+        self.severe = read(HUMAN + "severe_disease.dm")
+
+    def proc(self, text, marker):
+        return text.split(marker, 1)[1].split("\n/", 1)[0]
+
+    def test_both_drinking_routes_check_cholera_without_masking_worms(self):
+        for entry, guard, worm in (
+            ("proc/swallow_germs(", "immunization_protects(kind)", 'catch_disease("worms")'),
+            ("proc/catch_dirty_water_illness(", 'immunization_protects("cholera")', 'catch_disease("worms")'),
+        ):
+            body = self.proc(self.severe, entry)
+            self.assertLess(body.index(guard), body.index("catch_disease("))
+            self.assertIn(worm, body)
+        generic = self.proc(read(HUMAN + "immunity.dm"), "proc/infection_chance_scale(")
+        self.assertIn("immunization_protects(kind)", generic)
+        illness = self.proc(read(HUMAN + "immunity.dm"), "proc/handle_immunity()")
+        self.assertNotIn("immunization", illness)
+
+    def test_window_and_existing_case_are_separate(self):
+        protects = self.proc(self.clinic, "proc/immunization_protects(")
+        self.assertIn('kind != "cholera"', protects)
+        self.assertIn("now >= entry[1] && now < entry[2]", protects)
+        record = self.proc(self.clinic, "proc/receive_clinic_immunization(")
+        self.assertIn("(disease && disease_type == kind)", record)
+        self.assertIn("now < entry[2]", record)
+        self.assertIn("starts + CLINIC_CHOLERA_PROTECTION_MINUTES", record)
+        for name in ("disease_treatment", "disease_course", "clear_disease(", "disease_resistance"):
+            self.assertNotIn(name, record)
+
+    def test_consent_rechecks_precede_the_only_dose_commit(self):
+        offer = self.proc(self.clinic, "/immunization_clinic/attack_hand(")
+        consent = offer.index('answer != "Accept"')
+        commit = offer.index("apply_clinic_dose(")
+        for guard in ("clinic_active()", "H.client != operator", "patient.client != recipient",
+                      'crafting_node_allowed(H, "immunization")', "clinic_doses <= 0"):
+            self.assertIn(guard, offer[consent:commit])
+        dose = self.proc(self.clinic, "proc/apply_clinic_dose(")
+        self.assertLess(dose.index("receive_clinic_immunization("), dose.index("clinic_doses--"))
+        self.assertNotIn("sleep(", dose)
+        self.assertNotIn("WWinput", dose)
+
+    def test_paid_and_bounded_supplies_cannot_use_a_moved_stack(self):
+        stock = self.proc(self.clinic, "/immunization_clinic/attackby(")
+        for guard in ("clinic_active()", "clinic_present(H)", '"immunization"',
+                      "CLINIC_DOSE_CAPACITY - CLINIC_BATCH_DOSES", "S.loc != H", "H.get_active_hand() != S"):
+            self.assertLess(stock.index(guard), stock.index("S.use(1)"))
+        self.assertLess(stock.index("S.use(1)"), stock.index("clinic_doses += CLINIC_BATCH_DOSES"))
+
+    def test_staged_rollout_and_save_shape(self):
+        active = self.proc(self.clinic, "proc/clinic_active()")
+        self.assertIn("map.ordinal_age >=", active)
+        self.assertIn("!shard_group.enabled", active)
+        self.assertIn("config.shard_immunization_records", active)
+        self.assertIn("var/shard_immunization_records = FALSE", read("code/datums/configuration.dm"))
+        self.assertIn("/mob/living/human/var/list/immunization_record = null", self.clinic)
+        self.assertNotIn("var/tmp/immunization_record", self.clinic)
+        self.assertIn("world.realtime", self.proc(self.clinic, "proc/immunization_now()"))
+        nodes = read("code/modules/research_tree/research_node.dm")
+        self.assertRegex(nodes, r'"immunization", "Immunization", "Health".*list\("germ_theory", "pharmacology"\), 5')
+        self.assertIn('"/obj/structure/workshop_machine/immunization_clinic" = "immunization"', nodes)
+
+
 if __name__ == "__main__":
     unittest.main()

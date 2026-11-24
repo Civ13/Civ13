@@ -116,7 +116,7 @@ are retired; do not use them.
 CI selection and the offline baseline are described in
 [docs/ci-selection.md](docs/ci-selection.md). Lint uses SpacemanDMM `dreamchecker`
 (`SpacemanDMM.toml`). Contributor and agent rules live in
-[AGENTS.md](AGENTS.md) and [CODEX.md](CODEX.md).
+[AGENTS.md](AGENTS.md) and the skills in `.agents/skills/`.
 
 ## Coding pitfalls
 

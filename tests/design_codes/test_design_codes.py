@@ -150,9 +150,12 @@ class PlanCodesTest(unittest.TestCase):
         kinds = read('code/modules/naval/draught_kinds.dm')
         body = kinds.split('/obj/item/ship_draught/proc/draught_import(mob/living/human/H,', 1)[1].split('\n/', 1)[0]
         for needle in ('design_code_ask(H,', 'length(typed) > K["max"]', 'call(K["read"])(typed)',
-                       'design_code_refusal(', 'map.ordinal_age < K["age"]', 'design_code_log(H,',
+                       'design_code_refusal(', '!draught_age_available(H, K["age"])', 'design_code_log(H,',
                        'check_design()', 'R.chat_lines()'):
             self.assertIn(needle, body)
+        age_check = read('code/modules/1713/practice_workshop.dm').split(
+            '/proc/draught_age_available(mob/living/human/H, age)', 1)[1].split('\n/', 1)[0]
+        self.assertIn('(map && map.ordinal_age >= age) || tutorial_workshop_access(H, H)', age_check)
         self.assertNotIn('paste_any_code', read('code/modules/naval/sub_draught.dm'))
 
 
