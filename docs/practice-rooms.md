@@ -82,6 +82,13 @@ through four spaces joined by doors on one line:
    drawing office with the workshop desk and the supplies, and a concrete
    building bay.
 
+![The tutorial region's room](images/practice-rooms/tutorial-room.png)
+
+A source render of one built room (walls draw black; the two green glows are
+the walk marker and the exit marker). [The hall fitted out for each built
+exercise](images/practice-rooms/tutorial-room-exercises.png): empty, press,
+airship yard, train, ship and house, top to bottom.
+
 ### Workshop and extra lessons
 
 The workshop desk sets up one exercise in the trainee's private hall and lays
