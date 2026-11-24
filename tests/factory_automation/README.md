@@ -54,6 +54,13 @@ Removing the belt power check makes five drive checks fail.
 
 `fabricators_probe.dm` (phase 3a) checks:
 
+- Industrial plastics: two paid Bakelizer batches yield pellets that feed an
+  injection-molded tool handle, including short feed, stale timer, power loss,
+  legacy sheet mode, incompatible machines and a stopped Bakelizer after the
+  load hook. A separate laboratory route makes the same feedstock for an empty
+  blow-molded bottle. Ordinary gameplay, UI and actual disk save/reload remain
+  outside this fixture. See [Industrial plastics](../../docs/industrial-plastics.md).
+
 - Recipe list: the thirty-eight curated rows load with no errors and parse output, inputs, tier and node; every row names a real research node; a missing output, a zero input, a short row and a duplicate are reported and skipped.
 - Fabricators: no recipes without research, tier 1 lists only tier 1 recipes and tier 3 lists all; unknown recipes are refused; it takes only its recipe's inputs, up to two cycles each; nothing happens without power; powered steps add progress without spending inputs early; a finished cycle spends one cycle of inputs and leaves the output on the tile, which is offered (honouring arm filters) and can be taken; a power cut pauses the cycle without losing progress or inputs and restored power finishes it; an empty fabricator sleeps and new inputs wake it; a crowded tile makes it wait; an item recipe makes a screwdriver and offers it, and a stack recipe makes three rifle casings from one copper; the computerized tier runs at half time.
 - Lifecycle: every input buffers on its own; load clamps progress and resumes unpowered; the recipe and progress are saved and the active flag is not; load clears a recipe the list no longer has; changing the recipe or removing the fabricator drops its buffer.

@@ -909,6 +909,18 @@ SUITES = {
         'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
             'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
             'tests/save_movement/source_adapter.py')},
+    # Generated Atlas and dedicated molding recipe ingress contracts.
+    'industrial_plastics': {'files': ('tests/factory_automation/test_industrial_plastics.py',),
+        'paths': ('tests/factory_automation/test_industrial_plastics.py',
+                  'code/modules/1713/plastic_molding.dm',
+                  'docs/industrial-plastics.md'),
+        'shared_paths': ('code/modules/1713/modern_items.dm',
+                         'code/modules/1713/factory_fabricators.dm',
+                         'code/modules/1713/resin_laminate.dm',
+                         'code/modules/reagents/laboratory.dm',
+                         'scripts/atlas/catalog_metadata.py',
+                         'config/crafting/factory_recipes.txt',
+                         'UI/crafting-atlas.json')},
     # Complete oil-well ownership helpers with fake locations/reagents; no native IO.
     'oilwell_barrels': {'files': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
         'paths': ('tests/petroleum_lifecycle/test_barrel_recovery.py',),
