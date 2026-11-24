@@ -29,9 +29,15 @@ disk save or invulnerability; only a completed world generation is durable.
 - Sleep on an available stationary bed records a scalar canonical account claim
   on the bed and keeps the body there. One account may assign one bed; another
   account cannot silently take it. Sleep refuses a bed assigned to another account
-  before and after its two-minute wait, sleeping in an unassigned bed moves the
-  account's assignment there and releases the old bed, and examining an assigned
-  bed tells the viewer whether it is theirs. Chairs, carried/rolling beds, protected cells,
+  before and after its wait. In a registered bed, the wait is two minutes if
+  the map allows offline protection and the character's faction or nation holds
+  the province, or their faction owns the claimed island. It is 10 seconds on
+  Gaia and in other locations that do not qualify. The wait is chosen when
+  Sleep starts; offline protection still follows the live rules. The two-minute
+  wait on maps without registered beds is unchanged.
+  Sleeping in an unassigned bed moves the account's assignment there and
+  releases the old bed; examining an assigned bed tells the viewer whether it
+  is theirs. Chairs, carried/rolling beds, protected cells,
   blocked locations and another occupant are not return destinations.
 - A saved body's first lobby reclaim prefers its unique valid assigned bed.
   The existing restored-body registry claim is consumed after successful key
