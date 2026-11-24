@@ -812,6 +812,8 @@ class AcquisitionProjection(Projection):
         self.globals |= dict(recipe_node_requirements=NodeRequirements(re.findall(
             r'"(/obj/[^"\n]+)" = "([a-z_]+)"', research)), text2num=int,
             material_prefix='/material/electronics/',
+            # Grinder tests use ordinary crafting, outside the tutorial aqueduct bay.
+            tutorial_waterworks_recipe=lambda _actor, _path: False, user=None,
             map=Record(ordinal_age=5,is_node_done=lambda faction,node: node=='electricity',book_research_enabled=lambda: False),
             is_basic_crafting_recipe=lambda value: value in ('/obj/item/stack/material/rope','/obj/item/stack/material/stonebrick','/obj/structure/researchdesk'),
             reference_build_time=lambda _actor, _path, time: time,  # no book reference (subject_prototypes.dm)

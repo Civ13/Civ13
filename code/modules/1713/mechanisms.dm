@@ -231,7 +231,7 @@
 	if (tied.len < MECHANISM_MAX_LINKS)
 		for (var/atom/movable/A in mechanism_reachable_actuators(trigger))
 			var/turf/T = get_turf(A)
-			if (!T || (T in tied))
+			if (!T || (T in tied) || !tutorial_workshop_pair(user, trigger, T))
 				continue
 			choices["Tie a cord to [A.name] ([mechanism_offset_words(trigger, T)])"] = T
 	if (!choices.len)
@@ -239,7 +239,7 @@
 		return TRUE
 	var/choice = player_input(user, "Tie or cut which cord on \the [trigger]?", "Cords", null, "anything", choices, TRUE)
 	var/turf/target = choice ? choices[choice] : null
-	if (!target || QDELETED(trigger) || QDELETED(R) || user.get_active_hand() != R || get_dist(user, trigger) > 1)
+	if (!target || QDELETED(trigger) || QDELETED(R) || user.get_active_hand() != R || get_dist(user, trigger) > 1 || !tutorial_workshop_pair(user, trigger, target))
 		return TRUE
 	var/entry = mechanism_link_entry(trigger, target)
 	var/list/offsets = mechanism_link_offsets(trigger.vars["links"])
@@ -253,7 +253,7 @@
 		to_chat(user, SPAN_WARNING("\The [trigger] already has [MECHANISM_MAX_LINKS] cords tied to it."))
 		return TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts running a cord from \the [trigger]."), SPAN_NOTICE("You start running a cord from \the [trigger]."))
-	if (!do_after(user, MECHANISM_TIE_TIME, trigger) || QDELETED(trigger) || QDELETED(R) || !R.use(1))
+	if (!do_after(user, MECHANISM_TIE_TIME, trigger) || QDELETED(trigger) || QDELETED(R) || !tutorial_workshop_pair(user, trigger, target) || !R.use(1))
 		return TRUE
 	offsets = mechanism_link_offsets(trigger.vars["links"])
 	if (!(entry in offsets) && offsets.len < MECHANISM_MAX_LINKS)

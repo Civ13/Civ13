@@ -135,9 +135,11 @@ lesson rooms and what the trainee carries stay.
   railways, are pegged out in either yard and built with materials from the
   stores. The rocket works fabricates the pieces; nothing stacks, fuels or
   launches a rocket.
-- **Design here:** submarine, harbor, waterworks, contraption and space
-  station. These lessons use the actual designers, but do not provision the
-  matching physical construction site.
+- **Five more physical exercises:** assemble a five-row submarine in a
+  freshwater basin (no movement or diving); survey and lay a two-span pier;
+  peg and build an intake, channel and fountain; build a lever and tie it to a
+  bell; unfold a workshop and its airlocks on the ground. These are small
+  training builds, not complete live-world installations.
 - **Lesson board** (in the camp): all in-game character tutorial topics
   (including the HUD, Crafting Atlas, book research, chat and Help) can be
   reread here. The camp's tree, tall grass and flint serve the branch, twine
