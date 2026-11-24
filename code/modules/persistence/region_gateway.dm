@@ -134,6 +134,10 @@
 		a.gw-btn.gw-main:hover{background:#c9a25c}
 		.gw-note{color:#a99b87;font-size:11.5px;margin:10px 2px 0}
 		.gw-note a{color:#9ed2ff}
+		.gw-tabs{display:flex;gap:18px;border-bottom:1px solid #66513b;margin:0 0 14px}
+		.gw-tabs a,.gw-tabs strong{display:block;padding:0 1px 7px;margin-bottom:-1px;font-size:14px;font-weight:normal;color:#c9b9a0;text-decoration:none;border-bottom:2px solid transparent}
+		.gw-tabs a:hover{color:#f6ecd6}
+		.gw-tabs strong{color:#ffd985;font-weight:bold;border-bottom-color:#ffd985}
 		</style>"}
 
 // One page of character cards. A row is list(slot, safe name, kind), where
