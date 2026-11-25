@@ -357,12 +357,13 @@
 							if (ML && ML.capacity && crafting_recipe_allowed(H, "/obj/item/weapon/material/part/shovel"))
 								var/tamt = Floor(ML.capacity/2)
 								if (tamt >= 1)
-									ML.capacity = 0
-									ML.update_icon()
+									ML.capacity -= tamt * 2
 									for (var/i=1, i<=tamt, i++)
 										new/obj/item/weapon/material/part/shovel(loc,ML.current_material)
 									to_chat(user, "You finish crafting the [ML.current_material] shovel head.")
-									ML.current_material = null
+									if (!ML.capacity)
+										ML.current_material = null
+									ML.update_icon()
 
 							in_use = FALSE
 						else
