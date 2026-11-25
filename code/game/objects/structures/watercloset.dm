@@ -716,7 +716,7 @@
 	refill()
 
 /obj/structure/sink/proc/refill()
-	if (volume < max_volume)
+	if (!well_pauses_recharge() && volume < max_volume)
 		if (volume < max_volume)
 			volume += 10
 		if (volume > max_volume)
@@ -967,9 +967,9 @@
 	. = ..()
 	if (. && flood_depth_at(get_turf(src)) > 0 && get_dist(src, user) <= 1)
 		flood_foul()
-		to_chat(user, SPAN_WARNING("Floodwater has run into the well and fouled it. Scrub it with soap once the water goes down."))
+		to_chat(user, SPAN_WARNING("Floodwater has run into the well and fouled it. Wait for the water to go down before cleaning it out."))
 	if (. && has_observable_fecal_odor(user))
-		to_chat(user, SPAN_WARNING("A foul smell rises from the well."))
+		to_chat(user, SPAN_WARNING("A foul smell rises from the well. Use Clean Out Well with an empty bucket and a shovel."))
 
 /obj/structure/sink/well/sandstone
 	name = "sandstone well"

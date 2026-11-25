@@ -158,7 +158,7 @@
 
 // Bring the water up to date: what has seeped in since it was last used.
 /obj/structure/sink/proc/dug_settle()
-	if (!dug_depth)
+	if (!dug_depth || well_pauses_recharge())
 		return
 	var/column = dug_column()
 	max_volume = round(min(WELL_VOLUME_MAX, column * WELL_VOLUME_PER_LEVEL))
@@ -166,6 +166,9 @@
 	dug_settled_at = world.time
 	volume += minutes * min(column, WELL_RECHARGE_LEVELS) * WELL_RECHARGE_PER_LEVEL * dug_recharge_factor()
 	volume = clamp(volume, 0, max_volume)
+
+/obj/structure/sink/proc/well_pauses_recharge()
+	return FALSE
 
 /obj/structure/sink/well/refill()
 	if (dug_depth)
@@ -409,6 +412,107 @@
 	if (!dug_reach(user, O))
 		return
 	..()
+
+// ---- cleaning out a fouled well -----------------------------------------------
+
+/obj/structure/sink/well
+	var/tmp/well_bailed_for_cleanup = FALSE
+
+/obj/structure/sink/well/persistence_runtime_var(key)
+	return key == "well_bailed_for_cleanup" || ..()
+
+/obj/structure/sink/well/well_pauses_recharge()
+	return well_bailed_for_cleanup
+
+/obj/structure/sink/well/proc/well_cleanup_source()
+	if (flood_depth_at(get_turf(src)) > 0)
+		return "Wait for the floodwater to go down first."
+	if (has_nearby_fecal_waste())
+		return "Remove the nearby waste or stop the pollution reaching the well first."
+	return null
+
+/obj/structure/sink/well/proc/well_cleanup_context(mob/living/human/H, obj/item/weapon/reagent_containers/glass/bucket/B, obj/item/S, turf/site, datum/admission)
+	return !persistence_admission_changed(admission) && !QDELETED(src) && !QDELETED(H) && !QDELETED(B) && !QDELETED(S) && istype(B) && isturf(site) && loc == site && isturf(H.loc) && H.z == z && H.Adjacent(src) && !H.incapacitated() && !H.restrained() && B.loc == H && S.loc == H && ((H.get_active_hand() == B && H.get_inactive_hand() == S) || (H.get_active_hand() == S && H.get_inactive_hand() == B)) && is_tool(S, TOOL_SHOVEL) && B.is_open_container() && B.reagents && B.reagents.total_volume <= 0
+
+/obj/structure/sink/well/proc/well_bail_delay()
+	var/obj/structure/well_fitting/F = well_fitting()
+	if (istype(F, /obj/structure/well_fitting/pump))
+		return 60
+	if (istype(F, /obj/structure/well_fitting/windlass))
+		return 100
+	return 180
+
+/obj/structure/sink/well/proc/well_begin_scraping()
+	volume = 0
+	well_bailed_for_cleanup = TRUE
+	update_icon()
+
+// End the drain even on interruption. Only a complete scrape with no ongoing
+// source clears fecal fouling; mercury and radiation are not touched.
+/obj/structure/sink/well/proc/well_finish_scraping(completed)
+	var/problem = completed ? well_cleanup_source() : null
+	well_bailed_for_cleanup = FALSE
+	dug_settled_at = world.time
+	if (completed && !problem)
+		dirty = FALSE
+	if (!persistence_admission_blocked())
+		update_icon()
+	return problem
+
+/obj/structure/sink/well/verb/clean_out_well()
+	set name = "Clean Out Well"
+	set category = null
+	set src in range(1)
+	var/mob/living/human/H = usr
+	if (!istype(H) || persistence_admission_blocked())
+		return
+	var/datum/admission = persistence_admission_identity
+	var/turf/site = loc
+	var/obj/item/weapon/reagent_containers/glass/bucket/B = H.get_active_hand()
+	var/obj/item/S = H.get_inactive_hand()
+	if (!istype(B))
+		B = H.get_inactive_hand()
+		S = H.get_active_hand()
+	if (!well_cleanup_context(H, B, S, site, admission))
+		to_chat(H, SPAN_WARNING("Stand beside the well and hold an empty, open bucket and a shovel."))
+		return
+	if (well_bailed_for_cleanup)
+		to_chat(H, SPAN_WARNING("Someone is already cleaning out this well."))
+		return
+	var/problem = well_cleanup_source()
+	if (problem)
+		dirty = TRUE
+		to_chat(H, SPAN_WARNING(problem))
+		return
+	if (!dirty)
+		to_chat(H, SPAN_NOTICE("There is no foul residue to clear. Cleaning out a well does not remove chemical or radioactive contamination."))
+		return
+	var/obj/structure/well_fitting/F = well_fitting()
+	dug_settle()
+	H.visible_message(SPAN_NOTICE("[H] starts bailing out \the [src]."), SPAN_NOTICE("You start bailing out \the [src]. The fouled water is discarded, not collected in your bucket."))
+	if (F?.use_state)
+		flick(F.use_state, F)
+	playsound(site, 'sound/effects/watersplash.ogg', 50, TRUE)
+	if (!do_after(H, well_bail_delay(), src) || !well_cleanup_context(H, B, S, site, admission) || well_bailed_for_cleanup || well_fitting() != F || !dirty)
+		return
+	problem = well_cleanup_source()
+	if (problem)
+		to_chat(H, SPAN_WARNING(problem))
+		return
+	well_begin_scraping()
+	H.visible_message(SPAN_NOTICE("[H] starts clearing mud from \the [src]."), SPAN_NOTICE("The well is bailed out. You start clearing the foul mud and debris."))
+	playsound(site, 'sound/effects/shovelling.ogg', 50, TRUE)
+	var/completed = do_after(H, work_delay_per_speed(H, 120, WORK_DIG, S), src) && well_cleanup_context(H, B, S, site, admission) && well_fitting() == F
+	if (QDELETED(src))
+		return
+	problem = well_finish_scraping(completed)
+	if (!completed)
+		to_chat(H, SPAN_WARNING("The well refills, but the foul residue is still there."))
+	else if (problem)
+		to_chat(H, SPAN_WARNING(problem))
+	else
+		to_chat(H, SPAN_NOTICE("You clear the foul residue. Let the well refill naturally. This does not make chemical or radioactive contamination safe."))
+		log_game("[key_name(H)] cleaned out [src] at [x],[y],[z].")
 
 // ---- taking a well apart -----------------------------------------------------------
 // A fitting comes off first, then the lining is broken up. A dug shaft is left as
