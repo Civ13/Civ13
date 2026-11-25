@@ -46,6 +46,15 @@ class KatanaSheathTest(unittest.TestCase):
         self.assertEqual(sheath, ['katana'])
         self.assertEqual(hold, [])
 
+    def test_holster_checks_click_incapacitation_before_draw_or_stow(self):
+        body = adapter.extract(SHEATHS.read_text(encoding='utf-8-sig'),
+                               '/obj/item/clothing/accessory/storage/sheath/verb/sheathe_verb')
+        guard = '\tif (usr.stat || usr.paralysis || usr.stunned || usr.weakened)\n\t\treturn'
+        self.assertIn(guard, body)
+        self.assertLess(body.index('if (!istype(usr, /mob/living)) return'), body.index(guard))
+        self.assertLess(body.index(guard), body.index('attackby(W, usr)'))
+        self.assertLess(body.index(guard), body.index('usr.put_in_hands(currsword)'))
+
     def test_job_loadouts_supply_one_accessible_katana(self):
         source = JOBS.read_text(encoding='utf-8-sig')
         for role in ('ija_sergeant', 'ija_sergeant_tanker', 'camp_officer', 'ijn_sergeant'):

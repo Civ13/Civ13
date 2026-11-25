@@ -49,7 +49,7 @@ def source_contract(files):
     if 'wait_lease(' in ''.join(files.values()): failures.append('ambient_lookup')
     start=helper.index('/proc/do_after(');body=helper[start:]
     if not body.index('claim_gather_wait(user, target)')<body.index('user.survival_action_started(target, mining_context)'): failures.append('callback_entry_order')
-    if not body.rindex('gameplay_lease.valid()')>body.index('user.survival_action_finished()'): failures.append('callback_final_order')
+    if not body.rindex('gameplay_lease.valid()')>body.index('user.survival_action_finished(workload)'): failures.append('callback_final_order')
     return failures,required
 
 
@@ -78,13 +78,14 @@ class Lease:
 
 
 class Wait:
-    def __init__(self,actor,lease,service):
-        self.actor=actor;self.lease=lease;self.service=service;self.ok=True
+    def __init__(self,actor,lease,service,owns_repeat_lock):
+        self.actor=actor;self.lease=lease;self.service=service;self.ok=True;self.owns_repeat_lock=owns_repeat_lock
     def wake(self):
         if self.lease and not self.lease.valid(self.service): self.ok=False
         return self.ok
     def finish(self):
-        self.actor.may=True;self.actor.activities=max(0,self.actor.activities-1);self.actor.finished+=1
+        if self.owns_repeat_lock: self.actor.may=True
+        self.actor.activities=max(0,self.actor.activities-1);self.actor.finished+=1
         if self.lease and not self.lease.valid(self.service):self.ok=False
         return self.ok
 
@@ -98,7 +99,7 @@ def begin(actor,target,service,context=None,repeat=True,ambient=False):
         captured=context
     actor.activities+=1;actor.started+=1
     if repeat:actor.may=False
-    return Wait(actor,captured,service)
+    return Wait(actor,captured,service,repeat)
 
 
 class GatherContextTests(unittest.TestCase):
@@ -133,9 +134,9 @@ class GatherContextTests(unittest.TestCase):
             except ValueError:failures=['missing_order_anchor']
             self.assertTrue(failures,name)
     def test_callback_placement_unsafe_control_and_no_unconverted_readiness(self):
-        h=self.files[PATHS[0]];capture=h[h.index('\tvar/datum/gameplay_action_lease/gameplay_lease'):h.index('\tuser.survival_action_started(target, mining_context)',h.index('/proc/do_after('))]
+        h=self.files[PATHS[0]];capture=h[h.index('\tvar/datum/gameplay_action_lease/gameplay_lease'):h.index('\tvar/workload = user.survival_action_started(target, mining_context)',h.index('/proc/do_after('))]
         start=h.index('/proc/do_after(')
-        changed=dict(self.files);changed[PATHS[0]]=h[:start]+h[start:].replace(capture,'',1).replace('\tuser.survival_action_started(target, mining_context)\n','\tuser.survival_action_started(target, mining_context)\n'+capture,1)
+        changed=dict(self.files);changed[PATHS[0]]=h[:start]+h[start:].replace(capture,'',1).replace('\tvar/workload = user.survival_action_started(target, mining_context)\n','\tvar/workload = user.survival_action_started(target, mining_context)\n'+capture,1)
         self.assertIn('callback_entry_order',source_contract(changed)[0])
         mechanics=self.files[PATHS[3]]
         readiness=mechanics.split('/datum/gameplay_bridge/proc/wait_guards_ready(kind)\n',1)[1].split('/datum/gameplay_bridge/proc/sharp_flint()',1)[0]
@@ -160,8 +161,8 @@ class GatherContextTests(unittest.TestCase):
         a=helper.index('/proc/do_after(');b=helper.index('//Returns a list of all mobs',a)
         wait=helper[a:b]
         self.assertEqual(wait.count('user.survival_action_started(target, mining_context)'),1)
-        self.assertEqual(wait.count('user.survival_action_finished()'),1)
-        self.assertLess(wait.index('user.may_do_after = TRUE'),wait.index('user.survival_action_finished()'))
+        self.assertEqual(wait.count('user.survival_action_finished(workload)'),1)
+        self.assertLess(wait.index('user.may_do_after = TRUE'),wait.index('user.survival_action_finished(workload)'))
 
     def test_forged_invalid_and_wrong_scope_context_deny_before_callbacks(self):
         for fault in ('type','body','target','kind','owner','generation','pointer'):
@@ -195,12 +196,12 @@ class GatherContextTests(unittest.TestCase):
         lease.cancelled=True
         self.assertFalse(ordinary.wake())  # Unsafe variant fails ordinary-survival oracle.
         self.assertFalse(ordinary.finish())
-    def test_stock_false_first_unlock_behavior_is_preserved_without_context(self):
+    def test_unrestricted_wait_preserves_owned_repeat_lock(self):
         actor=Actor();site=object();service=Service()
         a=begin(actor,site,service,repeat=False);b=begin(actor,site,service)
-        self.assertFalse(actor.may);self.assertTrue(a.finish());self.assertTrue(actor.may)
-        c=begin(actor,site,service);self.assertIsNotNone(c)
-        self.assertTrue(b.finish());self.assertTrue(c.finish());self.assertEqual(actor.activities,0)
+        self.assertFalse(actor.may);self.assertTrue(a.finish());self.assertFalse(actor.may)
+        self.assertIsNone(begin(actor,site,service))
+        self.assertTrue(b.finish());self.assertTrue(actor.may);self.assertEqual(actor.activities,0)
     def test_old_context_never_borrows_replacement_and_zero_delay_final_checks(self):
         actor=Actor();site=object();service=Service();old=Lease(service,actor,site);service.current=old
         wait=begin(actor,site,service,old);old.cancelled=True

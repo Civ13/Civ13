@@ -97,6 +97,11 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
   }, [data]);
   const groupOf = (id: string) => groups.find(group => str(group.id) === id);
   const handsFree = hands.filter(hand => !hand.item).length;
+  // Older snapshots may not have sent the server's limit yet.
+  const snapshotMoveLimit = Number(data.move_limit);
+  const moveLimit = Number.isInteger(snapshotMoveLimit) && snapshotMoveLimit > 0 ? snapshotMoveLimit : 40;
+  const tooMany = (ids: string[]) => ids.length > moveLimit;
+  const limitMessage = `Move up to ${moveLimit} ${moveLimit === 1 ? 'item' : 'items'} at a time. Deselect items to continue.`;
 
   // A selection keeps only things still listed and not already on the move.
   useEffect(() => { setPicked(old => old.filter(id => items[id] && !items[id].queued && !items[id].moving)); }, [items]);
@@ -124,7 +129,7 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
   }, [queue.length, searching]);
 
   const moveTo = (to: string, ids: string[]) => {
-    if (!interactive || !ids.length || !to) return;
+    if (!interactive || !ids.length || !to || tooMany(ids)) return;
     lastTarget.current = to;
     act('move', { value: ids.join(','), to });
     setPicked([]);
@@ -137,13 +142,15 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
     setDrag({ ids, from });
   };
   const moving = drag ? drag.ids.map(id => items[id]).filter(Boolean) : picked.map(id => items[id]).filter(Boolean);
+  const dragRefusal = (group: StorageGroup) => !drag || drag.from === str(group.id) ? null
+    : tooMany(drag.ids) ? limitMessage : refusal(group, moving, handsFree);
   const dropProps = (group: StorageGroup) => {
     const id = str(group.id);
-    const why = drag && drag.from !== id ? refusal(group, moving, handsFree) : null;
+    const why = dragRefusal(group);
     return {
       onDragOver: (event: DragEvent) => { if (!drag || drag.from === id) return; if (!why) event.preventDefault(); setOver(id); },
       onDragLeave: () => setOver(old => old === id ? '' : old),
-      onDrop: (event: DragEvent) => { event.preventDefault(); if (drag && !why) moveTo(id, drag.ids); setDrag(null); setOver(''); },
+      onDrop: (event: DragEvent) => { event.preventDefault(); if (drag && drag.from !== id && !why) moveTo(id, drag.ids); setDrag(null); setOver(''); },
     };
   };
   const endDrag = () => { setDrag(null); setOver(''); };
@@ -164,7 +171,7 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
     // A container nobody has looked into yet stays shut until you search it.
     const unsearched = hidden > 0 && !search && !all.length;
     const open = !shut[id] && !group.locked && !nomatch && !unsearched;
-    const why = drag && over === id && drag.from !== id ? refusal(group, moving, handsFree) : null;
+    const why = over === id ? dragRefusal(group) : null;
     let cls = 'stor-group';
     if (!open) cls += ' stor-shut';
     if (nomatch) cls += ' stor-group-nomatch';
@@ -233,6 +240,7 @@ export function StorageWindow(ui: ScreenProps<StorageWindowData>) {
       {find ? <span className="stor-bar-note"><b>{shownCount}</b> of {totalCount} things shown - <button type="button" className="stor-link" onClick={() => setQuery('')}>Clear</button></span>
         : picked.length ? <span className="stor-bar-note"><b>{picked.length}</b> selected - <button type="button" className="stor-link" onClick={() => setPicked([])}>Clear</button></span>
           : <span className="stor-bar-note">Drag things, or select them and press Move here.</span>}
+      {tooMany(picked) && <span className="stor-bar-note" role="status">{limitMessage}</span>}
     </div>
     <div className="stor-columns">
       <div className="stor-pane" aria-label="You">
