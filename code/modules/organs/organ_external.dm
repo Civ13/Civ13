@@ -233,11 +233,7 @@
 			if (!parent.children)
 				parent.children = list()
 			parent.children.Add(src)
-			//Remove all stump wounds since limb is not missing anymore
-			for (var/datum/wound/lost_limb/W in parent.wounds)
-				parent.wounds -= W
-				qdel(W)
-				break
+			parent.clear_grafted_limb_wound(limb_name)
 			parent.update_damages()
 	if (istype(owner))
 		owner.refresh_held_items()
@@ -917,6 +913,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 /****************************************************
 			   HELPERS
 ****************************************************/
+
+/obj/item/organ/external/proc/clear_grafted_limb_wound(slot)
+	// The chest (arms) and groin (legs) each hold multiple amputation wounds.
+	// Older unlabelled wounds cannot be safely attributed to either side.
+	if (!istext(slot) || !length(slot))
+		return
+	for (var/datum/wound/lost_limb/W in wounds)
+		if (W.lost_limb_slot != slot)
+			continue
+		wounds -= W
+		qdel(W)
+		break
 
 /obj/item/organ/external/proc/update_damage_ratios()
 	var/limb_loss_threshold = max_damage

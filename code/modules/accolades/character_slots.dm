@@ -48,10 +48,10 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 
 // What one account has: unlocked slots, points spent, the slot it plays, when
 // each slot was last left (unix seconds) and each slot's latest name.
-/proc/character_slot_state(ckey)
+/proc/character_slot_state(ckey, fresh = FALSE)
 	ckey = ckey(ckey)
 	var/list/cached = character_slot_cache[ckey]
-	if(islist(cached) && world.time - cached[1] < 50)
+	if(!fresh && islist(cached) && world.time - cached[1] < 50)
 		return cached[2]
 	var/list/unlocked = list()
 	var/list/locked = list()
@@ -151,6 +151,7 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 
 // -- switching -------------------------------------------------------------------
 
+/mob/living/human/var/tmp/character_slot_admitted_name // set at fresh durable Join, consumed by EquipRank
 /mob/living/human/var/tmp/character_idle_minutes = 0 // minutes this owned body has had no player
 
 // Why this body cannot be switched away from now, or null.
@@ -305,7 +306,36 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 		if(other != slot && character_slot_open(state, other) && islist(names["[other]"]))
 			. += names["[other]"][1]
 
-// Remembers this character's name for kin lines, once per name.
+// Compare names, not ckeys: punctuation that distinguishes two character
+// names should remain significant, but capitalization and spacing should not.
+/proc/character_slot_name_key(name)
+	if(!istext(name))
+		return null
+	var/static/regex/whitespace = regex(@"\s+", "g")
+	return lowertext(trim(whitespace.Replace(name, " ")))
+
+// Returns the other existing slot using this name, or 0. Staff locking a
+// purchased slot preserves its body. A living body here takes priority over
+// its last recorded name; other lands use this account's shared records.
+/proc/character_slot_name_conflict(account, slot, name)
+	var/name_key = character_slot_name_key(name)
+	if(!account || !slot || !name_key)
+		return 0
+	var/list/state = character_slot_state(account, TRUE)
+	var/list/names = state["names"]
+	var/list/locked = state["locked"]
+	for(var/other = 1 to character_slots_max)
+		if(other == slot || (!character_slot_open(state, other) && !locked["[other]"]))
+			continue
+		var/mob/living/human/H = region_home_living_body(owner_key_for(account, other))
+		var/list/entry = names["[other]"]
+		var/other_name = H ? H.real_name : (islist(entry) ? entry[1] : null)
+		if(character_slot_name_key(other_name) == name_key)
+			return other
+	return 0
+
+// Remember the current name, including slot 1 before it has any siblings.
+// A slot that later returns to an older name needs a new latest record.
 /mob/living/human/proc/character_slot_note_name()
 	var/owner = persistence_owner_ckey
 	var/slot = owner_key_slot(owner)
@@ -313,12 +343,12 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 	if(!slot || !ckey || !real_name)
 		return
 	var/list/state = character_slot_state(ckey)
-	if(character_slot_count(state) < 2)
+	if(!persistence_bed_return_enabled() && character_slot_count(state) < 2)
 		return
 	var/list/names = state["names"]
 	if(islist(names["[slot]"]) && names["[slot]"][1] == real_name)
 		return
-	if(shared_records.add(ckey, "character_named", list("slot" = slot, "name" = real_name), "", "", character_slot_record_id("character_named", ckey, "[slot]|[real_name]")))
+	if(shared_records.add(ckey, "character_named", list("slot" = slot, "name" = real_name)))
 		character_slot_forget(ckey)
 
 /mob/living/human/examine(mob/user)

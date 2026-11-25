@@ -55,7 +55,14 @@ class KnowledgeSpreadTests(unittest.TestCase):
         self.assertIn('* knowledge_study_mult(node_id)', read('code/modules/research_tree/scholar_tools.dm'))
         self.assertIn('knowledge_band(N.id) == KNOWLEDGE_SPREADING) ? 1 : TRADE_LATE_CAP', read('code/modules/research_tree/trade_learning.dm'))
         book = read('code/modules/research_tree/book_interface.dm')
-        self.assertEqual(book.count('BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk'), 3)
+        # The bench's compact estimate still applies the rate directly. The
+        # book window applies it through the same timing helper as the wait.
+        self.assertIn('BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk', book)
+        window = book.split('/obj/item/weapon/book/proc/research_book_ui_data', 1)[1]
+        self.assertIn('research_chapter_study_time(H, N, written_in, tutor)', window)
+        research = read('code/modules/research_tree/book_research.dm')
+        timing = research.split('/proc/research_chapter_study_time(', 1)[1].split('/proc/study_research_source(', 1)[0]
+        self.assertIn('H.scholar_study_time(N.era_tier, N.id)', timing)
 
     def test_rediscovery_costs_a_third_at_the_bench_only(self):
         self.assertRegex(read('code/modules/research_tree/_research_tree_defines.dm'), r'#define KNOWLEDGE_REDISCOVERY_RATE 3\b')

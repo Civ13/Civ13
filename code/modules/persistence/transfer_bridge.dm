@@ -118,6 +118,13 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 		warn_held()
 	return answer
 
+// Managed agents apply the same check again at escrow. An older agent has no
+// preflight route; keep its existing travel behavior until the host refreshes it.
+/datum/transfer_bridge/proc/travel_build_problem(peer)
+	var/list/answer = request("/travel/build", list("peer" = peer))
+	var/list/result = answer && answer["ok"] ? answer["result"] : null
+	return islist(result) && istext(result["problem"]) ? result["problem"] : null
+
 // -- world effects ---------------------------------------------------------
 
 // Each returns the agent's result list, or null when the effect must not be

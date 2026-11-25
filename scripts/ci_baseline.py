@@ -1966,7 +1966,8 @@ SUITES = {
         'paths': ('tests/bee_products/test_mead_lid_timing.py',),
         'shared_paths': ('code/modules/1713/mead.dm', 'code/modules/reagents/reagent_containers/glass.dm')},
     'item_wash_source': {'files': ('tests/item_wash_source/test_completion.py',),
-        'paths': ('tests/item_wash_source/', 'code/game/objects/structures/watercloset.dm')},
+        'paths': ('tests/item_wash_source/', 'code/game/objects/structures/watercloset.dm'),
+        'shared_paths': ('code/game/objects/items/stacks/sheets/leather.dm', 'code/modules/1713/dug_wells.dm')},
     # Water quality by kind, washing fixes and flea typhus; source checks only.
     'water_quality': {'files': ('tests/water_quality/test_water_quality.py',),
         'paths': ('tests/water_quality/', 'code/modules/1713/water_quality.dm'), 'shared_paths': (
@@ -3082,7 +3083,10 @@ SUITES = {
         'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
-        'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
+        'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/stripping.dm',
+                         'code/game/mob/living/carbon/human/human.dm',
+                         'code/game/mob/living/carbon/human/inventory.dm')},
     # Signal-smoke choices must not overwrite a grenade activated by another dialog.
     'signal_smoke_selection': {'files': ('tests/signal_smoke_selection/test_source.py',),
         'paths': ('tests/signal_smoke_selection/',),
@@ -3237,7 +3241,9 @@ SUITES = {
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     'surgery_amputation_log': {'files': ('tests/surgery_amputation_log/test_source.py',),
-        'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm')},
+        'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm',
+                  'code/modules/surgery/limb_reattach.dm', 'code/modules/organs/organ_external.dm',
+                  'code/modules/organs/wound.dm')},
     # A properly sleeping, logged-off character is safe off Gaia.
     'offline_sleep_protection': {'files': ('tests/offline_sleep_protection/test_source.py',),
         'paths': ('tests/offline_sleep_protection/', 'code/modules/persistence/offline_sleep_protection.dm',

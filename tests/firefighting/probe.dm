@@ -18,6 +18,46 @@
 	map = src
 /mob/living/fire_tester/New()
 	return
+
+// Exercise the living Life entry point without unrelated fire damage or HUD work.
+/mob/living/fire_tester/immersion
+	var/fire_at_tick
+
+/mob/living/fire_tester/immersion/handle_fire()
+	fire_at_tick = on_fire
+
+/mob/living/fire_tester/immersion/handle_regular_status_updates()
+	return FALSE
+
+/obj/covers/fire_probe_cover/New()
+	return
+
+// Exercise the player's Resist verb and extinguishing; isolate appearance and
+// record whether the get-up fallback was chosen instead of attempting it.
+/mob/living/human/fire_resist_tester
+	var/get_up_attempts = 0
+	var/extinguish_messages = 0
+	var/roll_animations = 0
+
+/mob/living/human/fire_resist_tester/New()
+	return
+
+/mob/living/human/fire_resist_tester/update_canmove()
+	return
+
+/mob/living/human/fire_resist_tester/update_fire(update_icons = 1)
+	return
+
+/mob/living/human/fire_resist_tester/spin(spintime, speed)
+	roll_animations++
+
+/mob/living/human/fire_resist_tester/try_get_up()
+	get_up_attempts++
+	return TRUE
+
+/mob/living/human/fire_resist_tester/visible_message(message, self_message, blind_message)
+	if (findtext(self_message, "You extinguish yourself."))
+		extinguish_messages++
 var/fire_failures = 0
 var/fire_runtime_error = FALSE
 /proc/fire_check(condition, label)
@@ -40,6 +80,7 @@ var/fire_runtime_error = FALSE
 		fire_beater_checks()
 		fire_soak_checks()
 		fire_mob_checks()
+		fire_personal_checks()
 		fire_smother_checks()
 		fire_water_checks()
 		fire_blanket_checks()
@@ -153,6 +194,60 @@ var/fire_runtime_error = FALSE
 	qdel(B)
 	qdel(V)
 	qdel(U)
+
+/proc/fire_personal_checks()
+	var/turf/ice = locate(1, 2, 1).ChangeTurf(/turf/floor/beach/water/ice, FALSE, FALSE)
+	var/turf/salty_ice = locate(2, 2, 1).ChangeTurf(/turf/floor/beach/water/ice/salty, FALSE, FALSE)
+	var/turf/liquid = locate(3, 2, 1).ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	var/turf/covered = locate(4, 2, 1).ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	new /obj/covers/fire_probe_cover(covered)
+	var/obj/boat_container = new(liquid)
+	for (var/atom/tile in list(ice, salty_ice, liquid, covered, boat_container))
+		var/mob/living/fire_tester/immersion/V = new(tile)
+		V.on_fire = TRUE
+		V.fire_stacks = 4
+		V.Life()
+		var/stays_lit = tile != liquid
+		fire_check(V.on_fire == stays_lit && V.fire_at_tick == stays_lit && V.fire_stacks == (stays_lit ? 4 : 0), "Life immersion gate: [tile.type], covered or contained: [tile == covered || tile == boat_container]")
+		qdel(V)
+	qdel(boat_container)
+
+	config = new
+	config.no_click_cooldown = FALSE
+	var/mob/living/human/fire_resist_tester/P = new(locate(5, 2, 1))
+	P.stat = CONSCIOUS
+	P.status_flags |= CANWEAKEN
+	P.on_fire = TRUE
+	P.fire_stacks = 4
+	P.weakened = 5
+	P.resist()
+	fire_check(P.on_fire && abs(P.fire_stacks - 2.8) < 0.01 && P.weakened == 5 && P.roll_animations == 1 && !P.get_up_attempts, "Resist rolls while already knocked down")
+	P.resist()
+	fire_check(P.roll_animations == 1 && abs(P.fire_stacks - 2.8) < 0.01, "knocked-down rolls honor the Resist cooldown")
+	P.next_move = 0
+	P.fire_stacks = 1
+	P.resist()
+	fire_check(!P.on_fire && !P.fire_stacks && P.extinguish_messages == 1 && !P.get_up_attempts, "final roll extinguishes right away, once")
+	P.next_move = 0
+	P.resist()
+	fire_check(P.extinguish_messages == 1 && P.get_up_attempts == 1, "knocked-down Resist returns to getting up when not burning")
+	P.on_fire = TRUE
+	P.fire_stacks = 4
+	P.next_move = 0
+	P.buckled = new /obj(P.loc)
+	P.resist()
+	fire_check(P.fire_stacks == 4 && P.roll_animations == 2 && P.get_up_attempts == 2, "a buckled person cannot roll and keeps the get-up fallback")
+	qdel(P.buckled)
+	P.buckled = null
+	P.next_move = 0
+	P.weakened = 0
+	P.resist()
+	fire_check(abs(P.fire_stacks - 2.8) < 0.01 && P.weakened == 3 && P.roll_animations == 3, "standing Resist still drops and rolls")
+	P.next_move = 0
+	P.stat = UNCONSCIOUS
+	P.resist()
+	fire_check(P.roll_animations == 3 && abs(P.fire_stacks - 2.8) < 0.01, "an unconscious character cannot Resist to roll")
+	qdel(P)
 
 /proc/fire_smother_checks()
 	var/mob/living/fire_tester/U = new(locate(5, 15, 1))

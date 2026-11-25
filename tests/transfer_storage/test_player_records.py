@@ -45,7 +45,7 @@ class SharedRecords(unittest.TestCase):
         for name, token in TOKENS.items():
             store = RegionStore(os.path.join(self.root, name + '.sqlite'), name, 'g')
             server = make_server(store, token)
-            threading.Thread(target=server.serve_forever, daemon=True).start()
+            threading.Thread(target=server.serve_forever, kwargs={'poll_interval': 0.01}, daemon=True).start()
             self.stores[name], self.servers[name] = store, server
             self.urls[name] = 'http://127.0.0.1:%d' % server.server_address[1]
         self.coordinator = Coordinator(os.path.join(self.root, 'coordinator.sqlite'), 'g')
@@ -161,7 +161,7 @@ class SharedRecords(unittest.TestCase):
         self.assertNotIn('amy', self.index()['players'])
         self.assertNotIn('beta', self.index()['pulled'])
         server = make_server(self.stores['beta'], TOKENS['beta'])
-        threading.Thread(target=server.serve_forever, daemon=True).start()
+        threading.Thread(target=server.serve_forever, kwargs={'poll_interval': 0.01}, daemon=True).start()
         self.servers['beta'] = server
         self.coordinator.enroll('beta', 'http://127.0.0.1:%d' % server.server_address[1], TOKENS['beta'])
         self.urls['beta'] = 'http://127.0.0.1:%d' % server.server_address[1]

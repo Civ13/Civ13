@@ -474,9 +474,9 @@ def main():
         if not result_path.is_file():
             raise RuntimeError('Native daemon exited without a result; see daemon-exit.json and probe-progress.log')
         result = json.loads(result_path.read_text(encoding='utf-8'))
-        # 186 wound and organ assertions plus the generated offline-client startup check.
+        # 229 wound, limb graft and organ assertions plus the generated offline-client startup check.
         if args.wounds and not args.negative_control:
-            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 187:
+            if not result.get('done') or result.get('roundtrips') != 18 or result.get('checks') != 230:
                 raise RuntimeError('Wound disk recovery assertions incomplete: ' + str(result))
         if args.lifecycle_shutdown:
             # The DM receipt is written before native deletion. Acceptance must

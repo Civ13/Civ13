@@ -6,6 +6,12 @@
 		verbs += /mob/living/human/proc/clergy
 
 ///////////////////////RELIGION/////////////////////////
+/proc/religion_membership_allowed()
+	return map && (map.nomads == TRUE || map.tribes || map.nationsrp)
+
+/proc/religion_name_registered(religion_name)
+	return (religion_name in map.custom_religions) || (religion_name in map.custom_religion_nr)
+
 /mob/living/human/proc/create_religion()
 	set name = "Create Religion"
 	set category = "Faction"
@@ -15,7 +21,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.tribes || map.nationsrp)
+	if (religion_membership_allowed())
 		if (U.religion != "none")
 			to_chat(usr, SPAN_WARNING("You are already member of a religion. Abandon it first."))
 			return
@@ -34,10 +40,9 @@
 	if (!ishuman(src))
 		return
 	var/mob/living/human/H = src
-	for(var/i = 1, i <= map.custom_religion_nr.len, i++)
-		if (map.custom_religion_nr[i] == newname)
-			to_chat(usr, SPAN_WARNING("That religion already exists. Choose another name."))
-			return
+	if (religion_name_registered(newname))
+		to_chat(H, SPAN_WARNING("That religion already exists. Choose another name."))
+		return
 	if (newname != null && newname != "none")
 		var/choosetype = "Knowledge"
 		var/chooseclergy = "Shamans"
@@ -67,37 +72,45 @@
 		if (choosecolor2 == null || choosecolor2 == "")
 			return
 
-		H.religion = newname
-		H.religious_leader = TRUE
-		H.religious_clergy = chooseclergy
-		H.religion_type = choosetype
-		H.religion_style = chooseclergy
-		map.custom_religion_nr += newname
-		//////////////////////////////////////creator, type, points, symbol, color1, color2, clergy style
-		var/newnamev = list("[newname]" = list(H,choosetype,0, choosesymbol,choosecolor1,choosecolor2,chooseclergy))
-		map.custom_religions += newnamev
-		to_chat(usr, "<big>You are now the leader of the <b>[newname]</b> religion.</big>")
-		switch(chooseclergy)
-			if ("Shamans")
-				if (H.gender == "male")
-					H.religious_title = "Elder Shaman"
-				else
-					H.religious_title = "Elder Shamaness"
-			if ("Priests")
-				if (H.gender == "male")
-					H.religious_title = "High Priest"
-				else
-					H.religious_title = "High Priestess"
-			if ("Monks")
-				if (H.gender == "male")
-					H.religious_title = "Father"
-				else
-					H.religious_title = "Mother"
-			if ("Clerics")
-				H.religious_title = "Prophet"
-		return
-	else
-		return
+		complete_religion_founding(newname, choosetype, chooseclergy, choosesymbol, choosecolor1, choosecolor2)
+
+/mob/living/human/proc/complete_religion_founding(newname, choosetype, chooseclergy, choosesymbol, choosecolor1, choosecolor2)
+	var/mob/living/human/H = src
+	if (!religion_membership_allowed() || H.religion != "none" || !newname || newname == "none")
+		return FALSE
+	if (religion_name_registered(newname))
+		to_chat(H, SPAN_WARNING("That religion already exists. Choose another name."))
+		return FALSE
+
+	H.religion = newname
+	H.religious_leader = TRUE
+	H.religious_clergy = chooseclergy
+	H.religion_type = choosetype
+	H.religion_style = chooseclergy
+	map.custom_religion_nr += newname
+	//////////////////////////////////////creator, type, points, symbol, color1, color2, clergy style
+	var/newnamev = list("[newname]" = list(H,choosetype,0, choosesymbol,choosecolor1,choosecolor2,chooseclergy))
+	map.custom_religions += newnamev
+	to_chat(H, "<big>You are now the leader of the <b>[newname]</b> religion.</big>")
+	switch(chooseclergy)
+		if ("Shamans")
+			if (H.gender == "male")
+				H.religious_title = "Elder Shaman"
+			else
+				H.religious_title = "Elder Shamaness"
+		if ("Priests")
+			if (H.gender == "male")
+				H.religious_title = "High Priest"
+			else
+				H.religious_title = "High Priestess"
+		if ("Monks")
+			if (H.gender == "male")
+				H.religious_title = "Father"
+			else
+				H.religious_title = "Mother"
+		if ("Clerics")
+			H.religious_title = "Prophet"
+	return TRUE
 
 /mob/living/human/proc/abandon_religion()
 	set name = "Abandon Religion"
@@ -108,7 +121,7 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.nationsrp)
+	if (religion_membership_allowed())
 		if (U.religion == "none")
 			to_chat(usr, SPAN_WARNING("You are not part of any religion."))
 			return
@@ -117,7 +130,10 @@
 			return
 		else
 			var/list/rel_data = map.custom_religions[U.religion]
-			if (rel_data[1] != null)
+			if ((length(rel_data) >= 7 && rel_data[7] == "Clerics") || (!length(rel_data) && U.religion_style == "Clerics"))
+				to_chat(U, SPAN_WARNING("You cannot leave a Clerical religion."))
+				return
+			if (length(rel_data) && rel_data[1] != null)
 				var/mob/living/human/L = rel_data[1]
 				if (L.real_name == U.real_name)
 					rel_data[1] = null
@@ -139,70 +155,82 @@
 		U = src
 	else
 		return
-	if (map.nomads == TRUE || map.nationsrp)
+	if (religion_membership_allowed())
 		if (U.religion == "none")
 			to_chat(usr, SPAN_WARNING("You are not part of any religion."))
 			return
 		else if (U.religious_leader || U.religious_clergy != FALSE)
 			to_chat(usr, SPAN_WARNING("You are already part of the clergy!"))
 			return
-		else if (WWinput(src, "Are you sure you want to join the clergy? The membership is for life.", "", "Cancel", list("Join the clergy", "Cancel")) == "Join the clergy")
-			switch(map.custom_religions[U.religion][7])
-
-				if ("Shamans")
-					U.religious_clergy = "Shamans"
-					to_chat(U, "<big>You become a Shaman for the [U.religion]!</big>")
-					if (U.gender == "male")
-						U.fully_replace_character_name(U.real_name,"Shaman [U.name]")
-					else
-						U.fully_replace_character_name(U.real_name,"Shamaness [U.name]")
-					return
-
-				if ("Priests")
-					if (U.getStatCoeff("philosophy") < 1.75)
-						to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 1.75 or more to become a priest.</span>")
-						return
-					else
-						U.religious_clergy = "Priests"
-						to_chat(U, "<big>You become a Priest for the [U.religion]!</big>")
-						if (U.gender == "male")
-							U.fully_replace_character_name(U.real_name,"Priest [U.name]")
-						else
-							U.fully_replace_character_name(U.real_name,"Priestess [U.name]")
-						return
-
-				if ("Monks")
-					if (U.getStatCoeff("philosophy") < 1.5)
-						to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 1.5 or more to become a monk.</span>")
-						return
-					else
-						U.religious_clergy = "Monks"
-						to_chat(U, "<big>You become a Monk for the [U.religion]!</big>")
-						if (U.gender == "male")
-							U.fully_replace_character_name(U.real_name,"Brother [U.name]")
-						else
-							U.fully_replace_character_name(U.real_name,"Sister [U.name]")
-						return
-
-				if ("Clerics")
-					if (U.getStatCoeff("philosophy") < 2.2)
-						to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 2.2 or more to become a cleric.</span>")
-						return
-					else
-						U.religious_clergy = "Clerics"
-						to_chat(U, "<big>You become a Cleric for the [U.religion]!</big>")
-						if (U.gender == "male")
-							U.fully_replace_character_name(U.real_name,"Venerable [U.name]")
-						else
-							U.fully_replace_character_name(U.real_name,"Venerable [U.name]")
-						return
-
-				if ("Cultists")
-					U.religious_clergy = "Cultists"
-					to_chat(U, "<big>You become a Cultist of the [U.religion]!</big>")
+		else
+			var/religion_name = U.religion
+			if (WWinput(src, "Are you sure you want to join the clergy? The membership is for life.", "", "Cancel", list("Join the clergy", "Cancel")) == "Join the clergy")
+				complete_clergy_join(religion_name)
 	else
 		to_chat(usr, SPAN_WARNING("You cannot join the clergy on this map."))
 		return
+
+/mob/living/human/proc/complete_clergy_join(religion_name)
+	var/mob/living/human/U = src
+	if (!religion_membership_allowed() || religion_name == "none" || U.religion != religion_name || U.religious_leader || U.religious_clergy != FALSE)
+		return
+	var/list/rel_data = map.custom_religions[religion_name]
+	if (length(rel_data) < 7)
+		to_chat(U, SPAN_WARNING("Your religion is not registered on this world."))
+		return
+	switch(rel_data[7])
+		if ("Shamans")
+			U.religious_clergy = "Shamans"
+			to_chat(U, "<big>You become a Shaman for the [U.religion]!</big>")
+			if (U.gender == "male")
+				U.fully_replace_character_name(U.real_name,"Shaman [U.name]")
+			else
+				U.fully_replace_character_name(U.real_name,"Shamaness [U.name]")
+			return
+
+		if ("Priests")
+			if (U.getStatCoeff("philosophy") < 1.75)
+				to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 1.75 or more to become a priest.</span>")
+				return
+			else
+				U.religious_clergy = "Priests"
+				to_chat(U, "<big>You become a Priest for the [U.religion]!</big>")
+				if (U.gender == "male")
+					U.fully_replace_character_name(U.real_name,"Priest [U.name]")
+				else
+					U.fully_replace_character_name(U.real_name,"Priestess [U.name]")
+				return
+
+		if ("Monks")
+			if (U.getStatCoeff("philosophy") < 1.5)
+				to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 1.5 or more to become a monk.</span>")
+				return
+			else
+				U.religious_clergy = "Monks"
+				to_chat(U, "<big>You become a Monk for the [U.religion]!</big>")
+				if (U.gender == "male")
+					U.fully_replace_character_name(U.real_name,"Brother [U.name]")
+				else
+					U.fully_replace_character_name(U.real_name,"Sister [U.name]")
+				return
+
+		if ("Clerics")
+			if (U.getStatCoeff("philosophy") < 2.2)
+				to_chat(U, "<span class='danger'>Your philosophy skill is too low. You need 2.2 or more to become a cleric.</span>")
+				return
+			else
+				U.religious_clergy = "Clerics"
+				to_chat(U, "<big>You become a Cleric for the [U.religion]!</big>")
+				if (U.gender == "male")
+					U.fully_replace_character_name(U.real_name,"Venerable [U.name]")
+				else
+					U.fully_replace_character_name(U.real_name,"Venerable [U.name]")
+				return
+
+		if ("Cultists")
+			U.religious_clergy = "Cultists"
+			to_chat(U, "<big>You become a Cultist of the [U.religion]!</big>")
+
 /mob/living/human/proc/religion_check()
 	for (var/obj/item/clothing/CT in contents)
 		for (var/obj/item/clothing/accessory/armband/talisman/T in CT.contents)
@@ -210,8 +238,6 @@
 				return FALSE
 			else
 				return religion_type
-
-
 
 /obj/item/weapon/book/holybook
 	name = "holy book"

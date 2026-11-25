@@ -71,4 +71,51 @@ describe('research book window', () => {
     view.rerender(<ResearchBook {...ui} data={{ ...ui.data, writable: [] }} />);
     expect(screen.getByText('Everything you know is already in this book.')).toBeTruthy();
   });
+  it('blocks writing with occupied hands and restores it when the refreshed book permits it', () => {
+    const ui = book(); const view = render(<ResearchBook {...ui} />);
+    for (const [held, problem] of [
+      [1, 'Put the book down beside you first.'],
+      [0, 'Free the hand opposite your pen, or hold a blank sheet in it.'],
+    ] as const) {
+      view.rerender(<ResearchBook {...ui} data={{ ...ui.data, held, viewer: { ...ui.data.viewer, write_hands_problem: problem } }} />);
+      const write = screen.getByText('Write') as HTMLButtonElement;
+      expect(write.disabled).toBe(true);
+      fireEvent.click(write);
+      expect(ui.act).not.toHaveBeenCalled();
+    }
+    expect(screen.getByText(/Free the hand opposite your pen/)).toBeTruthy();
+    view.rerender(<ResearchBook {...ui} data={{ ...ui.data, held: 0 }} />);
+    const write = screen.getByText('Write') as HTMLButtonElement;
+    expect(write.disabled).toBe(false);
+    fireEvent.click(write);
+    expect(ui.act).toHaveBeenLastCalledWith('write', { value: 'fire' });
+  });
+  it('explains language blocks without offering Continue or counting them as ready', () => {
+    const ui = book();
+    const readable = ui.data.chapters[1];
+    const languageBlocked = { ...readable, id: 'paper', name: 'Pulp and Paper',
+      state: 'blocked', read_percent: 40,
+      read_problem: "This chapter is written in Norse, and you can't follow enough Norse to study it." };
+    render(<ResearchBook {...ui} data={{ ...ui.data, chapters: [readable, languageBlocked] }} />);
+    const row = screen.getByText('Pulp and Paper').closest('.rs-row') as HTMLElement;
+    expect(within(row).getByText(/written in Norse/)).toBeTruthy();
+    expect(within(row).queryByText('Study')).toBeNull();
+    expect(within(row).queryByText('Continue')).toBeNull();
+    const chips = screen.getByRole('group', { name: 'Show' });
+    expect(within(chips).getByText('Ready to study').textContent).toBe('Ready to study 1');
+    fireEvent.click(within(chips).getByText('Ready to study'));
+    expect(screen.queryByText('Pulp and Paper')).toBeNull();
+    expect(screen.getByText('Pottery')).toBeTruthy();
+  });
+  it('uses the supplied estimate for an interrupted tutored chapter, including short waits', () => {
+    const ui = book();
+    const chapter = { ...ui.data.chapters[1], read_percent: 80, study_minutes: 0 };
+    const view = render(<ResearchBook {...ui} data={{ ...ui.data, chapters: [chapter] }} />);
+    expect(screen.getByText(/80% read - less than a minute left with Odo tutoring/)).toBeTruthy();
+    fireEvent.click(screen.getByText('Continue'));
+    expect(ui.act).toHaveBeenLastCalledWith('study', { value: 'pottery' });
+    view.rerender(<ResearchBook {...ui} data={{ ...ui.data, chapters: [{ ...chapter, study_minutes: 2.5 }] }} />);
+    expect(screen.getByText(/about 2.5 minutes left with Odo tutoring/)).toBeTruthy();
+  });
+
 });

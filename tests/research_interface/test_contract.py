@@ -55,7 +55,12 @@ class ResearchInterfaceContract(unittest.TestCase):
         self.assertIn("dest.write_research_chapter(H, pen, node_id, src)", bench_write)
     def test_blank_sheet_helper_only_hands_over_blank_sheets_the_writer_carries(self):
         ready = proc(self.interface, "/mob/living/human/proc/ready_blank_sheet")
-        self.assertEqual(ready.count("blank_writing_sheet(P)"), 2)
+        self.assertEqual(ready.count("blank_writing_sheet(P)"), 1)
+        self.assertLess(ready.index("held_blank_sheet()"), ready.index("if (l_hand && r_hand)"))
+        held = proc(self.interface, "/mob/living/human/proc/held_blank_sheet")
+        self.assertIn("in list(l_hand, r_hand)", held)
+        self.assertIn("blank_writing_sheet(P)", held)
+        self.assertNotIn("get_contents()", held)
         self.assertIn("if (l_hand && r_hand)\n\t\treturn null", ready)
         self.assertIn("in get_contents()", ready)
         self.assertIn("recipe_held(src, P)", ready)
@@ -100,7 +105,8 @@ class ResearchInterfaceContract(unittest.TestCase):
         self.assertIn("do_reading(src, real, anchor)", proc(progress, "/mob/living/human/proc/timed_study"))
         # Farsighted reading is slower: interrupted study is credited at that pace and the estimate says so.
         self.assertIn("left / (real * farsight_reading_mult())", proc(progress, "/mob/living/human/proc/timed_study"))
-        self.assertIn("left * farsight_reading_mult() / 600", proc(progress, "/mob/living/human/proc/begin_study_message"))
+        self.assertIn("study_minutes_estimate(left)", proc(progress, "/mob/living/human/proc/begin_study_message"))
+        self.assertIn("round(left * farsight_reading_mult() / 600, 0.5)", proc(progress, "/mob/living/human/proc/study_minutes_estimate"))
         # Every read, copy and written page waits through it.
         for path, token in (("code/modules/research_tree/book_research.dm", "do_reading(H, time, src)"),
                             ("code/modules/research_tree/book_pages.dm", "do_reading(H, time, anchor ? anchor : src)"),
@@ -114,5 +120,29 @@ class ResearchInterfaceContract(unittest.TestCase):
         # Study and the timed waits say it is too dark before announcing a start.
         study = proc(self.research, "/proc/study_research_source")
         self.assertLess(study.index("H.too_dark_to_read()"), study.index("H.begin_study_message("))
+    def test_book_write_checks_live_hands_without_moving_paper_in_snapshot(self):
+        hands = proc(self.interface, "/obj/item/weapon/book/proc/research_book_write_hands_problem")
+        self.assertIn("if (!H.l_hand || !H.r_hand)\n\t\treturn null", hands)
+        self.assertIn("if (loc == H)", hands)
+        self.assertIn("if (!H.held_blank_sheet())", hands)
+        self.assertNotIn("ready_blank_sheet()", hands)
+        snapshot = proc(self.interface, "/obj/item/weapon/book/proc/research_book_ui_data")
+        self.assertIn('viewer["write_hands_problem"] = research_book_write_hands_problem(H)', snapshot)
+        self.assertNotIn("ready_blank_sheet()", snapshot)
+        topic = proc(self.interface, "/obj/item/weapon/book/Topic")
+        self.assertRegex(topic, r"var/hands_problem = research_book_write_hands_problem\(H\)[\s\S]+else if \(hands_problem\)\n\s+to_chat[^\n]+\n\s+else\n\s+write_research_chapter")
+
+    def test_book_preview_only_estimates_readable_chapters_with_real_tutor(self):
+        snapshot = proc(self.interface, "/obj/item/weapon/book/proc/research_book_ui_data")
+        self.assertEqual(snapshot.count("chapter_language_map()"), 1)
+        self.assertIn("cipher_blocks(H)", snapshot)
+        self.assertIn("language_reading_problem(H, written_in, LANGUAGE_BROKEN)", snapshot)
+        self.assertIn('if (state == "study" && read_problem)\n\t\t\t\tstate = "blocked"', snapshot)
+        self.assertIn('if (state == "study")\n\t\t\tvar/mob/living/human/tutor = H.find_tutor(node_id)', snapshot)
+        self.assertIn("research_chapter_study_time(H, N, written_in, tutor)", snapshot)
+        self.assertIn('row["study_minutes"] = H.study_minutes_estimate(H.study_time_left(node_id, time))', snapshot)
+        self.assertNotIn("SCHOLAR_TUTOR_RATE", snapshot)
+        self.assertNotIn("timed_study(", snapshot)
+
 if __name__ == "__main__":
     unittest.main()
