@@ -381,10 +381,18 @@
 			well_drain_dir = old_well.well_drain_dir
 		S.dug_settle()
 		volume = S.volume
-		qdel(S)
+		well_retire_previous_lining(S)
 	if (dug_depth)
 		dug_settle()
 		update_icon()
+
+// Removing a well normally removes its fitting. Relining alone hands off the
+// installed fitting in place to the new lined well on the same tile.
+/obj/structure/sink/well/proc/well_retire_previous_lining(obj/structure/sink/S)
+	var/obj/structure/sink/well/old = S
+	if (istype(old) && old != src && old.dug_depth && dug_depth && isturf(loc) && old.loc == loc)
+		old.well_reline_receiver = src
+	qdel(S)
 
 /obj/structure/sink/well/examine(mob/user, distance = -1)
 	. = ..()
@@ -746,9 +754,17 @@
 /obj/structure/sink/well/well_fitting()
 	return locate(/obj/structure/well_fitting) in loc
 
+/obj/structure/sink/well
+	var/tmp/obj/structure/sink/well/well_reline_receiver
+
 /obj/structure/sink/well/Destroy()
+	var/obj/structure/well_fitting/retained
+	if (!QDELETED(well_reline_receiver) && well_reline_receiver != src && well_reline_receiver.dug_depth && well_reline_receiver.loc == loc && isturf(loc))
+		retained = well_fitting()
+	well_reline_receiver = null
 	for (var/obj/structure/well_fitting/F in loc)
-		qdel(F)
+		if (F != retained)
+			qdel(F)
 	return ..()
 
 /obj/structure/well_fitting

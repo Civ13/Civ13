@@ -33,6 +33,7 @@ var/sewer_runtime_error = FALSE
 		GLOB.destroyed_event = new
 		map = new /obj/map_metadata/dug_wells_probe
 		sewer_checks()
+		well_relining_fittings_check()
 	catch(var/exception/e)
 		sewer_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = sewer_failures, "runtime_error" = sewer_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -316,3 +317,20 @@ var/sewer_runtime_error = FALSE
 	new /obj/structure/sewer_piece/drain/ditch(ditch)
 	sewer_check(findtext(well_site_problem(ditch), "drain"), "no well in a drain")
 	sewer_check(well_site_problem(locate(10, 3, 1)) && findtext(well_site_problem(spring), "water here already"), "none in the river, and none dug where a spring is")
+
+/proc/well_relining_fittings_check()
+	var/turf/site = locate(2, 6, 1)
+	var/obj/structure/sink/well/timber/timber = new(site)
+	timber.dug_depth = 4
+	var/obj/structure/well_fitting/windlass/windlass = new(site)
+	var/obj/structure/sink/well/marble/marble = new(site)
+	sewer_check(QDELETED(timber) && !QDELETED(windlass) && marble.well_fitting() == windlass && windlass.well() == marble, "a timber-to-marble reline keeps the very same windlass")
+	var/obj/structure/well_fitting/pump/pump = new(site)
+	var/obj/structure/sink/well/sandstone/sandstone = new(site)
+	var/count = 0
+	for (var/obj/structure/well_fitting/fitting in site)
+		count++
+	sewer_check(QDELETED(marble) && QDELETED(windlass) && sandstone.well_fitting() == pump && pump.well() == sandstone && count == 1, "relining with a pump transfers it without creating another fitting")
+	sewer_check(!(locate(/obj/item/stack/material/iron) in site) && !(locate(/obj/item/stack/material/rope) in site), "relining does not spawn fitting salvage")
+	var/obj/structure/sink/puddle/waterhole/bare = sandstone.well_break_lining(FALSE)
+	sewer_check(QDELETED(pump) && QDELETED(sandstone) && bare && !bare.well_fitting(), "an exposed waterhole cannot keep a lined-well fitting")

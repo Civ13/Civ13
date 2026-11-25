@@ -44,7 +44,7 @@ Well recipes need a puddle or a dug hole on the builder's tile
 (`well_build_site()`), and a lining may replace another kind on a dug well
 (`well_relining()`). The new well takes over the hole in
 `/obj/structure/sink/well/on_runtime_spawn()`: depth, water, the dry flag and,
-from a well, the foul flag. A well over a natural puddle has `dug_depth` 0 and
+from a well, the foul flag and its existing windlass or pump. A well over a natural puddle has `dug_depth` 0 and
 is a spring as before: 750 units, refilled by the old loop.
 
 ## Water
