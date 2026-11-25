@@ -63,6 +63,20 @@ class HaySourceTests(unittest.TestCase):
         buffalo = (animal / 'hostile/buffalo.dm').read_text(encoding='utf-8').split('/mob/living/simple_animal/bison', 1)[0]
         self.assertRegex(buffalo, r'(?m)^\therbivore = (TRUE|1)$')
 
+    def test_drying_requires_actual_precipitation_and_preserves_shelter(self):
+        rain = self.source.split('/obj/structure/hay_drying/proc/rained_on()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('weather_intensity_at(T) > 0 && !!weather_precip_at(T)', rain)
+        self.assertLess(rain.index('A.location != AREA_OUTSIDE'), rain.index('weather_precip_at(T)'))
+        self.assertLess(rain.index('locate(/obj/roof)'), rain.index('weather_precip_at(T)'))
+
+    def test_bale_footing_rejects_uncovered_liquid_water_before_spending_hay(self):
+        tie = self.source.split('/obj/item/stack/hay/proc/tie_hay_bale(', 1)[1].split('\n/', 1)[0]
+        self.assertLess(tie.index('hay_bale_site_clear(T)'), tie.index('hay_bale_site_clear(T, user)'))
+        self.assertLess(tie.index('hay_bale_site_clear(T, user)'), tie.index('use(HAY_BALE_SIZE)'))
+        site = self.source.split('/proc/hay_bale_site_clear(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (is_liquid_water(T) && !tile_floor_cover(T))\n\t\treturn FALSE', site)
+        self.assertIn('!tile_has_floor(T)', site)
+
     def test_thatch_uses_roofing_knowledge_and_callback_epoch_is_runtime(self):
         self.assertIn('crafting_recipe_allowed(user, "/obj/item/weapon/roofbuilder/leaves")', self.source)
         self.assertIn('var/tmp/drying_epoch', self.source)

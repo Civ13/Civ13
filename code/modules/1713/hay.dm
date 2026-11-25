@@ -55,6 +55,8 @@
 	// A floor upstairs (a hay loft) holds bales too (tile_occupancy.dm).
 	if (!isturf(T) || !tile_has_floor(T) || T.density)
 		return FALSE
+	if (is_liquid_water(T) && !tile_floor_cover(T))
+		return FALSE
 	for (var/atom/movable/AM in T)
 		if (AM != ignored && AM.density)
 			return FALSE
@@ -146,7 +148,7 @@
 	var/area/A = get_area(T)
 	if (!A || A.location != AREA_OUTSIDE || (locate(/obj/roof) in T))
 		return FALSE
-	return weather_intensity_at(T) > 0
+	return weather_intensity_at(T) > 0 && !!weather_precip_at(T)
 
 /obj/structure/hay_drying/proc/dry_step(epoch)
 	if (QDELETED(src) || epoch != drying_epoch || !isturf(loc) || portions < 1)
