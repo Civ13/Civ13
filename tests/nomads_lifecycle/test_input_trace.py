@@ -186,6 +186,26 @@ class InputTrace(unittest.TestCase):
         for approved, label in approved_travel_holds:
             self.assertEqual(prior.count(approved), 1, 'approved ' + label)
             prior = prior.replace(approved, '')
+        # #7150 adds Shift+Alt as an explicit item-pile choice. Keep the
+        # original click baseline and check this addition as an exact block.
+        approved_item_pile_choice = (
+            "\t// A deliberate pile selection resumes here as one ordinary click, keeping\n"
+            "\t// the normal facing, hand, reach, cooldown and attack dispatch below.\n"
+            "\tif (modifiers[\"shift\"] && modifiers[\"alt\"] && !modifiers[\"ctrl\"] && !modifiers[\"middle\"] && !modifiers[\"right\"] && ishuman(src))\n"
+            "\t\tvar/mob/living/human/H = src\n"
+            "\t\tvar/turf/site = isturf(A) ? A : A.loc\n"
+            "\t\tif (isturf(site) && H.item_pile_can_choose(site))\n"
+            "\t\t\tvar/list/options = item_pile_options(H, site)\n"
+            "\t\t\tif (item_pile_has_choice(options))\n"
+            "\t\t\t\tvar/obj/item/selected = H.item_pile_choose(site, options)\n"
+            "\t\t\t\tif (!selected)\n"
+            "\t\t\t\t\treturn\n"
+            "\t\t\t\tA = selected\n"
+            "\t\t\t\tparams = \"left=1\"\n"
+            "\t\t\t\tmodifiers = params2list(params)\n"
+        )
+        self.assertEqual(prior.count(approved_item_pile_choice), 1, 'approved item pile choice block')
+        prior = prior.replace(approved_item_pile_choice, '')
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')
@@ -231,6 +251,12 @@ class InputTrace(unittest.TestCase):
         block_end = self.clicks.index('\tscrambling = FALSE', block_start)
         changed = self.clicks[:block_start] + self.clicks[block_end:]
         with self.assertRaisesRegex(AssertionError, 'approved posture block: proning'):
+            self.assert_disabled_trace_preserves_prior_source(changed)
+
+    def test_disabled_trace_rejects_changed_item_pile_dispatch(self):
+        changed = self.clicks.replace('H.item_pile_choose(site, options)', 'options[1]', 1)
+        self.assertNotEqual(changed, self.clicks)
+        with self.assertRaisesRegex(AssertionError, 'approved item pile choice block'):
             self.assert_disabled_trace_preserves_prior_source(changed)
 
     def test_disabled_trace_rejects_changed_click_gate(self):
