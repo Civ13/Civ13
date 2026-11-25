@@ -56,7 +56,20 @@ than 2 spits down cannot be drunk from the hands and takes longer to draw into
 a container. A drink from the hands takes 10 units.
 
 Dug wells are wells and waterholes are puddles to the rest of the game, so
-waste and sewage nearby, floodwater and soap work on them unchanged.
+waste and sewage nearby, floodwater and soap still affect them.
+
+### Cleaning a fouled well without soap
+
+Right-click a lined well and choose **Clean Out Well** while holding an
+empty, open bucket and a shovel. Wait out any flood and clear the nearby
+waste or stop sewage or other pollution reaching the well first. You bail
+out and discard the foul water, then scrape out the mud and debris. Stay
+next to the well with both tools until both steps finish. Bailing takes 18
+seconds by hand, 10 with a windlass or 6 with a pump; scraping takes 12
+seconds at base work speed. If scraping is interrupted, the well starts
+refilling again but stays fouled. After a successful cleaning, let fresh
+water seep back in. This clears fecal fouling only, not mercury, radiation
+or an ongoing source of contamination.
 
 ## Fittings
 

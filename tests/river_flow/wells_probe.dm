@@ -191,8 +191,10 @@ var/sewer_runtime_error = FALSE
 	F.restore_hollows(list(1, 0))
 
 	// Fittings: a windlass fills a container in one haul, a pump takes its place.
+	var/bail_by_hand = SW.well_bail_delay()
 	var/obj/structure/well_fitting/windlass/WL = new /obj/structure/well_fitting/windlass(low)
 	sewer_check(SW.well_fitting() == WL && WL.well() == SW && !PW.well_fitting(), "a windlass over a well is that well's fitting")
+	var/bail_windlass = SW.well_bail_delay()
 	var/obj/item/weapon/reagent_containers/glass/bucket/BK = new /obj/item/weapon/reagent_containers/glass/bucket(low)
 	qdel(waste)
 	SW.dirty = FALSE
@@ -210,6 +212,40 @@ var/sewer_runtime_error = FALSE
 	sewer_check(!WL.draw_into(SW, BK), "an empty well gives nothing")
 	var/obj/structure/well_fitting/pump/PU = new /obj/structure/well_fitting/pump(low)
 	sewer_check(QDELETED(WL) && SW.well_fitting() == PU && PU.draw_time < initial(WL.draw_time), "a pump takes the windlass's place and draws faster")
+	// Cleaning is a drain, a separate clearing stage, and a natural refill.
+	sewer_check(bail_by_hand > bail_windlass && bail_windlass > SW.well_bail_delay(), "hand bailing is slower than the windlass, and a pump is faster again")
+	SW.radiation = 17
+	SW.dirty = TRUE
+	SW.volume = 180
+	SW.well_begin_scraping()
+	SW.dug_settled_at = world.time - 600
+	SW.dug_settle()
+	sewer_check(SW.well_pauses_recharge() && !SW.volume && SW.dirty, "bailing empties the well, pauses refill, and does not clear fouling")
+	SW.well_finish_scraping(FALSE)
+	sewer_check(!SW.well_pauses_recharge() && SW.dirty && SW.radiation == 17, "an interrupted scrape resumes recharge without clearing contamination")
+	SW.dug_settled_at = world.time - 600
+	SW.dug_settle()
+	sewer_check(SW.volume > 0, "a dug well refills again after the interruption")
+	waste = s2_poo(locate(2, 1, 1))
+	SW.well_begin_scraping()
+	sewer_check(SW.well_finish_scraping(TRUE) && SW.dirty, "nearby fresh waste prevents a completed scrape from clearing fouling")
+	qdel(waste)
+	F.restore_hollows(list(1, 6))
+	FW.well_begin_scraping()
+	sewer_check(FW.well_finish_scraping(TRUE) && FW.dirty, "active inundation prevents lasting cleanup")
+	F.restore_hollows(list(1, 0))
+	SW.well_begin_scraping()
+	sewer_check(!SW.well_finish_scraping(TRUE) && !SW.dirty && SW.radiation == 17 && !SW.volume, "with no source, clearing removes only fecal fouling and leaves the well empty")
+	SW.dug_settled_at = world.time - 600
+	SW.dug_settle()
+	sewer_check(SW.volume > 0 && SW.radiation == 17, "the refilled well retains its radioactive contamination")
+	OW.dirty = TRUE
+	OW.well_begin_scraping()
+	OW.refill()
+	sewer_check(!OW.volume && OW.dirty, "a spring pauses its normal refill while being scraped")
+	OW.well_finish_scraping(TRUE)
+	OW.refill()
+	sewer_check(OW.volume == 10 && !OW.dirty, "a cleaned spring refills at its ordinary rate")
 	// Taking a well apart: fitting, then lining, then the hole.
 	PU.unfit()
 	var/obj/item/stack/material/iron/scrap = locate() in low
