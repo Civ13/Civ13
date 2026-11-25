@@ -1,5 +1,6 @@
 // Minimal stand-ins for the types and helpers do_surgery() touches.
 #define SURGERY_FAILURE -1
+#define QDELETED(X) (!X)
 #define I_HELP "help"
 #define I_HARM "harm"
 
@@ -21,8 +22,11 @@ var/list/chat_log = list()
 /proc/ishuman(thing)
 	return istype(thing, /mob/living/human)
 
-/datum/op_stage
+/datum/surgery_status
 	var/list/in_progress = list()
+
+/datum/surgery_status/proc/release_zone(zone)
+	in_progress -= zone
 
 /mob
 	var/targeted_organ = "chest"
@@ -33,7 +37,7 @@ var/list/chat_log = list()
 	return TRUE
 
 /mob/living/human
-	var/datum/op_stage/op_stage
+	var/datum/surgery_status/op_stage
 
 /mob/living/human/New()
 	..()
