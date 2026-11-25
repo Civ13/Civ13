@@ -898,6 +898,11 @@
 	if (!I) return 								//Item's been destroyed while washing
 	if (user.get_active_hand() != I) return		//Person has switched hands or the item in their hands
 
+	if (QDELETED(src) || !Adjacent(user)) return
+	if (heat_dried() || volume <= 0)
+		to_chat(user, "<span class='warning'>\The [src] is dry!</span>")
+		return
+
 	O.clean_blood()
 	if (istype(O, /obj/item/clothing))
 		var/obj/item/clothing/C = O
