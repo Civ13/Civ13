@@ -928,6 +928,11 @@ SUITES = {
             'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
     # Complete monitor pipe rows with fake spatial/type boundaries; no native IO.
+    'factory_arm_custody': {'files': ('tests/factory_automation/test_arm_custody.py',),
+        'paths': ('tests/factory_automation/test_arm_custody.py',), 'shared_paths': (
+            'code/modules/1713/factory_arms.dm', 'code/modules/1713/factory_ports.dm',
+            'tests/save_movement/source_adapter.py', 'code/modules/1713/coin_mint.dm',
+            'code/modules/1713/fiatcurrency.dm')},
     'factory_monitor': {'files': ('tests/factory_automation/test_monitor_pipes.py',),
         'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
             'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
