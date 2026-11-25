@@ -27,14 +27,20 @@
 /proc/canal_tile(turf/T)
 	return istype(T, /turf/floor/trench/flooded) || (locate(/obj/structure/canal_lock) in T)
 
-// TRUE when a boat may not go from one water tile to the next: a step in a
-// canal, where the levels differ. Natural rivers and seas run down their own
-// slopes and are not affected.
+// TRUE when a boat tries to cross closed lock gates or unequal water levels
+// in a canal. Natural rivers and seas run down their own slopes and are not
+// affected.
 /proc/canal_step_blocked(turf/from, turf/to_turf)
 	if (!from || !to_turf || from == to_turf)
 		return FALSE
 	if (!canal_tile(from) && !canal_tile(to_turf))
 		return FALSE
+	for (var/obj/structure/canal_lock/L in from)
+		if (L.busy)
+			return TRUE
+	for (var/obj/structure/canal_lock/L in to_turf)
+		if (L.busy)
+			return TRUE
 	return canal_level(from) != canal_level(to_turf)
 
 // Gravity for trench flooding: water standing at W can flood dry ground at T.
@@ -116,14 +122,22 @@
 	user.visible_message(SPAN_NOTICE("[user] shuts the gates and opens the paddles of \the [src]."), SPAN_NOTICE("You shut the gates and wind open the paddles."))
 	flick(high ? "lock_emptying" : "lock_filling", src)
 	var/done = do_after(user, CANAL_LOCK_TIME, src)
+	if (QDELETED(src))
+		return
 	busy = FALSE
 	if (!done)
+		to_chat(user, SPAN_WARNING("The lock cycle is interrupted. The chamber stays at its previous level."))
 		return
-	set_high(!high)
+	levels = side_levels()
+	if (!levels || levels[1] == levels[2])
+		to_chat(user, SPAN_WARNING("The lock cycle is cancelled: the two pounds are no longer connected at different levels. The chamber stays at its previous level."))
+		return
+	set_high(!high, levels)
 	user.visible_message(SPAN_NOTICE("\The [src] [high ? "fills" : "empties"] and its [high ? "upper" : "lower"] gates swing open."))
 
-/obj/structure/canal_lock/proc/set_high(state)
-	var/list/levels = side_levels()
+/obj/structure/canal_lock/proc/set_high(state, list/levels)
+	if (!levels)
+		levels = side_levels()
 	high = state
 	if (levels)
 		chamber_level = high ? levels[2] : levels[1]
