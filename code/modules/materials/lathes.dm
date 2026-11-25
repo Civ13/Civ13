@@ -55,9 +55,9 @@ var/global/list/engine_lathe_materials = list("copper", "bronze", "brass", "iron
 		choices["[label] - [row[2]] [material_name]"] = label
 	return choices
 
-// The worker still stands at the fastened lathe with this item in hand.
+// The worker still stands at the fastened lathe and can still use it.
 /obj/structure/workshop_machine/lathe/proc/turner_ready(mob/living/human/H, obj/item/I)
-	return !QDELETED(src) && anchored && istype(H) && !QDELETED(I) && I.loc == H && get_dist(src, H) <= 1 && !H.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
+	return !QDELETED(src) && anchored && istype(H) && !QDELETED(I) && I.loc == H && get_dist(src, H) <= 1 && !H.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && crafting_recipe_allowed(H, "[type]")
 
 /obj/structure/workshop_machine/lathe/attackby(obj/item/I, mob/living/human/H)
 	if (!istype(H))

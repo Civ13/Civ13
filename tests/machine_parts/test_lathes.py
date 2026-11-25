@@ -104,6 +104,20 @@ class Lathes(unittest.TestCase):
         self.assertIn('turner_ready(H, P) && !P.precise && !tool_refusal(H)', true[true.index('do_after('):])
         self.assertIn('P.wear >= MACHINE_PART_WORN_OUT', true)
 
+    def test_each_cut_rechecks_lathe_subject_before_committing(self):
+        readiness = proc('/obj/structure/workshop_machine/lathe/proc/turner_ready(')
+        self.assertIn('&& crafting_recipe_allowed(H, "[type]")', readiness)
+        for method, item, mutation in (
+            ('turn_part', 'S', 'S.use(row[2])'),
+            ('true_part', 'P', 'P.precise = TRUE'),
+        ):
+            cut = proc('/obj/structure/workshop_machine/lathe/proc/%s(' % method)
+            wait = cut.index('do_after(')
+            self.assertIn('turner_ready(H, %s)' % item, cut[:wait])
+            self.assertIn('turner_ready(H, %s)' % item, cut[wait:cut.index(mutation)])
+        self.assertIn('crafting_recipe_allowed(H, "[row[1]]")', proc(
+            '/obj/structure/workshop_machine/lathe/proc/turn_part('))
+
     def test_pole_lathe_needs_a_chisel_and_the_engine_lathe_does_not(self):
         self.assertIn('craft_need_tool(H, "chisel", craft_need_candidates(H))', SOURCE)
         engine = re.search(r'^%s\n((?:\t[^\n]*\n)+)' % re.escape(ENGINE), SOURCE, re.M)[1]
