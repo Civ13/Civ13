@@ -317,6 +317,9 @@ SUITES = {
         'paths': ('tests/steam_engine_callbacks/', 'code/modules/1713/machinery/engines/external_combustion.dm')},
     'conveyor_sync': {'files': ('tests/conveyor_sync/test_sync.py',),
         'paths': ('tests/conveyor_sync/', 'code/modules/1713/machinery/conveyor2.dm', 'code/modules/1713/hydroponics.dm')},
+    'hydroponics_tray': {'files': ('tests/hydroponics_tray/test_reservoir_and_wrench.py',),
+        'paths': ('tests/hydroponics_tray/', 'code/modules/1713/hydroponics.dm'),
+        'shared_paths': ('code/modules/1713/production.dm',)},
     'medical_side_effects': {'files': ('tests/medical_side_effects/test_registration.py',),
         'paths': ('tests/medical_side_effects/', 'code/game/mob/living/carbon/human/MedicalSideEffects.dm')},
     'biofuel_feed': {'files': ('tests/biofuel_feed/test_feed.py',),
@@ -1787,7 +1790,7 @@ SUITES = {
             'code/game/mob/groups/land_registry.dm', 'code/game/mob/groups/faction_treasury.dm',
             'code/game/mob/groups/faction_roster.dm')},
     # Faction treasury strongboxes, wages and dues (the native probe is tests/faction_treasury/probe.dm).
-    'faction_treasury': {'files': ('tests/faction_treasury/test_source.py',),
+    'faction_treasury': {'files': ('tests/faction_treasury/test_source.py', 'tests/faction_treasury/test_wages.py'),
         'paths': ('tests/faction_treasury/',), 'shared_paths': (
             'code/game/mob/groups/faction_treasury.dm', 'code/modules/1713/marketplace.dm',
             'code/game/mob/groups/faction_roster.dm')},
@@ -1940,9 +1943,12 @@ SUITES = {
     'agent_ci_digest': {'files': ('tests/agent_ci_digest/test_ci_digest.py',),
         'paths': ('tests/agent_ci_digest/', 'scripts/ci_digest.py'), 'shared_paths': (
             '.github/workflows/',)},
-    # Water quality by kind, washing fixes and flea typhus; source checks only.
+    'mead_lid_timing': {'files': ('tests/bee_products/test_mead_lid_timing.py',),
+        'paths': ('tests/bee_products/test_mead_lid_timing.py', 'code/modules/1713/mead.dm'),
+        'shared_paths': ('code/modules/reagents/reagent_containers/glass.dm',)},
     'item_wash_source': {'files': ('tests/item_wash_source/test_completion.py',),
         'paths': ('tests/item_wash_source/', 'code/game/objects/structures/watercloset.dm')},
+    # Water quality by kind, washing fixes and flea typhus; source checks only.
     'water_quality': {'files': ('tests/water_quality/test_water_quality.py',),
         'paths': ('tests/water_quality/', 'code/modules/1713/water_quality.dm'), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_needs.dm',
