@@ -411,7 +411,7 @@ var/global/list/train_instruments = list()
 	if (istype(O, /obj/structure/train_lineside/board))
 		var/obj/structure/train_lineside/board/B = O
 		var/obj/structure/train_token_instrument/I = run_from
-		if (!istype(I) || !I.section)
+		if (!istype(I) || !I.partner())
 			return "Run the wire from a paired token instrument first."
 		B.section = I.section
 		B.update_board()
@@ -438,6 +438,25 @@ var/global/list/train_instruments = list()
 
 /proc/train_section_name(section)
 	return section ? "single line [section]" : "no single line"
+
+// Reserve IDs even when an instrument has been dismantled but its board or
+// issued token is still in the world. Only new pairs need a new number.
+/proc/train_unused_section_id()
+	var/list/used = list()
+	for (var/obj/structure/train_token_instrument/I in train_instruments)
+		if (!QDELETED(I) && I.section)
+			used["[I.section]"] = TRUE
+	for (var/obj/structure/train_lineside/board/B in train_lineside)
+		if (!QDELETED(B) && B.section)
+			used["[B.section]"] = TRUE
+	for (var/obj/item/train_token/T in train_tokens)
+		if (!QDELETED(T) && T.section)
+			used["[T.section]"] = TRUE
+	for (var/n in 100 to 9999)
+		var/section_id = "[n]"
+		if (!used[section_id])
+			return section_id
+	return null
 
 // The token of a section that is out of its instruments, or null.
 /proc/train_token_out(section)
@@ -515,9 +534,13 @@ var/global/list/train_instruments = list()
 		return "The two are wired as a pair already, for [train_section_name(section)]."
 	if (partner() || I.partner())
 		return "One of the two is wired to another instrument already. Build new ones for a new single line."
-	if (!section)
-		section = I.section ? I.section : "[rand(100, 9999)]"
-	I.section = section
+	var/pair_section = section ? section : I.section
+	if (!pair_section)
+		pair_section = train_unused_section_id()
+		if (!pair_section)
+			return "There are no unused single-line numbers."
+	section = pair_section
+	I.section = pair_section
 	return "You wire the two instruments as a pair. They hold the token for [train_section_name(section)]."
 
 // Draws the token. Returns it, or null when the instruments hold none.
@@ -621,6 +644,10 @@ var/global/list/train_instruments = list()
 /obj/structure/trains/locomotive/proc/engine_tiles()
 	. = list()
 	if (!isturf(loc))
+		return
+	// The same distinction as Move(): a small engine only carries its centre.
+	if (!body_kind || !body_parts)
+		. += loc
 		return
 	. |= train_platform_tiles(loc, dir)
 	if (!car_id)
