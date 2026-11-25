@@ -11,6 +11,7 @@
 	var/high = TRUE
 	var/mob/user = null
 	var/obj/item/catapult_ball/loaded = null
+	var/tmp/projectile_slot_revision = 0
 	bound_height = 64
 	bound_width = 32
 	anchored = TRUE
@@ -57,19 +58,38 @@
 		if (loaded)
 			to_chat(M, "<span class = 'warning'>There's already a projectile loaded.</span>")
 			return
-		// load first and only slot
-		M.remove_from_mob(W)
-		W.loc = src
-		loaded = W
-		icon_state = "[state_prefix]1"
-		update_icon()
-		if (M == user)
+		if (load_projectile(W, M) && M == user)
 			do_html(M)
 	else if (is_tool(W, TOOL_HAMMER))
 		toggle_anchor(user)
 	else
 		..()
 
+
+/obj/structure/catapult/proc/load_projectile(obj/item/catapult_ball/ball, mob/living/loader)
+	if (QDELETED(src) || loaded || !istype(ball) || !istype(loader))
+		return FALSE
+	if (!loader.transfer_held_item_to(ball, src) || QDELETED(src))
+		return FALSE
+	loaded = ball
+	projectile_slot_revision++
+	icon_state = "[state_prefix]1"
+	update_icon()
+	return TRUE
+
+/obj/structure/catapult/proc/unload_projectile(mob/actor)
+	var/obj/item/catapult_ball/ball = loaded
+	if (QDELETED(actor) || QDELETED(ball) || ball.loc != src)
+		return FALSE
+	// With no usable hand, put_in_hands can still drop the projectile at the operator's feet.
+	actor.put_in_hands(ball)
+	if (!QDELETED(ball) && ball.loc == src)
+		return FALSE
+	loaded = null
+	projectile_slot_revision++
+	icon_state = "[state_prefix]0"
+	update_icon()
+	return TRUE
 
 /obj/structure/catapult/interact(var/mob/m)
 	if (user)
@@ -116,11 +136,14 @@
 		return FALSE
 
 	if (href_list["load"])
-		var/obj/item/catapult_ball/M = user.get_active_hand()
-		if (M && istype(M) && do_after(user, 10, src))
-			user.remove_from_mob(M)
-			M.loc = src
-			loaded = M
+		if (loaded)
+			to_chat(user, SPAN_WARNING("There's already a projectile loaded."))
+		else
+			var/obj/item/catapult_ball/ball = user.get_active_hand()
+			if (istype(ball) && do_after(user, 10, src) && anchored && user.get_active_hand() == ball)
+				load_projectile(ball, user)
+	else if (href_list["unload"])
+		unload_projectile(user)
 
 	if (href_list["set_angle"])
 		angle = player_input(user, "Set the target distance to what? (From [min_range] to [max_range] meters)", null, null, "num", null, FALSE)
@@ -133,12 +156,16 @@
 				to_chat(user, "<span class = 'danger'>You can't fire yet.</span>")
 				return
 
-		if (!loaded)
+		var/obj/item/catapult_ball/firing_ball = loaded
+		if (QDELETED(firing_ball) || firing_ball.loc != src)
 			to_chat(user, "<span class = 'danger'>There's nothing in the catapult.</span>")
 			return
 
-
+		var/firing_revision = projectile_slot_revision
 		if (do_after(user, loose_time, src))
+			// Unloading (even if the same projectile is put back) cancels this wind-up.
+			if (QDELETED(src) || !anchored || loaded != firing_ball || projectile_slot_revision != firing_revision || QDELETED(firing_ball) || firing_ball.loc != src)
+				return
 
 			// firing code
 
@@ -176,12 +203,13 @@
 
 			travelled = 0
 			high = TRUE
-			qdel(loaded)
+			qdel(firing_ball)
 			loaded = null
+			projectile_slot_revision++
 			icon_state = "[state_prefix]_fire"
 			update_icon()
 			spawn(10)
-				icon_state = "[state_prefix]0"
+				icon_state = "[state_prefix][loaded ? 1 : 0]"
 				update_icon()
 			var/list/old_valid_targets = list()
 
@@ -263,11 +291,11 @@
 		ui_interact(m)
 
 /obj/structure/catapult/ui_actions(ui_key)
-	return list("load", "set_angle", "fire")
+	return list("load", "unload", "set_angle", "fire")
 
 /obj/structure/catapult/ui_interact(mob/viewer, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
 	var/list/rows = list(
-		panel_row("Projectile", loaded ? loaded.name : "No projectile loaded", loaded ? null : "muted", list(panel_button(loaded ? "Unload" : "Load", "load"))),
+		panel_row("Projectile", loaded ? loaded.name : "No projectile loaded", loaded ? null : "muted", list(panel_button(loaded ? "Unload" : "Load", loaded ? "unload" : "load"))),
 		panel_row("Distance", "[angle] meters", buttons = list(panel_button("Set", "set_angle"))))
 	open_panel(viewer, name, 420, 280, list(panel_section("Laying", rows = rows, buttons = list(panel_button("FIRE!", "fire")))), ui = ui, force_open = force_open)
 	//		<A href = '?src=\ref[src];topic_type=[topic_custom_input];continue_num=1'>
