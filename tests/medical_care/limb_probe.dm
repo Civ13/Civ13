@@ -1,4 +1,5 @@
 #define SURGERY_FAILURE -1
+#define QDELETED(X) (!(X))
 /datum/species
 	var/list/has_limbs = list("l_arm" = list(), "r_arm" = list())
 /mob/living/human
@@ -11,8 +12,14 @@
 	proc/UpdateDamageIcon()
 /mob/living/proc/visible_message(message, self_message)
 /mob/living/proc/drop_from_inventory(obj/item/E)
+	E.loc = null
+	return TRUE
 /obj/item/organ/external
 	var/limb_name
+	var/parent_organ
+	var/mob/living/human/owner
+	proc/is_stump()
+		return FALSE
 	var/amputation_point = "arm"
 	proc/replaced(mob/living/human/H)
 		H.limbs[limb_name] = src

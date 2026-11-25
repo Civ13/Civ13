@@ -35,6 +35,10 @@ def main():
         ("/datum/surgery_step/limb/attach", "can_use"),
         ("/datum/surgery_step/limb/attach", "end_step"),
     ))
+    graft = re.search(r"(?m)^/obj/item/organ/external/proc/graft_slots_clear\([^\n]*\)\n(?:(?:\t[^\n]*|)\n)*", source)
+    if not graft:
+        raise ValueError("missing graft slot validation")
+    methods += "\n" + graft.group()
     with tempfile.TemporaryDirectory(prefix="limb_surgery_") as temp:
         directory = Path(temp)
         (directory / "fixture.dme").write_text('#include "limb_probe.dm"\n#include "methods.dm"\n#include "limb_cases.dm"\n', encoding="utf-8")

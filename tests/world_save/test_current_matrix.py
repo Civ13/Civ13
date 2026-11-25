@@ -275,7 +275,7 @@ class CurrentMatrix(unittest.TestCase):
                     result=dict(done=1,checks=20)
                     if '--startup-only' in flags: (output/'startup-result.json').write_text('{"startup_only":1}')
                     if '--wounds' in flags:
-                        result=dict(done=1,checks=187,roundtrips=18)
+                        result=dict(done=1,checks=230,roundtrips=18)
                         if control:
                             receipt=json.loads((output/'receipt.json').read_text())
                             result=dict(done=0,checks=5,error='Cannot read null.max_damage',source=receipt['wound_control_source'],line=receipt['wound_control_line'])
@@ -433,8 +433,8 @@ class CurrentMatrix(unittest.TestCase):
                 # and the #3845 reverted-fix wound control.
                 tail = reference.split(marker,1)[1]
                 changes = (
-                    ("        if args.wounds and not args.negative_control:\n", "        # 186 wound and organ assertions plus the generated offline-client startup check.\n        if args.wounds and not args.negative_control:\n"),
-                    ("result.get('checks') != 141", "result.get('checks') != 187"),
+                    ("        if args.wounds and not args.negative_control:\n", "        # 229 wound, limb graft and organ assertions plus the generated offline-client startup check.\n        if args.wounds and not args.negative_control:\n"),
+                    ("result.get('checks') != 141", "result.get('checks') != 230"),
                     ("result.get('checks') != 4:", "result.get('checks') != 5:"),
                     ("# Four operation-admission checks precede the malformed-wire guard.\n            if args.negative_control == 'preflight' and result.get('checks') != 11:", "# Includes four operation-admission checks and the offline startup check.\n            if args.negative_control == 'preflight' and result.get('checks') != 12:"),
                     ("# Includes the export operation-release assertion before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 9:", "# Includes export operation-release and offline startup checks before recovery.\n            if args.negative_control == 'reclaim-order' and result.get('checks') != 10:"),
