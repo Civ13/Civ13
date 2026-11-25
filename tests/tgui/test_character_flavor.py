@@ -29,6 +29,20 @@ class CharacterFlavorContract(unittest.TestCase):
   self.assertNotIn('flavor_change',SOURCE);self.assertNotIn('flavor_text =',SOURCE)
   human=(ROOT/'code/game/mob/living/carbon/human/human.dm').read_text(encoding='utf-8')
   self.assertIn('if (C.body_parts_covered & FACE)',proc(human,'/mob/living/human/print_flavor_text(var/shrink = TRUE)'))
+ def test_examine_normalizes_decoded_characters_and_reencodes_before_render(self):
+  base=proc(MOB,'/mob/proc/print_flavor_text()')
+  decoded=base.index('html_decode(flavor_text)')
+  self.assertLess(decoded,base.index('length_char(msg) <= 40'))
+  self.assertIn('[html_encode(msg)]',base)
+  self.assertIn('html_encode(copytext_char(msg, 1, 37))',base)
+  self.assertIn('flavor_more=1',base)
+  self.assertNotIn('copytext_preserve_html',base)
+  human=(ROOT/'code/game/mob/living/carbon/human/human.dm').read_text(encoding='utf-8')
+  preview=proc(human,'/mob/living/human/print_flavor_text(var/shrink = TRUE)')
+  self.assertLess(preview.index('if (C.body_parts_covered & FACE)'),preview.index('return ..()'))
+  self.assertNotIn('html_decode',preview)
+  examine=(ROOT/'code/game/mob/living/carbon/human/examine.dm').read_text(encoding='utf-8')
+  self.assertIn('if (print_flavor_text())',examine)
  def test_admission_precedes_capture_and_canonical_budget_fallback_is_complete(self):
   opened=proc(SOURCE,'/mob/proc/present_character_flavor_ui(mob/viewer, legacy_snapshot)')
   for marker in ('!viewer || !viewer.client || !(src in view(viewer))','length(flavor_text) + length(encoded_name) <= 65536','html_encode(html_decode(flavor_text)) == flavor_text','lines.len > 2048','ui.legacy_snapshot = legacy_snapshot','if (!modern)','ui.plain_page = TRUE','ui.set_initial_data(list())','"name" = encoded_name, "text" = flavor_text'):

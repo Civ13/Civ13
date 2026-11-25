@@ -92,7 +92,7 @@ class PresenterSourceContracts(unittest.TestCase):
         self.assertIn('blocker.step_x / 32', block)
         self.assertIn('target.step_x / 32', block)
         door = (ROOT / 'code/game/objects/structures/door.dm').read_text()
-        close = door.split('/obj/structure/simple_door/proc/Close()', 1)[1].split('/obj/structure/simple_door/Destroy()', 1)[0]
+        close = door.split('/obj/structure/simple_door/proc/Close(', 1)[1].split('/obj/structure/simple_door/Destroy()', 1)[0]
         self.assertLess(close.index('los_invalidate(src, TRUE)'), close.index('opacity = TRUE'))
         movement = (ROOT / 'code/game/mob/mob_movement.dm').read_text()
         self.assertIn('los_refresh_moved_viewer(src, FALSE, los_move_contexts)', movement)

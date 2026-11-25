@@ -43,6 +43,17 @@ class FirefightingSourceTests(unittest.TestCase):
                          'code\\_onclick\\item_attack.dm'):
             self.assertLess(dme.index('#include "%s"' % original), mine)
 
+    def test_fire_roll_is_shared_and_finishes_without_a_delay(self):
+        resist = (ROOT / 'code/game/mob/living/carbon/resist.dm').read_text(encoding='utf-8')
+        self_help = (ROOT / 'code/game/mob/living/carbon/human/self_help.dm').read_text(encoding='utf-8')
+        roll = resist.split('/mob/living/human/proc/resist_fire_roll()', 1)[1].split('/mob/living/human/process_resist()', 1)[0]
+        self.assertIn('if (!on_fire || buckled)', roll)
+        self.assertLess(roll.index('fire_stacks -= 1.2'), roll.index('if (fire_stacks <= 0)'))
+        self.assertIn('ExtinguishMob()', roll)
+        self.assertNotIn('sleep(', roll)
+        for text, anchor in ((resist, 'process_resist()'), (self_help, 'resist_knockdown()')):
+            self.assertIn(f'/mob/living/human/{anchor}\n\tif (resist_fire_roll())\n\t\treturn TRUE', text)
+
     def test_every_icon_state_exists(self):
         states = dmi_states(ICON)
         for base in ('fire_beater', 'fire_flapper'):

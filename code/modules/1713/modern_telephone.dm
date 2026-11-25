@@ -138,6 +138,8 @@ var/global/civ_landline_cursor = 1
 		return FALSE
 	ringing = FALSE
 	P.ringing = FALSE
+	ringingnum = FALSE
+	P.ringingnum = FALSE
 	connected = P.phonenumber
 	P.connected = phonenumber
 	call_deadline = 0

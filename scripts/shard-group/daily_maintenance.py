@@ -26,9 +26,9 @@ One run:
    planned_notice, `warning_minutes`); an admin's Cancel Planned Restart in a region leaves that
    region on its old build for the day;
 4. hands every running region over to the build in turn (save, the new build loads it beside
-   the old world, players move across); a region busy with another action is tried again later,
-   so one busy region never holds the others back. Asleep, cold and stopped regions take the
-   build without waking (update_offline);
+   the old world, players move across); a region busy with another action is tried again later. Asleep, cold and stopped regions take the
+   build without waking (update_offline). Oceans wait for their configured coastal lands
+   to finish installing this revision; an unrelated busy region never holds them back;
 5. removes the pin and records what each region did (<root>/.maintenance/state.json).
 
 The gateway (the always-up world on the front door's port) is never staged, stopped or moved
@@ -315,12 +315,13 @@ class Run:
         for region, host in regions:
             if (region, host) not in behind:
                 self.note(region['id'], result='already on the build')
-        self.install_offline(offline)
+        self.install_offline([(r, h) for r, h in offline if r['kind'] != 'OCEANIC'])
         cancelled = self.warn(live)
-        self.hand_over([(r, h) for r, h in live if r['id'] not in cancelled], revision)
+        self.hand_over([(r, h) for r, h in live if r['id'] not in cancelled], revision,
+                       offline_oceans=[(r, h) for r, h in offline if r['kind'] == 'OCEANIC'])
         problems = {name: entry.get('result') for name, entry in self.state['regions'].items()
                     if not str(entry.get('result', '')).startswith(('already on', 'handed over', 'left running: the gateway',
-                                                                     'installing while', 'skipped: not set up'))}
+                                                                     'installing while', 'installed while', 'skipped: not set up'))}
         return {'revision': revision, 'problems': problems}
 
     def stage(self, regions, revision):
@@ -367,7 +368,8 @@ class Run:
         return failed
 
     def install_offline(self, offline):
-        """Asleep, cold and stopped regions take the build without waking (update_offline)."""
+        """Queue asleep, cold and stopped regions without waking them (update_offline)."""
+        accepted = {}
         for region, host in offline:
             name = region['id']
             try:
@@ -376,9 +378,12 @@ class Run:
                 self.note(name, result='not updated: %s' % str(error)[:300])
                 continue
             if name in answer.get('accepted', {}):
-                self.note(name, result='installing while %s' % answer['accepted'][name].get('state', 'down'))
+                state = answer['accepted'][name].get('state', 'down')
+                accepted[name] = (host, state)
+                self.note(name, result='installing while %s' % state)
             else:
                 self.note(name, result='not updated: %s' % answer.get('skipped', {}).get(name, 'refused'))
+        return accepted
 
     def world(self, host):
         try:
@@ -423,14 +428,43 @@ class Run:
                     self.note(region['id'], result='called off in game by an admin; left on its build today')
         return cancelled
 
-    def hand_over(self, live, revision):
-        """Hand each running region over in turn; a busy one is tried again later."""
+    def ocean_waiting(self, host, revision):
+        """Return (coastal reason, final) for an ocean not ready in this run."""
+        blockers = host.ocean_update_blockers(self.group, revision)
+        if not blockers:
+            return None, False
+        states = self.state['regions']
+        finished = ('called off', 'not updated', 'handover failed', 'handed over, but', 'skipped:')
+        final = any(name not in states or str(states[name].get('result', '')).startswith(finished)
+                    for name in blockers)
+        return 'waiting for coastal land builds: ' + ', '.join(blockers), final
+
+    def hand_over(self, live, revision, offline_oceans=()):
+        """Hand live regions over, and install offline oceans once their lands are ready."""
         self.save(phase='handing over')
-        pending = list(live)
+        pending = sorted(live, key=lambda pair: pair[0]['kind'] == 'OCEANIC')
+        offline = list(offline_oceans)
         operations = {}
+        installing_oceans = {}
         deadline = self.clock() + HANDOVER_SECONDS
-        while pending or operations:
+        while pending or offline or operations or installing_oceans:
+            for region, host in list(offline):
+                reason, final = self.ocean_waiting(host, revision)
+                if reason:
+                    self.note(region['id'], result=('not updated: ' if final else '') + reason)
+                    if final:
+                        offline.remove((region, host))
+                    continue
+                offline.remove((region, host))
+                installing_oceans.update(self.install_offline([(region, host)]))
             for region, host in list(pending):
+                if region['kind'] == 'OCEANIC':
+                    reason, final = self.ocean_waiting(host, revision)
+                    if reason:
+                        self.note(region['id'], result=('not updated: ' if final else '') + reason)
+                        if final:
+                            pending.remove((region, host))
+                        continue
                 try:
                     answer = host.request('handover')
                 except Refused as refusal:
@@ -458,13 +492,31 @@ class Run:
                 elif state.get('phase') in ('failed', 'killed'):
                     del operations[name]
                     self.note(name, result='handover failed (the old world plays on): %s' % str(state.get('error'))[:300])
-            if not (pending or operations):
+            # Keep the maintenance pin until these newly admitted oceans have
+            # taken the candidate build, not merely until the request is queued.
+            for name, (host, prior_state) in list(installing_oceans.items()):
+                if host.built_revision() == revision:
+                    del installing_oceans[name]
+                    self.note(name, result='installed while %s' % prior_state)
+                elif not host.stage_running() and not host.install_marker.exists() and not host.lock.exists():
+                    stage = host.read_json(host.stage_file) or {}
+                    status = host.read_state() or {}
+                    if stage.get('phase') == 'failed' or str(stage.get('install', '')).startswith('not installed'):
+                        del installing_oceans[name]
+                        self.note(name, result='not updated: %s' % (stage.get('install') or stage.get('error') or 'stage failed'))
+                    elif status.get('action') == 'update' and status.get('phase') in ('failed', 'killed'):
+                        del installing_oceans[name]
+                        self.note(name, result='not updated: %s' % (status.get('error') or 'offline install failed'))
+            if not (pending or offline or operations or installing_oceans):
                 break
             if self.clock() > deadline:
-                for region, _host in pending:
-                    self.note(region['id'], result='not updated: still busy at the end of maintenance')
+                for region, host in pending + offline:
+                    reason = self.ocean_waiting(host, revision)[0] if region['kind'] == 'OCEANIC' else None
+                    self.note(region['id'], result='not updated: ' + (reason or 'still busy at the end of maintenance'))
                 for name in operations:
                     self.note(name, result='handover still running at the end of maintenance')
+                for name in installing_oceans:
+                    self.note(name, result='not updated: offline ocean install did not finish during maintenance')
                 break
             self.sleep(POLL_SECONDS)
 

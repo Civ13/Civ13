@@ -260,15 +260,25 @@
 		door_opened()
 		power_point_barrier_changed(get_turf(src))
 
-/obj/structure/simple_door/proc/Close()
-	isSwitchingStates = TRUE
-	close_token++
+/obj/structure/simple_door/proc/door_close_sound()
 	if (istype(src, /obj/structure/simple_door/key_door/anyone/shoji))
 		playsound(loc, 'sound/machines/shoji_door_close.ogg', 100, TRUE)
 	else
 		playsound(loc, 'sound/machines/door_close.ogg', 100, TRUE)
+
+/obj/structure/simple_door/proc/Close(automatic_closer = null)
+	isSwitchingStates = TRUE
+	close_token++
+	if (!automatic_closer)
+		door_close_sound()
 	flick("[basic_icon]closing",src)
 	spawn (10)
+		if (automatic_closer && door_doorway_blocked())
+			// The open door was still passable during the closing animation.
+			isSwitchingStates = FALSE
+			update_icon()
+			door_retry_close()
+			return
 		los_invalidate(src, TRUE)
 		density = TRUE
 		if(override_opacity)
@@ -284,6 +294,9 @@
 			R.update_transparency(0)
 		door_closed()
 		power_point_barrier_changed(get_turf(src))
+		if (automatic_closer)
+			door_close_sound()
+			door_announce_auto_closed(automatic_closer)
 /obj/structure/simple_door/Destroy()
 	door_fittings_destroyed()
 	door_list -= src

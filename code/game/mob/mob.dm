@@ -229,6 +229,32 @@
 	if (!CIV13_GEOMETRIC_LOS_CORE && dir != get_dir(src,A))
 		face_atom(A)
 	//A.visible_message("<small>[A] looks at [src].</small>")//Doesn't work for everything yet.
+	var/datum/chat/C = client?.chat
+	if (!C?.is_ready || C.examine_lines)
+		C?.flush_examine()
+		examine_details(A)
+		return
+
+	// If an override sleeps, the waitfor=FALSE helper returns here at its
+	// first yield. Close the capture before another verb or message can run.
+	var/list/result = list(FALSE)
+	C.examine_lines = list()
+	examine_chat_details(A, result)
+	var/list/lines = C.examine_lines
+	C.examine_lines = null
+	if (!lines)
+		return
+	if (result[1] && lines.len > 1 && C.is_ready && client?.chat == C && C.send_examine(lines))
+		return
+	for (var/line in lines)
+		C.send_message(line)
+
+/mob/proc/examine_chat_details(atom/A, list/result)
+	set waitfor = FALSE
+	examine_details(A)
+	result[1] = TRUE
+
+/mob/proc/examine_details(atom/A)
 	A.examine(src)
 	if (A && !QDELETED(A))
 		crafting_atlas_reference.examine_link(src, A)
@@ -401,13 +427,16 @@
 		flavor_text = msg
 
 /mob/proc/print_flavor_text()
-	if (flavor_text && flavor_text != "")
-		var/msg = trim(replacetext(flavor_text, "\n", " "))
-		if (!msg) return ""
-		if (length(msg) <= 40)
-			return "<span class = 'notice'>[msg]</span>"
-		else
-			return "<span class = 'notice'>[copytext_preserve_html(msg, TRUE, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
+	if (!flavor_text)
+		return ""
+	// Storage is HTML-encoded; measure the visible text, not entity bytes.
+	var/msg = trim(replacetext(html_decode(flavor_text), "\n", " "))
+	if (!msg)
+		return ""
+	if (length_char(msg) <= 40)
+		return "<span class = 'notice'>[html_encode(msg)]</span>"
+	var/preview = html_encode(copytext_char(msg, 1, 37))
+	return "<span class = 'notice'>[preview]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
 
 /*
 /mob/verb/help()

@@ -1,9 +1,11 @@
 """Source-bound elapsed-clock model, not native BYOND execution."""
 from pathlib import Path
 import re
+from types import SimpleNamespace
 import unittest
 
-SOURCE = (Path(__file__).resolve().parents[2] / 'code/processes/time_track.dm').read_text()
+ROOT = Path(__file__).resolve().parents[2]
+SOURCE = (ROOT / 'code/processes/time_track.dm').read_text()
 
 
 def sample(last_real, now_real, last_game, now_game):
@@ -30,6 +32,41 @@ class TimeTracking(unittest.TestCase):
         self.assertNotIn('world.tick_lag', fire)
         self.assertNotIn('last_tick_tickcount', SOURCE)
         self.assertNotIn('864000 + schedule_interval', fire)
+
+    def test_load_suppression_precedes_sampling_and_is_reserved_at_admission(self):
+        fire = SOURCE.split('/process/time_track/fire()', 1)[1].split('/process/time_track/proc/', 1)[0]
+        self.assertTrue(fire.startswith('\n\tif (persistence_active_operation?.kind == "load")\n'
+                                       '\t\tignore_load_dilation()\n\t\treturn\n'))
+        self.assertLess(fire.index('ignore_load_dilation()'), fire.index('averages += dilation'))
+        self.assertLess(fire.index('ignore_load_dilation()'), fire.index('check_lag_capture()'))
+        ops = (ROOT / 'code/modules/persistence/functions.dm').read_text()
+        begin = ops.split('/proc/begin_persistence_operation(', 1)[1]
+        expected = ('persistence_active_operation = operation\n'
+                    '\t// A whole load can occur between samples, so reset the monitor at admission.\n'
+                    '\tif(kind == "load" && processes && processes.time_track)\n\t\tprocesses.time_track.ignore_load_dilation()')
+        self.assertIn(expected, begin)
+
+    def test_interrupted_automatic_capture_is_discarded_without_stopping_manual_profiler(self):
+        body = SOURCE.split('/process/time_track/proc/ignore_load_dilation()\n', 1)[1].split('\n\n', 1)[0]
+        lines = []
+        for raw in body.splitlines():
+            line = raw.strip().replace('&&', 'and').replace('!profile_dump_running', 'not profile_dump_running')
+            line = re.sub(r'\bTRUE\b', 'True', line)
+            line = re.sub(r'\bFALSE\b', 'False', line)
+            if line.startswith('if ('):
+                line += ':'
+            lines.append('    ' * (len(raw) - len(raw.lstrip('\t')) - 1) + line)
+        code = compile('\n'.join(lines), 'ignore_load_dilation', 'exec')
+        for due, owner, manual, stops in ((100, True, False, [1]), (100, True, True, []),
+                                         (100, False, True, []), (0, True, False, [])):
+            calls = []
+            env = dict(first_run=False, dilation=480, lag_seconds=2, lag_capture_due=due,
+                       lag_capture_started_profiler=owner, profile_dump_running=manual,
+                       world=SimpleNamespace(Profile=calls.append), PROFILE_STOP=1)
+            exec(code, {'__builtins__': {}}, env)
+            self.assertEqual(calls, stops)
+            self.assertEqual([env[k] for k in ('first_run', 'dilation', 'lag_seconds', 'lag_capture_due',
+                                                'lag_capture_started_profiler')], [True, 0, 0, 0, False])
 
     def test_no_lag_and_double_wall_time(self):
         self.assertEqual(sample(100, 110, 1000, 1010), 0)

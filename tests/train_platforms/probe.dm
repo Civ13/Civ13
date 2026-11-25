@@ -318,6 +318,15 @@ var/global/platform_probe_runtime_error = FALSE
 	W.dir = EAST
 	var/list/bay = W.bay()
 	platform_check("warehouse/bay", bay.len == 13 && bay[1] == platform_turf(44, 7) && bay[bay.len] == platform_turf(44, 19))
+	var/obj/structure/trains/transport/flatbed/first = new(platform_turf(44, 12))
+	var/obj/structure/trains/transport/flatbed/second = new(platform_turf(44, 13))
+	first.dir = NORTH
+	second.dir = NORTH
+	var/list/options = W.put_away_options(W.rear_units())
+	platform_check("warehouse/same_name_choices", first.name == second.name && options.len == 2 && options[options[1]][1] == first && options[options[2]][1] == second)
+	platform_check("warehouse/choice_names_track_tile", findtext(options[1], "track 44, 12") && findtext(options[2], "track 44, 13"))
+	qdel(first)
+	qdel(second)
 	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(44, 18))
 	L.dir = NORTH
 	var/obj/structure/trains/platform/car = platform_car("storage", 44, 17, NORTH)
@@ -332,6 +341,13 @@ var/global/platform_probe_runtime_error = FALSE
 	var/obj/structure/closet/crate/wagon_crate = new(platform_turf(44, 13))
 	var/list/rear = W.rear_units()
 	platform_check("warehouse/rear_unit", rear.len == 1 && rear[1][1] == F)
+	var/obj/structure/trains/transport/flatbed/newly_hitched = new(platform_turf(44, 12))
+	newly_hitched.dir = NORTH
+	F.connected = newly_hitched // Another player couples it after the menu was shown.
+	platform_check("warehouse/stale_choice_preserves_consist", W.put_away(null, rear[1], FALSE) == 0 && car_rear.connected == F && F.connected == newly_hitched && !W.stored_units().len)
+	F.connected = null
+	qdel(newly_hitched)
+	platform_check("warehouse/missing_rear_refused", W.put_away(null, list(F, null), FALSE) == 0 && car_rear.connected == F)
 	var/mob/living/human/platform_rider/rider = new(platform_turf(44, 13))
 	platform_check("warehouse/refuses_riders", W.store_problem(rear[1]))
 	qdel(rider)
@@ -3142,6 +3158,33 @@ var/global/platform_probe_runtime_error = FALSE
 /obj/structure/engine/train_probe_engine/New()
 	return
 
+/proc/platform_electric_isolation(obj/structure/train_catenary/M1, obj/structure/train_catenary/M2)
+	// A separate parallel row sits nine tiles away, within the old network
+	// radius but outside the feeder point's reach and off the wire centerline.
+	for (var/ty in 2 to 12)
+		platform_track(359, ty, NORTH)
+	var/obj/structure/train_catenary/parallel = new(platform_turf(361, 6))
+	var/parallel_up = parallel.put_up()
+	var/obj/structure/trains/locomotive/electric/unfed = platform_car("loco_electric", 359, 6, NORTH)
+	platform_check("electric/parallel_line_has_no_traction_power", parallel_up && !parallel.powersource && M1.line_live() && parallel.network() != M1.network() && unfed && train_catenary_over(unfed.loc) == parallel && findtext(unfed.start_problem(), "overhead line is dead"))
+	if (unfed)
+		qdel(unfed)
+	qdel(parallel)
+
+	// A five-tile offset stops the crossing wire one tile short; four joins.
+	platform_track(355, 6, EAST)
+	var/obj/structure/train_catenary/short_crossing = new(platform_turf(355, 4))
+	platform_check("electric/short_crossing_does_not_join", short_crossing.put_up() && short_crossing.dir == NORTH && short_crossing.network() != M1.network())
+	qdel(short_crossing)
+	platform_track(354, 6, EAST)
+	var/obj/structure/train_catenary/crossing = new(platform_turf(354, 4))
+	platform_check("electric/reaching_crossing_joins", crossing.put_up() && crossing.dir == NORTH && crossing.network() == M1.network())
+	qdel(crossing)
+
+	var/obj/structure/train_catenary/across_gap = new(platform_turf(352, 25))
+	platform_check("electric/one_tile_gap_breaks_wire", across_gap.put_up() && across_gap.dir == WEST && across_gap.network() != M2.network())
+	qdel(across_gap)
+
 /proc/platform_electric_run()
 	for (var/ty in 2 to 25)
 		platform_track(350, ty, NORTH)
@@ -3178,6 +3221,7 @@ var/global/platform_probe_runtime_error = FALSE
 	M1.net = null
 	M1.after_load()
 	platform_check("electric/line_is_fed_from_the_grid", one_line && M1.power_point == T && !M2.power_point && fed.len == 1 && fed[1] == M1 && live && idle_draw == 1 && (M1 in train_catenary) && M1.network() == M2.network() && findtext(M1.line_text(M1.network()), "The wire is live"))
+	platform_electric_isolation(M1, M2)
 	N = M1.network()
 
 	// The electric locomotive: a cab at each end, a hood between, no fuel.

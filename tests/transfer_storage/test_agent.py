@@ -29,7 +29,7 @@ class AgentTests(unittest.TestCase):
             store.enroll(peer, IN)
             store.reconcile_load(name + '-g0', [], 0)
             server = make_server(store, token)
-            threading.Thread(target=server.serve_forever, daemon=True).start()
+            threading.Thread(target=server.serve_forever, kwargs={'poll_interval': 0.01}, daemon=True).start()
             self.stores[name], self.servers[name] = store, server
             self.urls[name] = 'http://127.0.0.1:%d' % server.server_address[1]
         self.coordinator = Coordinator(os.path.join(self.tmp.name, 'coordinator.sqlite'), 'g')
@@ -49,6 +49,28 @@ class AgentTests(unittest.TestCase):
 
     def b(self, path, body=None):
         return call(self.urls['beta'], TOKEN_B, path, body)
+
+
+    def test_fast_character_and_vehicle_recheck_before_escrow(self):
+        store = self.stores['alpha']
+        issue = None
+        route = agent._routes(store, agent.RadioRelay(store.region, store.group), travel_refusal=lambda _peer: issue)
+        # A trip that passed its early dry check may be invalid by departure.
+        check = {'peer': 'beta'}
+        self.assertIsNone(route['/travel/build'](check)['problem'])
+        issue = 'Destination build changed.'
+        for body in ('{"kind":"character","ckey":"user"}',
+                     '{"kind":"character","ckey":"pilot","ship":{"name":"Test"}}',
+                     '{"kind":"freight","cargo":{}}',
+                     '{"kind":"train","id":"test"}'):
+            for fast in (0, 1):
+                payload = dict(check, fast=fast, payloads=[body])
+                with self.assertRaisesRegex(agent.TransferError, 'Destination build changed'):
+                    route['/escrow'](payload)
+        self.assertEqual([], store.status()['active'])
+        self.assertEqual([], store.outbox())
+        # Ordinary goods and settlement of already recorded trips are not gated.
+        self.assertIn('effect_id', route['/escrow'](dict(check, payloads=['bread'])))
 
     def test_transfer_end_to_end(self):
         escrow = self.a('/escrow', {'peer': 'beta', 'payloads': ['axe', 'bread']})['result']

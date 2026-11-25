@@ -907,6 +907,9 @@ var/global/datum/persistence_admission_identity
 	operation.observability_collecting = variable_observability_enabled()
 #endif
 	persistence_active_operation = operation
+	// A whole load can occur between samples, so reset the monitor at admission.
+	if(kind == "load" && processes && processes.time_track)
+		processes.time_track.ignore_load_dilation()
 	persistence_save_in_progress = TRUE
 	persistence_admission_identity = operation.admission_identity
 	// Reserve admission before settling quiet held pull pairs, so their

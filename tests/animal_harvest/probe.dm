@@ -100,6 +100,7 @@ var/global/harvest_duplicate_result = null
 		text2file(json_encode(list("commit" = world.params["tested_commit"], "byond_version" = world.byond_version, "byond_build" = world.byond_build, "maxx" = world.maxx, "maxy" = world.maxy)), "metadata.json")
 		var/turf/site = locate(3,3,1)
 		var/mob/living/harvest_tester/U = new(site)
+		harvest_sinew_conversion_regression(locate(2, 2, 1))
 		var/obj/item/weapon/material/kitchen/utensil/knife/K = new(U)
 		for (var/action in list("cancel", "move", "revive", "drop", "delete", "disconnect", "disconnect_after", "realwait_move", "realwait_complete", "concurrent", "complete"))
 			var/mob/living/simple_animal/cattle/cow/harvest_tester/C = new(site)
@@ -206,7 +207,7 @@ var/global/harvest_duplicate_result = null
 		var/obj/item/stack/material/rope/existing_rope = new(site, 10)
 		var/obj/item/stack/sinew/S = new(U, 3)
 		S.attack_self(U)
-		harvest_assert(S.amount == 2 && existing_rope.amount == 10 && harvest_count(site, /obj/item/stack/material/rope) == 2, "Binding conversion conservation on stocked turf")
+		harvest_assert(S.amount == 2 && existing_rope.amount == 11 && harvest_count(site, /obj/item/stack/material/rope) == 1, "Binding conversion conservation on stocked turf")
 		var/mob/living/simple_animal/cattle/cow/harvest_tester/saved = new(site)
 		saved.harvesting = TRUE
 		saved.harvested = TRUE
@@ -372,3 +373,4 @@ var/global/harvest_duplicate_result = null
 #include "tall_grass_probe.dm"
 #include "action_admission_probe.dm"
 #include "tanning_probe.dm"
+#include "sinew_probe.dm"

@@ -289,6 +289,10 @@
 	C.loc = T
 	C.randomrotation()
 
+// Called only after a casing transfer into the internal loaded list.
+/obj/item/weapon/gun/projectile/proc/on_internal_casings_loaded()
+	return
+
 //Attempts to load A into src, depending on the type of thing being loaded and the load_method
 //Maybe this should be broken up into separate procs for each load method?
 /mob/var/next_load = -1
@@ -382,6 +386,7 @@
 							AM.stored_ammo -= C //should probably go inside an ammo_magazine proc, but I guess less proc calls this way...
 							count++
 					if (count)
+						on_internal_casings_loaded()
 						user.visible_message("[user] reloads [src].", "<span class='notice'>You load [count] round\s into \the [src].</span>")
 						if (reload_sound) playsound(loc, reload_sound, 75, TRUE)
 						cock_gun(user)
@@ -395,6 +400,7 @@
 		user.remove_from_mob(C)
 		C.loc = src
 		loaded.Insert(1, C) //add to the head of the list
+		on_internal_casings_loaded()
 		user.visible_message("[user] inserts \a [C] into \the [src].", "<span class='notice'>You insert \a [C] into \the [src].</span>")
 		if (bulletinsert_sound) playsound(loc, bulletinsert_sound, 75, TRUE)
 

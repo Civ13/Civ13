@@ -191,6 +191,25 @@ var/telecom_failures = 0
 		Q.name = "saved phone Q"
 		C.connections |= P
 		C.connections |= Q
+		var/mob/living/human/telecom_fixture/receiver = new(get_turf(Q))
+		var/datum/agent_character/handset_messages = new
+		agent_characters[receiver] = handset_messages
+		telecom_check(P.dial(Q.phonenumber) && P.ringing && !P.ringingnum && Q.ringing && Q.ringingnum == P.phonenumber, "powered network rings the receiving handset")
+		Q.attack_self(receiver)
+		var/list/notice = handset_messages.messages.len ? handset_messages.messages[handset_messages.messages.len] : null
+		telecom_check(notice && notice["text"] == "You answer the call." && P.connected == Q.phonenumber && Q.connected == P.phonenumber && !P.ringing && !Q.ringing && !P.ringingnum && !Q.ringingnum, "answering click connects both handsets and leaves neither ringing")
+		Q.attack_self(receiver)
+		notice = handset_messages.messages.len ? handset_messages.messages[handset_messages.messages.len] : null
+		telecom_check(notice && notice["text"] == "You hang up." && !P.origincall && !Q.origincall && !P.connected && !Q.connected, "answering handset hangs up normally on its next click")
+		telecom_check(P.dial(Q.phonenumber), "a normally ended call can be redialed")
+		E.on = FALSE
+		Q.attack_self(receiver)
+		notice = handset_messages.messages.len ? handset_messages.messages[handset_messages.messages.len] : null
+		telecom_check(notice && notice["text"] == "The call has lost its connection." && !P.origincall && !Q.origincall, "answering a call after actual power loss still reports connection loss")
+		agent_characters -= receiver
+		qdel(handset_messages)
+		qdel(receiver)
+		E.on = TRUE
 		telecom_check(P.dial(Q.phonenumber) && Q.answer() && P.connected == Q.phonenumber && Q.connected == P.phonenumber, "phones call over the power cable")
 		E.on = FALSE
 		civ_check_landlines()

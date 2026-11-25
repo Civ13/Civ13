@@ -607,6 +607,17 @@ world plays on; that build is not tried again unattended, and a refused handover
 for players again after the standby boots and defers if anyone has joined; this
 status check is not atomic with the subsequent save request. A failed build leaves the world
 running (and is not retried until the revision changes or a Build update runs).
+An ocean can stage a build at any time. It only installs a different revision
+after every configured surface land bordering that ocean in the world-links table
+has a verified active build containing that revision (including islands inside
+the ocean). Other oceans, the gateway and unconfigured lands do not count. A
+source checkout or staged artifact is not an installed build. A blocked ocean
+keeps its current build, including when it wakes or recovers after a stop;
+ordinary land updates do not wait on oceans. Daily maintenance stages every
+region first, then admits each ocean once its coastal land updates finish. If
+a coastal update is cancelled or fails, maintenance reports why that ocean
+stayed on its current build.
+
 Asleep and cold regions are staged the same way. The mainland keeps its old
 build while asleep or cold and automatically starts that recorded build on a
 wake or watchdog recovery; it takes an update only after an awake, empty and

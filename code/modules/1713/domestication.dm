@@ -61,25 +61,24 @@
 			make_wild()
 			return
 
-/mob/living/simple_animal/proc/tame_fade(now = trap_now_minutes())
+// Stored trust is the balance at the last counted feeding. Calculate the
+// elapsed decay without rewriting that timestamp or charging it twice.
+/mob/living/simple_animal/proc/tame_current_trust(now = trap_now_minutes())
 	var/last = trap_minutes(tame_fed)
 	if (!wild || !tame_trust || !last || now <= last)
-		return
+		return tame_trust
 	var/days = round((now - last) / TAME_FADE_AFTER)
-	if (days > 0)
-		tame_trust = max(0, tame_trust - days)
-		tame_fed = trap_minutes_text(last + days * TAME_FADE_AFTER)
+	return max(0, tame_trust - days)
 
 // Called after a hand feeding went through. Returns TRUE when it counted.
 /mob/living/simple_animal/proc/tame_feeding(mob/user, now = trap_now_minutes())
 	if (!wild || stat == DEAD)
 		return FALSE
-	tame_fade(now)
 	var/last = trap_minutes(tame_fed)
 	if (last && now - last < TAME_FEED_GAP)
 		to_chat(user, SPAN_NOTICE("\The [src] eats, but it will take more time, not more food, to trust you."))
 		return FALSE
-	tame_trust++
+	tame_trust = tame_current_trust(now) + 1
 	tame_fed = trap_minutes_text(now)
 	if (tame_trust >= TAME_FEEDINGS)
 		wild = FALSE
@@ -100,10 +99,10 @@
 		return null
 	if (!wild)
 		return "It is tame."
-	tame_fade()
-	if (!tame_trust)
+	var/trust = tame_current_trust()
+	if (!trust)
 		return "It is wild and wary of people. Feed it by hand, again and again, to tame it."
-	return "It is wild, but getting used to people ([tame_trust] of [TAME_FEEDINGS] feedings)."
+	return "It is wild, but getting used to people ([trust] of [TAME_FEEDINGS] feedings)."
 
 /mob/living/simple_animal/examine(mob/user, distance = -1, infix = "", suffix = "")
 	. = ..()
