@@ -183,3 +183,27 @@ class OriginalNegativeControl(unittest.TestCase):
         fridge = Fridge()
         self.handler(fridge, Wrench(), User(completes=False))
         self.assertEqual(fridge.parent_calls, 1)
+
+
+class RefrigerationPowerContract(unittest.TestCase):
+    def test_spoilage_reads_the_appliance_grant_not_supply(self):
+        cases = (
+            ('code/modules/reagents/reagent_containers/food.dm', 'decaytimer += 75', 'decaytimer += 200'),
+            ('code/modules/materials/material_sheets.dm', 'decaytimer += 100', 'decaytimer += 300'),
+            ('code/modules/organs/organ_uses.dm', '? 0.1 : 0.4', None),
+        )
+        for path, powered, passive in cases:
+            with self.subTest(path=path):
+                text = (ROOT / path).read_text()
+                at = text.index('F.refrigeration_powered()')
+                branch = text[at:at + 165]
+                self.assertIn(powered, branch)
+                if passive:
+                    self.assertIn(passive, branch)
+
+    def test_only_electric_fridges_join_or_restore_the_object_process(self):
+        source = SOURCE.read_text()
+        for declaration in ('New', 'after_load'):
+            with self.subTest(declaration=declaration):
+                body = adapter.extract(source, f'/obj/structure/closet/fridge/{declaration}')
+                self.assertIn('if (powerneeded > 0)\n\t\tprocessing_objects |= src', body)

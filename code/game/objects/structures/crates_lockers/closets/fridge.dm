@@ -10,6 +10,30 @@
 	anchored = TRUE
 	health = 3000
 
+/obj/structure/closet/fridge/New()
+	..()
+	if (powerneeded > 0)
+		processing_objects |= src
+
+/obj/structure/closet/fridge/after_load()
+	. = ..()
+	if (powerneeded > 0)
+		processing_objects |= src
+
+// Reserve the refrigerator's load once per object tick, not once per stored item.
+/obj/structure/closet/fridge/process()
+	if (!powersource)
+		return
+	if (!anchored || powerneeded <= 0)
+		if (powersource.power_consumers[src] || grid_power_request_until)
+			powersource.update_power(-powerneeded, 1, src)
+		return
+	draw_cable_power()
+
+/obj/structure/closet/fridge/proc/refrigeration_powered()
+	var/obj/structure/cable/C = powersource
+	return anchored && powerneeded > 0 && C && !QDELETED(C) && C.powered && C.currentflow <= C.powerflow && C.power_consumers[src] == powerneeded && (src in C.connections) && cable_reach(C) && !smart_power_cut() && C.reservation_engines_running()
+
 /obj/structure/closet/fridge/update_icon()
 	if (!opened)
 		icon_state = icon_closed
