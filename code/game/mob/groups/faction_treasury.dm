@@ -17,7 +17,7 @@
 // lives in map.faction_recruitment["treasury"] (durable, renamed with the
 // faction):
 //   faction -> list("dues" = silver a week,
-//                   "wages" = list(account = list(silver a day, owed, last time, name)),
+//                   "wages" = list(account = list(silver a day, owed, last time, name, sub-tenth carry)),
 //                   "paid" = list(account = list(silver this week, week start, name)),
 //                   "ledger" = list(text, newest last))
 // Worth is in silver, the scale of the trading balance (weighed_money.dm).
@@ -69,8 +69,13 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 		var/list/wages = R["wages"]
 		for (var/account in wages.Copy())
 			var/list/row = wages[account]
-			if (!istext(account) || !islist(row) || row.len != 4 || !isnum(row[1]) || !isnum(row[2]) || !isnum(row[3]) || !istext(row[4]) || row[1] < 0 || row[2] < 0)
+			if (!istext(account) || !islist(row) || (row.len != 4 && row.len != 5) || !isnum(row[1]) || !isnum(row[2]) || !isnum(row[3]) || !istext(row[4]) || row[1] < 0 || row[2] < 0)
 				wages -= account
+				continue
+			if (row.len == 4)
+				row += 0 // legacy balance was already stored in tenths of silver
+			else if (!isnum(row[5]) || row[5] < 0 || row[5] >= TREASURY_DAY || row[5] != round(row[5]))
+				row[5] = 0 // bad carry cannot invalidate already-earned coin
 		var/list/paid = R["paid"]
 		for (var/account in paid.Copy())
 			var/list/row = paid[account]
@@ -106,15 +111,41 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 
 // --- Wages and dues ------------------------------------------------------------
 
-// Brings a wage row up to now and returns what is owed.
+// Brings a wage row up to now and returns the payable balance in silver.
+// Row 5 tracks the numerator of the unpayable fraction of one tenth of silver
+// (denominator TREASURY_DAY). Legacy rows simply start with no such fraction.
 /proc/treasury_wage_accrue(list/row, now)
-	if (!islist(row) || row.len != 4)
+	if (!islist(row) || (row.len != 4 && row.len != 5))
 		return 0
+	if (row.len == 4)
+		row += 0
 	var/elapsed = now - row[3]
-	if (elapsed > 0 && row[1] > 0)
-		row[2] = min(row[2] + row[1] * elapsed / TREASURY_DAY, row[1] * TREASURY_WAGE_CAP_DAYS)
 	row[3] = max(row[3], now)
-	row[2] = round(row[2], 0.1)
+	var/rate_tenths = round(row[1] * 10 + 0.5)
+	var/owed_tenths = round(row[2] * 10 + 0.5)
+	var/room = rate_tenths * TREASURY_WAGE_CAP_DAYS - owed_tenths
+	// A rate cut only limits NEW earnings. Even an over-cap balance is still owed.
+	if (elapsed <= 0 || room <= 0)
+		return row[2]
+
+	// Split the sub-day product into 128-decisecond blocks. Both intermediate
+	// products stay exactly representable in DM at any valid wage rate.
+	elapsed = min(elapsed, TREASURY_WAGE_CAP_DAYS * TREASURY_DAY)
+	var/days = round(elapsed / TREASURY_DAY)
+	var/within_day = elapsed - days * TREASURY_DAY
+	var/blocks = round(within_day / 128)
+	var/packed = blocks * rate_tenths
+	var/block_divisor = TREASURY_DAY / 128
+	var/block_tenths = round(packed / block_divisor)
+	var/carry = (packed - block_tenths * block_divisor) * 128 + (within_day - blocks * 128) * rate_tenths + row[5]
+	var/extra_tenths = round(carry / TREASURY_DAY)
+	var/earned = days * rate_tenths + block_tenths + extra_tenths
+	if (earned >= room)
+		row[2] = (owed_tenths + room) / 10
+		row[5] = 0
+	else
+		row[2] = (owed_tenths + earned) / 10
+		row[5] = carry - extra_tenths * TREASURY_DAY
 	return row[2]
 
 /obj/map_metadata/proc/treasury_set_wage(faction, account, name, rate)
@@ -125,13 +156,13 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (islist(row))
 		treasury_wage_accrue(row, recruitment_now())
 	if (rate <= 0)
-		if (islist(row) && row[2] > 0)
+		if (islist(row) && (row[2] > 0 || row[5] > 0))
 			row[1] = 0 // keep what is already owed
 		else
 			wages -= account
 		return 0
 	if (!islist(row))
-		row = list(rate, 0, recruitment_now(), name)
+		row = list(rate, 0, recruitment_now(), name, 0)
 		wages[account] = row
 	row[1] = rate
 	row[4] = name
@@ -421,8 +452,8 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (paid <= 0)
 		to_chat(user, SPAN_WARNING("You are owed [weighed_silver_text(owed)], but the box has no coin small enough to pay you."))
 		return
-	row[2] = round(max(0, row[2] - paid), 0.1)
-	if (row[1] <= 0 && row[2] <= 0)
+	row[2] = max(0, round(row[2] * 10 + 0.5) - round(paid * 10 + 0.5)) / 10
+	if (row[1] <= 0 && row[2] <= 0 && row[5] <= 0)
 		wages -= account
 	map.treasury_log(faction, "[user.real_name] collected wages worth [weighed_silver_text(paid)].")
 	to_chat(user, SPAN_NOTICE("You collect wages worth [weighed_silver_text(paid)][row[2] > 0 ? "; the box still owes you [weighed_silver_text(row[2])]" : ""]."))
@@ -455,7 +486,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	var/now = recruitment_now()
 	for (var/account in wages)
 		var/list/row = wages[account]
-		lines += "Wage: [row[4]], [row[1]] silver a day, owed [weighed_silver_text(treasury_wage_accrue(row, now))]."
+		lines += "Wage: [row[4]], [row[1]] silver a day, owed [weighed_silver_text(treasury_wage_accrue(row.Copy(), now))]."
 	var/list/paid = R["paid"]
 	for (var/account in paid)
 		var/list/row = paid[account]
