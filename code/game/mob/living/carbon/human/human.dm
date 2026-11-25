@@ -997,15 +997,6 @@ var/list/coefflist = list()
 			// Do not show flavor if face is hidden
 			return
 
-	flavor_text = flavor_text
-
-	if (flavor_text && flavor_text != "" && !shrink)
-		var/msg = trim(replacetext(flavor_text, "\n", " "))
-		if (!msg) return ""
-		if (length(msg) <= 40)
-			return "<span class = 'notice'>[msg]</span>"
-		else
-			return "<span class = 'notice'>[copytext_preserve_html(msg, TRUE, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
 	return ..()
 
 /mob/living/human/getDNA()
