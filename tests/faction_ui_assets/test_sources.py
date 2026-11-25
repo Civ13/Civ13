@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import unittest
 
-from run import ASSETS, CREATION, OMISSION_FAILURES, PREFIX, ROOT, prepare, replace_once, sources, verify_result
+from run import ASSETS, CREATION, NATIVE_CHECK_COUNT, OMISSION_FAILURES, PREFIX, ROOT, prepare, replace_once, sources, verify_result
 
 
 class FactionAssets(unittest.TestCase):
@@ -95,6 +95,7 @@ class FactionAssets(unittest.TestCase):
         assets = positive[PREFIX + '_assets.dm']
         self.assertEqual(assets.replace('\t\tA.register()\n\t\treturn A\n', '\t\treturn A\n'), omission[PREFIX + '_assets.dm'])
         self.assertIn('/datum/asset/nanoui/register()\n\tfaction_ui_registrations++\n', assets)
+        self.assertIn('/datum/asset/simple/civ13_tgui/register()\n\tfaction_tgui_registrations++\n', assets)
         self.assertIn('fcopy_rsc(path + filename)', assets)
         self.assertIn('/datum/nanoui/tgui/faction_assets_probe(user, src,', positive[PREFIX + '_tgui.dm'])
         self.assertNotIn('.dmm"', positive[PREFIX + '.dme'])
@@ -121,9 +122,9 @@ class FactionAssets(unittest.TestCase):
                 prepare(destination)
 
     def test_controls_require_complete_exact_named_failures(self):
-        labels = sorted(OMISSION_FAILURES) + ['other-' + str(i) for i in range(13)]
+        labels = sorted(OMISSION_FAILURES) + ['other-' + str(i) for i in range(NATIVE_CHECK_COUNT - len(OMISSION_FAILURES))]
         checks = [dict(label=label, passed=True) for label in labels]
-        good = dict(port=0, check_count=18, checks=checks, failed_labels=[])
+        good = dict(port=0, check_count=NATIVE_CHECK_COUNT, checks=checks, failed_labels=[])
         verify_result(good, False)
         for changes in (dict(port=1234), dict(check_count=17), dict(checks=[]), dict(failed_labels=['unrelated'])):
             with self.assertRaises(ValueError):

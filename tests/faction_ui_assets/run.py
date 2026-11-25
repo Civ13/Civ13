@@ -20,10 +20,12 @@ PREFIX = '.faction_ui_assets_ci'
 ASSETS = 'code/modules/client/asset_cache.dm'
 CREATION = 'code/game/mob/groups/faction_creation.dm'
 TGUI = 'code/modules/nano/tgui.dm'
+NATIVE_CHECK_COUNT = 21
 OMISSION_FAILURES = {
-    'cold lookup registers once', 'cold cache contains JavaScript',
-    'cold cache contains modern screen assets', 'cold common contains styles',
-    'repeat lookup and disconnected sends do not register again',
+    'cold TGUI lookup registers once', 'cold cache contains versioned modern assets',
+    'repeat TGUI lookup and disconnected send do not register again', 'production HTML names required resources',
+    'cold NanoUI lookup registers once', 'cold classic cache contains JavaScript', 'cold classic common contains styles',
+    'repeat NanoUI lookups and disconnected sends do not register again',
 }
 
 
@@ -43,6 +45,8 @@ def sources(omit_registration=False):
     # Read-only registration count; original flist/fcopy_rsc/cache code remains.
     assets = replace_once(assets, '/datum/asset/nanoui/register()\n',
                           '/datum/asset/nanoui/register()\n\tfaction_ui_registrations++\n')
+    assets = replace_once(assets, '/datum/asset/simple/civ13_tgui/register()\n',
+                          '/datum/asset/simple/civ13_tgui/register()\n\tfaction_tgui_registrations++\n')
     # The creation handler calls the shared opener. Keep the real manager,
     # state and model path; change only the open() receiver for this template.
     constructor = ('new /datum/nanoui/tgui(user, src, ui_key, template, title, width, height, '
@@ -81,7 +85,7 @@ def prepare(destination, omit_registration=False):
                     generated_sha256={p: hashlib.sha256(s.encode()).hexdigest() for p, s in generated.items()},
                     seams=['existing isolated_startup disables game/global startup and all maps',
                            'inert human/map subtype constructors; simulated restored phase',
-                           'read-only NanoUI register counter',
+                           'read-only NanoUI and TGUI register counters',
                            'UI subtype captures actual get_html instead of browse/winset',
                            'port always closed; Topic refused'],
                     limits='No client/resource-arrival acknowledgement, game Topic action, full save import, browser DOM or live acceptance')
@@ -91,7 +95,7 @@ def prepare(destination, omit_registration=False):
 
 def verify_result(result, omission):
     checks = result.get('checks', [])
-    if result.get('port') != 0 or result.get('check_count') != 18 or len(checks) != 18:
+    if result.get('port') != 0 or result.get('check_count') != NATIVE_CHECK_COUNT or len(checks) != NATIVE_CHECK_COUNT:
         raise ValueError('Incomplete or listening native fixture')
     if len({c['label'] for c in checks}) != len(checks):
         raise ValueError('Repeated native labels')

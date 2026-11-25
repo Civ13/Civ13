@@ -25,8 +25,10 @@ commits to distinguish an added substantive DM helper from edits and pushes.
 
 The prepared native fixture compiles the full production DME without maps or
 normal startup. It calls actual restored-phase ticker setup, the Create Faction
-verb, wizard data construction, NanoUI constructor/get_html, asset getter,
-directory registration and cache APIs. A read-only counter observes registration.
+verb, wizard data construction, shared TGUI opener, constructor/get_html,
+asset getter, registration and cache APIs. Read-only counters observe
+registration. The modern window first checks only its own versioned resources,
+then the fixture separately exercises classic NanoUI's cold getter.
 Inert actor/map constructors and a UI subtype capture the browse boundary. The
 fixture never founds a faction, sends a game Topic or admits a client; its port
 always closes and its Topic returns nothing. Repeated disconnected sends test
@@ -35,12 +37,12 @@ the existing no-client path, not client delivery acknowledgements.
 Only the coordinator may use the exclusive native slot:
 
 ```powershell
-py -3 -B tests/faction_ui_assets/run.py --byond-bin <516.1681-bin> --evidence-dir <fresh-path>
-py -3 -B tests/faction_ui_assets/run.py --byond-bin <516.1681-bin> --omit-registration --evidence-dir <other-fresh-path>
+py -3 -B tests/faction_ui_assets/run.py --byond-bin <516.1688-bin> --evidence-dir <fresh-path>
+py -3 -B tests/faction_ui_assets/run.py --byond-bin <516.1688-bin> --omit-registration --evidence-dir <other-fresh-path>
 ```
 
-There are 18 native checks. The control removes only the new registration call
-and must fail exactly the five named cold-registration/resource checks; unrelated
+There are 21 native checks. The control removes only the new registration call
+and must fail exactly the eight named cold-registration/resource checks; unrelated
 diagnostics, timeout, wrong counts or missing completion invalidate it. The normal
 roundstart hook itself is checked separately after cold-cache evidence is frozen.
 
