@@ -1,7 +1,7 @@
 # Optional launcher voice: implementation and acceptance
 
 Tracking issue: [#5122](https://github.com/Civ13/Civ13/issues/5122).
-Reviewed 2026-11-13 against master a504fad4828e50ce57ed6c2b7da45848b6f04e6c.
+Implementation status and next acceptance step reviewed 2026-11-25.
 
 ## Mandatory architecture: DiscordPHP
 
@@ -35,8 +35,8 @@ loop. Keep one owner for each branch and check current work before starting it.
 | DiscordSignIn.cs | PKCE account sign-in, identify scope, single-use join tickets | No communications grant |
 | Social/ | Bounded presence protocol and callback/lifetime contracts | Production SDK composition |
 | companion/ | C++20 peer and presence C-ABI backend; fake SDK tests | Executable child endpoint and vendor runtime |
-| WindowsCompanionFactory | Parent process/pipe source, fixed off, injected OS tests | Real Windows pipe/job/cancellation acceptance |
-| Game proximity voice | Not implemented | Session binding, policy, transport and real-client audio |
+| WindowsCompanionFactory | Parent process/pipe source and Windows child-process checks | Released vendor binding through the launcher |
+| Game proximity voice | Phase 3 game roster and launcher volume rules, with synthetic tests | Connected TDM acceptance and server-side audience isolation |
 
 The historical SOCIAL-SDK documents describe the separate SDK lane. Their
 statement that account/GUI work is absent must not be read as a description of
@@ -85,8 +85,10 @@ Private real-audio acceptance is a distinct step, not satisfied by a fake backen
 Status (2026-11-15): source implemented as a standalone prototype,
 [`civ13-voice-proto.exe`](../tools/opendream-client/native/companion/voice/README.md),
 outside the companion and launcher. Its portable rules are offline tested in CI
-(`voice-tests`). Real two-PC audio is not yet runtime verified; it needs Public
-Client and the desktop redirect on the application, and two testers.
+(`voice-tests`). The [Phase 2 acceptance update on #5122](https://github.com/Civ13/Civ13/issues/5122)
+records push-to-talk audio on two separate Windows PCs with the standalone
+development prototype and SDK 1.10.19337. This did not exercise the TDM
+roster, launcher-to-game binding, or production permissions.
 
 ### 3. Authoritative game context
 
@@ -153,9 +155,33 @@ the ordinary UI mutes. Before claiming private proximity, prove transport-side
 membership/delivery isolation with an adversarial receiver test. If unavailable,
 label the prototype honestly and do not ship it as secure proximity.
 
-Do not join/leave a lobby for every tile crossing. Design membership hysteresis,
-bounded rooms and retry budgets against actual rate limits. Verify crowded
-rooms and overlapping hearing groups before adding radios or acoustic effects.
+Use DiscordPHP-managed membership for the first isolated test room. Discord
+[documents](https://docs.discord.com/developers/resources/lobby#create-lobby)
+that SDK clients cannot join or leave a lobby created by the server API on
+their own. That makes a server-created private room a candidate, but does not
+prove that removing a member stops their media promptly or that the same
+membership model can represent overlapping visibility groups.
+
+The next slice is a bounded TDM development acceptance test, not a production
+rollout:
+
+1. Prove that a test caller outside an authorized roster receives no audio.
+   With two authorized test participants talking, revoke one membership and
+   measure when media stops for the removed participant. Record only synthetic
+   pass/fail markers, timestamps and SDK versions, not audio or credentials.
+2. Repeat for disconnect and reconnect, character swap, observer or death
+   transition, and faction change. An expired or unknown admission decision
+   must be fail-closed. The ordinary launcher join and BYOND text paths must
+   remain available when voice is denied.
+3. Use a fixed small room and count the actual lobby writes. Do not join/leave
+   per tile or promise proximity privacy from client-set volume. The
+   [documented development budgets](https://docs.discord.com/developers/discord-social-sdk/core-concepts/communication-features#development-rate-limits)
+   are 100 create/join and 100 update requests per two hours, each per
+   application. Simulate revocation delays, retries and rate-limit responses
+   before pursuing an overlapping proximity topology.
+
+Phase 4 remains open until transport-side isolation and safe revocation are
+observed on the authorized test environment. Phase 5 remains separate.
 
 ### 5. Release eligibility and acceptance
 
