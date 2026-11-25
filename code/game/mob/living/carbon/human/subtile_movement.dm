@@ -801,6 +801,9 @@
 	var/atom/movable/M = pulling
 	if (!M || !isturf(M.loc) || M.anchored || M.z != z || !isturf(loc))
 		return FALSE
+	// The chair moves its rider by full tiles, so a pixel pull would slide
+	// the seat independently of them (or leave an empty chair offset for a rider).
+	var/wheelchair_tile_follow = istype(M, /obj/structure/bed/chair/wheelchair)
 	var/pull_ref = "\ref[M]"
 	if (human_pull_ref != pull_ref || !human_pull_tile || human_pull_tile.z != z)
 		// A new pull starts with no trail: until the body moves on to
@@ -831,7 +834,7 @@
 				human_pull_trail = null
 		// Falling behind first (it sat diagonally or off the grid): it keeps
 		// coming in pixels toward the tile the body left.
-		if (!moved && human_subtile_pull_trail_chase(M, trail))
+		if (!moved && !wheelchair_tile_follow && human_subtile_pull_trail_chase(M, trail))
 			moved = TRUE
 			if (M.loc == trail && !M.step_x && !M.step_y)
 				human_pull_trail = null
@@ -839,6 +842,8 @@
 			to_chat(src, SPAN_WARNING("You lose your hold on \the [M]."))
 			stop_pulling()
 		return moved
+	if (wheelchair_tile_follow)
+		return FALSE
 	// In a steady walk the next tile comes within about one tile's time, so
 	// the pixel drag holds off and the tile follow above keeps its one-tile
 	// spacing. Small moves, or a fresh start after a pause, drag in pixels.

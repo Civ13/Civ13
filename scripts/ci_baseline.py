@@ -677,7 +677,8 @@ SUITES = {
         'paths': ('tests/vehicle_offset/',), 'shared_paths': (
             'civ13.dme', 'code/modules/craft/vehicle_offset.dm',
             'code/modules/craft/vehicle_offset_ride.dm', 'code/modules/craft/vehicle_offset_frame.dm',
-            'code/modules/craft/vehicle_offset_ship.dm', 'tests/save_movement/source_adapter.py')},
+            'code/modules/craft/vehicle_offset_ship.dm', 'tests/save_movement/source_adapter.py',
+            'code/game/objects/structures/stool_bed_chair_nest/wheelchair.dm', 'code/game/turfs/turf.dm')},
     'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
         'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',

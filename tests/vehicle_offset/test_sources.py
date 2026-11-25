@@ -70,6 +70,28 @@ class VehicleOffsetSources(unittest.TestCase):
         self.assertIn('if (commit(way))', advance)
         self.assertIn('if (!can_cover(way))', advance)
 
+    def test_wheelchair_transfer_counts_as_carried_for_floor_footsteps(self):
+        chair = (ROOT / 'code/game/objects/structures/stool_bed_chair_nest/wheelchair.dm').read_text(encoding='utf-8')
+        floor = (ROOT / 'code/game/turfs/turf.dm').read_text(encoding='utf-8')
+        self.assertIn('/mob/living/var/tmp/obj/structure/bed/chair/wheelchair/wheelchair_carrying', chair)
+        carry = proc(RIDE, '/mob/living/human/proc/carried_by_vehicle()')
+        self.assertIn('if (buckled || wheelchair_carrying || driver || driver_vehicle)', carry)
+        walk_sound = floor.index('playsound(src, footstepsound')
+        self.assertLess(floor.index('!H.carried_by_vehicle()'), walk_sound)
+        drive = proc(chair, '/obj/structure/bed/chair/wheelchair/relaymove(')
+        move = proc(chair, '/obj/structure/bed/chair/wheelchair/Move()')
+        self.assertIn('move_wheelchair_rider(buckled_mob, direction)', drive)
+        self.assertIn('move_wheelchair_rider(occupant)', move)
+        self.assertIn("'sound/effects/rollermove.ogg'", move)
+        transfer = proc(chair, '/obj/structure/bed/chair/wheelchair/proc/move_wheelchair_rider(')
+        self.assertLess(transfer.index('occupant.wheelchair_carrying = src'), transfer.index('occupant.buckled = null'))
+        self.assertLess(transfer.index('occupant.buckled = null'), transfer.index('step(occupant, direction)'))
+        self.assertIn('catch (var/exception/E)\n\t\tfinish_wheelchair_rider_move(occupant)\n\t\tthrow E', transfer)
+        self.assertTrue(transfer.rstrip().endswith('finish_wheelchair_rider_move(occupant)'))
+        finish = proc(chair, '/obj/structure/bed/chair/wheelchair/proc/finish_wheelchair_rider_move(')
+        self.assertIn('occupant.wheelchair_carrying = null', finish)
+        self.assertIn('if (!QDELETED(src) && buckled_mob == occupant && !occupant.buckled)', finish)
+
     def test_pulses_write_directly(self):
         # Pixel pulses never call Move(); only the tile step moves things between turfs.
         draw = proc(CORE, '/datum/vehicle_offset/proc/draw(')
