@@ -180,11 +180,23 @@ var/hay_runtime_error = FALSE
 	var/mob/living/simple_animal/cattle/cow/hay_tester/C = new(locate(16, 15, 1))
 	C.stat = CONSCIOUS
 	C.herbivore = 1
+	C.make_wild()
 	C.simplehunger = 100
 	var/obj/item/stack/hay/H = new(null, 3, FALSE)
 	hay_hold(U, H)
 	C.attackby(H, U)
 	hay_check(C.simplehunger == 650 && H.amount == 2, "a hungry cow eats one hay by hand")
+	hay_check(C.tame_trust == 1 && C.tame_fed, "successful hand-fed hay counts toward taming once")
+	var/first_feed = C.tame_fed
+	var/obj/item/stack/hay/repeat_hay = new(null, 1, FALSE)
+	hay_hold(U, repeat_hay)
+	C.simplehunger = 100
+	C.attackby(repeat_hay, U)
+	hay_check(QDELETED(repeat_hay) && C.simplehunger == 650, "hay during cooldown still feeds the animal")
+	hay_check(C.tame_trust == 1 && C.tame_fed == first_feed, "hay during cooldown does not earn or extend trust")
+	hay_hold(U, H)
+	C.tame_fed = trap_minutes_text(trap_now_minutes() - 10)
+	var/eligible_stamp = C.tame_fed
 	C.simplehunger = 900
 	C.attackby(H, U)
 	hay_check(H.amount == 2, "a full cow refuses hay")
@@ -200,6 +212,7 @@ var/hay_runtime_error = FALSE
 	U.l_hand = null
 	C.simplehunger = 100
 	hay_check(C.eat_nearby_hay() && H.amount == 1, "a grazing animal eats hay lying next to it")
+	hay_check(C.tame_trust == 1 && C.tame_fed == eligible_stamp, "refused feedings and ground or bale forage give no trust even after cooldown")
 	qdel(H)
 	qdel(C)
 	qdel(U)

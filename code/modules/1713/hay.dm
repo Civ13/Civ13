@@ -294,6 +294,8 @@
 		return FALSE
 	user.visible_message(SPAN_NOTICE("[user] feeds [src] some hay."))
 	finish_eating(HAY_FEED_HUNGER)
+	if (wild && user)
+		tame_feeding(user)
 	return TRUE
 
 /mob/living/simple_animal/proc/eat_hay_bale(obj/structure/hay_bale/B)
