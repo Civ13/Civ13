@@ -94,8 +94,8 @@
 
 		handle_environment()
 
-	// put us out before we check fire stuff
-	if (istype(loc, /turf/floor/beach/water))
+	// Only liquid water puts us out before we check fire stuff.
+	if (is_liquid_water(loc))
 		var/turf/floor/beach/water/W = loc
 		if (!W.iscovered())
 			W.Extinguish(src)

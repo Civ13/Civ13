@@ -3,24 +3,27 @@
 		return time
 	return time /= (H.getStatCoeff("strength")*H.getStatCoeff("strength"))
 
-/mob/living/human/process_resist()
-
-	//drop && roll
-	if (on_fire && !buckled)
-		fire_stacks -= 1.2
-		Weaken(3)
-		spin(32,2)
+// Shared by standing and knocked-down Resist. Buckled actors cannot roll.
+/mob/living/human/proc/resist_fire_roll()
+	if (!on_fire || buckled)
+		return FALSE
+	fire_stacks -= 1.2
+	Weaken(3)
+	spin(32,2)
+	visible_message(
+		"<span class='danger'>[src] rolls on the floor, trying to put themselves out!</span>",
+		"<span class='notice'>You stop, drop, and roll!</span>"
+		)
+	if (fire_stacks <= 0)
 		visible_message(
-			"<span class='danger'>[src] rolls on the floor, trying to put themselves out!</span>",
-			"<span class='notice'>You stop, drop, and roll!</span>"
+			"<span class='danger'>[src] has successfully extinguished themselves!</span>",
+			"<span class='notice'>You extinguish yourself.</span>"
 			)
-		sleep(30)
-		if (fire_stacks <= 0)
-			visible_message(
-				"<span class='danger'>[src] has successfully extinguished themselves!</span>",
-				"<span class='notice'>You extinguish yourself.</span>"
-				)
-			ExtinguishMob()
+		ExtinguishMob()
+	return TRUE
+
+/mob/living/human/process_resist()
+	if (resist_fire_roll())
 		return TRUE
 
 	if (..())
