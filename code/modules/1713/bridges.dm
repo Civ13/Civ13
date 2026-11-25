@@ -80,8 +80,10 @@
 		return "Take the railway track off the deck first."
 	if (locate(/obj/structure/rail_bed) in T)
 		return "Take the railway sleepers off the deck first."
-	if (locate(/obj/structure/vehicleparts) in T)
+	if ((locate(/obj/structure/vehicleparts) in T) || (locate(/obj/structure/vehicle) in T))
 		return "Move the vehicle off the deck first."
+	if (locate(/obj/structure/oilwell/offshore) in T)
+		return "Take the offshore drilling rig off the deck first."
 	if (locate(/mob/living) in T)
 		return "Nobody can stand on the deck while it comes apart."
 	return null
