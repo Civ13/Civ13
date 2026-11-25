@@ -59,7 +59,7 @@
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood/proc/stone_boil_mixture()
 	if (!reagents || reagents.get_reagent_amount("water") <= 0)
 		return null
-	var/list/mixture = list("water" = 0, "sodiumchloride" = 0, "cholera" = 0, "food_poisoning" = 0, "coffee_grounds" = 0)
+	var/list/mixture = list("water" = 0, "sodiumchloride" = 0, "cholera" = 0, "food_poisoning" = 0, "coffee_grounds" = 0, "coffee" = 0)
 	for (var/datum/reagent/R in reagents.reagent_list)
 		if (!(R.id in mixture))
 			return null
@@ -99,7 +99,7 @@
 	for (var/obj/structure/oven/fireplace/candidate in range(1, H))
 		var/turf/T = get_turf(candidate)
 		var/obj/item/stack/material/stone/stone = locate(/obj/item/stack/material/stone) in T
-		if (candidate.loc == T && candidate.stone_heat_ready() && !candidate.stone_heat_busy() && stone && stone.amount >= 1)
+		if (candidate.loc == T && H.Adjacent(candidate) && candidate.stone_heat_ready() && !candidate.stone_heat_busy() && stone && stone.amount >= 1)
 			F = candidate
 			S = stone
 			break
@@ -107,13 +107,13 @@
 		for (var/obj/structure/furnace/kiln/stone/campfire/candidate in range(1, H))
 			var/turf/T = get_turf(candidate)
 			var/obj/item/stack/material/stone/stone = locate(/obj/item/stack/material/stone) in T
-			if (candidate.loc == T && candidate.stone_heat_ready() && !candidate.stone_heat_busy() && stone && stone.amount >= 1)
+			if (candidate.loc == T && H.Adjacent(candidate) && candidate.stone_heat_ready() && !candidate.stone_heat_busy() && stone && stone.amount >= 1)
 				F = candidate
 				S = stone
 				break
 	var/list/mixture = stone_boil_mixture()
 	if (!(istype(tool, /obj/item/weapon/branch) || istype(tool, /obj/item/weapon/material/handle)) || !F || !S || !mixture || stone_boil_busy || F.stone_heat_busy())
-		to_chat(H, SPAN_NOTICE("Hold this open mug and a stick or handle, with a stone on a lit campfire or active stone kiln that has spare fuel. The mug must contain water, salt, cholera, food poisoning or coffee grounds only."))
+		to_chat(H, SPAN_NOTICE("Hold this open mug and a stick or handle, with a stone on a lit campfire or active stone kiln that has spare fuel. The mug must contain water, salt, cholera, food poisoning, coffee grounds or brewed coffee only."))
 		return
 	var/datum/reagents/holder = reagents
 	var/turf/site = get_turf(F)
