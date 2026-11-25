@@ -102,7 +102,8 @@
 	if (stack <> "product_name")
 		var/stackpath = text2path("/obj/item/stack/[stack]")
 		if (stackpath)
-			I = new stackpath(T, max(stack_amount, 1))
+			return spawn_crop_stack(stackpath, T, max(stack_amount, 1))
+		return null
 	else
 		var/fruitpath
 		if (condiment <> "product_name")
