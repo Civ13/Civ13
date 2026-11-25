@@ -47,6 +47,7 @@ var/hay_runtime_error = FALSE
 		new /obj/map_metadata/hay_probe
 		hay_drying_checks()
 		hay_bale_checks()
+		hay_bale_footing_checks()
 		hay_feeding_checks()
 		hay_seeking_checks()
 	catch(var/exception/e)
@@ -59,6 +60,8 @@ var/hay_runtime_error = FALSE
 	A.location = AREA_OUTSIDE
 	A.climate = "temperate"
 	A.weather = WEATHER_NONE
+	A.weather_intensity = 0
+	A.icon_state = ""
 	for (var/turf/T in block(locate(1, 1, 1), locate(20, 20, 1)))
 		T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
 	return A
@@ -88,14 +91,37 @@ var/hay_runtime_error = FALSE
 	hay_check(D && D.icon_state == "drying_grass", "fresh drying grass sprite")
 	var/old_epoch = D.drying_epoch
 	A.weather = WEATHER_WET
+	A.weather_intensity = 2
+	A.icon_state = "rain1"
 	D.dry_step(D.drying_epoch)
 	hay_check(D.dry_steps == 0, "rain under open sky stops drying")
 	var/obj/roof/R = new(site)
 	D.dry_step(D.drying_epoch)
 	hay_check(D.dry_steps == 1, "a roof keeps the grass drying in rain")
 	qdel(R)
-	A.weather = WEATHER_NONE
+	// Removing a roof can rebuild the turf's area. Test the current one.
+	A = get_area(site)
+	A.location = AREA_OUTSIDE
+	A.weather = WEATHER_EXTREME
+	A.weather_intensity = 3
+	A.icon_state = "snow_storm"
 	D.dry_step(D.drying_epoch)
+	hay_check(D.dry_steps == 1, "snow under open sky stops drying")
+	A.climate = "desert"
+	var/old_season = season
+	season = "Dry Season"
+	var/list/desert_state = climate_weather_state(A.climate, WEATHER_EXTREME, 3)
+	season = old_season
+	A.icon_state = desert_state[1]
+	A.weather = desert_state[2]
+	A.weather_intensity = desert_state[3]
+	hay_check(weather_look_at(site) == "sandstorm" && weather_intensity_at(site) > 0 && !weather_precip_at(site), "desert sandstorm has wind intensity but no precipitation")
+	D.dry_step(D.drying_epoch)
+	hay_check(D.dry_steps == 2, "sandstorm under open sky counts as a dry check")
+	A.climate = "temperate"
+	A.weather = WEATHER_NONE
+	A.weather_intensity = 0
+	A.icon_state = ""
 	D.dry_step(D.drying_epoch)
 	hay_check(D.icon_state == "drying_grass_half", "half-dry sprite at half progress")
 	hay_check(!D.dry_step(old_epoch - 1), "a stale drying callback is ignored")
@@ -171,6 +197,43 @@ var/hay_runtime_error = FALSE
 		qdel(I)
 	for (var/obj/item/I in front)
 		qdel(I)
+	qdel(U)
+
+/proc/hay_bale_footing_checks()
+	hay_setup()
+	var/turf/shore = locate(10, 10, 1)
+	var/turf/surface = locate(10, 11, 1)
+	surface.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	surface = locate(10, 11, 1)
+	var/mob/living/hay_tester/U = new(shore)
+	U.dir = NORTH
+	var/obj/item/stack/hay/H = new(null, 20, FALSE)
+	hay_hold(U, H)
+	var/tied = H.tie_hay_bale(U)
+	var/obj/structure/hay_bale/B = locate() in shore
+	hay_check(tied && B && H.amount == 10 && !(locate(/obj/structure/hay_bale) in surface), "uncovered water falls back to the worker's solid tile")
+	if (B)
+		qdel(B)
+	for (var/obj/structure/hay_bale/on_water in surface)
+		qdel(on_water)
+	// On uncovered shallow water facing more uncovered shallow water, neither
+	// tile can take a bale. The worker's carried hay must survive refusal.
+	U.forceMove(surface)
+	var/turf/beyond = locate(10, 12, 1)
+	beyond.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	beyond = locate(10, 12, 1)
+	var/before = H.amount
+	U.dir = NORTH
+	hay_check(!H.tie_hay_bale(U) && H.amount == before && !(locate(/obj/structure/hay_bale) in beyond), "no usable footing refuses without consuming hay")
+	for (var/obj/structure/hay_bale/on_water in beyond)
+		qdel(on_water)
+	var/obj/covers/repairedfloor/C = new(beyond)
+	hay_check(tile_floor_cover(beyond) == C && hay_bale_site_clear(beyond), "floor covering restores usable footing over water")
+	qdel(C)
+	beyond.ChangeTurf(/turf/floor/beach/water/ice, FALSE, FALSE)
+	beyond = locate(10, 12, 1)
+	hay_check(hay_bale_site_clear(beyond), "solid ice can hold a bale without a floor cover")
+	qdel(H)
 	qdel(U)
 
 /proc/hay_feeding_checks()
