@@ -80,7 +80,8 @@ class PlumbedToiletContract(unittest.TestCase):
                 self.assertEqual(body(TEXT, header).strip(), result)
 
     def test_well_draw_uses_plumbing_aware_scan(self):
-        draw = TEXT.split("if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))", 1)[1]
+        fill = body(TEXT, "/obj/structure/sink/attackby(obj/item/O as obj, mob/living/user as mob)")
+        draw = fill.split("else if (istype(src, /obj/structure/sink/well) || puddle)", 1)[1]
         draw = draw.split("RG.reagents.add_reagent(\"cholera\"", 1)[0]
         self.assertIn("if (has_nearby_fecal_waste())", draw)
         self.assertNotIn("range(", draw)
@@ -110,6 +111,16 @@ class PlumbedToiletContract(unittest.TestCase):
             code = body(WASTE, proc)
             self.assertIn("var/in_outhouse = istype(loc, /obj/structure/toilet/outhouse)", code)
             self.assertNotIn("crap_inside", code)
+
+    def test_fill_debits_delivered_amount_not_remaining_container_capacity(self):
+        fill = body(TEXT, '/obj/structure/sink/attackby(obj/item/O as obj, mob/living/user as mob)')
+        self.assertIn('var/dose = min(requested, volume)', fill)
+        self.assertIn('min(1, dose), accepted_amount = accepted', fill)
+        self.assertIn('dose * 0.05, accepted_amount = accepted', fill)
+        self.assertIn('add_reagent(watertype, dose - contaminant, accepted_amount = accepted)', fill)
+        self.assertIn('var/transferred = contaminant + accepted["amount"]', fill)
+        self.assertIn('volume = max(0, volume - transferred)', fill)
+        self.assertNotIn('volume -= min(RG.volume - RG.reagents.total_volume', fill)
 
 
 if __name__ == "__main__":
