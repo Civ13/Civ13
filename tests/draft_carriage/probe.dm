@@ -110,8 +110,34 @@ var/carriage_owners_about = FALSE
 	carriage_check(C.seats[1] == bob && bob.buckled == C && bob.loc == C.loc && (bob in C.ontop), "Bob takes the first seat")
 	var/obj/structure/closet/crate/crate = new(locate(22, 30, 1))
 	carriage_check(C.can_load(crate) && !C.can_load(C) && !C.can_load(new /obj/structure/vehicle/carriage(locate(40, 50, 1))), "a crate can be loaded; a carriage cannot")
-	C.take_seat(crate, C.free_seat())
+	carriage_check(C.complete_load(crate, ann), "loose cargo loads into an available seat")
 	carriage_check(C.seats[2] == crate && crate.anchored && !crate.density && (crate in C.ontop_o) && crate.layer > C.layer, "the crate rides in a seat, anchored and drawn above the bed")
+
+	// State changes during a timed load must not move refused cargo or passengers.
+	var/mob/living/human/carriage_probe/passenger = carriage_person(22, 31, "Waiting passenger")
+	var/turf/passenger_origin = passenger.loc
+	var/obj/structure/chair/chair = new(passenger_origin)
+	chair.buckled_mob = passenger
+	passenger.buckled = chair
+	carriage_check(!C.complete_load(passenger, ann) && passenger.loc == passenger_origin && passenger.buckled == chair && chair.buckled_mob == passenger, "loading preserves a passenger's other seat")
+	passenger.buckled = null
+	passenger.anchored = TRUE
+	carriage_check(!C.complete_load(passenger, ann) && passenger.loc == passenger_origin, "loading leaves an anchored passenger in place")
+	chair.buckled_mob = null
+	qdel(chair)
+	qdel(passenger)
+	var/list/extra_cargo = list()
+	while (C.free_seat())
+		var/obj/structure/closet/crate/extra = new(locate(22, 30, 1))
+		extra_cargo += extra
+		C.take_seat(extra, C.free_seat())
+	var/obj/structure/closet/crate/waiting = new(locate(22, 30, 1))
+	var/turf/cargo_origin = waiting.loc
+	carriage_check(!C.complete_load(waiting, ann) && waiting.loc == cargo_origin && !(waiting in C.seats) && !waiting.anchored, "a full carriage leaves refused cargo at its origin")
+	qdel(waiting)
+	for (var/obj/structure/closet/crate/extra in extra_cargo)
+		C.let_off(extra)
+		qdel(extra)
 
 	// ---- Harness ----
 	carriage_check(C.team_pull() == 0 && C.load_ratio() == INFINITY, "with no team it has no pull")
@@ -124,7 +150,13 @@ var/carriage_owners_about = FALSE
 	// 50 is the even cost these checks measure.
 	h1.stamina = 50
 	h2.stamina = 50
-	carriage_check(isnull(C.hitch_refusal(h1)) && C.can_fit_lane(1), "a horse can go in harness")
+	var/turf/second_lane_row = locate(C.x + 1, C.y - 2, C.z)
+	second_lane_row.ChangeTurf(/turf/wall, FALSE, FALSE)
+	carriage_check(C.lane_depth(ox) == 1 && C.can_fit_lane(ox), "an incoming ox only needs the clear first row")
+	carriage_check(C.lane_depth(h1) == 2 && !C.can_fit_lane(h1), "an incoming horse needs the blocked second row before it is hitched")
+	second_lane_row = locate(C.x + 1, C.y - 2, C.z)
+	second_lane_row.ChangeTurf(/turf/floor/plating/road, FALSE, FALSE)
+	carriage_check(isnull(C.hitch_refusal(h1)) && C.can_fit_lane(h1), "a horse can go in harness with both rows clear")
 	C.hitch(h1)
 	carriage_check(findtext(C.hitch_refusal(ox), "Horses and oxen"), "an ox is not put in with horses")
 	C.hitch(h2)
