@@ -89,7 +89,6 @@
 	biomes = list("temperate", "taiga", "tundra", "sea", "semiarid")
 	max_water = 50
 
-// Every harvest also lifts one root.
 /obj/structure/farming/plant/dandelion/spawn_produce(bonus = 0)
 	..()
 	var/obj/item/root = new /obj/item/weapon/reagent_containers/food/snacks/grown/dandelion_root(loc)
