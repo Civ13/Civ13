@@ -12,17 +12,35 @@ RULE = reader_base.rule(SOURCE, 'ship_stocks')
 
 
 class ShipStocksContract(unittest.TestCase):
-    def test_large_barrel_water_tally_counts_only_water_reagents(self):
-        food = BOOK.split('\tproc/tally_food()\n', 1)[1].split('\tproc/tally_weapons()', 1)[0]
-        barrel = food.split('for(var/obj/structure/reagent_dispensers/largebarrel/L in sel_turf)', 1)[1]
-        match = re.search(r'if \(istype\((\w+), /datum/reagent/water\)\)\s+tally\["water"\] \+= (\w+)\.volume', barrel)
-        self.assertIsNotNone(match)
-        tested, added = match.groups()
-        # Project the production type test and volume source for mixed barrels.
-        reagents = [('water', 40), ('beer', 60), ('water', 15)]
-        total = sum(volume for kind, volume in reagents
-                    if (kind if tested == 'R' else 'largebarrel') == 'water' and added == 'R')
-        self.assertEqual(total, 55)
+    def test_general_hold_and_galley_share_the_water_tally(self):
+        tally = BOOK.split('\tproc/tally_food()\n', 1)[1].split('\tproc/tally_weapons()', 1)[0]
+        area = '/area/caribbean/pirates/ship/voyage/lower/storage'
+        self.assertIn(f'get_area_turfs({area})', tally)
+        self.assertIn(f'galley = istype(storage, {area}/kitchen)', tally)
+        self.assertIn(f'if (!galley && storage.type != {area})\n\t\t\t\tcontinue', tally)
+        self.assertIn('tally_provisions(sel_turf, galley, tally)', tally)
+        self.assertIn('for (var/obj/structure/closet/crate/S in sel_turf)\n'
+                      '\t\t\t\ttally_provisions(S, galley, tally)', tally)
+        self.assertIn('for (var/obj/structure/reagent_dispensers/largebarrel/L in sel_turf)\n'
+                      '\t\t\t\ttally["water"] += tally_barrel_water(L.reagents)', tally)
+        map_text = (ROOT / 'maps/special/voyage.dmm').read_text()
+        self.assertRegex(map_text, rf'barrel/water,[^\n]+,{area}\)')
+
+    def test_portable_and_fixed_barrels_share_a_water_only_filter(self):
+        items = BOOK.split('\tproc/tally_provisions(', 1)[1].split('\tproc/tally_barrel_water(', 1)[0]
+        self.assertIn('for (var/obj/item/weapon/reagent_containers/glass/barrel/B in container)\n'
+                      '\t\t\ttally["water"] += tally_barrel_water(B.reagents)', items)
+        self.assertNotIn('tally_provisions(', items)
+        water = BOOK.split('\tproc/tally_barrel_water(', 1)[1].split('\tproc/tally_food()', 1)[0]
+        self.assertIn('if (contents)', water)
+        self.assertIn('if (istype(R, /datum/reagent/water))\n\t\t\t\t\ttotal += R.volume', water)
+
+    def test_food_remains_galley_only_and_excludes_empty_drinkware(self):
+        items = BOOK.split('\tproc/tally_provisions(', 1)[1].split('\tproc/tally_barrel_water(', 1)[0]
+        self.assertIn('if (galley)\n\t\t\tfor (var/obj/item/weapon/reagent_containers/food/F in container)',
+                      items)
+        self.assertIn('if (!istype(F, /obj/item/weapon/reagent_containers/food/drinks) || '
+                      'F.reagents?.total_volume > 0)\n\t\t\t\t\ttally["food"]++', items)
 
     def test_treasury_counts_loose_money_once_per_turf(self):
         treasury = BOOK.split('\tproc/tally_treasure()\n', 1)[1].split('\tproc/tally_materials()', 1)[0]
