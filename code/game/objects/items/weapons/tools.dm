@@ -81,6 +81,9 @@
 /obj/item/weapon/reagent_containers/glass/fire_extinguisher/proc/fire(var/mob/living/human/H,var/cdir=null,atom/target)
 	if (!H || !target)
 		return
+	// World clicks reach here before ordinary click handling checks incapacitation.
+	if (H.stat || H.paralysis || H.stunned || H.weakened)
+		return
 	if (world.time<=lastfire)
 		return
 	// Only clicks out in the world spray: not the HUD, and not things carried or stored.
