@@ -20,6 +20,20 @@ class TaserDartTest(unittest.TestCase):
         text = LIVING.read_text(encoding='utf-8')
         self.assertIn('if(P.taser_effect)\n\t\tstun_effect_act(P.stun, P.agony, def_zone, P)', text)
 
+    def test_mixing_panel_targets_the_attached_beaker_not_its_row(self):
+        dartgun = (ROOT / 'code/modules/projectiles/guns/projectile/dartgun.dm').read_text(encoding='utf-8')
+        panel = dartgun.split('/dartgun/ui_interact(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('var/beaker_ref = "\\ref[B]"', panel)
+        self.assertIn('panel_button("Eject", "eject", beaker_ref)', panel)
+        lookup = dartgun.split('/proc/attached_beaker_with_ref(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('B in beakers', lookup)
+        self.assertIn('!QDELETED(B) && B.loc == src && "\\ref[B]" == beaker_ref', lookup)
+        handler = dartgun.split('/dartgun/Topic(', 1)[1].split('\n/obj/', 1)[0]
+        for verb in ('stop_mix', 'mix', 'eject'):
+            self.assertIn(f'attached_beaker_with_ref(href_list["{verb}"])', handler)
+        self.assertNotIn('text2num', handler)
+        self.assertNotIn('beakers[index]', handler)
+
 
 if __name__ == '__main__':
     unittest.main()
