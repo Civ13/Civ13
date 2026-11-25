@@ -21,7 +21,9 @@ tools already serve as goods.
 - An empty hand opens a menu: Agree, Take back my offer, Leave the trade.
 - When both traders have agreed, each side's offer drops at the other trader's feet, and the
   trade is logged.
-- Any change to either offer clears both agreements, and the other trader is told.
+- Any change to either offer clears both agreements, and the other trader is told. An Agree
+  response from a menu opened before the change is rejected; examine the revised offers and
+  open the mat again to agree.
 - A trader who walks away or falls unconscious is dropped from the trade; their offer goes
   back onto the mat's tile.
 - Traders, offers and agreements are runtime only. After a load, anything on the mat drops onto
