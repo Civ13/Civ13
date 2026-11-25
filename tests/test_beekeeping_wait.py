@@ -107,6 +107,16 @@ class HiveForageTests(unittest.TestCase):
         self.assertEqual(forage_points([self.crop(10) for _ in range(17)]), 16)
 
 
+    def test_swarming_debits_only_if_a_recoverable_cluster_is_placed(self):
+        root = Path(__file__).resolve().parents[1]
+        kept = (root / 'code/modules/1713/kept_hives.dm').read_text(encoding='utf-8')
+        framed = (root / 'code/modules/1713/beekeeping.dm').read_text(encoding='utf-8')
+        self.assertIn('&& cast_swarm(src, 40))\n\t\t\tstrength -= 40', kept)
+        self.assertIn('&& cast_swarm(src, 40))\n\t\t\tbee_count -= 40', framed)
+        cast = kept.split('/proc/cast_swarm(', 1)[1].split('/proc/', 1)[0]
+        self.assertIn('if (!sites.len)\n\t\treturn null', cast)
+        self.assertIn('return new /obj/structure/bee_swarm_cluster', cast)
+
 
 if __name__ == '__main__':
     unittest.main()
