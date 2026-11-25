@@ -14,6 +14,7 @@ SNACKS = ROOT / 'code/modules/reagents/reagent_containers/food/snacks.dm'
 KITCHEN = ROOT / 'code/game/objects/items/weapons/material/kitchen.dm'
 CONTAINERS = ROOT / 'code/modules/reagents/reagent_containers.dm'
 HUMAN = ROOT / 'code/game/mob/living/carbon/human/human.dm'
+HUMAN_HELPERS = HUMAN.with_name('human_helpers.dm')
 
 
 def proc_body(text, signature):
@@ -41,6 +42,47 @@ class OverfedVomitTest(unittest.TestCase):
         self.assertLess(self_part.index('food_fullness_limit()'), self_part.index('trans_to_mob'))
         self.assertLess(other_part.index('do_mob'), other_part.index('trans_to_mob'))
         self.assertIn('M.overfed_vomit(user)', other_part)
+
+    def test_edged_scoop_utensils_reach_scooping_without_cutting(self):
+        scoop = proc_body(SNACKS.read_text(encoding='utf-8'),
+                          '/obj/item/weapon/reagent_containers/food/snacks/attackby(')
+        self.assertIn('if (W.edge && !(istype(U) && U.scoop_food))', scoop)
+        self.assertIn('var/obj/item/weapon/reagent_containers/food/snacks/slice = new slice_path(loc)', scoop)
+        self.assertLess(scoop.index('if (istype(U) && U.scoop_food)'), scoop.index('reagents.trans_to_obj(U'))
+
+    def test_voluntary_solid_food_diet_is_shared_and_scoop_remembers_classification(self):
+        snacks = SNACKS.read_text(encoding='utf-8')
+        scoop = proc_body(snacks, '/obj/item/weapon/reagent_containers/food/snacks/attackby(')
+        self.assertIn('U.loaded_non_vegetarian = non_vegetarian', scoop)
+        self.assertLess(scoop.index('reagents.trans_to_obj(U'), scoop.index('U.loaded_non_vegetarian = non_vegetarian'))
+        self_direct, force_direct = proc_body(snacks, '/obj/item/weapon/reagent_containers/food/snacks/attack(').split(
+            "//If you're feeding somebody", 1)
+        self.assertIn('C.can_eat_solid_food_diet(non_vegetarian)', self_direct)
+        self.assertNotIn('can_eat_solid_food_diet', force_direct)
+        kitchen = KITCHEN.read_text(encoding='utf-8')
+        self_utensil, force_utensil = proc_body(kitchen, '/obj/item/weapon/material/kitchen/utensil/attack(').split(
+            'else\n\t\t\tuser.visible_message', 1)
+        self.assertLess(self_utensil.index('M.can_eat_solid_food_diet(loaded_non_vegetarian)'),
+                        self_utensil.index('trans_to_mob'))
+        self.assertNotIn('can_eat_solid_food_diet', force_utensil)
+        reset = proc_body(kitchen, '/obj/item/weapon/material/kitchen/utensil/on_reagent_change(')
+        self.assertIn('if (!reagents?.total_volume && !isnull(loaded))', reset)
+        self.assertIn('loaded = null', reset)
+        self.assertIn('loaded_non_vegetarian = FALSE', reset)
+        self.assertIn('overlays.Cut()', reset)
+        diet = proc_body(HUMAN_HELPERS.read_text(encoding='utf-8'),
+                         '/mob/living/human/proc/can_eat_solid_food_diet(')
+        self.assertIn('gorillaman || find_trait("Vegan")', diet)
+        self.assertIn('wolfman || crab || find_trait("Carnivore")', diet)
+
+    def test_last_scoop_returns_container_to_scooper(self):
+        snacks = SNACKS.read_text(encoding='utf-8')
+        scoop = proc_body(snacks, '/obj/item/weapon/reagent_containers/food/snacks/attackby(')
+        self.assertRegex(scoop, r'if \(!reagents\.total_volume\)\s+over\(user\)')
+        finish = proc_body(snacks, '/obj/item/weapon/reagent_containers/food/snacks/proc/over(')
+        self.assertRegex(finish, r'if \(loc == handler\)\s+handler\.drop_from_inventory\(src\)')
+        self.assertLess(finish.index('handler.put_in_hands(empty_container)'), finish.index('qdel(src)'))
+        self.assertNotIn('usr', finish)
 
     def test_drinks_force_fed_vomit(self):
         body = proc_body(CONTAINERS.read_text(encoding='utf-8'),

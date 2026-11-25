@@ -158,14 +158,15 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			else
 				message_admins("SIZE NOT DEFINED! NO REAGENTS!!!")
 
-/obj/item/weapon/reagent_containers/food/snacks/proc/over(var/mob/M) //end of snack
-	usr.drop_from_inventory(src)	//so icons update :[
-	if (trash)
-		if (ispath(trash,/obj/item))
-			var/obj/item/TrashItem = new trash(usr)
-			usr.put_in_hands(TrashItem)
-		else if (istype(trash,/obj/item))
-			usr.put_in_hands(trash)
+/obj/item/weapon/reagent_containers/food/snacks/proc/over(mob/handler) // end of snack
+	if (handler)
+		if (loc == handler)
+			handler.drop_from_inventory(src) // refresh held item icons
+		if (ispath(trash, /obj/item))
+			var/obj/item/empty_container = new trash(handler)
+			handler.put_in_hands(empty_container)
+		else if (istype(trash, /obj/item))
+			handler.put_in_hands(trash)
 	qdel(src)
 
 //Placeholder for effect that trigger on eating that aren't tied to reagents.
@@ -189,7 +190,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	M.rad_act(radiation) //need be before qdel(src) may happens
 	if (!reagents.total_volume)
 		M.visible_message("<span class='notice'>[M] finishes eating \the [src].</span>","<span class='notice'>You finish eating \the [src].</span>")
-		over(M)
+		over(usr)
 
 /obj/item/weapon/reagent_containers/food/snacks/attack_self(mob/user as mob)
 	return
@@ -206,23 +207,8 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		var/fullness = C.get_fullness()
 		var/fullness_limit = C.food_fullness_limit()
 		if (C == user)								//If you're eating it yourself
-			if (istype(C,/mob/living/human))
-				var/mob/living/human/H = M
-				if (!H.check_has_mouth())
-					to_chat(user, "Where do you intend to put \the [src]? You don't have a mouth!")
-					return
-				var/obj/item/blocked = H.check_mouth_coverage()
-				if (blocked)
-					to_chat(user, "<span class='warning'>\The [blocked] is in the way!</span>")
-					return
-				if (H.gorillaman || H.find_trait("Vegan"))
-					if (non_vegetarian)
-						to_chat(user, "<span class='warning'>You are a vegan/herbivore! You can't eat this!</span>")
-						return
-				else if (H.wolfman || H.crab || H.find_trait("Carnivore"))
-					if (!non_vegetarian)
-						to_chat(user, "<span class='warning'>You are a carnivore! You can't eat this!</span>")
-						return
+			if (!C.can_eat(src) || !C.can_eat_solid_food_diet(non_vegetarian))
+				return
 			user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN) //puts a limit on how fast people can eat/drink things
 			if (fullness <= 50)
 				to_chat(C, "<span class='danger'>You hungrily chew out a piece of [src] and gobble it!</span>")
@@ -302,8 +288,9 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	if (istype(W,/obj/item/weapon/storage) && user.a_intent != I_HARM)
 		..() // -> item/attackby()
 		return
-	//cutting sliceable items with blades
-	if (W.edge)
+	var/obj/item/weapon/material/kitchen/utensil/U = W
+	// Edged forks and chopsticks scoop food; knives still slice it.
+	if (W.edge && !(istype(U) && U.scoop_food))
 		if (!is_sliceable())
 			..()
 			return
@@ -326,29 +313,30 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			slice.satisfaction = src.satisfaction / slices_num
 		qdel(src)
 		return
-	// Eating with forks, spoons, chopsticks (utensil, but not knives, that have edge and worked above)
-	if (istype(W,/obj/item/weapon/material/kitchen/utensil))
-		var/obj/item/weapon/material/kitchen/utensil/U = W
-		if (U.scoop_food)
-			if (!U.reagents)
-				U.create_reagents(5)
-			if (U.reagents.total_volume > 0)
-				to_chat(user, "<span class='warning'>You already have something on your [U].</span>")
-				return
-			user.visible_message( \
-				"\The [user] scoops up some [src] with \the [U]!", \
-				"<span class='notice'>You scoop up some [src] with \the [U]!</span>" \
-			)
-			bitecount++
-			U.overlays.Cut()
+	// Eating with forks, spoons, and chopsticks.
+	if (istype(U) && U.scoop_food)
+		if (!U.reagents)
+			U.create_reagents(5)
+		if (U.reagents.total_volume > 0)
+			to_chat(user, "<span class='warning'>You already have something on your [U].</span>")
+			return
+		if (!reagents.trans_to_obj(U, min(reagents.total_volume, 5)))
+			return
+		user.visible_message( \
+			"\The [user] scoops up some [src] with \the [U]!", \
+			"<span class='notice'>You scoop up some [src] with \the [U]!</span>" \
+		)
+		bitecount++
+		if (U.reagents.total_volume > 0)
 			U.loaded = "[src]"
+			U.loaded_non_vegetarian = non_vegetarian
 			var/image/I = new(U.icon, "loadedfood")
 			I.color = filling_color
+			U.overlays.Cut()
 			U.overlays += I
-			reagents.trans_to_obj(U, min(reagents.total_volume,5))
-			if (reagents.total_volume <= 0)
-				qdel(src)
-			return
+		if (!reagents.total_volume)
+			over(user)
+		return
 
 /obj/item/weapon/reagent_containers/food/snacks/attack_generic(var/mob/living/M) //Eating food by mobs on "their own"
 	if (!isanimal(M))

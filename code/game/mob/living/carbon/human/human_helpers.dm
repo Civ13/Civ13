@@ -25,6 +25,18 @@
 			to_chat(src, SPAN_WARNING("\The [status[2]] is in the way!"))
 	return FALSE
 
+// Voluntary solid-food eating must respect the same diet through either bite path.
+/mob/living/human/proc/can_eat_solid_food_diet(non_vegetarian)
+	if (gorillaman || find_trait("Vegan"))
+		if (non_vegetarian)
+			to_chat(src, SPAN_WARNING("You are a vegan/herbivore! You can't eat this!"))
+			return FALSE
+	else if (wolfman || crab || find_trait("Carnivore"))
+		if (!non_vegetarian)
+			to_chat(src, SPAN_WARNING("You are a carnivore! You can't eat this!"))
+			return FALSE
+	return TRUE
+
 /mob/living/human/can_force_feed(var/feeder, var/food, var/feedback = TRUE)
 	var/list/status = can_eat_status()
 	if (status[1] == HUMAN_EATING_NO_ISSUE)

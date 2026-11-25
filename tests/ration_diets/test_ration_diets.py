@@ -35,7 +35,10 @@ class RationDietTest(unittest.TestCase):
 
     def test_food_gate_uses_the_same_flag(self):
         food = (ROOT / 'code/modules/reagents/reagent_containers/food/snacks.dm').read_text(encoding='utf-8-sig')
-        self.assertRegex(food, r'if \(H\.gorillaman \|\| H\.find_trait\("Vegan"\)\)\s+if \(non_vegetarian\)')
+        self.assertIn('C.can_eat_solid_food_diet(non_vegetarian)', food)
+        helpers = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text(encoding='utf-8-sig')
+        self.assertRegex(helpers, r'(?s)/proc/can_eat_solid_food_diet\(non_vegetarian\).*?'
+                                  r'if \(gorillaman \|\| find_trait\("Vegan"\)\)\s+if \(non_vegetarian\)')
 
 
 if __name__ == '__main__':
