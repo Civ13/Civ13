@@ -179,6 +179,7 @@
 	icon_state = "switch-off"
 	var/position = 0			// 0 off, -1 reverse, 1 forward
 	var/last_pos = -1			// last direction setting
+	var/convdir = 0 // reversible by default; one-way switches use 1 or -1
 	var/operated = 1			// true if just operated
 
 	var/id = "" 				// must match conveyor IDs to control them
@@ -186,7 +187,7 @@
 	var/list/conveyors		// the list of conveyors that are controlled by this switch
 	anchored = 1
 	// Saved with the icon so a reloaded switch shows the state its belts run in.
-	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;id;position;last_pos"
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;id;position;last_pos;convdir"
 
 
 
@@ -271,12 +272,16 @@
 	if(is_tool(I, TOOL_CROWBAR))
 		var/obj/item/conveyor_switch_construct/C = new/obj/item/conveyor_switch_construct(src.loc)
 		C.id = id
+		if(istype(src, /obj/machinery/conveyor_switch/oneway))
+			C.convdir = convdir
 		transfer_fingerprints_to(C)
 		to_chat(user, "<span class='notice'>You detach the conveyor switch.</span>")
 		qdel(src)
+		return TRUE
+	return ..()
 
 /obj/machinery/conveyor_switch/oneway
-	var/convdir = 1 //Set to 1 or -1 depending on which way you want the convayor to go. (In other words keep at 1 and set the proper dir on the belts.)
+	convdir = 1
 	desc = "A conveyor control switch. It appears to only go in one direction."
 
 // attack with hand, switch position
@@ -312,11 +317,12 @@
 	var/id = "" //inherited by the belt
 
 /obj/item/conveyor_construct/attackby(obj/item/I, mob/user, params)
-	..()
 	if(istype(I, /obj/item/conveyor_switch_construct))
 		to_chat(user, "<span class='notice'>You link the switch to the conveyor belt assembly.</span>")
 		var/obj/item/conveyor_switch_construct/C = I
 		id = C.id
+		return TRUE
+	return ..()
 
 /obj/item/conveyor_construct/afterattack(atom/A, mob/user, proximity)
 	if(!proximity || user.incapacitated())
@@ -345,6 +351,8 @@
 	icon_state = "switch-off"
 	w_class = ITEM_SIZE_LARGE
 	var/id = "" //inherited by the switch
+	var/convdir = 0 // zero retains the behavior of a newly crafted assembly
+	map_storage_saved_vars = "density;icon_state;dir;name;pixel_x;pixel_y;id;convdir"
 
 /obj/item/conveyor_switch_construct/New()
 	..()
@@ -358,13 +366,18 @@
 	if(!T)
 		return
 	var/found = 0
-	for(var/obj/machinery/conveyor/C in view())
+	for(var/obj/machinery/conveyor/C in view(user))
 		if(C.id == src.id)
 			found = 1
 			break
 	if(!found)
 		to_chat(user, "<span class='notice'>The conveyor switch did not detect any linked conveyor belts in range.</span>")
 		return
-	var/obj/machinery/conveyor_switch/NC = new/obj/machinery/conveyor_switch(T, id)
+	var/obj/machinery/conveyor_switch/NC
+	if(convdir == 1 || convdir == -1)
+		NC = new /obj/machinery/conveyor_switch/oneway(T, id)
+		NC.convdir = convdir
+	else
+		NC = new /obj/machinery/conveyor_switch(T, id)
 	transfer_fingerprints_to(NC)
 	qdel(src)
