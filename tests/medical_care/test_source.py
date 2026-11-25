@@ -101,7 +101,7 @@ class MedicalCare(unittest.TestCase):
     def test_shared_treatment_guards(self):
         treat = block(MEDICAL, "/obj/item/stack/medical/proc/treat(")
         lookup = treat.index("H.get_organ(user.targeted_organ)")
-        guard = treat.index("if (!affecting)", lookup)
+        guard = treat.index("if (!affecting || !tourniquet_patient_in_reach(H, user))", lookup)
         self.assertLess(guard, treat.index("affecting.", guard + 20))
         open_check = treat.index("if (affecting.open)")
         self.assertIn("\n\t\treturn\n", treat[open_check:treat.index("limb_needs(affecting)", open_check)])
@@ -114,6 +114,16 @@ class MedicalCare(unittest.TestCase):
         splint = block(MEDICAL, "/obj/item/stack/medical/splint/attack")
         lookup = splint.index("H.get_organ(user.targeted_organ)")
         self.assertLess(splint.index("if (!affecting)", lookup), splint.index("affecting.", lookup + 40))
+
+    def test_treatment_rechecks_reach_after_wait_and_settles_prior_work(self):
+        treat = block(MEDICAL, "/obj/item/stack/medical/proc/treat(")
+        after_wait = treat.split("if (!do_mob(user, H, W.damage/5))", 1)[1]
+        guard = after_wait.index("if (!tourniquet_patient_in_reach(H, user))")
+        first_effect = after_wait.index("W.bandage()")
+        self.assertLess(guard, first_effect)
+        self.assertIn("break", after_wait[guard:first_effect])
+        self.assertIn("\n\tif (used)\n\t\tuse(min(used, amount))", treat)
+        self.assertIn("if (tourniquet_patient_in_reach(H, user))\n\t\ttry_expert_close", treat)
 
     def test_every_treatment_item_uses_the_shared_proc(self):
         expected = {
