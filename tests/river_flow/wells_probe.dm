@@ -246,6 +246,39 @@ var/sewer_runtime_error = FALSE
 	OW.well_finish_scraping(TRUE)
 	OW.refill()
 	sewer_check(OW.volume == 10 && !OW.dirty, "a cleaned spring refills at its ordinary rate")
+	// Each upgrade has a surface-only limit; nearby waste is independent.
+	sewer_check(PW.well_flood_can_enter(FLOOD_BAND_ANKLE), "a bare rim admits shallow runoff")
+	PW.raised_well_rim = TRUE
+	sewer_check(!PW.well_flood_can_enter(FLOOD_BAND_KNEE) && PW.well_flood_can_enter(FLOOD_BAND_WAIST), "the raised rim protects below waist depth")
+	PW.raised_well_rim = FALSE
+	PW.well_cover = TRUE
+	PW.well_cover_closed = TRUE
+	sewer_check(!PW.well_flood_can_enter(FLOOD_BAND_ANKLE) && PW.well_flood_can_enter(FLOOD_BAND_KNEE), "a shut cover protects from shallow runoff only")
+	PW.well_cover_closed = FALSE
+	sewer_check(PW.well_flood_can_enter(FLOOD_BAND_ANKLE), "the open cover gives no flood protection")
+	sewer_check(PW.well_runoff_outlet(WEST) && !PW.well_runoff_outlet(EAST) && !PW.well_runoff_outlet(NORTHWEST), "an outlet must be cardinal and downhill")
+	PW.well_drain_dir = WEST
+	sewer_check(!PW.well_flood_can_enter(FLOOD_BAND_ANKLE) && PW.well_flood_can_enter(FLOOD_BAND_KNEE), "a downhill apron drain diverts only shallow runoff")
+	var/obj/structure/sewer_piece/drain/ditch/blocked = new(bank)
+	sewer_check(PW.well_flood_can_enter(FLOOD_BAND_ANKLE), "a well drain does not empty into a sewage ditch")
+	qdel(blocked)
+	PW.raised_well_rim = TRUE
+	PW.well_cover_closed = TRUE
+	PW.dirty = TRUE
+	waste = s2_poo(locate(2, 1, 1))
+	sewer_check(PW.dirty && PW.well_cleanup_source() && PW.well_flood_can_enter(FLOOD_BAND_WAIST), "the combination neither purifies the well nor stops seepage and serious floods")
+	qdel(waste)
+	var/obj/structure/sink/well/relined = new /obj/structure/sink/well(plain)
+	sewer_check(QDELETED(PW) && relined.raised_well_rim && relined.well_cover && relined.well_cover_closed && relined.well_drain_dir == WEST && relined.dirty, "relining retains upgrades and existing fouling")
+	SW.well_cover = TRUE
+	SW.well_cover_closed = TRUE
+	BK.reagents.clear_reagents()
+	SW.volume = 180
+	sewer_check(PU.draw_into(SW, BK) > 0, "a pump draws past a closed cover")
+	var/obj/structure/well_fitting/windlass/test_windlass = new /obj/structure/well_fitting/windlass(plain)
+	relined.volume = 150
+	BK.reagents.clear_reagents()
+	sewer_check(!test_windlass.draw_into(relined, BK) && !BK.reagents.total_volume, "a covered well will not lower a windlass bucket")
 	// Taking a well apart: fitting, then lining, then the hole.
 	PU.unfit()
 	var/obj/item/stack/material/iron/scrap = locate() in low

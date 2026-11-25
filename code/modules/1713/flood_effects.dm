@@ -104,10 +104,10 @@
 #undef FLOOD_SILT_NUTRITION
 
 // ---- wells -----------------------------------------------------
-// Floodwater over a well fouls it until it is scrubbed clean with soap.
+// Floodwater reaching a well shaft fouls it until it is cleaned.
 
 /obj/structure/sink/well/proc/flood_foul()
-	if (!dirty && flood_depth_at(get_turf(src)) > 0)
+	if (!dirty && well_flood_ingress())
 		dirty = TRUE
 	return dirty
 
