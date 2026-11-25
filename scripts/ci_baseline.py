@@ -3166,6 +3166,8 @@ SUITES = {
             'code/modules/naval/air_designer.dm', 'code/modules/craft/vehicle_designer.dm',
             'code/modules/1713/train_designer.dm', 'code/modules/space/station_designer.dm',
             'code/game/objects/house_designer.dm')},
+    'modern_bridges': {'files': ('tests/modern_bridges/test_sources.py',),
+        'paths': ('tests/modern_bridges/', 'code/modules/1713/bridges.dm', 'code/modules/1713/offshore_rig.dm')},
     'harbor_planner': {'files': ('tests/harbor_planner/test_source.py',),
         'paths': ('tests/harbor_planner/', 'code/modules/naval/harbor_planner.dm'),
         'shared_paths': ('code/modules/naval/slipway.dm', 'code/modules/naval/boathouse.dm',
