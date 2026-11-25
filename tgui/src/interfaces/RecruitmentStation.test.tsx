@@ -47,6 +47,39 @@ describe('Recruitment station', () => {
     fireEvent.click(screen.getByText('Withdraw'));
     expect(props.act).toHaveBeenLastCalledWith('withdraw', { value: 'app7' });
   });
+  it.each(['Turned down', 'Offer withdrawn'])('keeps the read-only %s decision alongside current eligibility', status => {
+    const props = ui({ station: 1, bound: 1, supported: 1, faction: 'Oak', applicant: {
+      text: 'You can apply again.', action: 'apply',
+      outcome: { status_text: status, reason: 'Need more &lt;b&gt;experience&lt;/b&gt;.' },
+    } });
+    const view = render(<RecruitmentStation {...props} />);
+    expect(screen.getByText(status)).toBeTruthy();
+    expect(screen.getByText('Reason: Need more <b>experience</b>.')).toBeTruthy();
+    expect(view.container.querySelector('b')).toBeNull();
+    expect(screen.queryByText('Withdraw')).toBeNull();
+    expect(screen.queryByText('Confirm and join')).toBeNull();
+    fireEvent.click(screen.getByText('Apply'));
+    expect(props.act).toHaveBeenCalledExactlyOnceWith('apply', { value: 1 });
+  });
+  it('hides earlier outcomes when there is an active application', () => {
+    render(<RecruitmentStation {...ui({ station: 1, bound: 1, supported: 1, faction: 'Oak', applicant: {
+      text: 'Waiting for review.', application: { id: 'app9', status: 'pending', status_text: 'Pending', expires: '7 days' },
+      outcome: { status_text: 'Turned down', reason: 'Old reason' },
+    } })} />);
+    expect(screen.getByText('Pending')).toBeTruthy();
+    expect(screen.queryByText('Turned down')).toBeNull();
+    expect(screen.queryByText('Reason: Old reason')).toBeNull();
+    expect(screen.getByText('Withdraw')).toBeTruthy();
+  });
+  it('shows an expired decision without a reason or an action', () => {
+    render(<RecruitmentStation {...ui({ station: 1, bound: 1, supported: 1, faction: 'Oak', applicant: {
+      text: 'Oak is not taking applications right now.', outcome: { status_text: 'Expired', reason: '' },
+    } })} />);
+    expect(screen.getByText('Expired')).toBeTruthy();
+    expect(screen.getByText('Oak is not taking applications right now.')).toBeTruthy();
+    expect(screen.queryByText(/Reason:/)).toBeNull();
+    expect(screen.queryByRole('button')).toBeNull();
+  });
   it('lets reviewers decide and leaders change rules', () => {
     const props = ui({ station: 0, bound: 1, supported: 1, faction: 'Oak', can_review: 1, queue: [
       { id: 'app3', name: 'Ann', status: 'pending', status_text: 'Waiting', submitted: '5 minutes', expires: '7 days', intro: 'hi', results: [] },

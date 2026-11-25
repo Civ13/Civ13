@@ -58,6 +58,51 @@ class FactionRecruitmentSource(unittest.TestCase):
         self.assertGreaterEqual(factions.count('verbs += /mob/living/human/proc/recruitment_applications'), 2)
         self.assertIn("'recruitment_station.tmpl': RecruitmentStation", read('tgui/src/interfaces/index.tsx'))
 
+    def test_station_outcome_filters_identity_and_retention(self):
+        import importlib.util
+        from types import SimpleNamespace
+        spec = importlib.util.spec_from_file_location('outcome_adapter', ROOT/'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        source = read(run.RECRUITMENT)
+        retention = 14 * 24 * 60 * 60 * 10
+        now = retention + 100
+        records = {}
+        env = {'recruitment_state': lambda: {'applications': records}, 'recruitment_now': lambda: now,
+               'RECRUITMENT_TERMINAL_KEEP': retention, 'RECRUIT_PENDING': 'pending', 'RECRUIT_APPROVED': 'approved'}
+        env['recruitment_active_status'] = adapter.project(source, '/proc/recruitment_active_status', 'status', env.copy())
+        env['recruitment_identity_matches'] = adapter.project(source, '/proc/recruitment_identity_matches', 'H,A', env.copy())
+        latest = adapter.project(source, '/obj/map_metadata/proc/recruitment_outcome_for', 'src,H,faction', env)
+        viewer = SimpleNamespace(recruitment_life_id='life', recruitment_account=lambda: 'account')
+        def record(changed, **kw):
+            return dict({'faction': 'Oak', 'account': 'account', 'life': 'life',
+                        'status': 'rejected', 'changed': changed, 'seen': 1}, **kw)
+        records.update({
+            'expired': record(now - retention),
+            'different_faction': record(now, faction='Pine'),
+            'different_account': record(now, account='someone-else'),
+            'different_life': record(now, life='old-life'),
+            'active': record(now, status='approved'),
+            'newest': record(now - 2, status='revoked'),
+            'older': record(now - 3),
+        })
+        self.assertIs(latest(None, viewer, 'Oak'), records['newest'])
+        viewer.recruitment_account = lambda: None
+        self.assertIsNone(latest(None, viewer, 'Oak'))
+        viewer.recruitment_account = lambda: 'account'
+        del records['newest']
+        del records['older']
+        self.assertIsNone(latest(None, viewer, 'Oak'))
+
+    def test_station_outcome_is_separate_from_active_and_only_carries_applicable_reason(self):
+        station = read('code/game/mob/groups/recruitment_station.dm')
+        data = run.proc_text(station, '/datum/recruitment_panel/proc/build_data(')
+        self.assertIn('if (station && !is_member)', data)
+        self.assertIn('if (!A)\n\t\t\tvar/list/outcome = map.recruitment_outcome_for(viewer, faction)', data)
+        self.assertLess(data.index('map.recruitment_expire()'), data.index('map.recruitment_outcome_for('))
+        self.assertIn('(status in list(RECRUIT_REJECTED, RECRUIT_REVOKED, RECRUIT_INVALIDATED)) ? html_encode(outcome["reason"]) : ""', data)
+        self.assertIn('applicant["outcome"] = list("status_text" = recruitment_status_text(outcome), "reason" = reason)', data)
+
     def test_panel_rechecks_after_prompts(self):
         station = read('code/game/mob/groups/recruitment_station.dm')
         state = run.proc_text(station, '/datum/topic_state/recruitment_panel/can_use_topic(')
