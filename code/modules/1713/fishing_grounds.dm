@@ -640,6 +640,11 @@ var/global/list/fishing_grounds_published = null
 	H.ocean_fishing = FALSE
 	if (!done || QDELETED(W) || W.loc != H || craft_at(get_turf(H)) != ship)
 		return
+	if (trawl)
+		var/step = fish_craft_step(ship)
+		if (step != VESSEL_SPEED_SLOW && step != VESSEL_SPEED_HALF)
+			to_chat(H, SPAN_WARNING("The trawl only works at slow or half ahead."))
+			return
 	if (baited && line.bait_uses > 0)
 		line.bait_uses--
 	var/turf/water = fish_water_beside(H, ship)
