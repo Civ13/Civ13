@@ -825,13 +825,19 @@ class SourcePathTests(unittest.TestCase):
         self.assertEqual(transport.count('if (!O.persistence_set_loc(get_turf(src))) return FALSE'), 2)
         self.assertEqual(transport.count('if (!O.persistence_set_loc(get_turf(user))) return FALSE'), 2)
         self.assertNotRegex(transport, re.compile(r'^\s+O.loc\s*=', re.M))
-        for path, list_name, loading in (('code/modules/1713/siege/piece.dm', 'loaded', 'is_loading'),
-                                         ('code/modules/1713/siege/turret.dm', 'A.loaded', 'A.is_loading')):
-            body = read(path).split('chosen = WWinput')[1]
-            self.assertLess(body.index('if (!chosen.persistence_set_loc(src))'), body.index(list_name + ' += chosen'))
-            refusal = body.split('if (!chosen.persistence_set_loc(src))')[1].split(list_name + ' += chosen')[0]
-            self.assertIn(loading + ' = FALSE', refusal)
-            self.assertIn('return FALSE', refusal)
+        cannon = read('code/modules/1713/siege/piece.dm').split('chosen = WWinput')[1]
+        self.assertLess(cannon.index('if (!chosen.persistence_set_loc(src))'), cannon.index('loaded += chosen'))
+        refusal = cannon.split('if (!chosen.persistence_set_loc(src))')[1].split('loaded += chosen')[0]
+        self.assertIn('is_loading = FALSE', refusal)
+        self.assertIn('return FALSE', refusal)
+        turret = read('code/modules/1713/siege/turret.dm')
+        choose = extract(turret, '/obj/structure/turret/proc/choose_autoload_shell')
+        self.assertIn('if (!chosen.persistence_set_loc(src))\n\t\treturn FALSE\n\tcannon.loaded += chosen', choose)
+        # The same cleanup runs when selection fails at the movement boundary.
+        finish = extract(turret, '/obj/structure/turret/proc/finish_autoload')
+        self.assertIn('var/did_load = choose_autoload_shell(cannon, actor, loadable)\n'
+                      '\tif (QDELETED(cannon))\n\t\treturn\n\tcannon.is_loading = FALSE', finish)
+        self.assertLess(finish.index('cannon.is_loading = FALSE'), finish.index('if (did_load && !QDELETED(src))'))
         shots = read('code/modules/projectiles/projectile.dm')
         self.assertNotRegex(shots, re.compile(r'^\s+loc = (curloc|get_turf\(user\))', re.M))
         self.assertEqual(shots.count('if (!persistence_set_loc(curloc)) return TRUE'), 2)

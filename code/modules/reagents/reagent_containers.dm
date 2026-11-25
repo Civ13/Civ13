@@ -243,8 +243,9 @@
 		target.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been fed [name] by [user.name] ([user.ckey]). Reagents: [contained]</font>"))
 		user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Fed [name] by [target.name] ([target.ckey]). Reagents: [contained]</font>"))
 		msg_admin_attack("[key_name(user)] fed [key_name(target)] with [name]. Reagents: [contained] (INTENT: [uppertext(user.a_intent)]) (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[user.x];Y=[user.y];Z=[user.z]'>JMP</a>)", key_name(user), key_name(target))
-	reagents.trans_to_mob(target, issmall(target) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
-	target.bladder += amount_per_transfer_from_this/2
+	var/swallowed = reagents.trans_to_mob(target, issmall(target) ? ceil(amount_per_transfer_from_this/2) : amount_per_transfer_from_this, CHEM_INGEST)
+	if (swallowed > 0)
+		target.bladder += swallowed / 2
 	feed_sound(user)
 	// Force-fed past what the stomach holds: it comes back up.
 	if (target != user && ishuman(target))

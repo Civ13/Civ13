@@ -96,7 +96,7 @@ export type StorageGroup = {
 };
 export type StorageWindowData = {
   hands_id?: string; hands?: { side?: string; active?: Flag; item?: StorageItem }[]; you?: StorageGroup[]; near?: StorageGroup[];
-  queue?: { name?: string; image?: string; to?: string; time?: number; done?: number }[]; more_images?: Flag;
+  queue?: { name?: string; image?: string; to?: string; time?: number; done?: number }[]; more_images?: Flag; move_limit?: number;
 };
 // The modular computer. shell picks the look ("cli" today; "desktop" and "mobile" later) and every shell reads this one snapshot.
 // index fields are the values the server expects back; files is present while the Files program is the active one.

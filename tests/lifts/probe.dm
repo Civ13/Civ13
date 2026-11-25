@@ -81,9 +81,16 @@ var/lf_runtime_error = FALSE
 	lf_check(P.drive_kind(P.best_drive()) == 0, "a cold engine leaves it to the hand winch")
 
 	lf_check(P.arrive(1) && P.z == 1, "it comes back down")
+	lf_check_transactions(P, bottom)
+	lf_check_reachable_call()
+
 	var/obj/structure/anvil/A = new(bottom)
-	A.anchored = FALSE // unfastened, as for a hoist
-	lf_check(P.load_refusal(), "a wooden lift won't take an anvil")
+	A.anchored = TRUE
+	lf_check(!P.load_refusal(), "anchored equipment is not part of the initial load")
+	A.anchored = FALSE
+	lf_check(P.load_refusal(), "a wooden lift won't take a loose anvil")
+	var/mob/living/human/lf_fixture/operator = new(bottom)
+	lf_check(!P.finish_travel(operator, 2, P.shaft_levels()) && P.loc == bottom && A.loc == bottom, "completion rechecks new load before moving")
 	var/obj/structure/lift_platform/iron/I = new(locate(8, 5, 1))
 	A.loc = I.loc
 	lf_check(!I.load_refusal(), "an iron lift car takes it")
@@ -91,3 +98,34 @@ var/lf_runtime_error = FALSE
 	new /obj/covers/repairedfloor(locate(5, 5, 2))
 	levels = P.shaft_levels()
 	lf_check(levels.len == 1, "a floor laid over the shaft blocks it ([json_encode(levels)])")
+
+
+// Stay with a fixed seat, but travel with a portable seat in either direction.
+/proc/lf_check_transactions(obj/structure/lift_platform/P, turf/bottom)
+	var/mob/living/human/lf_fixture/fixed_rider = new(bottom)
+	var/mob/living/human/lf_fixture/portable_rider = new(bottom)
+	var/obj/structure/bed/chair/fixed_seat = new(bottom)
+	var/obj/structure/bed/chair/portable_seat = new(bottom)
+	fixed_seat.anchored = TRUE
+	portable_seat.anchored = FALSE
+	lf_check(fixed_seat.buckle_mob(fixed_rider) && portable_seat.buckle_mob(portable_rider), "fixtures buckle both riders to their chairs")
+	var/list/carried = P.riders()
+	lf_check(!(fixed_rider in carried) && !(fixed_seat in carried) && (portable_rider in carried) && (portable_seat in carried), "load includes only the portable seat and its rider")
+	lf_check(P.arrive(2) && fixed_rider.loc == bottom && fixed_rider.buckled == fixed_seat && fixed_seat.loc == bottom, "fixed seat and rider stay together at the starting stop")
+	lf_check(portable_rider.loc == P.loc && portable_rider.buckled == portable_seat && portable_seat.loc == P.loc, "portable seat and rider arrive together")
+	lf_check(P.arrive(1) && portable_rider.loc == bottom && portable_seat.loc == bottom, "portable seat and rider return together")
+	qdel(fixed_seat)
+	qdel(portable_seat)
+	qdel(fixed_rider)
+	qdel(portable_rider)
+
+// The middle floor stops the lower lift but is the upper lift's bottom stop.
+/proc/lf_check_reachable_call()
+	new /turf/sky/building(locate(3, 2, 3))
+	var/obj/structure/lift_platform/lower = new(locate(3, 2, 1))
+	var/obj/structure/lift_platform/upper = new(locate(3, 2, 3))
+	var/obj/structure/lift_call/button/call_button = new(locate(2, 2, 2))
+	lf_check(!(2 in lower.shaft_levels()) && (2 in upper.shaft_levels()), "the two lifts belong to different shafts")
+	lf_check(call_button.find_platform() == upper, "the call finds a platform that reaches this floor")
+	qdel(upper)
+	lf_check(!call_button.find_platform(), "an unreachable platform is not called")

@@ -287,11 +287,11 @@
 
 	var/randwep = pick(1,2,3,4)
 	if (randwep == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_shoulder)
 	if (randwep == 2)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/pitchfork(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/pitchfork(H), slot_r_hand)
 	if (randwep == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_back)
 	if (randwep == 4)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_belt)
 
@@ -602,11 +602,11 @@
 
 	var/randwep = pick(1,2,3,4)
 	if (randwep == 1)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/spear/iron(H), slot_shoulder)
 	if (randwep == 2)
-		H.equip_to_slot_or_del(new /obj/item/weapon/material/pitchfork(H), slot_back)
+		H.equip_to_slot_or_del(new /obj/item/weapon/material/pitchfork(H), slot_r_hand)
 	if (randwep == 3)
-		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_belt)
+		H.equip_to_slot_or_del(new /obj/item/weapon/melee/classic_baton/club(H), slot_back)
 	if (randwep == 4)
 		H.equip_to_slot_or_del(new /obj/item/weapon/material/hatchet/battleaxe(H), slot_belt)
 

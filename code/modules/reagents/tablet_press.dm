@@ -168,8 +168,7 @@
 /obj/structure/chem_master/tablet_press/after_load()
 	. = ..()
 	tablet_action = null
-	// Older saves may still advertise the buffer as an ordinary open container.
-	flags &= ~OPENCONTAINER
+	flags &= ~OPENCONTAINER // Clear the legacy open-container flag on restore.
 
 /obj/structure/chem_master/tablet_press/proc/can_operate(mob/living/human/user)
 	if (gcDestroyed || gc_destroyed || !anchored || !user || user.stat || user.restrained() || !tablet_press_year_allowed())
@@ -184,9 +183,7 @@
 	if (is_tool(W, TOOL_WRENCH))
 		anchored = !anchored
 		return
-	if (!can_operate(user) || beaker || !istype(W, /obj/item/weapon/reagent_containers/glass))
-		return
-	if (!user.transfer_held_item_to(W, src))
+	if (!can_operate(user) || beaker || !istype(W, /obj/item/weapon/reagent_containers/glass) || !user.transfer_held_item_to(W, src))
 		return
 	beaker = W
 	updateUsrDialog()

@@ -14,14 +14,19 @@ def completion(source):
 
 
 def project(source, barrier, own_dir, last_global):
-    """Direction the completed wall gets; the constructor only takes the passed direction with a creator."""
+    """Project the completion arguments through the constructor's source guard."""
     args = [a.strip() for a in completion(source).split(',')]
     signature = barrier.split('/obj/structure/window/barrier/New(', 1)[1].split(')', 1)[0]
     params = [p.strip().split('/')[-1] for p in signature.split(',')]
     bound = dict(zip(params, args))
     if bound.get('creator') == 'user' and bound.get('direction') == 'dir':
         return own_dir
-    return last_global
+    body = barrier_constructor(barrier)
+    return last_global if 'dir = set_dir' in body else own_dir
+
+
+def barrier_constructor(barrier):
+    return barrier.split('/obj/structure/window/barrier/New(', 1)[1].split('\n/obj/', 1)[0]
 
 
 class SnowBarricadeSource(unittest.TestCase):
@@ -35,7 +40,22 @@ class SnowBarricadeSource(unittest.TestCase):
     def test_completed_wall_keeps_its_direction(self):
         self.assertEqual(project(self.snow, self.barrier, 'NORTH', 'EAST'), 'NORTH')
         old = self.snow.replace('snowwall(loc, user, dir)', 'snowwall(loc, dir)', 1)
-        self.assertEqual(project(old, self.barrier, 'NORTH', 'EAST'), 'EAST')
+        # A creatorless construction must not inherit the previous barrier's direction.
+        self.assertEqual(project(old, self.barrier, 'NORTH', 'EAST'), 'NORTH')
+
+    def test_only_the_creators_direction_can_replace_authored_facing(self):
+        body = barrier_constructor(self.barrier)
+        self.assertNotIn('var/set_dir', self.barrier)
+        before_visuals = body.split('switch (dir)', 1)[0]
+        self.assertRegex(
+            before_visuals,
+            r'if \(ismob\(creator\) && direction\)\n'
+            r'\t\t[^\n]*\n'
+            r'\t\tif \(direction & EAST\)\n\t\t\tdir = EAST\n'
+            r'\t\telse if \(direction & WEST\)\n\t\t\tdir = WEST\n'
+            r'\t\telse\n\t\t\tdir = direction',
+        )
+        self.assertEqual(len(re.findall(r'(?m)^\s+dir = ', before_visuals)), 3)
 
 
 if __name__ == "__main__":

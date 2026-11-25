@@ -21,7 +21,7 @@ class IdleWaitContract(unittest.TestCase):
         methods = set(re.findall(r"mining_context\.(\w+)\(", wait))
         fields = set(re.findall(r"mining_context\.(\w+)\s*=", wait))
         self.assertEqual(methods, {"claim", "valid"})
-        self.assertEqual(fields, {"wait_started", "progressbar"})
+        self.assertEqual(fields, {"wait_started", "wait_workload", "wait_repeat_lock", "progressbar"})
         for name in methods:
             body = idle.procedure(fixture, "/datum/pickaxe_mining_action/proc/" + name)
             self.assertIn('check(FALSE, "unexpected mining context in metabolism fixture")', body)

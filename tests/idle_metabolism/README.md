@@ -3,7 +3,7 @@
 Awake food and water use follows the workload: resting 0.6, light work 0.8
 (reading, writing, sewing, study), ordinary work, walking and fighting 1.0, and
 heavy labour 1.75 food / 2.0 water (mining, digging, felling, smithing) times
-0.0864 per second. Overlapping timed actions count the heaviest. A chilled body
+0.0864 per second. Overlapping timed actions count the heaviest still running. A chilled body
 burns 1.3x food (1.6x when 15 K below normal); dry heat costs 2.2x water and an
 overheated body another 1.5x. Pools are 600 food and 500 water.
 
@@ -12,7 +12,7 @@ Conscious connected players consume 10% of their awake food/water rate after
 input, combat cooldowns, training and `do_after`/`do_mob` keep normal rates.
 Timed actions count independently, including overlapping unrestricted actions;
 finishing/cancelling one starts a new 60-second grace period. No world scan or
-per-mob timer is added. NPC/disconnected, induced SSD and trait rules retain
+per-mob timer is added. Only a wait that acquired the repeat lock can release it. NPC/disconnected, induced SSD and trait rules retain
 their existing rates; any other sleep or unconsciousness, in a bed or not, uses
 the slow sleep rate. Hot-weather/desert thirst is still
 proportionally higher while idle. This applies only where Life already enables
@@ -25,13 +25,13 @@ The factor and threshold are Civ13 tuning choices. The read-only local reference
 while sleeping and applies mood/satiety modifiers. That inspected code does not
 establish equivalent awake-idle behavior or water tuning.
 
-Run with pinned BYOND 516.1681 and a fresh output directory:
+Run with the BYOND version pinned in tools/byond/version.json and a fresh output directory:
 
 ```text
-<verified-python> tests/idle_metabolism/run.py --byond-bin <516.1681-bin> --output <new-directory>
+<verified-python> tests/idle_metabolism/run.py --byond-bin <pinned-BYOND-bin> --output <new-directory>
 ```
 
-Repeat with `--negative-control idle`, `action` and `persistence` in separate
+Repeat with `--negative-control idle`, `action`, `persistence`, `workload` and `repeat` in separate
 output directories. Controls must fail their specific production contract;
 compile errors, unrelated failures and runtime diagnostics are rejected.
 The runner extracts the actual Life consumption block, activity helpers,
@@ -41,7 +41,9 @@ storage, disabled hub and a closed listening port. No game startup, live save,
 client or external service is used. Hashes, tested head, dirty diff and logs are
 recorded. These checks establish isolated arithmetic/activity/exclusion behavior,
 not full-game player acceptance or a disk save round trip. Normal PR compilation
-checks the complete game; new-suite CI runs this positive case and three controls.
+checks the complete game; new-suite CI runs the positive case and the idle,
+action and persistence controls. Use the workload and repeat controls to
+check that the new final-state assertions distinguish the former behavior.
 
 Per Life call, unmodified ordinary food/water loss is 0.0864 each, compared with
 0.00864 once idle. Hot-weather water loss is 0.224 active / 0.0224 idle. These

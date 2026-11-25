@@ -35,7 +35,14 @@ class ThrowModeGuardTests(unittest.TestCase):
         self.assertEqual(prefix.strip().splitlines(), [
             'if (!isDeleted(AM))',
             '\t\t\tvar/list/flight_token = AM.throw_flight_token',
-            '\t\t\tif (AM.loc)',
+            '\t\t\tif (flight_token && flight_token["terrain_path"])',
+            '\t\t\t\ttry',
+            '\t\t\t\t\tterrain_tumble_hop(AM, flight_token)',
+            '\t\t\t\tcatch (var/exception/terrain_error)',
+            '\t\t\t\t\tcatchException(terrain_error, AM)',
+            '\t\t\t\t\tif (!QDELETED(AM) && AM.throw_flight_token == flight_token)',
+            '\t\t\t\t\t\tAM.finished_throwing()',
+            '\t\t\telse if (AM.loc)',
             '\t\t\t\ttry',
             '\t\t\t\t\tswitch (AM.throwmode)',
         ])

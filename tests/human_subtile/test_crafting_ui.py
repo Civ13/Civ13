@@ -46,9 +46,23 @@ def restore_crafting_projection(path, source):
             ('\t\t\t// A stationary action also stops on physical movement within its tile.\n\t\t\t// Explicit can_move actions retain their existing contract.\n', ''),
             ('user.loc != original_loc || user.step_x != original_step_x || user.step_y != original_step_y', 'user.loc != original_loc'),
             # Hunger by workload (tests/idle_metabolism): timed actions report their target.
+            ('/mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)\n\treturn 0\n',
+             '/mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)\n\treturn\n'),
             ('/mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)', '/mob/proc/survival_action_started()'),
-            ('\tuser.survival_action_started(target)\n', '\tuser.survival_action_started()\n'),
-            ('\tuser.survival_action_started(target, mining_context)\n', '\tuser.survival_action_started()\n'),
+            ('/mob/proc/survival_action_finished(workload)', '/mob/proc/survival_action_finished()'),
+            ('\tvar/workload = user.survival_action_started(target)\n', '\tuser.survival_action_started()\n'),
+            ('\tvar/workload = user.survival_action_started(target, mining_context)\n'
+             '\tif (mining_context)\n\t\tmining_context.wait_workload = workload\n'
+             '\t\tmining_context.wait_repeat_lock = check_for_repeats\n\t\tmining_context.wait_started = TRUE\n',
+             '\tif (mining_context)\n\t\tmining_context.wait_started = TRUE\n\tuser.survival_action_started()\n'),
+            ('\tif (user)\n\t\tif (check_for_repeats)\n\t\t\tuser.may_do_after = TRUE\n'
+             '\t\tif (mining_context)\n\t\t\tmining_context.wait_started = FALSE\n'
+             '\t\t\tmining_context.wait_workload = 0\n\t\t\tmining_context.wait_repeat_lock = FALSE\n'
+             '\t\tuser.survival_action_finished(workload)\n',
+             '\tif (user)\n\t\tuser.may_do_after = TRUE\n'
+             '\t\tif (mining_context)\n\t\t\tmining_context.wait_started = FALSE\n'
+             '\t\tuser.survival_action_finished()\n'),
+            ('\n\tuser.survival_action_finished(workload)\n', '\n\tuser.survival_action_finished()\n'),
         )
     elif path == MECHANICS:
         # 2026 age: recipe max-era 8 is open-ended, so the canopy gate no
@@ -155,6 +169,11 @@ def restore_crafting_projection(path, source):
             ('\t// An agent-controlled character has no client but is driven like a player.\n\treturn user && (user.client || agent_character_for(user))\n',
              '\treturn user && user.client\n'),
             ('\tif (!user || !user.may_do_after)\n\t\treturn\n\tif (has_snow_cover() || busy', '\tif (has_snow_cover() || busy'),
+            # Timed work (tests/idle_metabolism): the mining error path releases only its own state.
+            ('\tvar/wait_workload = 0\n\tvar/wait_repeat_lock = FALSE\n', ''),
+            ('\t\tif (wait_repeat_lock)\n\t\t\twait_repeat_lock = FALSE\n\t\t\tactor.may_do_after = TRUE\n'
+             '\t\tactor.survival_action_finished(wait_workload)\n\t\twait_workload = 0\n',
+             '\t\tactor.may_do_after = TRUE\n\t\tactor.survival_action_finished()\n'),
             ('\tvar/datum/progressbar/progressbar\n\tvar/datum/resource_work_animation/work_animation\n', '\tvar/datum/progressbar/progressbar\n'),
             ('/datum/pickaxe_mining_action/proc/release()\n\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '/datum/pickaxe_mining_action/proc/release()\n'),
             # Labour speed (work_speed.dm): the rock wall wait comes from work_delay.

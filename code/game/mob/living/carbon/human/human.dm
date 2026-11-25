@@ -250,9 +250,9 @@ var/list/coefflist = list()
 
 // RuCiv13 3c1ee1fa: forced relocation bypasses living.Move's cone refresh.
 // Preserve forceMove's result; vehicle transactions refresh after final geometry.
-/mob/living/human/forceMove(atom/destination, var/special_event)
+/mob/living/human/forceMove(atom/destination, var/special_event, list/throw_hop_token = null)
 	var/turf/origin = get_turf(src)
-	. = ..()
+	. = ..(destination, special_event, throw_hop_token)
 	var/turf/target = get_turf(src)
 	if (!. || !target || origin == target)
 		return .

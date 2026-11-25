@@ -1,6 +1,9 @@
 // NPC Vendors - Human traders (mob version, Pepelsibirsk-style)
 // Setting: The Art of the Deal (1990s organized crime)
 
+// The street shops quote prices in dollars; standard $5 bills have 20 money units.
+#define STREET_VENDOR_UNITS_PER_DOLLAR 4
+
 /mob/living/simple_animal/npc_vendor
 	name = "NPC (Do not use!)"
 	icon = 'icons/mob/npcs.dmi'
@@ -100,7 +103,7 @@
 	var/total_money = 0
 	for (var/obj/item/stack/money/M in H.contents)
 		total_money += M.value * M.amount
-	var/list/sections = list(panel_section(null, rows = list(panel_row("Money", "$[total_money]"))))
+	var/list/sections = list(panel_section(null, rows = list(panel_row("Money", "$[total_money / STREET_VENDOR_UNITS_PER_DOLLAR]"))))
 	sections += shop_sections(H)
 	open_panel(H, name, 500, 520, sections, ui_key = ui_key, ui = ui, force_open = force_open)
 
@@ -271,6 +274,23 @@
 		return "My boys are busy for now. Come back later."
 	return null
 
+// Keep what the panel promises and what checkout pays on the same price calculation.
+/mob/living/simple_animal/npc_vendor/biker/proc/sale_price_dollars(sale_kind, faction_reputation)
+	switch (sale_kind)
+		if ("meth")
+			return buying_price1 + max(faction_reputation, 0)
+		if ("coke")
+			return buying_price2 + min(faction_reputation, 15)
+		if ("brick")
+			return (buying_price2 + max(faction_reputation, 0)) * 20
+	return 0
+
+/mob/living/simple_animal/npc_vendor/biker/proc/pay_sale(mob/living/human/H, sale_kind)
+	var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
+	D.amount = sale_price_dollars(sale_kind, reputation[H.civilization]) * STREET_VENDOR_UNITS_PER_DOLLAR / D.value
+	D.update_icon()
+	H.put_in_hands(D)
+
 /mob/living/simple_animal/npc_vendor/biker/shop_sections(mob/living/human/H)
 	// What he will buy depends on the drugs in the customer's hands.
 	var/list/selling = list()
@@ -288,9 +308,9 @@
 
 	if (P)
 		if (P.reagents.has_reagent("methamphetamine") && P.reagents.get_reagent_amount("methamphetamine") >= 10)
-			selling += list(panel_item("Methamphetamine Pill", "Sell for: $[buying_price1 + max(reputation[H.civilization], 0)]", list(panel_button("Sell", "sell", "meth"))))
+			selling += list(panel_item("Methamphetamine Pill", "Sell for: $[sale_price_dollars("meth", reputation[H.civilization])]", list(panel_button("Sell", "sell", "meth"))))
 		else if (P.reagents.has_reagent("cocaine") && P.reagents.get_reagent_amount("cocaine") >= 25 && !P.reagents.has_reagent("methamphetamine"))
-			selling += list(panel_item("Cocaine (10g Bag)", "Sell for: $[buying_price2 + min(reputation[H.civilization], 15)]", list(panel_button("Sell", "sell", "coke"))))
+			selling += list(panel_item("Cocaine (10g Bag)", "Sell for: $[sale_price_dollars("coke", reputation[H.civilization])]", list(panel_button("Sell", "sell", "coke"))))
 		else if (P.reagents.has_reagent("cocaine") && P.reagents.has_reagent("methamphetamine"))
 			sell_note = "Are you trying to get my clients killed? Tell your cook to separate his shit."
 		else if (P.reagents.has_reagent("crack"))
@@ -298,7 +318,7 @@
 		else
 			sell_note = "What the hell is this weak shit? Fuck off!"
 	else if (CB)
-		selling += list(panel_item("Cocaine Brick", "Sell for: $[(buying_price2 + max(reputation[H.civilization], 0)) * 20]", list(panel_button("Sell", "sell", "brick"))))
+		selling += list(panel_item("Cocaine Brick", "Sell for: $[sale_price_dollars("brick", reputation[H.civilization])]", list(panel_button("Sell", "sell", "brick"))))
 
 	var/list/weapons = list()
 	for (var/i = 1 to products.len)
@@ -324,11 +344,7 @@
 					P = H.get_inactive_hand()
 				if (P && P.reagents.has_reagent("methamphetamine") && P.reagents.get_reagent_amount("methamphetamine") >= 10)
 					qdel(P)
-					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-					D.amount = (buying_price1 + max(reputation[H.civilization], 0)) / (D.value / 5)
-					if (D.amount == 0)
-						qdel(D)
-					H.put_in_hands(D)
+					pay_sale(H, "meth")
 					to_chat(H, "\icon[getFlatIcon(src)] Here, there's more where it came from.")
 					reputation[H.civilization] += 2
 					if (prob(50))
@@ -344,11 +360,7 @@
 					P = H.get_inactive_hand()
 				if (P && P.reagents.has_reagent("cocaine") && P.reagents.get_reagent_amount("cocaine") >= 25 && !P.reagents.has_reagent("methamphetamine"))
 					qdel(P)
-					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-					D.amount = (buying_price2 + min(reputation[H.civilization], 15)) / (D.value / 5)
-					if (D.amount == 0)
-						qdel(D)
-					H.put_in_hands(D)
+					pay_sale(H, "coke")
 					to_chat(H, "\icon[getFlatIcon(src)] Here, there's more where it came from.")
 					reputation[H.civilization] += 1
 					if (prob(50))
@@ -364,11 +376,7 @@
 					CB = H.get_inactive_hand()
 				if (CB)
 					qdel(CB)
-					var/obj/item/stack/money/dollar/D = new /obj/item/stack/money/dollar(null)
-					D.amount = ((buying_price2 + max(reputation[H.civilization], 0)) * 20) / (D.value / 5)
-					if (D.amount == 0)
-						qdel(D)
-					H.put_in_hands(D)
+					pay_sale(H, "brick")
 					to_chat(H, "\icon[getFlatIcon(src)] Holy shit, now that's some product. I'll need some time to distribute it.")
 					biker_cooldown = world.time + 6000
 					if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
@@ -716,7 +724,7 @@
 				var/heat_price = ceil(200 / reputation[H.civilization])
 				sections += list(panel_section("Reduce Heat",
 					notes = list("Current heat: [AD.heat[H.civilization]] evidence files. $[heat_price] per file."),
-					buttons = list(panel_button("Remove 1", "reduce", 1), panel_button("Remove 5", "reduce", 5), panel_button("Remove 10", "reduce", 10))))
+					buttons = list(panel_button("Remove 1", "reduce", 1), panel_button("Remove Up to 5", "reduce", 5), panel_button("Remove Up to 10", "reduce", 10))))
 			else
 				sections += list(panel_section("Reduce Heat", empty = "I can't tamper with evidence that fast."))
 	return sections
@@ -739,36 +747,38 @@
 		show_shop(H)
 
 	if (href_list["reduce"])
-		if (reputation[H.civilization] == 0)
+		if (!(reputation[H.civilization] > 0))
 			to_chat(H, "\icon[getFlatIcon(src)] I will need a little sign of appreciation for this, if you know what I mean.")
 			return
 		if (map && map.ID == MAP_THE_ART_OF_THE_DEAL)
 			var/obj/map_metadata/art_of_the_deal/AD = map
-			if (AD.heat[H.civilization] == 0)
+			if (!(AD.heat[H.civilization] > 0))
 				to_chat(H, "\icon[getFlatIcon(src)] You gentlemen are off the radar, for now.")
 				return
 			if (world.time <= heat_cooldown)
 				to_chat(H, "\icon[getFlatIcon(src)] Not so fast, pal. I can't just tamper with evidence that fast.")
 				return
-			var/amount = text2num(href_list["reduce"])
-			if (!(amount in list(1, 5, 10)))
+			var/requested = text2num(href_list["reduce"])
+			if (!(requested in list(1, 5, 10)))
 				return
+			var/removed = min(requested, AD.heat[H.civilization])
 			var/heat_price = ceil(200 / reputation[H.civilization])
-			var/total_price = amount * heat_price
+			var/total_price = removed * heat_price
 			var/obj/item/stack/money/M = held_money(H)
-			if (!M || M.value * M.amount < total_price * 4)
+			var/amount_due = M && M.value > 0 ? total_price * STREET_VENDOR_UNITS_PER_DOLLAR / M.value : null
+			if (isnull(amount_due) || M.amount < amount_due)
 				to_chat(H, "\icon[getFlatIcon(src)] You need at least [total_price] dollars in one of your hands.")
 				return
-			M.amount -= total_price / 5
+			M.amount -= amount_due
 			if (M.amount <= 0)
 				qdel(M)
-			AD.heat[H.civilization] -= amount
-			if (AD.heat[H.civilization] < 0)
-				AD.heat[H.civilization] = 0
-			if (amount >= 5)
-				heat_cooldown = world.time + 600
-			if (amount >= 10)
+			else
+				M.update_icon()
+			AD.heat[H.civilization] -= removed
+			if (removed >= 10)
 				heat_cooldown = world.time + 1200
+			else if (removed >= 5)
+				heat_cooldown = world.time + 600
 			to_chat(H, "\icon[getFlatIcon(src)] Done. Those files had a... accident.")
 			show_shop(H)
 
@@ -933,3 +943,5 @@
 	desc = "A barber that likes to relax."
 	icon_state = "big_lenny"
 	mob_type_to_spawn = /mob/living/simple_animal/npc_vendor/big_lenny
+
+#undef STREET_VENDOR_UNITS_PER_DOLLAR

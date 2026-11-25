@@ -123,10 +123,14 @@
 		else if (istype(M.pulling, /obj/structure))
 			var/obj/structure/pulled_structure = M.pulling
 			delay += pulled_structure.drag_delay(M) * M.pull_drag_mult()
+	var/start_x = M.step_x
+	var/start_y = M.step_y
 	M.Move(n, d)
 	var/moved = get_turf(M) != old
 	if (moved && H)
-		agent_walk_costs(H, old, n)
+		agent_walk_costs(H)
+		if (!H.stat && !H.buckled && !H.riding && !H.throwing && terrain_steep_step(old, n))
+			terrain_completed_step(H, old, n, start_x, start_y, d, 1, delay)
 	var/speed = M.movement_speed_multiplier
 	if (M.find_trait("Slowness"))
 		speed *= 0.85
@@ -149,8 +153,8 @@
 	if (length(keys))
 		.["controls"] = keys
 
-// Food, water, stamina and warmth a step costs, by movement mode, plus hills.
-/proc/agent_walk_costs(mob/living/human/H, turf/old, turf/n)
+// Food, water, stamina and warmth a step costs, by movement mode.
+/proc/agent_walk_costs(mob/living/human/H)
 	switch (H.m_intent)
 		if ("run")
 			H.nutrition -= 0.005
@@ -171,8 +175,6 @@
 		if ("proning")
 			H.nutrition -= 0.0015
 			H.water -= 0.0015
-	terrain_climb_effects(H, old, n, 1)
-	terrain_trip_check(H, old, n, 1)
 
 // walk_to (docs/agent-control.md#walk-to): the route a player gets with
 // Ctrl+click (click_route.dm), walked one whole-tile step per call with the

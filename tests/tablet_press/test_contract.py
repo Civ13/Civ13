@@ -538,7 +538,7 @@ class TabletProtocolTests(unittest.TestCase):
         restore = SOURCE.split(press + '/after_load()', 1)[1].split('\n/', 1)[0]
         self.assertIn('flags &= ~OPENCONTAINER', restore)
         install = SOURCE.split(press + '/attackby(', 1)[1].split('\n/', 1)[0]
-        self.assertIn('if (!user.transfer_held_item_to(W, src))', install)
+        self.assertIn('|| !user.transfer_held_item_to(W, src))', install)
         self.assertIn('beaker = W\n\tupdateUsrDialog()\n\treturn TRUE', install)
         self.assertNotIn('drop_from_inventory', install)
 
