@@ -1,5 +1,5 @@
 {
-  "joinery: whittled wooden dowel set": {
+  "whittled wooden dowel set": {
     "stock_type": "/obj/item/stack/material/woodplank",
     "stock_cost": 1,
     "result_type": "/obj/item/stack/wooden_dowels",
