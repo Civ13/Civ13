@@ -112,6 +112,20 @@ class BodyWashingTest(unittest.TestCase):
         self.assertIn('{"do": "click", "target": me, "zone": "mouth"}', read("tools/agent-control/autopilot.py"))
         self.assertIn("select the mouth on the body doll", read("code/modules/1713/practice_rooms.dm"))
 
+    def test_soap_revalidates_the_original_patient_after_the_wait(self):
+        soap = (ROOT / 'code/game/objects/items/soap.dm').read_text(encoding='utf-8')
+        admission, washing = soap.split('/mob/living/human/attackby(', 1)
+        self.assertIn('src != user && !user.Adjacent(src)', admission)
+        self.assertIn('!is_nude()', admission)
+        self.assertIn('bath_water_at(T)', admission)
+        self.assertIn('/obj/structure/sink', admission)
+        before, after = washing.split('var/finished = do_after(user, 40, src)', 1)
+        self.assertIn('!soap_wash_available(user)', before)
+        guard = after.index('!soap_wash_available(user) || user.get_active_hand() != S')
+        self.assertLess(after.index('S.washing = FALSE'), guard)
+        for effect in ('hygiene = HYGIENE_LEVEL_CLEAN', 'adjust_mood(10,', 'S.used += 1'):
+            self.assertLess(guard, after.index(effect))
+
     def test_wounds_and_soap(self):
         self.assertIn("W.germ_level *= 0.5", self.WASH)
         self.assertIn("E.disinfect()", self.WASH)
