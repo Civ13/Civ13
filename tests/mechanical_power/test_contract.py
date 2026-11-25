@@ -91,8 +91,9 @@ class MechanicalPower(unittest.TestCase):
 
     def test_drive_is_asked_on_demand_and_is_short_range(self):
         self.assertIn('#define MECHANICAL_DRIVE_REACH 1', SOURCE)
-        self.assertIn('return mechanical_load_factor(mechanical_drive_load(A))', proc_body(SOURCE, '/proc/mechanical_drive_factor(atom/A)'))
-        body = proc_body(SOURCE, '/proc/mechanical_drive_load(atom/A)')
+        self.assertIn('return mechanical_load_factor(mechanical_drive_load(A, update_source_icons))', proc_body(SOURCE, '/proc/mechanical_drive_factor(atom/A, update_source_icons = TRUE)'))
+        body = proc_body(SOURCE, '/proc/mechanical_drive_load(atom/A, update_source_icons = TRUE)')
+        self.assertIn('if (update_source_icons)\n\t\t\tM.update_icon()', body)
         self.assertIn('range(MECHANICAL_DRIVE_REACH, T)', body)
         self.assertIn('best = min(best, factor)', body)
         # the search through transmission parts is bounded
@@ -145,27 +146,40 @@ class MechanicalPower(unittest.TestCase):
         self.assertEqual(NEEDS[HAMMER], {'tools': [], 'inputs': {'/obj/item/stack/material/iron': 6, SHAFT: 1}})
 
     def test_trip_hammer_only_helps_when_fastened_and_driven(self):
-        self.assertIn('return anchored && isturf(loc) && mechanical_drive_factor(src) < 1',
-                      proc_body(SOURCE, HAMMER + '/proc/striking()'))
-        self.assertIn('return striking() ? TRIP_HAMMER_FACTOR : 1', proc_body(SOURCE, HAMMER + '/forge_factor(category)'))
+        self.assertIn('return anchored && isturf(loc) && mechanical_drive_factor(src, !preview) < 1',
+                      proc_body(SOURCE, HAMMER + '/proc/striking(preview = FALSE)'))
+        self.assertIn('return striking(preview) ? TRIP_HAMMER_FACTOR : 1', proc_body(SOURCE, HAMMER + '/forge_factor(category, preview = FALSE)'))
         self.assertIn('#define TRIP_HAMMER_FACTOR 0.5', SOURCE)
         self.assertIn('forge_role = "hammer"', type_block(HAMMER))
 
     def test_the_anvil_takes_the_best_machine_of_each_role(self):
-        body = proc_body(SOURCE, '/obj/structure/anvil/proc/forge_time(base_time, category = null)')
+        body = proc_body(SOURCE, '/obj/structure/anvil/proc/forge_time(base_time, category = null, use_assists = TRUE, list/preview_cache = null)')
         self.assertIn('for (var/obj/structure/workshop_machine/W in range(1, src))', body)
-        self.assertIn('var/left = W.forge_factor(category)', body)
-        self.assertIn('if (left < 1 && (!best[W.forge_role] || left < share[W.forge_role]))', body)
+        self.assertIn('var/left = W.forge_factor(category, !use_assists)', body)
+        self.assertIn('if (left < 1 && (!chosen[W.forge_role] || left < factors[W.forge_role]))', body)
         self.assertIn('if (!length(best))\n\t\treturn base_time', body)
-        self.assertIn('W.forge_used()', body)
+        self.assertIn('if (use_assists)\n\t\t\tW.forge_used()', body)
+        self.assertIn('preview_cache[category] = assists', body)
         self.assertIn('return max(FORGE_MIN_TIME, round(time))', body)
         self.assertIn('#define FORGE_MIN_TIME 10', SOURCE)
         # A machine that is no helper gives no help.
-        self.assertIn('return 1', proc_body(SOURCE, '/obj/structure/workshop_machine/proc/forge_factor(category)'))
+        self.assertIn('return 1', proc_body(SOURCE, '/obj/structure/workshop_machine/proc/forge_factor(category, preview = FALSE)'))
 
     def test_both_anvil_forging_waits_ask_with_the_recipe_category(self):
         anvil = (ROOT / 'code/game/objects/structures/blacksmithing/blacksmithing.dm').read_text(encoding='utf-8')
-        self.assertIn('trade_time(user, forge_time(10*anvil_recipes[parsed_choice2[1]][material_index],anvil_recipes[parsed_choice2[1]][2]), "smith")),src,can_move=FALSE)', anvil)
+        helper = proc_body(anvil, '/obj/structure/anvil/proc/stack_forge_duration(')
+        self.assertIn('var/base_delay = 10 * cost', helper)
+        self.assertIn('if (row[2] == "flintlock parts")\n\t\treturn blackpowder_forge_duration(H, base_delay)', helper)
+        self.assertIn('reference_build_time(H, "[row[9]]", trade_time(user, forge_time(base_delay, row[2], !preview, assist_cache), "smith"), !preview)', helper)
+        self.assertIn('stack_forge_duration(user, H, row, row[material_index])', anvil)
+        self.assertRegex(anvil, r'show_stack_forge_progress\(H, delay\)\s+if \(do_after\(user, delay, src, can_move=FALSE\)\)')
+        flint = (ROOT / 'code/modules/1713/gunsmithing/blackpowder_assembly.dm').read_text()
+        self.assertIn('return trade_time(H, base_delay, "gunsmith")', flint)
+        self.assertRegex(flint, r'var/duration = blackpowder_forge_duration\(H, delay\)\s+show_stack_forge_progress\(H, duration\)\s+return do_after\(H, duration, src\)')
+        prototypes = (ROOT / 'code/modules/research_tree/subject_prototypes.dm').read_text()
+        reference = proc_body(prototypes, '/proc/reference_build_time(')
+        self.assertRegex(reference, r'if \(announce\)\s+to_chat')
+        self.assertIn('return round(time * mult)', reference)
         self.assertIn('trade_time(user, forge_time(10*mat,row[2]), "smith")),src,can_move=FALSE)', anvil)
         self.assertNotIn('do_after(user,10*anvil_recipes', anvil)
         self.assertNotIn('do_after(user,10*mat', anvil)
@@ -183,21 +197,21 @@ class MechanicalPower(unittest.TestCase):
 
     def test_steam_hammer_burns_one_job_of_fuel_a_job(self):
         steam = '/obj/structure/workshop_machine/trip_hammer/steam'
-        self.assertIn('return anchored && isturf(loc) && fuel >= 1', proc_body(SHOP_SOURCE, steam + '/striking()'))
-        self.assertIn('return striking() ? STEAM_HAMMER_FACTOR : 1', proc_body(SHOP_SOURCE, steam + '/forge_factor(category)'))
+        self.assertIn('return anchored && isturf(loc) && fuel >= 1', proc_body(SHOP_SOURCE, steam + '/striking(preview = FALSE)'))
+        self.assertIn('return striking() ? STEAM_HAMMER_FACTOR : 1', proc_body(SHOP_SOURCE, steam + '/forge_factor(category, preview = FALSE)'))
         self.assertIn('fuel = max(0, fuel - 1)', proc_body(SHOP_SOURCE, steam + '/forge_used()'))
         self.assertIn('#define STEAM_HAMMER_FACTOR 0.35', SHOP_SOURCE)
         load = proc_body(SHOP_SOURCE, steam + '/attackby(')
         self.assertIn('solid_fuel_unit_value(S, steam_hammer_fuel_rates)', load)
         self.assertIn('min(S.amount, round((STEAM_HAMMER_FUEL_LIMIT - fuel) / each))', load)
-        self.assertNotIn('mechanical_drive_factor', proc_body(SHOP_SOURCE, steam + '/striking()'))
+        self.assertNotIn('mechanical_drive_factor', proc_body(SHOP_SOURCE, steam + '/striking(preview = FALSE)'))
 
     def test_fitting_machines_help_only_their_own_work(self):
         fitting = '/obj/structure/workshop_machine/fitting'
-        self.assertIn('return (category && ready() && helps(category)) ? FITTING_FACTOR : 1',
-                      proc_body(SHOP_SOURCE, fitting + '/forge_factor(category)'))
+        self.assertIn('return (category && ready(preview) && helps(category)) ? FITTING_FACTOR : 1',
+                      proc_body(SHOP_SOURCE, fitting + '/forge_factor(category, preview = FALSE)'))
         self.assertIn('#define FITTING_FACTOR 0.6', SHOP_SOURCE)
-        self.assertIn('return ..() && mechanical_drive_factor(src) < 1', proc_body(SHOP_SOURCE, fitting + '/drill_press/ready()'))
+        self.assertIn('return ..() && mechanical_drive_factor(src, !preview) < 1', proc_body(SHOP_SOURCE, fitting + '/drill_press/ready(preview = FALSE)'))
         self.assertIn('return category in drill_press_categories', proc_body(SHOP_SOURCE, fitting + '/drill_press/helps(category)'))
         self.assertNotIn('/hydraulic_press/ready()', SHOP_SOURCE)
         categories = set(re.findall(r'^\s*"[^"]+" = list\("[^"]*",\s*"([^"]*)"', ANVIL_RECIPES, re.M))

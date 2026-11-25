@@ -76,6 +76,31 @@
 			return key
 	return null
 
+// Resolve exactly the offered variant, not the first producer for its output.
+/datum/crafting_atlas_reference/proc/anvil_variant_id(recipe_name, material, cost, product)
+	if (!load_catalog())
+		return ""
+	var/display_name = "[recipe_name] \[[material]\]"
+	var/ingredient_id = "/material/[material]"
+	for (var/list/group in recipes)
+		if (group["kind"] != "Anvil")
+			continue
+		var/list/variants = group["variants"]
+		if (!islist(variants))
+			variants = list(group)
+		for (var/list/recipe in variants)
+			if (recipe["kind"] != "Anvil" || recipe["name"] != display_name)
+				continue
+			var/list/inputs = recipe["inputs"]
+			var/list/outputs = recipe["outputs"]
+			if (length(inputs) != 1 || length(outputs) != 1)
+				continue
+			var/list/ingredient = inputs[1]
+			var/list/output = outputs[1]
+			if (ingredient["id"] == ingredient_id && text2num("[ingredient["quantity"]]") == cost && output["id"] == product)
+				return recipe["id"]
+	return ""
+
 /datum/crafting_window/anvil/build_data()
 	var/obj/item/stack/S = source
 	var/list/rows = list()
@@ -83,17 +108,18 @@
 	var/list/pinned = pinned_keys()
 	var/list/recent = viewer.client ? viewer.client.craft_recent : null
 	var/list/metal = anvil.stack_metal(S)
+	var/list/assist_cache = list()
 	for (var/key in anvil.stack_offers(S, viewer))
 		var/list/R = anvil_recipes[key]
 		var/cost = R[metal[1]]
 		var/result = "[R[9]]"
 		var/row_state = "ready"
 		var/why = ""
+		var/hint = ""
 		if (!crafting_recipe_allowed(viewer, result))
 			row_state = "locked"
-			why = crafting_recipe_manual_hint(viewer, result)
-			if (!why)
-				why = "Not learned yet"
+			hint = crafting_recipe_manual_hint(viewer, result)
+			why = hint || "Not learned yet"
 		else if (S.amount < cost)
 			row_state = "missing"
 			why = "Needs [cost] [metal[2]], you have [S.amount]"
@@ -114,7 +140,8 @@
 			"built" = 0,
 			"one_per_turf" = 0,
 			"on_floor" = 0,
-			"time" = 10 * cost,
+			"time" = anvil.stack_forge_duration(viewer, viewer, R, cost, TRUE, assist_cache),
+			"tech_tree" = hint && tech_tree_view ? 1 : 0,
 			"makes" = 1,
 			"batches" = S.amount >= cost ? 1 : 0,
 			"atlas" = (crafting_atlas_reference && crafting_atlas_reference.resource_exists(result)) ? 1 : 0,
@@ -143,10 +170,21 @@
 		return ..()
 	if (href_list["atlas"])
 		var/shown = offered_name(href_list["atlas"])
-		if (shown)
+		var/list/metal = anvil.stack_metal(source)
+		if (shown && metal)
 			var/list/R = anvil_recipes[shown]
-			if (crafting_atlas_reference && crafting_atlas_reference.resource_exists("[R[9]]"))
-				crafting_atlas_reference.show(H, "[R[9]]", 1, "[R[9]]")
+			var/product = "[R[9]]"
+			if (crafting_atlas_reference && crafting_atlas_reference.resource_exists(product))
+				var/recipe = crafting_atlas_reference.anvil_variant_id(shown, metal[2], R[metal[1]], product)
+				crafting_atlas_reference.show(H, product, 1, product, recipe_id = recipe)
+		return FALSE
+	if (href_list["tech_tree"])
+		var/gated = offered_name(href_list["tech_tree"])
+		if (gated && tech_tree_view)
+			var/list/R = anvil_recipes[gated]
+			var/product = "[R[9]]"
+			if (crafting_recipe_manual_hint(H, product))
+				tech_tree_view.show(H, get_recipe_node_req(product))
 		return FALSE
 	if (href_list["pin"])
 		var/marked = offered_name(href_list["pin"])
@@ -183,8 +221,8 @@
 		var/obj/structure/anvil/A = anvil
 		var/held_before = S.amount
 		var/recent_key = row_key(wanted)
-		working = list("id" = href_list["make"], "name" = html_encode("[wanted]"), "time" = 10 * R[metal[1]])
-		GLOB.nanomanager.update_uis(src)
+		// Reserve the window now; only an admitted forge may start its timer.
+		working = list("id" = href_list["make"], "name" = html_encode("[wanted]"))
 		// The anvil admits the smith again and picks the row up from here.
 		pending = wanted
 		A.attackby(S, H)
@@ -201,6 +239,13 @@
 			refresh()
 		return FALSE
 	return FALSE
+
+// Show the actual duration the accepted job is just about to request.
+/obj/structure/anvil/proc/show_stack_forge_progress(mob/living/human/H, delay)
+	var/datum/crafting_window/anvil/W = H ? H.crafting_window : null
+	if (istype(W) && W.anvil == src && W.working && !W.pending && W.still_valid(H))
+		W.working["time"] = delay
+		GLOB.nanomanager.update_uis(W)
 
 // TRUE when the Crafting window took this use of a sheet metal on the anvil:
 // either it opened, or it had asked for a row and the row was worked here.

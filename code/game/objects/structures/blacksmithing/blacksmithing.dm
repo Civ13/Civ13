@@ -19,6 +19,14 @@
 	else
 		icon_state = "[base_icon]_anvil"
 
+// Sheet-metal estimates use the same rounding and work modifiers as the job.
+// A snapshot's temporary cache avoids scanning adjacent machines for every row.
+/obj/structure/anvil/proc/stack_forge_duration(mob/user, mob/living/human/H, list/row, cost, preview = FALSE, list/assist_cache = null)
+	var/base_delay = 10 * cost
+	if (row[2] == "flintlock parts")
+		return blackpowder_forge_duration(H, base_delay)
+	return reference_build_time(H, "[row[9]]", trade_time(user, forge_time(base_delay, row[2], !preview, assist_cache), "smith"), !preview)
+
 /obj/structure/anvil/proc/forge_stack_recipe(obj/item/P, mob/user, mob/living/human/H, choice, material_index, material_name, picked = null)
 	var/list/newlist = list("Cancel")
 	var/valid_recipes = FALSE // Tracking if any valid recipes are found
@@ -42,7 +50,10 @@
 			to_chat(user, "You begin crafting \the [parsed_choice2[1]]...")
 			in_use = TRUE
 			update_icon()
-			if (do_after(user,reference_build_time(H, "[anvil_recipes[parsed_choice2[1]][9]]", trade_time(user, forge_time(10*anvil_recipes[parsed_choice2[1]][material_index],anvil_recipes[parsed_choice2[1]][2]), "smith")),src,can_move=FALSE))
+			var/list/row = anvil_recipes[parsed_choice2[1]]
+			var/delay = stack_forge_duration(user, H, row, row[material_index])
+			show_stack_forge_progress(H, delay)
+			if (do_after(user, delay, src, can_move=FALSE))
 				if (P.amount >= anvil_recipes[parsed_choice2[1]][material_index] && crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]"))
 					P.amount -= anvil_recipes[parsed_choice2[1]][material_index]
 					if (P.amount <= 0)
