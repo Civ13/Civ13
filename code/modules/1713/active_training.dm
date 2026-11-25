@@ -42,7 +42,7 @@
 	var/tmp/list/exercise_carry
 
 /mob/living/human/persistence_runtime_var(key)
-	return (key in list("exercise_rest_epoch", "exercise_equipment", "exercise_carry", "survival_rest_since", "survival_actions", "survival_workload", "exercise_token")) || ..()
+	return (key in list("exercise_rest_epoch", "exercise_equipment", "exercise_carry", "survival_rest_since", "survival_actions", "survival_workload", "survival_ordinary_actions", "survival_heavy_actions", "exercise_token")) || ..()
 
 /mob/living/human/proc/recover_exercise()
 	var/now = exercise_time()

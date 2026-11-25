@@ -115,7 +115,7 @@ class TrainingGearSources(unittest.TestCase):
     def test_runtime_fields_stay_out_of_saves(self):
         body = re.search(r'^/mob/living/human/persistence_runtime_var\(key\)\n\t(.*)\n', CORE, re.M)[1]
         for key in ('exercise_rest_epoch', 'exercise_equipment', 'survival_rest_since', 'survival_actions',
-                    'survival_workload', 'exercise_token'):
+                    'survival_workload', 'survival_ordinary_actions', 'survival_heavy_actions', 'exercise_token'):
             self.assertIn('"%s"' % key, body)
         self.assertNotIn('"exercise_fatigue"', body)
         self.assertIn('return (key in list("reps", "lifting", "carry_tiles", "winded")) || ..()', GEAR)

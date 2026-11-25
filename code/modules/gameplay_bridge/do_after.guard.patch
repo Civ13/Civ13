@@ -8,9 +8,9 @@
 +#define CIV13_GAMEPLAY_WAIT_GUARDS
 +#endif
 +#ifdef CIV13_GAMEPLAY_BRIDGE
-+/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null, datum/gameplay_action_lease/gameplay_context = null)
++/proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null, datum/gameplay_action_lease/gameplay_context = null, datum/ship_construction/ship_craft = null)
 +#else
- /proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null)
+ /proc/do_after(mob/user, delay, atom/target = null, needhand = TRUE, progress = TRUE, var/incapacitation_flags = INCAPACITATION_DEFAULT, can_move = FALSE, check_for_repeats = TRUE, datum/pickaxe_mining_action/mining_context = null, datum/ship_construction/ship_craft = null)
 +#endif
  	if (!user || !user.may_do_after)
  		return FALSE
@@ -27,8 +27,8 @@
 +#endif
  	if (!isnull(mining_context) && (!istype(mining_context, /datum/pickaxe_mining_action) || !mining_context.claim(user, target)))
  		return FALSE
- 	if (mining_context)
-@@ -218,6 +236,11 @@
+ 	var/workload = user.survival_action_started(target, mining_context)
+@@ -220,6 +238,11 @@
  	. = TRUE
  	while (world.time < endtime)
  		sleep(0.1)
@@ -40,7 +40,7 @@
  		if (mining_context && !mining_context.valid(user, target))
  			. = FALSE
  			break
-@@ -253,6 +276,10 @@
+@@ -266,6 +289,10 @@
  
  	if (progbar)
  		qdel(progbar)
