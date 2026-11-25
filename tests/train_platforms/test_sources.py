@@ -306,6 +306,26 @@ class TrainPlatformSourceTests(unittest.TestCase):
         layout = SOURCE[SOURCE.index('/obj/structure/trains/platform/proc/apply_layout()'):]
         self.assertLess(layout.index('if (!isturf(loc))'), layout.index('deck_parts = list()'))
 
+    def test_warehouse_keeps_same_named_choices_mapped_to_their_exact_units(self):
+        menu = WAREHOUSE.split('/proc/put_away_options(list/units)', 1)[1].split('\n\n', 1)[0]
+        self.assertIn('options["Put away [i].', menu)
+        self.assertIn('(track [front.x], [front.y])"] = unit', menu)
+        attack = WAREHOUSE.split('/obj/structure/rail_warehouse/attack_hand(', 1)[1]
+        self.assertIn('var/list/options = put_away_options(rear)', attack)
+        self.assertIn('options["Put away the whole train"] = "all"', attack)
+        self.assertIn('options["Couple on [i]. [U.unit_name]"] = U', attack)
+        self.assertIn('var/action = options[choice]', attack)
+        self.assertIn('put_away(H, islist(action) ? action : null, action == "all")', attack)
+
+    def test_warehouse_rechecks_the_current_rear_before_storing(self):
+        validation = WAREHOUSE.split('/proc/store_problem(list/unit)', 1)[1].split('\n\n', 1)[0]
+        self.assertIn('rail_warehouse_end(unit, FALSE)', validation)
+        self.assertIn('if (QDELETED(rear))', validation)
+        self.assertIn('if (rear.connected)', validation)
+        action = WAREHOUSE.split('/proc/put_away(', 1)[1].split('\n\n', 1)[0]
+        self.assertLess(action.index('store_problem(unit)'), action.index('store_unit(unit)'))
+        self.assertIn('if (!all)\n\t\t\tbreak\n\t\tunit = null', action)
+
     def test_shunting_buffers_up_and_automatic_couplers_lock(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_shunting.dm"'), 1)
