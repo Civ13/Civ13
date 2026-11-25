@@ -374,21 +374,81 @@
 	nothrow = TRUE
 	flammable = TRUE
 	var/deployed = FALSE
+	var/ladder_target_key
+
+// Resolve only on the ladder's own tile. Relocation cannot confer remote access.
+/obj/item/weapon/siegeladder/proc/deployed_target()
+	if (!deployed || !anchored || QDELETED(src) || !isturf(loc))
+		return null
+	var/obj/structure/only_match
+	var/matches = 0
+	var/obj/structure/legacy_flagged
+	var/flagged_matches = 0
+	for (var/obj/structure/S in loc)
+		if (QDELETED(S) || !S.supports_siege_ladders())
+			continue
+		if (ladder_target_key)
+			if (S.siege_ladder_support_key == ladder_target_key)
+				return S
+			continue
+		// Legacy deployments recorded the target's direction and set its flag.
+		if (S.dir != dir)
+			continue
+		matches++
+		only_match = S
+		if (S.climbable && !initial(S.climbable))
+			flagged_matches++
+			legacy_flagged = S
+	if (flagged_matches == 1)
+		return legacy_flagged
+	if (matches == 1)
+		return only_match
+	return null
+
+/obj/item/weapon/siegeladder/proc/deploy_on(obj/structure/target, mob/user)
+	if (QDELETED(src) || QDELETED(target) || deployed || !user || loc != user || !user.canUnEquip(src))
+		return FALSE
+	if (!isturf(target.loc) || !target.supports_siege_ladders() || !persistence_movement_allowed(src, target.loc))
+		return FALSE
+	user.remove_from_mob(src)
+	if (QDELETED(src) || !persistence_set_loc(target.loc))
+		return FALSE
+	ladder_target_key = target.ensure_siege_ladder_support_key()
+	anchored = TRUE
+	deployed = TRUE
+	icon_state = depicon
+	dir = target.dir
+	return TRUE
+
+/obj/item/weapon/siegeladder/proc/retract()
+	if (!deployed || QDELETED(src))
+		return FALSE
+	if (!ladder_target_key)
+		var/obj/structure/target = deployed_target()
+		if (target)
+			// Bind all identifiable legacy ladders before removing the old flag.
+			// Otherwise a shared turf could make the remaining ladder ambiguous.
+			var/support_key = target.ensure_siege_ladder_support_key()
+			for (var/obj/item/weapon/siegeladder/ladder in loc)
+				if (!ladder.ladder_target_key && ladder.deployed_target() == target)
+					ladder.ladder_target_key = support_key
+			if (!initial(target.climbable))
+				target.climbable = FALSE
+	anchored = FALSE
+	deployed = FALSE
+	ladder_target_key = null
+	icon_state = initial(icon_state)
+	return TRUE
 
 /obj/item/weapon/siegeladder/attack_hand(mob/user as mob)
 	if (deployed)
 		user.visible_message(
 			SPAN_DANGER("[user] starts removing \the [src]!"),
 			SPAN_DANGER("You start removing \the [src]!"))
-		if (do_after(user, 8 SECONDS, src))
+		if (do_after(user, 8 SECONDS, src) && retract())
 			user.visible_message(
 				SPAN_DANGER("[user] has removed \the [src]!"),
 				SPAN_DANGER("You have removed \the [src]!"))
-			anchored = FALSE
-			deployed = FALSE
-			icon_state = initial(icon_state)
-			for (var/obj/structure/ST in get_turf(src))
-				ST.climbable = FALSE
 			user.put_in_any_hand_if_possible(src, prioritize_active_hand = TRUE)
 	else
 		..()
