@@ -376,6 +376,21 @@ var/global/list/recruitment_combat_skills = list("rifle", "pistol", "swords", "b
 			return A
 	return null
 
+// Last retained terminal outcome for this account's current character life.
+// Chat delivery does not make the record unavailable at a station.
+/obj/map_metadata/proc/recruitment_outcome_for(mob/living/human/H, faction)
+	var/list/S = recruitment_state()
+	var/list/apps = S["applications"]
+	var/list/latest = null
+	var/now = recruitment_now()
+	for (var/id in apps)
+		var/list/A = apps[id]
+		if (A["faction"] != faction || recruitment_active_status(A["status"]) || A["changed"] + RECRUITMENT_TERMINAL_KEEP <= now || !recruitment_identity_matches(H, A))
+			continue
+		if (!latest || A["changed"] >= latest["changed"])
+			latest = A
+	return latest
+
 /obj/map_metadata/proc/recruitment_queue(faction, statuses = null)
 	var/list/result = list()
 	var/list/S = recruitment_state()

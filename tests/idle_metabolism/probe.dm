@@ -25,12 +25,23 @@
 // a future probe accidentally supplies a mining context.
 /datum/pickaxe_mining_action
 	var/wait_started = FALSE
+	var/wait_workload = 0
+	var/wait_repeat_lock = FALSE
 	var/datum/progressbar/progressbar
 /datum/pickaxe_mining_action/proc/claim(mob/user, atom/target)
 	check(FALSE, "unexpected mining context in metabolism fixture")
 	return FALSE
 /datum/pickaxe_mining_action/proc/valid(mob/user, atom/target)
 	check(FALSE, "unexpected mining context in metabolism fixture")
+	return FALSE
+// Ship crafting is likewise outside this fixture.
+/datum/ship_construction
+	var/obj/workpiece
+/datum/ship_construction/proc/fixture_stationary(atom/target)
+	check(FALSE, "unexpected ship fixture in metabolism probe")
+	return FALSE
+/datum/ship_construction/proc/stationary(mob/user)
+	check(FALSE, "unexpected ship wait in metabolism probe")
 	return FALSE
 /proc/qdel(datum/D)
 	del(D)
@@ -77,9 +88,14 @@ var/obj/map_metadata/map
 	return trait in probe_traits
 /mob/living/human/proc/trait_food_mult()
 	return 1
+/mob/living/human/proc/home_rest_hunger_mult()
+	return 1 // Home comforts are not set in this fixture.
 // Item and target classification is a separate type table (survival_workload.dm).
 /mob/living/human/proc/survival_workload_for(atom/target)
 	return probe_workload
+/mob/living/human/probe
+	var/probe_wait_finished = FALSE
+	var/probe_wait_result
 /mob/living/human/probe/survival_metabolism_time()
 	return probe_clock
 /mob/living/human/probe/survival_input_inactivity()
@@ -187,28 +203,14 @@ var/obj/map_metadata/map
 	H.probe_clock += 1000
 	consume(H, 0.0864, 0.0864, "stationary unrestricted action")
 	check(H.survival_actions == 1, "timed action ownership")
-	check(H.survival_workload == 2, "ordinary action workload")
+	check(H.survival_current_workload() == 2, "ordinary action workload")
 	sleep(6)
 	check(H.survival_actions == 0, "completed action releases ownership")
-	check(H.survival_workload == 0, "completed action releases workload")
+	check(H.survival_current_workload() == 0, "completed action releases workload")
 	consume(H, 0.05184, 0.05184, "completed action grace")
-	H.probe_workload = 3
-	spawn(0)
-		do_after(H, 5, progress = FALSE, check_for_repeats = FALSE)
-	sleep(1)
-	consume(H, 0.1512, 0.1728, "heavy labour")
-	H.probe_workload = 1
-	spawn(0)
-		do_after(H, 2, progress = FALSE, check_for_repeats = FALSE)
-	sleep(1)
-	check(H.survival_workload == 3, "overlapping work keeps the heaviest")
-	sleep(6)
-	check(H.survival_workload == 0, "heavy labour releases")
-	spawn(0)
-		do_after(H, 3, progress = FALSE, check_for_repeats = FALSE)
-	sleep(1)
-	consume(H, 0.06912, 0.06912, "light work")
-	sleep(4)
+	probe_overlapping_work(H)
+	probe_repeat_lock(H)
+
 	H.probe_workload = 2
 	H.probe_clock += 600
 	spawn(0)
@@ -233,7 +235,9 @@ var/obj/map_metadata/map
 	check(H.survival_actions == 0, "do_mob finishes activity")
 	check(H.persistence_runtime_var("survival_rest_since"), "runtime clock exclusion")
 	check(H.persistence_runtime_var("survival_actions"), "runtime actions exclusion")
-	check(H.persistence_runtime_var("survival_workload"), "runtime workload exclusion")
+	check(H.persistence_runtime_var("survival_workload"), "legacy runtime workload exclusion")
+	check(H.persistence_runtime_var("survival_ordinary_actions"), "runtime ordinary actions exclusion")
+	check(H.persistence_runtime_var("survival_heavy_actions"), "runtime heavy actions exclusion")
 	check(H.persistence_runtime_var("exercise_equipment"), "existing exclusion retained")
 	check(H.persistence_runtime_var("parent_sentinel"), "parent exclusion retained")
 	check(!H.persistence_runtime_var("nutrition"), "durable nutrition retained")

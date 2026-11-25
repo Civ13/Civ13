@@ -50,8 +50,38 @@ class ChemDispenserRefillTest(unittest.TestCase):
     def test_dispenser_branches(self):
         self.assertEqual(problems(attackby_body(SOURCE.read_text(encoding='utf-8'))), [])
 
+    def test_mixed_alcohol_refill_credits_each_entry_in_both_stock_paths(self):
+        source = attackby_body(SOURCE.read_text(encoding='utf-8'))
+        credit = source[source.index('for(var/datum/reagent/R'):source.index('B.reagents.clear_reagents()')]
+        self.assertIn('r[2] += R.volume', credit)
+        self.assertIn('list(list(R.id, R.volume))', credit)
+        self.assertNotIn('get_reagent_amount', credit)
+
     def test_negative_control_old_proc_fails_all_three(self):
         self.assertEqual(len(problems(OLD_BODY)), 3)
+
+
+class AlcoholDistilleryTest(unittest.TestCase):
+    def setUp(self):
+        self.source = SOURCE.read_text(encoding='utf-8').split('/obj/structure/distillery/proc/process_machine()', 1)[1]
+
+    def test_rechecks_current_collector_after_timed_wait(self):
+        self.assertIn('spawn(150)\n\t\tfinish_distilling()', self.source)
+        guard = self.source.index('if (QDELETED(collector) || collector.loc != src || !collector.reagents)')
+        self.assertIn('active = FALSE\n\tupdate_icon()', self.source[:guard])
+        self.assertIn('return FALSE', self.source[guard:self.source.index('var/ethanol_sum')])
+
+    def test_complete_exact_entry_yield_must_fit_before_consumption(self):
+        body = self.source.split('/obj/structure/distillery/proc/finish_distilling()', 1)[1]
+        self.assertIn('ethanol_sum += r.volume * (1 - r.strength / 100)', body)
+        self.assertNotIn('get_reagent_amount', body)
+        guard = body.index('if (ethanol_sum > collector.reagents.get_free_space())')
+        add = body.index('!collector.reagents.add_reagent("ethanol", ethanol_sum)')
+        clear = body.index('reagents.clear_reagents()')
+        self.assertLess(guard, add)
+        self.assertLess(add, clear)
+        self.assertIn('return FALSE', body[guard:add])
+        self.assertIn('return FALSE', body[add:clear])
 
 
 if __name__ == '__main__':

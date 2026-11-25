@@ -89,10 +89,10 @@
 	biomes = list("temperate", "taiga", "tundra", "sea", "semiarid")
 	max_water = 50
 
-// Every harvest also lifts one root.
 /obj/structure/farming/plant/dandelion/spawn_produce(bonus = 0)
 	..()
-	new /obj/item/weapon/reagent_containers/food/snacks/grown/dandelion_root(loc)
+	var/obj/item/root = new /obj/item/weapon/reagent_containers/food/snacks/grown/dandelion_root(loc)
+	root.radiation = radiation/2
 
 /obj/structure/farming/plant/mint
 	name = "mint"
@@ -231,6 +231,10 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/grown/sunflower/attack_self(mob/user)
 	if (!user || QDELETED(src))
+		return
+	// Radiation is delivered per bite, so shelling into several snacks could change the dose.
+	if (radiation > 0)
+		to_chat(user, SPAN_WARNING("You cannot shell \the [src]: its seeds are contaminated."))
 		return
 	var/turf/T = get_turf(user)
 	if (!T)

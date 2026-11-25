@@ -58,17 +58,17 @@ var/global/gather_probe_finished = FALSE
 #endif
 /mob/living/human/gather_probe/New()
 	return // No normal anatomy, connected client, natural Life or survival proof.
-/mob/living/human/gather_probe/survival_action_started()
+/mob/living/human/gather_probe/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)
 	starts++
-	. = ..() // Real human metabolism callback, unchanged.
+	. = ..(target, mining_context) // Real human metabolism callback, unchanged.
 #ifdef CIV13_GAMEPLAY_BRIDGE
 	if (start_cancel)
 		start_cancel.cancelled = TRUE
 		start_cancel = null
 #endif
-/mob/living/human/gather_probe/survival_action_finished()
+/mob/living/human/gather_probe/survival_action_finished(workload)
 	finishes++
-	. = ..() // Real cleanup first; deterministic final-phase cancellation seam.
+	. = ..(workload) // Real cleanup first; deterministic final-phase cancellation seam.
 #ifdef CIV13_GAMEPLAY_BRIDGE
 	if (finish_cancel)
 		finish_cancel.cancelled = TRUE

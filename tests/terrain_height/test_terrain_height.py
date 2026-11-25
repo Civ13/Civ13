@@ -289,8 +289,13 @@ class Wiring(unittest.TestCase):
         self.assertLess(MOVEMENT.index('if ("proning")'), hook.start())
 
     def test_client_move_applies_climb_effects_to_humans(self):
-        self.assertIn('\t\t\tif (mob_is_human)\n\t\t\t\tterrain_climb_effects(H, mob_loc, n, distance_fraction)\n', MOVEMENT)
-        self.assertIn('\t\t\t\tterrain_trip_check(H, mob_loc, n, distance_fraction, move_delay - world.time)\n', MOVEMENT)
+        after_move = MOVEMENT.index("terrain_completed_step(H, slope_origin, n")
+        self.assertGreater(after_move, MOVEMENT.index(". = mob.SelfMove(n, direct)"))
+        self.assertNotIn("terrain_climb_effects(H, mob_loc", MOVEMENT)
+        self.assertIn("H.client == src", MOVEMENT[MOVEMENT.index("skipgrab:"):after_move])
+        completed = MODULE.split("/proc/terrain_completed_step", 1)[1].split("/proc/terrain_trip_check", 1)[0]
+        self.assertLess(completed.index("if (distance_fraction <= 0)"), completed.index("terrain_climb_effects"))
+        self.assertIn("if (arrival == destination)", completed)
         self.assertIn('You lose your footing and tumble down the slope!', MODULE)
         self.assertIn('#define TERRAIN_STEEP_LEVELS 3', MODULE)
         self.assertIn('/proc/terrain_climb_effects(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1)', MODULE)

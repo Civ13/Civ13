@@ -25,6 +25,18 @@
 			to_chat(src, SPAN_WARNING("\The [status[2]] is in the way!"))
 	return FALSE
 
+// Voluntary solid-food eating must respect the same diet through either bite path.
+/mob/living/human/proc/can_eat_solid_food_diet(non_vegetarian)
+	if (gorillaman || find_trait("Vegan"))
+		if (non_vegetarian)
+			to_chat(src, SPAN_WARNING("You are a vegan/herbivore! You can't eat this!"))
+			return FALSE
+	else if (wolfman || crab || find_trait("Carnivore"))
+		if (!non_vegetarian)
+			to_chat(src, SPAN_WARNING("You are a carnivore! You can't eat this!"))
+			return FALSE
+	return TRUE
+
 /mob/living/human/can_force_feed(var/feeder, var/food, var/feedback = TRUE)
 	var/list/status = can_eat_status()
 	if (status[1] == HUMAN_EATING_NO_ISSUE)
@@ -578,6 +590,15 @@
 			life_water_refresh()
 			return
 		free_diving = FALSE
+	// A lifejacket or covered tile cannot provide air in a roof-high tunnel.
+	if (flood_airless(T) && !seabed_diving_rating())
+		drowning = TRUE
+		water_overlay = TRUE
+		if (!tunnel_hold_breath())
+			to_chat(src, SPAN_DANGER("<font size='2'>You are drowning in the flooded tunnel!</font>"))
+			adjustOxyLoss(10)
+		life_water_refresh()
+		return
 	// Floating: a lifejacket, or a sealed diving suit with its weights dropped.
 	if ((istype(wear_suit, /obj/item/clothing/suit/lifejacket) || seabed_diving_rating()) && istype(T, /turf/floor/beach/water/deep) && !T.iscovered())
 		drowning = FALSE
@@ -589,15 +610,6 @@
 		// River floodwater over land (flood_effects.dm): over the head, swim.
 		var/flood_band = T.iscovered() ? FLOOD_BAND_NONE : flood_band_at(T)
 		if (flood_band == FLOOD_BAND_DEEP && !istype(buckled, /obj/structure/vehicle/boat) && !istype(wear_suit, /obj/item/clothing/suit/lifejacket) && !seabed_diving_rating())
-			// A tunnel flooded to the roof has no air to swim up to (flood_cellars.dm).
-			if (flood_airless(T))
-				drowning = TRUE
-				water_overlay = TRUE
-				if (!tunnel_hold_breath())
-					to_chat(src, SPAN_DANGER("<font size='2'>You are drowning in the flooded tunnel!</font>"))
-					adjustOxyLoss(10)
-				life_water_refresh()
-				return
 			if (swim_step(T))
 				drowning = FALSE
 				water_overlay = TRUE

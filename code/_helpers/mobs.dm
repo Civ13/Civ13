@@ -138,8 +138,8 @@ Proc for attack log creation, because really why not
 
 /mob/var/may_do_mob = TRUE
 /mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)
-	return
-/mob/proc/survival_action_finished()
+	return 0
+/mob/proc/survival_action_finished(workload)
 	return
 
 /proc/do_mob(mob/user , mob/target, time = 30, uninterruptible = FALSE, progress = TRUE)
@@ -147,7 +147,7 @@ Proc for attack log creation, because really why not
 		return FALSE
 
 	user.may_do_mob = FALSE
-	user.survival_action_started(target)
+	var/workload = user.survival_action_started(target)
 
 	var/holding = user.get_active_hand()
 	var/datum/progressbar/progbar
@@ -178,7 +178,7 @@ Proc for attack log creation, because really why not
 			break
 
 	user.may_do_mob = TRUE
-	user.survival_action_finished()
+	user.survival_action_finished(workload)
 
 	if (progbar)
 		qdel(progbar)
@@ -207,9 +207,11 @@ Proc for attack log creation, because really why not
 #endif
 	if (!isnull(mining_context) && (!istype(mining_context, /datum/pickaxe_mining_action) || !mining_context.claim(user, target)))
 		return FALSE
+	var/workload = user.survival_action_started(target, mining_context)
 	if (mining_context)
+		mining_context.wait_workload = workload
+		mining_context.wait_repeat_lock = check_for_repeats
 		mining_context.wait_started = TRUE
-	user.survival_action_started(target, mining_context)
 
 	if (check_for_repeats)
 		user.may_do_after = FALSE
@@ -277,10 +279,13 @@ Proc for attack log creation, because really why not
 	if (mining_context && !mining_context.valid(user, target))
 		. = FALSE
 	if (user)
-		user.may_do_after = TRUE
+		if (check_for_repeats)
+			user.may_do_after = TRUE
 		if (mining_context)
 			mining_context.wait_started = FALSE
-		user.survival_action_finished()
+			mining_context.wait_workload = 0
+			mining_context.wait_repeat_lock = FALSE
+		user.survival_action_finished(workload)
 
 	if (progbar)
 		qdel(progbar)

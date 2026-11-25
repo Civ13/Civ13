@@ -27,6 +27,15 @@ class InitialWaterTest(unittest.TestCase):
         with self.assertRaises(AssertionError):
             assert_initial_charge(self, source.replace(fixed, '\t\treagents.add_reagent("water", volume)', 1))
 
+    def test_discharge_checks_click_incapacitation_before_using_water_or_cooldown(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        body = source.split('/fire_extinguisher/proc/fire(', 1)[1].split('/fire_extinguisher/proc/process_foam(', 1)[0]
+        guard = '\tif (H.stat || H.paralysis || H.stunned || H.weakened)\n\t\treturn'
+        self.assertIn(guard, body)
+        self.assertLess(body.index('if (!H || !target)'), body.index(guard))
+        self.assertLess(body.index(guard), body.index('if (world.time<=lastfire)'))
+        self.assertLess(body.index(guard), body.index('process_foam(H,cdir,target)'))
+
     def test_global_recipe_constructs_empty_subtype(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
         self.assertIn(',fire extinguisher,' + EMPTY + ',', recipes)

@@ -928,6 +928,11 @@ SUITES = {
             'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
     # Complete monitor pipe rows with fake spatial/type boundaries; no native IO.
+    'factory_arm_custody': {'files': ('tests/factory_automation/test_arm_custody.py',),
+        'paths': ('tests/factory_automation/test_arm_custody.py',), 'shared_paths': (
+            'code/modules/1713/factory_arms.dm', 'code/modules/1713/factory_ports.dm',
+            'tests/save_movement/source_adapter.py', 'code/modules/1713/coin_mint.dm',
+            'code/modules/1713/fiatcurrency.dm')},
     'factory_monitor': {'files': ('tests/factory_automation/test_monitor_pipes.py',),
         'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
             'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
@@ -1041,6 +1046,11 @@ SUITES = {
                          'scripts/nomads-lifecycle/supervisor.py',
                          'scripts/nomads-lifecycle/canonical_update.py',
                          'scripts/nomads-lifecycle/bot_consumer.py', 'civ13.dme')},
+    'npc_vendor_checkout': {'files': ('tests/npc_vendor_checkout/test_checkout.py',),
+        'paths': ('tests/npc_vendor_checkout/',), 'shared_paths': (
+            'code/game/objects/structures/vending/npc_vendors.dm',
+            'code/game/objects/items/stacks/money.dm',
+            'code/game/objects/map_metadata/the_art_of_the_deal.dm')},
     'fuel_pump_variants': {'files': ('tests/fuel_pump/test_variants.py',),
         'paths': ('tests/fuel_pump/',), 'shared_paths': (
             'tests/save_movement/source_adapter.py',
@@ -1128,6 +1138,9 @@ SUITES = {
             'code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',
             'tests/save_movement/source_adapter.py', 'civ13.dme')},
     # Company stock ledger, stock market and company stall guard projections.
+    'supply_order_payout': {'files': ('tests/supply_order_payout/test_checkout.py',),
+        'paths': ('tests/supply_order_payout/', 'code/game/objects/structures/vending/supplier.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'code/game/objects/items/stacks/money.dm')},
     'company_stock': {'files': ('tests/company_stock/test_company_stock.py',),
         'paths': ('tests/company_stock/', 'code/game/mob/groups/companies.dm',
                   'code/modules/1713/marketplace.dm'),
@@ -1822,9 +1835,10 @@ SUITES = {
             'code/modules/1713/aqueducts.dm', 'icons/obj/aqueducts.dmi', 'tests/sprites/create_aqueducts.py',
             'code/modules/1713/mechanical_power.dm')},
     # Siege engines and castle defences: source contracts (the native probe is tests/siege_engines/probe.dm).
-    'siege_engines': {'files': ('tests/siege_engines/test_source.py',),
+    'siege_engines': {'files': ('tests/siege_engines/test_source.py', 'tests/siege_engines/test_turret_autoload.py'),
         'paths': ('tests/siege_engines/',), 'shared_paths': (
             'code/modules/1713/siege/siege_engines.dm', 'code/modules/1713/siege/catapult.dm',
+            'code/modules/1713/siege/turret.dm',
             'code/modules/1713/siege/portcullis_runs.dm', 'code/game/objects/controls.dm',
             'icons/obj/doors/material_doors.dmi', 'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
             'tests/sprites/create_siege_engines.py')},
@@ -2665,6 +2679,9 @@ SUITES = {
         'code/processes/throwing.dm', 'code/modules/persistence/functions.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/human_defense.dm',
                          'code/game/mob/living/living_defense.dm')},
+    'terrain_tumble': {'files': ('tests/terrain_height/test_tumble.py',), 'paths': (
+        'tests/terrain_height/', 'code/modules/1713/terrain_height.dm'), 'shared_paths': (
+        'code/game/mob/mob_movement.dm', 'code/processes/throwing.dm')},
     'los_context': {'files': ('tests/los_context/test_offline.py',
                               'tests/los_context/test_production.py',
                               'tests/los_context/test_tile_motion.py',
@@ -3010,6 +3027,7 @@ SUITES = {
     'persistence_status': {'files': ('tests/persistence_status/test_status.py',),
         'paths': ('tests/persistence_status/',), 'shared_paths': (
             'code/modules/1713/battlereport_variables.dm', 'code/modules/admin/verbs/1713.dm',
+            'code/processes/battlereport.dm',
             'code/game/mob/groups/factions.dm', 'code/predefines.dm',
             'tests/save_movement/source_adapter.py')},
     # Status tab "Last save" wiring; native round trip via the berry_load fixture.

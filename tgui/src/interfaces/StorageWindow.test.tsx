@@ -38,6 +38,50 @@ describe('Storage window', () => {
     fireEvent.click(within(backpack).getByText('Move here'));
     expect(props.act).toHaveBeenCalledWith('move', { value: 'i6,i7', to: 'worn:b' });
   });
+  it.each(['click', 'drag', 'keyboard', 'hands'])('retains an oversized selection for %s and can retry at the server limit', action => {
+    const entries = Array.from({ length: 41 }, (_, i) => ({ id: `i${i}`, name: `Item ${i}` }));
+    const props = ui({ move_limit: 40, hands_id: 'hands', hands: [{ side: 'left' }], near: [
+      ...Array.from({ length: 5 }, (_, i) => ({ id: `crate${i}`, kind: 'near', name: `Crate ${i}`, items: entries.slice(i * 9, i * 9 + 9) })),
+      { id: 'floor', kind: 'floor', name: 'Floor', items: [] },
+    ] });
+    render(<StorageWindow {...props} />);
+    const item = (i: number) => screen.getByTitle(`Item ${i}`);
+    const floor = screen.getByLabelText('Floor');
+    if (action === 'keyboard') {
+      fireEvent.click(item(0));
+      fireEvent.click(within(floor).getByText('Move here'));
+      vi.mocked(props.act).mockClear();
+    }
+    for (let i = 0; i < 41; i++) fireEvent.click(item(i));
+    const message = 'Move up to 40 items at a time. Deselect items to continue.';
+    expect(screen.getByRole('status').textContent).toBe(message);
+    if (action === 'click') fireEvent.click(within(floor).getByText('Move here'));
+    else if (action === 'keyboard') fireEvent.keyDown(item(0), { key: 'Enter' });
+    else if (action === 'hands') fireEvent.click(screen.getByText('To hands'));
+    else {
+      const dataTransfer = { setData: vi.fn(), effectAllowed: '' };
+      fireEvent.dragStart(item(0), { dataTransfer });
+      fireEvent.dragOver(floor, { dataTransfer });
+      fireEvent.drop(floor, { dataTransfer });
+    }
+    expect(props.act).not.toHaveBeenCalled();
+    expect(screen.getAllByRole('button', { pressed: true })).toHaveLength(41);
+    fireEvent.click(item(40));
+    expect(screen.queryByRole('status')).toBeNull();
+    fireEvent.click(within(floor).getByText('Move here'));
+    expect(props.act).toHaveBeenCalledExactlyOnceWith('move', {
+      value: entries.slice(0, 40).map(entry => entry.id).join(','), to: 'floor',
+    });
+  });
+  it('uses the snapshot limit even when it is below 40', () => {
+    const props = ui({ ...fixture.data, move_limit: 1 });
+    render(<StorageWindow {...props} />);
+    fireEvent.click(screen.getByTitle('wheat grain'));
+    fireEvent.click(screen.getByTitle('clay bowl'));
+    fireEvent.click(within(screen.getByLabelText('leather backpack')).getByText('Move here'));
+    expect(props.act).not.toHaveBeenCalled();
+    expect(screen.getByRole('status').textContent).toContain('up to 1 item');
+  });
   it('asks before dumping and then dumps', () => {
     const props = ui(); render(<StorageWindow {...props} />);
     const basket = screen.getByLabelText('woven basket');

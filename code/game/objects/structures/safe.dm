@@ -153,9 +153,11 @@ FLOOR SAFES
 /obj/structure/safe/attackby(obj/item/I as obj, mob/user as mob)
 	if (open)
 		if (I.w_class + space <= maxspace)
+			var/mob/living/actor = user
+			if (!istype(actor) || !actor.transfer_held_item_to(I, src))
+				to_chat(user, SPAN_WARNING("You can't put [I] in [src]."))
+				return
 			space += I.w_class
-			user.drop_item()
-			I.loc = src
 			to_chat(user, "<span class='notice'>You put [I] in [src].</span>")
 			updateUsrDialog()
 			return

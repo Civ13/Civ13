@@ -109,6 +109,15 @@ class FishingGrounds(unittest.TestCase):
         # After the once-a-tick guard, so a tile is asked at most once a river minute.
         self.assertLess(items.index('flood_items_done[T] = TRUE'), items.index('fish_flood_stranding(T, band)'))
 
+    def test_trawl_revalidates_speed_before_consuming_bait_or_landing_fish(self):
+        troll = self.source.split('/proc/fish_troll(', 1)[1].split('\n/proc/', 1)[0]
+        wait = troll.index('var/done = do_after(')
+        step = troll.index('var/step = fish_craft_step(ship)', wait)
+        guard = troll.index('step != VESSEL_SPEED_SLOW && step != VESSEL_SPEED_HALF', step)
+        self.assertLess(guard, troll.index('line.bait_uses--'))
+        self.assertLess(guard, troll.index('fish_land('))
+        self.assertIn('return', troll[guard:troll.index('line.bait_uses--')])
+
     def test_a_ship_under_way_trolls_and_sonar_reads_the_fish(self):
         cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]
         self.assertLess(cast.index('fish_troll(W, H, ship, profile)'), cast.index('do_after('))
@@ -231,6 +240,15 @@ class FishingGrounds(unittest.TestCase):
             text = (ROOT / path).read_text(encoding='utf-8')
             self.assertNotIn('nomads_fish_boot', text, path)
             self.assertNotIn('seaturfs', text, path)
+
+    def test_pen_accepts_only_fresh_raw_unsalted_stock(self):
+        pen = (ROOT / 'code/modules/1713/fish_pen.dm').read_text(encoding='utf-8')
+        allowed = pen.split('/proc/fish_pen_stock_ok(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('F.raw && !F.roasted && !F.rotten', allowed)
+        self.assertIn('!istype(F, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted)', allowed)
+        handler = pen.split('/obj/structure/fish_pen/attackby(', 1)[1].split('\n/', 1)[0]
+        self.assertLess(handler.index('if (fish_pen_stock_ok(W))'), handler.index('stock++'))
+        self.assertLess(handler.index('Only fresh, raw fish'), handler.index('fish_pen_feed_value(W)'))
 
 
 if __name__ == '__main__':

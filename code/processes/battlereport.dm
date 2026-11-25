@@ -14,12 +14,18 @@
 
 /process/battle_report/statProcess(client/C)
 	..(C)
+	if (map && map.persistence)
+		return
 	C.add_stat("Next battle report: [(max_BR_ticks - BR_ticks) * schedule_interval / 10] seconds")
 
 /process/battle_report/htmlProcess()
+	if (map && map.persistence)
+		return ..()
 	return ..() + "Next battle report: [(max_BR_ticks - BR_ticks) * schedule_interval / 10] seconds"
 
 /process/battle_report/fire()
+	if (map && map.persistence)
+		return
 	++BR_ticks
 	if (BR_ticks >= max_BR_ticks)
 		show_global_battle_report(null)

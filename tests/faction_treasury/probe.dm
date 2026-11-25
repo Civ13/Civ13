@@ -122,6 +122,16 @@ var/treasury_p_runtime_error = FALSE
 	treasury_p_check(abs(treasury_wage_accrue(row, recruitment_now()) - 21) < 0.01, "unpaid wages stop at seven days")
 	treasury_p_check(map.treasury_set_wage("Eagles", "x", "X", 999) == 50, "wages are capped")
 
+	// A new online character can use an old name held by a legacy saved wage.
+	var/list/online_names = list("new_tanner" = "Bo Tanner", "x" = "X")
+	var/list/choices = treasury_wage_choices(online_names, wages)
+	treasury_p_check(choices.len == 3, "each account appears once including the offline wage under a reused name")
+	treasury_p_check(choices["1. Bo Tanner (online)"][1] == "new_tanner" && choices["3. Bo Tanner (saved wage)"][1] == "botanner", "colliding labels resolve to the correct distinct accounts")
+	map.treasury_refresh_wage_name("botanner", "Bo Tanner", "Bo Reeve")
+	map.treasury_refresh_wage_name("botanner", "Another character", "Different name")
+	choices = treasury_wage_choices(online_names, wages)
+	treasury_p_check(choices["3. Bo Reeve (saved wage)"][2] == "Bo Reeve" && row[1] == 3 && row[2] == 21, "legal rename changes the label and preserves the rate and accrued balance")
+
 	var/turf/T = get_turf(M)
 	B.collect_wages(M)
 	treasury_p_check(treasury_p_turf_worth(T) == 12 && B.coin_worth() == 0 && row[2] == 9, "a member collects what the box holds and is owed the rest")

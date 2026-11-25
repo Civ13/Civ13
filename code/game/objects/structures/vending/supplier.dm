@@ -1,5 +1,7 @@
 // a "reverse" market stall/vending machine, where you put buy orders and people can sell to you.
 
+#define SUPPLY_COPPERS_PER_SILVER 10
+
 /obj/structure/supplier
 	name = "supply stall"
 	desc = "A market stall where you can fulfill this company supply orders."
@@ -77,6 +79,7 @@
 			if (!ordertype && can_buy)
 				var/choice = player_alert(user, "Do you want to add a buying order for [W]?", "Stall Management", list("Yes", "No"))
 				if (choice == "Yes")
+					var/quoted_currency = accepted_currency
 					var/price_unit_label = accepted_currency == "standard" ? "standard coins" : fiat.currency_list[accepted_currency][1]
 					var/choice2 = player_input(user, "What price per unit, in [price_unit_label]?", "Stall Management", 1, "num", null, FALSE)
 					if (choice2 <= 0)
@@ -84,9 +87,12 @@
 					if (choice2 > 100000)
 						choice2 = 100000
 					var/choice3 = player_input(user, "How many units do you want to buy?", "Stall Management", 1, "num", null, FALSE)
-					if (choice3 <= 0 || !accept_supply_order_edit(user, W))
+					if (choice3 <= 0 || !accept_supply_order_edit(user, W) || quoted_currency != accepted_currency)
 						return
-					orderprice = choice2
+					var/checked_price = payable_order_price(user, choice2)
+					if (isnull(checked_price))
+						return
+					orderprice = checked_price
 					orderamount = round(choice3)
 					if (istype(W, /obj/item/stack/money/fiat))
 						var/obj/item/stack/money/fiat/F = W
@@ -131,6 +137,7 @@
 			if (choice == "No")
 				return
 			else
+				var/quoted_currency = accepted_currency
 				var/price_unit_label = accepted_currency == "standard" ? "standard coins" : fiat.currency_list[accepted_currency][1]
 				var/choice2 = player_input(user, "What price per unit, in [price_unit_label]? This stall will keep accepting orders until it runs out of money.", "Stall Management", orderprice, "num", null, FALSE)
 				if (choice2 < 0)
@@ -138,9 +145,12 @@
 				else if (choice2 > 100000)
 					choice2 = 100000
 				var/choice3 = player_input(user, "How much do you want to buy? This stall will keep accepting orders until it runs out of money.", "Stall Management", moneyin, "num", null, FALSE)
-				if (!accept_supply_order_edit(user, W))
+				if (!accept_supply_order_edit(user, W) || quoted_currency != accepted_currency)
 					return
-				orderprice = choice2
+				var/checked_price = payable_order_price(user, choice2)
+				if (isnull(checked_price))
+					return
+				orderprice = checked_price
 				if (choice3 < 0)
 					choice3 = 0
 				else if (moneyin < orderamount*choice3)
@@ -157,42 +167,62 @@
 				if (WF.fiat_id != orderfiat_id)
 					to_chat(user, "<span class='warning'>The [src] is buying [ordername], not [WF.name].</span>")
 					return
+			// Saved orders may predate price validation. Refuse before touching a seller's item.
+			var/standard_payment = accepted_currency == "standard"
+			var/price_coppers
+			var/funds_coppers
+			if (standard_payment)
+				price_coppers = exact_order_coppers(orderprice)
+				if (!price_coppers)
+					to_chat(user, SPAN_WARNING("The stall's order price cannot be paid in whole copper coins. Ask its owner to correct it."))
+					return
+				funds_coppers = whole_balance_coppers(moneyin)
+			var/mob/living/seller = user
+			if (!istype(seller) || W.loc != seller || !seller.item_is_in_hands(W))
+				return
 			if (istype(W, /obj/item/stack))
 				if (orderamount < 1)
 					to_chat(user, "<span class='warning'>The [src] is not currently buying.</span>")
 					return
 				var/obj/item/stack/WS = W
-				var/max_affordable = orderprice > 0 ? floor(moneyin / orderprice) : orderamount
+				var/max_affordable = standard_payment ? floor(funds_coppers / price_coppers) : (orderprice > 0 ? floor(moneyin / orderprice) : orderamount)
 				var/limit_qty = min(orderamount, max_affordable)
 				if (limit_qty < 1)
-					if (moneyin < orderprice)
+					if (max_affordable < 1)
 						to_chat(user, "<span class='warning'>The [src] has no money left to buy from you!</span>")
 					else
 						to_chat(user, "<span class='warning'>The [src] is not currently buying.</span>")
 					return
 
 				var/buy_qty = min(WS.amount, limit_qty)
+				if (standard_payment)
+					buy_qty = floor(buy_qty)
 				if (buy_qty < 1)
 					return
 
-				var/payment = orderprice * buy_qty
 				if (buy_qty == WS.amount)
-					user.drop_from_inventory(WS)
-					WS.forceMove(src)
+					if (!seller.transfer_held_item_to(WS, src))
+						return
 				else
+					if (WS.nodrop || WS.nodrop_special_check())
+						return
 					var/obj/item/stack/NST = WS.split(buy_qty)
-					if (NST)
-						NST.forceMove(src)
-					else
-						user.drop_from_inventory(WS)
-						WS.forceMove(src)
+					if (!NST)
+						return
+					if (!NST.forceMove(src) || QDELETED(NST) || NST.loc != src)
+						if (!QDELETED(WS) && !QDELETED(NST))
+							WS.amount += NST.amount
+							WS.update_icon()
+							WS.update_strings()
+							qdel(NST)
+						return
 
-				if (accepted_currency == "standard")
-					pay_standard_coins(payment)
+				if (standard_payment)
+					settle_standard_coppers(price_coppers * buy_qty)
 				else
+					var/payment = orderprice * buy_qty
 					new/obj/item/stack/money/fiat(loc, payment, accepted_currency)
-
-				moneyin -= payment
+					moneyin -= payment
 				orderamount -= buy_qty
 				to_chat(user, "<span class='notice'>You sell [buy_qty] [ordername].</span>")
 				return
@@ -200,14 +230,14 @@
 				if (orderamount < 1)
 					to_chat(user, "<span class='warning'>The [src] is not currently buying.</span>")
 					return
-				if (moneyin >= orderprice)
-					user.drop_from_inventory(W)
-					W.forceMove(src)
-					if (accepted_currency == "standard")
-						pay_standard_coins(orderprice)
+				if (standard_payment ? funds_coppers >= price_coppers : moneyin >= orderprice)
+					if (!seller.transfer_held_item_to(W, src))
+						return
+					if (standard_payment)
+						settle_standard_coppers(price_coppers)
 					else
 						new/obj/item/stack/money/fiat(loc, orderprice, accepted_currency)
-					moneyin -= orderprice
+						moneyin -= orderprice
 					orderamount -= 1
 					to_chat(user, "<span class='notice'>You sell the [W].</span>")
 					return
@@ -216,17 +246,47 @@
 					return
 	return
 
-/** Pays out amount in standard coins (gold, silver, copper) without losing any remainder. */
 // A steward's second dialog must not outlive their authority or active order.
 /obj/structure/supplier/proc/accept_supply_order_edit(mob/user, obj/item/W)
 	return !QDELETED(src) && !QDELETED(W) && W.loc == user && !ordertype && in_range(src, user) && company_may_operate(user, owner)
 
-/obj/structure/supplier/proc/pay_standard_coins(var/amount)
-	var/coppers = round(amount*10)
-	var/golds = floor(coppers/40)
-	coppers -= golds*40
-	var/silvers = floor(coppers/10)
-	coppers -= silvers*10
+// Never round a real fractional balance up; allow only noise around a whole copper.
+/obj/structure/supplier/proc/whole_balance_coppers(amount)
+	var/scaled = max(0, amount * SUPPLY_COPPERS_PER_SILVER)
+	var/whole = floor(scaled)
+	if (whole + 1 - scaled <= 0.0001)
+		return whole + 1
+	return whole
+
+/obj/structure/supplier/proc/exact_order_coppers(amount)
+	if (!isnum(amount) || amount <= 0)
+		return 0
+	var/coppers = whole_balance_coppers(amount)
+	if (abs(amount * SUPPLY_COPPERS_PER_SILVER - coppers) > 0.0001)
+		return 0
+	return coppers
+
+/obj/structure/supplier/proc/payable_order_price(mob/user, amount)
+	if (!isnum(amount))
+		return null
+	if (accepted_currency != "standard")
+		return amount
+	var/coppers = exact_order_coppers(amount)
+	if (!coppers)
+		to_chat(user, SPAN_WARNING("Standard buy orders need a positive price in whole copper coins (0.1 silver per copper)."))
+		return null
+	return coppers / SUPPLY_COPPERS_PER_SILVER
+
+// Both sale and withdrawal pay already-validated integer units and keep the remainder.
+/obj/structure/supplier/proc/settle_standard_coppers(coppers)
+	pay_standard_coppers(coppers)
+	moneyin = max(0, moneyin - coppers / SUPPLY_COPPERS_PER_SILVER)
+
+/obj/structure/supplier/proc/pay_standard_coppers(coppers)
+	var/golds = floor(coppers / (4 * SUPPLY_COPPERS_PER_SILVER))
+	coppers -= golds * 4 * SUPPLY_COPPERS_PER_SILVER
+	var/silvers = floor(coppers / SUPPLY_COPPERS_PER_SILVER)
+	coppers -= silvers * SUPPLY_COPPERS_PER_SILVER
 	if (golds > 0)
 		var/obj/item/stack/money/goldcoin/G = new/obj/item/stack/money/goldcoin(loc)
 		G.amount = golds
@@ -294,7 +354,9 @@
 			return TRUE
 		if (val < 0) val = 0
 		if (val > 100000) val = 100000
-		orderprice = val
+		var/checked_price = payable_order_price(H, val)
+		if (!isnull(checked_price))
+			orderprice = checked_price
 		return TRUE
 
 	if (href_list["changeamount"])
@@ -310,6 +372,9 @@
 			return TRUE
 		if (moneyin > 0)
 			to_chat(H, "<span class='warning'>You must remove all money from the stall before changing the accepted currency!</span>")
+			return TRUE
+		if (new_cur == "standard" && ordertype && !exact_order_coppers(orderprice))
+			to_chat(H, SPAN_WARNING("Set a price payable in whole copper coins, or remove the order, before switching to standard coins."))
 			return TRUE
 		accepted_currency = new_cur
 		return TRUE
@@ -333,10 +398,19 @@
 		if (moneyin <= 0)
 			return TRUE
 		if (accepted_currency == "standard")
-			pay_standard_coins(moneyin)
+			var/coppers = whole_balance_coppers(moneyin)
+			if (!coppers)
+				to_chat(H, SPAN_NOTICE("The remaining balance is below one copper and stays in the stall."))
+				return TRUE
+			settle_standard_coppers(coppers)
+			if (moneyin > 0)
+				to_chat(H, SPAN_NOTICE("Coins removed. The balance below one copper stays in the stall."))
+				return TRUE
 		else
 			new/obj/item/stack/money/fiat(loc, moneyin, accepted_currency)
-		moneyin = 0
+			moneyin = 0
 		to_chat(H, "<span class='notice'>Money removed from stall.</span>")
 		return TRUE
 	return TRUE
+
+#undef SUPPLY_COPPERS_PER_SILVER

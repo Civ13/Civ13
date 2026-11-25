@@ -205,6 +205,20 @@ class WiringTest(unittest.TestCase):
         self.assertIn('flood_items_at(T, band)', view)
         self.assertEqual(effects.count('flood_items_at('), 2, 'floor items are only visited from the viewer scan')
 
+    def test_airless_flood_precedes_flotation_and_boat_cover(self):
+        helpers = (ROOT / 'code/game/mob/living/carbon/human/human_helpers.dm').read_text(encoding='utf-8')
+        drowning = helpers.split('/mob/living/human/proc/handle_drowning()', 1)[1].split('\n/mob/', 1)[0]
+        roof = drowning.index('if (flood_airless(T) && !seabed_diving_rating())')
+        floats = drowning.index('// Floating: a lifejacket')
+        flood_band = drowning.index('T.iscovered() ? FLOOD_BAND_NONE : flood_band_at(T)')
+        self.assertLess(roof, floats)
+        self.assertLess(floats, flood_band)
+        self.assertIn('if (!tunnel_hold_breath())', drowning[roof:floats])
+        self.assertIn('adjustOxyLoss(10)', drowning[roof:floats])
+        self.assertNotIn('swim_rest()', drowning[roof:floats])
+        self.assertIn('swim_rest()', drowning[floats:flood_band])
+        self.assertEqual(drowning.count('flood_airless(T)'), 1)
+
     def test_crops_drown_unless_they_grow_in_water(self):
         effects = (ROOT / 'code/modules/1713/flood_effects.dm').read_text(encoding='utf-8')
         step = effects.split('/obj/structure/farming/plant/proc/flood_plant_step()', 1)[1].split('\n/', 1)[0]

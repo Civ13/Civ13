@@ -38,47 +38,59 @@
 		return FALSE
 	return TRUE
 
-// Same item kind for merging: identical type, stack kind and colour, so no
-// per-stack identity is lost.
+// Keep each stack subtype's identity contract, including issued currency.
 /proc/factory_stack_matches(obj/item/stack/A, obj/item/stack/B)
-	return istype(A) && istype(B) && A.type == B.type && A.stacktype == B.stacktype && A.color == B.color
+	return istype(A) && istype(B) && A.type == B.type && A.stacktype == B.stacktype && A.color == B.color && A.stack_compatible(B) && B.stack_compatible(A)
 
 // Move amount units of I into container, merging into matching stacks there
-// first. Returns the amount moved.
+// first. Returns only the amount actually moved.
 /proc/factory_move_units(obj/item/I, atom/container, amount)
-	if (!factory_movable_item(I) || !container || amount <= 0)
+	if (!factory_movable_item(I) || !container || container == I.loc || amount <= 0 || !persistence_movement_allowed(I, container))
 		return 0
 	if (!istype(I, /obj/item/stack))
-		I.forceMove(container)
-		return 1
+		if (I.forceMove(container) && I.loc == container)
+			return 1
+		return 0
+
 	var/obj/item/stack/S = I
 	amount = min(amount, S.amount)
+	if (amount <= 0)
+		return 0
 	var/remaining = amount
 	for (var/obj/item/stack/existing in container)
-		if (existing == S || !factory_stack_matches(existing, S))
+		if (!factory_stack_matches(existing, S))
 			continue
 		var/space = max(0, existing.max_amount - existing.amount)
 		var/moved = min(space, remaining)
-		if (moved <= 0)
+		if (moved <= 0 || !S.transfer_to(existing, moved))
 			continue
-		existing.amount += moved
 		existing.update_icon()
 		remaining -= moved
 		if (!remaining)
-			break
-	if (remaining && remaining == S.amount)
-		// The rest of the stack fits as it is.
-		S.forceMove(container)
-		return amount
-	if (remaining)
-		var/obj/item/stack/part = new S.type(container, remaining, FALSE)
-		part.color = S.color
-	S.amount -= amount
-	if (S.amount <= 0)
-		qdel(S)
-	else
-		S.update_icon()
-	return amount
+			if (!QDELETED(S))
+				S.update_icon()
+			return amount
+
+	if (remaining == S.amount)
+		// All unmerged units fit as the original stack; do not reconstruct it.
+		if (S.forceMove(container) && S.loc == container)
+			S.update_icon()
+			S.update_slot_count()
+			return amount
+	else if (remaining > 0 && S.amount <= S.max_amount)
+		// A real split delegates identity and other per-stack state to its subtype.
+		// Don't split an overfilled stack: a refused move could not be fully rolled back.
+		var/obj/item/stack/part = S.split(remaining)
+		if (part && !QDELETED(part))
+			if (part.forceMove(container) && part.loc == container)
+				part.update_icon()
+				part.update_slot_count()
+				S.update_icon()
+				return amount
+			// The source still holds units, so there is room to put the split back.
+			part.transfer_to(S, part.amount)
+	S.update_icon()
+	return amount - remaining
 
 //////////////////////////////////////////////////////////////////////////////
 // Closets and crates: closed storage accepts anything that fits its capacity

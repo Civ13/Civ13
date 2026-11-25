@@ -34,6 +34,15 @@ class CanalSource(unittest.TestCase):
     def test_aqueduct_feeds_a_cut(self):
         self.assertIn('P.wet_level >= terrain_height_at(A)', read('code/modules/1713/aqueducts.dm'))
 
+    def test_shovel_never_reinitializes_an_existing_channel(self):
+        shovel = read('code/modules/1713/tools.dm')
+        channel = shovel.split('else if (input == "Irrigation Channel")', 1)[1]
+        channel = channel.split('else if  (input == "Grave")', 1)[0]
+        before, after = channel.split('if (do_after(', 1)
+        self.assertIn('if (TB.irrigation)', before)
+        self.assertLess(after.index('if (TB.irrigation)'), after.index('TB.irrigate("empty")'))
+        self.assertIn('return', after[after.index('if (TB.irrigation)'):after.index('TB.irrigate("empty")')])
+
     def test_states_and_recipe(self):
         states = dmi_states('icons/obj/canal_lock.dmi')
         self.assertTrue({'lock_low', 'lock_high', 'lock_filling', 'lock_emptying'} <= states)

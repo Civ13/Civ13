@@ -849,9 +849,6 @@
 				move_delay += terrain_free_slope_delay(H, n, direct, move_delay - world.time, fine_step == FINE_STEP_HELD)
 			else
 				move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)
-			if (mob_is_human)
-				terrain_climb_effects(H, mob_loc, n, distance_fraction)
-				terrain_trip_check(H, mob_loc, n, distance_fraction, move_delay - world.time)
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
@@ -887,6 +884,7 @@
 				var/obj/structure/pulled_structure = mob.pulling
 				move_delay += pulled_structure.drag_delay(mob) * mob.pull_drag_mult()
 
+		var/terrain_started_running = mob.m_intent == "run"
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)
 				to_chat(H, SPAN_WARNING("You're starting to tire from running so much."))
@@ -928,6 +926,16 @@
 		// A preceding climb wait/callback may have changed the body or links.
 		if (fine_step && (mob != input_actor || !H.human_subtile_fine_ready(direct)))
 			return FALSE
+
+		// Snapshot the approach immediately before the move: held input may
+		// yield, and a partial slide can move without crossing a tile boundary.
+		var/turf/slope_origin
+		var/slope_start_x
+		var/slope_start_y
+		if (mob_is_human && mob == input_actor && !H.buckled && !H.riding && isturf(H.loc) && isturf(n) && terrain_steep_step(H.loc, n))
+			slope_origin = H.loc
+			slope_start_x = H.step_x
+			slope_start_y = H.step_y
 
 		//We are now going to move
 		moving = TRUE
@@ -1020,6 +1028,8 @@
 				return FALSE
 
 			skipgrab:
+			if (slope_origin && !QDELETED(H) && mob == H && H.client == src && !H.stat && !H.buckled && !H.riding && !H.throwing && isturf(H.loc))
+				terrain_completed_step(H, slope_origin, n, slope_start_x, slope_start_y, direct, distance_fraction, move_delay - world.time, terrain_started_running)
 
 			#define STOMP_TIME 1
 

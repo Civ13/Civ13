@@ -37,6 +37,16 @@ class FactionTreasurySource(unittest.TestCase):
         self.assertNotIn('new /obj/item/stack/money', collect)
         self.assertNotIn('company_pay_coins', collect)
 
+    def test_wage_selector_and_rename_share_account_identity(self):
+        rename = (ROOT / 'code/game/mob/living/carbon/human/name_change.dm').read_text(encoding='utf-8')
+        self.assertIn('treasury_refresh_wage_name(account, old_name, new_name)', rename)
+        self.assertIn('row[4] == old_name', self.text)
+        select = self.text.split('/proc/set_wages(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('treasury_wage_choices(online_names, wages)', select)
+        self.assertIn('var/account = selection[1]', select)
+        self.assertIn('treasury_set_wage(faction, account, name, value)', select)
+        self.assertNotIn('treasury_set_wage(faction, account, pick, value)', select)
+
     def test_powers_rechecked_after_the_prompt(self):
         menu = self.text.split('/proc/treasury_menu(', 1)[1].split('\n/', 1)[0]
         after = menu.split('var/choice = WWinput(', 1)[1]

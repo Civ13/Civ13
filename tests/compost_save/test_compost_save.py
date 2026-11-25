@@ -40,6 +40,19 @@ class CompostSaveTests(unittest.TestCase):
     def test_load_restarts_the_cycle(self):
         self.assertIn('initialize()', block(self.source, '/obj/structure/compost/after_load()'))
 
+    def test_materials_fit_capacity_without_consuming_the_remaining_stack(self):
+        stack = block(self.source, '/obj/structure/compost/proc/add_compost_stack(obj/item/stack/S, mob/living/human/H, units_per_compost)')
+        self.assertIn('min(S.amount, round(max(0, 10 - current) * units_per_compost', stack)
+        self.assertLess(stack.index('if (S.use(units))'), stack.index('credit_compost(H,'))
+        self.assertNotIn('S.use(units, H)', stack)
+        self.assertNotIn('qdel(S)', stack)
+        inputs = block(self.source, '/obj/structure/compost/proc/auto_load(var/mob/living/human/H)')
+        for rate in (4, 10, 18):
+            self.assertIn(f'add_compost_stack(W, H, {rate})', inputs)
+        add = block(self.source, '/obj/structure/compost/proc/add(obj/item/W, mob/living/human/H, amount_to_add, legacy_marker = FALSE)')
+        self.assertLess(add.index('!legacy_marker && amount_to_add > 10 - current'), add.index('qdel(W)'))
+        self.assertIn('add(W, H, W.amount * 10, legacy_marker = TRUE)', inputs)
+
 
 if __name__ == '__main__':
     unittest.main()

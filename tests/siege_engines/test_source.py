@@ -91,5 +91,46 @@ class SiegeSource(unittest.TestCase):
         self.assertIn('siege_can_fight()', SRC)
 
 
+    def test_catapult_panel_dispatches_a_distinct_unload_action(self):
+        cat = (ROOT / 'code/modules/1713/siege/catapult.dm').read_text(encoding='utf-8')
+        self.assertIn('return list("load", "unload", "set_angle", "fire")', cat)
+        self.assertIn('panel_button(loaded ? "Unload" : "Load", loaded ? "unload" : "load")', cat)
+        self.assertIn('else if (href_list["unload"])\n\t\tunload_projectile(user)', cat)
+
+    def test_catapult_commits_only_delivered_projectiles_and_will_not_replace_them(self):
+        cat = (ROOT / 'code/modules/1713/siege/catapult.dm').read_text(encoding='utf-8')
+        physical = cat.split('/catapult/attackby(', 1)[1].split('/obj/structure/', 1)[0]
+        self.assertIn('load_projectile(W, M)', physical)
+        self.assertNotIn('loaded =', physical)
+        load = cat.split('/proc/load_projectile(', 1)[1].split('/obj/structure/', 1)[0]
+        self.assertIn('QDELETED(src) || loaded || !istype(ball) || !istype(loader))\n\t\treturn FALSE', load)
+        self.assertIn('if (!loader.transfer_held_item_to(ball, src) || QDELETED(src))\n\t\treturn FALSE\n\tloaded = ball', load)
+        panel = cat.split('if (href_list["load"])', 1)[1].split('else if (href_list["unload"])', 1)[0]
+        self.assertIn('do_after(user, 10, src) && anchored && user.get_active_hand() == ball)\n\t\t\t\tload_projectile(ball, user)', panel)
+        self.assertNotIn('loaded =', panel)
+
+    def test_catapult_unload_uses_location_to_keep_the_slot_if_movement_is_refused(self):
+        cat = (ROOT / 'code/modules/1713/siege/catapult.dm').read_text(encoding='utf-8')
+        unload = cat.split('/proc/unload_projectile(', 1)[1].split('/obj/structure/', 1)[0]
+        self.assertIn('if (QDELETED(actor) || QDELETED(ball) || ball.loc != src)\n\t\treturn FALSE', unload)
+        self.assertIn('actor.put_in_hands(ball)\n\tif (!QDELETED(ball) && ball.loc == src)\n\t\treturn FALSE\n\tloaded = null', unload)
+        self.assertIn('projectile_slot_revision++', unload)
+        self.assertIn('icon_state = "[state_prefix]0"\n\tupdate_icon()', unload)
+
+    def test_catapult_windup_rechecks_the_original_slot_before_firing(self):
+        cat = (ROOT / 'code/modules/1713/siege/catapult.dm').read_text(encoding='utf-8')
+        fire = cat.split('if (href_list["fire"])', 1)[1].split('/obj/structure/', 1)[0]
+        expected = (
+            'var/obj/item/catapult_ball/firing_ball = loaded',
+            'var/firing_revision = projectile_slot_revision',
+            'if (do_after(user, loose_time, src))',
+            'loaded != firing_ball || projectile_slot_revision != firing_revision || QDELETED(firing_ball) || firing_ball.loc != src)\n\t\t\t\treturn',
+            'qdel(firing_ball)',
+        )
+        indexes = [fire.index(anchor) for anchor in expected]
+        self.assertEqual(indexes, sorted(indexes))
+        self.assertNotIn('qdel(loaded)', fire)
+
+
 if __name__ == '__main__':
     unittest.main()
