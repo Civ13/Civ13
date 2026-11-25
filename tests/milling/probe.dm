@@ -55,8 +55,15 @@ var/eco_runtime_error = FALSE
 	eco_check(!D.check_power() && !D.takes_plates, "the drum needs a mover and takes no plates")
 	eco_check(milling_probe_crushed(D, /obj/item/stack/ore/crushed_ore/gold, 3) == 3 && !D.hopper_accepts(new /obj/item/stack/material/stone(locate(1, 1, 1))), "the drum hopper takes crushed ore, not stone")
 	D.water_store = 60
-	eco_check(!D.stamp_one_stone(1) && D.mill_stop_reason == "its quicksilver is spent", "a dry drum stops for quicksilver")
+	eco_check(!D.stamp_one_stone(1) && D.mill_stop_reason == "its quicksilver is spent", "a drum without quicksilver stops")
 	D.reagents.add_reagent("mercury", 10)
+	D.water_store = 0
+	var/turf/drum_site = get_turf(D)
+	var/obj/item/stack/ore/tailings/amalgam/stray
+	eco_check(!D.stamp_one_stone(1) && D.mill_stop_reason == "it has run out of water", "a dry drum stops for water")
+	stray = locate() in drum_site
+	eco_check(!stray && D.loaded_stone_amount() == 3 && D.reagents.get_reagent_amount("mercury") == 10, "a dry drum creates no tailings and preserves feed and quicksilver")
+	D.water_store = 60
 	var/ok = D.stamp_one_stone(1)
 	var/obj/item/stack/ore/amalgam/gold/A = locate() in get_turf(D)
 	eco_check(ok && A && abs(D.reagents.get_reagent_amount("mercury") - 7.8) < 0.001 && D.water_store == 45, "a lucky load makes amalgam and loses 0.2u ([D.reagents.get_reagent_amount("mercury")])")
@@ -70,13 +77,29 @@ var/eco_runtime_error = FALSE
 	var/obj/item/stack/ore/silver/SV = locate() in get_turf(T)
 	var/obj/item/stack/ore/tailings/TL = locate() in get_turf(T)
 	eco_check(SV && TL && !T.reagents, "the shaking table gives clean silver and tailings without quicksilver")
+	var/tailings_before = TL ? TL.amount : 0
 	T.water_store = 0
 	eco_check(!T.stamp_one_stone(1) && T.mill_stop_reason == "it has run out of water", "a dry table stops for water")
+	eco_check(TL && TL.amount == tailings_before && T.loaded_stone_amount() == 1, "a dry table adds no tailings and preserves feed")
+	if (TL)
+		TL.amount = TL.max_amount
+	T.output_stack_limit = 1
+	T.water_store = 60
+	eco_check(!T.stamp_one_stone(1) && T.water_store == 60 && T.loaded_stone_amount() == 1, "a blocked table preserves water and feed")
 	var/obj/structure/drill/stamp_mill/water/mill/trommel/R = new(locate(14, 14, 1))
 	eco_check(milling_probe_crushed(R, /obj/item/stack/ore/pay_dirt/rich, 4) == 4, "the trommel takes pay dirt")
 	R.water_store = 60
 	eco_check(!R.stamp_one_stone() && R.mill_stop_reason == "there is no free sluice box beside it", "a trommel needs a sluice")
 	var/obj/structure/placer_washer/sluice/SL = new(locate(15, 14, 1))
+	var/turf/sluice_site = get_turf(SL)
+	var/list/fillers = list()
+	for (var/i in 1 to R.output_stack_limit)
+		fillers += new /obj/item/stack/material/stone(sluice_site, 1, FALSE)
+	SL.reagents.add_reagent("mercury", 2)
+	eco_check(!R.stamp_one_stone() && R.mill_stop_reason == "clear the sluice output tile and restart it", "a full sluice tile stops the trommel")
+	eco_check(R.loaded_stone_amount() == 4 && R.water_store == 60 && SL.reagents.get_reagent_amount("mercury") == 2, "a full sluice tile preserves dirt, water, and quicksilver")
+	for (var/obj/item/stack/filler in fillers)
+		qdel(filler)
 	eco_check(R.stamp_one_stone() && R.loaded_stone_amount() == 3 && SL, "with a sluice beside it the trommel screens a load")
 	var/obj/structure/drill/stamp_mill/M = new(locate(18, 18, 1))
 	eco_check(M.takes_plates && !M.plates, "a stamp mill takes plates")
