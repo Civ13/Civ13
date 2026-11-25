@@ -70,14 +70,25 @@ var/tame_runtime_error = FALSE
 	var/mob/living/human/tame_probe/H = new(locate(10, 11, 1))
 	var/mob/living/simple_animal/sheep/S = new(locate(10, 10, 1))
 	S.make_wild()
-	var/now = 20000000
+	var/now = 12000000 // keep one-minute steps exact in DM float arithmetic
 	tame_check(S.tame_feeding(H, now) && S.tame_trust == 1, "a first feeding counts")
 	tame_check(!S.tame_feeding(H, now + 3) && S.tame_trust == 1, "feeding again at once does not count")
 	for (var/i = 1 to TAME_FEEDINGS - 2)
 		S.tame_feeding(H, now + i * TAME_FEED_GAP)
 	tame_check(S.wild && S.tame_trust == TAME_FEEDINGS - 1, "one feeding short is still wild")
-	S.tame_fade(now + (TAME_FEEDINGS - 2) * TAME_FEED_GAP + TAME_FADE_AFTER * 2)
-	tame_check(S.tame_trust == TAME_FEEDINGS - 3, "two days away loses two feedings")
+	var/last = now + (TAME_FEEDINGS - 2) * TAME_FEED_GAP
+	var/last_text = S.tame_fed
+	tame_check(S.tame_current_trust(last + TAME_FADE_AFTER - 1) == TAME_FEEDINGS - 1, "trust is intact just before a full day")
+	tame_check(S.tame_current_trust(last + 2 * TAME_FADE_AFTER) == TAME_FEEDINGS - 3, "two days away loses two feedings")
+	tame_check(S.tame_current_trust(last + 2 * TAME_FADE_AFTER) == TAME_FEEDINGS - 3 && S.tame_fed == last_text && S.tame_trust == TAME_FEEDINGS - 1, "repeated reads do not change trust or feeding time")
+	var/day_boundary = last + TAME_FADE_AFTER
+	tame_check(S.tame_feeding(H, day_boundary) && S.tame_trust == TAME_FEEDINGS - 1 && S.tame_fed == trap_minutes_text(day_boundary), "feeding at the day boundary offsets one point of decay")
+	tame_check(!S.tame_feeding(H, day_boundary + TAME_FEED_GAP - 1) && S.tame_trust == TAME_FEEDINGS - 1, "real feeding still restarts the cooldown")
+	var/old_feeding = trap_now_minutes() - TAME_FADE_AFTER
+	S.tame_trust = 3
+	S.tame_fed = trap_minutes_text(old_feeding)
+	tame_check(findtext(S.tame_state_text(), "2 of 6") && S.tame_fed == trap_minutes_text(old_feeding) && S.tame_trust == 3, "examine shows decayed trust without recording a feeding")
+	tame_check(S.tame_feeding(H, old_feeding + TAME_FADE_AFTER + 9) && S.tame_trust == 3, "feeding nine minutes after the decay boundary still counts")
 	S.tame_trust = TAME_FEEDINGS - 1
 	S.tame_fed = trap_minutes_text(now)
 	S.tame_feeding(H, now + TAME_FEED_GAP)
