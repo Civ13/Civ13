@@ -448,12 +448,12 @@
 				G["used"] = items.len + unseen.len + (search_holder == S && search_item ? 1 : 0)
 				G["slots"] = CR.storagecap
 				G["unit"] = "things"
-			else if (!istype(S, /obj/structure/closet))
+			else if (istype(S, /obj/item/weapon/storage))
 				G["used"] = used
 				G["space"] = S.max_storage_space
 				G["slots"] = S.storage_slots
 				G["max_size"] = S.max_w_class
-			G["total"] = S.shown_contents_count()
+				G["total"] = S.shown_contents_count()
 			if (unseen.len)
 				G["unseen"] = unseen
 			if (search_holder == S && search_item)

@@ -229,6 +229,7 @@ var/storwin_runtime_error = FALSE
 		if (G["id"] == "near:[ref(IS)]")
 			basket = G
 	storwin_check(basket && !length(basket["items"]) && length(basket["unseen"]) == 2 && !basket["can_dump"], "someone else's basket shows two unseen things and can't be dumped")
+	storwin_check(basket && basket["total"] == 2, "item storage still includes a total count without naming unseen items")
 	storwin_check(!W.served_items.len || !(knife in W.served_items_values()), "unseen things are never named to the window")
 	storwin_check(storage_search_time(knife) == 7 && storage_search_time(axe) == 10, "looking takes 0.7 s for a small thing, 1.0 s for a normal one")
 	storwin_check(W.begin_search(IS) && W.search_item == knife, "searching starts with the top thing")
@@ -286,6 +287,27 @@ var/storwin_runtime_error = FALSE
 	var/datum/storage_window/W = new(H)
 	storwin_check(W.lists_holder(C) && storage_window_access(H, C), "the open crate next to you is listed and open to you")
 	storwin_check(!W.knows(packed, "near"), "what was packed before you came must be searched")
+	var/obj/structure/closet/cupboard = new(locate(2, 11, 1))
+	cupboard.opened = TRUE
+	var/obj/item/unseen = storwin_item(cupboard, ITEM_SIZE_SMALL, "unseen parcel")
+	var/obj/item/weapon/storage/backpack/bag = new(locate(2, 9, 1))
+	storwin_item(bag, ITEM_SIZE_TINY, "outside compartment")
+	var/obj/false_bottom/compartment = new(bag)
+	var/obj/item/private = storwin_item(compartment, ITEM_SIZE_TINY, "inside compartment")
+	var/list/data = W.build_data()
+	var/list/crate
+	var/list/closet
+	var/list/backpack
+	for (var/list/G in data["near"])
+		if (G["id"] == "near:[ref(C)]")
+			crate = G
+		else if (G["id"] == "near:[ref(cupboard)]")
+			closet = G
+		else if (G["id"] == "near:[ref(bag)]")
+			backpack = G
+	storwin_check(crate && !length(crate["items"]) && length(crate["unseen"]) == 1 && isnull(crate["total"]) && !(packed in W.served_items_values()), "an unsearched crate shows no item name or extra item-storage total")
+	storwin_check(closet && !length(closet["items"]) && length(closet["unseen"]) == 1 && isnull(closet["total"]) && !(unseen in W.served_items_values()), "an open closet shows only known items and no item-storage total")
+	storwin_check(backpack && backpack["total"] == 1 && !(private in W.served_items_values()), "item-storage totals still exclude false bottoms and their contents")
 	storwin_check(W.begin_search(C), "searching the crate starts")
 	W.finish_look()
 	storwin_check(W.knows(packed, "near") && W.reachable(packed), "once seen it is in reach")
@@ -294,12 +316,12 @@ var/storwin_runtime_error = FALSE
 	var/obj/item/third = storwin_item(here, ITEM_SIZE_TINY, "flint")
 	storwin_check(!W.perform_move(third, "near", C) && third.loc == here, "a crate refuses more things than it takes")
 	storwin_check(W.perform_move(packed, STORAGE_WINDOW_KIND_FLOOR, null) && packed.loc == here, "and gives them back to the floor")
-	var/list/data = W.build_data()
-	var/list/crate
+	data = W.build_data()
+	crate = null
 	for (var/list/G in data["near"])
 		if (G["id"] == "near:[ref(C)]")
 			crate = G
-	storwin_check(crate && crate["unit"] == "things" && crate["slots"] == 2 && crate["used"] == 1, "the window counts the crate in things")
+	storwin_check(crate && crate["unit"] == "things" && crate["slots"] == 2 && crate["used"] == 1 && length(crate["items"]) == 1, "the window counts the crate in things and lists the known item")
 	C.locked = TRUE
 	storwin_check(!storage_window_access(H, C) && !W.reachable(stone), "a locked crate keeps its things")
 	C.locked = FALSE
