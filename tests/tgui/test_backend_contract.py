@@ -2,7 +2,9 @@
 from pathlib import Path
 import json
 import re
+import struct
 import unittest
+import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 DM = (ROOT / 'code/modules/nano/tgui.dm').read_text()
@@ -27,6 +29,22 @@ def declared_fields(path, owner):
     for action, fields in re.findall(r'(?:if \(action == |if \()"(\w+)"\)+\n\t+return list\(([^\n]+)\)', body):
         found[action] = re.findall(r'"([^"\n]+)"', fields)
     return found
+
+
+def dmi_description(path):
+    """Read the PNG Description chunk without runner-installed imaging packages."""
+    data = path.read_bytes()
+    assert data.startswith(b"\x89PNG\r\n\x1a\n"), path
+    offset = 8
+    while offset + 12 <= len(data):
+        size, kind = struct.unpack_from(">I4s", data, offset)
+        value = data[offset + 8:offset + 8 + size]
+        if kind == b'zTXt' and value.startswith(b'Description\0\0'):
+            return zlib.decompress(value[len(b'Description\0\0'):]).decode()
+        if kind == b'tEXt' and value.startswith(b'Description\0'):
+            return value[len(b'Description\0'):].decode()
+        offset += size + 12
+    raise AssertionError(f"No DMI Description chunk in {path}")
 
 
 class BackendContract(unittest.TestCase):
@@ -505,14 +523,12 @@ class BackendContract(unittest.TestCase):
         self.assertIn('/obj/item/weapon/book/ui_actions(ui_key)\n\tif (ui_key == "research_book")', book)
 
     def test_faction_emblem_stamps_resolve_shipped_icon_states(self):
-        from PIL import Image
-
         source = (ROOT / 'code/game/mob/groups/faction_symbol.dm').read_text()
         labels = re.search(r'/list/faction_symbol_shapes = list\(([^\n]+)\)', source)[1]
         shapes = re.findall(r'"([^"]+)"', labels)
         stamp = source.split('/proc/faction_symbol_stamp_grid(', 1)[1].split('\n/', 1)[0]
-        with Image.open(ROOT / 'icons/obj/banners.dmi') as banners:
-            states = set(re.findall(r'^state = "([^"]*)"', banners.info['Description'], re.M))
+        description = dmi_description(ROOT / 'icons/obj/banners.dmi')
+        states = set(re.findall(r'^state = "([^"]*)"', description, re.M))
         self.assertIn('big cross', shapes)
         self.assertIn('var/shape_state = replacetext(shape, " ", "_")', stamp)
         self.assertIn('"b_[shape_state]"', stamp)
