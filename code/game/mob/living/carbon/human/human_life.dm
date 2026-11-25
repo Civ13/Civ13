@@ -35,7 +35,8 @@
 	var/healing_stage = 0 //for beds
 	var/tmp/survival_rest_since = null
 	var/tmp/survival_actions = 0
-	var/tmp/survival_workload = 0 // heaviest running timed action: 0 none, 1 light, 2 ordinary, 3 heavy
+	var/tmp/survival_ordinary_actions = 0
+	var/tmp/survival_heavy_actions = 0
 
 // Existing input and movement clocks avoid a per-mob timer or world scan.
 /mob/living/human/proc/survival_metabolism_time()
@@ -45,14 +46,24 @@
 	return client ? client.inactivity : -1
 
 /mob/living/human/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)
+	// Classify once. Hands and targets may change before the wait ends.
+	var/workload = mining_context ? 3 : survival_workload_for(target)
 	survival_actions++
-	survival_workload = max(survival_workload, mining_context ? 3 : survival_workload_for(target))
+	if (workload == 3)
+		survival_heavy_actions++
+	else if (workload == 2)
+		survival_ordinary_actions++
 	survival_rest_since = survival_metabolism_time()
+	return workload
 
-/mob/living/human/survival_action_finished()
-	survival_actions = max(0, survival_actions - 1)
-	if (!survival_actions)
-		survival_workload = 0
+/mob/living/human/survival_action_finished(workload)
+	if (!workload || !survival_actions)
+		return
+	survival_actions--
+	if (workload == 3)
+		survival_heavy_actions = max(0, survival_heavy_actions - 1)
+	else if (workload == 2)
+		survival_ordinary_actions = max(0, survival_ordinary_actions - 1)
 	survival_rest_since = survival_metabolism_time()
 
 // Food and water burn with the work being done, as multiples of the ordinary
@@ -62,7 +73,11 @@
 // heavy labour; sixty seconds without input still drops use by 90%.
 /mob/living/human/proc/survival_current_workload()
 	if (survival_actions)
-		return max(1, survival_workload)
+		if (survival_heavy_actions)
+			return 3
+		if (survival_ordinary_actions)
+			return 2
+		return 1
 	var/now = survival_metabolism_time()
 	if ((last_movement <= now && now - last_movement < 20) || next_move > now) // moved in the last 2 seconds or fighting
 		return 2

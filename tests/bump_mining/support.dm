@@ -87,10 +87,13 @@
 // time-per-speed wait against the iron pickaxe's speed of 2.
 /proc/work_delay(mob/user, base, kind, obj/item/tool)
 	return base * 2 / (user.getStatCoeff("strength") * tool.usespeed)
-/mob/proc/survival_action_started()
+/mob/proc/survival_action_started(atom/target, datum/pickaxe_mining_action/mining_context)
 	actions++
 	starts++
-/mob/proc/survival_action_finished()
+	return 3
+/mob/proc/survival_action_finished(workload)
+	if (workload != 3)
+		return
 	actions--
 	ends++
 /atom/proc/visible_message(a, b)
@@ -99,6 +102,8 @@
 	parent_bumps++
 /mob/living/human/proc/football_bump(atom/A)
 	return
+/mob/living/human/proc/sprint_collide(atom/A)
+	return FALSE // Sprint collision is outside this fixture.
 /mob/living/human/proc/try_bump_chopping(atom/A)
 	return FALSE // Tree chopping lives in wild.dm; not part of this fixture.
 /mob/proc/halt_held_movement_toward(atom/A)
@@ -152,3 +157,11 @@
 // Rendering is intentionally outside this extracted mining-behaviour fixture.
 /mob/proc/prepare_resource_work_animation(obj/item/tool, atom/target, duration)
 	return null
+
+// Ship construction waits are not exercised by the mining fixture.
+/datum/ship_construction
+	var/obj/workpiece
+/datum/ship_construction/proc/fixture_stationary(atom/target)
+	return FALSE
+/datum/ship_construction/proc/stationary(mob/user)
+	return FALSE

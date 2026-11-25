@@ -81,8 +81,8 @@ class GatherPacketTests(unittest.TestCase):
         self.assertNotIn('new /obj/item/stack/grass_cuttings',source)
         self.assertEqual(source.count('/client/New(TopicData)\n\treturn FALSE'),1)
         self.assertNotIn('.Life(',source)
-        self.assertEqual(source.count('starts++\n\t. = ..()'),1)
-        self.assertEqual(source.count('finishes++\n\t. = ..()'),1)
+        self.assertEqual(source.count('starts++\n\t. = ..(target, mining_context)'),1)
+        self.assertEqual(source.count('finishes++\n\t. = ..(workload)'),1)
         for name in prep.FAILURES.values():self.assertIn('"'+name+'"',source)
 
     def test_mutations_require_exact_failed_oracle_and_full_successful_setup(self):
