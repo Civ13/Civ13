@@ -67,5 +67,36 @@ class WashSourceTests(unittest.TestCase):
         self.assertIn('user.put_in_inactive_hand(made)', output)
 
 
+class HideWellWashTests(unittest.TestCase):
+    def test_windlass_routes_to_the_paid_hide_loop_and_never_generic_cleanup(self):
+        root = SOURCE.parents[4]
+        wells = (root / 'code/modules/1713/dug_wells.dm').read_text(encoding='utf-8')
+        fitting = wells.split('/obj/structure/well_fitting/attackby(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('return W.attackby(O, user)', fitting)
+        well = wells.split('/obj/structure/sink/well/attackby(', 1)[1].split('\n// ----', 1)[0]
+        route = well.split('if (istype(H))', 1)[1].split('\tif (F && F.draw', 1)[0]
+        self.assertIn('H.wash_in_water(user, src, F)', route)
+        self.assertLess(well.index('if (!well_can_use_item(O))'), well.index('H.wash_in_water(user, src, F)'))
+        self.assertIn('Draw water into an open vessel', route)
+        self.assertIn('\t\treturn TRUE', route)
+        self.assertNotIn('..()', route)
+
+    def test_washing_waits_and_rechecks_the_same_fitting_before_spending_water(self):
+        root = SOURCE.parents[4]
+        leather = (root / 'code/game/objects/items/stacks/sheets/leather.dm').read_text(encoding='utf-8')
+        admission = leather.split('/proc/water_wash_valid(', 1)[1].split('\n\n', 1)[0]
+        self.assertIn('fitting.loc != W.loc || W.well_fitting() != fitting', admission)
+        self.assertIn('|| W.well_cover_closed', admission)
+        self.assertIn('return !W.heat_dried() && W.volume >= HIDE_WASH_WATER_COST', admission)
+        washing = leather.split('/proc/wash_in_water(', 1)[1].split('\n#undef ', 1)[0]
+        self.assertIn(r'with water from \the [water] drawn using \the [fitting]', washing)
+        self.assertIn('[source_description], one at a time.', washing)
+        self.assertIn('hide[done == 1 ? "" : "s"] [source_description].', washing)
+        steps = ('while (water_wash_valid(user, water, fitting))', 'hide_wash_wait(water)',
+                 '|| !water_wash_valid(user, water, fitting)', 'W.volume -= HIDE_WASH_WATER_COST',
+                 'use(1)', 'water_wash_output(user, site)')
+        self.assertEqual(sorted(washing.index(step) for step in steps), [washing.index(step) for step in steps])
+
+
 if __name__ == '__main__':
     unittest.main()
