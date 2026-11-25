@@ -178,18 +178,18 @@ it('keeps line breaks and applies only [b], [i] and [br] to new writing', () => 
 it('wraps the selection with formatting tags, inserts stamps at the caret and counts remaining space', () => {
   const ui=props({...data(),free_space:40});render(<PaperEditor {...ui} />);
   const area=screen.getByLabelText('Writing text') as HTMLTextAreaElement;
-  expect(screen.getByText('40 of 40 characters remaining after this writing.')).toBeTruthy();
+  expect(screen.getByText('40 of 40 bytes remaining after this writing.')).toBeTruthy();
   expect(screen.queryByLabelText('Draft preview')).toBeNull();
   fireEvent.change(area,{target:{value:'make this bold'}});
   area.setSelectionRange(10,14);fireEvent.click(screen.getByRole('button',{name:'Bold'}));
   expect(area.value).toBe('make this [b]bold[/b]');expect([area.selectionStart,area.selectionEnd]).toEqual([13,17]);
-  expect(screen.getByText('19 of 40 characters remaining after this writing.')).toBeTruthy();
+  expect(screen.getByText('19 of 40 bytes remaining after this writing.')).toBeTruthy();
   const preview=screen.getByLabelText('Draft preview').querySelector('article')!;
   expect(preview.textContent).toBe('make this bold');expect(preview.querySelectorAll('span')[1].style.fontWeight).toBe('700');
   area.setSelectionRange(area.value.length,area.value.length);fireEvent.click(screen.getByRole('button',{name:'Insert the date'}));
   expect(area.value).toBe('make this [b]bold[/b][date]');expect(area.selectionStart).toBe(27);
   fireEvent.change(area,{target:{value:'x'.repeat(41)}});
-  expect(screen.getByText('1 characters over the remaining space.')).toBeTruthy();
+  expect(screen.getByText('1 byte over the remaining space.')).toBeTruthy();
   expect((screen.getByRole('button',{name:'Write'}) as HTMLButtonElement).disabled).toBe(true);
   expect(ui.act).not.toHaveBeenCalled();
 });
@@ -252,4 +252,59 @@ it('fills the chosen blank from the editor form', () => {
   fireEvent.change(screen.getByLabelText('Writing text'), { target: { value: 'Major' } });
   fireEvent.click(screen.getByText('Write'));
   expect(sent(ui)).toMatchObject({ kind: 'field_answer', target: 'section-2', value: 'Major' });
+});
+
+it('preserves authored answer breaks in both the draft and saved document', () => {
+  const ui = props(formData(false));
+  const { rerender } = render(<PaperEditor {...ui} />);
+  const answer = '\nAda\nLovelace[br]Countess';
+  fireEvent.change(screen.getByLabelText('Writing section'), { target: { value: 'field_answer' } });
+  fireEvent.change(screen.getByLabelText('Writing text'), { target: { value: answer } });
+  const lines = (name: string) => Array.from(screen.getByLabelText(name).querySelector('article')!.children,
+    child => child.querySelector('br') ? '|' : child.textContent).join('');
+  expect(lines('Draft preview')).toBe('Name: |Ada|Lovelace|Countess');
+  fireEvent.click(screen.getByRole('button', { name: 'Write' }));
+  expect(sent(ui)).toMatchObject({ value: answer, target: 'section-1' });
+  const saved = formData(true);
+  saved.view.sections[2].text = answer;
+  rerender(<PaperEditor {...ui} data={{ ...saved, response_serial: 2 }} />);
+  expect(lines('Document')).toBe('Name: |Ada|Lovelace|Countess|Rank: __________');
+});
+
+it.each([
+  { kind: 'field_answer', space: 5, overflow: 'ééé', exact: 'a🚢', warning: 'This text exceeds the remaining space.' },
+  { kind: 'field_label', space: 3072, overflow: 'é'.repeat(65), exact: 'é'.repeat(64), warning: "A blank's name can be at most 128 bytes." },
+])('checks UTF-8 limits and only submits valid $kind drafts', ({ kind, space, overflow, exact, warning }) => {
+  const ui = props({ ...formData(false), free_space: space });
+  render(<PaperEditor {...ui} />);
+  fireEvent.change(screen.getByLabelText('Writing section'), { target: { value: kind } });
+  const area = screen.getByLabelText('Writing text');
+  const button = screen.getByRole('button', { name: 'Write' }) as HTMLButtonElement;
+  fireEvent.change(area, { target: { value: overflow } });
+  expect(screen.getByText(warning)).toBeTruthy();
+  expect(button.disabled).toBe(true);
+  fireEvent.keyDown(area, { key: 'Enter', ctrlKey: true });
+  fireEvent.submit(area.closest('form')!);
+  expect(ui.act).not.toHaveBeenCalled();
+  fireEvent.change(area, { target: { value: exact } });
+  expect(screen.queryByText(warning)).toBeNull();
+  expect(button.disabled).toBe(false);
+  fireEvent.click(button);
+  expect(sent(ui)).toMatchObject({ kind, value: exact });
+});
+
+it.each([0, 1])('uses the full visible caption and corresponding target of blank %i', index => {
+  const form = formData(false);
+  const prefix = 'Enter the names of officers eligible to sign this requisition - ';
+  const captions = [prefix + 'town hall', prefix + 'harbor'];
+  form.view.sections.forEach((section: Data, i: number) => { section.text = captions[i]; });
+  const ui = props(form);
+  render(<PaperEditor {...ui} />);
+  fireEvent.change(screen.getByLabelText('Writing section'), { target: { value: 'field_answer' } });
+  const options = captions.map(name => screen.getByRole('option', { name }) as HTMLOptionElement);
+  expect(options.map(option => option.value)).toEqual(['section-1', 'section-2']);
+  fireEvent.change(screen.getByLabelText('Blank to fill'), { target: { value: options[index].value } });
+  fireEvent.change(screen.getByLabelText('Writing text'), { target: { value: 'Ada' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Write' }));
+  expect(sent(ui)).toMatchObject({ kind: 'field_answer', target: 'section-' + (index + 1) });
 });

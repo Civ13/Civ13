@@ -54,6 +54,27 @@ export async function paperEditorSmoke(browser, js, css) {
     assert.equal(await run.evaluate(e=>getComputedStyle(e).color),'rgb(255, 255, 255)');
     await page.setViewportSize({width:380,height:700});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    const blanks = await load();
+    await blanks.setViewportSize({width:380,height:700});
+    const caption = 'Enter the names of officers eligible to sign this requisition - ';
+    const fields = ['town hall','harbor'].map((suffix,index) => ({id:'section-'+(index+1),
+      kind:'field_label',language_id:EN,text:caption+suffix,ink:'black',tool:'pen'}));
+    await update(blanks,{...current,free_space:18,view:{...current.view,sections:fields}});
+    await blanks.getByLabel('Writing section').selectOption('field_answer');
+    assert.equal(await blanks.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
+    await blanks.getByLabel('Blank to fill').selectOption({label:caption+'harbor'});
+    const answer=blanks.getByLabel('Writing text'), write=blanks.getByRole('button',{name:'Write',exact:true});
+    await answer.fill('é'.repeat(10));
+    assert.equal(await write.isDisabled(),true);
+    assert.equal(await blanks.evaluate(()=>window.sent.length),0);
+    const multiline='\nAda\nLovelace[br]X';
+    await answer.fill(multiline);
+    assert.equal(await blanks.getByLabel('Draft preview').locator('br').count(),3);
+    await write.click();
+    await blanks.waitForFunction(()=>window.sent.length===1);
+    const filled=JSON.parse((await blanks.evaluate(()=>window.sent[0])).payload.value);
+    assert.equal(filled.target,'section-2');
+    assert.equal(filled.value,multiline);
     // Older pencode HTML and crayon writing render as inert styled text in the
     // real Chromium page checks; the editor stays usable and does not fall back.
     const legacyHtml='<font face="Verdana" color=blue><b>Orders</b><BR>March north<img src=x onerror="window.pwned=1"><script>window.pwned=1</script>'
