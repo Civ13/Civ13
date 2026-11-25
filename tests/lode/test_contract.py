@@ -90,6 +90,16 @@ class Wiring(unittest.TestCase):
         self.assertIn('if (!is_mill_feed(W) || !istype(H))', CRUSH)
         self.assertIn('lode_crushed_type(S) || roll_stone_crushing', CRUSH)
 
+    def test_manual_stone_crusher_uses_the_existing_millstone_frame(self):
+        crusher = CRUSH.split('/obj/structure/stone_crusher\n', 1)[1].split('\n/obj/', 1)[0]
+        icon = re.search(r"(?m)^\ticon = '([^']+)'$", crusher)[1]
+        state = re.search(r'(?m)^\ticon_state = "(\w+)"$', crusher)[1]
+        self.assertEqual((icon, state), ('icons/obj/hopper_machines.dmi', 'millstones'))
+        dmi = dmi_description(ROOT / icon)
+        self.assertIn('width = 32', dmi)
+        self.assertIn('height = 32', dmi)
+        self.assertRegex(dmi, rf'state = "{state}"\s+dirs = 1\s+frames = 1')
+
     def test_no_world_time(self):
         self.assertNotIn('world.time', SOURCE)
 
