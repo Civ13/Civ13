@@ -25,6 +25,7 @@ export function RecruitmentStation(ui: ScreenProps) {
   }
   const applicant = data.applicant;
   const application = applicant?.application;
+  const outcome = applicant?.outcome;
   const queue = list(data.queue);
   const policy = data.policy;
   return <>
@@ -36,6 +37,10 @@ export function RecruitmentStation(ui: ScreenProps) {
     </Section>
     {applicant && <Section title="Join">
       <p>{str(applicant.text)}</p>
+      {!application && outcome && <>
+        <p>Last decision: <Pill tone="info">{str(outcome.status_text)}</Pill></p>
+        {outcome.reason && <p>Reason: {str(outcome.reason)}</p>}
+      </>}
       <Results results={applicant.results} />
       {applicant.action === 'join' && <Action ui={ui} action="apply">Join</Action>}
       {applicant.action === 'apply' && <Action ui={ui} action="apply">Apply</Action>}
