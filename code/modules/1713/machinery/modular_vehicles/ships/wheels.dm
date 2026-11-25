@@ -84,20 +84,20 @@
 				ship.startmovementloop()
 			spamtimer = world.time + 20
 	if (href_list["set_sails"])
-		if (ship)
+		if (ship && ship.masts.len)
+			if (world.time <= spamtimer)
+				to_chat(user, SPAN_NOTICE("Wait a moment before adjusting the sails."))
+				return FALSE
+			var/next_sails = !sails_on
 			for (var/obj/structure/vehicleparts/movement/sail/M in ship.masts)
-				if (world.time > spamtimer)
-					if (!sails_on)
-						M.sails_on = TRUE
-					else
-						M.sails_on = FALSE
-					M.update_icon()
-			if (!sails_on)
+				M.sails_on = next_sails
+				M.update_icon()
+			sails_on = next_sails
+			spamtimer = world.time + 20
+			if (next_sails)
 				to_chat(user, "You hoist the sails on the [ship].")
 			else
 				to_chat(user, "You retract the sails on the [ship].")
-			spamtimer = world.time + 20
-			sails_on = !sails_on
 
 	if (href_list["set_heading_left"])
 		if (turndir(user,"left"))

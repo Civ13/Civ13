@@ -81,5 +81,51 @@ class ComponentTeardownTests(unittest.TestCase):
         self.assertIn(part, owner.masts)
 
 
+class SailCooldownTests(unittest.TestCase):
+    def test_cooldown_preserves_wheel_masts_and_retry_deadline(self):
+        topic = SAIL.with_name('wheels.dm').read_text(encoding='utf-8')
+        sail_action = topic.split('\n\tif (href_list["set_sails"])\n', 1)[1].split(
+            '\n\tif (href_list["set_heading_left"])', 1)[0]
+        sail_action = re.sub(r'(?<![\w.])(?:spamtimer|sails_on)\b',
+                             lambda m: 'src.' + m[0], sail_action)
+        sail_action = sail_action.replace('ship.masts.len', 'len(ship.masts)')
+        source = '/sails()\n' + '\n'.join(line[1:] for line in sail_action.splitlines())
+        now, messages, refreshes = SimpleNamespace(time=110), [], []
+        action = project(source, '/sails', 'src, ship, user', {
+            'world': now, 'typed_iter': lambda values, _kind: values,
+            'SPAN_NOTICE': str, 'to_chat': lambda _user, message: messages.append(message),
+        })
+        wheel = SimpleNamespace(sails_on=False, spamtimer=120)
+        masts = [SimpleNamespace(sails_on=False, update_icon=lambda: refreshes.append(1)) for _ in range(2)]
+        ship = SimpleNamespace(masts=masts)
+        for time in (110, 120):
+            now.time = time
+            action(wheel, ship, None)
+            self.assertFalse(wheel.sails_on)
+            self.assertEqual([mast.sails_on for mast in masts], [False, False])
+            self.assertEqual(wheel.spamtimer, 120)
+            self.assertFalse(refreshes)
+            self.assertIn('Wait', messages[-1])
+        now.time = 121
+        action(wheel, ship, None)
+        self.assertTrue(wheel.sails_on)
+        self.assertEqual([mast.sails_on for mast in masts], [True, True])
+        self.assertEqual(wheel.spamtimer, 141)
+        self.assertEqual(len(refreshes), 2)
+        self.assertIn('hoist', messages[-1])
+        now.time = 132
+        action(wheel, ship, None)
+        self.assertTrue(wheel.sails_on)
+        self.assertEqual(wheel.spamtimer, 141)
+        self.assertEqual(len(refreshes), 2)
+        now.time = 142
+        action(wheel, ship, None)
+        self.assertFalse(wheel.sails_on)
+        self.assertEqual([mast.sails_on for mast in masts], [False, False])
+        self.assertEqual(wheel.spamtimer, 162)
+        self.assertEqual(len(refreshes), 4)
+        self.assertIn('retract', messages[-1])
+
+
 if __name__ == '__main__':
     unittest.main()
