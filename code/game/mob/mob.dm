@@ -427,13 +427,16 @@
 		flavor_text = msg
 
 /mob/proc/print_flavor_text()
-	if (flavor_text && flavor_text != "")
-		var/msg = trim(replacetext(flavor_text, "\n", " "))
-		if (!msg) return ""
-		if (length(msg) <= 40)
-			return "<span class = 'notice'>[msg]</span>"
-		else
-			return "<span class = 'notice'>[copytext_preserve_html(msg, TRUE, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
+	if (!flavor_text)
+		return ""
+	// Storage is HTML-encoded; measure the visible text, not entity bytes.
+	var/msg = trim(replacetext(html_decode(flavor_text), "\n", " "))
+	if (!msg)
+		return ""
+	if (length_char(msg) <= 40)
+		return "<span class = 'notice'>[html_encode(msg)]</span>"
+	var/preview = html_encode(copytext_char(msg, 1, 37))
+	return "<span class = 'notice'>[preview]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
 
 /*
 /mob/verb/help()
