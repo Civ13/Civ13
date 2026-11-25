@@ -548,6 +548,12 @@
 		return ..()
 	study_research_source(H, src, choices[pick])
 
+// Shared by the chapter wait and its UI preview, including the tutor's rate
+// (not a flat tutoring bonus).
+/proc/research_chapter_study_time(mob/living/human/H, datum/research_node/N, datum/language/written_in, mob/living/human/tutor)
+	var/time = round(H.scholar_study_time(N.era_tier, N.id) * language_study_factor(H, written_in))
+	return tutor ? round(time / tutor.tutor_rate()) : time
+
 // Study a chapter from a book or a loose torn-out chapter page.
 /proc/study_research_source(mob/living/human/H, obj/item/source, node_id)
 	var/datum/research_node/N = get_research_node(node_id)
@@ -576,11 +582,10 @@
 		return FALSE
 	if (H.too_dark_to_read())
 		return FALSE
-	var/time = round(H.scholar_study_time(N.era_tier, node_id) * language_study_factor(H, written_in))
 	// A tutor who knows the chapter, standing beside the student, speeds it up.
 	var/mob/living/human/tutor = H.find_tutor(node_id)
+	var/time = research_chapter_study_time(H, N, written_in, tutor)
 	if (tutor)
-		time = round(time / tutor.tutor_rate())
 		to_chat(tutor, SPAN_NOTICE("You help [H] through the chapter on [N.name]."))
 	H.begin_study_message(node_id, time, "the chapter on [N.name]", tutor ? " with [tutor]'s help" : "")
 	var/atom/anchor = isturf(source.loc) || source.loc == H ? source : source.loc
