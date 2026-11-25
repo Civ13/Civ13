@@ -63,6 +63,8 @@
 	return max(20, round(delay / max(0.5, getStatCoeff("strength"))))
 
 /mob/living/human/resist_knockdown()
+	if (resist_fire_roll())
+		return TRUE
 	return try_get_up()
 
 // Resist while knocked down: a short, interruptible push back to your feet.
