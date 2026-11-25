@@ -901,6 +901,7 @@
 	var/lamb = FALSE
 	herbivore = 1
 	var/sheared = FALSE
+	var/tmp/wool_regrowth_pending = FALSE
 	wandersounds = list('sound/animals/sheep/sheep_1.ogg','sound/animals/sheep/sheep_2.ogg')
 
 /mob/living/simple_animal/sheep/uses_defensive_retaliation()
@@ -981,13 +982,23 @@
 				icon_dead = "sheep_ewe_dead"
 				mob_size = MOB_MEDIUM
 
+/mob/living/simple_animal/sheep/after_load()
+	. = ..()
+	// Saved sheep keep their fleece state; timers are rebuilt after restoration.
+	regrowth()
+
 /mob/living/simple_animal/sheep/proc/regrowth()
-	spawn(4800)
-		if (stat == DEAD) // a corpse keeps its sprite
-			return
-		sheared = FALSE
-		update_icons()
+	if (stat == DEAD || !sheared || wool_regrowth_pending)
 		return
+	wool_regrowth_pending = TRUE
+	addtimer(CALLBACK(src, PROC_REF(finish_wool_regrowth)), 4800)
+
+/mob/living/simple_animal/sheep/proc/finish_wool_regrowth()
+	wool_regrowth_pending = FALSE
+	if (stat == DEAD || !sheared) // a corpse keeps its sprite
+		return
+	sheared = FALSE
+	update_icons()
 
 /mob/living/simple_animal/sheep/female/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (istype(O, /obj/item/weapon/reagent_containers/glass))
