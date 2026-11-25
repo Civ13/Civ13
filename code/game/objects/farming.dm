@@ -1118,8 +1118,7 @@
 	var/obj/item/I
 	if (stack <> "product_name") // Routine to spawn produces when in stack
 		fruitpath = text2path("/obj/item/stack/[stack]")
-		// Stack constructors can merge and retire the new stack immediately.
-		// Finish the yield first so bonuses cannot be applied to a drained stack.
+		// Finish the yield first so bonuses are applied before any stack merges.
 		var/total = stack_amount
 		if (plant_nutrition >= 80)
 			total *= rand(1, 3)
@@ -1127,9 +1126,7 @@
 		var/stack_limit = initial(fruitpath:max_amount)
 		while (total > 0)
 			var/batch = stack_limit ? min(total, stack_limit) : total
-			I = new fruitpath(loc, batch)
-			if (!QDELETED(I))
-				I.radiation = radiation/2
+			spawn_crop_stack(fruitpath, loc, batch)
 			total -= batch
 	else
 		if (condiment <> "product_name") // Routine to spawn produces when condiment
@@ -1143,6 +1140,20 @@
 		for (var/l = 1, l <= count, l++)
 			I = new fruitpath(loc)
 			I.radiation = radiation/2
+
+// Keep each batch's radiation separate before letting it top up a matching pile.
+/obj/structure/farming/plant/proc/spawn_crop_stack(stackpath, atom/target, batch)
+	var/obj/item/stack/I = new stackpath(target, batch, FALSE)
+	I.radiation = radiation/2
+	if (!I.can_stack)
+		return I
+	for (var/obj/item/stack/S in target)
+		if (S == I || QDELETED(S) || !istype(S, I.type) || S.radiation != I.radiation)
+			continue
+		I.merge(S)
+		if (QDELETED(I))
+			return S
+	return I
 
 /*
 /////// Plant life processing code...
