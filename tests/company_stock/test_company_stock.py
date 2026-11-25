@@ -158,6 +158,12 @@ class StockMarket(unittest.TestCase):
         self.assertLess(guard, fiat.index('fiat_profits[fid] = 0'))
 
 
+    def test_former_proceeds_are_collected_before_the_sell_section(self):
+        lines = MARKET.splitlines()
+        branch = lines.index("\t\telse if (has_company_proceeds(H, cmp))")
+        self.assertIn("former_proceeds +=", lines[branch + 1])
+        self.assertTrue(lines[branch + 2].startswith('\tsections += list(panel_section("Sell Stocks"'))
+
     def test_former_holder_can_withdraw_their_own_standard_and_fiat_proceeds(self):
         panel = proc(MARKET, '// Own stocks.', '// Faction treasury')
         self.assertIn('if (find_company_member(H, cmp))', panel)

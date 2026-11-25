@@ -102,9 +102,9 @@
 					sell_forms += list(panel_form("[cmp] - you own [i[2]]%", "sell", cmp_idx, list(
 						panel_field("amt", "Amount", i[2]), panel_field("price", "Price", 10), panel_field("cur", "Currency", "standard", "choice", currencies)), "Sell"))
 			manage += list(panel_item(cmp, null, list(panel_button("Members", "viewmembers", cmp_idx), panel_button("Distribute", "distribute", cmp_idx), panel_button("Withdraw", "withdraw", cmp_idx))))
-	sections += list(panel_section("Sell Stocks", forms = sell_forms, empty = "You do not own any stocks."))
 		else if (has_company_proceeds(H, cmp))
 			former_proceeds += list(panel_item(cmp, null, list(panel_button("Withdraw", "withdraw", cmp_idx))))
+	sections += list(panel_section("Sell Stocks", forms = sell_forms, empty = "You do not own any stocks."))
 	sections += list(panel_section("Manage Company", items = manage, empty = "You are not a member of any company."))
 	if (former_proceeds.len)
 		sections += list(panel_section("Proceeds from Former Holdings", items = former_proceeds))
