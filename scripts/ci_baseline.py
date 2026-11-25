@@ -1784,7 +1784,7 @@ SUITES = {
             'code/game/mob/groups/land_registry.dm', 'code/game/mob/groups/faction_treasury.dm',
             'code/game/mob/groups/faction_roster.dm')},
     # Faction treasury strongboxes, wages and dues (the native probe is tests/faction_treasury/probe.dm).
-    'faction_treasury': {'files': ('tests/faction_treasury/test_source.py',),
+    'faction_treasury': {'files': ('tests/faction_treasury/test_source.py', 'tests/faction_treasury/test_wages.py'),
         'paths': ('tests/faction_treasury/',), 'shared_paths': (
             'code/game/mob/groups/faction_treasury.dm', 'code/modules/1713/marketplace.dm',
             'code/game/mob/groups/faction_roster.dm')},
