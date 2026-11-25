@@ -159,6 +159,8 @@
 	rows += line
 	while (rows.len > NAME_HISTORY_MAX)
 		rows.Cut(1, 2)
+	// Wages follow the account and preserve their accrued balance.
+	treasury_refresh_wage_name(account, old_name, new_name)
 	// Offices and candidates.
 	for (var/f in office_state())
 		if (!istext(f))
