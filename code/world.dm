@@ -322,7 +322,14 @@ var/world_topic_spam_protect_time = world.timeofday
 		if(tdm_battle_active())
 			tdm_battle.before_reboot()
 		else
-			to_chat(world, SPAN_DANGER("Rebooting!</span> <span class='notice'>Click here to rejoin (It may take a minute or two): <b>byond://[shard_group.relay_on() ? shard_group.gate_address() : "[world.internet_address]:[port]"]</b>"))
+			var/rejoin_address = shard_group.relay_on() ? shard_group.gate_address() : null
+			if(!rejoin_address && world.internet_address && port)
+				rejoin_address = "[world.internet_address]:[port]"
+			if(rejoin_address)
+				var/rejoin_url = html_encode("byond://[rejoin_address]")
+				to_chat(world, "[SPAN_DANGER("Rebooting!")] [SPAN_NOTICE("<a href=\"[rejoin_url]\">Click here to rejoin</a> (it may take a minute or two): [rejoin_url]")]")
+			else
+				to_chat(world, "[SPAN_DANGER("Rebooting!")] [SPAN_NOTICE("Reconnect from the BYOND pager in a minute or two.")]")
 
 		sleep(sleeptime) // I think this is needed so C << link() doesn't fail
 		// sleep(0) yields too. A transaction can acquire ownership while the
