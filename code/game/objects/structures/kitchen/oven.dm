@@ -323,6 +323,7 @@
 	else
 		on = FALSE
 		set_light(0)
+		update_icon()
 		return
 
 /obj/structure/oven/fireplace/attack_hand(var/mob/living/human/H)
@@ -356,7 +357,7 @@
 		..()
 
 /obj/structure/oven/fireplace/Crossed(mob/living/human/M as mob)
-	if (icon_state == "[base_state]_on" && ishuman(M))
+	if (on && icon_state == "[base_state]_on" && ishuman(M))
 		M.apply_damage(rand(2,4), BURN, "l_leg")
 		M.apply_damage(rand(2,4), BURN, "r_leg")
 		M.visible_message(SPAN_WARNING("[M] gets <big>burnt</big> by \the [name]!"), SPAN_WARNING("You get <big>burnt</big> by \the [name]!"))

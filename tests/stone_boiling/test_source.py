@@ -238,5 +238,22 @@ class StoneBoilingSource(unittest.TestCase):
         self.assertIn('/turf/floor/beach/sand', sifting)
 
 
+
+class FireplaceBurnoutTests(unittest.TestCase):
+    def test_burnout_updates_the_icon_after_extinguishing(self):
+        oven = OVEN.read_text(encoding="utf-8")
+        loop = oven.split("/obj/structure/oven/fireplace/proc/keep_fire_on(", 1)[1].split("\n/obj/", 1)[0]
+        shutdown = loop.rsplit("\n\telse\n", 1)[1]
+        self.assertRegex(shutdown, r"^\t\ton = FALSE\n\t\tset_light\(0\)\n\t\tupdate_icon\(\)\n\t\treturn")
+        icon = oven.split("/obj/structure/oven/update_icon()", 1)[1].split("\n/obj/", 1)[0]
+        self.assertRegex(icon, r'if \(on\)\n\t\ticon_state = "\[base_state\]_on"\n\telse\n\t\ticon_state = base_state')
+
+    def test_crossing_requires_actual_fire_not_only_its_sprite(self):
+        oven = OVEN.read_text(encoding="utf-8")
+        crossed = oven.split("/obj/structure/oven/fireplace/Crossed(", 1)[1].split("\n/obj/", 1)[0]
+        self.assertRegex(crossed, r'\n\tif \(on && icon_state == "\[base_state\]_on" && ishuman\(M\)\)\n\t\tM\.apply_damage')
+
+
+
 if __name__ == "__main__":
     unittest.main()

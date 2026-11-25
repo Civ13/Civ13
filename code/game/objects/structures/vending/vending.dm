@@ -31,6 +31,7 @@
 
 	// List of vending_product items available.
 	var/list/product_records = list()
+	var/tmp/next_vending_row_key = 0
 
 
 	// Variables used to initialize advertising
@@ -140,21 +141,35 @@
 			return
 	else
 		if (istype(src, /obj/structure/vending/craftable))
-			var/obj/structure/vending/craftable/CTB = src
-			if (product_records.len >= CTB.max_products)
-				to_chat(user, "<span class='notice'>\The [src] is full!</span>")
-				return FALSE
-			else
-				var/datum/data/vending_product/product = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
-				product.price = 0
-				stock(W,product,user)
-				return TRUE
-		else
-			for (var/datum/data/vending_product/R in product_records)
-				if (istype(W, R.product_path))
-					stock(W, R, user)
-					return TRUE
+			stock(W, null, user)
+			return TRUE
+		var/datum/data/vending_product/R = restock_record(W)
+		if (R)
+			stock(W, R, user)
+			return TRUE
 		..()
+
+// An exact catalog entry wins over an earlier ancestor entry for a variant.
+/obj/structure/vending/proc/restock_record(obj/item/W)
+	var/datum/data/vending_product/fallback
+	for (var/datum/data/vending_product/R in product_records)
+		if (W.type == R.product_path)
+			return R
+		if (!fallback && istype(W, R.product_path))
+			fallback = R
+	return fallback
+
+/obj/structure/vending/proc/vending_row_key(datum/data/vending_product/R)
+	if (!R.base_vending_row_key)
+		R.base_vending_row_key = ++next_vending_row_key
+	return R.base_vending_row_key
+
+/obj/structure/vending/proc/find_vending_row(key)
+	if (!isnum(key) || key < 1 || key != round(key))
+		return null
+	for (var/datum/data/vending_product/R in product_records)
+		if (!QDELETED(R) && R.base_vending_row_key == key && R.amount > 0)
+			return R
 
 
 /obj/structure/vending/attack_hand(mob/living/user as mob)
@@ -186,11 +201,10 @@
 		data["mode"] = FALSE
 		var/list/listed_products = list()
 
-		for (var/key = TRUE to product_records.len)
-			var/datum/data/vending_product/I = product_records[key]
+		for (var/datum/data/vending_product/I in product_records)
 
 			listed_products.Add(list(list(
-				"key" = key,
+				"key" = vending_row_key(I),
 				"name" = I.product_name,
 				"price" = I.price,
 				"color" = I.display_color,
@@ -200,7 +214,7 @@
 
 	open_tgui(user, ui_key, "vending_machine.tmpl", name, 540, 600, data, ui, force_open)
 
-// A window button. The product is its row number in product_records.
+// Resolve the listed row identity, not its current position.
 /obj/structure/vending/ui_act(action, list/params, mob/user, datum/nanoui/ui)
 	. = TRUE
 	var/value = params["value"]
@@ -214,10 +228,9 @@
 	if ((user.contents.Find(src) || (in_range(src, user) && istype(loc, /turf))))
 		if ((action == "vend") && (vend_ready) && (!currently_vending))
 
-			var/key = value
-			if (!isnum(key) || key != round(key) || key < 1 || key > product_records.len)
+			var/datum/data/vending_product/R = find_vending_row(value)
+			if (!R)
 				return
-			var/datum/data/vending_product/R = product_records[key]
 
 			if (R.price <= 0)
 				vend(R, user)
@@ -241,14 +254,15 @@
 	GLOB.nanomanager.update_uis(src)
 
 	spawn(vend_delay)
-		R.get_product(get_turf(src),1,user)
+		var/taken = (R in product_records) && !QDELETED(R) && R.get_product(get_turf(src), 1, user)
 		playsound(loc, 'sound/machines/vending_drop.ogg', 100, TRUE)
 		status_message = ""
 		status_error = FALSE
 		vend_ready = TRUE
 		currently_vending = null
-		if (istype(src, /obj/structure/vending/craftable))
+		if (taken && istype(src, /obj/structure/vending/craftable))
 			product_records -= R
+			qdel(R)
 		GLOB.nanomanager.update_uis(src)
 		update_icon()
 

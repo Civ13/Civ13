@@ -658,23 +658,37 @@
 				tally["wood"] += M2.amount
 		return tally
 
+	// One level of storage only: loose provisions and provisions directly
+	// inside a crate. Do not read inventories or recurse into containers.
+	proc/tally_provisions(atom/container, galley, list/tally)
+		if (galley)
+			for (var/obj/item/weapon/reagent_containers/food/F in container)
+				if (!istype(F, /obj/item/weapon/reagent_containers/food/drinks) || F.reagents?.total_volume > 0)
+					tally["food"]++
+		for (var/obj/item/weapon/reagent_containers/glass/barrel/B in container)
+			tally["water"] += tally_barrel_water(B.reagents)
+
+	proc/tally_barrel_water(datum/reagents/contents)
+		var/total = 0
+		if (contents)
+			for (var/datum/reagent/R in contents.reagent_list)
+				if (istype(R, /datum/reagent/water))
+					total += R.volume
+		return total
+
 	proc/tally_food()
 		var/list/tally = list("food" = 0, "water" = 0)
-		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
-		for(var/turf/sel_turf in t_turfs)
-			for(var/obj/structure/closet/crate/S in sel_turf)
-				for(var/obj/item/weapon/reagent_containers/food/F in S)
-					tally["food"]++
-			for(var/obj/item/weapon/reagent_containers/food/F in sel_turf)
-				tally["food"]++
-			for(var/obj/item/weapon/reagent_containers/glass/barrel/B in sel_turf)
-				for (var/datum/reagent/R in B.reagents.reagent_list)
-					if (istype(R, /datum/reagent/water))
-						tally["water"] += R.volume
-			for(var/obj/structure/reagent_dispensers/largebarrel/L in sel_turf)
-				for (var/datum/reagent/R in L.reagents.reagent_list)
-					if (istype(R, /datum/reagent/water))
-						tally["water"] += R.volume
+		var/list/t_turfs = get_area_turfs(/area/caribbean/pirates/ship/voyage/lower/storage)
+		for (var/turf/sel_turf in t_turfs)
+			var/area/storage = get_area(sel_turf)
+			var/galley = istype(storage, /area/caribbean/pirates/ship/voyage/lower/storage/kitchen)
+			if (!galley && storage.type != /area/caribbean/pirates/ship/voyage/lower/storage)
+				continue // Not the galley or general supply hold (e.g. the magazine).
+			tally_provisions(sel_turf, galley, tally)
+			for (var/obj/structure/closet/crate/S in sel_turf)
+				tally_provisions(S, galley, tally)
+			for (var/obj/structure/reagent_dispensers/largebarrel/L in sel_turf)
+				tally["water"] += tally_barrel_water(L.reagents)
 		return tally
 
 	proc/tally_weapons()

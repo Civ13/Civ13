@@ -252,7 +252,9 @@
 	var/gelatin_drying = FALSE
 	var/gelatin_batch_id = 0
 
-/obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
+/obj/structure/drying_rack/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
+	if (is_tool(W, TOOL_WRENCH))
+		return ..()
 	if(istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/container = W
 		if(!container.is_open_container())
