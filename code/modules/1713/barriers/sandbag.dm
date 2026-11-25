@@ -40,8 +40,6 @@
 				H.dir = get_dir(H, src)
 				do_climb(H)
 
-var/set_dir = null // Set the variable outside of any scopes
-
 /obj/structure/window/barrier/New(location, var/mob/creator, direction)
 	loc = location
 	// Every barrier starts at its own full strength (a jersey barrier or a
@@ -49,21 +47,15 @@ var/set_dir = null // Set the variable outside of any scopes
 	health = maxhealth
 	flags |= ON_BORDER
 
-	if (creator && ismob(creator))
-		set_dir = direction
-
-	// Adjust direction to cardinal directions if intermediate directions are given
-	// Cardinal movements use the standardized bitflag numbers 1, 2, 4, and 8. To move in any diagonal direction you just add 2 numbers together to find the sum 
-	// NORTH is 1 and EAST is 4, so NORTHEAST is 5
-
-	// Also much faster than a switch with if/else and OR
-
-	if (set_dir & EAST)
-		dir = EAST
-	else if (set_dir & WEST)
-		dir = WEST
-	else
-		dir = set_dir
+	// Only player placement overrides dir; authored and restored barriers retain their own facing.
+	if (ismob(creator) && direction)
+		// Preserve the existing east/west priority for diagonals from player placement.
+		if (direction & EAST)
+			dir = EAST
+		else if (direction & WEST)
+			dir = WEST
+		else
+			dir = direction
 
 	// Adjust layer and direction based on the final direction
 	switch (dir)
