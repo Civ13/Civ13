@@ -3082,7 +3082,10 @@ SUITES = {
         'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
-        'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
+        'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/stripping.dm',
+                         'code/game/mob/living/carbon/human/human.dm',
+                         'code/game/mob/living/carbon/human/inventory.dm')},
     # Signal-smoke choices must not overwrite a grenade activated by another dialog.
     'signal_smoke_selection': {'files': ('tests/signal_smoke_selection/test_source.py',),
         'paths': ('tests/signal_smoke_selection/',),

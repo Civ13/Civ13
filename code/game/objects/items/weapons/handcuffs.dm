@@ -71,10 +71,6 @@
 
 	admin_attack_log(user, H, "Attempted to handcuff the victim", "Was target of an attempted handcuff", "attempted to handcuff")
 
-	H.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been handcuffed by [user.name] ([user.ckey])</font>"))
-	user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Handcuff [H.name] ([H.ckey])</font>"))
-
-
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
 	user.do_attack_animation(H)
 
@@ -91,6 +87,9 @@
 		else if (!QDELETED(cuffs) && cuffs.loc != H)
 			user.put_in_hands(cuffs)
 		return FALSE
+
+	H.append_attack_log(text("\[[time_stamp()]\] <font color='orange'>Has been handcuffed by [user.name] ([user.ckey])</font>"))
+	user.append_attack_log(text("\[[time_stamp()]\] <font color='red'>Handcuff [H.name] ([H.ckey])</font>"))
 
 	user.visible_message("<span class='danger'>\The [user] has put [cuff_type] on \the [H]!</span>", "<span class='notice'>You have put [cuff_type] on \the [H]!</span>")
 	return 1
