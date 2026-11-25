@@ -225,14 +225,19 @@
 	if (door_held())
 		return FALSE	// letting go re-arms the closer
 	if (isSwitchingStates || door_doorway_blocked())
-		door_schedule_close(DOOR_BLOCKED_RETRY)
+		door_retry_close()
 		return FALSE
-	if (door_closer == DOOR_CLOSER_SPRING || door_closer == DOOR_CLOSER_SPRING_HINGE)
-		visible_message(SPAN_NOTICE("\The [src] swings shut with a slam."))
-	else if (door_closer == DOOR_CLOSER_COUNTERWEIGHT)
-		visible_message(SPAN_NOTICE("\The [src] is pulled shut by its weight."))
-	Close()
+	Close(door_closer)
 	return TRUE
+
+/obj/structure/simple_door/proc/door_retry_close()
+	door_schedule_close(DOOR_BLOCKED_RETRY)
+
+/obj/structure/simple_door/proc/door_announce_auto_closed(closer_kind)
+	if (closer_kind == DOOR_CLOSER_SPRING || closer_kind == DOOR_CLOSER_SPRING_HINGE)
+		visible_message(SPAN_NOTICE("\The [src] swings shut with a slam."))
+	else if (closer_kind == DOOR_CLOSER_COUNTERWEIGHT)
+		visible_message(SPAN_NOTICE("\The [src] is pulled shut by its weight."))
 
 // Called once a door has finished opening.
 /obj/structure/simple_door/proc/door_opened()
@@ -565,6 +570,9 @@
 	return TRUE
 
 /obj/structure/simple_door/proc/wedge_door(obj/item/door_wedge/W, mob/living/human/user)
+	if (isSwitchingStates)
+		to_chat(user, SPAN_WARNING("\The [src] is moving. Wait until it is fully open."))
+		return FALSE
 	if (!state)
 		to_chat(user, SPAN_WARNING("Open \the [src] first."))
 		return FALSE

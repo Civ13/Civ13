@@ -160,6 +160,9 @@
 // ---- fusible link -------------------------------------------------------------------
 
 /obj/structure/simple_door/proc/fit_fire_link(obj/item/fusible_link/L, mob/living/human/user)
+	if (isSwitchingStates)
+		to_chat(user, SPAN_WARNING("\The [src] is moving. Wait until it is fully open."))
+		return FALSE
 	if (!state)
 		to_chat(user, SPAN_WARNING("Open \the [src] first: the link holds it open."))
 		return FALSE
