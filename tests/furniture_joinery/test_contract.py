@@ -140,14 +140,26 @@ class Contracts(unittest.TestCase):
         self.assertIn('state = "stool_wood"',metadata)
         self.assertIn('state = "stool_base"',metadata)
 
+    def test_dowel_rename_keeps_pins_and_recents(self):
+        window=(ROOT/'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        pin=window.split('/proc/crafting_window_pin_key(',1)[1].split('// The player',1)[0]
+        self.assertIn('R.result_type == /obj/item/stack/wooden_dowels && pin_title == "whittled wooden dowel set"',pin)
+        self.assertIn('pin_title = "joinery: whittled wooden dowel set"',pin)
+        self.assertIn('md5("[S.type]|[pin_title]|[R.result_type]")',pin)
+
     def test_legacy_rows_preserved_without_git_history(self):
         for item in json.loads((Path(__file__).parent/'legacy-furniture.json').read_text()):
             self.assertIn(item['row'], (ROOT/item['file']).read_text().splitlines())
 
     def test_explicit_route_data_matches_catalog_and_no_hidden_bulk(self):
-        rows=[r.split('RECIPE: ',1)[1].split(',') for r in (ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines() if r.startswith('RECIPE: ') and ',joinery: ' in r]
+        rows=[r.split('RECIPE: ',1)[1].split(',') for r in (ROOT/'config/crafting/material_recipes_global.txt').read_text().splitlines() if r.startswith('RECIPE: ') and (',joinery: ' in r or ',/obj/item/stack/wooden_dowels,' in r)]
         self.assertEqual(set(SPECS),{r[1] for r in rows})
         self.assertEqual(len(rows),6)
+        self.assertIn('whittled wooden dowel set', SPECS)
+        self.assertIn('R.result_type == /obj/item/stack/wooden_dowels', TEXT)
+        for filename, var in (('stack.dm', 'recipe'), ('stack_makeable.dm', 'R')):
+            route=(ROOT/'code/game/objects/items/stacks'/filename).read_text()
+            self.assertIn(f'if (is_furniture_joinery_recipe({var}))', route)
         for row in rows:
             spec=SPECS[row[1]]
             self.assertEqual(spec['result_type'],row[2])
@@ -186,7 +198,7 @@ class Contracts(unittest.TestCase):
 
     def test_ordinary_preset_stock_subtypes_keep_actual_material_guards(self):
         f=Fixture();f.stock.type += '/twentyfive';self.assertTrue(f.valid())
-        f=Fixture();f.spec=SPECS['joinery: whittled wooden dowel set']
+        f=Fixture();f.spec=SPECS['whittled wooden dowel set']
         f.stock.type=f.spec['stock_type']+'/twentyfive'
         f.material.type='/material/wood/soft'
         f.recipe.result_type=f.spec['result_type'];f.recipe.req_amount=1
