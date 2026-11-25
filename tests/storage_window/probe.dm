@@ -47,6 +47,8 @@ var/storwin_runtime_error = FALSE
 			GLOB.nanomanager = new
 		storwin_time_checks()
 		storwin_window_checks()
+		storwin_carried_move_checks()
+		storwin_carried_hand_checks()
 		storwin_search_checks()
 		storwin_closet_checks()
 		storwin_fire_checks()
@@ -138,6 +140,73 @@ var/storwin_runtime_error = FALSE
 	storwin_check(W.perform_move(stone, "auto", null) && (stone == H.l_hand || stone == H.r_hand), "a taken thing ends up in a hand")
 	storwin_check(storage_window_in_group(stone, list(STORAGE_WINDOW_KIND_HANDS, H), H), "the hands group knows what is held")
 	W.cancel_all(FALSE)
+	qdel(W)
+
+/proc/storwin_carried_move_checks()
+	var/turf/start = locate(4, 1, 1)
+	var/turf/next_tile = locate(5, 1, 1)
+	var/mob/living/human/storwin_probe/H = new(start)
+	var/obj/item/weapon/storage/backpack/source = new(H)
+	var/obj/item/weapon/storage/backpack/target = new(H)
+	H.l_hand = source
+	H.r_hand = target
+	var/datum/storage_window/W = new(H)
+	storwin_check(W.lists_holder(source) && W.lists_holder(target), "both held bags are available in the window")
+	var/obj/item/I = storwin_item(source, ITEM_SIZE_TINY, "held-bag item")
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_WORN, target, FALSE) && W.current && W.current["time"] > 0, "carried transfer still has a timer")
+	// Set the real position without invoking the fixture's unstarted turf processors.
+	H.loc = next_tile
+	W.finish_move()
+	storwin_check(I.loc == target && !W.current, "carried transfer completes after walking to the next tile")
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_WORN, source, FALSE), "the return transfer starts")
+	source.loc = next_tile
+	H.l_hand = null
+	H.loc = start
+	W.finish_move()
+	storwin_check(I.loc == target, "dropping the destination cancels the transfer even when it is still nearby")
+	source.loc = H
+	H.l_hand = source
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_WORN, source, FALSE), "another transfer starts")
+	target.loc = start
+	H.r_hand = null
+	H.loc = next_tile
+	W.finish_move()
+	storwin_check(I.loc == target, "dropping the source cancels the transfer even when it is still nearby")
+	target.loc = H
+	H.r_hand = target
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_WORN, source, FALSE), "the final transfer starts")
+	H.stat = UNCONSCIOUS
+	W.finish_move()
+	storwin_check(I.loc == target && !W.current && !W.queue.len, "incapacitation cancels even a carried transfer")
+	qdel(W)
+
+/obj/item/organ/external/storwin_hand/New()
+	return
+
+/obj/item/organ/external/storwin_hand/is_usable()
+	return TRUE
+
+/proc/storwin_carried_hand_checks()
+	var/turf/start = locate(1, 1, 1)
+	var/mob/living/human/storwin_probe/H = new(start)
+	H.organs_by_name = list("l_hand" = new /obj/item/organ/external/storwin_hand, "r_hand" = new /obj/item/organ/external/storwin_hand)
+	var/obj/item/weapon/storage/backpack/source = new(H)
+	H.back = source
+	var/datum/storage_window/W = new(H)
+	var/obj/item/I = storwin_item(source, ITEM_SIZE_TINY, "item for right hand")
+	H.hand = 0
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_HANDS, H, TRUE) && W.current["hand_slot"] == slot_r_hand, "carried move picks the initially free active hand")
+	H.hand = 1
+	W.finish_move()
+	storwin_check(H.r_hand == I && !H.l_hand && I.loc == H, "switching active hands does not redirect or cancel the move")
+	var/obj/item/J = storwin_item(source, ITEM_SIZE_TINY, "item for left hand")
+	storwin_check(W.enqueue(J, STORAGE_WINDOW_KIND_HANDS, H, TRUE) && W.current["hand_slot"] == slot_l_hand, "second move picks the left hand")
+	H.r_hand = null
+	I.loc = source
+	H.l_hand = storwin_item(H, ITEM_SIZE_TINY, "other held item")
+	H.hand = 0
+	W.finish_move()
+	storwin_check(J.loc == source && !H.r_hand, "a filled destination leaves the item in its bag instead of using the other hand")
 	qdel(W)
 
 /proc/storwin_search_checks()
