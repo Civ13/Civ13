@@ -2,7 +2,7 @@
 // reach. "You" lists their hands, pockets and worn storages; "Nearby" lists
 // storage structures, bags on the floor and a body's bags next to them, plus
 // the loose things on the floor. Moving anything takes time (Project Zomboid
-// style): moves wait in a queue, walking away or being stopped cancels them.
+// style): moves wait in a queue; world moves still stop if you walk away.
 // Design by Fable (docs/storage-window.md). The window is opt-in: the classic
 // HUD strip is the default, and also serves agent characters and browsers that
 // can't run the window. The strip keeps the same timing and searching rules
@@ -190,7 +190,7 @@
 	// The last snapshot's ids: item id -> item, group id -> list(kind, holder, quick).
 	var/list/served_items = list()
 	var/list/served_groups = list()
-	// Moves waiting: each a list("item", "kind", "holder", "time", "name", "image", "to").
+	// Moves waiting, including the original source and whether both ends are carried.
 	var/list/queue = list()
 	var/list/current
 	var/current_started = 0
@@ -225,12 +225,26 @@
 /proc/storage_window_body(mob/living/human/M)
 	return istype(M) && (M.stat != CONSCIOUS || M.restrained())
 
+// Physical ownership matters as well as the equipment/hand slot: a bag
+// dropped during a transfer must not turn into an authorized world target.
+/proc/storage_window_carried_holders(mob/living/human/H)
+	. = list()
+	if (!H || QDELETED(H))
+		return
+	var/list/candidates = H.worn_storage_group("all")
+	for (var/obj/item/I in list(H.l_hand, H.r_hand))
+		if (!QDELETED(I) && I.loc == H)
+			candidates |= worn_item_storages(I)
+	for (var/obj/item/weapon/storage/S in candidates)
+		if (!QDELETED(S) && (S.loc == H || S.loc?.loc == H || S.loc?.loc?.loc == H))
+			. += S
+
 // Every container the window lists, in order: list(kind, holder, name, quick, owner).
 /datum/storage_window/proc/holders()
 	. = list()
 	var/mob/living/human/H = viewer
 	. += list(list(STORAGE_WINDOW_KIND_HANDS, H, "Hands", TRUE, null))
-	for (var/obj/item/weapon/storage/S in H.worn_storage_group("all"))
+	for (var/obj/item/weapon/storage/S in storage_window_carried_holders(H))
 		. += list(list(STORAGE_WINDOW_KIND_WORN, S, S.name, (H.belt && (S == H.belt || (S in H.belt))) ? TRUE : FALSE, null))
 	. += list(list(STORAGE_WINDOW_KIND_POCKETS, H, "pockets", TRUE, null))
 	var/turf/here = get_turf(H)
@@ -619,6 +633,22 @@
 		body = TRUE
 	return list(quick, body)
 
+// Only named personal destinations qualify. Automatic/world destinations keep
+// their existing stationary rule, even when their eventual destination is ours.
+/datum/storage_window/proc/is_carried_move(obj/item/I, kind, atom/holder)
+	if (QDELETED(I) || QDELETED(viewer))
+		return FALSE
+	var/mob/living/human/H = viewer
+	var/list/carried = storage_window_carried_holders(H)
+	if (I.loc == H)
+		if (I != H.l_hand && I != H.r_hand && I != H.l_store && I != H.r_store)
+			return FALSE
+	else if (!(I.loc in carried))
+		return FALSE
+	if (kind == STORAGE_WINDOW_KIND_HANDS || kind == STORAGE_WINDOW_KIND_POCKETS)
+		return holder == H
+	return kind == STORAGE_WINDOW_KIND_WORN && (holder in carried)
+
 /datum/storage_window/proc/enqueue(obj/item/I, kind, atom/holder, to_quick)
 	if (queue.len >= STORAGE_WINDOW_QUEUE_LIMIT || !reachable(I))
 		return FALSE
@@ -644,7 +674,7 @@
 			var/obj/structure/owner = storage_window_owner_structure(holder)
 			to_name = html_encode(owner ? owner.name : holder.name)
 	var/list/budget = list(1, FALSE)
-	queue += list(list("item" = I, "kind" = kind, "holder" = holder, "time" = storage_window_move_time(I, flags[1], to_quick, flags[2]), "name" = html_encode(I.name), "image" = picture(I, budget), "to" = to_name))
+	queue += list(list("item" = I, "source" = I.loc, "carried" = is_carried_move(I, kind, holder), "kind" = kind, "holder" = holder, "time" = storage_window_move_time(I, flags[1], to_quick, flags[2]), "name" = html_encode(I.name), "image" = picture(I, budget), "to" = to_name))
 	if (!current)
 		next_move()
 	return TRUE
@@ -677,12 +707,13 @@
 	var/mob/living/human/H = viewer
 	if (!H || QDELETED(H) || !current)
 		return
-	if (get_turf(H) != start_turf || H.stat || H.restrained() || H.incapacitated())
+	var/list/job = current
+	if ((!job["carried"] && get_turf(H) != start_turf) || H.stat || H.restrained() || H.incapacitated())
 		cancel_all(TRUE)
 		return
+	var/obj/item/I = job["item"]
 	usr = H // storage procs report to usr
-	var/list/job = current
-	if (!perform_move(job["item"], job["kind"], job["holder"]))
+	if ((job["carried"] && (QDELETED(I) || I.loc != job["source"] || !is_carried_move(I, job["kind"], job["holder"]))) || !perform_move(I, job["kind"], job["holder"]))
 		to_chat(H, SPAN_WARNING("You couldn't move \the [job["item"]] to [job["to"]]."))
 	next_move()
 

@@ -108,9 +108,9 @@
 		storage_mark_seen(looking, H)
 	storage_strip_apply(H, S)
 
-// Storage that is part of your own worn gear: never searched.
+// Storage in your own hands or worn gear: never searched.
 /proc/storage_strip_known(mob/living/human/H, obj/item/weapon/storage/S)
-	return S in H.worn_storage_group("all")
+	return S in storage_window_carried_holders(H)
 
 // What the viewer hasn't looked at yet in a container the strip shows.
 /proc/storage_strip_unseen(mob/living/human/H, obj/item/weapon/storage/S)
@@ -171,14 +171,17 @@
 
 // Waits the storage window's move time before a thing leaves a bag through the
 // strip (clicked into a hand or dragged out). FALSE when interrupted.
-/proc/storage_strip_take_wait(mob/user, obj/item/I)
+/proc/storage_strip_take_wait(mob/user, obj/item/I, carried_destination = TRUE)
 	var/obj/item/weapon/storage/S = I.loc
 	var/mob/living/human/H = user
 	if (istype(S) && !S.storage_contents_accessible())
 		return FALSE
 	if (!istype(S) || !istype(H) || !H.client)
 		return TRUE
-	if (!do_after(H, storage_strip_take_time(H, I), I))
+	var/carried = carried_destination && (S in storage_window_carried_holders(H))
+	if (!do_after(H, storage_strip_take_time(H, I), I, can_move = carried))
+		return FALSE
+	if (QDELETED(I) || QDELETED(S) || H.restrained() || (carried && !(S in storage_window_carried_holders(H))))
 		return FALSE
 	return I.loc == S && S.storage_contents_accessible()
 

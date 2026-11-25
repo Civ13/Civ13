@@ -67,20 +67,30 @@
 	// An item inside storage can only be dragged out of the storage window being shown.
 	if (istype(loc, /obj/item/weapon/storage) && H.s_active != loc)
 		return FALSE
-	// Taking it out of the bag takes the storage window's move time.
-	if (istype(loc, /obj/item/weapon/storage) && !storage_strip_take_wait(H, src))
+	// Resolve the destination before waiting so reaches into the world keep
+	// their stationary timer. A carried bag must still be carried afterward.
+	var/obj/screen/inventory/slot
+	var/obj/item/weapon/storage/S
+	if (istype(over, /obj/screen/inventory))
+		slot = over
+		if (slot.parentmob != H || !slot.slot_id)
+			return FALSE
+	else
+		S = inventory_drag_target_storage(over, H)
+		if (!S)
+			return FALSE
+	var/carried_destination = slot || (S in storage_window_carried_holders(H))
+	if (istype(loc, /obj/item/weapon/storage) && !storage_strip_take_wait(H, src, carried_destination))
 		return FALSE
 
-	if (istype(over, /obj/screen/inventory))
-		var/obj/screen/inventory/slot = over
+	if (slot)
 		if (slot.parentmob != H || !slot.slot_id)
 			return FALSE
 		if (slot.slot_id == slot_l_hand || slot.slot_id == slot_r_hand)
 			return inventory_drag_to_hand(slot.slot_id, H)
 		return inventory_drag_to_slot(slot.slot_id, H)
 
-	var/obj/item/weapon/storage/S = inventory_drag_target_storage(over, H)
-	if (S)
+	if (!QDELETED(S) && inventory_drag_target_storage(over, H) == S && (!carried_destination || (S in storage_window_carried_holders(H))))
 		return inventory_drag_to_storage(S, H)
 	return FALSE
 
