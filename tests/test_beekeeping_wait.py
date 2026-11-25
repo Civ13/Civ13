@@ -1,5 +1,7 @@
-"""Offline projection of the filled-frame completion guards; no BYOND world."""
+"""Offline projections of frame completion and hive forage; no BYOND world."""
 import importlib.util
+import re
+from types import SimpleNamespace
 from pathlib import Path
 import unittest
 
@@ -71,6 +73,39 @@ class BeekeepingWaitTests(unittest.TestCase):
         unguarded = source.replace('if (QDELETED(src) || QDELETED(user) || !Adjacent(user))\n',
                                    'if (FALSE)\n', 1)
         self.assertNotEqual(run_case(unguarded, 'deleted')[0], [])
+
+
+
+HIVES = ROOT / 'code/modules/1713/kept_hives.dm'
+
+
+def forage_points(objects):
+    source = HIVES.read_text(encoding='utf-8')
+    body = adapter.extract(source, '/proc/bee_forage_points')
+    body = re.sub(r'(istype\(O, )(/obj/structure/[\w/]+)(\))', r'\1"\2"\3', body)
+    run = adapter.project('/test/proc/forage(A)\n' + body + '\n', '/test/proc/forage', 'A', {
+        'range': lambda radius, center: objects,
+        'typed_iter': lambda values, kind: values,
+        'istype': lambda obj, kind: obj.kind == kind,
+        'KEPT_HIVE_FORAGE_RANGE': 5, 'KEPT_HIVE_FORAGE_FULL': 16,
+    })
+    return run(None)
+
+
+class HiveForageTests(unittest.TestCase):
+    @staticmethod
+    def crop(stage, limit=10):
+        return SimpleNamespace(kind='/obj/structure/farming/plant', stage=stage, readyStageMax=limit)
+
+    def test_dead_field_crops_cannot_supply_full_forage(self):
+        self.assertEqual(forage_points([self.crop(11) for _ in range(16)]), 0)
+
+    def test_living_crops_and_wild_trees_keep_existing_weights(self):
+        tree = SimpleNamespace(kind='/obj/structure/wild/tree')
+        self.assertEqual(forage_points([self.crop(11), self.crop(10), tree]), 1.5)
+        self.assertEqual(forage_points([self.crop(9, 8), self.crop(8, 8)]), 1)
+        self.assertEqual(forage_points([self.crop(10) for _ in range(17)]), 16)
+
 
 
 if __name__ == '__main__':

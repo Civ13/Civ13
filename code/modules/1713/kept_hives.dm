@@ -191,7 +191,9 @@ var/global/kept_hive_cycle_count = 0
 	var/points = 0
 	for (var/obj/structure/O in range(KEPT_HIVE_FORAGE_RANGE, A))
 		if (istype(O, /obj/structure/farming/plant))
-			points += 1
+			var/obj/structure/farming/plant/P = O
+			if (P.stage <= P.readyStageMax)
+				points += 1
 		else if (istype(O, /obj/structure/wild/tree) || istype(O, /obj/structure/wild/jungle) || istype(O, /obj/structure/wild/bush))
 			points += 0.5
 		if (points >= KEPT_HIVE_FORAGE_FULL)

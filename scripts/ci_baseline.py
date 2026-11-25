@@ -380,7 +380,7 @@ SUITES = {
                          'code/game/objects/structures.dm')},
     'beekeeping_wait': {'files': ('tests/test_beekeeping_wait.py',),
         'paths': ('tests/test_beekeeping_wait.py', 'tests/beekeeping/',
-                  'code/modules/1713/beekeeping.dm'),
+                  'code/modules/1713/beekeeping.dm', 'code/modules/1713/kept_hives.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py', 'code/_helpers/mobs.dm',
                          'code/_onclick/adjacent.dm', 'code/processes/garbage.dm')},
     'light_fuel': {'files': ('tests/test_light_fuel.py',),
