@@ -50,11 +50,15 @@
 /mob/living/human/proc/study_time_left(node_id, total_time)
 	return max(1, round(total_time * (1 - study_fraction(node_id))))
 
+// Farsighted readers take longer (do_reading). Use the same rounding and
+// eyesight adjustment for the book's preview and the actual start message.
+/mob/living/human/proc/study_minutes_estimate(left)
+	return round(left * farsight_reading_mult() / 600, 0.5)
+
 // Says where the reader starts. Returns the time left to read.
 /mob/living/human/proc/begin_study_message(node_id, total_time, what, helper_text = "")
 	var/left = study_time_left(node_id, total_time)
-	// Farsighted readers take longer (do_reading); say so in the estimate.
-	var/minutes = round(left * farsight_reading_mult() / 600, 0.5)
+	var/minutes = study_minutes_estimate(left)
 	var/minutes_text = minutes > 0 ? "about [minutes] minute\s" : "less than a minute"
 	if (study_fraction(node_id) > 0)
 		to_chat(src, SPAN_NOTICE("You pick up [what][helper_text] where you left off, [study_percent(node_id)]% of the way through. Finishing takes [minutes_text]."))

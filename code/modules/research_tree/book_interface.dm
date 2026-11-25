@@ -24,12 +24,19 @@
 		count += length(bundle_blank_sheets(B))
 	return count
 
-// A blank sheet in hand for writing or copying. With none in hand and a hand
-// free, one is taken out of the writer's pockets or bags.
-/mob/living/human/proc/ready_blank_sheet()
+// Check the hands without touching inventory; the write menu uses this too.
+/mob/living/human/proc/held_blank_sheet()
 	for (var/obj/item/weapon/paper/P in list(l_hand, r_hand))
 		if (blank_writing_sheet(P))
 			return P
+	return null
+
+// A blank sheet in hand for writing or copying. With none in hand and a hand
+// free, one is taken out of the writer's pockets or bags.
+/mob/living/human/proc/ready_blank_sheet()
+	var/obj/item/weapon/paper/held = held_blank_sheet()
+	if (held)
+		return held
 	if (l_hand && r_hand)
 		return null
 	for (var/obj/item/weapon/paper/P in get_contents())
@@ -498,6 +505,16 @@
 
 /var/global/datum/topic_state/research_book/research_book_state = new()
 
+// The menu and its action share these non-mutating hand checks.
+/obj/item/weapon/book/proc/research_book_write_hands_problem(mob/living/human/H)
+	if (!H.l_hand || !H.r_hand)
+		return null
+	if (loc == H)
+		return "Put [src] down beside you first: writing needs the pen in one hand and a blank sheet in the other."
+	if (!H.held_blank_sheet())
+		return "Free the hand opposite your pen, or hold a blank sheet in it."
+	return null
+
 /obj/item/weapon/book/proc/research_book_ui_data(mob/living/human/H)
 	var/list/data = list()
 	data["name"] = "[name]"
@@ -517,7 +534,9 @@
 	var/desk = H.scholar_desk_rate()
 	var/obj/item/weapon/pen/pen = H.held_writing_pen()
 	var/pen_rate = pen ? scholar_pen_rate(pen) : 1
-	var/mob/living/human/tutor_cache = null
+	// Parse the saved language table once, not once per chapter row.
+	var/list/written_languages = chapter_language_map()
+	var/cipher_blocks_reader = cipher_blocks(H)
 	var/list/names = list()
 	for (var/node_id in research_chapter_list())
 		names[get_research_node(node_id).name] = node_id
@@ -527,6 +546,12 @@
 		var/node_id = names[name]
 		var/datum/research_node/N = get_research_node(node_id)
 		var/state = chapter_reader_state(H, node_id)
+		var/datum/language/written_in = written_languages[node_id] ? all_languages[written_languages[node_id]] : null
+		var/read_problem
+		if (state != "known")
+			read_problem = cipher_blocks_reader ? "Decipher this book before studying its chapters." : language_reading_problem(H, written_in, LANGUAGE_BROKEN)
+			if (state == "study" && read_problem)
+				state = "blocked"
 		var/list/row = list(
 			"id" = node_id,
 			"name" = name,
@@ -535,15 +560,16 @@
 			"era_name" = research_era_label(N),
 			"discipline" = scholar_disciplines[node_discipline(node_id)],
 			"groundwork" = node_groundwork_rows(H, N),
-			"study_minutes" = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk)),
+			"read_problem" = read_problem,
 			"read_percent" = state == "study" ? H.study_percent(node_id) : 0,
 			"recipe_names" = get_node_recipe_names(node_id),
 			"effect" = research_node_effect_text(node_id))
 		if (state == "study")
-			tutor_cache = H.find_tutor(node_id)
-			if (tutor_cache)
-				row["tutor"] = "[tutor_cache.name]"
-				row["study_minutes"] = ui_minutes(H.study_time_left(node_id, BOOK_STUDY_TIME(N.era_tier) * knowledge_study_mult(node_id) / desk / SCHOLAR_TUTOR_RATE))
+			var/mob/living/human/tutor = H.find_tutor(node_id)
+			var/time = research_chapter_study_time(H, N, written_in, tutor)
+			row["study_minutes"] = H.study_minutes_estimate(H.study_time_left(node_id, time))
+			if (tutor)
+				row["tutor"] = "[tutor.name]"
 		chapters += list(row)
 	data["chapters"] = chapters
 	var/list/unfinished = list()
@@ -568,6 +594,7 @@
 	data["writable"] = writable
 	var/list/viewer = book_viewer_ui(H)
 	viewer["stamina"] = round(H.stats["stamina"][1])
+	viewer["write_hands_problem"] = research_book_write_hands_problem(H)
 	data["viewer"] = viewer
 	data["busy"] = page_busy ? 1 : 0
 	return data
@@ -601,10 +628,11 @@
 		study_research_source(H, src, href_list["study"])
 	else if (href_list["write"])
 		var/obj/item/weapon/pen/pen = H.held_writing_pen()
+		var/hands_problem = research_book_write_hands_problem(H)
 		if (!pen)
 			to_chat(H, SPAN_WARNING("Hold a pencil or pen to write with."))
-		else if (loc == H && H.l_hand && H.r_hand)
-			to_chat(H, SPAN_WARNING("Put [src] down beside you first: writing needs the pen in one hand and a blank sheet in the other."))
+		else if (hands_problem)
+			to_chat(H, SPAN_WARNING(hands_problem))
 		else
 			write_research_chapter(H, pen, href_list["write"])
 	else if (href_list["rip"])
