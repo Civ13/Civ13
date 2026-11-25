@@ -619,7 +619,7 @@ class ChartAgentTests(unittest.TestCase):
         for name in TOKENS:
             store = RegionStore(os.path.join(self.tmp.name, name + '.sqlite'), name, 'g')
             server = make_server(store, TOKENS[name])
-            threading.Thread(target=server.serve_forever, daemon=True).start()
+            threading.Thread(target=server.serve_forever, kwargs={'poll_interval': 0.01}, daemon=True).start()
             self.stores[name], self.servers[name] = store, server
             self.urls[name] = 'http://127.0.0.1:%d' % server.server_address[1]
         self.db = os.path.join(self.tmp.name, 'coordinator.sqlite')
