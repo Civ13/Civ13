@@ -140,6 +140,7 @@ var/knowledge_failures = 0
 		var/mob/living/human/knowledge_fixture/reloaded_scholar = locate() in locate(7,7,1)
 		knowledge_check(reloaded_scholar && reloaded_scholar.scholar_level("engineering") >= 74, "scholarship survives reload")
 		knowledge_check(reloaded_scholar && reloaded_scholar.study_fraction("field_defenses") == 0.25, "a chapter read part-way survives reload")
+		knowledge_check(reloaded_scholar && abs(reloaded_scholar.study_fraction("digital_computing") - 0.9983333) < 0.000002, "a near-complete chapter keeps its fractional progress on durable reload")
 		var/list/scholar_research = reloaded_scholar ? reloaded_scholar.research_knowledge_summary() : null
 		knowledge_check(scholar_research && scholar_research["studying"]["field_defenses"] == 25 && !("field_defenses" in scholar_research["known"]) && !scholar_research["exempt"], "admin research view shows a part-way chapter as 25% read")
 		var/known_before = H ? H.known_recipe_nodes.len : -1
@@ -460,6 +461,42 @@ var/knowledge_failures = 0
 	knowledge_check(findtext(tome.read_aloud_problem(deaf, "basic_tools"), "already know"), "only someone who knows the chapter can read it aloud")
 	knowledge_check(findtext(tome.read_aloud_problem(reader, "iron_tools"), "not in this book"), "the chapter must be in the book")
 	knowledge_check(("aloud" in tome.ui_actions("research_book")), "the book window can start a reading")
+	tome.loc = reader
+	reader.traits += "Mute"
+	reader.traits_dirty = TRUE
+	knowledge_check(tome.read_aloud_problem(reader, "basic_tools") == "You can't speak." && tome.read_aloud_speaker_problem(reader), "the Mute trait blocks read-aloud admission and continuing credit")
+	reader.traits -= "Mute"
+	reader.traits_dirty = TRUE
+	reader.silent = 5
+	knowledge_check(tome.read_aloud_problem(reader, "basic_tools") == "You can't speak." && tome.read_aloud_speaker_problem(reader), "temporary silence blocks read-aloud admission and continuing credit")
+	reader.silent = 0
+	reader.sdisabilities |= MUTE
+	knowledge_check(tome.read_aloud_problem(reader, "basic_tools") == "You can't speak." && tome.read_aloud_speaker_problem(reader), "the MUTE disability blocks read-aloud admission and continuing credit")
+	reader.sdisabilities &= ~MUTE
+	knowledge_check(!tome.read_aloud_speaker_problem(reader), "the credit gate accepts a well and unmuted speaker")
+
+	var/digital = "digital_computing"
+	var/list/digital_groundwork = list("automation", "electricity", "electronic_computing")
+	near.known_recipe_nodes |= digital_groundwork
+	knower.known_recipe_nodes |= digital_groundwork
+	reader.known_recipe_nodes |= digital_groundwork
+	reader.learn_recipe_node(digital)
+	total = near.scholar_study_time(get_research_node(digital).era_tier, digital)
+	knowledge_check(total == 3000 && near.knows_research_prereqs(digital), "Digital Computing uses its normal study duration in the listening regression")
+	for (var/i in 1 to 119)
+		near.hear_chapter_read(digital, 50, reader)
+	knowledge_check(!near.knows_recipe_node(digital) && abs(near.study_fraction(digital) - 119.0 / 120) < 0.00001, "119 ordinary read-aloud credits preserve elapsed time without teaching early")
+	knowledge_check(near.hear_chapter_read(digital, 50, reader) && near.knows_recipe_node(digital) && !near.study_fraction(digital), "the 120th ordinary credit teaches Digital Computing and clears progress")
+
+	knower.note_study_progress(digital, 0.99)
+	knowledge_check(!knower.hear_chapter_read(digital, 50, reader) && knower.study_fraction(digital) > 0.99 && knower.study_percent(digital) == 99, "a single ordinary credit advances legacy 99% progress without teaching early or displaying 100%")
+	var/fraction_before_export = knower.study_fraction(digital)
+	knower.persistence_owner_ckey = "fixturelistener"
+	var/list/travel = region_travel_decode(knower.region_travel_payload(list()))
+	var/list/travelling_progress = travel ? travel["reading"] : null
+	knower.study_progress = clean_study_progress(travelling_progress)
+	knowledge_check(abs(knower.study_fraction(digital) - fraction_before_export) < 0.000002 && knower.study_time_left(digital, total) <= 5, "a high partial fraction survives the travel round trip and leaves only a short solo study")
+	knowledge_check(knower.hear_chapter_read(digital, 50, reader) && knower.knows_recipe_node(digital), "the next ordinary credit teaches a continued legacy chapter")
 	qdel(tome)
 	qdel(reader)
 	qdel(near)
@@ -990,10 +1027,11 @@ var/knowledge_practice_waits = 0
 	knowledge_check(row["read_percent"] == 40, "the book window shows how far the reader got")
 	qdel(shelf)
 	scholar.note_study_progress("field_defenses", 5)
-	knowledge_check(abs(scholar.study_fraction("field_defenses") - 0.99) < 0.001, "reading progress never finishes a chapter by itself")
+	knowledge_check(scholar.study_fraction("field_defenses") > 0.99 && scholar.study_fraction("field_defenses") < 1 && scholar.study_percent("field_defenses") == 99, "reading progress never finishes a chapter by itself")
 	scholar.note_study_progress("field_defenses", 0)
 	knowledge_check(!("field_defenses" in scholar.study_progress), "zero progress is dropped")
 	scholar.note_study_progress("field_defenses", 0.25)
+	scholar.note_study_progress("digital_computing", 0.9983333)
 	var/list/cleaned = clean_study_progress(list("iron_tools" = 0.5, "bogus" = 0.5, "basic_tools" = 2, "field_defenses" = "x"))
 	knowledge_check(cleaned.len == 1 && cleaned["iron_tools"] == 0.5, "restored reading progress is validated")
 	var/old_owner = scholar.persistence_owner_ckey

@@ -60,7 +60,10 @@
 		return FALSE
 	var/before = study_fraction(node_id)
 	var/after = before + heard_time * READ_ALOUD_RATE / total
-	if (after >= 1)
+	// Fraction arithmetic uses single precision. A full sequence of credits
+	// may land slightly below 1. Treat less than half a decisecond remaining
+	// as complete, below the resolution of the study timer.
+	if ((1 - after) * total < 0.5)
 		if (learn_recipe_node(node_id))
 			gain_scholarship(node_id, SCHOLAR_STUDY_GAIN)
 			philosophy_from_study(node_id)
@@ -73,6 +76,15 @@
 		to_chat(src, SPAN_NOTICE("[reader] is reading the chapter on <b>[N.name]</b> aloud. You take it in at half the pace of reading it yourself, and can keep working while you listen."))
 	return FALSE
 
+// Shared by admission and the credit loop so going silent mid-read stops teaching.
+/obj/item/weapon/book/proc/read_aloud_speaker_problem(mob/living/human/H)
+	if (H.stat != CONSCIOUS || H.incapacitated() || H.sleeping)
+		return "You are in no state to read aloud."
+	// Match normal human speech restrictions (human/say.dm), plus muzzle/choke.
+	if (H.is_muzzled() || H.choked_by || H.silent || (H.sdisabilities & MUTE) || H.find_trait("Mute"))
+		return "You can't speak."
+	return null
+
 // Why H can't read node_id aloud from this book right now, or null.
 /obj/item/weapon/book/proc/read_aloud_problem(mob/living/human/H, node_id)
 	var/datum/research_node/N = get_research_node(node_id)
@@ -82,10 +94,9 @@
 		return "You can only read aloud a chapter you already know. Study it first."
 	if (loc != H)
 		return "Hold the book to read from it."
-	if (H.stat != CONSCIOUS || H.incapacitated() || H.sleeping)
-		return "You are in no state to read aloud."
-	if (H.is_muzzled() || H.choked_by || (H.sdisabilities & MUTE))
-		return "You can't speak."
+	var/speaker_problem = read_aloud_speaker_problem(H)
+	if (speaker_problem)
+		return speaker_problem
 	if (H.reading_aloud)
 		return "You are already reading aloud."
 	return H.reading_light_problem()
@@ -113,7 +124,7 @@
 	while (idle < READ_ALOUD_IDLE_STEPS)
 		if (!do_reading(H, READ_ALOUD_STEP, src))
 			break
-		if (QDELETED(src) || loc != H || !holds_research_chapter(node_id) || H.is_muzzled() || H.choked_by)
+		if (QDELETED(src) || loc != H || !holds_research_chapter(node_id) || read_aloud_speaker_problem(H))
 			break
 		var/list/audience = H.read_aloud_audience(node_id)
 		if (!audience.len)
