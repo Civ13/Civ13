@@ -1617,6 +1617,19 @@ var/global/redirect_all_players = null
 
 	show_latechoices_window(dat, join_jobs)
 
+// Fresh body creation runs after AssignRole. Keep the same client and mind
+// in the lobby, without carrying the cancelled admission's job reservation.
+/mob/new_player/proc/release_new_character_job()
+	if (original_job)
+		original_job.current_positions = max(0, original_job.current_positions - 1)
+	original_job = null
+	original_job_title = null
+	if (mind)
+		mind.assigned_role = null
+		mind.assigned_job = null
+	spawning = FALSE
+	ready = FALSE
+
 /mob/new_player/proc/create_character(mobtype)
 	if(!map_storage.allow_new_character(src)) return null
 	// Reclaim above does not depend on the next character's preferences.
@@ -1634,14 +1647,7 @@ var/global/redirect_all_players = null
 		if (!initial_location)
 			// AssignRole reserved a slot before create_character. Release it while
 			// keeping the lobby, client and mind intact for another Join attempt.
-			original_job.current_positions = max(0, original_job.current_positions - 1)
-			original_job = null
-			original_job_title = null
-			if (mind)
-				mind.assigned_role = null
-				mind.assigned_job = null
-			spawning = FALSE
-			ready = FALSE
+			release_new_character_job()
 			to_chat(src, SPAN_WARNING("No safe outdoor starting place was found. Please try joining again."))
 			return null
 
@@ -1701,6 +1707,20 @@ var/global/redirect_all_players = null
 			qdel(new_character)
 			spawning = FALSE
 			return null
+
+	// Use the actual applied name, including generated names, and check only
+	// fresh admissions. Existing bodies have already gone through reclaim above.
+	if (persistence_bed_return_enabled() && client)
+		var/account = accolade_client_ckey(client)
+		var/other_slot = character_slot_name_conflict(account, client.character_slot, new_character.real_name)
+		if (other_slot)
+			qdel(new_character)
+			release_new_character_job()
+			lobby_join_trace("spawn_denied", "character_slot_name_used")
+			to_chat(src, SPAN_WARNING("Another character on your account (slot [other_slot]) already uses this name. Choose a different name in Character Setup and try Join again."))
+			return null
+		if (account)
+			new_character.character_slot_admitted_name = new_character.real_name
 
 	src << sound(null, repeat = FALSE, wait = FALSE, volume = 85, channel = TRUE) // MAD JAMS can't last forever yo
 

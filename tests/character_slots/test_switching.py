@@ -48,7 +48,7 @@ class CharacterSlotSourceTest(unittest.TestCase):
         self.assertIn("#define CHARACTER_SLOT_HURT_WAIT 6000", SOURCE)
 
     def test_record_times_compare_as_digit_strings(self):
-        state = body("/proc/character_slot_state(ckey)")
+        state = body("/proc/character_slot_state(ckey, fresh = FALSE)")
         self.assertIn("shared_records.unix_after", state)
         self.assertNotIn("at < active_at", state)
 
@@ -131,6 +131,58 @@ class CharacterSlotSourceTest(unittest.TestCase):
         admin = (ROOT / "code/modules/admin/accolades_admin.dm").read_text()
         self.assertIn('"Lock slot"', admin)
         self.assertIn("shared_records.revoke(open[pick]", admin)
+
+
+LOBBY = (ROOT / "code/game/mob/new_player/new_player.dm").read_text()
+JOBS = (ROOT / "code/game/jobs/job_controller.dm").read_text()
+
+
+def admission_body(source, signature):
+    match = re.search(r"^" + re.escape(signature) + r"\n((?:[ \t].*\n|\n)*)", source, re.M)
+    if not match:
+        raise AssertionError("Missing procedure: " + signature)
+    return match.group(1)
+
+
+class CharacterSlotNameAdmission(unittest.TestCase):
+    def test_name_gate_is_after_reclaim_and_preferences_but_before_control_transfer(self):
+        create = admission_body(LOBBY, "/mob/new_player/proc/create_character(mobtype)")
+        gate = "character_slot_name_conflict(account, client.character_slot, new_character.real_name)"
+        guarded = create.index(gate)
+        for earlier in ("map_storage.allow_new_character(src)", "client.prefs.copy_to(new_character)",
+                        "if (client && client.prefs.be_random_body)", "if (persistence_bed_return_enabled() && client)",
+                        "var/account = accolade_client_ckey(client)"):
+            self.assertLess(create.index(earlier), guarded)
+        for later in ("mind.transfer_to(new_character)", "new_character.key = key"):
+            self.assertLess(guarded, create.index(later))
+        refusal = create[guarded:create.index("src << sound", guarded)]
+        for required in ("if (other_slot)", "qdel(new_character)", "release_new_character_job()",
+                         "Choose a different name in Character Setup and try Join again.", "return null"):
+            self.assertIn(required, refusal)
+
+    def test_refusal_releases_role_without_deleting_or_moving_the_lobby(self):
+        release = admission_body(LOBBY, "/mob/new_player/proc/release_new_character_job()")
+        for required in ("original_job.current_positions = max(0, original_job.current_positions - 1)",
+                         "original_job = null", "original_job_title = null", "mind.assigned_role = null",
+                         "mind.assigned_job = null", "spawning = FALSE", "ready = FALSE"):
+            self.assertIn(required, release)
+        self.assertNotIn("key =", release)
+        self.assertNotIn("qdel", release)
+        self.assertNotIn("transfer_to", release)
+
+    def test_new_writes_follow_equipped_name_and_unlocked_siblings_only(self):
+        conflict = admission_body(SOURCE, "/proc/character_slot_name_conflict(account, slot, name)")
+        self.assertIn("character_slot_state(account, TRUE)", conflict)
+        self.assertIn("other == slot || !character_slot_open(state, other)", conflict)
+        self.assertIn("region_home_living_body(owner_key_for(account, other))", conflict)
+        self.assertIn("H ? H.real_name", conflict)
+        equip = admission_body(JOBS, "/datum/controller/occupations/proc/EquipRank(var/mob/living/human/H, var/rank, var/joined_late = FALSE)")
+        self.assertIn("H.character_slot_admitted_name = null", equip)
+        self.assertIn("if (admitted_name && H.client)", equip)
+        gate = equip.index("character_slot_name_conflict(")
+        self.assertLess(equip.index("job.give_random_name(H)"), gate)
+        self.assertLess(equip.index("if (job.rank_abbreviation)"), gate)
+        self.assertLess(equip.index("H.real_name = admitted_name", gate), equip.index("H.character_slot_note_name()"))
 
 
 if __name__ == "__main__":

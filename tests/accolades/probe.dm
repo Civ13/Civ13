@@ -21,6 +21,8 @@
 var/accolade_probe_durable = TRUE
 /obj/map_metadata/accolade_probe/uses_durable_metadata()
 	return accolade_probe_durable
+/mob/new_player/slot_name_probe/New()
+	return
 var/acc_failures = 0
 var/acc_runtime_error = FALSE
 /proc/acc_check(condition, label)
@@ -47,6 +49,7 @@ var/acc_runtime_error = FALSE
 		map = new /obj/map_metadata/accolade_probe
 		Master.start_timer_loop()
 		acc_checks()
+		acc_slot_name_checks()
 	catch(var/exception/e)
 		acc_check(FALSE, "exception [e] [e.file]:[e.line] [e.desc]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = acc_failures, "runtime_error" = acc_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -264,3 +267,58 @@ var/acc_runtime_error = FALSE
 	frozen["faction:Sparta"] = list("test", "staff", world.realtime)
 	acc_check(province_claims_frozen("faction:Sparta") && !province_claims_frozen("faction:Rome"), "staff can freeze a side's claims")
 	acc_check(accolade_name("magistrate") == "Magistrate", "Magistrate is in the catalog")
+
+/proc/acc_slot_name_checks()
+	var/mob/living/human/H = new(locate(6, 8, 1))
+	H.persistence_owner_ckey = "rosterprobe"
+	H.real_name = "Ava O'Neil"
+	H.character_slot_note_name()
+	var/list/state = character_slot_state("rosterprobe")
+	var/list/names = state["names"]
+	acc_check(character_slot_count(state) == 1 && names["1"][1] == "Ava O'Neil", "a new first slot records its name even before unlocking a second")
+	acc_check(character_slot_name_conflict("rosterprobe", 1, "Ava O'Neil") == 0, "a slot does not reserve its own name against itself")
+	acc_check(character_slot_name_conflict("rosterprobe", 2, "  AVA   O'NEIL  ") == 1, "local sibling names compare without case or whitespace")
+	acc_check(character_slot_name_conflict("rosterprobe", 2, "Ava O-Neil") == 0, "meaningful name punctuation is preserved")
+	acc_check(character_slot_name_conflict("differentaccount", 2, "Ava O'Neil") == 0, "a different account can use that name")
+	H.real_name = "Ava Renamed"
+	acc_check(character_slot_name_conflict("rosterprobe", 2, "Ava O'Neil") == 0 && character_slot_name_conflict("rosterprobe", 2, "Ava Renamed") == 1, "the local sibling body wins over its old shared name")
+	var/path = "[shared_records.root()]players/r/rosterprobe.json"
+	var/list/records = list(
+		list("id" = md5("rosterprobe2"), "kind" = "character_slot", "at" = "10000", "region" = "otherland", "body" = list("slot" = 2, "points" = 100)),
+		list("id" = md5("rosterprobe2name"), "kind" = "character_named", "at" = "10000", "region" = "otherland", "body" = list("slot" = 2, "name" = "Ivy North")),
+		list("id" = md5("rosterprobe3name"), "kind" = "character_named", "at" = "10000", "region" = "otherland", "body" = list("slot" = 3, "name" = "Ash North")))
+	text2file(json_encode(list("records" = records)), path)
+	acc_check(character_slot_name_conflict("rosterprobe", 1, "  ivy   NORTH  ") == 2, "an uncached shared snapshot prevents a collision with an unlocked remote sibling")
+	acc_check(character_slot_name_conflict("rosterprobe", 1, "Ash North") == 0, "names in a locked or unbought slot do not block admission")
+	acc_check(character_slot_name_conflict("rosterprobe", 2, "Ivy North") == 0, "a remote record for the slot being created does not block it")
+
+	// An existing first character can be asleep before any minute tick saw
+	// multiple slots. The fresh local body still protects its name.
+	var/mob/living/human/old_slot = new(locate(8, 8, 1))
+	old_slot.persistence_owner_ckey = "oldslotprobe"
+	old_slot.real_name = "Ofelia Stone"
+	old_slot.sleeping = 66
+	old_slot.inducedSSD = TRUE
+	shared_records.add("oldslotprobe", "character_slot", list("slot" = 2, "points" = 100))
+	var/list/old_state = character_slot_state("oldslotprobe", TRUE)
+	var/list/old_names = old_state["names"]
+	acc_check(character_slot_open(old_state, 2) && !old_names["1"], "slot two is unlocked before the first slot has a shared name")
+	acc_check(character_slot_name_conflict("oldslotprobe", 2, "Ofelia Stone") == 1, "a sleeping local first slot reserves its name before the minute tick")
+
+	var/mob/new_player/slot_name_probe/L = new
+	var/datum/job/J = new
+	var/datum/mind/M = new("rosterprobe")
+	L.mind = M
+	L.spawning = TRUE
+	L.ready = TRUE
+	L.original_job = J
+	L.original_job_title = "test job"
+	J.current_positions = 2
+	M.assigned_job = J
+	M.assigned_role = L.original_job_title
+	L.release_new_character_job()
+	acc_check(J.current_positions == 1 && L.mind == M && !L.ready && !L.spawning, "name refusal releases one role position and leaves the lobby and mind intact")
+	acc_check(!L.original_job && !L.original_job_title && !M.assigned_role && !M.assigned_job, "the failed admission clears the old assignment")
+	L.release_new_character_job()
+	acc_check(J.current_positions == 1, "repeated release does not deduct another player's position")
+	acc_check(!character_slot_name_conflict("oldslotprobe", 2, "Ofelia River") && !L.spawning && !L.mind.assigned_job, "a corrected name passes the guard after the lobby releases its failed admission")
