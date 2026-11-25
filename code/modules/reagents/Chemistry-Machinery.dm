@@ -1159,20 +1159,35 @@
 /obj/structure/distillery/proc/process_machine()
 	if (!active)
 		return
-	else
-		spawn(150)
-			var/ethanol_sum = 0
-			for (var/datum/reagent/r in reagents.reagent_list)
-				if (istype(r, /datum/reagent/ethanol))
-					ethanol_sum += reagents.get_reagent_amount(r.id)*(1-(r.strength/100))
-					reagents.remove_reagent(r.id,reagents.get_reagent_amount(r.id))
-				else
-					reagents.remove_reagent(r.id,reagents.get_reagent_amount(r.id))
+	spawn(150)
+		finish_distilling()
 
-			var/voltotransf = min(collector.reagents.get_free_space(),ethanol_sum)
-			collector.reagents.add_reagent("ethanol",voltotransf)
+/obj/structure/distillery/proc/finish_distilling()
+	if (!active)
+		return FALSE
+	active = FALSE
+	update_icon()
 
+	if (QDELETED(collector) || collector.loc != src || !collector.reagents)
+		warn_distillation_stopped("its collector is missing")
+		return FALSE
 
-			active = FALSE
-			update_icon()
-			visible_message("\The [src] finishes distilling.")
+	var/ethanol_sum = 0
+	for (var/datum/reagent/r in reagents.reagent_list)
+		if (istype(r, /datum/reagent/ethanol))
+			ethanol_sum += r.volume * (1 - r.strength / 100)
+
+	collector.reagents.update_total()
+	if (ethanol_sum > collector.reagents.get_free_space())
+		warn_distillation_stopped("the collector is too small or too full; use an empty or larger collector")
+		return FALSE
+	if (ethanol_sum > 0 && !collector.reagents.add_reagent("ethanol", ethanol_sum))
+		warn_distillation_stopped("the collector cannot accept the distillate")
+		return FALSE
+
+	reagents.clear_reagents()
+	visible_message("\The [src] finishes distilling.")
+	return TRUE
+
+/obj/structure/distillery/proc/warn_distillation_stopped(reason)
+	visible_message(SPAN_WARNING("\The [src] stops: [reason]. Nothing was consumed."))
