@@ -98,6 +98,42 @@ var/telecom_failures = 0
 		S.next_broadcast = 0
 		S.transmit_lesson()
 		telecom_check(listener.broadcast_lessons.len == 1, "powered matching station and receiver award real lesson")
+		map.ordinal_age = 8
+		var/obj/structure/telecom/relay/course_relay = new(locate(3,4,1))
+		course_relay.enabled = TRUE
+		course_relay.powersource = C
+		C.connections |= course_relay
+		R.enabled = FALSE
+		listener.station_heard = 0
+		S.next_broadcast = 0
+		telecom_check(course_relay.operational(), "relay-only control is powered")
+		S.transmit_lesson()
+		telecom_check(!listener.station_heard, "a powered relay alone does not play a course")
+		qdel(course_relay)
+		R.enabled = TRUE
+		map.ordinal_age = 5
+		var/list/ineligible = list()
+		for (var/i = 1, i <= 36, i++)
+			var/mob/living/human/telecom_fixture/member = new(locate(4,4,1))
+			if (i <= 9)
+				member.online = FALSE
+			else if (i <= 18)
+				member.stat = UNCONSCIOUS
+			else if (i <= 27)
+				member.sleeping = 1
+			else
+				member.ear_deaf = 1
+			ineligible += member
+		var/mob/living/human/telecom_fixture/late_listener = new(locate(4,4,1))
+		S.next_broadcast = 0
+		S.transmit_lesson()
+		telecom_check(late_listener.station_heard == 1 && late_listener.broadcast_lessons.len == 1, "ineligible listeners do not consume scheduled audience slots")
+		var/ineligible_deliveries = 0
+		for (var/mob/living/human/telecom_fixture/member in ineligible)
+			ineligible_deliveries += member.station_heard
+			qdel(member)
+		telecom_check(!ineligible_deliveries, "scheduled audience excludes offline, unconscious, sleeping and deaf players")
+		qdel(late_listener)
 		telecom_check(civ_telecom_era_allowed(/obj/structure/telecom) && !civ_telecom_era_allowed(/obj/structure/telecom/tv) && !civ_telecom_era_allowed(/obj/structure/telecom/station/tv), "1903 radio does not unlock TV")
 		listener.station_heard = 0
 		var/mob/living/human/telecom_fixture/presenter = new(locate(3,3,1))
@@ -106,6 +142,11 @@ var/telecom_failures = 0
 		S.faction_tag = "Roleplay"
 		telecom_check(S.transmit_live(presenter, "Hello listeners", null) >= 1 && listener.station_heard == 1 && findtext(listener.station_last, "Test station"), "live station delivers named speech")
 		telecom_check(!S.transmit_live(presenter, "Too fast", null) && listener.station_heard == 1, "live station rate limit")
+		S.next_live_broadcast = 0
+		S.toggle_equipment_power()
+		S.toggle_equipment_power()
+		telecom_check(S.enabled && !S.presenter && !S.transmit_live(presenter, "Old presenter", null) && listener.station_heard == 1, "power cycle ends presentation without a periodic tick")
+		S.presenter = presenter
 		S.next_live_broadcast = 0
 		R.frequency = 201
 		S.transmit_live(presenter, "Wrong channel", null)
