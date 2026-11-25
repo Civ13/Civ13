@@ -137,3 +137,8 @@ With Pillow, `preview.py --output <file.png>` validates each new item's effectiv
 existing DMI state (including rotten variants), rejects blank/missing sprites and
 renders a PR-review sheet. It never modifies game art. Upload the sheet to the PR,
 verify its rendered attachment, then remove the generated local PNG.
+
+The sinew conversion probe exercises the real self-use handler. It verifies
+the other hand takes priority, a full hand bundle falls back to ground rope,
+and full, anchored, differently colored, or remote bundles cannot consume
+the one-unit output. A fresh cord is retained when no bundle can take it.

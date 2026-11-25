@@ -11554,7 +11554,7 @@
         "/obj/item/stack/material/rope"
       ],
       "file": "code/modules/1713/animal_harvest.dm",
-      "conditions": "one held sinew unit consumed -> one named sinew binding cord",
+      "conditions": "one held sinew unit consumed -> one rope unit; compatible other-hand bundle first, then ground bundle beneath the player, otherwise a new cord",
       "status": "source-derived conditional transformation; runtime/map availability unverified"
     },
     {
@@ -11910,9 +11910,9 @@
       ],
       "tools": [],
       "steps": [
-        "Use one held sinew portion in hand to twist it into binding cord, which functions as rope."
+        "Use held sinew to twist one portion into binding cord, which functions as rope. It adds to a compatible bundle in your other hand first, then a bundle beneath you. If neither has space, you get a separate cord."
       ],
-      "conditions": "Twist one held sinew into one sinew binding cord.",
+      "conditions": "One held sinew portion produces one rope unit; existing bundles retain their capacity limit.",
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "era": "No additional era restriction established by this procedure.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified"
