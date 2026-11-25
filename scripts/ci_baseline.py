@@ -1944,6 +1944,9 @@ SUITES = {
         'paths': ('tests/agent_ci_digest/', 'scripts/ci_digest.py'), 'shared_paths': (
             '.github/workflows/',)},
     # Water quality by kind, washing fixes and flea typhus; source checks only.
+    'mead_lid_timing': {'files': ('tests/bee_products/test_mead_lid_timing.py',),
+        'paths': ('tests/bee_products/test_mead_lid_timing.py', 'code/modules/1713/mead.dm'),
+        'shared_paths': ('code/modules/reagents/reagent_containers/glass.dm',)},
     'water_quality': {'files': ('tests/water_quality/test_water_quality.py',),
         'paths': ('tests/water_quality/', 'code/modules/1713/water_quality.dm'), 'shared_paths': (
             'code/game/mob/living/carbon/human/human_needs.dm',
