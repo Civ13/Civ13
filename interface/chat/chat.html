@@ -1079,6 +1079,7 @@
         }
 
         function applyFilter() {
+            if (!tabShows(activeTab, 'ic')) cancelLocalSpeech();
             const children = messagesContainer.children;
             for (let i = 0; i < children.length; i++) {
                 const child = children[i];
@@ -1089,7 +1090,6 @@
         function selectTab(index) {
             if (index < 0 || index >= chatTabs.length) index = 0;
             activeTab = index;
-            if (!tabShows(activeTab, 'ic')) cancelLocalSpeech();
             unread[index] = 0;
             applyFilter();
             renderTabs();

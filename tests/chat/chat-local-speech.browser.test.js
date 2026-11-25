@@ -130,6 +130,21 @@ const openSettings = page => page.locator('#chat-tab-settings').click();
     await send(page, tts('Live after reload'));
     assert.deepEqual(await speakLog(page), [['Live after reload', 'Local voice']]);
 
+    // Editing the active tab applies its filter without selecting another tab.
+    await send(page, tts('Queued before editing'));
+    const ic = page.locator('#chat-settings-list .tab-config').first()
+      .getByRole('checkbox', { name: 'IC speech and emotes', exact: true });
+    const previousCancels = await page.evaluate(() => window.cancels);
+    await ic.uncheck();
+    assert.equal(await page.evaluate(() => window.cancels), previousCancels + 1,
+      'editing the active tab stops its current IC speech');
+    await finish(page); // A stale native end event cannot revive the queue.
+    await ic.check();
+    await send(page, tts('Only new speech after editing'));
+    assert.deepEqual((await speakLog(page)).map(line => line[0]),
+      ['Live after reload', 'Only new speech after editing']);
+    await finish(page);
+
     const legacy = await context.newPage();
     await legacy.addInitScript(() => {
       Object.defineProperty(window, 'SpeechSynthesisUtterance', { value: undefined, configurable: true });
