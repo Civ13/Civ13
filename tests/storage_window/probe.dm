@@ -49,6 +49,7 @@ var/storwin_runtime_error = FALSE
 		storwin_window_checks()
 		storwin_carried_move_checks()
 		storwin_carried_hand_checks()
+		storwin_inventory_drag_checks()
 		storwin_search_checks()
 		storwin_closet_checks()
 		storwin_fire_checks()
@@ -184,7 +185,7 @@ var/storwin_runtime_error = FALSE
 	return
 
 /obj/item/organ/external/storwin_hand/is_usable()
-	return TRUE
+	return drag_usable
 
 /proc/storwin_carried_hand_checks()
 	var/turf/start = locate(1, 1, 1)
@@ -208,6 +209,65 @@ var/storwin_runtime_error = FALSE
 	W.finish_move()
 	storwin_check(J.loc == source && !H.r_hand, "a filled destination leaves the item in its bag instead of using the other hand")
 	qdel(W)
+
+/obj/item/organ/external/storwin_hand/var/drag_usable = TRUE
+
+/proc/storwin_change_during_drag(mob/living/human/storwin_probe/H, obj/item/I, action)
+	set waitfor = FALSE
+	sleep(1)
+	switch (action)
+		if ("injury")
+			var/obj/item/organ/external/storwin_hand/hand = H.organs_by_name["r_hand"]
+			hand.drag_usable = FALSE
+		if ("switch")
+			H.hand = 1
+		if ("locked")
+			I.canremove = FALSE
+		if ("slot")
+			H.shoulder = null
+			H.back = I
+
+/proc/storwin_inventory_drag_checks()
+	var/turf/start = locate(7, 1, 1)
+	var/mob/living/human/storwin_probe/H = new(start)
+	var/obj/item/organ/external/storwin_hand/right = new
+	H.organs_by_name = list("l_hand" = new /obj/item/organ/external/storwin_hand, "r_hand" = right)
+	var/obj/screen/inventory/R = new("right hand", "7,7", slot_r_hand, null, null, H)
+	var/obj/screen/inventory/L = new("left hand", "6,7", slot_l_hand, null, null, H)
+	var/obj/item/I = storwin_item(start, ITEM_SIZE_NORMAL, "timed weapon")
+	I.equiptimer = 5
+
+	storwin_change_during_drag(H, I, "injury")
+	I.inventory_drag_transfer(R, H)
+	storwin_check(!right.drag_usable && !H.r_hand && I.loc == start, "timed floor drag leaves an item in place if its receiving hand becomes unusable")
+	right.drag_usable = TRUE
+
+	I.loc = H
+	H.shoulder = I
+	storwin_change_during_drag(H, I, "locked")
+	var/started = world.time
+	I.inventory_drag_transfer(R, H)
+	storwin_check(world.time - started >= I.equiptimer && !I.canremove && H.shoulder == I && !H.r_hand, "worn drag waits and honors a removal restriction added during the draw")
+	I.canremove = TRUE
+
+	storwin_change_during_drag(H, I, "slot")
+	I.inventory_drag_transfer(R, H)
+	storwin_check(H.back == I && !H.shoulder && !H.r_hand && I.loc == H, "a worn drag cannot pull from a different slot after its wait")
+	H.back = null
+	H.shoulder = I
+
+	H.l_hand = storwin_item(H, ITEM_SIZE_TINY, "other held item")
+	H.hand = 0
+	storwin_change_during_drag(H, I, "switch")
+	started = world.time
+	I.inventory_drag_transfer(R, H)
+	storwin_check(world.time - started >= I.equiptimer && H.hand && H.r_hand == I && !H.shoulder, "worn drag completes after its draw delay into the clicked hand despite switching active hands")
+	H.l_hand = null
+	started = world.time
+	I.inventory_drag_transfer(L, H)
+	storwin_check(world.time == started && H.l_hand == I && !H.r_hand, "moving a timed item between hands remains immediate")
+	qdel(R)
+	qdel(L)
 
 /proc/storwin_search_checks()
 	var/turf/here = locate(8, 8, 1)

@@ -105,7 +105,7 @@ class InventoryDragTests(unittest.TestCase):
     def test_hand_and_slot_moves_respect_equip_rules(self):
         hand = proc_body(DRAG, '/obj/item/proc/inventory_drag_to_hand')
         for guard in ('if (held)', 'user.lying', 'inventory_drag_hand_usable(slot, user)',
-                      'user.canUnEquip(src)', 'inventory_drag_pickup_delay(user)', 'inventory_drag_put_back(origin)'):
+                      'user.canUnEquip(src)', 'inventory_drag_pickup_delay(user, fixed_hand = TRUE)', 'inventory_drag_put_back(origin)'):
             self.assertIn(guard, hand)
         slot = proc_body(DRAG, '/obj/item/proc/inventory_drag_to_slot')
         self.assertLess(slot.index('mob_can_equip(user, slot)'), slot.index('inventory_drag_take_out(user)'))
@@ -113,6 +113,28 @@ class InventoryDragTests(unittest.TestCase):
         self.assertIn('inventory_drag_put_back(origin)', slot)
         delay = proc_body(DRAG, '/obj/item/proc/inventory_drag_pickup_delay')
         self.assertIn('do_after(user, equiptimer, src', delay)
+
+    def test_timed_hand_drag_revalidates_before_removing_from_any_source(self):
+        hand = proc_body(DRAG, '/obj/item/proc/inventory_drag_to_hand')
+        before, after = hand.split('inventory_drag_pickup_delay(user, fixed_hand = TRUE)')
+        self.assertIn('source_slot = user.get_inventory_slot(src)', before)
+        self.assertIn('user.canUnEquip(src)', before)
+        self.assertIn('loc != source', after)
+        usable = after.index('inventory_drag_hand_usable(slot, user)')
+        self.assertLess(usable, after.index('user.u_equip(src)'))
+        self.assertLess(usable, after.index('inventory_drag_take_out(user)'))
+        self.assertLess(after.index('user.get_equipped_item(source_slot) != src || !user.canUnEquip(src)'),
+                        after.index('user.u_equip(src)'))
+        self.assertLess(after.index('!S.storage_contents_accessible()'), after.index('inventory_drag_take_out(user)'))
+
+    def test_timed_hand_drag_keeps_the_clicked_slot_but_skips_wait_between_hands(self):
+        hand = proc_body(DRAG, '/obj/item/proc/inventory_drag_to_hand')
+        wait = proc_body(DRAG, '/obj/item/proc/inventory_drag_pickup_delay')
+        self.assertLess(wait.index('user.item_is_in_hands(src)'), wait.index('do_after('))
+        self.assertIn('needhand = !carried && !fixed_hand', wait)
+        self.assertIn('inventory_drag_pickup_delay(user, fixed_hand = TRUE)', hand)
+        self.assertIn('inventory_drag_put_in_hand(slot, user)', hand)
+        self.assertNotIn('user.hand', hand)
 
     def test_storage_drop_reaches_transfer_before_worn_only_return(self):
         body = proc_body(STORAGE, '/obj/item/weapon/storage/MouseDrop')
