@@ -183,6 +183,10 @@
 /obj/item/weapon/reagent_containers/food/snacks/egg/proc/grow()
 	if (QDELETED(src))
 		return
+	if (roasted)
+		growing = FALSE
+		processing_objects -= src
+		return
 	if (isturf(loc) && chicken_count.len < 80)
 		amount_grown += 1
 		if (amount_grown >= 400)
@@ -572,6 +576,10 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/proc/grow()
 	if (QDELETED(src))
+		return
+	if (roasted)
+		growing = FALSE
+		processing_objects -= src
 		return
 	if (isturf(loc) && turkey_count.len < 80)
 		amount_grown += 1
