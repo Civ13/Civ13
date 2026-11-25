@@ -946,6 +946,7 @@ SUITES = {
         'paths': ('tests/boat_movement/',), 'shared_paths': (
             'code/modules/1713/machinery/modular_vehicles/movement.dm',
             'code/modules/1713/machinery/modular_vehicles/ships/movement.dm',
+            'code/modules/1713/machinery/modular_vehicles/ships/wheels.dm',
             'tests/save_movement/source_adapter.py')},
     # Explosion remains above the ground: production wiring and map level audit.
     'vehicle_hull_damage': {'files': ('tests/vehicle_hull_damage/test_contract.py',),
