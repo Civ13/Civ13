@@ -624,7 +624,7 @@
             cursor: default;
         }
 
-        /* x2, x3 counter on a line that repeated (see receiveMessage). */
+        /* Repeat counter on a chat line or complete examine result. */
         .chat-repeat {
             display: inline-block;
             margin-left: 5px;
@@ -639,6 +639,8 @@
             line-height: 14px;
             vertical-align: 1px;
         }
+
+        .chat-examine, .chat-examine > div:last-child { display: inline; }
 
         .chat-repeat.bump {
             animation: chat-repeat-bump 0.25s ease-out;
@@ -1382,6 +1384,8 @@
         // counter was added to the line.
         let lastLine = null;
         let lastLineHtml = '';
+        let lastLineKey = '';
+        const recentExamineDeliveries = new Set();
 
         function bumpRepeat(div) {
             const count = (Number(div.getAttribute('data-repeat')) || 1) + 1;
@@ -1392,7 +1396,7 @@
                 badge.className = 'chat-repeat';
                 div.appendChild(badge);
             }
-            badge.textContent = 'x' + count;
+            badge.textContent = '×' + count;
             badge.classList.remove('bump');
             void badge.offsetWidth; // restart the bump animation
             badge.classList.add('bump');
@@ -1439,48 +1443,95 @@
                 lastMessage = messageHtml;
                 lastMessageTime = Date.now();
 
-                if (lastLine && lastLineHtml === messageHtml && messagesContainer.lastElementChild === lastLine) {
-                    bumpRepeat(lastLine);
-                    scheduleHistorySave();
-                    scrollToTail();
-                    return;
-                }
-
-                const messageDiv = document.createElement('div');
-                messageDiv.className = 'message';
-
-                // Robust sanitization with fallback
-                if (skip_purify || typeof DOMPurify === 'undefined') {
-                    messageDiv.innerHTML = messageHtml;
-                } else {
-                    try {
-                        messageDiv.innerHTML = DOMPurify.sanitize(messageHtml, {
-                            USE_PROFILES: { html: true },
-                            ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp|tel|file|sms|byond):|[^&:/?#]*(?:[/?#]|$))/i
-                        });
-                    } catch (e) {
-                        console.error("Chat: Sanitization failed", e);
-                        messageDiv.innerText = messageHtml; // Fallback to plain text on failure
-                    }
-                }
-
-                const chatType = classifyMessage(messageDiv);
-                noteMessageType(messageDiv, chatType);
-                messagesContainer.appendChild(messageDiv);
-                queueLocalSpeech(messageDiv, chatType);
-                queueTranslation(messageDiv, chatType);
-                lastLine = messageDiv;
-                lastLineHtml = messageHtml;
-
-                // Keep memory usage in check by trimming old messages per
-                // type. When reading above the tail, keep a surviving visible
-                // message at the same screen position.
-                trimType(chatType);
-                scheduleHistorySave();
-
-                scrollToTail();
+                displayMessage(messageHtml, skip_purify);
             } catch (err) {
                 console.error("Chat Fatal Error:", err);
+            }
+        }
+
+        function sanitizedContent(div, html, skipPurify) {
+            if (skipPurify || typeof DOMPurify === 'undefined') {
+                div.innerHTML = html;
+            } else {
+                try {
+                    div.innerHTML = DOMPurify.sanitize(html, {
+                        USE_PROFILES: { html: true },
+                        ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|ftp|tel|file|sms|byond):|[^&:/?#]*(?:[/?#]|$))/i
+                    });
+                } catch (e) {
+                    console.error("Chat: Sanitization failed", e);
+                    div.innerText = html;
+                }
+            }
+        }
+
+        function repeatLast(html, key) {
+            if (!lastLine || lastLineHtml !== html || lastLineKey !== key || messagesContainer.lastElementChild !== lastLine) return false;
+            bumpRepeat(lastLine);
+            scheduleHistorySave();
+            scrollToTail();
+            return true;
+        }
+
+        function displayMessage(messageHtml, skipPurify) {
+            const key = skipPurify ? 'trusted-line' : 'line';
+            if (repeatLast(messageHtml, key)) return;
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            sanitizedContent(messageDiv, messageHtml, skipPurify);
+            const chatType = classifyMessage(messageDiv);
+            appendMessage(messageDiv, messageHtml, key, chatType);
+            queueLocalSpeech(messageDiv, chatType);
+            queueTranslation(messageDiv, chatType);
+        }
+
+        function appendMessage(div, html, key, type) {
+            noteMessageType(div, type);
+            messagesContainer.appendChild(div);
+            lastLine = div;
+            lastLineHtml = html;
+            lastLineKey = key;
+
+            // Trim while retaining a surviving visible anchor above the tail.
+            trimType(type);
+            scheduleHistorySave();
+            scrollToTail();
+        }
+
+        function receiveExamine(data) {
+            try {
+                const packet = decodeURIComponent(data);
+                const batch = JSON.parse(packet);
+                if (!batch || typeof batch.id !== 'string' || !batch.id || recentExamineDeliveries.has(batch.id)) return;
+                const lines = batch.lines;
+                if (!Array.isArray(lines) || !lines.length || lines.some(line => typeof line !== 'string')) return;
+                heardFromServer();
+                lastMessage = '';
+                lastMessageTime = 0;
+                recentExamineDeliveries.add(batch.id);
+                if (recentExamineDeliveries.size > 64) recentExamineDeliveries.delete(recentExamineDeliveries.values().next().value);
+                const key = JSON.stringify([batch.id.split(':', 1)[0], lines]);
+                if (repeatLast(key, 'examine')) return;
+                const div = document.createElement('div');
+                div.className = 'message';
+                const block = document.createElement('div');
+                block.className = 'chat-examine';
+                for (const html of lines) {
+                    if (!html) continue;
+                    const line = document.createElement('div');
+                    sanitizedContent(line, html, false);
+                    // Do not change existing filtering, TTS or translation for
+                    // output belonging to a different chat channel.
+                    if (classifyMessage(line) !== 'other') {
+                        for (const individual of lines) displayMessage(individual, false);
+                        return;
+                    }
+                    block.appendChild(line);
+                }
+                div.appendChild(block);
+                appendMessage(div, key, 'examine', 'other');
+            } catch (err) {
+                console.error("Chat: Failed to receive examine output", err);
             }
         }
 
@@ -2167,6 +2218,7 @@
 
         // Expose to global scope for BYOND
         window.receiveMessage = receiveMessage;
+        window.receiveExamine = receiveExamine;
         window.clearChat = clearChat;
         window.setChatIdentity = setChatIdentity;
         window.selectChatTab = selectTab;
