@@ -67,7 +67,27 @@
 		return FALSE
 	return finish_grinding(W, user)
 
+// Same access as the inventory and adjacent floor-storage item click branches.
+// do_after() watches src.loc, which does not change when a carrier takes a bag.
+/obj/item/weapon/reagent_containers/glass/mortar/proc/grind_access(mob/user)
+	if (QDELETED(src) || QDELETED(user))
+		return FALSE
+	if (!is_open_container())
+		to_chat(user, SPAN_WARNING("Open the lid before grinding."))
+		return FALSE
+	var/depth = storage_depth(user)
+	if (depth != -1 && depth <= 1)
+		return TRUE
+	if (isturf(user.loc))
+		depth = storage_depth_turf()
+		if ((isturf(loc) || (depth != -1 && depth <= 1)) && Adjacent(user))
+			return TRUE
+	to_chat(user, SPAN_WARNING("You cannot reach the mortar to grind in it."))
+	return FALSE
+
 /obj/item/weapon/reagent_containers/glass/mortar/proc/can_grind(obj/item/W, mob/user)
+	if (!grind_access(user))
+		return FALSE
 	var/list/result = mortar_grind_result(W)
 	if (!result)
 		return FALSE
