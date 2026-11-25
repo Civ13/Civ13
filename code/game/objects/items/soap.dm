@@ -68,7 +68,7 @@
 		return
 	hygiene = HYGIENE_LEVEL_CLEAN
 	if ((world.time - soap_cooldown >= S.mood_boost_wait) || !soap_cooldown)
-		adjust_mood(10, "a good wash")
+		src.adjust_mood(10, "a good wash")
 		to_chat(src, "You really enjoy bathing with the [S.name]. You feel much better!")
 		soap_cooldown = world.time
 	else
