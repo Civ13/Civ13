@@ -1,3 +1,5 @@
+#include "load_transactions.dm"
+
 // Carriages (code/game/objects/structures/carriage.dm and
 // code/modules/craft/carriage_papers.dm): the team's pull and pace, the
 // footprint and team lane, boarding, harness and cargo seats, steps and what
@@ -113,31 +115,7 @@ var/carriage_owners_about = FALSE
 	carriage_check(C.complete_load(crate, ann), "loose cargo loads into an available seat")
 	carriage_check(C.seats[2] == crate && crate.anchored && !crate.density && (crate in C.ontop_o) && crate.layer > C.layer, "the crate rides in a seat, anchored and drawn above the bed")
 
-	// State changes during a timed load must not move refused cargo or passengers.
-	var/mob/living/human/carriage_probe/passenger = carriage_person(22, 31, "Waiting passenger")
-	var/turf/passenger_origin = passenger.loc
-	var/obj/structure/chair/chair = new(passenger_origin)
-	chair.buckled_mob = passenger
-	passenger.buckled = chair
-	carriage_check(!C.complete_load(passenger, ann) && passenger.loc == passenger_origin && passenger.buckled == chair && chair.buckled_mob == passenger, "loading preserves a passenger's other seat")
-	passenger.buckled = null
-	passenger.anchored = TRUE
-	carriage_check(!C.complete_load(passenger, ann) && passenger.loc == passenger_origin, "loading leaves an anchored passenger in place")
-	chair.buckled_mob = null
-	qdel(chair)
-	qdel(passenger)
-	var/list/extra_cargo = list()
-	while (C.free_seat())
-		var/obj/structure/closet/crate/extra = new(locate(22, 30, 1))
-		extra_cargo += extra
-		C.take_seat(extra, C.free_seat())
-	var/obj/structure/closet/crate/waiting = new(locate(22, 30, 1))
-	var/turf/cargo_origin = waiting.loc
-	carriage_check(!C.complete_load(waiting, ann) && waiting.loc == cargo_origin && !(waiting in C.seats) && !waiting.anchored, "a full carriage leaves refused cargo at its origin")
-	qdel(waiting)
-	for (var/obj/structure/closet/crate/extra in extra_cargo)
-		C.let_off(extra)
-		qdel(extra)
+	carriage_check_load_transactions(C, ann)
 
 	// ---- Harness ----
 	carriage_check(C.team_pull() == 0 && C.load_ratio() == INFINITY, "with no team it has no pull")
