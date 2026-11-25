@@ -42,6 +42,9 @@
 	if (wash_mode == "remove_fitting")
 		var/obj/structure/sink/well/W = water
 		qdel(W.well_fitting())
+	if (wash_mode == "cover_closes")
+		var/obj/structure/sink/well/W = water
+		W.well_cover_closed = TRUE
 	if (wash_mode == "another_draw")
 		var/obj/structure/sink/well/W = water
 		W.volume = 2
@@ -73,6 +76,8 @@ var/hide_wash_runtime_error = FALSE
 		hide_wash_fitted_case("remove_fitting", 0, 12, 1)
 		hide_wash_fitted_case("another_draw", 0, 2, 1)
 		hide_wash_fitted_case("no_fitting", 0, 12, 0)
+		hide_wash_fitted_case("cover_closed", 0, 12, 0)
+		hide_wash_fitted_case("cover_closes", 0, 12, 1)
 		hide_wash_shallow_case()
 	catch(var/exception/e)
 		hide_wash_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -94,6 +99,9 @@ var/hide_wash_runtime_error = FALSE
 	U.r_hand = H
 	var/obj/structure/sink/well/timber/W = new(source)
 	W.volume = 12
+	if (mode == "cover_closed" || mode == "cover_closes")
+		W.well_cover = TRUE
+		W.well_cover_closed = mode == "cover_closed"
 	var/obj/structure/well_fitting/windlass/F
 	if (mode == "no_fitting")
 		W.attackby(H, U)
@@ -122,4 +130,3 @@ var/hide_wash_runtime_error = FALSE
 	U.r_hand = H
 	hide_wash_check(H.resolve_attackby(source, U) && U.wash_waits == 2 && QDELETED(H), "ordinary shallows still wash each hide with its own wait")
 	hide_wash_check(hide_wash_count(U, /obj/item/stack/material/wethide) + hide_wash_count(stand, /obj/item/stack/material/wethide) == 2, "ordinary shallows retain output accounting")
-

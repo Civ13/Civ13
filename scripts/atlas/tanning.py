@@ -101,7 +101,7 @@ def add_tanning(files, add, records, variants):
           [(STACK+'wethide', 'n pieces')],
           LEATHER, '/obj/item/stack/material/hairlesshide/proc/wash_in_water(',
           ('Hold the prepared hides and click a nearby well with a windlass or pump.',
-           'Each hide takes 30 ticks and consumes 5 units of well water. Work stops if the water runs low, the fitting is removed, or you stop.',
+           'Each hide takes 30 ticks and consumes 5 units of well water. Work stops if the water runs low, the cover closes, the fitting is removed, or you stop.',
            'Washed hides gather in your free hand or drop at your feet.'), ['Well with a windlass or pump'])
     route('Rack-dry washed hides', [(STACK+'wethide', 'n pieces'), (STATION, 'station; not consumed')],
           [(STACK+'dryhide', 'n pieces')], RACK, '/obj/structure/converter/tanning\n',

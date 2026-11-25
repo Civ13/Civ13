@@ -189,7 +189,7 @@
 		return FALSE
 	if (fitting)
 		var/obj/structure/sink/well/W = water
-		if (!istype(W) || QDELETED(fitting) || fitting.loc != W.loc || W.well_fitting() != fitting)
+		if (!istype(W) || QDELETED(fitting) || fitting.loc != W.loc || W.well_fitting() != fitting || W.well_cover_closed)
 			return FALSE
 		W.dug_settle()
 		return !W.heat_dried() && W.volume >= HIDE_WASH_WATER_COST

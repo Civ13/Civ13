@@ -76,6 +76,7 @@ class HideWellWashTests(unittest.TestCase):
         well = wells.split('/obj/structure/sink/well/attackby(', 1)[1].split('\n// ----', 1)[0]
         route = well.split('if (istype(H))', 1)[1].split('\tif (F && F.draw', 1)[0]
         self.assertIn('H.wash_in_water(user, src, F)', route)
+        self.assertLess(well.index('if (!well_can_use_item(O))'), well.index('H.wash_in_water(user, src, F)'))
         self.assertIn('Draw water into an open vessel', route)
         self.assertIn('\t\treturn TRUE', route)
         self.assertNotIn('..()', route)
@@ -85,6 +86,7 @@ class HideWellWashTests(unittest.TestCase):
         leather = (root / 'code/game/objects/items/stacks/sheets/leather.dm').read_text(encoding='utf-8')
         admission = leather.split('/proc/water_wash_valid(', 1)[1].split('\n\n', 1)[0]
         self.assertIn('fitting.loc != W.loc || W.well_fitting() != fitting', admission)
+        self.assertIn('|| W.well_cover_closed', admission)
         self.assertIn('return !W.heat_dried() && W.volume >= HIDE_WASH_WATER_COST', admission)
         washing = leather.split('/proc/wash_in_water(', 1)[1].split('\n#undef ', 1)[0]
         self.assertIn(r'with water from \the [water] drawn using \the [fitting]', washing)
