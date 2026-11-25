@@ -34,6 +34,8 @@
 #define BUILDING_HEAT_TILES 30
 // What a closed curtain in a doorway or empty frame is worth.
 #define BUILDING_CURTAIN_VALUE 0.35
+// What a closed curtain adds over glazing that already seals the room.
+#define BUILDING_GLAZED_CURTAIN_BONUS 0.2
 #define BUILDING_LINING_COST 2
 
 var/global/list/building_room_of = list()
@@ -141,8 +143,13 @@ var/global/list/building_room_of = list()
 			break
 	for (var/obj/structure/simple_door/D in N)
 		if (D.door_seals_room())
-			return building_insulation_material(D.material ? D.material.name : "wood") * 0.8
-		return curtained ? BUILDING_CURTAIN_VALUE : 0
+			var/door_value = building_insulation_material(D.material ? D.material.name : "wood") * 0.8
+			if (curtained && istype(D, /obj/structure/simple_door/key_door/anyone/casement))
+				door_value += BUILDING_GLAZED_CURTAIN_BONUS
+			return door_value
+		// Open shutters can expose an intact pane on the same tile.
+		if (!istype(D, /obj/structure/simple_door/key_door/anyone/window_shutters))
+			return curtained ? BUILDING_CURTAIN_VALUE : 0
 	for (var/obj/covers/C in N)
 		if (C.wall)
 			if (C.incomplete)
@@ -156,7 +163,7 @@ var/global/list/building_room_of = list()
 	for (var/obj/structure/window/W in N)
 		if (istype(W, /obj/structure/window/barrier))
 			return building_insulation_material(W.structure_impact_material() || "dirt")
-		return curtained ? 0.5 : 0.3
+		return 0.3 + (curtained ? BUILDING_GLAZED_CURTAIN_BONUS : 0)
 	// An empty window frame or doorway, closed only by a curtain if anything.
 	return curtained ? BUILDING_CURTAIN_VALUE : 0
 
@@ -284,4 +291,5 @@ var/global/list/building_room_of = list()
 #undef BUILDING_ROOF_SHELTER
 #undef BUILDING_HEAT_TILES
 #undef BUILDING_CURTAIN_VALUE
+#undef BUILDING_GLAZED_CURTAIN_BONUS
 #undef BUILDING_LINING_COST
