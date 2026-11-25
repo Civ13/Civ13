@@ -1098,21 +1098,28 @@ obj/structure/vending/idfammo
 			ct1+=4
 
 /obj/structure/vending/craftable/stock(obj/item/W, var/datum/data/vending_product/R, var/mob/user)
-	if (!user.unEquip(W))
-		return
-
+	if (product_records.len >= max_products)
+		to_chat(user, SPAN_NOTICE("\The [src] is full!"))
+		return FALSE
+	var/mob/living/L = user
+	if (!istype(L) || !L.canUnEquip(W) || !L.transfer_held_item_to(W, src) || !stock_auto(W))
+		return FALSE
 	user.visible_message(SPAN_NOTICE("[user] inserts \the [W] into \the [src]."), SPAN_NOTICE("You insert \the [W] into \the [src]."), "You hear something thudding and slotting into place.")
-	W.forceMove(src)
-	product_records.Add(R)
-	GLOB.nanomanager.update_uis(src)
-	update_icon()
+	return TRUE
 
 /obj/structure/vending/craftable/proc/stock_auto(obj/item/W)
-	var/datum/data/vending_product/R = new/datum/data/vending_product(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state, M = W)
-	W.forceMove(src)
+	if (QDELETED(W) || product_records.len >= max_products)
+		return FALSE
+	if (W.loc != src)
+		W.forceMove(src)
+	if (W.loc != src)
+		return FALSE
+	var/datum/data/vending_product/R = new(src, W.type, W.name, _icon = W.icon, _icon_state = W.icon_state)
+	R.product_item += W
 	product_records.Add(R)
 	GLOB.nanomanager.update_uis(src)
 	update_icon()
+	return TRUE
 
 /obj/structure/vending/craftable/rifles
 	name = "rifle rack"

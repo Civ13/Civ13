@@ -78,7 +78,11 @@ class BackendContract(unittest.TestCase):
             self.assertTrue(act.startswith('\t. = TRUE\n'))
             self.assertLess(act.index('user.stat || user.restrained()'), act.index('action == "vend"'))
             self.assertLess(act.index('in_range(src, user)'), act.index('action == "vend"'))
-            self.assertLess(act.index(row), act.index('product_records[key]'))
+            if source == sales:
+                self.assertLess(act.index(row), act.index('product_records[key]'))
+            else:
+                self.assertIn('find_vending_row(value)', act)
+                self.assertNotIn('product_records[key]', act)
             self.assertNotRegex(act, r'\busr\b|href_list')
         # The owner's management page is a panel window with its own checked handler.
         self.assertNotIn('/obj/structure/vending/sales/Topic(', sales)
@@ -89,6 +93,25 @@ class BackendContract(unittest.TestCase):
         self.assertIn('fiat.currency_list[new_currency][5]', manage)
         self.assertIn('sanitize("[value]", 50)', manage)
         self.assertNotRegex(manage, r'\busr\b|href_list|locate\(')
+
+    def test_base_vendor_rows_and_rack_storage_use_exact_identity(self):
+        base = (ROOT / 'code/game/objects/structures/vending/vending.dm').read_text()
+        craftable = (ROOT / 'code/modules/1713/vending.dm').read_text()
+        product = (ROOT / 'code/game/objects/structures/vending/vending_product.dm').read_text()
+        select = base.split('/proc/find_vending_row(key)', 1)[1].split('/obj/', 1)[0]
+        self.assertIn('R.base_vending_row_key == key && R.amount > 0', select)
+        self.assertNotIn('product_records[key]', select)
+        self.assertIn('"key" = vending_row_key(I)', base)
+        restore = base.split('/proc/restock_record(obj/item/W)', 1)[1].split('/obj/', 1)[0]
+        self.assertLess(restore.index('W.type == R.product_path'), restore.index('istype(W, R.product_path)'))
+        stock = craftable.split('/craftable/stock(', 1)[1].split('/craftable/rifles', 1)[0]
+        self.assertLess(stock.index('canUnEquip(W)'), stock.index('transfer_held_item_to(W, src)'))
+        self.assertLess(stock.index('transfer_held_item_to(W, src)'), stock.index('stock_auto(W)'))
+        self.assertLess(stock.index('R.product_item += W'), stock.index('product_records.Add(R)'))
+        branch = product.split('/proc/get_product(', 1)[1].split('/obj/structure/vending/sales)', 1)[0]
+        self.assertNotIn('new product_path', branch)
+        self.assertIn('stored_item.loc != vending_machine', branch)
+        self.assertIn('stored_item.forceMove(product_location)', branch)
 
     def test_status_only_updates_and_ready_snapshot(self):
         self.assertIn('if (!isnull(data))\n\t\tlatest_data = data', DM)

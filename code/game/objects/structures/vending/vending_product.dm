@@ -11,6 +11,7 @@
 	var/image/product_image			//an image to be used as an overlay in the vending machine
 	var/list/product_item = list()	//the actual objects
 	var/is_stack = FALSE
+	var/tmp/base_vending_row_key = 0
 /datum/data/vending_product/New(var/_vending_machine, var/path, var/name = null, var/_amount = 1, var/_price = 0, var/_color = null, var/_icon = null, var/_icon_state = null, var/atom/movable/M = null)
 	..()
 
@@ -58,7 +59,21 @@
 	. = ..()
 
 /datum/data/vending_product/proc/get_product(var/product_location, var/p_amount=1, var/mob/user)
-	if (istype(vending_machine, /obj/structure/vending/sales) || istype(vending_machine, /obj/structure/vending/craftable))
+	if (istype(vending_machine, /obj/structure/vending/craftable))
+		// A rack row represents one physical object, even when that object is a
+		// stack. Leave ambiguous old rows alone rather than inventing stock.
+		if (!product_location || p_amount != 1 || amount != 1 || product_item.len != 1)
+			return FALSE
+		var/obj/item/stored_item = product_item[1]
+		if (!istype(stored_item) || QDELETED(stored_item) || stored_item.loc != vending_machine)
+			return FALSE
+		stored_item.forceMove(product_location)
+		if (stored_item.loc != product_location)
+			return FALSE
+		product_item.Cut()
+		amount = 0
+		return TRUE
+	if (istype(vending_machine, /obj/structure/vending/sales))
 		if (amount <= 0 || amount < p_amount || !product_location)
 			return
 		if (is_stack)
