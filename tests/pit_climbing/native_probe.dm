@@ -89,7 +89,11 @@ var/list/pit_probe_log = list()
 	persistence_save_in_progress = TRUE
 	pit_probe_check(item.try_stand_ladder(lower, H) && !QDELETED(item) && !P.has_ladder, "save_blocks_below_fit")
 	persistence_save_in_progress = FALSE
+	var/underlays_before = length(P.underlays)
 	pit_probe_check(item.try_stand_ladder(lower, H) && QDELETED(item) && P.has_ladder, "fit_from_lower_turf")
+	pit_probe_check(P.icon_state == "ladderdown_wood" && length(P.underlays) == underlays_before + 1 && P.loc == upper, "fitted_pit_keeps_shaft_backdrop_without_changing_turf")
+	P.update_icon()
+	pit_probe_check(length(P.underlays) == underlays_before + 1, "repeated_icon_update_does_not_stack_backdrop")
 	H.r_hand = null
 	var/obj/structure/multiz/ladder/up/hole_ladder/L = P.lower_ladder()
 	pit_probe_check(L && L.hole_above() == P, "linked_pair_matches_opening")
@@ -104,6 +108,7 @@ var/list/pit_probe_log = list()
 	L.attack_hand(H)
 	var/obj/item/weapon/hole_ladder/returned = H.get_active_hand()
 	pit_probe_check(QDELETED(L) && !P.has_ladder && istype(returned) && H.loc == lower, "grab_from_below_refunds_once_without_climbing")
+	pit_probe_check(P.icon_state == "hole_top" && length(P.underlays) == underlays_before && P.loc == upper, "ladder_removal_restores_open_pit_surface")
 	H.r_hand = null
 	qdel(returned)
 	H.a_intent = I_HELP
