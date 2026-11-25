@@ -71,7 +71,9 @@
 #define SEAWATER_VOMIT_CHANCE 10
 
 /datum/reagent/water/affect_ingest(var/mob/living/human/M, var/alien, var/removed)
-	if (reagents_are_brine(holder, volume)) // seawater and brine do not quench thirst
+	var/datum/reagents/metabolism/stomach = holder
+	var/brine = id == "water" && istype(stomach) && !isnull(stomach.ingest_brine) ? stomach.ingest_brine : reagents_are_brine(holder, volume)
+	if (brine) // seawater and brine do not quench thirst
 		brine_nausea(M)
 		return
 	..()

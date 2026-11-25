@@ -56,7 +56,7 @@
 			new /obj/effect/decal/cleanable/greenglow(T)
 	return
 
-/datum/reagent/proc/on_mob_life(var/mob/living/human/M, var/alien, var/location) // Currently, on_mob_life is called on carbons. Any interaction with non-carbon mobs (lube) will need to be done in touch_mob.
+/datum/reagent/proc/on_mob_life(var/mob/living/human/M, var/alien, var/location, var/amount_override = null) // Currently, on_mob_life is called on carbons. Any interaction with non-carbon mobs (lube) will need to be done in touch_mob.
 	if (!istype(M))
 		return
 	if (!affects_dead && M.stat == DEAD)
@@ -66,6 +66,8 @@
 		removed = ingest_met
 	else if (touch_met && (location == CHEM_TOUCH))
 		removed = touch_met
+	if (!isnull(amount_override))
+		removed = amount_override
 	removed = min(removed, volume)
 	// Overdose handlers get the amount metabolized this tick, including a final partial dose (#6295).
 	if (overdose && (dose > overdose_limit(M)) && (location != CHEM_TOUCH))
