@@ -68,9 +68,8 @@
 		return
 	return ..()
 
-/obj/item/weapon/gun/projectile/revolver/load_ammo(var/obj/item/A, mob/user)
+/obj/item/weapon/gun/projectile/revolver/on_internal_casings_loaded()
 	chamber_offset = 0
-	return ..()
 
 
 /obj/item/weapon/gun/projectile/revolver/attack_hand(mob/user as mob)
@@ -567,6 +566,10 @@
 			feed_first_loaded_casing()
 		else
 			open = TRUE
+			if (chambered)
+				loaded -= chambered
+				loaded.Insert(1, chambered)
+				chambered = null
 			to_chat(user, "<span class='notice'>You break open \the [src].</span>")
 			icon_state = "derringer_open"
 		recentpump = world.time
