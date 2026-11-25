@@ -141,3 +141,45 @@ var/vr_runtime_error = FALSE
 	var/datum/building_room/again = building_room_at(locate(41, 5, 1))
 	vr_check(again && again == building_room_at(locate(31, 4, 1)), "the room is surveyed once for all its tiles")
 	vr_check(findtext(building_room_warmth_text(again), "insulated"), "Judge This Room describes the warmth")
+	insul_window_checks()
+
+
+// Change only one exterior edge of an otherwise unchanged room.
+/proc/insul_window_checks()
+	insul_room(10, 15, 14, 19, /obj/covers/wood_wall)
+	var/turf/interior = locate(12, 17, 1)
+	var/turf/edge = locate(14, 17, 1)
+	var/obj/covers/old_wall = locate() in edge
+	qdel(old_wall)
+	var/obj/structure/window_frame/frame = new(edge)
+	var/obj/structure/simple_door/key_door/anyone/window_shutters/shutters = new(edge)
+	shutters.state = TRUE
+	shutters.density = FALSE
+	insul_fresh(interior)
+	var/datum/building_room/R = building_room_at(interior)
+	vr_check(R && R.gaps == 1 && R.draughty, "an open shutter over an empty frame is a gap")
+	qdel(frame)
+	var/obj/structure/window/classic/pane = new(edge)
+	insul_fresh(interior)
+	R = building_room_at(interior)
+	vr_check(R && !R.gaps && !R.draughty && building_insulation_edge_base(edge) == 0.3, "an open shutter exposes intact glazing without a gap")
+	shutters.state = FALSE
+	shutters.density = TRUE
+	vr_check(abs(building_insulation_edge_base(edge) - 0.56) < 0.001, "shut wooden shutters keep their own insulation value")
+	qdel(shutters)
+	qdel(pane)
+	var/obj/structure/window_frame/casement_frame = new(edge)
+	var/obj/structure/simple_door/key_door/anyone/casement/casement = new(edge)
+	var/obj/structure/curtain/curtain = new(edge)
+	curtain.opacity = FALSE
+	var/bare = building_insulation_edge_base(edge)
+	vr_check(abs(bare - 0.16) < 0.001, "bare closed casement retains glass-door insulation")
+	curtain.opacity = TRUE
+	vr_check(abs(building_insulation_edge_base(edge) - bare - 0.20) < 0.001, "closed curtain adds the same bonus over shut glazing")
+	casement.state = TRUE
+	vr_check(building_insulation_edge_base(edge) == 0.35, "closed curtain still seals an open casement")
+	curtain.opacity = FALSE
+	insul_fresh(interior)
+	R = building_room_at(interior)
+	vr_check(R && R.gaps == 1 && R.draughty, "open curtain and casement still leave a draught")
+	qdel(casement_frame)

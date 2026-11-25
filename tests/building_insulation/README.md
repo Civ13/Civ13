@@ -12,3 +12,6 @@ warm a long hall by how much fire it has, an outdoor fire warms only two tiles
 round it, and a room is surveyed once for all its tiles. It also checks that a
 closed curtain over a hole stops the draught (an open one does not), that wool
 lining holds more warmth, and which stacks line a wall.
+
+Window regressions cover shuttered frames with and without fixed glazing,
+and curtain bonuses over both shut and open casements.
