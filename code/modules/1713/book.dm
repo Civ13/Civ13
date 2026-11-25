@@ -31,7 +31,7 @@
 	return !unique
 
 /obj/item/weapon/book/attack_self(var/mob/user as mob)
-	if (dat)
+	if (dat || length(drawings))
 		user.examinate(src)
 		return
 	else
