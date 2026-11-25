@@ -1943,9 +1943,10 @@ SUITES = {
     'agent_ci_digest': {'files': ('tests/agent_ci_digest/test_ci_digest.py',),
         'paths': ('tests/agent_ci_digest/', 'scripts/ci_digest.py'), 'shared_paths': (
             '.github/workflows/',)},
+    # Mead production changes keep their conservative all-suite fallback.
     'mead_lid_timing': {'files': ('tests/bee_products/test_mead_lid_timing.py',),
-        'paths': ('tests/bee_products/test_mead_lid_timing.py', 'code/modules/1713/mead.dm'),
-        'shared_paths': ('code/modules/reagents/reagent_containers/glass.dm',)},
+        'paths': ('tests/bee_products/test_mead_lid_timing.py',),
+        'shared_paths': ('code/modules/1713/mead.dm', 'code/modules/reagents/reagent_containers/glass.dm')},
     'item_wash_source': {'files': ('tests/item_wash_source/test_completion.py',),
         'paths': ('tests/item_wash_source/', 'code/game/objects/structures/watercloset.dm')},
     # Water quality by kind, washing fixes and flea typhus; source checks only.
