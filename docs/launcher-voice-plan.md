@@ -167,12 +167,20 @@ rollout:
 
 1. Prove that a test caller outside an authorized roster receives no audio.
    With two authorized test participants talking, revoke one membership and
-   measure when media stops for the removed participant. Record only synthetic
-   pass/fail markers, timestamps and SDK versions, not audio or credentials.
+   timestamp the game decision, bot receipt, confirmed Discord membership update,
+   and SDK-observed end of media delivery. Measure end-to-end from the game
+   decision. Local mute and token invalidation are separate checks; neither is
+   evidence of removal or media cessation. Record only synthetic pass/fail
+   markers, timings and SDK versions, not audio or credentials.
 2. Repeat for disconnect and reconnect, character swap, observer or death
-   transition, and faction change. An expired or unknown admission decision
-   must be fail-closed. The ordinary launcher join and BYOND text paths must
-   remain available when voice is denied.
+   transition, and faction change. Explicit loss of eligibility starts revocation
+   without reconnect grace. If grace is allowed for transient disconnects, reserve
+   it for the same authenticated session and audience; stale context must expire
+   on a bounded schedule independent of roster traffic. Extend the bot's
+   fake-clock coverage for delayed and absent follow-up rosters and confirm the
+   deadline is not extended by a replayed or stale update. An expired or unknown
+   admission decision must be fail-closed. Ordinary launcher join and BYOND text
+   must remain available when voice is denied.
 3. Use a fixed small room and count the actual lobby writes. Do not join/leave
    per tile or promise proximity privacy from client-set volume. The
    [documented development budgets](https://docs.discord.com/developers/discord-social-sdk/core-concepts/communication-features#development-rate-limits)
