@@ -353,16 +353,23 @@
 	..()
 	if (!before || !holds_hide_scraper(scraper_user, null))
 		return
+	var/overflow_type
 	for (var/obj/item/stack/material/S in site)
-		if (!istype(S, /obj/item/stack/material/pelt) && !istype(S, /obj/item/stack/material/rawhide))
+		if (QDELETED(S) || (!istype(S, /obj/item/stack/material/pelt) && !istype(S, /obj/item/stack/material/rawhide)))
 			continue
 		if ((S in before) && S.amount <= before[S])
 			continue
 		if (S.amount >= S.max_amount)
+			if (!overflow_type)
+				overflow_type = S.type
 			continue
 		S.amount = min(S.max_amount, S.amount + HIDE_SCRAPER_BONUS)
 		S.update_icon()
 		return
+	// No room in the hides this harvest produced. Keep the extra piece
+	// separate instead of merging it into an unrelated older pile.
+	if (overflow_type)
+		new overflow_type(site, HIDE_SCRAPER_BONUS, FALSE)
 
 // ---------------------------------------------------------------- bone needle
 // Mend worn clothing: use the needle on it while holding sinew, leather,

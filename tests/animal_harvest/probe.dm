@@ -13,6 +13,9 @@
 /mob/living/harvest_tester/New()
 	return
 
+/mob/living/simple_animal/hostile/dinosaur/trex/harvest_tester/New()
+	return
+
 /obj/map_metadata/harvest_fixture/New()
 	map = src
 
@@ -70,6 +73,16 @@ var/global/harvest_duplicate_result = null
 	for (var/obj/O in site)
 		qdel(O)
 
+/proc/harvest_hide_assert(turf/site, path, expected_stacks, expected_pieces)
+	var/total = 0
+	for (var/obj/item/stack/material/S in site)
+		if (!istype(S, path) || QDELETED(S))
+			continue
+		harvest_assert(S.amount > 0 && S.amount <= S.max_amount, "Skinning created out-of-range stack: [S.amount]")
+		total += S.amount
+	harvest_assert(total == expected_pieces, "Wrong total hide yield: [total] instead of [expected_pieces]")
+	harvest_assert(harvest_count(site, path) == expected_stacks, "Wrong number of hide stacks")
+
 /world/New()
 	OpenPort("none")
 	// Exercise object cleanup after the first world tick.
@@ -112,6 +125,32 @@ var/global/harvest_duplicate_result = null
 			K.loc = U
 			harvest_clear(site)
 			K.loc = U
+		// The knife is held alongside the scraper. Ground pelts of other
+		// kinds and unchanged stacks must not acquire or swallow the bonus.
+		var/obj/item/weapon/material/hide_scraper/scraper = new(U)
+		U.r_hand = K
+		U.l_hand = scraper
+		for (var/starting in list(38, 39, 44))
+			var/obj/item/stack/material/pelt/cowpelt/old = new(site, starting)
+			var/obj/item/stack/material/pelt/sheeppelt/unrelated = new(site, 2)
+			var/mob/living/simple_animal/cattle/cow/harvest_tester/C = new(site)
+			C.stat = DEAD
+			harvest_assert(C.harvest_animal(U, K, TRUE), "Scraper-assisted skinning failed")
+			harvest_hide_assert(site, /obj/item/stack/material/pelt/cowpelt, starting == 38 ? 1 : 2, starting + 12)
+			harvest_assert(old.amount == 50 && unrelated.amount == 2, "Wrong merged output or unrelated hide was changed")
+			harvest_clear(site)
+		var/mob/living/simple_animal/hostile/dinosaur/trex/harvest_tester/rex = new(site)
+		rex.harvest_scraper_user = U
+		rex.harvest_products(site, TRUE)
+		harvest_hide_assert(site, /obj/item/stack/material/pelt/lizardpelt, 2, 51)
+		harvest_clear(site)
+		U.l_hand = null
+		rex.harvest_products(site, TRUE)
+		harvest_hide_assert(site, /obj/item/stack/material/pelt/lizardpelt, 1, 50)
+		harvest_clear(site)
+		qdel(rex)
+		qdel(scraper)
+		U.r_hand = null
 		for (var/size_category in list(MOB_MINISCULE, MOB_TINY, MOB_SMALL, MOB_MEDIUM, MOB_LARGE, MOB_HUGE))
 			var/mob/living/simple_animal/cattle/cow/harvest_tester/C = new(site)
 			C.mob_size = size_category

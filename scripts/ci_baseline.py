@@ -2357,6 +2357,7 @@ SUITES = {
     # adapters only. Tests replace every process boundary; no native execution.
     'harvest_inputs': {'files': ('tests/animal_harvest/test_input_accounting.py',),
         'paths': ('tests/animal_harvest/test_input_accounting.py',), 'shared_paths': (
+            'code/modules/1713/stone_age_arms.dm',
             'tests/animal_harvest/run.py', 'tests/animal_harvest/hide_recipe_probe.dm',
             'tests/flax_processing/run.py', 'tests/flax_processing/required-inputs.json',
             'code/names.dm', 'config/names/', 'scripts/native_fixture.py',
