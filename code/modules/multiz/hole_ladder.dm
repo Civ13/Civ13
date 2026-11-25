@@ -121,7 +121,12 @@
 
 /obj/structure/multiz/ladder/ww2/tunneltop/pit/update_icon()
 	..()
+	// The fitted sprite has transparent pixels between the rungs. Keep
+	// the mouth of the shaft behind it, not the original grass or soil.
+	var/image/mouth = image(icon = 'icons/turf/areas.dmi', icon_state = "black")
+	underlays -= mouth
 	if (has_ladder && !leaf_covered)
+		underlays += mouth
 		icon = 'icons/obj/stairs.dmi'
 		icon_state = "ladderdown_wood"
 		name = "dug hole with a ladder"

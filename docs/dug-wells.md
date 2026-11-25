@@ -44,7 +44,7 @@ Well recipes need a puddle or a dug hole on the builder's tile
 (`well_build_site()`), and a lining may replace another kind on a dug well
 (`well_relining()`). The new well takes over the hole in
 `/obj/structure/sink/well/on_runtime_spawn()`: depth, water, the dry flag and,
-from a well, the foul flag. A well over a natural puddle has `dug_depth` 0 and
+from a well, the foul flag and its existing windlass or pump. A well over a natural puddle has `dug_depth` 0 and
 is a spring as before: 750 units, refilled by the old loop.
 
 ## Water
@@ -56,7 +56,37 @@ than 2 spits down cannot be drunk from the hands and takes longer to draw into
 a container. A drink from the hands takes 10 units.
 
 Dug wells are wells and waterholes are puddles to the rest of the game, so
-waste and sewage nearby, floodwater and soap work on them unchanged.
+waste and sewage nearby, floodwater and soap still affect them.
+
+### Cleaning a fouled well without soap
+
+Right-click a lined well and choose **Clean Out Well** while holding an
+empty, open bucket and a shovel. Wait out any flood and clear the nearby
+waste or stop sewage or other pollution reaching the well first. You bail
+out and discard the foul water, then scrape out the mud and debris. Stay
+next to the well with both tools until both steps finish. Bailing takes 18
+seconds by hand, 10 with a windlass or 6 with a pump; scraping takes 12
+seconds at base work speed. If scraping is interrupted, the well starts
+refilling again but stays fouled. After a successful cleaning, let fresh
+water seep back in. This clears fecal fouling only, not mercury, radiation
+or an ongoing source of contamination.
+
+### Keeping runoff out
+
+Right-click a lined well and choose **Improve Well**. Hold the tool in one
+hand and the requested materials in the other. These improvements do not
+clean an already-fouled well or stop contamination seeping in from waste,
+sewage, or industrial pollution:
+
+| Improvement | Materials | Protection |
+| --- | --- | --- |
+| Raised rim | Hammer and 3 stone | Keeps out floodwater below waist depth |
+| Wooden cover | Hammer and 2 planks | A closed cover keeps out ankle-deep runoff; open it for manual access or windlass use. A hand pump still works while shut. |
+| Runoff drain | Shovel and 2 stone | Diverts ankle-deep runoff to lower, dry ground. Build while standing on a clear lower tile to the north, south, east, or west. A blocked or submerged outlet stops protecting the shaft. |
+
+The same tool removes an improvement through **Improve Well** without
+materials. Replacing a dug well's lining retains its improvements. No
+combination of these upgrades stops a waist-deep flood.
 
 ## Fittings
 

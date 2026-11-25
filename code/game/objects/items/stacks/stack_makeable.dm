@@ -27,7 +27,7 @@
 		var/datum/stone_mold_carving/carving = new(src, H, R)
 		if (!carving.valid())
 			return FALSE
-	if (findtext(R.title, "joinery: ") == 1)
+	if (is_furniture_joinery_recipe(R))
 		var/datum/furniture_joinery_action/joinery = new(src, H, R)
 		if (!joinery.valid())
 			return FALSE

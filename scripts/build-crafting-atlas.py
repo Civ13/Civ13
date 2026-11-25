@@ -173,7 +173,7 @@ for p,s in files.items():
                 tool_notes += ' Scaled base time; circuits: crafting coefficient >= 2.2, nominal copper+iron. Need full listed amount. No dismantling/refund.'
             if b == '/obj/structure/chem_master/tablet_press/constructed':
                 tool_notes += ' Calendar >1843; scaled base time. Full 20 required; Production debit 18. Buffer-only carbonate+aspirin; no salvage.'
-            if n.startswith('joinery: '):
+            if b == '/obj/item/stack/wooden_dowels' or n.startswith('joinery: '):
                 if not joint or joint['result_type']!=b or joint['stock_cost']!=int(c) or material_stack(canon(a))!=joint['stock_type']:
                     raise ValueError('Joinery recipe contract drift: '+n)
                 if joint['component_type']:

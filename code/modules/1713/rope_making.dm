@@ -181,8 +181,8 @@
 /obj/item/rope_spindle
 	name = "hand spindle"
 	desc = "Spins one portion of dressed hemp or flax tow into one bundle of rope yarn. Hold the spindle and fibres in opposite hands and use it on the fibres."
-	icon = 'icons/obj/materials.dmi'
-	icon_state = "sheet-wood"
+	icon = 'icons/obj/items.dmi'
+	icon_state = "dropspindle"
 	w_class = ITEM_SIZE_SMALL
 	var/tmp/spinning = FALSE
 

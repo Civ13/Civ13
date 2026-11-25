@@ -3,14 +3,19 @@
 One TGUI window for every container a character can reach. Opening a bag, a
 basket or any storage structure opens it, with that container brought into view.
 
-- **You** (left): both hands, worn bags and belt storage, pockets.
+- **You** (left): both hands, held and worn bags, belt storage, and pockets.
 - **Nearby** (right): storage structures on the tiles around you, bags lying on
   the floor, the worn bags of anyone unconscious or restrained next to you (under
   "Body of ..."), and loose things on the floor.
 - **Moves** (bottom): every move is timed and queued (at most 40). A move takes
   0.3 s plus 0.2 s per size class, half as long to or from your hands, pockets and
   belt, and half again as long out of someone else's gear; the multipliers stack.
-  Walking away, being stunned or restrained, or Cancel all stops the queue.
+  Transfers between your own carried inventory slots and bags keep their
+  timer while you walk. Transfers involving the floor or someone else's
+  storage still stop when you walk away. Being stunned or restrained, or
+  choosing Cancel all, still stops the queue. A move into a hand keeps the
+  hand picked at the start even if you switch active hands; that hand must be
+  usable and empty when the item arrives.
 
 Moving: drag a thing onto a container, or click to select several and press
 **Move here**. Enter moves the selection to the container used last. **Take all**
@@ -46,7 +51,8 @@ tells them where the switch is.
 window's rules:
 
 - Taking a thing out of a bag through the strip (click or drag) waits
-  `storage_window_move_time` to a hand.
+  `storage_window_move_time` to a hand. Moving is allowed if the bag and
+  destination are both carried, and the transfer stops if either is dropped.
 - Things the viewer hasn't seen show as "?" tiles (`icons/mob/screen/storage_unseen.dmi`,
   states `unseen1`-`unseen5` by size class, drawn by `tests/sprites/create_storage_unseen.py`).
   Opening the strip searches them top first at `storage_search_time` each while

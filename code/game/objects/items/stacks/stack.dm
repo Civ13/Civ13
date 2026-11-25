@@ -401,7 +401,7 @@
 		press_construction = new(src, H, recipe, quantity)
 		if (!press_construction.valid())
 			return
-	if (findtext(recipe.title, "joinery: ") == 1)
+	if (is_furniture_joinery_recipe(recipe))
 		joinery = new(src, H, recipe)
 		if (quantity != 1 || !joinery.valid())
 			to_chat(user, SPAN_WARNING("Joinery needs its materials, research and equipped tools. Check the Crafting Atlas."))

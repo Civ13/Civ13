@@ -716,7 +716,7 @@
 	refill()
 
 /obj/structure/sink/proc/refill()
-	if (volume < max_volume)
+	if (!well_pauses_recharge() && volume < max_volume)
 		if (volume < max_volume)
 			volume += 10
 		if (volume > max_volume)
@@ -769,7 +769,7 @@
 			return
 		if (H.a_intent == I_GRAB)
 			H.visible_message("[H] starts drinking some water from \the [src]...", "You start drinking some water from \the [src]...", "You hear the sound of something being consumed nearby.")
-			if (do_after(H,50,src))
+			if (do_after(H,50,src) && well_open_mouth(user))
 				var/watertype = "water"
 				if (radiation>0)
 					watertype = "irradiated_water"
@@ -826,7 +826,7 @@
 	if (radiation>0)
 		watertype = "irradiated_water"
 	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
-		if (QDELETED(RG) || !RG.is_open_container() || !RG.reagents || heat_dried() || volume <= 0)
+		if (QDELETED(RG) || !RG.is_open_container() || !RG.reagents || heat_dried() || volume <= 0 || !well_open_mouth(user))
 			return
 		var/requested = min(RG.reagents.get_free_space(), RG.amount_per_transfer_from_this)
 		if (requested <= 0)
@@ -873,7 +873,7 @@
 		playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
 		return
 	
-	else if (istype(O, /obj/item/weapon/soap) && dirty == TRUE && do_after(user, 100, src))
+	else if (istype(O, /obj/item/weapon/soap) && dirty == TRUE && do_after(user, 100, src) && well_open_mouth(user))
 		dirty = FALSE
 		to_chat(user, "You clean \the [src].")
 		qdel(O) // Whole soap bar is used, may need to change the reagents amount.
@@ -965,11 +965,11 @@
 
 /obj/structure/sink/well/examine(mob/user, distance = -1)
 	. = ..()
-	if (. && flood_depth_at(get_turf(src)) > 0 && get_dist(src, user) <= 1)
+	if (. && get_dist(src, user) <= 1 && well_flood_ingress())
 		flood_foul()
-		to_chat(user, SPAN_WARNING("Floodwater has run into the well and fouled it. Scrub it with soap once the water goes down."))
+		to_chat(user, SPAN_WARNING("Floodwater has run into the well and fouled it. Wait for the water to go down before cleaning it out."))
 	if (. && has_observable_fecal_odor(user))
-		to_chat(user, SPAN_WARNING("A foul smell rises from the well."))
+		to_chat(user, SPAN_WARNING("A foul smell rises from the well. Use Clean Out Well with an empty bucket and a shovel."))
 
 /obj/structure/sink/well/sandstone
 	name = "sandstone well"

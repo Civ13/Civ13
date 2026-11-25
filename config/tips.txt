@@ -28,6 +28,7 @@ Press 1, 2, 3 and 4 in hotkey mode to switch between the help, disarm, grab and 
 Press M to toggle walking and running, and the comma key to go prone. Moving right before you shoot ruins your accuracy, so stop for a moment before firing.
 Middle-click to kick, jump or bite. Press U to cycle between them.
 Press N to cycle your tactic. Rush makes your melee attacks faster, Defend improves your dodge and parry chances, and Charge makes your punches hit harder.
+Click Combat Stance on the HUD to change how you aim in melee. Manual uses the body doll; Measured looks for gaps in armor, Aggressive favors the head, Disarming favors the weapon hand, and Low line favors the legs. Guarded can counter attacks, and Restrain uses grab intent to make arrests.
 Your skills improve by using them. Building trains crafting, digging and chopping train strength, and fighting trains your weapon skills.
 Check Notes in the IC tab for information about your role, faction and race.
 New to the game or stuck? Press F2 to ask a mentor, or F1 to contact an admin. Nobody minds a polite question.

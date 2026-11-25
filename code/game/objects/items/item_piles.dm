@@ -1,9 +1,7 @@
 /////////////////////////////// Item piles ///////////////////////////////
-// BYOND's right-click menu lists every clickable object under the mouse, so a
-// tile holding 70 identical items showed 70 identical entries. Items on a tile
-// that look the same (type, name, icon state) form a pile: only the top one
-// stays clickable, the rest are mouse-transparent until the top one leaves.
-// They still draw as before. Leaving the tile always makes an item clickable.
+// BYOND's native menu shares its hit-testing with left click. Collapse only
+// identical, superimposed appearances: putting a duplicate out of the menu
+// must not remove a visible click target beside the representative.
 
 // The item is hidden under an identical one on its tile; pile_opacity holds
 // the mouse_opacity it had. Both save with the item so a loaded pile stays
@@ -39,24 +37,45 @@ var/global/item_pile_flush_pending = FALSE
 		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(item_pile_flush)), 1)
 
 /proc/item_pile_key(obj/item/I)
-	return "[I.type]|[I.name]|[I.icon_state]"
+	return "[I.type]|[I.name]|[I.invisibility]|[I.step_x]|[I.step_y]|[I.pixel_x]|[I.pixel_y]"
 
-// Recomputes which item of each identical group on T stays clickable: the
-// last one in the tile's contents, which is drawn on top of the others.
+// Only merge candidates with precisely the same BYOND appearance, including
+// direction, transforms, overlays, layer, plane and original mouse mask.
+// Split obvious spatial differences by key first. If any remaining aspect
+// differs, conservatively leave every item in that bucket clickable.
 /proc/item_pile_refresh(turf/T)
 	if (!isturf(T))
 		return
 	var/list/top = list()
+	var/list/appearances = list()
+	var/list/mixed = list()
+	var/mutable_appearance/scratch
 	for (var/obj/item/I in T)
 		if (QDELETED(I))
 			continue
-		if (!I.pile_hidden && !I.mouse_opacity)
-			continue // made unclickable on purpose by its own code; not ours to manage
-		top[item_pile_key(I)] = I
-	for (var/obj/item/I in T)
-		if (QDELETED(I) || (!I.pile_hidden && !I.mouse_opacity))
+		if ((!I.pile_hidden && !I.mouse_opacity) || !I.alpha || I.screen_loc)
+			I.pile_reveal()
 			continue
-		if (top[item_pile_key(I)] == I)
+		var/key = item_pile_key(I)
+		if (mixed[key])
+			continue
+		var/appearance = I.appearance
+		if (I.pile_hidden)
+			if (!scratch)
+				scratch = new
+			scratch.appearance = appearance
+			scratch.mouse_opacity = I.pile_opacity
+			appearance = scratch.appearance
+		if (!top[key])
+			appearances[key] = appearance
+		else if (appearances[key] != appearance)
+			mixed[key] = TRUE
+		top[key] = I
+	for (var/obj/item/I in T)
+		if (QDELETED(I) || (!I.pile_hidden && !I.mouse_opacity) || !I.alpha || I.screen_loc)
+			continue
+		var/key = item_pile_key(I)
+		if (mixed[key] || top[key] == I)
 			I.pile_reveal()
 		else
 			I.pile_hide()
@@ -96,8 +115,7 @@ var/global/item_pile_flush_pending = FALSE
 	if (!istype(AM, /obj/item) || !(isturf(origin) || isturf(destination)))
 		return
 	var/obj/item/I = AM
-	if (!isturf(destination))
-		I.pile_reveal()
+	I.pile_reveal() // raw turf-to-turf moves also need an immediate hitbox
 	item_pile_mark(origin)
 	item_pile_mark(destination)
 

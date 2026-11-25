@@ -62,7 +62,11 @@ var/global/list/crafting_purpose_cache = list()
 
 // One recipe of one material, the same on every visit: what Pinned and Recent remember.
 /proc/crafting_window_pin_key(obj/item/stack/S, datum/stack_recipe/R)
-	return md5("[S.type]|[R.title]|[R.result_type]")
+	// Preserve pins and recent entries created before the dowel recipe rename.
+	var/pin_title = R.title
+	if (R.result_type == /obj/item/stack/wooden_dowels && pin_title == "whittled wooden dowel set")
+		pin_title = "joinery: whittled wooden dowel set"
+	return md5("[S.type]|[pin_title]|[R.result_type]")
 
 // The player's pins, with anything a damaged save left behind removed.
 /datum/crafting_window/proc/pinned_keys()

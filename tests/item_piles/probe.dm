@@ -33,6 +33,7 @@ var/pile_runtime_error = FALSE
 		GLOB.dir_set_event = new
 		GLOB.destroyed_event = new
 		pile_collapse_checks()
+		pile_distinct_hitbox_checks()
 		roofing_pile_checks()
 		brick_pile_checks()
 	catch(var/exception/e)
@@ -95,6 +96,40 @@ var/pile_runtime_error = FALSE
 	B.loose_pile_update()
 	item_pile_flush()
 	pile_check(A.mouse_opacity && B.mouse_opacity, "items with different names are not collapsed together")
+
+// The loot in the player report uses scattered snack offsets. Set the
+// positions explicitly so the failure is deterministic.
+/proc/pile_distinct_hitbox_checks()
+	var/turf/T = locate(12, 4, 1)
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/left = new(T)
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/copy = new(T)
+	var/obj/item/weapon/reagent_containers/food/snacks/rawcutlet/right = new(T)
+	left.pixel_x = -6
+	copy.pixel_x = -6
+	right.pixel_x = 6
+	left.pixel_y = 0
+	copy.pixel_y = 0
+	right.pixel_y = 0
+	item_pile_flush()
+	pile_check(!left.mouse_opacity && copy.mouse_opacity && right.mouse_opacity, "two offset cutlets stay clickable; an exact duplicate still groups")
+	item_pile_refresh(T)
+	pile_check(!left.mouse_opacity && copy.mouse_opacity && right.mouse_opacity, "rechecking a hidden duplicate keeps the same representatives")
+
+	// Equal position isn't sufficient: hitboxes can differ due to direction,
+	// transform, appearance overlays, plane or mouse mask.
+	copy.transform = matrix(1, 0, 0, 0, 0.5, 0)
+	item_pile_refresh(T)
+	pile_check(left.mouse_opacity && copy.mouse_opacity, "differing transforms preserve hitboxes even with equal offsets")
+	copy.transform = left.transform
+	copy.mouse_opacity = 2
+	item_pile_refresh(T)
+	pile_check(left.mouse_opacity == 1 && copy.mouse_opacity == 2, "different native mouse masks remain intact")
+
+	copy.mouse_opacity = left.mouse_opacity
+	item_pile_refresh(T)
+	pile_check(left.pile_hidden, "a matching appearance groups again")
+	left.persistence_set_loc(locate(13, 4, 1))
+	pile_check(left.mouse_opacity && !left.pile_hidden, "raw turf-to-turf move restores clickability before delayed regroup")
 
 /proc/roofing_pile_checks()
 	var/turf/T = locate(12, 12, 1)

@@ -33,6 +33,7 @@ var/sewer_runtime_error = FALSE
 		GLOB.destroyed_event = new
 		map = new /obj/map_metadata/dug_wells_probe
 		sewer_checks()
+		well_relining_fittings_check()
 	catch(var/exception/e)
 		sewer_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = sewer_failures, "runtime_error" = sewer_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -191,8 +192,10 @@ var/sewer_runtime_error = FALSE
 	F.restore_hollows(list(1, 0))
 
 	// Fittings: a windlass fills a container in one haul, a pump takes its place.
+	var/bail_by_hand = SW.well_bail_delay()
 	var/obj/structure/well_fitting/windlass/WL = new /obj/structure/well_fitting/windlass(low)
 	sewer_check(SW.well_fitting() == WL && WL.well() == SW && !PW.well_fitting(), "a windlass over a well is that well's fitting")
+	var/bail_windlass = SW.well_bail_delay()
 	var/obj/item/weapon/reagent_containers/glass/bucket/BK = new /obj/item/weapon/reagent_containers/glass/bucket(low)
 	qdel(waste)
 	SW.dirty = FALSE
@@ -210,6 +213,74 @@ var/sewer_runtime_error = FALSE
 	sewer_check(!WL.draw_into(SW, BK), "an empty well gives nothing")
 	var/obj/structure/well_fitting/pump/PU = new /obj/structure/well_fitting/pump(low)
 	sewer_check(QDELETED(WL) && SW.well_fitting() == PU && PU.draw_time < initial(WL.draw_time), "a pump takes the windlass's place and draws faster")
+	// Cleaning is a drain, a separate clearing stage, and a natural refill.
+	sewer_check(bail_by_hand > bail_windlass && bail_windlass > SW.well_bail_delay(), "hand bailing is slower than the windlass, and a pump is faster again")
+	SW.radiation = 17
+	SW.dirty = TRUE
+	SW.volume = 180
+	SW.well_begin_scraping()
+	SW.dug_settled_at = world.time - 600
+	SW.dug_settle()
+	sewer_check(SW.well_pauses_recharge() && !SW.volume && SW.dirty, "bailing empties the well, pauses refill, and does not clear fouling")
+	SW.well_finish_scraping(FALSE)
+	sewer_check(!SW.well_pauses_recharge() && SW.dirty && SW.radiation == 17, "an interrupted scrape resumes recharge without clearing contamination")
+	SW.dug_settled_at = world.time - 600
+	SW.dug_settle()
+	sewer_check(SW.volume > 0, "a dug well refills again after the interruption")
+	waste = s2_poo(locate(2, 1, 1))
+	SW.well_begin_scraping()
+	sewer_check(SW.well_finish_scraping(TRUE) && SW.dirty, "nearby fresh waste prevents a completed scrape from clearing fouling")
+	qdel(waste)
+	F.restore_hollows(list(1, 6))
+	FW.well_begin_scraping()
+	sewer_check(FW.well_finish_scraping(TRUE) && FW.dirty, "active inundation prevents lasting cleanup")
+	F.restore_hollows(list(1, 0))
+	SW.well_begin_scraping()
+	sewer_check(!SW.well_finish_scraping(TRUE) && !SW.dirty && SW.radiation == 17 && !SW.volume, "with no source, clearing removes only fecal fouling and leaves the well empty")
+	SW.dug_settled_at = world.time - 600
+	SW.dug_settle()
+	sewer_check(SW.volume > 0 && SW.radiation == 17, "the refilled well retains its radioactive contamination")
+	OW.dirty = TRUE
+	OW.well_begin_scraping()
+	OW.refill()
+	sewer_check(!OW.volume && OW.dirty, "a spring pauses its normal refill while being scraped")
+	OW.well_finish_scraping(TRUE)
+	OW.refill()
+	sewer_check(OW.volume == 10 && !OW.dirty, "a cleaned spring refills at its ordinary rate")
+	// Each upgrade has a surface-only limit; nearby waste is independent.
+	sewer_check(PW.well_flood_can_enter(FLOOD_BAND_ANKLE), "a bare rim admits shallow runoff")
+	PW.raised_well_rim = TRUE
+	sewer_check(!PW.well_flood_can_enter(FLOOD_BAND_KNEE) && PW.well_flood_can_enter(FLOOD_BAND_WAIST), "the raised rim protects below waist depth")
+	PW.raised_well_rim = FALSE
+	PW.well_cover = TRUE
+	PW.well_cover_closed = TRUE
+	sewer_check(!PW.well_flood_can_enter(FLOOD_BAND_ANKLE) && PW.well_flood_can_enter(FLOOD_BAND_KNEE), "a shut cover protects from shallow runoff only")
+	PW.well_cover_closed = FALSE
+	sewer_check(PW.well_flood_can_enter(FLOOD_BAND_ANKLE), "the open cover gives no flood protection")
+	sewer_check(PW.well_runoff_outlet(WEST) && !PW.well_runoff_outlet(EAST) && !PW.well_runoff_outlet(NORTHWEST), "an outlet must be cardinal and downhill")
+	PW.well_drain_dir = WEST
+	sewer_check(!PW.well_flood_can_enter(FLOOD_BAND_ANKLE) && PW.well_flood_can_enter(FLOOD_BAND_KNEE), "a downhill apron drain diverts only shallow runoff")
+	var/obj/structure/sewer_piece/drain/ditch/blocked = new(bank)
+	sewer_check(PW.well_flood_can_enter(FLOOD_BAND_ANKLE), "a well drain does not empty into a sewage ditch")
+	qdel(blocked)
+	PW.raised_well_rim = TRUE
+	PW.well_cover_closed = TRUE
+	PW.dirty = TRUE
+	waste = s2_poo(locate(2, 1, 1))
+	sewer_check(PW.dirty && PW.well_cleanup_source() && PW.well_flood_can_enter(FLOOD_BAND_WAIST), "the combination neither purifies the well nor stops seepage and serious floods")
+	qdel(waste)
+	var/obj/structure/sink/well/relined = new /obj/structure/sink/well(plain)
+	sewer_check(QDELETED(PW) && relined.raised_well_rim && relined.well_cover && relined.well_cover_closed && relined.well_drain_dir == WEST && relined.dirty, "relining retains upgrades and existing fouling")
+	SW.well_cover = TRUE
+	SW.well_cover_closed = TRUE
+	BK.reagents.clear_reagents()
+	SW.volume = 180
+	sewer_check(SW.well_can_use_item(BK) && PU.draw_into(SW, BK) > 0, "a pump draws past a closed cover")
+	sewer_check(!SW.well_can_use_item(new /obj/item/weapon/soap(low)), "a closed cover prevents applying soap")
+	var/obj/structure/well_fitting/windlass/test_windlass = new /obj/structure/well_fitting/windlass(plain)
+	relined.volume = 150
+	BK.reagents.clear_reagents()
+	sewer_check(!relined.well_can_use_item(BK) && !test_windlass.draw_into(relined, BK) && !BK.reagents.total_volume, "a covered well will not lower a windlass bucket")
 	// Taking a well apart: fitting, then lining, then the hole.
 	PU.unfit()
 	var/obj/item/stack/material/iron/scrap = locate() in low
@@ -246,3 +317,20 @@ var/sewer_runtime_error = FALSE
 	new /obj/structure/sewer_piece/drain/ditch(ditch)
 	sewer_check(findtext(well_site_problem(ditch), "drain"), "no well in a drain")
 	sewer_check(well_site_problem(locate(10, 3, 1)) && findtext(well_site_problem(spring), "water here already"), "none in the river, and none dug where a spring is")
+
+/proc/well_relining_fittings_check()
+	var/turf/site = locate(2, 6, 1)
+	var/obj/structure/sink/well/timber/timber = new(site)
+	timber.dug_depth = 4
+	var/obj/structure/well_fitting/windlass/windlass = new(site)
+	var/obj/structure/sink/well/marble/marble = new(site)
+	sewer_check(QDELETED(timber) && !QDELETED(windlass) && marble.well_fitting() == windlass && windlass.well() == marble, "a timber-to-marble reline keeps the very same windlass")
+	var/obj/structure/well_fitting/pump/pump = new(site)
+	var/obj/structure/sink/well/sandstone/sandstone = new(site)
+	var/count = 0
+	for (var/obj/structure/well_fitting/fitting in site)
+		count++
+	sewer_check(QDELETED(marble) && QDELETED(windlass) && sandstone.well_fitting() == pump && pump.well() == sandstone && count == 1, "relining with a pump transfers it without creating another fitting")
+	sewer_check(!(locate(/obj/item/stack/material/iron) in site) && !(locate(/obj/item/stack/material/rope) in site), "relining does not spawn fitting salvage")
+	var/obj/structure/sink/puddle/waterhole/bare = sandstone.well_break_lining(FALSE)
+	sewer_check(QDELETED(pump) && QDELETED(sandstone) && bare && !bare.well_fitting(), "an exposed waterhole cannot keep a lined-well fitting")

@@ -17,6 +17,12 @@
 	map = src
 /mob/living/hay_tester/New()
 	return
+/mob/living/simple_animal/hostile/buffalo/hay_tester/New()
+	return
+/mob/living/simple_animal/cattle/cow/hay_tester/var/atom/hay_step_target
+/mob/living/simple_animal/cattle/cow/hay_tester/smart_step_towards(atom/target)
+	hay_step_target = target
+	return TRUE
 /mob/living/simple_animal/cattle/cow/hay_tester/New()
 	return
 /mob/living/simple_animal/cattle/cow/hay_tester/crush()
@@ -42,6 +48,7 @@ var/hay_runtime_error = FALSE
 		hay_drying_checks()
 		hay_bale_checks()
 		hay_feeding_checks()
+		hay_seeking_checks()
 	catch(var/exception/e)
 		hay_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = hay_failures, "runtime_error" = hay_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -196,3 +203,28 @@ var/hay_runtime_error = FALSE
 	qdel(H)
 	qdel(C)
 	qdel(U)
+
+/proc/hay_seeking_checks()
+	hay_setup()
+	var/turf/floor/stand = locate(9, 9, 1)
+	var/mob/living/simple_animal/cattle/cow/hay_tester/C = new(stand)
+	var/mob/living/simple_animal/hostile/buffalo/hay_tester/W = new(locate(1, 1, 1))
+	hay_check(W.herbivore && W.wild_forager(), "hostile buffalo can graze")
+	var/obj/structure/hay_bale/B = new(locate(13, 9, 1))
+	C.simplehunger = 100
+	hay_check(!C.seek_hay_bale() && !C.hay_step_target, "fresh grass keeps a distant bale in reserve")
+	for (var/turf/floor/F in range(6, stand))
+		F.graze_down()
+	var/turf/winter_tile = locate(9, 13, 1)
+	winter_tile.ChangeTurf(/turf/floor/winter/grass, FALSE, FALSE)
+	var/turf/floor/winter/grass/winter_pasture = locate(9, 13, 1)
+	hay_check(winter_pasture.pasture_ready() && !C.seek_hay_bale() && !C.hay_step_target, "fresh winter grass also keeps hay in reserve")
+	winter_pasture.graze_down()
+	hay_check(C.seek_hay_bale() && C.hay_step_target == B && B.hay_left == 10, "grazed-down pasture sends the animal toward the bale")
+	var/obj/structure/hay_bale/N = new(locate(9, 10, 1))
+	C.hay_step_target = null
+	hay_check(C.seek_hay_bale() && !C.hay_step_target && N.hay_left == 9 && C.simplehunger == 650, "animal eats one portion from the adjacent bale rather than walking past it")
+	qdel(N)
+	qdel(B)
+	qdel(W)
+	qdel(C)
