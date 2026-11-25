@@ -33,7 +33,8 @@
 	set category = null
 	set src in usr
 	if (!istype(usr, /mob/living)) return
-	if (usr.stat) return
+	if (usr.stat || usr.paralysis || usr.stunned || usr.weakened)
+		return
 
 	//can't we just use src here?
 	var/obj/item/clothing/accessory/storage/sheath/H = null
