@@ -108,9 +108,9 @@
 		return null
 	return runs
 
-/datum/mind/proc/character_notes_ui_data(discovery_snapshot)
+/datum/mind/proc/character_notes_ui_data(discovery_snapshot, character_heading)
 	var/datum/character_notes_budget/budget = new()
-	var/list/character_runs = character_notes_parse("[current.real_name]", budget)
+	var/list/character_runs = character_notes_parse(character_heading, budget)
 	if (isnull(character_runs))
 		return null
 	var/list/sections = list()
@@ -141,10 +141,10 @@
 	return list("character" = character_runs, "sections" = sections, "memory" = memory_runs, "discoveries" = discovery_runs)
 
 // Fixed internal presentation hook. No client-selected proc or action forwarding.
-/datum/mind/proc/present_character_notes_ui(mob/user, legacy_snapshot, discovery_snapshot)
+/datum/mind/proc/present_character_notes_ui(mob/user, legacy_snapshot, discovery_snapshot, character_heading)
 	if (!user || !user.client || user.mind != src)
 		return FALSE
-	var/list/data = character_notes_ui_data(discovery_snapshot)
+	var/list/data = character_notes_ui_data(discovery_snapshot, character_heading)
 	var/ui_key = "character_notes"
 	if (islist(user.open_uis))
 		for (var/datum/nanoui/tgui/snapshot/character_notes/old_ui in user.open_uis.Copy())

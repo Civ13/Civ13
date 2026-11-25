@@ -170,7 +170,9 @@
 	var/client/C = recipient.client
 	if(!C)
 		return
-	var/output = "<b>You are <span style = 'font-size: 1.25em; color: #E1E1FF'>[current.real_name]</span></b><hr>"
+	// A ghost retains its character name and mind after body deletion.
+	var/character_heading = html_encode(current ? current.real_name : recipient.real_name)
+	var/output = "<b>You are <span style = 'font-size: 1.25em; color: #E1E1FF'>[character_heading]</span></b><hr>"
 	for (var/title in notes)
 		output += "<br><br>"
 		output += "<b><span style = 'font-size: 1.1em; color: #E1E1FF'>[title]</span></b>"
@@ -209,7 +211,7 @@
 	var/legacy_snapshot = replacetext(memory_stylized, "PLACEHOLDER", output)
 	// Fixed optional presentation hook: isolated mind fixtures keep the original
 	// renderer without importing the full game's NanoUI implementation.
-	if (hascall(src, "present_character_notes_ui") && call(src, "present_character_notes_ui")(recipient, legacy_snapshot, discovery_snapshot))
+	if (hascall(src, "present_character_notes_ui") && call(src, "present_character_notes_ui")(recipient, legacy_snapshot, discovery_snapshot, character_heading))
 		return
 	show_browse(recipient, legacy_snapshot,"window=memory;size=625x650")
 
