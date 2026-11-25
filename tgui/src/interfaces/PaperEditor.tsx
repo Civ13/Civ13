@@ -167,8 +167,8 @@ export function paperEditorModel(data: Data): PaperEditorModel {
 }
 const encode = (value: string) => value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 const BLANK = '__________';
-// A field label is drawn as "Label: answer" (or a blank line) on one line;
-// answers are shown with their label instead of in writing order.
+// An answer starts beside its field label, rather than in writing order.
+// Skip the synthetic section separator, but keep all authored breaks.
 export function formPieces(runs: Run[]): PaperPiece[] {
   const answers = new Map<string, Run>();
   for (const run of runs) if (run.kind === 'field_answer' && run.target && !answers.has(run.target)) answers.set(run.target, run);
@@ -179,7 +179,7 @@ export function formPieces(runs: Run[]): PaperPiece[] {
     const answer = run.id ? answers.get(run.id) : undefined;
     const style = { ink: run.ink, face: pieces[0].face, bold: false, italic: false };
     if (!answer) return [...pieces, { text: ': ' + BLANK, ...style }];
-    return [...pieces, { text: ': ', ...style }, ...sectionPieces(answer).filter(piece => !piece.br)];
+    return [...pieces, { text: ': ', ...style }, ...sectionPieces(answer).slice(1)];
   });
 }
 // Open blanks: labels with no answer yet, in the order they were written.
@@ -203,6 +203,15 @@ export function paperEditParams(model: PaperEditorModel, operation: 'append' | '
   return params;
 }
 const DRAFT_LIMIT = 3072, LABEL_LIMIT = 128;
+// DM counts bytes; count code points so this also works without TextEncoder.
+function utf8Length(value: string): number {
+  let length = 0;
+  for (const char of value) {
+    const point = char.codePointAt(0)!;
+    length += point <= 0x7f ? 1 : point <= 0x7ff ? 2 : point <= 0xffff ? 3 : 4;
+  }
+  return length;
+}
 // Toolbar insertions wrap the current textarea selection; nothing is sent.
 const TOOLS: { label: string; title: string; before: string; after?: string }[] = [
   { label: 'B', title: 'Bold', before: '[b]', after: '[/b]' },
@@ -259,7 +268,8 @@ export function PaperEditorForm({ model, act, interactive, template }: { model: 
   };
   const editable = interactive && !pending && !uncertain;
   const signing = kind === 'signature', full = model.free_space <= 0;
-  const remaining = model.free_space - (signing ? 0 : draft.length), labelTooLong = kind === 'field_label' && draft.length > LABEL_LIMIT;
+  const draftBytes = utf8Length(draft);
+  const remaining = model.free_space - (signing ? 0 : draftBytes), labelTooLong = kind === 'field_label' && draftBytes > LABEL_LIMIT;
   const tooLong = !signing && remaining < 0, noBlank = kind === 'field_answer' && !fieldTarget;
   let previewRuns: ReturnType<typeof bookRuns> = [];
   let invalidDraft = false;
@@ -287,7 +297,7 @@ export function PaperEditorForm({ model, act, interactive, template }: { model: 
           <option value="field_label">Blank to fill in</option><option value="field_answer" disabled={!blanks.length}>Fill in a blank</option>
         </select></label>
         {kind === 'field_answer' && <label>Blank <select aria-label="Blank to fill" value={fieldTarget} disabled={!editable || !blanks.length} onChange={event => setTarget(event.currentTarget.value)}>
-          {blanks.map(blank => <option key={blank.id} value={blank.id}>{blank.text.slice(0, 64)}</option>)}
+          {blanks.map(blank => <option key={blank.id} value={blank.id}>{blank.text}</option>)}
         </select></label>}
       </div>
       {!signing && <>
@@ -301,13 +311,13 @@ export function PaperEditorForm({ model, act, interactive, template }: { model: 
         <p className="paper-hint">Press Enter for a new line and Ctrl+Enter to write. [b]bold[/b] and [i]italic[/i] are shown as formatting; [sign], [date] and [time] are filled in when written.</p>
       </>}
       {signing && <p className="paper-hint">Signing writes the name from the held pen; nothing is typed.</p>}
-      <p className={'paper-space' + (tooLong ? ' paper-over' : '')}>{full ? 'This paper is full.' : tooLong ? `${-remaining} characters over the remaining space.` : `${remaining} of ${model.free_space} characters remaining after this writing.`}</p>
+      <p className={'paper-space' + (tooLong ? ' paper-over' : '')}>{full ? 'This paper is full.' : tooLong ? `${-remaining} byte${remaining === -1 ? '' : 's'} over the remaining space.` : `${remaining} of ${model.free_space} bytes remaining after this writing.`}</p>
       {(signing || draft.length > 0) && <section aria-label="Draft preview">
         <h3>Preview</h3>
         <BookPage runs={previewRuns} />
       </section>}
       {tooLong && <NoticeBox danger>This text exceeds the remaining space.</NoticeBox>}
-      {labelTooLong && <NoticeBox danger>{`A blank's name can be at most ${LABEL_LIMIT} characters.`}</NoticeBox>}
+      {labelTooLong && <NoticeBox danger>{`A blank's name can be at most ${LABEL_LIMIT} bytes.`}</NoticeBox>}
       {noBlank && <NoticeBox info>There is no empty blank on this paper to fill in.</NoticeBox>}
       {invalidDraft && <NoticeBox danger>Some characters cannot be previewed. Edit the text before writing.</NoticeBox>}
       {pending && <NoticeBox info>Sending to the paper...</NoticeBox>}
