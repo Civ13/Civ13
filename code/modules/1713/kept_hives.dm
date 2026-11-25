@@ -216,8 +216,7 @@ var/global/kept_hive_cycle_count = 0
 			strength = min(strength + 4 * f, 100)
 		if (combs < max_combs && prob(strength * f * 0.5))
 			combs++
-		if (swarm_season && strength >= 80 && prob(8))
-			cast_swarm(src, 40)
+		if (swarm_season && strength >= 80 && prob(8) && cast_swarm(src, 40))
 			strength -= 40
 	else if (prob(strength * 0.1))
 		if (combs > 0)
