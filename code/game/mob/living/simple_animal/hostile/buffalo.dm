@@ -1,5 +1,6 @@
 /mob/living/simple_animal/hostile/buffalo
 	ruminant = TRUE
+	herbivore = TRUE
 	name = "buffalo"
 	desc =  "A large member of the bovine Family, they are grazers and will be hostile if harmed."
 	icon = 'icons/mob/animal_64.dmi'

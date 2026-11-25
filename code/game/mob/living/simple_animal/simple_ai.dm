@@ -140,6 +140,9 @@
 	adjustBruteLoss(-4)
 
 /mob/living/simple_animal/proc/check_food()
+	if (herbivore && ((prob(40) && eat_nearby_hay()) || seek_hay_bale()))
+		return
+
 	// Phase 1: Try to eat food already in close range
 	if (herbivore)
 		// Grazed grass grows back (wild_feeding.dm) instead of turning to dirt.

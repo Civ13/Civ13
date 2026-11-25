@@ -34,7 +34,6 @@ class HaySourceTests(unittest.TestCase):
         hay = dme.index('#include "code\\modules\\1713\\hay.dm"')
         # The simple_animal and floor overrides chain to the originals with ..().
         for original in ('code\\game\\mob\\living\\simple_animal\\simple_animal.dm',
-                         'code\\game\\mob\\living\\simple_animal\\simple_ai.dm',
                          'code\\game\\turfs\\floor_attackby.dm'):
             self.assertLess(dme.index('#include "%s"' % original), hay)
 
@@ -45,11 +44,24 @@ class HaySourceTests(unittest.TestCase):
         self.assertLessEqual(used, states)
 
     def test_overrides_fall_through(self):
-        for proc in ('/turf/floor/attackby', '/mob/living/simple_animal/attackby',
-                     '/mob/living/simple_animal/check_food'):
+        for proc in ('/turf/floor/attackby', '/mob/living/simple_animal/attackby'):
             start = self.source.index('\n' + proc + '(')
             end = self.source.find('\n/', start + 1)
             self.assertIn('return ..()', self.source[start:end], proc)
+
+    def test_hay_seeking_uses_live_pasture_and_eats_on_arrival(self):
+        seek = self.source.split('/mob/living/simple_animal/proc/seek_hay_bale()', 1)[1].split('#undef', 1)[0]
+        self.assertIn('F.pasture_ready()', seek)
+        self.assertNotIn('locate(/turf/floor/grass)', seek)
+        self.assertIn('if (closest_distance <= 1)\n\t\treturn eat_hay_bale(closest)', seek)
+        self.assertIntactNearbyFeeding()
+
+    def assertIntactNearbyFeeding(self):
+        animal = ROOT / 'code/game/mob/living/simple_animal'
+        ai = (animal / 'simple_ai.dm').read_text(encoding='utf-8')
+        self.assertRegex(ai, r'herbivore && .*eat_nearby_hay\(\).*seek_hay_bale\(\)')
+        buffalo = (animal / 'hostile/buffalo.dm').read_text(encoding='utf-8').split('/mob/living/simple_animal/bison', 1)[0]
+        self.assertRegex(buffalo, r'(?m)^\therbivore = (TRUE|1)$')
 
     def test_thatch_uses_roofing_knowledge_and_callback_epoch_is_runtime(self):
         self.assertIn('crafting_recipe_allowed(user, "/obj/item/weapon/roofbuilder/leaves")', self.source)

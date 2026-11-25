@@ -296,15 +296,19 @@
 	finish_eating(HAY_FEED_HUNGER)
 	return TRUE
 
+/mob/living/simple_animal/proc/eat_hay_bale(obj/structure/hay_bale/B)
+	var/message = "\The [src] eats some hay from \the [B]."
+	if (!B.take_hay(1))
+		return FALSE
+	npc_subtile_stop_continuous_walk()
+	visible_message(message)
+	finish_eating(HAY_FEED_HUNGER)
+	return TRUE
+
 /mob/living/simple_animal/proc/eat_nearby_hay()
 	for (var/obj/structure/hay_bale/B in range(1, src))
-		if (B.hay_left < 1)
-			continue
-		npc_subtile_stop_continuous_walk()
-		visible_message("\The [src] eats some hay from \the [B].")
-		B.take_hay(1)
-		finish_eating(HAY_FEED_HUNGER)
-		return TRUE
+		if (eat_hay_bale(B))
+			return TRUE
 	for (var/obj/item/stack/hay/H in range(1, src))
 		if (!isturf(H.loc) || H.amount < 1)
 			continue
@@ -315,16 +319,27 @@
 		return TRUE
 	return FALSE
 
-/mob/living/simple_animal/check_food()
-	if (herbivore && prob(40) && eat_nearby_hay())
-		return
-	// With no grass to graze nearby, walk to a hay bale.
-	if (herbivore && !(locate(/turf/floor/grass) in range(6, src)))
-		for (var/obj/structure/hay_bale/B in range(6, src))
-			if (get_dist(src, B) > 1)
-				smart_step_towards(B)
-				return
-	return ..()
+// Hay bales supplement pasture, including when all nearby grass is grazed down.
+/mob/living/simple_animal/proc/seek_hay_bale()
+	var/list/nearby = range(6, src)
+	var/obj/structure/hay_bale/closest
+	var/closest_distance = 7
+	for (var/obj/structure/hay_bale/B in nearby)
+		if (QDELETED(B) || B.hay_left < 1)
+			continue
+		var/distance = get_dist(src, B)
+		if (distance < closest_distance)
+			closest = B
+			closest_distance = distance
+	if (!closest)
+		return FALSE
+	for (var/turf/floor/F in nearby)
+		if (F.pasture_ready())
+			return FALSE
+	// A failed nearby-hay roll should not send the animal away from its food.
+	if (closest_distance <= 1)
+		return eat_hay_bale(closest)
+	return smart_step_towards(closest)
 
 #undef HAY_DRY_STEPS
 #undef HAY_DRY_STEP_TIME
