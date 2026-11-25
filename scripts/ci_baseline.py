@@ -1128,6 +1128,9 @@ SUITES = {
             'code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',
             'tests/save_movement/source_adapter.py', 'civ13.dme')},
     # Company stock ledger, stock market and company stall guard projections.
+    'supply_order_payout': {'files': ('tests/supply_order_payout/test_checkout.py',),
+        'paths': ('tests/supply_order_payout/', 'code/game/objects/structures/vending/supplier.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'code/game/objects/items/stacks/money.dm')},
     'company_stock': {'files': ('tests/company_stock/test_company_stock.py',),
         'paths': ('tests/company_stock/', 'code/game/mob/groups/companies.dm',
                   'code/modules/1713/marketplace.dm'),
