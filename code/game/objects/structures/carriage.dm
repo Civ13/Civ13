@@ -199,14 +199,17 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 
 // ---- Shape and layout ----
 
-// Tiles of lane the team needs ahead of the carriage.
-/obj/structure/vehicle/carriage/proc/lane_depth()
-	if (!team.len)
+// Tiles of lane the team needs ahead of the carriage, including a prospective animal.
+/obj/structure/vehicle/carriage/proc/lane_depth(mob/living/simple_animal/incoming = null)
+	var/count = team.len + (incoming ? 1 : 0)
+	if (!count)
 		return 0
-	var/ranks = round((team.len + 1) / 2)
-	return ceil((2 + ranks * team_rank_length()) / world.icon_size)
+	var/ranks = round((count + 1) / 2)
+	return ceil((2 + ranks * team_rank_length(incoming)) / world.icon_size)
 
-/obj/structure/vehicle/carriage/proc/team_rank_length()
+/obj/structure/vehicle/carriage/proc/team_rank_length(mob/living/simple_animal/incoming = null)
+	if (istype(incoming, /mob/living/simple_animal/horse))
+		return 52
 	for (var/mob/living/simple_animal/horse/H in team)
 		return 52
 	return 30
@@ -668,7 +671,7 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		user.visible_message(SPAN_NOTICE("[user] starts putting [SA] in harness..."), SPAN_NOTICE("You start putting [SA] in harness..."))
 		if (!do_after(user, 30, src) || hitch_refusal(SA) || !Adjacent(SA))
 			return
-		if (!can_fit_lane(team.len + 1))
+		if (!can_fit_lane(SA))
 			to_chat(user, SPAN_WARNING("There is no room ahead of \the [src] for another animal."))
 			return
 		hitch(SA)
@@ -690,12 +693,23 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		user.visible_message(SPAN_NOTICE("[user] starts putting [M] on \the [src]..."), SPAN_NOTICE("You start putting [M] on \the [src]..."))
 		if (!do_after(user, 30, src) || is_aboard(M) || !Adjacent(M))
 			return
-		if (istype(M, /obj/structure) && (!can_load(M) || !M.persistence_set_loc(loc)))
-			return
-		var/seat = free_seat()
-		if (seat)
-			take_seat(M, seat)
+		if (complete_load(M, user))
 			user.visible_message(SPAN_NOTICE("[user] puts [M] on \the [src]."), SPAN_NOTICE("You put [M] on \the [src]."))
+
+// Conditions can change while the loading action waits. A refused load must not move anything.
+/obj/structure/vehicle/carriage/proc/complete_load(atom/movable/M, mob/living/human/user)
+	var/seat = free_seat()
+	if (!seat)
+		to_chat(user, SPAN_WARNING("\The [src] is full."))
+		return FALSE
+	if (isliving(M))
+		var/mob/living/L = M
+		if (L.buckled || L.anchored)
+			return FALSE
+	else if (!can_load(M) || !M.persistence_set_loc(loc))
+		return FALSE
+	take_seat(M, seat)
+	return TRUE
 
 /obj/structure/vehicle/carriage/proc/can_handle(mob/living/human/user)
 	return user && !user.incapacitated() && Adjacent(user)
@@ -718,14 +732,12 @@ var/global/list/carriage_gear_delays = list(7, 4, 2.2)
 		return "Horses and oxen do not pull well together. Use one kind for the team."
 	return null
 
-// TRUE when a team of this many would fit the lane ahead.
-/obj/structure/vehicle/carriage/proc/can_fit_lane(count)
+// TRUE when the team including the incoming animal fits the lane ahead.
+/obj/structure/vehicle/carriage/proc/can_fit_lane(mob/living/simple_animal/incoming)
 	if (!isturf(loc))
 		return FALSE
-	var/ranks = round((count + 1) / 2)
-	var/depth = ceil((2 + ranks * team_rank_length()) / world.icon_size)
 	var/list/now = cells_at(loc, facing)
-	var/list/after = cells_at(loc, facing, depth)
+	var/list/after = cells_at(loc, facing, lane_depth(incoming))
 	if (!after)
 		return FALSE
 	// Animals waiting to be harnessed may stand there; only the ground counts.
