@@ -112,7 +112,11 @@
 /obj/item/proc/inventory_drag_pickup_delay(mob/living/human/user)
 	if (equiptimer <= 0 || user.item_is_in_hands(src))
 		return TRUE
-	if (!do_after(user, equiptimer, src, can_move = equiptimer))
+	var/atom/source = loc
+	var/carried = (source in storage_window_carried_holders(user))
+	if (!do_after(user, equiptimer, src, needhand = !carried, can_move = equiptimer))
+		return FALSE
+	if (carried && (loc != source || !(source in storage_window_carried_holders(user))))
 		return FALSE
 	return inventory_drag_in_reach(src, user)
 

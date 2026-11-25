@@ -688,6 +688,13 @@
 	queue.Cut(1, 2)
 	current_started = world.time
 	start_turf = get_turf(viewer)
+	if (current["carried"] && current["kind"] == STORAGE_WINDOW_KIND_HANDS)
+		// This is the group drop target, so choose the first free hand now.
+		// Switching active hands must not redirect the eventual placement.
+		if (!viewer.get_active_hand())
+			current["hand_slot"] = viewer.hand ? slot_l_hand : slot_r_hand
+		else if (!viewer.get_inactive_hand())
+			current["hand_slot"] = viewer.hand ? slot_r_hand : slot_l_hand
 	timer_id = addtimer(CALLBACK(src, PROC_REF(finish_move)), current["time"], TIMER_STOPPABLE)
 	refresh()
 
@@ -713,13 +720,17 @@
 		return
 	var/obj/item/I = job["item"]
 	usr = H // storage procs report to usr
-	if ((job["carried"] && (QDELETED(I) || I.loc != job["source"] || !is_carried_move(I, job["kind"], job["holder"]))) || !perform_move(I, job["kind"], job["holder"]))
+	var/is_carried = job["carried"]
+	var/kind = job["kind"]
+	var/hand_slot = job["hand_slot"]
+	var/carried_invalid = is_carried && (QDELETED(I) || I.loc != job["source"] || !is_carried_move(I, kind, job["holder"]) || (kind == STORAGE_WINDOW_KIND_HANDS && !hand_slot))
+	if (carried_invalid || !perform_move(I, kind, job["holder"], hand_slot))
 		to_chat(H, SPAN_WARNING("You couldn't move \the [job["item"]] to [job["to"]]."))
 	next_move()
 
 // The move itself, re-checked now: reach, access, room. Nothing is dropped on
 // the floor unless the floor was asked for.
-/datum/storage_window/proc/perform_move(obj/item/I, kind, atom/holder)
+/datum/storage_window/proc/perform_move(obj/item/I, kind, atom/holder, hand_slot = 0)
 	var/mob/living/human/H = viewer
 	if (!reachable(I))
 		return FALSE
@@ -735,6 +746,20 @@
 				return FALSE
 			return I.persistence_set_loc(get_turf(H))
 		if (STORAGE_WINDOW_KIND_HANDS)
+			if (hand_slot)
+				if (H.get_equipped_item(hand_slot) || H.lying || !I.inventory_drag_hand_usable(hand_slot, H) || !persistence_movement_allowed(I, H))
+					return FALSE
+				var/atom/source = I.loc
+				var/old_slot = source == H ? H.get_inventory_slot(I) : 0
+				if (!detach(I))
+					return FALSE
+				if (I.inventory_drag_put_in_hand(hand_slot, H))
+					return TRUE
+				if (old_slot)
+					H.equip_to_slot_if_possible(I, old_slot, FALSE, TRUE)
+				else
+					I.inventory_drag_put_back(source)
+				return FALSE
 			if (H.l_hand && H.r_hand)
 				return FALSE
 			if (!detach(I))

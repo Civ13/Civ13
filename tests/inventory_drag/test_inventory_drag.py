@@ -64,8 +64,25 @@ class InventoryDragTests(unittest.TestCase):
         strip = (ROOT / 'code/modules/storage_window/storage_strip.dm').read_text()
         take = proc_body(strip, '/proc/storage_strip_take_wait')
         self.assertIn('carried_destination && (S in storage_window_carried_holders(H))', take)
-        self.assertIn('can_move = carried', take)
+        self.assertIn('needhand = !carried, can_move = carried', take)
         self.assertIn('carried && !(S in storage_window_carried_holders(H))', take)
+
+    def test_carried_hand_destination_is_fixed_before_the_timer(self):
+        window = read('code/modules/storage_window/storage_window.dm')
+        start = proc_body(window, '/datum/storage_window/proc/next_move')
+        self.assertLess(start.index('current["hand_slot"]'), start.index('addtimer('))
+        perform = proc_body(window, '/datum/storage_window/proc/perform_move')
+        chosen = perform.split('if (hand_slot)', 1)[1]
+        self.assertLess(chosen.index('H.get_equipped_item(hand_slot)'), chosen.index('detach(I)'))
+        self.assertIn('inventory_drag_put_in_hand(hand_slot, H)', perform)
+        pickup = proc_body(read('code/game/objects/items.dm'), '/obj/item/attack_hand')
+        self.assertLess(pickup.index('hand_slot = holder.hand'), pickup.index('storage_strip_take_wait('))
+        self.assertIn('needhand = !hand_slot', pickup)
+        self.assertIn('loc != source', pickup)
+        self.assertIn('inventory_drag_put_in_hand(hand_slot, holder)', pickup)
+        wait = proc_body(DRAG, '/obj/item/proc/inventory_drag_pickup_delay')
+        self.assertIn('needhand = !carried', wait)
+        self.assertIn('loc != source', wait)
 
     def test_destinations_cover_hands_slots_and_storage(self):
         body = proc_body(DRAG, '/obj/item/proc/inventory_drag_transfer')

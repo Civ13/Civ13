@@ -13,7 +13,9 @@ basket or any storage structure opens it, with that container brought into view.
   Transfers between your own carried inventory slots and bags keep their
   timer while you walk. Transfers involving the floor or someone else's
   storage still stop when you walk away. Being stunned or restrained, or
-  choosing Cancel all, still stops the queue.
+  choosing Cancel all, still stops the queue. A move into a hand keeps the
+  hand picked at the start even if you switch active hands; that hand must be
+  usable and empty when the item arrives.
 
 Moving: drag a thing onto a container, or click to select several and press
 **Move here**. Enter moves the selection to the container used last. **Take all**

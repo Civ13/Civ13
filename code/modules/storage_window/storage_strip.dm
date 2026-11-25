@@ -179,7 +179,7 @@
 	if (!istype(S) || !istype(H) || !H.client)
 		return TRUE
 	var/carried = carried_destination && (S in storage_window_carried_holders(H))
-	if (!do_after(H, storage_strip_take_time(H, I), I, can_move = carried))
+	if (!do_after(H, storage_strip_take_time(H, I), I, needhand = !carried, can_move = carried))
 		return FALSE
 	if (QDELETED(I) || QDELETED(S) || H.restrained() || (carried && !(S in storage_window_carried_holders(H))))
 		return FALSE
