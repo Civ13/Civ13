@@ -51,9 +51,13 @@ var/global/list/masons_saw_cuts = list(
 // The fuelled furnace beside the bench the gather is reheated in, or null.
 /obj/structure/workshop_machine/glass_bench/proc/glory_hole()
 	for (var/obj/structure/furnace/F in range(1, src))
-		if (F.fuel >= GLASS_BENCH_FUEL)
+		if (!QDELETED(F) && F.fuel >= GLASS_BENCH_FUEL && Adjacent(F))
 			return F
 	return null
+
+// A save or load can finish while the picker or batch is still waiting.
+/obj/structure/workshop_machine/glass_bench/proc/glass_worker_ready(mob/living/human/H, obj/item/stack/material/glass/S, datum/admission)
+	return !persistence_admission_changed(admission) && !QDELETED(H) && worker_ready(H, S) && isturf(H.loc) && Adjacent(H)
 
 /proc/glass_bench_choices(mob/living/human/H)
 	var/list/choices = list()
@@ -77,8 +81,11 @@ var/global/list/masons_saw_cuts = list(
 	if (!anchored)
 		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
 		return
+	var/datum/admission = persistence_admission_identity
+	if (!glass_worker_ready(H, I, admission))
+		return
 	if (!glory_hole())
-		to_chat(H, SPAN_WARNING("\The [src] needs a fuelled bloomery, blast furnace or kiln beside it to reheat the glass."))
+		to_chat(H, SPAN_WARNING("\The [src] needs a reachable, fuelled bloomery, blast furnace or kiln to reheat the glass."))
 		return
 	var/list/choices = glass_bench_choices(H)
 	if (!choices.len)
@@ -87,10 +94,10 @@ var/global/list/masons_saw_cuts = list(
 	var/picked = WWinput(H, "What do you want to blow?", "Glassblowing bench", choices[1], choices + "Cancel")
 	if (!picked || picked == "Cancel" || !(picked in choices))
 		return
-	blow_wares(H, I, choices[picked], picked)
+	blow_wares(H, I, choices[picked], picked, admission)
 
-/obj/structure/workshop_machine/glass_bench/proc/blow_wares(mob/living/human/H, obj/item/stack/material/glass/S, ware, label)
-	if (busy || !worker_ready(H, S))
+/obj/structure/workshop_machine/glass_bench/proc/blow_wares(mob/living/human/H, obj/item/stack/material/glass/S, ware, label, datum/admission)
+	if (busy || !glass_worker_ready(H, S, admission))
 		return 0
 	var/list/cost = glass_bench_wares[ware]
 	if (S.amount < cost[1])
@@ -100,11 +107,13 @@ var/global/list/masons_saw_cuts = list(
 	icon_state = "glass_bench_on"
 	visible_message(SPAN_NOTICE("[H] gathers molten glass on the blowpipe."))
 	var/made = 0
-	while (worker_ready(H, S) && S.amount >= cost[1] && glory_hole())
+	while (glass_worker_ready(H, S, admission) && S.amount >= cost[1] && glory_hole())
 		if (!do_after(H, cost[2], src))
 			break
+		if (!glass_worker_ready(H, S, admission) || S.amount < cost[1] || !crafting_recipe_allowed(H, "[ware]"))
+			break
 		var/obj/structure/furnace/F = glory_hole()
-		if (!F || !worker_ready(H, S) || S.amount < cost[1] || !crafting_recipe_allowed(H, "[ware]"))
+		if (!F)
 			break
 		var/last = S.amount <= cost[1]
 		F.burn_structure_fuel(GLASS_BENCH_FUEL)
@@ -119,8 +128,8 @@ var/global/list/masons_saw_cuts = list(
 		icon_state = "glass_bench"
 	if (made)
 		to_chat(H, SPAN_NOTICE("You blow [made] pieces of [label]."))
-	else if (!glory_hole())
-		to_chat(H, SPAN_WARNING("The fire beside \the [src] has run out of fuel."))
+	else if (glass_worker_ready(H, S, admission) && !glory_hole())
+		to_chat(H, SPAN_WARNING("No reachable furnace has enough fuel to reheat the glass."))
 	return made
 
 //////////////////////////////////////////////////////////////////////////////
