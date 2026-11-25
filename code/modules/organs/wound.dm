@@ -389,6 +389,7 @@ datum/wound/cut/massive
 
 /** EXTERNAL ORGAN LOSS **/
 /datum/wound/lost_limb
+	var/lost_limb_slot = null // Historical wounds have no identifiable slot.
 
 /datum/wound/lost_limb/New(var/obj/item/organ/external/lost_limb, var/losstype, var/clean, var/restore_shell = FALSE)
 	// Load_Entry registers this shell before decoding the saved organ/wound
@@ -397,6 +398,7 @@ datum/wound/cut/massive
 	if(restore_shell)
 		return ..(0)
 	var/damage_amt = lost_limb.max_damage
+	lost_limb_slot = lost_limb.limb_name
 	if (clean) damage_amt /= 2
 
 	switch(losstype)

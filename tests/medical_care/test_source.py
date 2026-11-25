@@ -145,8 +145,8 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("return SURGERY_FAILURE", admission)
         self.assertIn("return FALSE", admission)
         self.assertIn("return TRUE", admission)
-        self.assertIn("if (can_use(user, target, target_zone, tool) != TRUE)", completion)
-        self.assertLess(completion.index("if (can_use("), completion.index("E.replaced(target)"))
+        self.assertIn("if (QDELETED(tool) || tool.loc != user || can_use(user, target, target_zone, tool) != TRUE)", completion)
+        self.assertLess(completion.index("can_use("), completion.index("E.replaced(target)"))
 
     def test_severed_artery_is_repairable(self):
         step = block(SURGERY, "/datum/surgery_step/fix_vein")

@@ -3240,7 +3240,9 @@ SUITES = {
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     'surgery_amputation_log': {'files': ('tests/surgery_amputation_log/test_source.py',),
-        'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm')},
+        'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm',
+                  'code/modules/surgery/limb_reattach.dm', 'code/modules/organs/organ_external.dm',
+                  'code/modules/organs/wound.dm')},
     # A properly sleeping, logged-off character is safe off Gaia.
     'offline_sleep_protection': {'files': ('tests/offline_sleep_protection/test_source.py',),
         'paths': ('tests/offline_sleep_protection/', 'code/modules/persistence/offline_sleep_protection.dm',

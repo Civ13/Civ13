@@ -37,6 +37,32 @@ class AmputationLogTests(unittest.TestCase):
         self.assertIn("victim offline", body)
 
 
+class LimbGraftSourceTests(unittest.TestCase):
+    def setUp(self):
+        self.graft = (ROOT / "code/modules/surgery/limb_reattach.dm").read_text(encoding="utf-8")
+        self.organs = (ROOT / "code/modules/organs/organ_external.dm").read_text(encoding="utf-8")
+        self.wounds = (ROOT / "code/modules/organs/wound.dm").read_text(encoding="utf-8")
+
+    def test_real_parent_and_each_child_slot_are_required(self):
+        self.assertIn("parent.is_stump() || parent.owner != target || parent.loc != target", self.graft)
+        self.assertIn("seen[limb_name] || target.get_organ(limb_name)", self.graft)
+        self.assertIn("child.graft_slots_clear(target, seen, limb_name)", self.graft)
+        self.assertIn("!isnull(inside_slot) && parent_organ != inside_slot", self.graft)
+
+    def test_completion_revalidates_before_releasing_and_registering_donor(self):
+        complete = self.graft.split("\tend_step(", 1)[1].split("\tfail_step(", 1)[0]
+        self.assertLess(complete.index("can_use("), complete.index("drop_from_inventory("))
+        self.assertLess(complete.index("drop_from_inventory("), complete.index("E.replaced("))
+        self.assertIn("tool.loc != user", complete)
+
+    def test_wound_cleanup_uses_saved_slot_not_list_order(self):
+        self.assertIn("var/lost_limb_slot = null", self.wounds)
+        self.assertIn("lost_limb_slot = lost_limb.limb_name", self.wounds)
+        self.assertIn("parent.clear_grafted_limb_wound(limb_name)", self.organs)
+        cleanup = self.organs.split("/proc/clear_grafted_limb_wound(", 1)[1]
+        self.assertLess(cleanup.index("W.lost_limb_slot != slot"), cleanup.index("wounds -= W"))
+
+
 class FacialCauteryTests(unittest.TestCase):
     def setUp(self):
         sys.path.insert(0, str(ROOT / 'tests/save_movement'))

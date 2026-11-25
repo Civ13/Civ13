@@ -51,8 +51,8 @@ REVIEWED_TABLES = {
 # Reviewed edits after BEFORE to the durable runner's result checks.
 REVIEWED_DURABLE_TAIL = (
     ('        # 141 wound assertions plus the generated offline-client startup check.\n',
-     '        # 186 wound and organ assertions plus the generated offline-client startup check.\n'),
-    ("result.get('checks') != 142:", "result.get('checks') != 187:"),
+     '        # 229 wound, limb graft and organ assertions plus the generated offline-client startup check.\n'),
+    ("result.get('checks') != 142:", "result.get('checks') != 230:"),
     ("result.get('line') != 394", "result.get('line') != receipt['wound_control_line']"),
     ("'Historical wound source did not reproduce the constructor failure: '",
      "'Reverted wound fix did not reproduce the constructor failure: '"),
