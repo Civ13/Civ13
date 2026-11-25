@@ -128,17 +128,35 @@ var/fire_doors_runtime = null
 	F.remove_door_fitting(screwdriver, east)
 	fire_doors_assert(F.door_closer == "spring", "closer_fixed")
 
-	// Exposure spends the rating; at nothing the seals burn and it stops rating.
+	// Two nearby fires share the door's five-second debit interval.
 	F.fire_rating_left = 60
-	F.fire_door_exposure()
+	var/obj/effect/fire/first_fire = new(locate(4, 4, 1))
+	var/obj/effect/fire/second_fire = new(locate(6, 4, 1))
+	fire_nearby_doors(first_fire)
 	fire_doors_assert(F.fire_rating_left == 10 && F.fire_seals_intact, "exposure_spends")
+	fire_nearby_doors(second_fire)
+	fire_doors_assert(F.fire_rating_left == 10 && F.fire_seals_intact, "two_fires_spend_rating_once")
+	qdel(first_fire)
+	qdel(second_fire)
+	sleep(50)
 	F.fire_door_exposure()
 	fire_doors_assert(!F.fire_seals_intact && !F.fire_door_rated() && findtext(F.fire_rating_fault(), "spent"), "seals_burn")
 	fire_doors_assert(F.fitting_images && F.fitting_images.len, "burnt_overlay")
+
+	// Both workers can start, but only the first completed repair pays.
+	var/mob/living/human/west = fire_doors_actor(4, 5, "West")
 	var/obj/item/fire_seals/seals = new
+	var/obj/item/fire_seals/spare_seals = new
 	fire_doors_hands(east, seals, null)
-	F.attackby(seals, east)
+	fire_doors_hands(west, spare_seals, null)
+	spawn(0)
+		F.attackby(seals, east)
+	sleep(1)
+	fire_doors_assert(!east.may_do_after && F.fire_rating_left == 0, "first_repair_waits_before_competing")
+	F.attackby(spare_seals, west)
 	fire_doors_assert(F.fire_seals_intact && F.fire_rating_left == F.fire_rating_full && QDELETED(seals) && F.fire_door_rated(), "seals_replaced")
+	fire_doors_assert(!QDELETED(spare_seals) && west.get_active_hand() == spare_seals, "second_repair_preserves_held_seals")
+	qdel(west)
 
 	// A fusible link holds the door open until fire comes near.
 	F.Open()

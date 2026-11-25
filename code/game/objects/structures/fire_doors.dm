@@ -15,7 +15,7 @@
 
 #define FIRE_RATING_IRON 18000		// ds: 30 minutes
 #define FIRE_RATING_STEEL 36000		// ds: 60 minutes
-#define FIRE_EXPOSURE_TICK 50		// ds of rating spent per fire tick next to it
+#define FIRE_EXPOSURE_TICK 50		// ds per door rating interval
 
 /obj/structure/simple_door
 	var/panic_bar_side = 0			// the side a panic bar is fitted on
@@ -34,6 +34,10 @@
 	var/fire_rating_left = FIRE_RATING_IRON
 	var/fire_heat_share = 0.1			// share of fire damage it takes while rated
 	var/fire_seals_intact = TRUE
+	var/tmp/fire_next_seal_debit = 0
+
+/obj/structure/simple_door/key_door/anyone/fire_door/persistence_runtime_var(key)
+	return key == "fire_next_seal_debit" || ..()
 
 /obj/structure/simple_door/key_door/anyone/fire_door/steel
 	name = "steel fire"
@@ -135,14 +139,15 @@
 		return fire_heat_share
 	return ..()
 
-// Each fire tick beside a rated fire door spends some of its rating; once it
-// is spent the seals have burnt away and the door burns like its material.
+// Nearby fires share the same rating interval for each door. When its time
+// is spent, the seals burn away and the door burns like its material.
 /obj/structure/simple_door/proc/fire_door_exposure()
 	return
 
 /obj/structure/simple_door/key_door/anyone/fire_door/fire_door_exposure()
-	if (!fire_door_rated())
+	if (world.time < fire_next_seal_debit || !fire_door_rated())
 		return
+	fire_next_seal_debit = world.time + FIRE_EXPOSURE_TICK
 	fire_rating_left = max(0, fire_rating_left - FIRE_EXPOSURE_TICK)
 	if (fire_rating_left <= 0)
 		fire_seals_intact = FALSE
@@ -282,14 +287,20 @@
 		return remove_panic_bar(W, user)
 	return FALSE
 
+/obj/structure/simple_door/key_door/anyone/fire_door/proc/has_full_fire_seals()
+	return fire_seals_intact && fire_rating_left >= fire_rating_full
+
 /obj/structure/simple_door/key_door/anyone/fire_door/proc/replace_fire_seals(obj/item/fire_seals/S, mob/living/human/user)
-	if (fire_seals_intact && fire_rating_left >= fire_rating_full)
+	if (has_full_fire_seals())
 		to_chat(user, SPAN_NOTICE("The seals of \the [src] are whole."))
 		return TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts pressing new seals into the frame of \the [src]."), SPAN_NOTICE("You start replacing the seals."))
 	if (!do_after(user, 60, src))
 		return TRUE
 	if (QDELETED(src) || QDELETED(S) || user.get_active_hand() != S)
+		return TRUE
+	if (has_full_fire_seals())
+		to_chat(user, SPAN_NOTICE("The seals of \the [src] have already been replaced."))
 		return TRUE
 	fire_seals_intact = TRUE
 	fire_rating_left = fire_rating_full
