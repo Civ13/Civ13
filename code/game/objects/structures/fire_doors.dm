@@ -36,6 +36,9 @@
 	var/fire_seals_intact = TRUE
 	var/tmp/fire_next_seal_debit = 0
 
+/obj/structure/simple_door/key_door/anyone/fire_door/persistence_runtime_var(key)
+	return key == "fire_next_seal_debit" || ..()
+
 /obj/structure/simple_door/key_door/anyone/fire_door/steel
 	name = "steel fire"
 	desc = "A steel fire door with a mineral core and a wired-glass vision panel, hung in a rated frame with a closer, a latch and edge seals. It shuts itself after every passage. Set in a masonry wall and kept whole, it holds back fire for an hour."
