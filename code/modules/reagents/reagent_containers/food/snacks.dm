@@ -534,7 +534,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 /obj/item/weapon/reagent_containers/food/snacks/egg/afterattack(obj/O as obj, mob/user as mob, proximity)
 /*	if (istype(O,/obj/structure/microwave))
 		return ..()*/
-	if (istype(O, /obj/structure/pot))
+	if (istype(O, /obj/structure/pot) || istype(O, /obj/structure/oven))
 		return
 	if (!(proximity && O.is_open_container()))
 		return
@@ -565,7 +565,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	var/growing = FALSE
 
 /obj/item/weapon/reagent_containers/food/snacks/turkeyegg/afterattack(obj/O as obj, mob/user as mob, proximity)
-	if (istype(O, /obj/structure/pot))
+	if (istype(O, /obj/structure/pot) || istype(O, /obj/structure/oven))
 		return
 	if (!(proximity && O.is_open_container()))
 		return

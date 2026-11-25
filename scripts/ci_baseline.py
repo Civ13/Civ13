@@ -3266,6 +3266,11 @@ SUITES = {
         'shared_paths': ('code/modules/1713/aqueducts.dm', 'code/modules/1713/sewers.dm',
             'code/game/objects/build_markers.dm', 'code/modules/naval/ship_draught.dm',
             'code/modules/naval/draught_kinds.dm', 'code/modules/paintings/design_codes.dm')},
+    'egg_roasting': {'files': ('tests/egg_roasting/test_sources.py',),
+        'paths': ('tests/egg_roasting/',),
+        'shared_paths': ('code/game/objects/structures/kitchen/oven.dm',
+                         'code/modules/reagents/reagent_containers/food/snacks.dm',
+                         'code/game/mob/living/simple_animal/friendly/birds.dm')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
