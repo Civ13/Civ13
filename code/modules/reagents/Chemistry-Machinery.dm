@@ -193,11 +193,11 @@
 				var/done = FALSE
 				for (var/list/r in dispensable_reagents)
 					if (R.id == r[1])
-						r[2] += B.reagents.get_reagent_amount(R.id)
+						r[2] += R.volume
 						done = TRUE
 						break
 				if (!done)
-					dispensable_reagents += list(list(R.id, B.reagents.get_reagent_amount(R.id)))
+					dispensable_reagents += list(list(R.id, R.volume))
 			B.reagents.clear_reagents()
 			sanitize_reagents()
 			GLOB.nanomanager.update_uis(src) // show the new stock in open windows
