@@ -50,6 +50,28 @@ class AgentTests(unittest.TestCase):
     def b(self, path, body=None):
         return call(self.urls['beta'], TOKEN_B, path, body)
 
+
+    def test_fast_character_and_vehicle_recheck_before_escrow(self):
+        store = self.stores['alpha']
+        issue = None
+        route = agent._routes(store, agent.RadioRelay(store.region, store.group), travel_refusal=lambda _peer: issue)
+        # A trip that passed its early dry check may be invalid by departure.
+        check = {'peer': 'beta'}
+        self.assertIsNone(route['/travel/build'](check)['problem'])
+        issue = 'Destination build changed.'
+        for body in ('{"kind":"character","ckey":"user"}',
+                     '{"kind":"character","ckey":"pilot","ship":{"name":"Test"}}',
+                     '{"kind":"freight","cargo":{}}',
+                     '{"kind":"train","id":"test"}'):
+            for fast in (0, 1):
+                payload = dict(check, fast=fast, payloads=[body])
+                with self.assertRaisesRegex(agent.TransferError, 'Destination build changed'):
+                    route['/escrow'](payload)
+        self.assertEqual([], store.status()['active'])
+        self.assertEqual([], store.outbox())
+        # Ordinary goods and settlement of already recorded trips are not gated.
+        self.assertIn('effect_id', route['/escrow'](dict(check, payloads=['bread'])))
+
     def test_transfer_end_to_end(self):
         escrow = self.a('/escrow', {'peer': 'beta', 'payloads': ['axe', 'bread']})['result']
         self.assertEqual(0, self.coordinator.relay_once())  # nothing leaves before the save
