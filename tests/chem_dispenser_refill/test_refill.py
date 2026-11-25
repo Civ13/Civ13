@@ -50,6 +50,13 @@ class ChemDispenserRefillTest(unittest.TestCase):
     def test_dispenser_branches(self):
         self.assertEqual(problems(attackby_body(SOURCE.read_text(encoding='utf-8'))), [])
 
+    def test_mixed_alcohol_refill_credits_each_entry_in_both_stock_paths(self):
+        source = attackby_body(SOURCE.read_text(encoding='utf-8'))
+        credit = source[source.index('for(var/datum/reagent/R'):source.index('B.reagents.clear_reagents()')]
+        self.assertIn('r[2] += R.volume', credit)
+        self.assertIn('list(list(R.id, R.volume))', credit)
+        self.assertNotIn('get_reagent_amount', credit)
+
     def test_negative_control_old_proc_fails_all_three(self):
         self.assertEqual(len(problems(OLD_BODY)), 3)
 
