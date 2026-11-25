@@ -245,10 +245,13 @@ class GaiaSpawn(unittest.TestCase):
         self.assertLess(body.index('start_land.new_player_destination(src)'),body.index('new mobtype'))
         self.assertEqual(body.count('new mobtype(initial_location'),2)
         failure=body[body.index('if (!initial_location)'):body.index('if (delayed_spawning_as_job)')]
+        self.assertIn('release_new_character_job()',failure)
+        self.assertIn('return null',failure)
+        release=adapter.extract(src,'/mob/new_player/proc/release_new_character_job')
         for token in ('original_job.current_positions - 1','mind.assigned_role = null',
-                      'mind.assigned_job = null','spawning = FALSE','ready = FALSE','return null'):
-            self.assertIn(token,failure)
-        self.assertNotIn('transfer_to',failure)
+                      'mind.assigned_job = null','spawning = FALSE','ready = FALSE'):
+            self.assertIn(token,release)
+        self.assertNotIn('transfer_to',failure+release)
         join=adapter.extract(src,'/mob/new_player/proc/AttemptLateSpawn')
         self.assertIn('!map.uses_random_new_player_spawn(job_master.GetJob(rank))',join)
         relocate=adapter.extract((ROOT/'code/game/jobs/job_controller.dm').read_text(),
