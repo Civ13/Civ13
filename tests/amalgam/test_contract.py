@@ -4,9 +4,11 @@
 """
 import re
 import struct
+import sys
 import unittest
 import zlib
 from pathlib import Path
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/modules/1713/amalgam.dm').read_text(encoding='utf-8')
@@ -17,6 +19,9 @@ DME = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
 NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
 DMI = ROOT / 'icons/obj/amalgam.dmi'
+
+sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+import source_adapter
 
 
 def define(name):
@@ -98,6 +103,56 @@ class Wiring(unittest.TestCase):
         states = set(re.findall(r'(?:icon_state) = "([a-z_]+)"', SOURCE)) | {'arrastra_overlay', 'patio_heap_2', 'patio_heap_3'}
         for state in states:
             self.assertIn(f'state = "{state}"', text, state)
+
+class PatioTurnOwnership(unittest.TestCase):
+    def project_turn(self, wait):
+        path = '/obj/structure/patio_heap/proc/turn_heap'
+        fields = source_adapter.FIELDS
+        env = dict(
+            to_chat=lambda actor, message: None, SPAN_WARNING=str, SPAN_NOTICE=str,
+            signal_fire_open_sky=lambda heap: True, crafting_node_allowed_or_warn=lambda *args: True,
+            QDELETED=lambda heap: False, PATIO_TURNS=define('PATIO_TURNS'), do_after=wait,
+        )
+        try:
+            source_adapter.FIELDS = fields + (
+                'turning', 'charged', 'turn_time', 'turns', 'update_icon', 'finish',
+            )
+            return source_adapter.project(SOURCE, path, 'src, H', env, method=True)
+        finally:
+            source_adapter.FIELDS = fields
+
+    def test_hand_and_shovel_use_the_same_turn_entry(self):
+        hand = SOURCE.split('/obj/structure/patio_heap/attack_hand(', 1)[1].split('\n/', 1)[0]
+        tool = SOURCE.split('/obj/structure/patio_heap/attackby(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('turn_heap(H)', hand)
+        self.assertIn('turn_heap(H)', tool)
+
+    def test_busy_wait_refuses_second_worker_and_allows_retry_after_cancel(self):
+        waits = []
+        heap = SimpleNamespace(turning=False, turns=0, charged=lambda: True,
+                               turn_time=lambda: 1, update_icon=lambda: None)
+        workers = [SimpleNamespace(visible_message=lambda *args: None) for _ in range(2)]
+
+        def wait(worker, seconds, target):
+            self.assertIs(target, heap)
+            self.assertTrue(heap.turning)
+            waits.append(worker)
+            if worker is workers[0]:
+                # Enter the same production proc at a fake timer boundary, not in game.
+                turn(heap, workers[1])
+                self.assertTrue(heap.turning)
+                return False
+            return True
+
+        turn = self.project_turn(wait)
+        turn(heap, workers[0])
+        self.assertEqual(waits, [workers[0]])
+        self.assertEqual(heap.turns, 0)
+        self.assertFalse(heap.turning)
+        turn(heap, workers[1])
+        self.assertEqual(waits, workers)
+        self.assertEqual(heap.turns, 1)
+        self.assertFalse(heap.turning)
 
 
 if __name__ == '__main__':
