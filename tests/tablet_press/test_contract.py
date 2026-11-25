@@ -530,6 +530,18 @@ class TabletProtocolTests(unittest.TestCase):
                 self.assertNotIn(forbidden, block)
         self.assertIn('R.volume = after_volumes[R]', SOURCE)
 
+    def test_beaker_install_consumes_click_and_buffer_is_not_open(self):
+        press = '/obj/structure/chem_master/tablet_press'
+        declaration = SOURCE.split(press + '\n', 1)[1].split('\n/', 1)[0]
+        self.assertIn('flags = NOREACT', declaration)
+        self.assertNotIn('OPENCONTAINER', declaration)
+        restore = SOURCE.split(press + '/after_load()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('flags &= ~OPENCONTAINER', restore)
+        install = SOURCE.split(press + '/attackby(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('if (!user.transfer_held_item_to(W, src))', install)
+        self.assertIn('beaker = W\n\tupdateUsrDialog()\n\treturn TRUE', install)
+        self.assertNotIn('drop_from_inventory', install)
+
     def test_legacy_href_and_ejection_contract(self):
         block = SOURCE.split('/obj/structure/chem_master/tablet_press/Topic', 1)[1].split('\n/', 1)[0]
         self.assertNotIn('..()', block)
