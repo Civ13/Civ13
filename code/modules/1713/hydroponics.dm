@@ -220,7 +220,10 @@
 /obj/structure/hydroponics_tray/examine(mob/user, distance)
 	..(user, distance)
 	to_chat(user, SPAN_NOTICE("Reservoir: [round(water_units, 0.1)] water and [round(nutrient_units, 0.1)] nutrient of [HYDROPONICS_RESERVOIR] units."))
-	if (!can_pay_cycle() && reservoir_free() < HYDROPONICS_COMPOST_NUTRIENT)
+	var/space_needed = max(0, HYDROPONICS_CYCLE_WATER - water_units)
+	if (nutrient_units < HYDROPONICS_CYCLE_NUTRIENT)
+		space_needed += HYDROPONICS_COMPOST_NUTRIENT
+	if (reservoir_free() < space_needed)
 		to_chat(user, SPAN_NOTICE("The reservoir is too full to take what it lacks. Right-click the tray and choose Drain Reservoir to empty it."))
 	if (!crop)
 		to_chat(user, SPAN_NOTICE("Nothing is planted. It accepts potato, carrot, cabbage, tomato, bean or wheat seeds."))
@@ -375,8 +378,10 @@
 		start_processing()
 		return TRUE
 	if (is_tool(W, TOOL_WRENCH))
-		release_power()
+		var/was_anchored = anchored
 		wrench_action(H)
+		if (anchored != was_anchored)
+			release_power()
 		return TRUE
 	if (is_tool(W, TOOL_HAMMER))
 		if (crop)
