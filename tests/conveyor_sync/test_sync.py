@@ -49,6 +49,28 @@ class ConveyorSyncTest(unittest.TestCase):
         self.assertEqual(placed_state(OLD_PLACE + '\n', 1), 0)
 
 
+    def test_switch_link_is_handled_before_item_placement(self):
+        link = block(self.source, '/obj/item/conveyor_construct/attackby(')
+        self.assertRegex(link, r'id = C\.id\n\t\treturn TRUE\n\treturn \.\.\(\)')
+
+    def test_switch_round_trip_preserves_configured_direction_and_id(self):
+        detach = block(self.source, '/obj/machinery/conveyor_switch/attackby(')
+        self.assertIn('C.id = id', detach)
+        self.assertIn('C.convdir = convdir', detach)
+        place = block(self.source, '/obj/item/conveyor_switch_construct/afterattack(')
+        self.assertIn('if(convdir == 1 || convdir == -1)', place)
+        self.assertIn('NC = new /obj/machinery/conveyor_switch/oneway(T, id)', place)
+        self.assertIn('NC.convdir = convdir', place)
+        self.assertIn('NC = new /obj/machinery/conveyor_switch(T, id)', place)
+
+    def test_installed_and_detached_direction_are_saved(self):
+        switch = block(self.source, '/obj/machinery/conveyor_switch\n')
+        assembly = block(self.source, '/obj/item/conveyor_switch_construct\n')
+        self.assertIn(';id;position;last_pos;convdir"', switch)
+        self.assertIn(';id;convdir"', assembly)
+        self.assertIn('var/convdir = 0', assembly)
+
+
 class HydroponicsDrainTest(unittest.TestCase):
     def setUp(self):
         self.source = HYDRO.read_text(encoding='utf-8')
