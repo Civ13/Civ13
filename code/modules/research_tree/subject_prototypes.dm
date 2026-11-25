@@ -155,11 +155,12 @@
 
 // Called by whatever makes things, before its wait: the wait while working
 // from a book (Val, 2026-11-17: unlimited uses, but slower until learned).
-/proc/reference_build_time(mob/user, result_path_string, time)
+/proc/reference_build_time(mob/user, result_path_string, time, announce = TRUE)
 	var/mult = reference_build_mult(user, "[result_path_string]")
 	if (mult <= 1)
 		return time
-	to_chat(user, SPAN_NOTICE("You work slowly, checking each step against your book."))
+	if (announce)
+		to_chat(user, SPAN_NOTICE("You work slowly, checking each step against your book."))
 	return round(time * mult)
 
 // Called when something is made (from note_craft_practice): a prototype writes

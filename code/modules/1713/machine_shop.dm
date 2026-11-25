@@ -32,10 +32,10 @@ var/global/list/hydraulic_press_words = list("helmet", "armor", "shield", "headw
 	idle_text = "Its firebox is cold. Load coal, charcoal or wood."
 	var/fuel = 0 // forging jobs it can still strike for
 
-/obj/structure/workshop_machine/trip_hammer/steam/striking()
+/obj/structure/workshop_machine/trip_hammer/steam/striking(preview = FALSE)
 	return anchored && isturf(loc) && fuel >= 1
 
-/obj/structure/workshop_machine/trip_hammer/steam/forge_factor(category)
+/obj/structure/workshop_machine/trip_hammer/steam/forge_factor(category, preview = FALSE)
 	return striking() ? STEAM_HAMMER_FACTOR : 1
 
 /obj/structure/workshop_machine/trip_hammer/steam/forge_used()
@@ -71,14 +71,14 @@ var/global/list/hydraulic_press_words = list("helmet", "armor", "shield", "headw
 	var/work = "work" // what it takes off the smith, for messages
 
 // TRUE when the fastened machine can work right now.
-/obj/structure/workshop_machine/fitting/proc/ready()
+/obj/structure/workshop_machine/fitting/proc/ready(preview = FALSE)
 	return anchored && isturf(loc)
 
 /obj/structure/workshop_machine/fitting/proc/helps(category)
 	return FALSE
 
-/obj/structure/workshop_machine/fitting/forge_factor(category)
-	return (category && ready() && helps(category)) ? FITTING_FACTOR : 1
+/obj/structure/workshop_machine/fitting/forge_factor(category, preview = FALSE)
+	return (category && ready(preview) && helps(category)) ? FITTING_FACTOR : 1
 
 /obj/structure/workshop_machine/fitting/proc/idle_reason()
 	return null
@@ -109,8 +109,8 @@ var/global/list/hydraulic_press_words = list("helmet", "armor", "shield", "headw
 	icon_state = "drill_press"
 	work = "guns, gun parts and machine parts"
 
-/obj/structure/workshop_machine/fitting/drill_press/ready()
-	return ..() && mechanical_drive_factor(src) < 1
+/obj/structure/workshop_machine/fitting/drill_press/ready(preview = FALSE)
+	return ..() && mechanical_drive_factor(src, !preview) < 1
 
 /obj/structure/workshop_machine/fitting/drill_press/helps(category)
 	return category in drill_press_categories

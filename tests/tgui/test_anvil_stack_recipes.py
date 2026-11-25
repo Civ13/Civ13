@@ -1,6 +1,7 @@
 """Source-projected anvil stack actions; no BYOND runtime is launched."""
 from pathlib import Path
 import importlib.util
+import json
 import re
 import unittest
 
@@ -21,6 +22,8 @@ class Stack:
 class AnvilStackRecipe(unittest.TestCase):
     def setUp(self, remove_stock_recheck=False):
         self.messages, self.outputs, self.waits, self.menus = [], [], [], []
+        self.timing_events = []
+        self.duration = lambda cost: cost * 10
         self.allowed, self.wait_result = True, True
         self.on_wait = lambda: None
         self.selection = 'Helmet - 2 iron'
@@ -39,13 +42,12 @@ class AnvilStackRecipe(unittest.TestCase):
             'crafting_recipe_allowed(H, "[anvil_recipes[parsed_choice2[1]][9]]")':
                 'crafting_recipe_allowed(H, anvil_recipes[parsed_choice2[1]][9])',
             'new rtype (loc,material_name)': 'spawn_output(rtype, loc, material_name)',
-            'reference_build_time(H, "[anvil_recipes[parsed_choice2[1]][9]]", ':
-                'reference_build_time(H, anvil_recipes[parsed_choice2[1]][9], ',
         }
         for before, after in changes.items():
             self.assertEqual(source.count(before), 3 if before.startswith('crafting_recipe_allowed') else 1)
             source = source.replace(before, after)
         def wait(user, ticks, anvil, can_move):
+            self.timing_events.append(('wait', ticks))
             self.waits.append((ticks, can_move))
             self.on_wait()
             return self.wait_result
@@ -65,11 +67,9 @@ class AnvilStackRecipe(unittest.TestCase):
                    menu_label=label, WWinput=menu, splittext=lambda value, sep: {1: value.split(sep)[0]},
                    crafting_recipe_allowed=lambda human, recipe: self.allowed,
                    do_after=wait, qdel=discard,
-                   # No trip hammer or machine beside this anvil: the job takes its base time.
-                   forge_time=lambda base, category=None: base,
-                   # No trade (trade_traits.dm): the wait is unchanged.
-                   trade_time=lambda user, delay, kind: delay,
-                   reference_build_time=lambda human, recipe, delay: delay,  # no book reference (subject_prototypes.dm)
+                   # Modifier inputs are exercised by the mechanical power contract.
+                   stack_forge_duration=lambda user, human, row, cost: self.duration(cost),
+                   show_stack_forge_progress=lambda human, delay: self.timing_events.append(('progress', delay)),
                    to_chat=lambda user, message: self.messages.append(message),
                    update_icon=lambda: None,
                    note_craft_practice=lambda user, path: None,
@@ -96,6 +96,16 @@ class AnvilStackRecipe(unittest.TestCase):
                 self.assertEqual(self.outputs, [('helmet_type', 'tile', material)])
                 self.assertEqual(self.waits, [(10*cost, False)])
                 self.assertEqual(self.menus, [['Cancel', f'Helmet - {cost} {material} (manual)']])
+
+    def test_accepted_wait_publishes_the_same_duration_not_the_raw_base(self):
+        self.rows['Helmet'][6] = 4
+        self.duration = lambda cost: round(cost * 10 * .75)
+        self.run_action()
+        self.assertEqual(self.timing_events, [('progress', 30), ('wait', 30)])
+        self.setUp()
+        self.allowed = False
+        self.run_action()
+        self.assertEqual(self.timing_events, [])
 
     def test_interruption_and_post_wait_resource_or_permission_change_do_not_pay(self):
         for condition in ('interrupted', 'stock', 'permission'):
@@ -149,6 +159,58 @@ class AnvilStackRecipe(unittest.TestCase):
         calls = re.findall(r'return forge_stack_recipe\(P, user, H, choice, (\d+), "(\w+)"\)', source)
         self.assertEqual(calls, [('6', 'iron'), ('5', 'steel'), ('8', 'kevlar'), ('7', 'bronze')])
         self.assertEqual(source.count('return forge_blackpowder_part(P, H)'), 2)
+
+class AnvilWindowRoutes(unittest.TestCase):
+    def setUp(self):
+        self.window = source_path.with_name('anvil_window.dm').read_text()
+        self.snapshot = self.window.split('/datum/crafting_window/anvil/build_data()', 1)[1].split('/datum/crafting_window/anvil/Topic', 1)[0]
+        self.topic = self.window.split('/datum/crafting_window/anvil/Topic', 1)[1].split('/obj/structure/anvil/proc/show_stack_forge_progress', 1)[0]
+
+    def test_estimate_is_quiet_and_active_time_is_only_set_at_admission(self):
+        self.assertIn('var/list/assist_cache = list()', self.snapshot)
+        self.assertIn('"time" = anvil.stack_forge_duration(viewer, viewer, R, cost, TRUE, assist_cache)', self.snapshot)
+        self.assertNotIn('"time" = 10 *', self.topic)
+        progress = self.window.split('/obj/structure/anvil/proc/show_stack_forge_progress', 1)[1].split('/obj/structure/anvil/proc/anvil_window_shown', 1)[0]
+        self.assertRegex(progress, r'if \(istype\(W\) && W.anvil == src && W.working && !W.pending && W.still_valid\(H\)\)\s+W.working\["time"\] = delay\s+GLOB.nanomanager.update_uis\(W\)')
+
+    def test_breaking_a_research_prerequisite_opens_only_the_offered_nodes_hint(self):
+        self.assertIn('"tech_tree" = hint && tech_tree_view ? 1 : 0', self.snapshot)
+        self.assertIn('hint = crafting_recipe_manual_hint(viewer, result)', self.snapshot)
+        link = self.topic.split('if (href_list["tech_tree"])', 1)[1].split('if (href_list["pin"])', 1)[0]
+        self.assertLess(self.topic.index('!still_valid(H)'), self.topic.index('if (href_list["tech_tree"])'))
+        self.assertRegex(link, r'var/gated = offered_name\(href_list\["tech_tree"\]\)\s+if \(gated && tech_tree_view\)')
+        self.assertIn('var/list/R = anvil_recipes[gated]', link)
+        self.assertRegex(link, r'if \(crafting_recipe_manual_hint\(H, product\)\)\s+tech_tree_view.show\(H, get_recipe_node_req\(product\)\)')
+        self.assertNotIn('tech_tree_view.show(H, href_list', link)
+
+    def test_atlas_routes_steel_and_iron_to_their_own_producers_or_falls_back(self):
+        atlas = self.topic.split('if (href_list["atlas"])', 1)[1].split('if (href_list["tech_tree"])', 1)[0]
+        self.assertIn('offered_name(href_list["atlas"])', atlas)
+        self.assertIn('crafting_atlas_reference.anvil_variant_id(shown, metal[2], R[metal[1]], product)', atlas)
+        self.assertIn('show(H, product, 1, product, recipe_id = recipe)', atlas)
+        resolver = self.window.split('/datum/crafting_atlas_reference/proc/anvil_variant_id', 1)[1].split('/datum/crafting_window/anvil/build_data', 1)[0]
+        for source_contract in ('recipe["kind"] != "Anvil" || recipe["name"] != display_name', '"/material/[material]"',
+                                'length(inputs) != 1 || length(outputs) != 1', 'ingredient["id"] == ingredient_id',
+                                'text2num("[ingredient["quantity"]]") == cost', 'output["id"] == product',
+                                'return recipe["id"]', 'return ""'):
+            self.assertIn(source_contract, resolver)
+        craft = json.loads((ROOT / 'UI/crafting-atlas.json').read_text())
+        rows = [v for group in craft['recipes'] if group['kind'] == 'Anvil' for v in group.get('variants', [group])]
+        product = '/obj/item/clothing/suit/armor/samurai/warrior'
+
+        def matching(material, cost, item=product):
+            return [r['id'] for r in rows if r['kind'] == 'Anvil'
+                    and r['name'] == f'Metal Samurai Armor [{material}]'
+                    and len(r['inputs']) == len(r['outputs']) == 1
+                    and r['inputs'][0]['id'] == f'/material/{material}'
+                    and float(r['inputs'][0]['quantity']) == cost
+                    and r['outputs'][0]['id'] == item]
+
+        steel, iron = matching('steel', 11), matching('iron', 14)
+        self.assertEqual((len(steel), len(iron)), (1, 1))
+        self.assertNotEqual(steel, iron)
+        self.assertEqual(matching('steel', 14), [])
+        self.assertEqual(matching('steel', 11, product + '/red'), [])
 
 if __name__ == '__main__':
     unittest.main()

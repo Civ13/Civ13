@@ -168,8 +168,13 @@
 /obj/structure/anvil/proc/blackpowder_forge_access(obj/item/stack/material/P, mob/living/human/H)
 	return !QDELETED(src) && !QDELETED(P) && !QDELETED(H) && isturf(H.loc) && in_range(src, H) && P.loc == H && H.get_active_hand() == P && !H.incapacitated()
 
+/obj/structure/anvil/proc/blackpowder_forge_duration(mob/living/human/H, base_delay)
+	return trade_time(H, base_delay, "gunsmith")
+
 /obj/structure/anvil/proc/wait_for_blackpowder_forging(mob/living/human/H, delay)
-	return do_after(H, trade_time(H, delay, "gunsmith"), src)
+	var/duration = blackpowder_forge_duration(H, delay)
+	show_stack_forge_progress(H, duration)
+	return do_after(H, duration, src)
 
 /obj/structure/anvil/proc/produce_blackpowder_part(key, obj/item/stack/material/P, mob/living/human/H)
 	if (in_use || !blackpowder_forge_access(P, H))
