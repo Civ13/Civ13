@@ -141,14 +141,24 @@
 			if (seen[TR])
 				continue
 			var/list/unit = rail_warehouse_unit(TR)
+			if (!unit.len || QDELETED(unit[1]))
+				continue
 			for (var/obj/structure/trains/S in unit)
 				seen[S] = TRUE
 			var/obj/structure/trains/rear = rail_warehouse_end(unit, FALSE)
-			if (!rear.connected)
+			if (!QDELETED(rear) && !rear.connected)
 				units += list(unit)
 	return units
 
 /obj/structure/rail_warehouse/proc/store_problem(list/unit)
+	// An individual option can outlive a coupling or a removed segment.
+	if (!unit?.len || QDELETED(unit[1]))
+		return "That rail car is no longer available."
+	var/obj/structure/trains/rear = rail_warehouse_end(unit, FALSE)
+	if (QDELETED(rear))
+		return "That rail car is missing its rear section."
+	if (rear.connected)
+		return "Unhitch the car behind \the [unit[1]] first."
 	if (stored_units().len >= capacity)
 		return "The warehouse is full: it holds [capacity] cars."
 	var/list/bay = bay()
@@ -364,13 +374,21 @@
 		names += U.unit_name
 	to_chat(user, names.len ? "Stored ([names.len]/[capacity]): [english_list(names)]." : "It is empty ([capacity] spaces).")
 
+// The label distinguishes identical stock; its value is the selected unit,
+// not a type or name to look up again after the prompt.
+/obj/structure/rail_warehouse/proc/put_away_options(list/units)
+	var/list/options = list()
+	for (var/i in 1 to units.len)
+		var/list/unit = units[i]
+		var/obj/structure/trains/front = unit[1]
+		options["Put away [i]. \the [front] (track [front.x], [front.y])"] = unit
+	return options
+
 /obj/structure/rail_warehouse/attack_hand(mob/living/human/H)
 	if (busy || !istype(H) || !Adjacent(H))
 		return
-	var/list/options = list()
 	var/list/rear = rear_units()
-	for (var/list/unit in rear)
-		options["Put away \the [rail_warehouse_unit_name(unit)]"] = unit
+	var/list/options = put_away_options(rear)
 	if (rear.len)
 		options["Put away the whole train"] = "all"
 	var/list/units = stored_units()
