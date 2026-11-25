@@ -403,6 +403,9 @@
 	dug_drink(H, before)
 
 /obj/structure/sink/well/attackby(obj/item/O, mob/user)
+	if (!well_can_use_item(O))
+		well_open_mouth(user)
+		return TRUE
 	if (is_tool(O, TOOL_HAMMER))
 		well_break(user)
 		return
@@ -549,6 +552,13 @@
 	if (band <= FLOOD_BAND_KNEE && raised_well_rim)
 		return FALSE
 	return TRUE
+
+// Tools used on the lining remain usable; a hand pump can draw through the cover.
+/obj/structure/sink/well/proc/well_can_use_item(obj/item/O)
+	if (!well_cover_closed || is_tool(O, TOOL_HAMMER) || is_tool(O, TOOL_SHOVEL))
+		return TRUE
+	var/obj/item/weapon/reagent_containers/RG = O
+	return istype(well_fitting(), /obj/structure/well_fitting/pump) && istype(RG) && RG.is_open_container() && RG.reagents
 
 /obj/structure/sink/proc/well_open_mouth(mob/user)
 	return TRUE

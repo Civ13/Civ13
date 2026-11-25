@@ -274,11 +274,12 @@ var/sewer_runtime_error = FALSE
 	SW.well_cover_closed = TRUE
 	BK.reagents.clear_reagents()
 	SW.volume = 180
-	sewer_check(PU.draw_into(SW, BK) > 0, "a pump draws past a closed cover")
+	sewer_check(SW.well_can_use_item(BK) && PU.draw_into(SW, BK) > 0, "a pump draws past a closed cover")
+	sewer_check(!SW.well_can_use_item(new /obj/item/weapon/soap(low)), "a closed cover prevents applying soap")
 	var/obj/structure/well_fitting/windlass/test_windlass = new /obj/structure/well_fitting/windlass(plain)
 	relined.volume = 150
 	BK.reagents.clear_reagents()
-	sewer_check(!test_windlass.draw_into(relined, BK) && !BK.reagents.total_volume, "a covered well will not lower a windlass bucket")
+	sewer_check(!relined.well_can_use_item(BK) && !test_windlass.draw_into(relined, BK) && !BK.reagents.total_volume, "a covered well will not lower a windlass bucket")
 	// Taking a well apart: fitting, then lining, then the hole.
 	PU.unfit()
 	var/obj/item/stack/material/iron/scrap = locate() in low
