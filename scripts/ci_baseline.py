@@ -1041,6 +1041,11 @@ SUITES = {
                          'scripts/nomads-lifecycle/supervisor.py',
                          'scripts/nomads-lifecycle/canonical_update.py',
                          'scripts/nomads-lifecycle/bot_consumer.py', 'civ13.dme')},
+    'npc_vendor_checkout': {'files': ('tests/npc_vendor_checkout/test_checkout.py',),
+        'paths': ('tests/npc_vendor_checkout/',), 'shared_paths': (
+            'code/game/objects/structures/vending/npc_vendors.dm',
+            'code/game/objects/items/stacks/money.dm',
+            'code/game/objects/map_metadata/the_art_of_the_deal.dm')},
     'fuel_pump_variants': {'files': ('tests/fuel_pump/test_variants.py',),
         'paths': ('tests/fuel_pump/',), 'shared_paths': (
             'tests/save_movement/source_adapter.py',
