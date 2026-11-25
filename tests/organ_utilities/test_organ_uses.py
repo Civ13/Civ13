@@ -95,7 +95,7 @@ class OrganUses(unittest.TestCase):
 
     def test_power_loss_weakens_fridge(self):
         rate = proc_body(self.uses, '/obj/item/organ/proc/spoil_rate(')
-        self.assertIn('(F.powersource && F.powersource.powered) ? 0.1 : 0.4', rate)
+        self.assertIn('F.refrigeration_powered() ? 0.1 : 0.4', rate)
         self.assertIn('depth <= 4', rate)
 
     def test_reload_resumes_only_loose_organs(self):

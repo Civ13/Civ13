@@ -238,7 +238,7 @@ var/global/list/specimen_organ_names = list(
 	for (var/depth = 1, depth <= 4 && A && !isturf(A), depth++)
 		if (istype(A, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = A
-			return (F.powersource && F.powersource.powered) ? 0.1 : 0.4
+			return F.refrigeration_powered() ? 0.1 : 0.4
 		if (istype(A, /obj/structure/closet/crate/freezer))
 			return 0.15
 		A = A.loc

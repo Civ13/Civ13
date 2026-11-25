@@ -35,6 +35,11 @@ try {
             $consumerEnd = $consumerSource.IndexOf($consumerSpec[2], $consumerStart)
             $fixture += "`n" + $consumerSource.Substring($consumerStart, $consumerEnd - $consumerStart)
         }
+        $fridgeSource = Get-Content -LiteralPath (Join-Path $repo 'code/game/objects/structures/crates_lockers/closets/fridge.dm') -Raw
+        $fridgeStart = $fridgeSource.IndexOf('/obj/structure/closet/fridge/process()')
+        $fridgeEnd = $fridgeSource.IndexOf('/obj/structure/closet/fridge/update_icon()', $fridgeStart)
+        if ($fridgeStart -lt 0 -or $fridgeEnd -le $fridgeStart) { throw 'Refrigeration power section not found.' }
+        $fixture += "`n" + $fridgeSource.Substring($fridgeStart, $fridgeEnd - $fridgeStart)
         $smartSource = Get-Content -LiteralPath (Join-Path $repo 'code/modules/1713/smart_home.dm') -Raw
         $smartStart = $smartSource.IndexOf('/obj/proc/smart_power_cut()')
         $smartEnd = $smartSource.IndexOf('/obj/structure/proc/smart_kind()', $smartStart)
