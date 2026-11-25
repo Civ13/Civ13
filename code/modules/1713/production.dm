@@ -2306,12 +2306,26 @@
 	if (!restoring)
 		initialize()
 
-/obj/structure/compost/proc/add(var/obj/item/W, var/mob/living/human/H, amount_to_add)
-	current += amount_to_add
+/obj/structure/compost/proc/credit_compost(mob/living/human/H, item_name, credit)
+	current += credit
 	if (H)
-		H.visible_message("<span class='warning'>[H] place \the [W] in \the [src], composting it.</span>",
-			"<span class='notice'>You place \the [W] in \the [src], composting it.</span>")
+		H.visible_message("<span class='warning'>[H] places \the [item_name] in \the [src], composting it.</span>",
+			"<span class='notice'>You place \the [item_name] in \the [src], composting it.</span>")
+
+/obj/structure/compost/proc/add(obj/item/W, mob/living/human/H, amount_to_add, legacy_marker = FALSE)
+	if (!legacy_marker && amount_to_add > 10 - current)
+		return
+	credit_compost(H, W.name, amount_to_add)
 	qdel(W)
+
+/obj/structure/compost/proc/add_compost_stack(obj/item/stack/S, mob/living/human/H, units_per_compost)
+	// DM round() floors. Only take whole stack units, without the crafting discount.
+	var/units = min(S.amount, round(max(0, 10 - current) * units_per_compost + 0.00001))
+	if (units <= 0)
+		return
+	var/item_name = S.name
+	if (S.use(units))
+		credit_compost(H, item_name, min(10 - current, units / units_per_compost))
 
 /obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (nitrary_mode && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER))
@@ -2356,22 +2370,22 @@
 		if (istype(W, /obj/item/stack/dung))
 			continue
 		if (W.type == /obj/item/stack/ore)
-			add(W, H, W.amount*10) //It's not obtainable item now, we used it for save/load current values
+			add(W, H, W.amount * 10, legacy_marker = TRUE) // Old save marker, not an input material
 			continue
 		if (istype(W, /obj/item/weapon/reagent_containers/food))
 			add(W, H, 0.5)
 			continue
 		if (istype(W, /obj/item/stack/material/leaf))
-			add(W, H, W.amount/18) //divides (using /) by eighteenth's from each plant input of 1, 0.05(5555555555556) gain per leaf
+			add_compost_stack(W, H, 18)
 			continue
 		if (istype(W, /obj/item/stack/farming/seeds))
-			add(W, H, W.amount/10) //divides (using /) by tenths from each plant input of 1, 0.10 gain per seed, 10 seeds = 1 unit. 100 seeds = 10
+			add_compost_stack(W, H, 10)
 			continue
 		if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco_green) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca) || istype(W, /obj/item/stack/material/cannabis_fresh) || istype(W, /obj/item/stack/material/cannabis))
-			add(W, H, W.amount/4) //by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
+			add_compost_stack(W, H, 4)
 			continue
 		if (istype(W, /obj/item/stack/material/flax) || istype(W, /obj/item/stack/material/hemp) || istype(W, /obj/item/stack/material/rettedfabric))
-			add(W, H, W.amount/4) //by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
+			add_compost_stack(W, H, 4)
 
 /obj/structure/compost/proc/compost()
 	if (nitrary_mode)
