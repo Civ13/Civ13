@@ -1123,9 +1123,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 		remove_tourniquet()
 		to_chat(owner, SPAN_DANGER("The makeshift tourniquet on your [name] slips loose! Replace it with a proper one."))
 		return
-	if ((status & ORGAN_ARTERY_CUT) && arterial_bleed_severity <= 1 && tourniquet_ticks >= TOURNIQUET_CLOT_TICKS && has_bandaged_wound())
-		status &= ~ORGAN_ARTERY_CUT
-		to_chat(owner, SPAN_NOTICE("The bleeding from your [artery_name] has clotted under the tourniquet. Loosen it with a bandage before your [name] goes numb."))
+	if (tourniquet_ticks >= TOURNIQUET_CLOT_TICKS)
+		clot_covered_arteries(src)
 	if (tourniquet_ticks < TOURNIQUET_NUMB_TICKS)
 		return
 	if (tourniquet_ticks >= TOURNIQUET_NUMB_TICKS * 2)
@@ -1136,6 +1135,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 		return
 	if (tourniquet_ticks % 60 == 0)
 		owner.custom_pain("Your [name] throbs and tingles under the tourniquet!", 30, affecting = src)
+
+
+// Run from the tied limb so the covered limbs use its timer and its removal site.
+/obj/item/organ/external/proc/clot_covered_arteries(obj/item/organ/external/covered)
+	if (covered.owner != owner || (covered.status & ORGAN_DESTROYED))
+		return
+	if ((covered.status & ORGAN_ARTERY_CUT) && covered.arterial_bleed_severity <= 1 && covered.has_bandaged_wound())
+		covered.status &= ~ORGAN_ARTERY_CUT
+		to_chat(owner, SPAN_NOTICE("The bleeding from your [covered.artery_name] has clotted under the tourniquet. Loosen it with a bandage before your [name] goes numb."))
+	for (var/obj/item/organ/external/child in covered.children)
+		if (child.parent == covered)
+			clot_covered_arteries(child)
 
 
 /obj/item/organ/external/proc/get_damage()	//returns total damage

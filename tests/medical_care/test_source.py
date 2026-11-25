@@ -1,4 +1,5 @@
 """Offline source contracts for field treatment and artery repair; not native DM execution."""
+import importlib.util
 from pathlib import Path
 import re
 import unittest
@@ -23,6 +24,74 @@ def block(source, path):
     if not match:
         raise AssertionError(f"missing {path}")
     return match.group()
+
+
+class TourniquetLimb:
+    """Fake organ state; lifecycle and clotting decisions come from the DM procs."""
+
+    def __init__(self, owner, artery_cut=0, bandaged=True, severity=1, parent=None):
+        self.owner = owner
+        self.status = artery_cut
+        self.bandaged = bandaged
+        self.arterial_bleed_severity = severity
+        self.parent = parent
+        self.children = []
+        self.tourniquet = False
+        self.tourniquet_ticks = 0
+        self.tourniquet_makeshift = 0
+        if parent:
+            parent.children.append(self)
+
+    def has_bandaged_wound(self):
+        return self.bandaged
+
+
+def project_tourniquet(source, messages):
+    spec = importlib.util.spec_from_file_location(
+        "source_adapter", ROOT / "tests/save_movement/source_adapter.py"
+    )
+    adapter = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(adapter)
+    names = ("ORGAN_ARTERY_CUT", "ORGAN_DESTROYED", "ORGAN_DEAD",
+             "TOURNIQUET_CLOT_TICKS", "TOURNIQUET_NUMB_TICKS")
+    env = {name: int(re.search(rf"(?m)^#define\s+{name}\s+(\d+)", DEFINES)[1])
+           for name in names}
+    env.update(typed_iter=lambda items, _type: items or (), to_chat=lambda *args: messages.append(args),
+               SPAN_NOTICE=lambda msg: msg, SPAN_DANGER=lambda msg: msg)
+
+    # The adapter projects a free proc; qualify the implicit DM fields
+    # outside message literals, just as for its existing method mode.
+    fields = re.compile(
+        r"(?<![\w.])(?:owner|status|tourniquet|tourniquet_ticks|tourniquet_makeshift|"
+        r"arterial_bleed_severity|has_bandaged_wound|remove_tourniquet|clot_covered_arteries)\b"
+    )
+
+    def project(name, args):
+        path = f"/obj/item/organ/external/proc/{name}"
+        body = []
+        for line in adapter.extract(source, path).splitlines():
+            pieces = re.split(r'(".*?")', line)
+            for i in range(0, len(pieces), 2):
+                pieces[i] = fields.sub(lambda m: "src." + m[0], pieces[i])
+            body.append("".join(pieces))
+        return adapter.project(path + "()\n" + "\n".join(body), path, args, dict(env))
+
+    handle = project("handle_tourniquet", "src")
+    remove = project("remove_tourniquet", "src")
+    try:
+        clot = project("clot_covered_arteries", "src, covered")
+    except AssertionError:
+        if "/proc/clot_covered_arteries" in source:
+            raise
+        clot = None  # Old source has no descendant path; run its actual handler in negative controls.
+
+    def tick(limb):
+        limb.remove_tourniquet = lambda: remove(limb)
+        if clot:
+            limb.clot_covered_arteries = lambda covered: clot(limb, covered)
+        handle(limb)
+
+    return tick, env
 
 
 def dmi_states(path):
@@ -177,8 +246,7 @@ class MedicalCare(unittest.TestCase):
         self.assertLess(skip, bleed.index("temp.status & ORGAN_ARTERY_CUT", loop))
         self.assertIn("temp.has_bandaged_wound()", bleed)
         tq = block(ORGAN, "/obj/item/organ/external/proc/handle_tourniquet")
-        for term in ("tourniquet_ticks++", "TOURNIQUET_CLOT_TICKS", "arterial_bleed_severity <= 1",
-                     "has_bandaged_wound()", "status &= ~ORGAN_ARTERY_CUT", "TOURNIQUET_NUMB_TICKS * 2",
+        for term in ("tourniquet_ticks++", "TOURNIQUET_CLOT_TICKS", "TOURNIQUET_NUMB_TICKS * 2",
                      "status |= ORGAN_DEAD"):
             self.assertIn(term, tq)
         self.assertNotIn("world.time", tq)
@@ -188,6 +256,46 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("if (tourniquet)", need)
         apply = block(ORGAN, "/obj/item/organ/external/proc/apply_tourniquet")
         self.assertIn("owner.bad_external_organs |= src", apply)
+
+    def test_tied_limb_timer_clots_its_covered_small_bandaged_arteries(self):
+        messages = []
+        tick, defines = project_tourniquet(ORGAN, messages)
+        artery, threshold = defines["ORGAN_ARTERY_CUT"], defines["TOURNIQUET_CLOT_TICKS"]
+        owner = object()
+        limb = TourniquetLimb(owner, artery)
+        child = TourniquetLimb(owner, artery, parent=limb)
+        unbandaged = TourniquetLimb(owner, artery, bandaged=False, parent=limb)
+        severe = TourniquetLimb(owner, artery, severity=2, parent=limb)
+        detached = TourniquetLimb(owner, artery)
+        limb.children.append(detached)
+        unrelated = TourniquetLimb(object(), artery, parent=limb)
+        limb.tourniquet = True
+        limb.tourniquet_ticks = threshold - 2
+        tick(limb)
+        self.assertEqual((limb.status, child.status), (artery, artery))
+        tick(limb)
+        self.assertEqual((limb.status, child.status), (0, 0))
+        self.assertEqual([l.status for l in (unbandaged, severe, detached, unrelated)], [artery]*4)
+        self.assertEqual(len(messages), 2)
+        tick(limb)
+        self.assertEqual(len(messages), 2)
+
+    def test_makeshift_tourniquet_that_slips_does_not_clot_covered_arteries(self):
+        messages = []
+        tick, defines = project_tourniquet(ORGAN, messages)
+        artery, threshold = defines["ORGAN_ARTERY_CUT"], defines["TOURNIQUET_CLOT_TICKS"]
+        owner = object()
+        limb = TourniquetLimb(owner, artery)
+        child = TourniquetLimb(owner, artery, parent=limb)
+        limb.tourniquet = True
+        limb.tourniquet_ticks = threshold - 1
+        limb.tourniquet_makeshift = threshold
+        tick(limb)
+        self.assertEqual((limb.status, child.status), (artery, artery))
+        self.assertFalse(limb.tourniquet)
+        self.assertEqual(limb.tourniquet_ticks, 0)
+        self.assertEqual(len(messages), 1)
+        self.assertIn("slips loose", messages[0][1])
 
     def test_bandage_roll_applies_and_loosens_tourniquet(self):
         self.assertIn("return try_tourniquet(H, affecting, user)",
