@@ -600,6 +600,7 @@
 				if (h_user.client)	h_user.client.screen -= src
 				h_user.put_in_hands(B)
 		to_chat(user, "<span class='notice'>You clip the [P.name] to [(name == "paper") ? "the paper" : name].</span>")
+		pile_reveal() // raw move out of a ground pile skips turf exit
 		loc = B
 		P.loc = B
 

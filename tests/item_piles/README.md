@@ -25,3 +25,17 @@ onto a pile, the pile cap and taking several pieces at once. Exit status 0 means
 
 Not established: the right-click menu in a real client and a save/load roundtrip
 of a collapsed pile.
+
+For overlapping items, **Shift+Alt-click** an adjacent tile or an item on it.
+Pick a specific object from the numbered list: an empty hand picks it up, and
+a held item is used on it as in an ordinary click. Right-click still groups
+identical objects. This does not split a counted stack into individual choices. For unusually
+large piles the chooser checks the first 100 ground items on each click.
+
+```
+python3 tests/item_piles/test_sources.py
+```
+
+The source regression checks the existing click dispatch, direct tile items
+and line of sight, stale prompt choices, and pile refresh after paper bundling
+or a quantity rename. It does not drive a Dream Seeker client or its popup.

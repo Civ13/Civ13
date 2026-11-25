@@ -120,6 +120,85 @@ var/global/item_pile_flush_pending = FALSE
 	item_pile_mark(src)
 	return ..()
 
+/////////////////////////////// Item selection /////////////////////////////
+// This is an ordinary BYOND choice prompt, not a second interaction path.
+// Show no contents of containers and no objects hidden except by pile grouping.
+#define ITEM_PILE_PICK_LIMIT 100
+
+/client/var/tmp/item_pile_prompt_open = FALSE
+
+/mob/living/human/proc/item_pile_can_choose(turf/site)
+	return client && !client.item_pile_prompt_open && client.mob == src && client.eye == src && isturf(loc) && site && z == site.z && site.Adjacent(src) && !stat && !paralysis && !stunned && !weakened && !restrained() && !in_throw_mode && !using_object && canClick()
+
+/proc/item_pile_selectable(mob/living/human/H, turf/site, obj/item/I, datum/los_context/context = null, datum/los_snapshot/snapshot = null)
+	if (!(I && !QDELETED(I) && I.loc == site && I.name && I.alpha && I.invisibility <= H.see_invisible && (I.mouse_opacity || (I.pile_hidden && I.pile_opacity)) && !is_type_in_list(I, H.shouldnt_see) && I.Adjacent(H)))
+		return FALSE
+	return context ? context.decision_snapshot(I, snapshot, "click") != LOS_DENY : los_read_allowed(H, I, "click")
+
+/proc/item_pile_options(mob/living/human/H, turf/site)
+	var/list/options = list()
+	var/datum/los_context/context = null
+	var/datum/los_snapshot/snapshot = null
+	var/datum/los_context/current = H.client?.los_context
+	if (CIV13_GEOMETRIC_LOS_CORE && current?.eligible())
+		if (current.body != H || current.owner != H.client)
+			return options
+		// Every candidate is a direct item on this one tile. Reuse one raw
+		// capture only while building the list; the answer takes fresh sight.
+		context = current
+		snapshot = current.capture(FALSE, site)
+		if (!snapshot)
+			return options
+	var/scanned = 0
+	for (var/obj/item/I in site)
+		if (++scanned > ITEM_PILE_PICK_LIMIT)
+			break
+		if (!item_pile_selectable(H, site, I, context, snapshot))
+			continue
+		// Native input is plain text. Prefix a number so identical names are
+		// still separate choices, without inspecting writing or contents.
+		var/display_name = I.name
+		if (istype(I, /obj/item/stack) && I.amount > 1)
+			display_name = "[display_name] ([I.amount] units)"
+		options["[options.len + 1]. [display_name]"] = I
+	return options
+
+/proc/item_pile_has_choice(list/options)
+	if (options.len > 1)
+		return TRUE
+	if (!options.len)
+		return FALSE
+	// Its normal representative may be out of sight. Selection is still
+	// useful when the sole eligible item cannot be clicked directly.
+	var/obj/item/only_item = options[options[1]]
+	return only_item?.pile_hidden
+
+/mob/living/human/proc/item_pile_choose(turf/site, list/options)
+	var/client/chooser = client
+	if (chooser.item_pile_prompt_open)
+		return null
+	var/atom/origin = loc
+	var/obj/item/held = get_active_hand()
+	var/original_hand = hand
+	var/original_intent = a_intent
+	var/original_click = next_click
+	chooser.item_pile_prompt_open = TRUE
+	var/label = player_input(src, "Pick up an item, or use your held item on it.", "Items on this tile", null, "anything", options, TRUE)
+	if (chooser)
+		chooser.item_pile_prompt_open = FALSE
+	if (!label || QDELETED(src) || client != chooser || loc != origin || hand != original_hand || held != get_active_hand() || a_intent != original_intent || !item_pile_can_choose(site))
+		return null
+	// A separate click made while the chooser was open still owns its clock.
+	if (next_click != original_click && world.time <= next_click)
+		return null
+	var/obj/item/selected = options[label]
+	if (!item_pile_selectable(src, site, selected) || (travel_holds && travel_hold_refuses(src, selected)))
+		return null
+	next_click = world.time + 1
+	return selected
+
+#undef ITEM_PILE_PICK_LIMIT
+
 /////////////////////////////// Loose piles ///////////////////////////////
 // Plain items that are not /obj/item/stack (roofing, bricks, clay blocks) can
 // still gather into one counted pile: one inventory item and one menu entry.
@@ -134,7 +213,11 @@ var/global/item_pile_flush_pending = FALSE
 	if (!loose_pile_max)
 		return
 	amount = clamp(round(amount), 1, loose_pile_max)
-	name = amount > 1 ? "[initial(name)] ([amount])" : initial(name)
+	var/new_name = amount > 1 ? "[initial(name)] ([amount])" : initial(name)
+	if (new_name != name)
+		name = new_name
+		if (isturf(loc))
+			item_pile_mark(loc)
 
 /obj/item/proc/loose_pile_can_join(obj/item/other)
 	return loose_pile_max && istype(other) && other != src && other.type == type && !QDELETED(src) && !QDELETED(other) && amount < loose_pile_max
