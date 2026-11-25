@@ -65,48 +65,35 @@ class MapSchemaMigration(unittest.TestCase):
         self.assertEqual(re.findall(r'result\["(\w+)"\] = list\(\)',body),['faction_renames','faction_recruitment','river_flood_state','fishing_grounds_state','language_lineage_state','era_records_state','player_houses_state'])
         self.assertNotIn('state[',body)
 
-    def test_house_roles_use_life_tokens_and_do_not_mutate_economic_rows(self):
+    def test_house_authority_requires_exact_slot_then_canonical_account(self):
         rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
-        death = (ROOT/'code/game/mob/living/carbon/human/death.dm').read_text()
-        runtime = (ROOT/'code/game/mob/living/carbon/human/nomads_adoption.dm').read_text()
-        # The company companion may read the registry to select and revalidate a
-        # charter target. Require each reference to be an explicit read; house
-        # authority still cannot alter shares, balances, listings, or permissions.
+        account = rules.split('/proc/player_house_account(', 1)[1].split('\n/', 1)[0]
+        for guard in ('H.stat != CONSCIOUS', 'H.client.mob != H', 'IsGuestKey(H.client.key)',
+                      'slot_owner != C.owner_key()', 'account == C.ckey'):
+            self.assertIn(guard, account)
+        self.assertLess(account.index('slot_owner != C.owner_key()'), account.index('owner_key_account(slot_owner)'))
+        self.assertNotIn('real_name', account)
+        self.assertNotIn('player_house_life_id', account)
+        lookup = rules.split('/obj/map_metadata/proc/player_house_bound_id(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('house["owner_ckey"] != account', lookup)
+        self.assertIn('if(found)\n\t\t\treturn null', lookup)
+        for old_grant in ('Invite Member', 'Appoint Co-steward', 'recover_player_house', 'house["roster"]'):
+            self.assertNotIn(old_grant, rules)
+        admin = (ROOT/'code/modules/admin/admin_verbs.dm').read_text()
+        self.assertNotIn('recover_player_house', admin)
+
+    def test_ownerless_legacy_records_are_not_reassigned_or_removed(self):
+        rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
+        founder = rules.split('/obj/map_metadata/proc/player_house_found(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('house["owner_ckey"] == account', founder)
+        self.assertIn('if(house_id in player_houses_state)', founder)
+        self.assertIn('player_houses_state[house_id] = list("name" = house_name, "owner_ckey" = account)', founder)
         for line in rules.splitlines():
             if "custom_company" in line:
-                self.assertTrue(
-                    line.strip() == "for (var/company in land.custom_company_nr)"
-                    or line.strip().endswith("|| !(company in land.custom_company_nr))"),
-                    line,
-                )
-        for field in ("sales_registry", "faction_perms", "adoption_surname"):
+                self.assertTrue(line.strip() == "for (var/company in land.custom_company_nr)"
+                                or line.strip().endswith("|| !(company in land.custom_company_nr))"), line)
+        for field in ('sales_registry', 'faction_perms', 'adoption_surname'):
             self.assertNotIn(field, rules)
-        role = rules.split('/obj/map_metadata/proc/player_house_role(', 1)[1].split('\n/', 1)[0]
-        self.assertIn('roster[H.player_house_life_id]', role)
-        self.assertNotIn('owner_key', role)
-        self.assertNotIn('real_name', role)
-        self.assertIn('H.stat == DEAD', role)
-        discard = rules.split('/mob/living/human/proc/lose_player_house_authority()', 1)[1].split('\n/', 1)[0]
-        self.assertIn('player_house_life_id = null', discard)
-        self.assertLess(death.index('lose_player_house_authority()'), death.index('company_return_stake('))
-        self.assertIn('player_house_runtime_var(key)', runtime)
-        states = rules.split('/proc/player_house_runtime_var(key)', 1)[1].split('\n/', 1)[0]
-        self.assertNotIn('player_house_life_id', states)
-        commit = rules[rules.index('var/answer = WWinput(target'):]
-        self.assertLess(commit.index('persistence_admission_changed(save_identity)'), commit.index('roster[life] = offer_role'))
-        self.assertLess(commit.index('invitee_life_generation != target.player_house_life_generation'), commit.index('roster[life] = offer_role'))
-
-    def test_house_recovery_requires_named_charter_consent_and_admin_reason(self):
-        rules = (ROOT/'code/game/mob/groups/player_houses.dm').read_text()
-        recovery = rules.split('/client/proc/recover_player_house()', 1)[1].split('\n/', 1)[0]
-        assignment = recovery.index('roster[life] = "steward"')
-        for required in ('check_rights(R_ADMIN)', 'player_house_has_active_steward(id)',
-                         'persistence_admission_changed(save_identity)', 'land != map',
-                         'life_generation != recipient.player_house_life_generation',
-                         'Staff are offering you stewardship', 'if(!reason'):
-            self.assertLess(recovery.rindex(required, 0, assignment), assignment)
-        self.assertIn('log_admin(', recovery[assignment:])
-        self.assertNotIn('custom_company', recovery)
 
     def test_encoded_preflight_keeps_exact_inventory_and_root_types(self):
         source=(ROOT/'code/modules/persistence/durable_world.dm').read_text(encoding='utf-8')
