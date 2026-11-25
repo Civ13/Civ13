@@ -192,5 +192,20 @@ class PipeMonitorTests(unittest.TestCase):
         self.assertEqual(self.rows(source=changed)[0][5:], ['running', 20])
 
 
+class BeltReportingTests(unittest.TestCase):
+    def test_loaded_belt_power_is_checked_before_blocked_retry(self):
+        report = SOURCE.split('/proc/report_rows()', 1)[1].split('\n/obj/', 1)[0]
+        no_power = report.index('if (!B.belt_powered(FALSE))')
+        self.assertLess(no_power, report.index('else if (B.next_poll > factory_belt_tick)'))
+        self.assertIn('state = "[unpowered] no power"', report)
+        self.assertIn('state += ", [waiting] blocked"', report)
+
+    def test_monitor_lookup_never_changes_cached_drive(self):
+        belts = (ROOT / 'code/modules/1713/factory_belts.dm').read_text(encoding='utf-8')
+        lookup = belts.split('/proc/belt_powered(cache_drive = TRUE)', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn('if (cache_drive)\n\t\tdrive = null', lookup)
+        self.assertIn('if (cache_drive)\n\t\t\t\tdrive = D', lookup)
+
+
 if __name__ == '__main__':
     unittest.main()

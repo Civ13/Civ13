@@ -309,48 +309,67 @@
 				G.unload_ammo(user)
 			else if(istype(weapons[selected_weapon], /obj/structure/cannon/modern/tank))
 				var/obj/structure/cannon/modern/tank/C = weapons[selected_weapon]
+				var/obj/structure/cannon/modern/tank/autoloader/A = C
+				if (istype(A) && A.is_loading)
+					to_chat(user, SPAN_WARNING("The autoloader is currently in use."))
+					return FALSE
 				if(C.loaded.len > 0)
 					var/obj/item/cannon_ball/S = C.loaded[1]
 					if (!S.persistence_set_loc(get_turf(user))) return FALSE
 					C.loaded -= S
 					to_chat(user, SPAN_NOTICE("You unload \the [src]."))
-				if(istype(weapons[selected_weapon], /obj/structure/cannon/modern/tank/autoloader))
-					var/obj/structure/cannon/modern/tank/autoloader/A = weapons[selected_weapon]
-					if (!A.is_loading)
-						A.is_loading = TRUE
-						var/list/loadable = list()
-						for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
-							if (AL.storage.contents)
-								for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
-									if (istype(TS, A.ammotype))
-										if (A.caliber != TS.caliber && A.caliber != null && A.caliber != 0)
-											to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [A.caliber] mm shells for this cannon."))
-											continue
-										loadable += TS
+				if (istype(A))
+					A.is_loading = TRUE
+					var/list/loadable = list()
+					for (var/obj/structure/shellrack/autoloader/AL in range(1,src))
+						if (AL.storage.contents)
+							for (var/obj/item/cannon_ball/shell/tank/TS in AL.storage.contents)
+								if (istype(TS, A.ammotype))
+									if (A.caliber != TS.caliber && A.caliber != null && A.caliber != 0)
+										to_chat(user, SPAN_WARNING("\The [TS] is of the wrong caliber! You need [A.caliber] mm shells for this cannon."))
+										continue
+									loadable += TS
 
-						playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
-						var/obj/item/cannon_ball/shell/tank/chosen
-
-						to_chat(user, SPAN_NOTICE("The autoloader begins loading a shell."))
-						spawn (6 SECONDS)
-							if (!loadable.len)
-								to_chat(user, SPAN_WARNING("There are no shells to load."))
-								return
-							chosen = WWinput(usr, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
-							if (!chosen || chosen == "")
-								return
-							if (!chosen.persistence_set_loc(src))
-								A.is_loading = FALSE
-								return FALSE
-							A.loaded += chosen
-							to_chat(user, SPAN_NOTICE("The autoloader loads \the [src]."))
-							A.is_loading = FALSE
-							return
-					else
-						to_chat(user, SPAN_WARNING("The autoloader is currently in use."))
+					playsound(loc, 'sound/machines/autoloader.ogg', 100, TRUE)
+					to_chat(user, SPAN_NOTICE("The autoloader begins loading a shell."))
+					spawn (6 SECONDS)
+						finish_autoload(A, user, loadable)
 	do_html(user)
 
-/obj/structure/turret/proc/do_html(var/mob/m)
+// Release the in-flight flag for every finished selection, including cancellations.
+/obj/structure/turret/proc/finish_autoload(obj/structure/cannon/modern/tank/autoloader/cannon, mob/actor, list/loadable)
+	var/did_load = choose_autoload_shell(cannon, actor, loadable)
+	if (QDELETED(cannon))
+		return
+	cannon.is_loading = FALSE
+	if (did_load && !QDELETED(src))
+		to_chat(actor, SPAN_NOTICE("The autoloader loads \the [src]."))
+		GLOB.nanomanager.update_uis(src)
+
+/obj/structure/turret/proc/choose_autoload_shell(obj/structure/cannon/modern/tank/autoloader/cannon, mob/actor, list/loadable)
+	if (QDELETED(src) || QDELETED(cannon) || QDELETED(actor) || actor != gunner || !(cannon in weapons))
+		return FALSE
+	if (!loadable.len)
+		to_chat(actor, SPAN_WARNING("There are no shells to load."))
+		return FALSE
+	var/obj/item/cannon_ball/shell/tank/chosen = WWinput(actor, "Select a tank shell to load", "Load Tank Shell", loadable[1], WWinput_list_or_null(loadable))
+	if (QDELETED(src) || QDELETED(cannon) || QDELETED(actor) || actor != gunner || !(cannon in weapons) || cannon.loaded.len >= cannon.max_loaded)
+		return FALSE
+	if (!istype(chosen) || QDELETED(chosen) || !(chosen in loadable))
+		return FALSE
+	// The picker waits for input. A shell could have left the rack in the meantime.
+	var/obj/item/weapon/storage/internal/storage = chosen.loc
+	if (!istype(storage))
+		return FALSE
+	var/obj/structure/shellrack/autoloader/rack = storage.loc
+	if (QDELETED(rack) || !istype(rack) || rack.storage != storage || !(rack in range(1, src)))
+		return FALSE
+	if (!chosen.persistence_set_loc(src))
+		return FALSE
+	cannon.loaded += chosen
+	return TRUE
+
+/obj/structure/turret/proc/do_html(mob/m, ui_key = "main", datum/nanoui/ui = null, force_open = TRUE)
 	if (!m)
 		return
 
@@ -373,7 +392,7 @@
 				loaded = C.loaded[1].name
 	open_panel(m, name, 420, 260, list(panel_section("Weapons", rows = list(
 		panel_row("Selected", weapon_name, buttons = list(panel_button("Switch", "switch"))),
-		panel_row("Loaded", loaded, buttons = list(panel_button("Load", "load")))))), state = conscious_state)
+		panel_row("Loaded", loaded, buttons = list(panel_button("Load", "load")))))), ui_key = ui_key, ui = ui, force_open = force_open, state = conscious_state)
 
 /obj/structure/turret/ui_actions(ui_key)
 	return list("switch", "load")
@@ -382,7 +401,7 @@
 	if (viewer != gunner)
 		GLOB.nanomanager.close_user_uis(viewer, src)
 		return
-	do_html(viewer)
+	do_html(viewer, ui_key, ui, force_open)
 
 /obj/structure/turret/bt7
 	turret_color = "#5c784f"

@@ -826,48 +826,45 @@
 	if (radiation>0)
 		watertype = "irradiated_water"
 	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
-		if  (volume > 0)
-			if (min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this) > volume)
-				if (istype(src, /obj/structure/sink/puddle))
-					if (prob(10))
-						RG.reagents.add_reagent("food_poisoning", 1)
-						RG.note_food_toxin("puddle water (1 in 10 fill roll)")
-						RG.reagents.add_reagent(watertype, volume-1)
-					else
-						RG.reagents.add_reagent(watertype, volume)
-				else
-					RG.reagents.add_reagent(watertype, volume)
-				volume = 0
-				spawn(3)
-					update_icon()
-				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-				user.setClickCooldown(5)
-				return TRUE
-			else
-				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
-					if (has_nearby_fecal_waste())
-						dirty = TRUE
-					if (istype(src, /obj/structure/sink/well))
-						var/obj/structure/sink/well/W = src
-						W.flood_foul()
-						river_mercury_fill(RG, get_turf(src), 3) // amalgam.dm
-					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
-						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.note_food_toxin(dirty ? "unboiled water from a dirty [name] (fecal waste nearby) at ([x],[y],[z])" : "unboiled puddle water (15% fill roll) at ([x],[y],[z])")
-						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
-					else
-						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-				else
-					RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-				if (RG.reagents)
-					volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
-				spawn(3)
-					update_icon()
-				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-				user.setClickCooldown(5)
-				return TRUE
+		if (QDELETED(RG) || !RG.is_open_container() || !RG.reagents || heat_dried() || volume <= 0)
+			return
+		var/requested = min(RG.reagents.get_free_space(), RG.amount_per_transfer_from_this)
+		if (requested <= 0)
+			return
+		var/puddle = istype(src, /obj/structure/sink/puddle)
+		var/dose = min(requested, volume)
+		var/contaminant = 0
+		var/list/accepted = list()
+		if (requested > volume)
+			if (puddle && prob(10))
+				RG.reagents.add_reagent("food_poisoning", min(1, dose), accepted_amount = accepted)
+				contaminant = accepted["amount"]
+				RG.note_food_toxin("puddle water (1 in 10 fill roll)")
+		else if (istype(src, /obj/structure/sink/well) || puddle)
+			if (has_nearby_fecal_waste())
+				dirty = TRUE
+			if (istype(src, /obj/structure/sink/well))
+				var/obj/structure/sink/well/W = src
+				W.flood_foul()
+				river_mercury_fill(RG, get_turf(src), 3) // amalgam.dm
+				dose = min(dose, RG.reagents.get_free_space())
+			if (dirty || (puddle && prob(15)))
+				RG.reagents.add_reagent("cholera", dose * 0.05, accepted_amount = accepted)
+				contaminant = accepted["amount"]
+				RG.note_food_toxin(dirty ? "unboiled water from a dirty [name] (fecal waste nearby) at ([x],[y],[z])" : "unboiled puddle water (15% fill roll) at ([x],[y],[z])")
+		accepted["amount"] = 0
+		if (!QDELETED(RG) && RG.reagents)
+			RG.reagents.add_reagent(watertype, dose - contaminant, accepted_amount = accepted)
+		var/transferred = contaminant + accepted["amount"]
+		if (transferred <= 0)
+			return
+		volume = max(0, volume - transferred)
+		spawn(3)
+			update_icon()
+		user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+		user.setClickCooldown(5)
+		return TRUE
 
 
 	else if (istype(O, /obj/item/weapon/mop))

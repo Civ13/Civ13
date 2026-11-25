@@ -527,8 +527,10 @@ obj/structure/religious/monument
 		playsound(src,'sound/effects/shovelling.ogg',100,1)
 		if (do_after(user, 100, src))
 			if (open)
+				if (!cover_grave())
+					to_chat(user, SPAN_WARNING("Free anyone buckled or pinned over the grave before covering it."))
+					return
 				to_chat(user, "You fill up \the [src].")
-				cover_grave()
 				log_game("[key_name(user)] filled in [src] at ([x],[y],[z]).")
 		else
 			return
@@ -553,6 +555,10 @@ obj/structure/religious/monument
 // Fills the grave over whatever lies in it. Anyone still alive in it, in the
 // open or shut in a coffin, is buried alive (code/modules/1713/burial.dm).
 /obj/structure/religious/grave/proc/cover_grave()
+	// The grave can't carry a seat or pin with its occupant. Refuse before moving anything.
+	for (var/mob/living/L in loc)
+		if (L.buckled || L.pinned.len)
+			return FALSE
 	open = FALSE
 	icon_state = "grave_filled"
 	name = "grave"
@@ -573,6 +579,7 @@ obj/structure/religious/monument
 		CF.forceMove(src)
 		for (var/mob/living/human/HM in CF)
 			HM.burial_start(src)
+	return TRUE
 
 // Opens the grave and lays what it held back on the ground.
 /obj/structure/religious/grave/proc/uncover_grave()

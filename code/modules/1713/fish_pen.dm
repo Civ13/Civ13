@@ -30,7 +30,8 @@
 	return 0
 
 /proc/fish_pen_stock_ok(obj/item/I)
-	return istype(I, /obj/item/weapon/reagent_containers/food/snacks/rawfish) && !istype(I, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted)
+	var/obj/item/weapon/reagent_containers/food/snacks/rawfish/F = I
+	return istype(F) && F.raw && !F.roasted && !F.rotten && !istype(F, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted)
 
 /obj/structure/fish_pen
 	name = "fish pen"
@@ -141,6 +142,9 @@
 		qdel(W)
 		to_chat(user, SPAN_NOTICE("You release the fish into the pen. It now holds [stock]."))
 		update_icon()
+		return
+	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/rawfish))
+		to_chat(user, SPAN_WARNING("Only fresh, raw fish can be released into the pen."))
 		return
 	var/value = fish_pen_feed_value(W)
 	if (value)

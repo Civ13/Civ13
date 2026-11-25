@@ -32,7 +32,7 @@ def production(control):
     helpers = life[life.index('/mob/living/human/proc/survival_metabolism_time()'):
                    life.index('/mob/living/human/Life()')]
     fields = re.findall(r'^\tvar/tmp/survival_[^\n]+', life, re.M)
-    if len(fields) != 3:
+    if len(fields) != 4:
         raise ValueError('Runtime field extraction changed')
     start = life.index('\t\tvar/water_m = 1')
     end = life.index('\t\thandle_playstyle_traits()', start)
@@ -45,17 +45,25 @@ def production(control):
         assert source.count('>= 600 ? 0.1 : 1') == 1
         source = source.replace('>= 600 ? 0.1 : 1', '>= 600 ? 1 : 1')
     elif control == 'action':
-        source = re.sub(r'\tuser\.survival_action_started\([^)\n]*\)', '\t// omitted start', source)
+        source = re.sub(r'\tvar/workload = user\.survival_action_started\([^)\n]*\)', '\tvar/workload = 0 // omitted start', source)
         source = source.replace('survival_actions || !may_do_after || !may_do_mob || ', '')
     elif control == 'persistence':
         source = source.replace(', "survival_rest_since", "survival_actions"', '')
+    elif control == 'workload':
+        anchor = 'if (!workload || !survival_actions)\n\t\treturn'
+        assert source.count(anchor) == 1
+        source = source.replace(anchor, anchor + '\n\tif (survival_actions > 1 && workload == 3)\n\t\tsurvival_actions--\n\t\treturn')
+    elif control == 'repeat':
+        anchor = '\t\tif (check_for_repeats)\n\t\t\tuser.may_do_after = TRUE'
+        assert source.count(anchor) == 1
+        source = source.replace(anchor, '\t\tuser.may_do_after = TRUE')
     return source, {p: hashlib.sha256((ROOT / p).read_bytes()).hexdigest() for p in paths}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--byond-bin', type=Path, required=True)
-    parser.add_argument('--negative-control', choices=['idle', 'action', 'persistence'])
+    parser.add_argument('--negative-control', choices=['idle', 'action', 'persistence', 'workload', 'repeat'])
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
@@ -70,7 +78,8 @@ def main():
         work = Path(temp)
         (work / 'production.dm').write_text(source, encoding='utf-8')
         (work / 'probe.dm').write_text((ROOT / 'tests/idle_metabolism/probe.dm').read_text(encoding='utf-8'), encoding='utf-8')
-        (work / 'probe.dme').write_text('#include "probe.dm"\n#include "production.dm"\n', encoding='utf-8')
+        (work / 'overlaps.dm').write_text((ROOT / 'tests/idle_metabolism/overlaps.dm').read_text(encoding='utf-8'), encoding='utf-8')
+        (work / 'probe.dme').write_text('#include "probe.dm"\n#include "production.dm"\n#include "overlaps.dm"\n', encoding='utf-8')
         compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
         daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')
         build = subprocess.run([str(compiler), '-max_errors', '0', 'probe.dme'], cwd=work,
@@ -88,7 +97,9 @@ def main():
         (args.output / 'runtime.log').write_text(runtime + result.stdout + result.stderr, encoding='utf-8')
         (args.output / 'result.txt').write_text(complete, encoding='utf-8')
         expected = {'idle': 'FAIL: idle ordinary food', 'action': 'FAIL: stationary unrestricted action food',
-                    'persistence': 'FAIL: runtime clock exclusion'}.get(args.negative_control, 'PASS: idle metabolism')
+                    'persistence': 'FAIL: runtime clock exclusion',
+                    'workload': 'FAIL: heavy work ends while light work continues food',
+                    'repeat': 'FAIL: earlier unowned completion preserves repeat lock'}.get(args.negative_control, 'PASS: idle metabolism')
         diagnostics = runtime + result.stdout + result.stderr
         matched = complete.strip() == expected if args.negative_control else complete.startswith(expected)
         if result.returncode or not matched or any(x in diagnostics for x in ('runtime error:', 'Runtime error:', 'runtime:', 'BUG:')):

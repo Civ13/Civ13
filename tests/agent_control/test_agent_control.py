@@ -2724,7 +2724,7 @@ class MovementParityTests(unittest.TestCase):
         'H.nutrition -= 0.004 * distance_fraction',
         'H.nutrition -= 0.0015 * distance_fraction',
         'move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)',
-        'terrain_climb_effects(H, mob_loc, n, distance_fraction)',
+        'terrain_completed_step(H, slope_origin, n, slope_start_x, slope_start_y, direct, distance_fraction',
         'if (mob.drowsyness > 0)\n\t\t\tmove_delay += 3',
         'move_delay += 1.25',
         'move_delay += pulled_structure.drag_delay(mob)',
@@ -2746,7 +2746,7 @@ class MovementParityTests(unittest.TestCase):
         self.assertIn("return agent_walk_step(A, C, d, from_queue, ", characters)
         movement = dm_source("agent_movement.dm")
         for anchor in ("check_caribbean_block(M, ref)", "agent_queue_only(", "terrain_slope_delay(old, n, delay)",
-                       "terrain_climb_effects(H, old, n, 1)", "M.get_run_delay()", "M.get_walk_delay()", "M.get_stealth_delay()",
+                       "terrain_completed_step(H, old, n, start_x, start_y, d, 1, delay)", "M.get_run_delay()", "M.get_walk_delay()", "M.get_stealth_delay()",
                        "H.nutrition -= 0.005", "H.nutrition -= 0.002", "H.nutrition -= 0.004", "H.nutrition -= 0.0015",
                        "delay += pulled_structure.drag_delay(M)"):
             self.assertIn(anchor, movement)

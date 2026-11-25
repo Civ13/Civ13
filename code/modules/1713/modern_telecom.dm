@@ -118,6 +118,12 @@ var/global/civ_telecom_cursor = 1
 	powersource = O
 	powersource.connections |= src
 
+/obj/structure/telecom/proc/toggle_equipment_power()
+	interrupt_node_reception()
+	enabled = !enabled
+	if (!enabled && powersource)
+		powersource.update_power(-powerneeded, 1, src)
+
 /obj/structure/telecom/attack_hand(mob/living/human/H)
 	if (!istype(H) || H.stat != CONSCIOUS || !H.can_use_hands() || get_dist(H, src) > 1)
 		return
@@ -125,10 +131,7 @@ var/global/civ_telecom_cursor = 1
 	if (!H || H.stat != CONSCIOUS || get_dist(H, src) > 1 || !H.can_use_hands())
 		return
 	if (choice == "Power")
-		interrupt_node_reception()
-		enabled = !enabled
-		if (!enabled && powersource)
-			powersource.update_power(-powerneeded, 1, src)
+		toggle_equipment_power()
 	if (choice == "Frequency")
 		var/value = player_input(H, "Frequency (150-300)", name, frequency, "num", null, TRUE)
 		if (!isnull(value) && H && get_dist(H, src) <= 1 && H.stat == CONSCIOUS && H.can_use_hands())
@@ -175,6 +178,11 @@ var/global/civ_telecom_cursor = 1
 	stop_node_lesson(FALSE)
 	presenter = null
 	return ..()
+
+/obj/structure/telecom/station/toggle_equipment_power()
+	. = ..()
+	if (!enabled && presenter)
+		stop_presenting(presenter)
 
 /obj/structure/telecom/station/proc/can_present(mob/living/human/H)
 	return istype(H) && H.broadcast_online() && H.stat == CONSCIOUS && !H.sleeping && !H.choked_by && !H.is_muzzled() && H.z == z && get_dist(H, src) <= 1 && (!H.client || !(H.client.prefs.muted & MUTE_IC))
@@ -243,7 +251,7 @@ var/global/civ_telecom_cursor = 1
 		for (var/mob/living/human/listener in view(3, R))
 			if (delivered.len >= 32)
 				break
-			if ((listener in delivered) || !listener.broadcast_online() || listener.stat != CONSCIOUS || listener.sleeping || (listener.sdisabilities & DEAF) || listener.ear_deaf || listener.find_trait("Deaf"))
+			if ((listener in delivered) || !listener.station_can_hear())
 				continue
 			delivered |= listener
 			var/heard = speaking && !listener.say_understands(H, speaking) ? speaking.scramble(message, listener) : message
@@ -251,6 +259,9 @@ var/global/civ_telecom_cursor = 1
 	if (!television) civ_relay_outbound(frequency, H, "\[[label]\] [voice]: [message]")
 	if (!television) rusty_bolt_reradiate(src, message, speaking)
 	return delivered.len
+
+/mob/living/human/proc/station_can_hear()
+	return broadcast_online() && stat == CONSCIOUS && !sleeping && !(sdisabilities & DEAF) && !ear_deaf && !find_trait("Deaf")
 
 /mob/living/human/proc/hear_station_line(message)
 	on_hear_radio(null, message)
@@ -295,19 +306,18 @@ var/global/civ_telecom_cursor = 1
 	civ_relay_log_line("COURSE", "[broadcast_label()] ([frequency]): [announcement] [program] lesson [line]: [telecom_lesson_text(program, line)]")
 	var/list/delivered = list()
 	for (var/obj/structure/telecom/R in civ_telecom_devices)
-		if (istype(R, /obj/structure/telecom/station) || istype(R, /obj/structure/telecom/antenna) || istype(R, /obj/structure/telecom/terminal) || R.television != television || R.frequency != frequency || R.z != z || get_dist(R, src) > 60 || !R.operational())
+		if (!node_receiver_available(R))
 			continue
 		for (var/mob/living/human/H in view(3, R))
 			if (delivered.len >= 32)
 				break
-			if (H in delivered)
+			if ((H in delivered) || !H.station_can_hear())
 				continue
 			delivered |= H
-			if (H.broadcast_online() && H.stat == CONSCIOUS)
-				if (announcement)
-					H.hear_station_line("[R]: [announcement]")
-				H.hear_station_line("[R]: [program] workshop, lesson [line] of 6. [telecom_lesson_text(program, line)]")
-				H.learn_broadcast(program, line)
+			if (announcement)
+				H.hear_station_line("[R]: [announcement]")
+			H.hear_station_line("[R]: [program] workshop, lesson [line] of 6. [telecom_lesson_text(program, line)]")
+			H.learn_broadcast(program, line)
 
 /proc/telecom_lesson_text(skill, line)
 	var/list/lessons

@@ -141,3 +141,11 @@ var/fp_runtime_error = FALSE
 	fp_check(P.cycle_epoch == epoch + 1, "loading restarts the cycle")
 	var/obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted/SC = new(U)
 	fp_check(!fish_pen_stock_ok(SC), "salted fish cannot stock a pen")
+	var/obj/item/weapon/reagent_containers/food/snacks/rawfish/specimen = new(U)
+	fp_check(fish_pen_stock_ok(specimen), "fresh fish can stock the pen")
+	specimen.rotten = TRUE
+	fp_check(!fish_pen_stock_ok(specimen), "rotten fish cannot stock the pen")
+	specimen.rotten = FALSE
+	specimen.raw = FALSE
+	specimen.roasted = TRUE
+	fp_check(!fish_pen_stock_ok(specimen), "roasted fish cannot stock the pen")

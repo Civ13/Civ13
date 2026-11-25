@@ -13,7 +13,7 @@ import tempfile
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
-APPLICABILITY = "if (!step_is_valid || !S.is_valid_target(M))\n\t\t\tcontinue"
+APPLICABILITY = "if (!step_is_valid || !S.is_valid_target(M))\n\t\t\tstage.release_zone(zone)\n\t\t\tcontinue"
 
 
 def project(source):
@@ -32,7 +32,7 @@ def main():
     source = (ROOT / "code/modules/surgery/surgery.dm").read_text(encoding="utf-8")
     if args.negative_control:
         assert source.count(APPLICABILITY) == 1
-        source = source.replace(APPLICABILITY, "if ((!step_is_valid || !S.is_valid_target(M)) && quality > 50)\n\t\t\tcontinue", 1)
+        source = source.replace(APPLICABILITY, "if ((!step_is_valid || !S.is_valid_target(M)) && quality > 50)\n\t\t\tstage.release_zone(zone)\n\t\t\tcontinue", 1)
     with tempfile.TemporaryDirectory(prefix="surgery_drinking_") as temp:
         directory = Path(temp)
         (directory / "fixture.dme").write_text('#include "drink_stubs.dm"\n#include "method.dm"\n#include "drink_cases.dm"\n', encoding="utf-8")

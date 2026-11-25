@@ -1096,12 +1096,13 @@
 	/obj/item/clothing/head/ww2/japcap = slot_head,
 	/obj/item/ammo_magazine/c8mmnambu = slot_r_store,
 	/obj/item/weapon/gun/projectile/submachinegun/type100 = slot_shoulder,
-	/obj/item/weapon/gun/projectile/pistol/ww2/nambu = slot_l_store,
 	/obj/item/weapon/storage/belt/jap/camp_officer = slot_belt)
 /datum/job/japanese/camp_officer/equip(var/mob/living/human/H)
 	if (!H)	return FALSE
 //shoes
 	equip_loadout(H)
+	// The Nambu cannot go in a pocket; use either free hand.
+	H.put_in_hands(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H))
 	var/obj/item/clothing/under/uniform = H.w_uniform
 	var/obj/item/clothing/accessory/storage/sheath/katana/fullh = new /obj/item/clothing/accessory/storage/sheath/katana/full(null)
 	uniform.attackby(fullh, H)
@@ -1399,9 +1400,9 @@
 //head
 		H.equip_to_slot_or_del(new /obj/item/clothing/head/ww2/japcap_snlf(H), slot_head)
 //weapons
-	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H), slot_l_store)
 	H.equip_to_slot_or_del(new /obj/item/weapon/gun/projectile/boltaction/arisaka99(H), slot_shoulder)
 	H.equip_to_slot_or_del(new /obj/item/weapon/material/sword/katana(H), slot_l_hand)
+	H.put_in_hands(new /obj/item/weapon/gun/projectile/pistol/ww2/nambu(H))
 	H.equip_to_slot_or_del(new /obj/item/weapon/storage/belt/jap/ww2soldier(H), slot_belt)
 	if (time_of_day == "Night" || time_of_day == "Evening" || time_of_day == "Early Morning")
 		H.equip_to_slot_or_del(new /obj/item/flashlight/japflashlight(H), slot_wear_id)

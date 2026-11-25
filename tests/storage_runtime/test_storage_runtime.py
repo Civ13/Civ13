@@ -326,4 +326,69 @@ class StorageRuntime(unittest.TestCase):
         self.assertLess(saved.index('s_active.close(src)'),saved.index('sleep_update()'))
         self.assertLess(LOGIN.index('s_active.close(src)'),LOGIN.index('client.screen = null'))
 
+class ClassicCrateClose(unittest.TestCase):
+    def test_close_only_sweeps_remaining_cargo(self):
+        path = ROOT/'code/game/objects/structures/crates_lockers/crates.dm'
+        source = path.read_text(encoding='utf8')
+        room = (ROOT/'code/modules/storage_window/closet_storage.dm').read_text(encoding='utf8')
+        cart_body = source.split('/obj/structure/closet/crate/cart/wooden\n', 1)[1].split('\n/obj/', 1)[0]
+        capacity = int(re.search(r'\bstoragecap\s*=\s*(\d+)', cart_body)[1])
+
+        class Item:
+            density = anchored = False
+            def __init__(self, origin):
+                self.loc = origin
+                origin.contents.append(self)
+            def forceMove(self, destination):
+                self.loc.contents.remove(self)
+                destination.contents.append(self)
+                self.loc = destination
+
+        class Structure(Item):
+            pass
+
+        A.FIELDS += ('opened', 'can_close', 'keep_items', 'icon_closed', 'storagecap')
+        count_decl = '/proc/closet_item_count'
+        # Express DM's implicit result as an explicit return for the adapter.
+        counter = A.extract(room, count_decl).replace('.++', 'result++')
+        closet_item_count = A.project(
+            '/fixture(C)\n'+counter+'\n\treturn result\n', '/fixture', 'C',
+            {'typed_iter': lambda items, _: [i for i in items if not isinstance(i, Structure)]},
+        )
+        close_decl = '/obj/structure/closet/crate/close'
+        close_body = A.extract(source, close_decl).replace('/obj/structure)', 'Structure)')
+        lifted = '/fixture()\n'+close_body+'\n'
+        close = A.project(lifted, '/fixture', 'src', {
+            'playsound': lambda *args: None, 'get_turf': lambda crate: crate.loc.contents[:],
+            'typed_iter': lambda values, kind: values, 'Structure': Structure,
+            'istype': isinstance, 'closet_item_count': closet_item_count,
+        }, method=True)
+
+        for packed, loose, keep_items, moved in (
+            (capacity, 2, False, 0),
+            (capacity - 1, 3, False, 1),
+            (capacity + 1, 2, False, 0),
+            (1, 3, True, 0),
+            (0, 3, False, 3),
+        ):
+            with self.subTest(packed=packed, keep_items=keep_items):
+                turf = SimpleNamespace(contents=[])
+                crate = SimpleNamespace(loc=turf, contents=[], can_close=lambda: True,
+                                        opened=True, icon_closed='closed', storagecap=capacity,
+                                        keep_items=keep_items)
+                existing = [Item(crate) for _ in range(packed)]
+                special = Structure(crate)
+                blocked_structure = Structure(turf)
+                loose_items = [Item(turf) for _ in range(loose)]
+                self.assertTrue(close(crate))
+                self.assertFalse(crate.opened)
+                self.assertEqual(crate.icon_state, 'closed')
+                self.assertEqual(crate.contents, existing + [special] + loose_items[:moved])
+                self.assertEqual(turf.contents, [blocked_structure] + loose_items[moved:])
+
+        large = A.extract(source, '/obj/structure/closet/crate/large/close')
+        self.assertIn('for (var/obj/structure/S in loc)', large)
+        self.assertIn('S.forceMove(src)', large)
+
+
 if __name__=='__main__':unittest.main()

@@ -203,21 +203,14 @@
 
 /obj/structure/gate/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/siegeladder))
+		var/obj/item/weapon/siegeladder/ladder = W
 		user.visible_message("<span class='danger'>\The [user] starts deploying \the [W.name].</span>",
 							"<span class='notice'>You start deploying \the [W.name].</span>",
 							"You hear something being deployed.")
-		if (do_after(user, 8 SECONDS, src))
+		if (do_after(user, 8 SECONDS, src) && ladder.deploy_on(src, user))
 			user.visible_message("<span class='danger'>\The [user] has deployed \the [W.name]!</span>",
 								"<span class='notice'>You have deployed \the [W.name]!</span>",
 								"You hear something being deployed.")
-			var/obj/item/weapon/siegeladder/ANCH = W
-			user.remove_from_mob(ANCH)
-			ANCH.loc = src.loc
-			ANCH.anchored = TRUE
-			climbable = TRUE
-			ANCH.deployed = TRUE
-			ANCH.icon_state = ANCH.depicon
-			ANCH.dir = src.dir
 			return
 	if (istype(W,/obj/item/weapon) && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER)) //No weapons can harm me! If not weapon and not a wrench.
 		user.visible_message("<span class='warning'>[user] hits \the [src] uselessly!</span>",

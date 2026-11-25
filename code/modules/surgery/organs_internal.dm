@@ -5,12 +5,51 @@
 	blood_level = TRUE
 
 /datum/surgery_step/internal/can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
+	return operation_site_open(target, target_zone)
 
+/datum/surgery_step/internal/proc/operation_site_open(mob/living/human/target, target_zone)
 	if (!hasorgans(target))
 		return FALSE
 
 	var/obj/item/organ/external/affected = target.get_organ(target_zone)
 	return affected && affected.open == (affected.encased ? 3 : 2)
+
+
+// Bind a choice to the exact organ seen by this action, not just its display name.
+/datum/surgery_step/internal/proc/select_organ(mob/living/user, mob/living/human/target, target_zone, obj/item/tool, cut_away)
+	var/datum/surgery_status/stage = target.op_stage
+	var/list/options = list()
+	var/list/organs = list()
+	for (var/tag in target.internal_organs_by_name)
+		var/obj/item/organ/I = target.internal_organs_by_name[tag]
+		if (organ_matches_selection(target, target_zone, I, cut_away))
+			options += tag
+			organs[tag] = I
+	if (!options.len)
+		return FALSE
+	var/choice = player_input(user, cut_away ? "Which organ do you want to remove?" : "Which organ do you want to prepare for removal?", null, null, "anything", options, TRUE)
+	if (!(choice in options) || QDELETED(user) || QDELETED(target) || QDELETED(tool) || target.op_stage != stage || !(target_zone in stage.in_progress))
+		return SURGERY_FAILURE
+	if (!user.Adjacent(target) || !(tool in user.contents) || user.a_intent == I_HARM)
+		return SURGERY_FAILURE
+	var/obj/item/organ/selected = organs[choice]
+	if (!organ_matches_selection(target, target_zone, selected, cut_away))
+		return SURGERY_FAILURE
+	stage.selected_organs[target_zone] = selected
+	return TRUE
+
+/datum/surgery_step/internal/proc/organ_matches_selection(mob/living/human/target, target_zone, obj/item/organ/I, cut_away)
+	if (QDELETED(I) || I.parent_organ != target_zone || target.internal_organs_by_name[I.organ_tag] != I || !operation_site_open(target, target_zone))
+		return FALSE
+	if (I.status & ORGAN_CUT_AWAY)
+		return cut_away
+	return !cut_away
+
+/datum/surgery_step/internal/proc/current_zone_selection(mob/living/human/target, target_zone, cut_away)
+	var/obj/item/organ/selected = target.op_stage.selected_organs[target_zone]
+	if (organ_matches_selection(target, target_zone, selected, cut_away))
+		return selected
+	return null
 
 //////////////////////////////////////////////////////////////////
 //				CHEST INTERNAL ORGAN SURGERY					//
@@ -117,44 +156,23 @@
 
 		if (!..())
 			return FALSE
-
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-
-		if (!(affected))
-			return FALSE
-
-		target.op_stage.current_organ = null
-
-		var/list/attached_organs = list()
-		for (var/organ in target.internal_organs_by_name)
-			var/obj/item/organ/I = target.internal_organs_by_name[organ]
-			if (I && !(I.status & ORGAN_CUT_AWAY) && I.parent_organ == target_zone)
-				attached_organs |= organ
-
-		var/organ_to_remove = player_input(user, "Which organ do you want to prepare for removal?", null, null, "anything", attached_organs, TRUE)
-		if (!organ_to_remove)
-			return FALSE
-
-		target.op_stage.current_organ = organ_to_remove
-
-		return ..() && organ_to_remove
+		return select_organ(user, target, target_zone, tool, FALSE)
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
-
+		var/obj/item/organ/selected = target.op_stage.selected_organs[target_zone]
+		user.visible_message("[user] starts to separate [target]'s [selected.organ_tag] with \the [tool].", \
+		"You start to separate [target]'s [selected.organ_tag] with \the [tool].")
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
-
-		user.visible_message("[user] starts to separate [target]'s [target.op_stage.current_organ] with \the [tool].", \
-		"You start to separate [target]'s [target.op_stage.current_organ] with \the [tool]." )
 		target.custom_pain("The pain in your [affected.name] is living hell!",200)
 		..()
 
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
-		user.visible_message("<span class='notice'>[user] has separated [target]'s [target.op_stage.current_organ] with \the [tool].</span>" , \
-		"<span class='notice'>You have separated [target]'s [target.op_stage.current_organ] with \the [tool].</span>")
-
-		var/obj/item/organ/I = target.internal_organs_by_name[target.op_stage.current_organ]
-		if (I && istype(I))
-			I.status |= ORGAN_CUT_AWAY
+		var/obj/item/organ/selected = current_zone_selection(target, target_zone, FALSE)
+		if (!selected)
+			return
+		user.visible_message("<span class='notice'>[user] has separated [target]'s [selected.organ_tag] with \the [tool].</span>", \
+		"<span class='notice'>You have separated [target]'s [selected.organ_tag] with \the [tool].</span>")
+		selected.status |= ORGAN_CUT_AWAY
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)
@@ -179,39 +197,23 @@
 
 		if (!..())
 			return FALSE
-
-		target.op_stage.current_organ = null
-
-		var/list/removable_organs = list()
-		for (var/organ in target.internal_organs_by_name)
-			var/obj/item/organ/I = target.internal_organs_by_name[organ]
-			if ((I.status & ORGAN_CUT_AWAY) && I.parent_organ == target_zone)
-				removable_organs |= organ
-
-		var/organ_to_remove = player_input(user, "Which organ do you want to remove?", null, null, "anything", removable_organs, TRUE)
-		if (!organ_to_remove)
-			return FALSE
-
-		target.op_stage.current_organ = organ_to_remove
-		return ..()
+		return select_organ(user, target, target_zone, tool, TRUE)
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
-		user.visible_message("[user] starts removing [target]'s [target.op_stage.current_organ] with \the [tool].", \
-		"You start removing [target]'s [target.op_stage.current_organ] with \the [tool].")
-		target.custom_pain("Someone's ripping out your [target.op_stage.current_organ]!",200)
+		var/obj/item/organ/selected = target.op_stage.selected_organs[target_zone]
+		user.visible_message("[user] starts removing [target]'s [selected.organ_tag] with \the [tool].", \
+		"You start to remove [target]'s [selected.organ_tag] with \the [tool].")
+		target.custom_pain("Someone's ripping out your [selected.organ_tag]!",200)
 		..()
 
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
-		user.visible_message("<span class='notice'>[user] has removed [target]'s [target.op_stage.current_organ] with \the [tool].</span>", \
-		"<span class='notice'>You have removed [target]'s [target.op_stage.current_organ] with \the [tool].</span>")
-
-		// Extract the organ!
-		if (target.op_stage.current_organ)
-			var/obj/item/organ/O = target.internal_organs_by_name[target.op_stage.current_organ]
-			if (O && istype(O))
-				O.removed(user)
-			target.op_stage.current_organ = null
-			playsound(target.loc, 'sound/effects/squelch1.ogg', 50, TRUE)
+		var/obj/item/organ/selected = current_zone_selection(target, target_zone, TRUE)
+		if (!selected)
+			return
+		user.visible_message("<span class='notice'>[user] has removed [target]'s [selected.organ_tag] with \the [tool].</span>", \
+		"<span class='notice'>You have removed [target]'s [selected.organ_tag] with \the [tool].</span>")
+		selected.removed(user)
+		playsound(target.loc, 'sound/effects/squelch1.ogg', 50, TRUE)
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)

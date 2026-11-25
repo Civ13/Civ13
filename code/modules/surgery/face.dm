@@ -123,14 +123,13 @@
 		..()
 
 	end_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
-		var/obj/item/organ/external/affected = target.get_organ(target_zone)
 		user.visible_message("<span class = 'notice'>[user] cauterizes the incision on [target]'s face and neck with \the [tool].</span>", \
 		"<span class = 'notice'>You cauterize the incision on [target]'s face and neck with \the [tool].</span>")
-		affected.open = FALSE
-		affected.status &= ~ORGAN_BLEEDING
+		// The mouth maps to the head organ, but facial progress owns its own incision.
 		if (target.op_stage.face == 3)
-			var/obj/item/organ/external/head/h = affected
-			h.disfigured = FALSE
+			var/obj/item/organ/external/head/h = target.get_organ(target_zone)
+			if (h)
+				h.disfigured = FALSE
 		target.op_stage.face = FALSE
 
 	fail_step(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
