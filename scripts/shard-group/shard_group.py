@@ -276,9 +276,11 @@ def world_neighbours(table=None):
     return out
 
 
-def load_group(path):
+def load_group(path, persist_ports=True):
     group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
-    if isinstance(group, dict) and fill_ports(group):
+    if not isinstance(group, dict):
+        raise ValueError('group config must be an object')
+    if fill_ports(group) and persist_ports:
         # Ports the file left out were chosen: keep them, so every later reader (the launcher,
         # the bot, the host service) sees the same ones and a new region never moves an old one.
         path = Path(path)
@@ -888,6 +890,7 @@ class RegionPlatform(Platform):
                 '--token-file', str(path / 'config' / 'transfer-token.txt')]
         if self.config.get('lobby_gateway'):
             argv.append('--lobby-gateway')
+        argv += ['--shard-config', self.config['group_config']]
         for peer in self.config['peers']:
             argv += ['--enroll', peer + ':out', '--enroll', peer + ':in']
         Path(self.config['state_dir']).mkdir(parents=True, exist_ok=True)
@@ -897,6 +900,44 @@ class RegionPlatform(Platform):
 
     def agent_record_now(self):
         return read_record(self.agent_record())
+
+
+def travel_build_refusal(config_path, source, destination, platform=None):
+    """An authoritative source-agent check before creating any travel escrow."""
+    pending = "The regions' builds cannot be verified right now. Try again later."
+    try:
+        group = load_group(config_path, persist_ports=False)
+        by_id = {region['id']: region for region in group['regions']}
+        origin, target = by_id[source], by_id[destination]
+        if origin['kind'] == 'GATEWAY' or target['kind'] == 'GATEWAY':
+            return None  # the gateway is intentionally pinned
+        hosts = [RegionHost(region_config(group, region), platform) for region in (origin, target)]
+
+        def snapshot(host):
+            # A handover rewrites the active build record after port takeover. Never
+            # trust either slot while a host operation could be changing custody.
+            if host.lock.exists():
+                return None
+            revision = host.built_revision()
+            return revision if revision and not host.lock.exists() else None
+
+        before = [snapshot(host) for host in hosts]
+        if not all(before):
+            return pending
+        old, new = before
+        run = hosts[0].platform.run
+        args = [group['git'], 'merge-base', '--is-ancestor']
+        # Even equal stamps must name a real commit; --is-ancestor validates both.
+        allowed, _ = run(args + [old, new], cwd=group['repository'], timeout=2)
+        if allowed == 0 and before == [snapshot(host) for host in hosts]:
+            return None
+        if allowed == 1:
+            reverse, _ = run(args + [new, old], cwd=group['repository'], timeout=2)
+            if reverse == 0 and before == [snapshot(host) for host in hosts]:
+                return 'The destination is on an older build. Wait for it to update before travelling.'
+    except (OSError, ValueError, KeyError, RuntimeError, Refused, subprocess.SubprocessError):
+        pass
+    return pending
 
 
 class RegionHost(Host):

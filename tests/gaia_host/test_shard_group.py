@@ -56,6 +56,65 @@ class SelectedMapTests(unittest.TestCase):
                     self.assertIn('usage:', result.stdout.lower())
 
 
+
+class TravelBuildPolicyTests(unittest.TestCase):
+    def test_real_ancestry_gateway_and_stale_records(self):
+        with tempfile.TemporaryDirectory() as folder:
+            cwd = Path(folder)
+            def git(*args):
+                return subprocess.check_output(['git', *args], cwd=cwd, text=True).strip()
+            git('init', '-q')
+            git('config', 'user.email', 'ci@example.invalid')
+            git('config', 'user.name', 'CI')
+            git('commit', '--allow-empty', '-qm', 'ancestor')
+            old = git('rev-parse', 'HEAD')
+            git('commit', '--allow-empty', '-qm', 'descendant')
+            new = git('rev-parse', 'HEAD')
+            git('checkout', '--detach', '-q', old)
+            git('commit', '--allow-empty', '-qm', 'divergent')
+            other = git('rev-parse', 'HEAD')
+
+            group = {'git': 'git', 'repository': str(cwd), 'regions': [
+                {'id': 'land', 'kind': 'SURFACE'}, {'id': 'water', 'kind': 'OCEANIC'},
+                {'id': 'lobby', 'kind': 'GATEWAY'}]}
+            class Platform:
+                def run(self, args, cwd, timeout):
+                    result = subprocess.run(args, cwd=cwd, timeout=timeout, capture_output=True)
+                    return result.returncode, result.stdout
+
+            states = {'land': old, 'water': new}
+            locks = {rid: cwd / (rid + '.lock') for rid in states}
+            def host(region, platform):
+                obj = mock.Mock(platform=Platform(), lock=locks[region['id']])
+                obj.built_revision.side_effect = lambda: states[region['id']]
+                return obj
+
+            check = shard_group.travel_build_refusal
+            with mock.patch.object(shard_group, 'load_group', return_value=group), \
+                 mock.patch.object(shard_group, 'region_config', side_effect=lambda g, r: r), \
+                 mock.patch.object(shard_group, 'RegionHost', side_effect=host):
+                self.assertIsNone(check('group.json', 'land', 'water'))
+                self.assertIn('older build', check('group.json', 'water', 'land'))
+                self.assertIsNone(check('group.json', 'water', 'lobby'))
+                self.assertIsNone(check('group.json', 'lobby', 'land'))
+                states['water'] = old
+                self.assertIsNone(check('group.json', 'land', 'water'))
+                states['land'] = new
+                for unproved in (other, 'f' * 40, None):
+                    states['water'] = unproved
+                    self.assertIn('cannot be verified', check('group.json', 'land', 'water'))
+                states.update(land=old, water=new)
+                locks['water'].touch()
+                self.assertIn('cannot be verified', check('group.json', 'land', 'water'))
+                locks['water'].unlink()
+                run = Platform().run
+                def changing(args, cwd, timeout):
+                    result = run(args, cwd, timeout)
+                    states['water'] = old
+                    return result
+                with mock.patch.object(Platform, 'run', side_effect=changing):
+                    self.assertIn('cannot be verified', check('group.json', 'land', 'water'))
+
 class RegionViewTopicTests(unittest.TestCase):
     def test_fragmented_reply_and_request(self):
         connection = mock.MagicMock()
@@ -937,6 +996,21 @@ class ShardGroupTests(unittest.TestCase):
     def host(self, group, region_id):
         region = next(r for r in group['regions'] if r['id'] == region_id)
         return shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
+
+    def test_travel_uses_active_dmb_stamp_not_inactive_slot(self):
+        group = self.write_group()
+        for region_id in ('gaia', 'deep'):
+            host = self.host(group, region_id)
+            host.state_dir.mkdir(parents=True, exist_ok=True)
+            artifact = host.repo / shard_group.DMB_SLOTS[1]
+            artifact.write_bytes(b'installed')
+            host.record_build(REVISION, artifact.name)
+            (host.repo / shard_group.DMB_SLOTS[0]).write_bytes(b'alt slot')
+        self.assertIsNone(shard_group.travel_build_refusal(group['_path'], 'gaia', 'deep', self.machine))
+        host = self.host(group, 'deep')
+        host.dmb().write_bytes(b'changed since it was recorded')
+        self.assertIn('cannot be verified',
+                      shard_group.travel_build_refusal(group['_path'], 'gaia', 'deep', self.machine))
 
     def test_update_checks_out_and_compiles_each_region_map(self):
         group = self.write_group()

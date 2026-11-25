@@ -226,6 +226,12 @@ var/global/list/air_crossing_planes = list()
 		reason = air_crossing_refusal(pilot)
 		if (reason)
 			return reason
+	reason = transfer_bridge.travel_build_problem(id)
+	if (reason)
+		return reason
+	reason = air_crossing_refusal(pilot)
+	if (reason)
+		return reason
 	// The control column goes back in its seat: it is part of her, not the pilot's kit.
 	stow_column(pilot)
 	. = air_cross_crew(id, tiles, pilot, need, fuel)

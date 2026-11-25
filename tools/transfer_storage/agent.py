@@ -20,7 +20,7 @@ if __package__ in (None, ''):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from tools.transfer_storage.lobby import LobbyMailbox  # noqa: E402
 from tools.transfer_storage.radio import RadioError, RadioRelay  # noqa: E402
-from tools.transfer_storage.region import RegionHeld, RegionStore, TransferError  # noqa: E402
+from tools.transfer_storage.region import FAST_KINDS, RegionHeld, RegionStore, TransferError, payload_kinds  # noqa: E402
 
 MAX_BODY = 1 << 20  # 1 MiB per request
 READ_TIMEOUT = 10  # seconds a connection may take to send its request
@@ -41,7 +41,22 @@ def _fast(body):
     return body.get('fast') in (True, 1)
 
 
-def _routes(store, radio, lobby=None):
+def _routes(store, radio, lobby=None, travel_refusal=None):
+    def travel_problem(peer):
+        if not isinstance(peer, str) or not peer:
+            raise TransferError('travel needs a destination')
+        return travel_refusal(peer) if travel_refusal else None
+
+    def escrow(body):
+        fast = _fast(body)
+        if travel_refusal and (fast or any(kind in FAST_KINDS for kind in
+                                             payload_kinds(json.dumps({'items': body['payloads']})))):
+            problem = travel_problem(body['peer'])
+            if problem:
+                raise TransferError(problem)
+        return dict(zip(('transfer_id', 'effect_id'), store.begin_escrow(
+            body['peer'], body['payloads'], fast, body.get('train_lease'))))
+
     routes = {
         # Cross-region radio: ephemeral, never in the ledger (radio.py).
         '/radio/send': lambda body: {'id': radio.send(body.get('envelope'))},
@@ -81,8 +96,8 @@ def _routes(store, radio, lobby=None):
         '/status': lambda body: store.status(),
         '/outbox': lambda body: {'envelopes': store.outbox()},
         '/receive': lambda body: {'reply': store.receive(body['envelope'])},
-        '/escrow': lambda body: dict(zip(('transfer_id', 'effect_id'), store.begin_escrow(
-            body['peer'], body['payloads'], _fast(body), body.get('train_lease')))),
+        '/travel/build': lambda body: {'problem': travel_problem(body['peer'])},
+        '/escrow': escrow,
         '/import': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_import(body['transfer_id'], _fast(body)))),
         '/return': lambda body: dict(zip(('effect_id', 'payloads'), store.begin_return(body['transfer_id'], _fast(body)))),
         '/abort': lambda body: store.abort(body['transfer_id']) or {},
@@ -125,11 +140,11 @@ def _routes(store, radio, lobby=None):
     return routes
 
 
-def make_server(store, token, port=0, radio=None, lobby_gateway=False):
+def make_server(store, token, port=0, radio=None, lobby_gateway=False, travel_refusal=None):
     if not isinstance(token, str) or len(token) < 32:
         raise ValueError('the agent token must be at least 32 characters')
     routes = _routes(store, radio or RadioRelay(store.region, store.group),
-                     LobbyMailbox(store) if lobby_gateway else None)
+                     LobbyMailbox(store) if lobby_gateway else None, travel_refusal)
     lock = threading.Lock()
 
     class Handler(BaseHTTPRequestHandler):
@@ -200,6 +215,7 @@ def main(argv=None):
     parser.add_argument('--group', required=True)
     parser.add_argument('--port', type=int, required=True)
     parser.add_argument('--token-file', required=True)
+    parser.add_argument('--shard-config', help='group config for directional travel build checks')
     parser.add_argument('--lobby-gateway', action='store_true', help='enable read-only home query mailbox')
     parser.add_argument('--enroll', action='append', default=[], metavar='PEER:DIRECTION',
                         help='permit one direction (out or in) with a peer; repeatable, kept in the store')
@@ -215,7 +231,15 @@ def main(argv=None):
     store = RegionStore(args.db, args.region, args.group)
     for peer, direction in enrollments:
         store.enroll(peer, direction)
-    server = make_server(store, token, args.port, lobby_gateway=args.lobby_gateway)
+    travel_refusal = None
+    if args.shard_config:
+        # Load only on managed hosts; standalone agents retain their own policy.
+        scripts = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
+                               'scripts', 'shard-group')
+        sys.path.insert(0, scripts)
+        from shard_group import travel_build_refusal
+        travel_refusal = lambda destination: travel_build_refusal(args.shard_config, args.region, destination)
+    server = make_server(store, token, args.port, lobby_gateway=args.lobby_gateway, travel_refusal=travel_refusal)
     try:
         server.serve_forever()
     finally:
