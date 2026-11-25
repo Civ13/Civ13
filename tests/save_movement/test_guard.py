@@ -92,8 +92,11 @@ class Fixture:
         # Inert lifecycle boundary: save guards execute the real relocation
         # body; paper-session observer behavior belongs to paper_documents.
         self.paper_notifications = []
+        self.load_dilation_resets = []
         self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False, persistence_admission_identity=None,
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
+                        processes=NS(time_track=NS(ignore_load_dilation=lambda: self.load_dilation_resets.append(
+                            self.env["persistence_active_operation"].kind))),
                         # Practice rooms own no saved state; their close hook is covered by tests/practice_rooms.
                         practice_rooms_close_for_save=lambda: True,
                         # A tutorial region never saves; these worlds are not one.
@@ -590,7 +593,11 @@ class GuardTests(unittest.TestCase):
         self.assertIs(f.env['persistence_active_operation'], second)
         self.assertFalse(f.allow(f.actor(), f.other))
         second.finish(True)
+        self.assertEqual(f.load_dilation_resets, [])
         load = f.begin(f.store, 'load')
+        self.assertEqual(f.load_dilation_resets, ['load'])
+        self.assertIsNone(f.begin(f.store, 'load'))
+        self.assertEqual(f.load_dilation_resets, ['load'])
         self.assertTrue(f.allow(f.actor(), f.other))
         load.enter_backend(f.store, 'load')
         load.finish(False)

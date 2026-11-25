@@ -103,6 +103,11 @@ var/datum/world_save_fixture_jobs/job_master = new
 var/datum/fixture_processes/processes = new
 /datum/fixture_processes
 	var/datum/fixture_ticker_process/ticker = new
+	// Isolated serializer worlds never start the lag monitor. Keep its
+	// optional slot declared for production load admission's null guard.
+	var/datum/fixture_time_track_process/time_track
+/datum/fixture_time_track_process/proc/ignore_load_dilation()
+	throw EXCEPTION("Lag monitoring requires the production time-track process")
 /datum/fixture_ticker_process
 	var/playtime_elapsed = 0
 // Production applies restored daylight in the lighting module; fixtures have no overlays.
