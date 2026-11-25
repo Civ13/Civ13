@@ -142,6 +142,20 @@ var/global/train_catenary_serial = 0
 			return M
 	return null
 
+// Physical wire continuity uses the drawn centerlines, not the deliberately
+// wider collector pickup area. Collinear wires on neighboring tiles meet.
+/proc/catenary_spans_join(turf/C, c_dir, turf/D, d_dir)
+	if (!C || !D || C.z != D.z || !(c_dir in cardinal) || !(d_dir in cardinal))
+		return FALSE
+	var/c_horizontal = c_dir == NORTH || c_dir == SOUTH
+	var/d_horizontal = d_dir == NORTH || d_dir == SOUTH
+	var/dx = abs(C.x - D.x)
+	var/dy = abs(C.y - D.y)
+	if (c_horizontal == d_horizontal)
+		return c_horizontal ? !dy && dx <= CATENARY_REACH * 2 + 1 : !dx && dy <= CATENARY_REACH * 2 + 1
+	// A crossing connects only if both wires actually reach its tile.
+	return dx <= CATENARY_REACH && dy <= CATENARY_REACH
+
 // The line this mast is part of: every mast whose wire meets the wire of
 // another in it. Rebuilt when a mast goes up or comes down.
 /obj/structure/train_catenary/proc/network()
@@ -161,7 +175,7 @@ var/global/train_catenary_serial = 0
 			if (N.masts[O] || QDELETED(O) || !O.anchored)
 				continue
 			var/turf/D = O.wire_turf()
-			if (C && D && C.z == D.z && get_dist(C, D) <= CATENARY_REACH * 2 + 1)
+			if (catenary_spans_join(C, M.dir, D, O.dir))
 				N.masts[O] = TRUE
 				pending += O
 	for (var/obj/structure/train_catenary/M in N.masts)
