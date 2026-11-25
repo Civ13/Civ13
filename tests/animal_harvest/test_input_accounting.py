@@ -16,6 +16,17 @@ spec.loader.exec_module(runner)
 
 
 class HarvestInputs(unittest.TestCase):
+    def test_scraper_awards_one_bonus_only_to_new_or_grown_hides(self):
+        source = (ROOT/'code/modules/1713/stone_age_arms.dm').read_text(encoding='utf-8')
+        proc = source.split('/mob/living/simple_animal/harvest_products(', 1)[1].split('\n\n', 1)[0]
+        self.assertLess(proc.index('hide_stack_amounts(site)'), proc.index('..()'))
+        self.assertIn('if (!before || !holds_hide_scraper(scraper_user, null))\n\t\treturn', proc)
+        self.assertIn('if ((S in before) && S.amount <= before[S])\n\t\t\tcontinue', proc)
+        self.assertIn('if (S.amount >= S.max_amount)\n\t\t\tif (!overflow_type)\n\t\t\t\toverflow_type = S.type\n\t\t\tcontinue', proc)
+        self.assertIn('S.update_icon()\n\t\treturn\n', proc)
+        self.assertIn('if (overflow_type)\n\t\tnew overflow_type(site, HIDE_SCRAPER_BONUS, FALSE)', proc)
+        self.assertEqual(proc.count('new overflow_type'), 1)
+
     def test_fixture_defers_global_bootstrap_without_changing_its_body(self):
         source = (ROOT/'code/world.dm').read_text(encoding='utf-8')
         prepared = runner.prepare_world_source(source)
