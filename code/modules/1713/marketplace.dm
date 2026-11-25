@@ -1,3 +1,6 @@
+// Standard payment units are copper; fiat stacks use whole units.
+#define STOCK_MARKET_COPPERS_PER_SILVER 10
+
 /obj/structure/stockmarket
 	name = "stock market"
 	desc = "Use this to buy, sell and check company shares. You can also manage your companies here."
@@ -66,16 +69,19 @@
 		company_rows[++company_rows.len] = list(cmp, sorted[cmp], vm_owned)
 	sections += list(panel_section("Companies", table = panel_table(list("Company", "Value", "Points"), company_rows), empty = "No companies have been founded."))
 
-	// Stocks for sale. A listing is named by its position among the open ones.
+	// Stocks for sale. Each button names the actual listing across market windows.
 	var/list/offers = list()
-	var/sale_id = 1
 	for (var/list/i in map.sales_registry)
-		if (i[5])
-			var/curr_name = "sc"
-			if (i.len >= 6 && i[6] != "standard")
-				curr_name = fiat.currency_list[i[6]][1]
-			offers += list(panel_item("[i[2]]% of [i[1]]", "[i[3]*10] [curr_name]", list(panel_button("Buy", "buy", sale_id))))
-			sale_id++
+		if (!i[5])
+			continue
+		var/currency = listing_currency(i)
+		var/price_units = listing_price_units(i, currency)
+		if (isnull(price_units))
+			offers += list(panel_item("[i[2]]% of [i[1]]", "Unavailable: price cannot be paid in its listed currency."))
+			continue
+		var/curr_name = currency == "standard" ? "sc" : fiat.currency_list[currency][1]
+		var/display_price = payment_label(price_units, currency)
+		offers += list(panel_item("[i[2]]% of [i[1]]", "[display_price] [curr_name]", list(panel_button("Buy", "buy", listing_token(i)))))
 	sections += list(panel_section("Buy Stocks", list("Hold the money in your inactive hand."), items = offers, empty = "No stocks for sale."))
 
 	// Own stocks. A company is named by its position in custom_company_nr, so
@@ -86,16 +92,22 @@
 			currencies += list(panel_option(fid, fiat.currency_list[fid][1]))
 	var/list/sell_forms = list()
 	var/list/manage = list()
+	var/list/former_proceeds = list()
+	var/cmp_idx = 0
 	for (var/cmp in map.custom_company_nr)
+		cmp_idx++
 		if (find_company_member(H, cmp))
-			var/cmp_idx = map.custom_company_nr.Find(cmp)
 			for (var/list/i in map.custom_company[cmp])
 				if (i[1] == H)
 					sell_forms += list(panel_form("[cmp] - you own [i[2]]%", "sell", cmp_idx, list(
 						panel_field("amt", "Amount", i[2]), panel_field("price", "Price", 10), panel_field("cur", "Currency", "standard", "choice", currencies)), "Sell"))
 			manage += list(panel_item(cmp, null, list(panel_button("Members", "viewmembers", cmp_idx), panel_button("Distribute", "distribute", cmp_idx), panel_button("Withdraw", "withdraw", cmp_idx))))
+		else if (has_company_proceeds(H, cmp))
+			former_proceeds += list(panel_item(cmp, null, list(panel_button("Withdraw", "withdraw", cmp_idx))))
 	sections += list(panel_section("Sell Stocks", forms = sell_forms, empty = "You do not own any stocks."))
 	sections += list(panel_section("Manage Company", items = manage, empty = "You are not a member of any company."))
+	if (former_proceeds.len)
+		sections += list(panel_section("Proceeds from Former Holdings", items = former_proceeds))
 
 	// Faction treasury
 	if (H.civilization != "none" && map.is_faction_leader(H, H.civilization))
@@ -128,6 +140,104 @@
 		return null
 	return map.custom_company_nr[idx]
 
+// Former shareholders can still collect balances on their own retained rows.
+/obj/structure/stockmarket/proc/has_company_proceeds(mob/living/human/H, cmp)
+	for (var/list/row in map.custom_company[cmp])
+		if (row[1] != H)
+			continue
+		if (row[3] > 0)
+			return TRUE
+		if (row.len >= 4 && islist(row[4]))
+			var/list/balances = row[4]
+			for (var/fid in balances)
+				if (balances[fid] > 0)
+					return TRUE
+	return FALSE
+
+/obj/structure/stockmarket/proc/listing_currency(list/listing)
+	return listing.len >= 6 ? listing[6] : "standard"
+
+// Keep the saved positional fields intact, including pre-fiat estate rows.
+// Mint once per listing. Persist the token with its row, not with a market window.
+/obj/structure/stockmarket/proc/listing_token(list/listing)
+	if (listing.len >= 7 && istext(listing[7]) && length(listing[7]))
+		return listing[7]
+	var/static/listing_sequence = 0
+	var/token = md5("[world.realtime]-[world.time]-[rand(1, 1000000000)]-[++listing_sequence]")
+	if (listing.len < 6)
+		listing.len = 6
+		listing[6] = "standard"
+	listing.len = max(listing.len, 7)
+	listing[7] = token
+	return token
+
+/obj/structure/stockmarket/proc/live_listing(token)
+	if (!istext(token) || length(token) != 32)
+		return null
+	for (var/list/listing in map.sales_registry)
+		if (listing.len >= 7 && listing[5] && listing[7] == token)
+			return listing
+	return null
+
+/obj/structure/stockmarket/proc/payment_scale(currency)
+	return currency == "standard" ? STOCK_MARKET_COPPERS_PER_SILVER : 1
+
+// Format the payable value without rounding the last copper on a large quote.
+/obj/structure/stockmarket/proc/payment_label(units, currency)
+	if (currency != "standard")
+		return num2text(units, 12)
+	var/silver = round(units / STOCK_MARKET_COPPERS_PER_SILVER)
+	var/copper = units - silver * STOCK_MARKET_COPPERS_PER_SILVER
+	if (copper)
+		return "[num2text(silver, 12)].[copper]"
+	return num2text(silver, 12)
+
+// DM currency values use floats. Tolerate representation noise, not a fractional coin.
+/obj/structure/stockmarket/proc/exact_payment_units(amount, scale)
+	if (!isnum(amount) || amount < 0)
+		return null
+	var/scaled = amount * scale
+	// Stay within DM's consecutive integer range so subtraction preserves change.
+	if (scaled > 16777215)
+		return null
+	var/units = round(scaled)
+	if (scaled - units >= 0.5)
+		units++
+	// Allow at most the precision lost through DM's float storage and scaling.
+	var/tolerance = max(0.0001, min(0.125, scaled * 0.00000012))
+	if (abs(scaled - units) > tolerance)
+		return null
+	return units
+
+/obj/structure/stockmarket/proc/listing_price_units(list/listing, currency)
+	if (currency != "standard" && (!currency || !fiat.currency_list[currency]))
+		return null
+	// New rows carry the exact price as integer units. Preserve the legacy price field for old saves.
+	if (listing.len >= 8)
+		if (isnum(listing[8]) && listing[8] > 0 && listing[8] == round(listing[8]) && listing[8] <= 16777215)
+			return listing[8]
+		return null
+	if (!isnum(listing[3]))
+		return null
+	var/price = listing[3] * 10
+	var/units = exact_payment_units(price, payment_scale(currency))
+	// Valuations generated by the estate process can predate payable prices.
+	// Round those down to copper and quote that same effective price to buyers.
+	if (isnull(units) && currency == "standard" && isnull(listing[4]) && price >= 0 && price * STOCK_MARKET_COPPERS_PER_SILVER <= 16777215)
+		return round(price * STOCK_MARKET_COPPERS_PER_SILVER)
+	return units
+
+// This is purchase change, not the whole-silver profit withdrawal policy.
+/obj/structure/stockmarket/proc/pay_standard_change(change_units)
+	var/silver = round(change_units / STOCK_MARKET_COPPERS_PER_SILVER)
+	var/copper = change_units - silver * STOCK_MARKET_COPPERS_PER_SILVER
+	if (silver > 0)
+		company_pay_coins(loc, silver)
+	if (copper > 0)
+		var/obj/item/stack/money/coppercoin/C = new(loc)
+		C.amount = copper
+		C.update_icon()
+
 // Fiat stacks contain whole units; leave any fraction in the treasury.
 /obj/structure/stockmarket/proc/withdraw_treasury_fiat(list/treasury, fid, mob/user)
 	var/amount = treasury[fid]
@@ -154,95 +264,86 @@
 
 	// Buy stock
 	if (href_list["buy"])
-		var/sale_id = text2num(href_list["buy"])
-		var/found = FALSE
-		var/sale_idx = 1
-		for (var/list/L in map.sales_registry)
-			if (L[5])
-				if (sale_idx == sale_id)
-					found = TRUE
-					var/ord = L[1]
-					var/ord_perc = L[2]
-					var/ord_price = L[3]*10
-					var/req_currency = L.len >= 6 ? L[6] : "standard"
-					var/mob/living/human/SELLER = ishuman(L[4]) ? L[4] : null
-					// A listing is only a promise: the seller may have transferred
-					// the stake or died since. Never sell stock nobody holds.
-					if (!company_has_stake(ord, SELLER, ord_perc))
-						map.sales_registry -= list(L)
-						to_chat(H, "<span class='notice'>That stock listing is no longer available.</span>")
-						return
-
-					if (!istype(H.get_inactive_hand(), /obj/item/stack/money))
-						to_chat(H, "<span class='notice'>You need to have money in your inactive hand to buy stocks!</span>")
-						return
-					var/obj/item/stack/money/M = H.get_inactive_hand()
-					var/valid_money = FALSE
-					var/money_val = 0
-					var/money_return = 0
-
-					if (req_currency == "standard")
-						if (!istype(M, /obj/item/stack/money/fiat))
-							valid_money = TRUE
-							money_val = M.amount * M.value
-							money_return = money_val - ord_price
-					else
-						if (istype(M, /obj/item/stack/money/fiat))
-							var/obj/item/stack/money/fiat/M_fiat = M
-							if (M_fiat.fiat_id == req_currency)
-								valid_money = TRUE
-								money_val = M_fiat.amount
-								money_return = money_val - ord_price
-
-					if (!valid_money)
-						var/req_name = req_currency == "standard" ? "sc" : fiat.currency_list[req_currency][1]
-						to_chat(H, "<span class='notice'>You are not holding the requested currency ([req_name])!</span>")
-						return
-					if (money_val < ord_price)
-						var/req_name = req_currency == "standard" ? "sc" : fiat.currency_list[req_currency][1]
-						to_chat(H, "<span class='notice'>You do not have enough money. Need [ord_price] [req_name], have [money_val] [req_name].</span>")
-						return
-
-					if (SELLER ? !SELLER.transfer_stock_proc(ord, ord_perc, H) : !transfer_stock_nomob(ord, ord_perc, H))
-						map.sales_registry -= list(L)
-						to_chat(H, "<span class='notice'>That stock listing is no longer available.</span>")
-						return
-					qdel(M)
-					if (money_return > 0)
-						if (req_currency == "standard")
-							company_pay_coins(loc, money_return)
-						else
-							new/obj/item/stack/money/fiat(loc, money_return, req_currency)
-
-					if (SELLER)
-						for (var/list/j in map.custom_company[ord])
-							if (j[1] == SELLER)
-								if (j.len < 4)
-									j.len = 4
-									j[4] = list()
-								if (req_currency == "standard")
-									j[3] += ord_price
-								else
-									if (!j[4][req_currency])
-										j[4][req_currency] = 0
-									j[4][req_currency] += ord_price
-								break
-						L[5] = 0
-						map.sales_registry -= list(L)
-						for (var/list/LL in map.sales_registry)
-							if (LL[1] == ord && LL[4] == SELLER)
-								LL[5] = 0
-								map.sales_registry -= list(LL)
-					else
-						// Only this estate listing: an identical one belongs to another
-						// dead holder's estate row and stays for sale.
-						L[5] = 0
-						map.sales_registry -= list(L)
-					to_chat(H, "<span class='notice'>You successfully bought [ord_perc]% of [ord].</span>")
-					break
-				sale_idx++
-		if (!found)
+		var/list/L = live_listing(href_list["buy"])
+		if (!L)
 			to_chat(H, "<span class='notice'>That stock listing is no longer available.</span>")
+			return
+		var/ord = L[1]
+		var/ord_perc = L[2]
+		var/req_currency = listing_currency(L)
+		var/price_units = listing_price_units(L, req_currency)
+		if (isnull(price_units))
+			to_chat(H, "<span class='notice'>That listing price cannot be paid in its listed currency.</span>")
+			return
+		var/mob/living/human/SELLER = ishuman(L[4]) ? L[4] : null
+		// A listing is only a promise: the seller may have transferred the stake or died since.
+		if (!company_has_stake(ord, SELLER, ord_perc))
+			map.sales_registry -= list(L)
+			to_chat(H, "<span class='notice'>That stock listing is no longer available.</span>")
+			return
+		var/obj/item/stack/money/M = H.get_inactive_hand()
+		if (!istype(M, /obj/item/stack/money))
+			to_chat(H, "<span class='notice'>You need to have money in your inactive hand to buy stocks!</span>")
+			return
+		var/req_name = req_currency == "standard" ? "sc" : fiat.currency_list[req_currency][1]
+		var/money_val
+		if (req_currency == "standard")
+			if (!istype(M, /obj/item/stack/money/fiat))
+				money_val = M.amount * M.value
+		else if (istype(M, /obj/item/stack/money/fiat))
+			var/obj/item/stack/money/fiat/M_fiat = M
+			if (M_fiat.fiat_id == req_currency)
+				money_val = M_fiat.amount
+		if (isnull(money_val))
+			to_chat(H, "<span class='notice'>You are not holding the requested currency ([req_name])!</span>")
+			return
+		var/tender_units = exact_payment_units(money_val, payment_scale(req_currency))
+		if (isnull(tender_units))
+			to_chat(H, "<span class='notice'>That stack cannot be exchanged for exact change.</span>")
+			return
+		var/ord_price = price_units / payment_scale(req_currency)
+		if (tender_units < price_units)
+			to_chat(H, "<span class='notice'>You do not have enough money. Need [payment_label(price_units, req_currency)] [req_name], have [payment_label(tender_units, req_currency)] [req_name].</span>")
+			return
+
+		if (SELLER ? !SELLER.transfer_stock_proc(ord, ord_perc, H) : !transfer_stock_nomob(ord, ord_perc, H))
+			map.sales_registry -= list(L)
+			to_chat(H, "<span class='notice'>That stock listing is no longer available.</span>")
+			return
+		if (price_units > 0)
+			qdel(M)
+			var/change_units = tender_units - price_units
+			if (change_units > 0)
+				if (req_currency == "standard")
+					pay_standard_change(change_units)
+				else
+					new/obj/item/stack/money/fiat(loc, change_units, req_currency)
+
+		if (SELLER)
+			for (var/list/j in map.custom_company[ord])
+				if (j[1] == SELLER)
+					if (j.len < 4 || !islist(j[4]))
+						j.len = max(j.len, 4)
+						j[4] = list()
+					if (req_currency == "standard")
+						j[3] += ord_price
+					else
+						if (!j[4][req_currency])
+							j[4][req_currency] = 0
+						j[4][req_currency] += ord_price
+					break
+			L[5] = 0
+			map.sales_registry -= list(L)
+			for (var/list/LL in map.sales_registry)
+				if (LL[1] == ord && LL[4] == SELLER)
+					LL[5] = 0
+					map.sales_registry -= list(LL)
+		else
+			// Only this estate listing: an identical one belongs to another
+			// dead holder's estate row and stays for sale.
+			L[5] = 0
+			map.sales_registry -= list(L)
+		to_chat(H, "<span class='notice'>You successfully bought [ord_perc]% of [ord].</span>")
 		return
 
 	// Sell stock
@@ -260,17 +361,25 @@
 		// An unknown currency id would break every buyer's listing page.
 		if (requested_currency != "standard" && !(fiat.currency_list[requested_currency] && fiat.currency_list[requested_currency][5]))
 			return
+		var/price_units = exact_payment_units(price, payment_scale(requested_currency))
+		if (!price_units)
+			to_chat(H, "<span class='notice'>Set a price payable in whole fiat units or in copper increments for standard coins.</span>")
+			return
+		price = price_units / payment_scale(requested_currency)
 		for (var/list/i in map.custom_company[cmp])
 			if (i[1] == H)
 				if (amt > i[2])
 					amt = i[2]
 				if (amt < 1)
 					break
-				map.sales_registry += list(list(cmp, amt, price/10, H, 1, requested_currency))
+				var/list/listing = list(cmp, amt, price / 10, H, 1, requested_currency)
+				listing_token(listing)
+				listing += price_units
+				map.sales_registry += list(listing)
 				var/curr_name = "Standard Coins"
 				if (requested_currency != "standard" && fiat.currency_list[requested_currency])
 					curr_name = fiat.currency_list[requested_currency][1]
-				to_chat(H, "<span class='notice'>You put up [amt]% of [cmp] at [price] [curr_name].</span>")
+				to_chat(H, "<span class='notice'>You put up [amt]% of [cmp] at [payment_label(price_units, requested_currency)] [curr_name].</span>")
 				break
 		return
 
@@ -316,8 +425,9 @@
 	// Manage company - withdraw profits
 	if (href_list["withdraw"])
 		var/cmp = href_company(href_list["withdraw"])
-		if (!find_company_member(H, cmp))
+		if (!cmp)
 			return
+		// The requesting player can withdraw only from their own retained row.
 		for (var/list/j in map.custom_company[cmp])
 			if (j[1] == H)
 				var/withdrew_something = FALSE
@@ -427,3 +537,5 @@
 			var/list/fiat_treasury = map.custom_civs[H.civilization][11]
 			withdraw_treasury_fiat(fiat_treasury, fid, H)
 		return
+
+#undef STOCK_MARKET_COPPERS_PER_SILVER

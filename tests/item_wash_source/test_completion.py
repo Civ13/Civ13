@@ -57,6 +57,15 @@ class WashSourceTests(unittest.TestCase):
         self.assertIn('user.visible_message(', self.cleanup)
         self.assertIn('if (user.get_active_hand() != I) return', self.gates)
 
+    def test_washed_hide_reserves_output_for_an_empty_hand_before_ground_merge(self):
+        root = SOURCE.parents[4]
+        leather = (root / 'code/game/objects/items/stacks/sheets/leather.dm').read_text(encoding='utf-8')
+        output = leather.split('/proc/water_wash_output(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertLess(output.index('if (istype(held) && held.amount < held.max_amount)'),
+                        output.index('wethide(site, 1, !!user.get_inactive_hand())'))
+        self.assertIn('if (!QDELETED(made) && made.loc == site && !user.get_inactive_hand())', output)
+        self.assertIn('user.put_in_inactive_hand(made)', output)
+
 
 if __name__ == '__main__':
     unittest.main()

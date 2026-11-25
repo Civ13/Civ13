@@ -330,5 +330,154 @@ class DestroyTests(unittest.TestCase):
                 self.assertNotEqual(Harness(BASE + '/Destroy()\n' + mutant + '\n').run(), expected)
 
 
+class SiegeLadderTile(list):
+    pass
+
+
+class SiegeLadderTarget:
+    def __init__(self, loc, *, key=None, climbable=False, inherent=False, eligible=True):
+        self.loc = loc
+        self.siege_ladder_support_key = key
+        self.climbable = climbable
+        self.initial_climbable = inherent
+        self.eligible = eligible
+        self.dir = 2
+        self.deleted = False
+        loc.append(self)
+
+    def supports_siege_ladders(self):
+        return self.eligible
+
+    def ensure_siege_ladder_support_key(self):
+        self.siege_ladder_support_key = self.siege_ladder_support_key or 'adopted-key'
+        return self.siege_ladder_support_key
+
+
+class SiegeLadderItem:
+    def __init__(self, loc, key=None):
+        self.loc = loc
+        self.ladder_target_key = key
+        self.anchored = True
+        self.deployed = True
+        self.deleted = False
+        self.dir = 2
+        self.icon_state = 'deployed'
+        loc.append(self)
+
+
+class SiegeLadderSupportTests(unittest.TestCase):
+    """Run the actual support selection and retraction procs without a game server."""
+
+    ITEM = '/obj/item/weapon/siegeladder'
+    TOOL_PATH = 'code/game/objects/items/weapons/tools.dm'
+    STRUCTURE_PATH = 'code/game/objects/structures.dm'
+    TRAPS_PATH = 'code/modules/1713/siege/castle_traps.dm'
+
+    @staticmethod
+    def read(path):
+        return (ROOT / path).read_text(encoding='utf-8')
+
+    def setUp(self):
+        self.env = dict(
+            isturf=lambda value: isinstance(value, SiegeLadderTile),
+            QDELETED=lambda value: value is None or value.deleted,
+            initial=lambda value: 'stowed',
+            typed_iter=lambda values, path: [value for value in values if isinstance(
+                value, SiegeLadderItem if path == self.ITEM else SiegeLadderTarget
+            )],
+        )
+        self.select = self.bind(self.TOOL_PATH, self.ITEM + '/proc/deployed_target')
+        self.retract = self.bind(self.TOOL_PATH, self.ITEM + '/proc/retract')
+        self.access = self.bind(self.STRUCTURE_PATH, '/obj/structure/proc/is_climbable_with_support')
+
+    def bind(self, path, declaration):
+        source = extract(self.read(path), declaration)
+        source = re.sub(r'(?m)^(\t+var/[\w/]+)$', r'\1 = null', source)
+        source = re.sub(r'initial\((S|target)\.climbable\)', r'\1.initial_climbable', source)
+        source = re.sub(
+            r'(?<![\w.])(loc|deployed|anchored|dir|ladder_target_key|deployed_target|icon_state|climbable|supports_siege_ladders)\b',
+            r'src.\1', source,
+        )
+        return project('/selection()\n' + source + '\n', '/selection', 'src', self.env)
+
+    def ladder(self, tile, key=None):
+        item = SiegeLadderItem(tile, key)
+        item.deployed_target = lambda: self.select(item)
+        return item
+
+    def test_remove_one_keyed_ladder_preserves_other_and_intrinsic_routes(self):
+        tile = SiegeLadderTile()
+        target = SiegeLadderTarget(tile, key='target')
+        second_target = SiegeLadderTarget(tile, key='other')
+        intrinsic = SiegeLadderTarget(tile, climbable=True, inherent=True, eligible=False)
+        first, second = self.ladder(tile, 'target'), self.ladder(tile, 'target')
+        unrelated = self.ladder(tile, 'other')
+        self.assertTrue(self.access(target) and self.access(second_target) and self.access(intrinsic))
+        self.assertTrue(self.retract(first))
+        self.assertTrue(self.access(target))
+        self.assertTrue(self.retract(second))
+        self.assertFalse(self.access(target))
+        self.assertTrue(self.access(second_target) and self.access(intrinsic))
+        self.assertIs(self.select(unrelated), second_target)
+        self.assertIsNone(first.ladder_target_key)
+        self.assertFalse(first.deployed or first.anchored)
+        self.assertEqual(first.icon_state, 'stowed')
+
+    def test_persisted_scalar_recovers_route_only_on_the_same_tile(self):
+        tile, other_tile = SiegeLadderTile(), SiegeLadderTile()
+        # Separate reconstructed objects; only the value stored in the save joins them.
+        target = SiegeLadderTarget(tile, key='stored-target')
+        recovered = self.ladder(tile, key='stored-target')
+        unrelated = SiegeLadderTarget(tile, key='unrelated')
+        self.assertIs(self.select(recovered), target)
+        self.assertFalse(self.access(unrelated))
+        tile.remove(target)
+        other_tile.append(target)
+        target.loc = other_tile
+        self.assertIsNone(self.select(recovered))
+        self.assertFalse(self.access(target))
+
+    def test_old_flag_adopts_all_identifiable_ladders_before_it_is_cleared(self):
+        tile = SiegeLadderTile()
+        target = SiegeLadderTarget(tile, climbable=True)
+        nearby = SiegeLadderTarget(tile)
+        intrinsic = SiegeLadderTarget(tile, climbable=True, inherent=True)
+        first, second = self.ladder(tile), self.ladder(tile)
+        self.assertIs(self.select(second), target)
+        self.assertTrue(self.retract(first))
+        self.assertFalse(target.climbable)
+        self.assertEqual(second.ladder_target_key, target.siege_ladder_support_key)
+        self.assertTrue(self.access(target))
+        self.assertFalse(self.access(nearby))
+        self.assertTrue(self.retract(second))
+        self.assertFalse(self.access(target))
+        self.assertTrue(self.access(intrinsic))
+
+    def test_ambiguous_legacy_ladder_does_not_invent_a_target(self):
+        tile = SiegeLadderTile()
+        left = SiegeLadderTarget(tile, climbable=True)
+        right = SiegeLadderTarget(tile, climbable=True)
+        item = self.ladder(tile)
+        self.assertIsNone(self.select(item))
+        self.assertTrue(self.retract(item))
+        self.assertTrue(left.climbable and right.climbable)
+
+    def test_deployment_and_both_removal_paths_use_support_procs(self):
+        for path, declaration in (
+            ('code/game/objects/controls.dm', '/obj/structure/gate/attackby'),
+            ('code/game/objects/structures/barricades.dm', '/obj/structure/barricade/attackby'),
+            ('code/modules/1713/structures.dm', '/obj/structure/grille/metalsheetfence/attackby'),
+        ):
+            source = extract(self.read(path), declaration)
+            self.assertIn('do_after(user, 8 SECONDS, src) && ladder.deploy_on(src, user)', source)
+            self.assertNotIn('climbable = TRUE', source)
+        hand = extract(self.read(self.TOOL_PATH), self.ITEM + '/attack_hand')
+        fork = extract(self.read(self.TRAPS_PATH).split('\n#undef', 1)[0], self.ITEM + '/proc/push_off')
+        self.assertIn('do_after(user, 8 SECONDS, src) && retract()', hand)
+        self.assertLess(fork.index('if (!retract())'), fork.index('!target.is_climbable_with_support()'))
+        self.assertIn('fallers = target.climbers.Copy()', fork)
+        self.assertNotIn('climbable = FALSE', hand + fork)
+
+
 if __name__ == '__main__':
     unittest.main()

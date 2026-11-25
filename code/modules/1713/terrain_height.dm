@@ -307,8 +307,10 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 	return levels
 
 // Percent chance that this step trips a running human; 0 when it cannot.
-/proc/terrain_trip_chance(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1)
-	if (distance_fraction < 1 || H.m_intent != "run" || H.lying || H.buckled)
+/proc/terrain_trip_chance(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1, started_running = null)
+	if (isnull(started_running))
+		started_running = H.m_intent == "run"
+	if (distance_fraction < 1 || !started_running || H.lying || H.buckled)
 		return 0
 	var/drop = -terrain_step_levels(origin, destination)
 	if (drop < TERRAIN_STEEP_LEVELS)
@@ -320,14 +322,54 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 	chance *= footwear_slope_grip(H)
 	return min(TERRAIN_TRIP_MAX, chance)
 
-// Running down a steep slope may trip the runner, who falls once the step is
-// done and tumbles on down the hill. step_delay is the step's duration.
-/proc/terrain_trip_check(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1, step_delay = 0)
-	var/chance = terrain_trip_chance(H, origin, destination, distance_fraction)
-	if (!chance || !prob(chance))
+/proc/terrain_steep_step(turf/origin, turf/destination)
+	return abs(terrain_step_levels(origin, destination)) >= TERRAIN_STEEP_LEVELS
+
+// Charge forward progress based on the actual body position, not SelfMove's
+// boolean or its requested destination. Tile coordinates and step offsets
+// together survive centre refiling and represent partial movement correctly.
+/proc/terrain_completed_step(mob/living/human/H, turf/origin, turf/destination, start_x, start_y, direct, max_fraction, step_delay, started_running = null)
+	var/turf/arrival = H.loc
+	if (!isturf(arrival) || !origin || !destination || arrival.z != origin.z || get_step(origin, direct) != destination)
 		return FALSE
-	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(terrain_tumble), H), max(world.tick_lag, step_delay))
+	if (arrival != origin && arrival != destination)
+		return FALSE // Not this step (sideways, redirected or teleported).
+	var/size = world.icon_size
+	var/progress = size
+	if (direct & (EAST|WEST))
+		var/delta_x = (arrival.x - origin.x) * size + H.step_x - start_x
+		progress = min(progress, (direct & EAST) ? delta_x : -delta_x)
+	else if (arrival.x != origin.x || H.step_x != start_x)
+		return FALSE
+	if (direct & (NORTH|SOUTH))
+		var/delta_y = (arrival.y - origin.y) * size + H.step_y - start_y
+		progress = min(progress, (direct & NORTH) ? delta_y : -delta_y)
+	else if (arrival.y != origin.y || H.step_y != start_y)
+		return FALSE
+	var/distance_fraction = min(max_fraction, progress / size)
+	if (distance_fraction <= 0)
+		return FALSE
+	terrain_climb_effects(H, origin, destination, distance_fraction)
+	if (arrival == destination)
+		terrain_trip_check(H, origin, destination, distance_fraction, step_delay, started_running)
 	return TRUE
+
+// Running down a completed steep step may trip the runner. A legacy tile
+// step still waits out its remaining move delay, without rolling somewhere
+// else if the body has moved, changed hands, or been thrown in the meantime.
+/proc/terrain_trip_check(mob/living/human/H, turf/origin, turf/destination, distance_fraction = 1, step_delay = 0, started_running = null)
+	var/chance = terrain_trip_chance(H, origin, destination, distance_fraction, started_running)
+	if (!chance || H.loc != destination || H.throwing || !prob(chance))
+		return FALSE
+	if (step_delay <= 0)
+		return terrain_tumble(H)
+	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(terrain_tumble_arrival), H, destination, H.step_x, H.step_y, H.client, !!H.client), max(world.tick_lag, step_delay))
+	return TRUE
+
+/proc/terrain_tumble_arrival(mob/living/human/H, turf/arrival, step_x, step_y, client/owner, had_client = FALSE)
+	if (QDELETED(H) || (had_client && !owner) || H.client != owner || H.loc != arrival || H.step_x != step_x || H.step_y != step_y || H.throwing)
+		return FALSE
+	return terrain_tumble(H)
 
 // Where a fall from T rolls to: down the steepest neighbour, tile by tile,
 // while each tile drops at least TERRAIN_TUMBLE_DROP levels.
@@ -352,10 +394,10 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 		. += best
 		at = best
 
-// The fall: the human is knocked down and rolls down the slope, bruised for
-// every tile rolled. Things in the way stop the roll as any thrown body does.
+// The fall: the human is knocked down. The throw processor walks the slope
+// route and accounts for actual travel and any impacts.
 /proc/terrain_tumble(mob/living/human/H)
-	if (QDELETED(H) || H.stat == DEAD || H.lying || H.buckled || !isturf(H.loc))
+	if (QDELETED(H) || H.stat || H.lying || H.buckled || H.riding || H.throwing || !isturf(H.loc))
 		return FALSE
 	var/list/path = terrain_tumble_path(H.loc)
 	H.terrain_momentum = 0
@@ -365,9 +407,73 @@ var/global/list/terrain_height_chars = terrain_height_char_table()
 		H.adjustBruteLoss(TERRAIN_TUMBLE_DAMAGE)
 		return TRUE
 	H.visible_message(SPAN_WARNING("[H] trips and tumbles down the slope!"), SPAN_DANGER("You lose your footing and tumble down the slope!"))
-	H.adjustBruteLoss(TERRAIN_TUMBLE_DAMAGE * path.len)
-	H.throw_at(path[path.len], path.len, 1)
+	if (!H.throw_at(path[path.len], path.len, 1))
+		return FALSE
+	H.throw_flight_token["terrain_path"] = path
+	H.throw_flight_token["terrain_arrival"] = H.loc
+	H.throw_flight_token["terrain_step_x"] = H.step_x
+	H.throw_flight_token["terrain_step_y"] = H.step_y
 	return TRUE
+
+// Use the throw processor's existing ownership and impact handling. A normal
+// throw creates a new token, so an old downhill route cannot resume it.
+/proc/terrain_tumble_blocker(turf/T)
+	if (!T || T.density || istype(T, /turf/floor/beach/water))
+		return T
+	for (var/obj/structure/S in T)
+		if (istype(S, /obj/structure/window/barrier) || S.throwpass)
+			continue
+		if (S.density || istype(S, /obj/structure/window/classic))
+			return S
+	for (var/obj/covers/C in T)
+		if (!C.passable)
+			return C
+	return null
+
+/proc/terrain_tumble_hop(mob/living/human/H, list/flight_token)
+	if (QDELETED(H) || !flight_token || H.throw_flight_token != flight_token)
+		return
+	var/list/path = flight_token["terrain_path"]
+	var/turf/origin = H.loc
+	if (!H.throwing || H.stat == DEAD || H.buckled || !isturf(origin) || origin != flight_token["terrain_arrival"] || H.step_x != flight_token["terrain_step_x"] || H.step_y != flight_token["terrain_step_y"] || !length(path))
+		H.finished_throwing()
+		return
+	var/turf/target = path[1]
+	var/direction = target ? get_dir(origin, target) : 0
+	if (!target || target.z != origin.z || !direction || get_step(origin, direction) != target || (map && map.check_caribbean_block(H, target)))
+		H.finished_throwing()
+		return
+	var/atom/blocker = terrain_tumble_blocker(target)
+	if (blocker)
+		if (isturf(blocker))
+			if (blocker.density)
+				H.turf_collision(blocker, H.speed)
+		else
+			H.throw_impact(blocker, H.speed)
+		if (!QDELETED(H) && H.throw_flight_token == flight_token)
+			H.finished_throwing()
+		return
+	// A diagonal downhill tile is one leg, but never pass through a sealed corner.
+	if ((direction in cornerdirs) && terrain_tumble_blocker(get_step(origin, direction & (NORTH|SOUTH))) && terrain_tumble_blocker(get_step(origin, direction & (EAST|WEST))))
+		H.finished_throwing()
+		return
+	var/advanced = H.forceMove_nondenseturf(target, throw_hop_token = flight_token)
+	if (QDELETED(H) || H.throw_flight_token != flight_token)
+		return
+	if (!advanced || H.loc != target)
+		H.finished_throwing()
+		return
+	path.Cut(1, 2)
+	flight_token["terrain_arrival"] = target
+	flight_token["terrain_step_x"] = H.step_x
+	flight_token["terrain_step_y"] = H.step_y
+	H.dist_travelled++
+	H.adjustBruteLoss(TERRAIN_TUMBLE_DAMAGE)
+	if (QDELETED(H) || H.throw_flight_token != flight_token)
+		return
+	H.hit_check(H.speed, TRUE)
+	if (!QDELETED(H) && H.throw_flight_token == flight_token && (!length(path) || !H.throwing || H.loc != target))
+		H.finished_throwing()
 
 // Delay factor for a grade in levels per tile (negative downhill), capped at
 // TERRAIN_MAX_LEVEL_STEP. Packed ground halves the extra climbing cost.

@@ -261,6 +261,13 @@
 			else
 				applicant["action"] = "apply"
 				applicant["text"] = "Your application will be reviewed by the leader or a recruiter. You don't need to wait here."
+		if (!A)
+			var/list/outcome = map.recruitment_outcome_for(viewer, faction)
+			if (outcome)
+				// Expired and otherwise closed offers can still hold an old approval reason.
+				var/status = outcome["status"]
+				var/reason = (status in list(RECRUIT_REJECTED, RECRUIT_REVOKED, RECRUIT_INVALIDATED)) ? html_encode(outcome["reason"]) : ""
+				applicant["outcome"] = list("status_text" = recruitment_status_text(outcome), "reason" = reason)
 		data["applicant"] = applicant
 
 	if (can_review)

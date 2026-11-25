@@ -54,17 +54,23 @@
 	var/list/traders = list() // two mobs at most
 	var/list/offers = list() // trader = list of items
 	var/list/agreed = list() // traders who agreed
+	var/tmp/agreement_revision = 0 // invalidates Agree responses from open prompts
 
 /obj/structure/barter_mat/persistence_runtime_var(key)
-	return key == "traders" || key == "offers" || key == "agreed" || ..()
+	return key == "traders" || key == "offers" || key == "agreed" || key == "agreement_revision" || ..()
 
 /obj/structure/barter_mat/after_load()
 	..()
 	traders = list()
 	offers = list()
 	agreed = list()
+	invalidate_agreements()
 	for (var/obj/item/I in contents)
 		I.forceMove(get_turf(src))
+
+/obj/structure/barter_mat/proc/invalidate_agreements()
+	agreement_revision++
+	agreed.Cut()
 
 /obj/structure/barter_mat/proc/present(mob/M)
 	return M && !QDELETED(M) && M.stat == CONSCIOUS && get_dist(M, src) <= 1
@@ -88,7 +94,7 @@
 			I.forceMove(get_turf(src))
 	offers -= T
 	traders -= T
-	agreed.Cut()
+	invalidate_agreements()
 	update_icon()
 
 /obj/structure/barter_mat/proc/join(mob/M)
@@ -99,7 +105,7 @@
 		return FALSE
 	traders += M
 	offers[M] = list()
-	agreed.Cut()
+	invalidate_agreements()
 	return TRUE
 
 /obj/structure/barter_mat/proc/offer(mob/M, obj/item/I)
@@ -108,7 +114,7 @@
 	var/list/offer = offers[M]
 	offer += I
 	I.forceMove(src)
-	agreed.Cut()
+	invalidate_agreements()
 	update_icon()
 	return TRUE
 
@@ -120,13 +126,13 @@
 		if (I.loc == src)
 			I.forceMove(get_turf(src))
 	offer.Cut()
-	agreed.Cut()
+	invalidate_agreements()
 	update_icon()
 	return TRUE
 
-/obj/structure/barter_mat/proc/agree(mob/M)
+/obj/structure/barter_mat/proc/agree(mob/M, reviewed_revision)
 	tidy()
-	if (!(M in traders) || traders.len < 2)
+	if (reviewed_revision != agreement_revision || !(M in traders) || traders.len < 2)
 		return FALSE
 	agreed |= M
 	if (agreed.len < 2)
@@ -150,7 +156,7 @@
 	visible_message(SPAN_NOTICE("[A] and [B] strike a bargain."))
 	traders.Cut()
 	offers.Cut()
-	agreed.Cut()
+	invalidate_agreements()
 	update_icon()
 	return TRUE
 
@@ -197,14 +203,20 @@
 		examine(user)
 		return
 	var/list/choices = list("Agree", "Take back my offer", "Leave the trade", "Cancel")
+	var/reviewed_revision = agreement_revision
 	var/choice = player_input(user, "[src]: [other_trader(user) ? "trading with [other_trader(user)]" : "waiting for someone to trade with"].", "Barter", null, "anything", choices, TRUE)
-	if (!choice || choice == "Cancel" || !(user in traders) || !present(user))
+	if (QDELETED(src) || !choice || choice == "Cancel" || !present(user))
+		return
+	tidy()
+	if (!(user in traders))
 		return
 	switch (choice)
 		if ("Agree")
-			if (traders.len < 2)
+			if (reviewed_revision != agreement_revision)
+				to_chat(user, SPAN_WARNING("The trade changed while this menu was open. Examine the current offers and open the mat again."))
+			else if (traders.len < 2)
 				to_chat(user, SPAN_WARNING("Nobody is trading with you yet."))
-			else if (!agree(user))
+			else if (!agree(user, reviewed_revision))
 				var/mob/other = other_trader(user)
 				to_chat(user, SPAN_NOTICE("You agree to the trade. Waiting for [other]."))
 				to_chat(other, SPAN_NOTICE("[user] agrees to the trade: you give [offer_text(offers[other])] for [offer_text(offers[user])]. Use the mat to agree."))

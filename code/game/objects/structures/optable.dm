@@ -85,7 +85,7 @@
 /obj/structure/optable/MouseDrop_T(mob/target, mob/user)
 
 	var/mob/living/M = user
-	if (user.stat || user.restrained() || !check_table(user) || !ishuman(target))
+	if (user.stat || user.restrained() || !ishuman(target) || !check_table(target))
 		return
 	if (istype(M))
 		take_victim(target,user)

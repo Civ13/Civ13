@@ -16,7 +16,14 @@
 
 		if (!isDeleted(AM))
 			var/list/flight_token = AM.throw_flight_token
-			if (AM.loc)
+			if (flight_token && flight_token["terrain_path"])
+				try
+					terrain_tumble_hop(AM, flight_token)
+				catch (var/exception/terrain_error)
+					catchException(terrain_error, AM)
+					if (!QDELETED(AM) && AM.throw_flight_token == flight_token)
+						AM.finished_throwing()
+			else if (AM.loc)
 				try
 					switch (AM.throwmode)
 						if (0)

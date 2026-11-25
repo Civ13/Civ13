@@ -702,10 +702,11 @@
 		return ..() // A slice is already the smallest portion.
 	if (is_tool(W, TOOL_KNIFE))
 		to_chat(user, "You slice the salami up.")
-		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
-		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
-		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
-		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
+		var/portion_count = 4
+		var/reagents_per_slice = reagents.total_volume / portion_count
+		for (var/i = 1 to portion_count)
+			var/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice/portion = new(user.loc)
+			fill_food_slice(portion, reagents_per_slice)
 		qdel(src)
 		return
 

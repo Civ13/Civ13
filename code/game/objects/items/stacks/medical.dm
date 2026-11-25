@@ -68,7 +68,7 @@
 // Shared wound treatment for every bandage, kit, herb and powder.
 /obj/item/stack/medical/proc/treat(mob/living/human/H, mob/user)
 	var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
-	if (!affecting)
+	if (!affecting || !tourniquet_patient_in_reach(H, user))
 		return
 	if (pre_treat(H, affecting, user))
 		return
@@ -102,6 +102,9 @@
 		if (!do_mob(user, H, W.damage/5))
 			to_chat(user, SPAN_NOTICE("You must stand still to treat wounds."))
 			break
+		if (!tourniquet_patient_in_reach(H, user))
+			to_chat(user, SPAN_NOTICE("The patient is no longer within reach."))
+			break
 		if (used >= amount || !wound_needs(W))
 			continue // the stack shrank or someone else treated it meanwhile
 		user.visible_message(SPAN_NOTICE("\The [user] [treat_verb] \a [W.desc] on [H]'s [affecting.name]."), \
@@ -123,7 +126,8 @@
 	affecting.update_damages()
 	if (used >= amount && limb_needs(affecting))
 		to_chat(user, SPAN_WARNING("\The [src] is used up, but there are more wounds to treat on \the [affecting.name]."))
-	try_expert_close(affecting, user)
+	if (tourniquet_patient_in_reach(H, user))
+		try_expert_close(affecting, user)
 	if (treat_flags & MED_BANDAGE)
 		H.update_bandaging(1)
 	H.UpdateDamageIcon()

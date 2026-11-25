@@ -50,7 +50,7 @@ class WaitOverlayTests(unittest.TestCase):
 
     def test_type_and_callback_omission_refuses(self):
         for anchor in ("if (!istype(gameplay_context, /datum/gameplay_action_lease))",
-                       "user.survival_action_started(target, mining_context)", "user.survival_action_finished()"):
+                       "user.survival_action_started(target, mining_context)", "user.survival_action_finished(workload)"):
             with self.subTest(anchor=anchor), self.assertRaises(ValueError):
                 unguarded_source(self.source.replace(anchor,"OMITTED",1))
 

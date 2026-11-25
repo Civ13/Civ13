@@ -53,7 +53,7 @@ class DryingRackTest(unittest.TestCase):
     def test_slices_are_not_cut_again(self):
         body = proc_body(self.text, '%s/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)' % SAUSAGE)
         guard = body.index('istype(src, %s/salami/slice)' % SAUSAGE)
-        self.assertLess(guard, body.index('/salami/slice(user.loc)'))
+        self.assertLess(guard, body.index('/salami/slice/portion = new(user.loc)'))
         self.assertTrue(body[guard:].splitlines()[1].strip().startswith('return ..()'))
 
 

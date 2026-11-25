@@ -22,7 +22,7 @@ def guarded_source(source):
         raise ValueError("production do_after changed; review integration again")
     s=source
     signature=next(line for line in s.splitlines(True) if line.startswith('/proc/do_after('))
-    s=change(s,signature,signature.rstrip()[:-1]+', datum/gameplay_action_lease/gameplay_context = null)\n')
+    s=change(s,signature,signature.replace(', datum/ship_construction/ship_craft', ', datum/gameplay_action_lease/gameplay_context = null, datum/ship_construction/ship_craft'))
     # Insert only in do_after, preserving do_mob and all outside text.
     start=s.index('#ifdef '+FEATURE+'\n/proc/do_after(');end=s.index('//Returns a list of all mobs',start)
     body=s[start:end]

@@ -56,18 +56,17 @@
 		return FALSE
 
 	playsound(loc, 'sound/machines/click.ogg', 15, TRUE, -3)
-	var/itemcount = FALSE
-	for (var/obj/O in get_turf(src))
-		if (keep_items)
-			break
-		if (itemcount >= storagecap)
-			break
-		if (O.density || O.anchored)
-			continue
-		if (istype(O, /obj/structure))
-			continue
-		O.forceMove(src)
-		itemcount++
+	if (!keep_items)
+		var/itemcount = closet_item_count(src)
+		for (var/obj/O in get_turf(src))
+			if (itemcount >= storagecap)
+				break
+			if (O.density || O.anchored)
+				continue
+			if (istype(O, /obj/structure))
+				continue
+			O.forceMove(src)
+			itemcount++
 
 	icon_state = icon_closed
 	opened = FALSE

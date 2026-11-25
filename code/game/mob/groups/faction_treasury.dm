@@ -93,6 +93,18 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 			B.faction = new_name
 			B.update_box_name()
 
+// A character's legal rename updates existing wage labels without changing ownership or earnings.
+/obj/map_metadata/proc/treasury_refresh_wage_name(account, old_name, new_name)
+	var/list/T = treasury_state()
+	for (var/faction in T)
+		var/list/R = T[faction]
+		if (!islist(R))
+			continue
+		var/list/wages = R["wages"]
+		var/list/row = islist(wages) ? wages[account] : null
+		if (islist(row) && row.len >= 4 && row[4] == old_name)
+			row[4] = new_name
+
 /obj/map_metadata/proc/treasury_log(faction, text)
 	var/list/R = treasury_record(faction)
 	var/list/ledger = R["ledger"]
@@ -408,33 +420,61 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	map.treasury_log(faction, "[user.real_name] set [lowertext(label)] at [civ[index]]%.")
 	to_chat(user, SPAN_NOTICE("[label] is now [civ[index]]%."))
 
+// Prompt labels are unique even for legacy wage records with the same name.
+// Do not expose account keys or store the prompt label as the character's name.
+/proc/treasury_wage_choices(list/online_names, list/wages)
+	var/list/options = list()
+	for (var/account in online_names)
+		var/name = online_names[account]
+		options["[options.len + 1]. [name] (online)"] = list(account, name)
+	for (var/account in wages)
+		if (account in online_names)
+			continue
+		var/list/row = wages[account]
+		if (!islist(row) || row.len < 4 || !istext(row[4]))
+			continue
+		var/name = row[4]
+		options["[options.len + 1]. [name] (saved wage)"] = list(account, name)
+	return options
+
 /obj/structure/closet/crate/faction_strongbox/proc/set_wages(mob/living/human/user)
-	var/list/members = list()
+	var/selected_faction = faction
+	var/list/online_names = list()
+	var/list/online_members = list()
 	for (var/mob/living/human/M in human_mob_list)
-		if (M.civilization == faction && M.stat != DEAD && M.client)
+		if (M.civilization == selected_faction && M.stat != DEAD && M.client)
 			var/account = faction_roster_account(M)
 			if (account)
-				members["[M.real_name]"] = account
-	var/list/R = map.treasury_record(faction)
+				online_names[account] = M.real_name
+				online_members[account] = M
+	var/list/R = map.treasury_record(selected_faction)
 	var/list/wages = R["wages"]
-	for (var/account in wages)
-		var/list/row = wages[account]
-		if (!(row[4] in members))
-			members[row[4]] = account
-	if (!members.len)
-		to_chat(user, SPAN_NOTICE("No members are about to pay."))
+	var/list/choices = treasury_wage_choices(online_names, wages)
+	if (!choices.len)
+		to_chat(user, SPAN_NOTICE("No members are available to pay."))
 		return
-	var/pick = WWinput(user, "Whose wage? Members collect wages from the coin in the box; unpaid wages stop growing after [TREASURY_WAGE_CAP_DAYS] days.", "Wages", "Cancel", members + "Cancel")
-	if (!pick || pick == "Cancel" || !(pick in members))
+	var/pick = WWinput(user, "Whose wage? Members collect wages from the coin in the box; unpaid wages stop growing after [TREASURY_WAGE_CAP_DAYS] days.", "Wages", "Cancel", choices + "Cancel")
+	if (!pick || pick == "Cancel" || !(pick in choices) || faction != selected_faction || !map.is_faction_leader(user, faction))
 		return
-	var/account = members[pick]
+	var/list/selection = choices[pick]
+	var/account = selection[1]
+	var/name = selection[2]
 	var/list/row = wages[account]
-	var/value = player_input(user, "[pick]'s wage in silver a day (0 to [TREASURY_WAGE_MAX]; 0 stops it):", "Wages", islist(row) ? row[1] : 0, "num", null, TRUE)
-	if (!isnum(value) || !map.is_faction_leader(user, faction))
+	var/value = player_input(user, "[name]'s wage in silver a day (0 to [TREASURY_WAGE_MAX]; 0 stops it):", "Wages", islist(row) ? row[1] : 0, "num", null, TRUE)
+	if (!isnum(value) || faction != selected_faction || !map.is_faction_leader(user, faction))
 		return
-	var/rate = map.treasury_set_wage(faction, account, pick, value)
-	map.treasury_log(faction, "[user.real_name] set [pick]'s wage at [rate] silver a day.")
-	to_chat(user, SPAN_NOTICE("[pick]'s wage is now [rate] silver a day."))
+	// The prompts can sleep. Prefer the current name if the character was renamed while either was open.
+	R = map.treasury_record(selected_faction)
+	wages = R["wages"]
+	row = wages[account]
+	var/mob/living/human/online = online_members[account]
+	if (!QDELETED(online) && faction_roster_account(online) == account)
+		name = online.real_name
+	else if (islist(row) && row.len >= 4 && istext(row[4]))
+		name = row[4]
+	var/rate = map.treasury_set_wage(faction, account, name, value)
+	map.treasury_log(faction, "[user.real_name] set [name]'s wage at [rate] silver a day.")
+	to_chat(user, SPAN_NOTICE("[name]'s wage is now [rate] silver a day."))
 
 /obj/structure/closet/crate/faction_strongbox/proc/collect_wages(mob/living/human/user)
 	var/account = faction_roster_account(user)

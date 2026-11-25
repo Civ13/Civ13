@@ -470,6 +470,7 @@
 		"you" = you,
 		"near" = near,
 		"queue" = jobs,
+		"move_limit" = STORAGE_WINDOW_QUEUE_LIMIT,
 		"more_images" = budget[2] ? 1 : 0)
 
 /datum/storage_window/proc/picture_of_atom(atom/A, list/budget)

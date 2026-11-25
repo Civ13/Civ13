@@ -439,9 +439,6 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 	var/datum/lock/L = host_lock(host)
 	if (istype(W, /obj/item/fitted_lock))
 		var/obj/item/fitted_lock/F = W
-		if (L && !(L.kind == LOCK_SEAL && F.lock_kind == LOCK_SEAL))
-			to_chat(user, SPAN_WARNING("\The [host] already has \a [L.name()]."))
-			return TRUE
 		fit_lock(host, F, user)
 		return TRUE
 	if (!L)
@@ -503,12 +500,22 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 /proc/host_takes_hasp_lock(atom/host, kind)
 	return istype(host, /obj/structure/simple_door/key_door/custom/jail) && (kind == LOCK_PADLOCK || kind == LOCK_COMBO_PADLOCK)
 
-/proc/fit_lock(atom/host, obj/item/fitted_lock/F, mob/living/human/user)
-	if (host_has_other_lock(host) && !host_takes_hasp_lock(host, F.lock_kind))
+// Fitting and completion must enforce the same compatibility and shut-host rules.
+/proc/lock_fit_allowed(atom/host, kind, mob/living/human/user)
+	var/datum/lock/L = host_lock(host)
+	if (L && !(L.kind == LOCK_SEAL && kind == LOCK_SEAL))
+		to_chat(user, SPAN_WARNING("\The [host] already has \a [L.name()]."))
+		return FALSE
+	if (host_has_other_lock(host) && !host_takes_hasp_lock(host, kind))
 		to_chat(user, SPAN_WARNING("\The [host] already has a lock of its own[istype(host, /obj/structure/simple_door/key_door/custom/jail) ? "; only a padlock fits beside it" : ""]."))
 		return FALSE
 	if (!host_is_shut(host))
 		to_chat(user, SPAN_WARNING("Shut \the [host] first."))
+		return FALSE
+	return TRUE
+
+/proc/fit_lock(atom/host, obj/item/fitted_lock/F, mob/living/human/user)
+	if (!lock_fit_allowed(host, F.lock_kind, user))
 		return FALSE
 	var/tool = lock_fit_tool(F.lock_kind)
 	if (tool && !door_tool_in_hands(user, tool))
@@ -523,8 +530,9 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 	user.visible_message(SPAN_NOTICE("[user] starts fitting \the [F] to \the [host]."), SPAN_NOTICE("You start fitting \the [F]."))
 	if (!do_after(user, tool ? LOCK_FIT_TIME : LOCK_FIT_TIME / 4, host))
 		return FALSE
-	var/datum/lock/old = host_lock(host)
-	if (QDELETED(host) || QDELETED(F) || user.get_active_hand() != F || !host_is_shut(host) || (old && old.kind != LOCK_SEAL))
+	if (QDELETED(host) || QDELETED(F) || user.get_active_hand() != F)
+		return FALSE
+	if (!lock_fit_allowed(host, F.lock_kind, user))
 		return FALSE
 	var/datum/lock/L = F.make_lock(user)
 	if (host_is_door(host))
@@ -631,15 +639,21 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 	to_chat(user, SPAN_WARNING("The latch won't slip."))
 	return FALSE
 
+// The same fitted lock may have become locked while the removal waited.
+/proc/lock_removal_allowed(atom/host, datum/lock/L, mob/living/human/user)
+	var/where = host_lock_side(host, L, user)
+	if (L.blocks() && where == "key" && !(L.kind == LOCK_CATCH && L.catch_known(user)))
+		to_chat(user, SPAN_WARNING("Unlock \the [L.name()] first."))
+		return FALSE
+	return TRUE
+
 // Taking a lock off: from inside, or while it is open, with its tool.
 /proc/remove_lock(atom/host, mob/living/human/user)
 	var/datum/lock/L = host_lock(host)
 	if (!L)
 		to_chat(user, SPAN_WARNING("\The [host] has no lock."))
 		return FALSE
-	var/where = host_lock_side(host, L, user)
-	if (L.blocks() && where == "key" && !(L.kind == LOCK_CATCH && L.catch_known(user)))
-		to_chat(user, SPAN_WARNING("Unlock \the [L.name()] first."))
+	if (!lock_removal_allowed(host, L, user))
 		return FALSE
 	var/tool = lock_fit_tool(L.kind)
 	if (tool && !door_tool_in_hands(user, tool))
@@ -647,6 +661,8 @@ var/global/list/LOCK_DEFEAT_METHODS = list("pick", "skeleton", "shim", "crack", 
 		return FALSE
 	user.visible_message(SPAN_NOTICE("[user] starts taking \the [L.name()] off \the [host]."), SPAN_NOTICE("You start taking the [L.name()] off."))
 	if (!do_after(user, tool ? LOCK_FIT_TIME / 2 : LOCK_FIT_TIME / 4, host) || QDELETED(host) || host_lock(host) != L)
+		return FALSE
+	if (!lock_removal_allowed(host, L, user))
 		return FALSE
 	host_set_lock(host, null)
 	var/obj/item/fitted_lock/F = lock_to_item(L, get_turf(user))

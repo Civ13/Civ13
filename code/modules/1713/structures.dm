@@ -139,21 +139,14 @@
 
 /obj/structure/grille/metalsheetfence/attackby(obj/item/W, mob/user)
 	if (istype(W, /obj/item/weapon/siegeladder))
+		var/obj/item/weapon/siegeladder/ladder = W
 		user.visible_message(
 			SPAN_WARNING("[user] starts deploying \the [W.name]."),
 			SPAN_NOTICE("You start deploying \the [W.name]."))
-		if (do_after(user, 8 SECONDS, src))
+		if (do_after(user, 8 SECONDS, src) && ladder.deploy_on(src, user))
 			user.visible_message(
 				SPAN_WARNING("[user] has deployed \the [W.name]!"),
 				SPAN_WARNING("You have deployed \the [W.name]!"))
-			var/obj/item/weapon/siegeladder/ANCH = W
-			user.remove_from_mob(ANCH)
-			ANCH.loc = src.loc
-			ANCH.anchored = TRUE
-			climbable = TRUE
-			ANCH.deployed = TRUE
-			ANCH.icon_state = ANCH.depicon
-			ANCH.dir = src.dir
 		else
 			user.visible_message(
 				SPAN_WARNING("[user] stops deploying \the [W.name]."),
