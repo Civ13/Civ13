@@ -755,7 +755,7 @@ var/list/coefflist = list()
 		return
 
 	to_chat(usr, "You must[self ? "" : " both"] remain still until counting is finished.")
-	if (do_after(usr, 60, usr.loc))
+	if (do_after(usr, 60, src) && !QDELETED(src) && (src in view(1, usr)))
 		to_chat(usr, "<span class='notice'>[self ? "Your" : "[src]'s"] pulse is [get_pulse(GETPULSE_HAND)].</span>")
 	else
 		to_chat(usr, "<span class='warning'>You failed to check the pulse. Try again.</span>")
