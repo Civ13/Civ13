@@ -75,7 +75,7 @@ var/list/preferences_datums = list()
 		"SHOW_TYPING", "SHOW_DYN_CROSS", "CHAT_OOC", "CHAT_LOOC", "CHAT_DEAD", "SHOW_PROGRESS",
 		"FIT_VIEWPORT", "AMBIENT_OCCLUSION", "ROOT_LIT_TREES", "CHAT_DEBUGLOGS", "CHAT_PRAYER", "SOUND_ADMINHELP")
 
-	var/list/preferences_disabled = list("CHAT_TTS")
+	var/list/preferences_disabled = list()
 
 /datum/preferences/New(client/C)
 

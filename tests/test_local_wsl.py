@@ -229,7 +229,7 @@ class LocalWslTests(unittest.TestCase):
             value = module.config(server, Path('/tmp/isolated') / server)
             self.assertIn('ALLOWED_GAMEMODES ' + mode, value)
             self.assertIn('HUB NO', value)
-            self.assertIn('TTS_ON 0', value)
+            self.assertNotIn('TTS_ON', value)
             self.assertIn('SCRIPTS_DIRECTORY null', value)
             self.assertNotIn('WEBHOOK', value)
             self.assertNotIn('civ13.com', value)

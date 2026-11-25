@@ -110,8 +110,8 @@ If nothing fits, create a new section. Prefix your additions with the date and
 a brief tag so others can tell when and why it was added (e.g. `<!-- 2026-06-10: subcom audit -->`).
 
 <!-- 2026-10-13: unsupported OpenDream shell work -->
-OpenDream TTS returns before scheduling shell-backed audio jobs; native TTS
-remains available. Python control uses mutually exclusive engine branches.
+Chat speech synthesis runs only in the client. Python control uses mutually
+exclusive engine branches.
 tests/opendream_shell runs both production branches with counted external-effect
 adapters and omission controls, without launching OpenDream or real scripts.
 

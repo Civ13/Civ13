@@ -7,13 +7,6 @@
 	to_chat(world, "<big><b>You [(ticker.players_can_join) ? "can" : "can't"] join the game [(ticker.players_can_join) ? "now" : "anymore"].</b></big>")
 	message_admins("[key_name(src)] changed the playing setting.", key_name(src))
 
-/client/proc/toggle_tts()
-	set category = "Special"
-	set name = "Toggle TTS"
-
-	config.tts_on = !config.tts_on
-	message_admins("[key_name(src)] changed turned the TTS setting [config.tts_on ? "on" : "off"].", key_name(src))
-
 /client/proc/set_teams()
 	set category = "Special"
 	set name = "Set Teams"

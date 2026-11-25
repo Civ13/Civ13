@@ -36,7 +36,7 @@
       "code/game/mob/living/carbon/human/tester.dm": 1,
       "code/game/mob/living/carbon/human/whisper.dm": 2,
       "code/game/mob/living/carbon/resist.dm": 2,
-      "code/game/mob/living/chat_overlay.dm": 4,
+      "code/game/mob/living/chat_overlay.dm": 2,
       "code/game/mob/living/death.dm": 1,
       "code/game/mob/living/living.dm": 5,
       "code/game/mob/living/living_defense.dm": 2,

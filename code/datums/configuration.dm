@@ -55,7 +55,6 @@
 	var/ToRban = FALSE
 	var/automute_on = FALSE					//enables automuting/spam prevention
 
-	var/tts_on = TRUE
 	var/guests_allowed = TRUE
 	var/debugparanoid = FALSE
 
@@ -249,8 +248,9 @@
 				if ("no_respawn_delays")
 					no_respawn_delays = text2num(value)
 
+				// Obsolete server TTS switch in existing host configurations.
 				if ("tts_on")
-					tts_on = text2num(value)
+					continue
 
 				if ("scripts_directory")
 					if (!list("null", "Null", "NULL", "nil", "Nil", "NILL").Find(value))

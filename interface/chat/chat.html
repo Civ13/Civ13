@@ -797,7 +797,7 @@
 <body style="background-color: #392611; color: #e1e1d7;">
     <div id="chat-tabs">
         <div id="chat-tab-list"></div>
-        <button id="chat-tab-settings" type="button" title="Choose which kinds of chat each tab shows, turn plain text on or off, and set up chat translation">Tabs...</button>
+        <button id="chat-tab-settings" type="button" title="Choose which kinds of chat each tab shows, turn plain text on or off, and set up translation or local speech">Tabs...</button>
     </div>
     <div id="chat-settings">
         <h3>Chat tabs</h3>
@@ -816,6 +816,12 @@
             <label>My language <select id="chat-translate-lang"></select></label>
             <p class="hint" id="chat-translate-status"></p>
             <button id="chat-translate-setup" type="button" hidden>Set up language detection</button>
+        </div>
+        <h3>Local speech</h3>
+        <div class="translate-config">
+            <label><input id="chat-tts-on" type="checkbox"> Read incoming IC speech aloud on this device</label>
+            <p class="hint" id="chat-tts-status" role="status"></p>
+            <button id="chat-tts-preview" type="button">Preview local voice</button>
         </div>
         <button id="chat-settings-close" type="button">Done</button>
     </div>
@@ -1083,6 +1089,7 @@
         function selectTab(index) {
             if (index < 0 || index >= chatTabs.length) index = 0;
             activeTab = index;
+            if (!tabShows(activeTab, 'ic')) cancelLocalSpeech();
             unread[index] = 0;
             applyFilter();
             renderTabs();
@@ -1460,6 +1467,7 @@
                 const chatType = classifyMessage(messageDiv);
                 noteMessageType(messageDiv, chatType);
                 messagesContainer.appendChild(messageDiv);
+                queueLocalSpeech(messageDiv, chatType);
                 queueTranslation(messageDiv, chatType);
                 lastLine = messageDiv;
                 lastLineHtml = messageHtml;
@@ -1920,10 +1928,147 @@
         }
         setupPlainText();
 
+        // Speech is opt-in, per device, and uses only voices explicitly
+        // advertised by the browser as local. No default or network fallback.
+        const TTS_KEY = 'civ13-chat-local-speech-v1';
+        const TTS_QUEUE_LIMIT = 3;
+        const TTS_TEXT_LIMIT = 300;
+        const TTS_EXPIRY_MS = 10000;
+        const TTS_DEADLINE_MS = 15000;
+        const localSpeech = typeof window.SpeechSynthesisUtterance === 'function'
+            && window.speechSynthesis && typeof window.speechSynthesis.getVoices === 'function'
+            && typeof window.speechSynthesis.speak === 'function'
+            && typeof window.speechSynthesis.cancel === 'function' ? window.speechSynthesis : null;
+        const localSpeechQueue = [];
+        let activeLocalSpeech = null;
+        let localSpeechTimer = null;
+        let localSpeechEnabled = false;
+
+        function localSpeechVoice() {
+            if (!localSpeech) return null;
+            try {
+                const voices = localSpeech.getVoices().filter(function (v) { return v.localService === true; });
+                const lang = (navigator.language || '').toLowerCase();
+                const base = lang.split('-')[0];
+                return voices.find(function (v) { return v.lang.toLowerCase() === lang; })
+                    || voices.find(function (v) { return v.lang.toLowerCase().split('-')[0] === base; })
+                    || voices.find(function (v) { return v.default; })
+                    || voices[0] || null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function voiceActivated() {
+            return !navigator.userActivation || navigator.userActivation.hasBeenActive;
+        }
+
+        function updateLocalSpeechStatus() {
+            const status = document.getElementById('chat-tts-status');
+            const voice = localSpeechVoice();
+            document.getElementById('chat-tts-preview').disabled = !voice;
+            if (!localSpeech) status.textContent = 'This chat browser does not support local speech.';
+            else if (!voice) status.textContent = 'No on-device speech voice is available.';
+            else if (localSpeechEnabled && !voiceActivated()) status.textContent = 'Click in the chat to allow local speech.';
+            else status.textContent = localSpeechEnabled ? 'Only new, readable IC speech on this tab is read aloud.'
+                : 'Off. When enabled, speech stays on this device.';
+        }
+
+        function cancelLocalSpeech() {
+            localSpeechQueue.length = 0;
+            if (!activeLocalSpeech) return;
+            activeLocalSpeech = null;
+            clearTimeout(localSpeechTimer);
+            try { localSpeech.cancel(); } catch (e) { /* keep chat usable */ }
+        }
+
+        function speakLocally(text, voice, onDone) {
+            try {
+                const utterance = new window.SpeechSynthesisUtterance(text);
+                utterance.voice = voice;
+                utterance.lang = voice.lang;
+                activeLocalSpeech = utterance;
+                function finish(ok) {
+                    if (activeLocalSpeech !== utterance) return;
+                    clearTimeout(localSpeechTimer);
+                    activeLocalSpeech = null;
+                    if (onDone) onDone(ok);
+                    nextLocalSpeech();
+                }
+                utterance.onend = function () { finish(true); };
+                utterance.onerror = function () { finish(false); };
+                localSpeechTimer = setTimeout(function () {
+                    cancelLocalSpeech();
+                    if (onDone) onDone(false);
+                }, TTS_DEADLINE_MS);
+                localSpeech.speak(utterance);
+            } catch (e) {
+                cancelLocalSpeech();
+                if (onDone) onDone(false);
+            }
+        }
+
+        function nextLocalSpeech() {
+            if (!localSpeechEnabled || activeLocalSpeech || !tabShows(activeTab, 'ic')) return;
+            while (localSpeechQueue.length) {
+                const item = localSpeechQueue.shift();
+                if (Date.now() - item.queuedAt > TTS_EXPIRY_MS) continue;
+                const voice = localSpeechVoice();
+                if (!voice) break;
+                speakLocally(item.text, voice);
+                return;
+            }
+            localSpeechQueue.length = 0;
+        }
+
+        function queueLocalSpeech(div, type) {
+            if (!localSpeechEnabled || !localSpeech || type !== 'ic' || !voiceActivated()
+                || div.classList.contains('filtered') || div.querySelector('.chat-notr')) return;
+            const source = div.querySelector("span.chattype-ic span.chat-local-voice > span.chat-tr");
+            if (!source) return;
+            const text = Array.from(source.textContent.replace(/\s+/g, ' ').trim()).slice(0, TTS_TEXT_LIMIT).join('');
+            if (!text || localSpeechQueue.length >= TTS_QUEUE_LIMIT) return;
+            localSpeechQueue.push({ text: text, queuedAt: Date.now() });
+            nextLocalSpeech();
+        }
+
+        function setupLocalSpeech() {
+            const option = document.getElementById('chat-tts-on');
+            try { localSpeechEnabled = window.localStorage.getItem(TTS_KEY) === '1'; } catch (e) { /* off */ }
+            option.checked = localSpeechEnabled;
+            option.disabled = !localSpeech;
+            option.addEventListener('change', function () {
+                localSpeechEnabled = option.checked;
+                if (!localSpeechEnabled) cancelLocalSpeech();
+                try { window.localStorage.setItem(TTS_KEY, localSpeechEnabled ? '1' : '0'); } catch (e) { /* this session only */ }
+                updateLocalSpeechStatus();
+            });
+            document.getElementById('chat-tts-preview').addEventListener('click', function () {
+                const voice = localSpeechVoice();
+                if (!voice) return updateLocalSpeechStatus();
+                cancelLocalSpeech();
+                const status = document.getElementById('chat-tts-status');
+                status.textContent = 'Playing a preview using a local voice…';
+                speakLocally('This is your local chat speech preview.', voice, function (ok) {
+                    status.textContent = ok ? 'Local preview completed.' : 'The local voice could not play the preview.';
+                });
+            });
+            if (localSpeech && typeof localSpeech.addEventListener === 'function') {
+                localSpeech.addEventListener('voiceschanged', updateLocalSpeechStatus);
+            }
+            window.addEventListener('click', function (event) {
+                if (event.target.id !== 'chat-tts-preview') updateLocalSpeechStatus();
+            });
+            window.addEventListener('pagehide', cancelLocalSpeech);
+            updateLocalSpeechStatus();
+        }
+        setupLocalSpeech();
+
         /**
          * Clears all messages from the chat.
          */
         function clearChat() {
+            cancelLocalSpeech();
             messagesContainer.innerHTML = '';
             for (const type in typeCounts) typeCounts[type] = 0;
             unread = [];
@@ -1989,6 +2134,7 @@
             const now = Date.now();
             if (pingSentAt && !connectionLost && now - pingSentAt >= heartbeatTimeoutMs) {
                 connectionLost = true;
+                cancelLocalSpeech();
                 connectionNotice('connection-lost', 'Connection lost: the server has not answered for '
                     + Math.round((now - pingSentAt) / 1000) + ' seconds. The server may have stopped or your'
                     + ' connection died. If this does not clear, reconnect.');

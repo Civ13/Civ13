@@ -1024,7 +1024,6 @@ jobs:
         run: |
           source "$GITHUB_WORKSPACE/BYOND/byond/bin/byondsetup"
           python3 tests/opendream_shell/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/shell-compat"
-          python3 tests/opendream_shell/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/shell-tts-control" --negative-control tts
           python3 tests/opendream_shell/run.py --byond-bin "$GITHUB_WORKSPACE/BYOND/byond/bin" --output "$RUNNER_TEMP/shell-dispatch-control" --negative-control dispatch
 
       - name: Verify explicit object processing units and negative controls

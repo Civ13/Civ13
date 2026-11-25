@@ -6,9 +6,6 @@ PREFIX = b'''// Test-only native/shell boundaries; no operating-system settings 
 
 # Guards precede every original body, including global construction before New.
 GUARDS = {
-    'code/game/mob/living/chat_overlay.dm': (
-        ('/mob/proc/play_tts(message,var/mob/living/speaker)', '\treturn gaia_visibility_denied_shell()\n'),
-    ),
     'code/processes/python.dm': (
         ('/process/python/proc/execute(var/command, var/list/py_args = list())', '\treturn gaia_visibility_denied_shell()\n'),
     ),
