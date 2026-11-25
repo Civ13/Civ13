@@ -278,28 +278,47 @@
 		if (A.anchored && !ismob(A))
 			continue
 		. += A
+	// Keep a rider with their seat. Fixed furniture isn't part of the load.
+	var/list/carried = .
+	for (var/mob/living/M in carried.Copy())
+		if (M.buckled && !(M.buckled in carried))
+			carried -= M
 
 // Why the platform refuses to carry what is on it, or null.
-/obj/structure/lift_platform/proc/load_refusal()
+/obj/structure/lift_platform/proc/load_refusal(list/carried = null)
 	if (carries_heavy)
 		return null
-	for (var/atom/movable/A in riders())
+	if (isnull(carried))
+		carried = riders()
+	for (var/atom/movable/A in carried)
 		if (needs_hoist(A))
 			return "\The [A] is too heavy for \the [src]. An iron lift car or a hoist could take it."
 	return null
 
 // Moves the platform and its riders to level z. TRUE when it got there.
-/obj/structure/lift_platform/proc/arrive(z)
+/obj/structure/lift_platform/proc/arrive(z, list/carried = null)
 	var/turf/here = get_turf(src)
 	var/turf/there = lift_turf_on(here, z)
 	if (!there || !lift_stop_open(there))
 		return FALSE
-	var/list/carried = riders()
+	if (isnull(carried))
+		carried = riders()
 	if (!persistence_set_loc(there))
 		return FALSE
+	var/list/seated = list()
 	for (var/atom/movable/A in carried)
-		if (!QDELETED(A) && A.loc == here)
-			A.persistence_set_loc(there)
+		if (QDELETED(A) || A.loc != here)
+			continue
+		if (isliving(A))
+			var/mob/living/M = A
+			if (M.buckled)
+				seated += M
+				continue
+		A.persistence_set_loc(there)
+	// Test the actual seat destination rather than relying on rider order.
+	for (var/mob/living/M in seated)
+		if (!QDELETED(M) && M.loc == here && M.buckled && (M.buckled in carried) && M.buckled.loc == there)
+			M.persistence_set_loc(there)
 	playsound(there, 'sound/effects/ladder.ogg', 40, TRUE)
 	return TRUE
 
@@ -336,7 +355,16 @@
 		return FALSE
 	if (rider && get_turf(user) != start)
 		return FALSE
-	if (!(z in shaft_levels()) || !arrive(z))
+	return finish_travel(user, z, levels)
+
+// Take one fresh snapshot after winding. Use it for both admission and arrival.
+/obj/structure/lift_platform/proc/finish_travel(mob/living/user, z, list/levels)
+	var/list/carried = riders()
+	var/refusal = load_refusal(carried)
+	if (refusal)
+		to_chat(user, SPAN_WARNING(refusal))
+		return FALSE
+	if (!(z in shaft_levels()) || !arrive(z, carried))
 		to_chat(user, SPAN_WARNING("The shaft is blocked."))
 		return FALSE
 	visible_message(SPAN_NOTICE("\The [src] stops at the [storey_label(levels, z)]."))
@@ -424,9 +452,9 @@
 			T = z ? lift_turf_on(N, z) : null
 			if (!T)
 				break
-			P = locate() in T
-			if (P)
-				return P
+			for (var/obj/structure/lift_platform/candidate in T)
+				if (here.z in candidate.shaft_levels())
+					return candidate
 			count++
 		z = here.z
 		count = 0
@@ -435,9 +463,9 @@
 			T = z ? lift_turf_on(N, z) : null
 			if (!T)
 				break
-			P = locate() in T
-			if (P)
-				return P
+			for (var/obj/structure/lift_platform/candidate in T)
+				if (here.z in candidate.shaft_levels())
+					return candidate
 			count++
 	return null
 

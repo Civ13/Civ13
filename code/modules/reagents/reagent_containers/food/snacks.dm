@@ -284,6 +284,11 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 			return TRUE
 	return FALSE
 
+// A cut portion uses the source's contents instead of the new item's recipe.
+/obj/item/weapon/reagent_containers/food/snacks/proc/fill_food_slice(obj/item/weapon/reagent_containers/food/snacks/slice, portion_volume)
+	slice.reagents.clear_reagents()
+	reagents.trans_to_obj(slice, portion_volume)
+
 /obj/item/weapon/reagent_containers/food/snacks/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W,/obj/item/weapon/storage) && user.a_intent != I_HARM)
 		..() // -> item/attackby()
@@ -309,7 +314,7 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 		var/reagents_per_slice = reagents.total_volume/slices_num
 		for (var/i=1 to (slices_num - slices_lost))
 			var/obj/item/weapon/reagent_containers/food/snacks/slice = new slice_path(loc)
-			reagents.trans_to_obj(slice, reagents_per_slice)
+			fill_food_slice(slice, reagents_per_slice)
 			slice.satisfaction = src.satisfaction / slices_num
 		qdel(src)
 		return

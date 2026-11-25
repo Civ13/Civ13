@@ -54,8 +54,9 @@
 	soak(user, W)
 
 /obj/item/flax_bundle/attack_hand(mob/user)
-	if (istype(loc, /turf/floor/beach/water))
-		soak(user, loc)
+	var/turf/floor/beach/water/W = loc
+	if (valid_water(W))
+		soak(user, W)
 		return
 	return ..()
 

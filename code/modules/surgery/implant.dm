@@ -155,8 +155,12 @@
 	max_duration = 100
 
 	can_use(mob/living/user, mob/living/human/target, target_zone, obj/item/tool)
+		if (!..())
+			return FALSE
+		if (!istype(target.get_organ(target_zone), /obj/item/organ/external/head))
+			return TRUE
 		var/obj/item/organ/brain/sponge = target.internal_organs_by_name["brain"]
-		return ..() && (!sponge || !sponge.damage)
+		return !sponge || !sponge.damage
 
 	begin_step(mob/user, mob/living/human/target, target_zone, obj/item/tool)
 		var/obj/item/organ/external/affected = target.get_organ(target_zone)

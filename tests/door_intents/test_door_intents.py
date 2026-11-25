@@ -258,3 +258,70 @@ class CustomDoorKeyDispatch(unittest.TestCase):
         broken = KEY_DOOR.replace('\t\t\ttoggle_key_lock(user)', '\t\t\treturn', 1)
         self.assertNotEqual(broken, KEY_DOOR)
         self.assertEqual(self.project(broken, 'key', 42, [], False), (False, []))
+
+
+class FittedLockAdmissionTest(unittest.TestCase):
+    """Exercise the shared admission rules with ordinary lock states and no game runtime."""
+
+    SOURCE = (ROOT / 'code/game/objects/structures/key_doors/fitted_locks.dm').read_text(encoding='utf-8')
+
+    def helper(self, name, args):
+        body = source_adapter.extract(self.SOURCE, '/proc/' + name)
+        # The chat boundary is inert; retain every executable policy condition.
+        body = re.sub(r'(?m)^(\t+)to_chat\(.*\)$', r'\1notify()', body)
+        env = dict(
+            LOCK_SEAL='seal',
+            LOCK_CATCH='catch',
+            host_lock=lambda host: host.lock,
+            host_has_other_lock=lambda host: host.other_lock,
+            host_takes_hasp_lock=lambda host, kind: host.hasp and kind == 'padlock',
+            host_is_shut=lambda host: host.shut,
+            host_lock_side=lambda host, lock, user: user.side,
+            notify=lambda: None,
+        )
+        return source_adapter.project('/check()\n' + body + '\n', '/check', args, env)
+
+    def test_fit_policy_for_empty_hosts_resealing_and_other_locks(self):
+        allowed = self.helper('lock_fit_allowed', 'host, kind, user')
+        host = SimpleNamespace(lock=None, other_lock=False, hasp=False, shut=True)
+        self.assertTrue(allowed(host, 'warded', None))
+        host.lock = SimpleNamespace(kind='seal')
+        self.assertFalse(allowed(host, 'warded', None))
+        self.assertTrue(allowed(host, 'seal', None))
+        host.lock = SimpleNamespace(kind='warded')
+        self.assertFalse(allowed(host, 'seal', None))
+        host.lock = None
+        host.shut = False
+        self.assertFalse(allowed(host, 'seal', None))
+        host.shut, host.other_lock = True, True
+        self.assertFalse(allowed(host, 'warded', None))
+        host.hasp = True
+        self.assertTrue(allowed(host, 'padlock', None))
+
+    def test_remove_policy_preserves_unlocked_thumb_and_known_catch_access(self):
+        allowed = self.helper('lock_removal_allowed', 'host, L, user')
+        lock = SimpleNamespace(kind='padlock', locked=False, blocks=lambda: lock.locked,
+                               catch_known=lambda user: user.knows_catch)
+        user = SimpleNamespace(side='key', knows_catch=False)
+        self.assertTrue(allowed(None, lock, user))
+        lock.locked = True
+        self.assertFalse(allowed(None, lock, user))
+        for side in ('thumb', 'both'):
+            user.side = side
+            self.assertTrue(allowed(None, lock, user))
+        user.side, lock.kind = 'key', 'catch'
+        self.assertFalse(allowed(None, lock, user))
+        user.knows_catch = True
+        self.assertTrue(allowed(None, lock, user))
+
+    def test_timed_actions_use_same_policy_before_wait_and_before_commit(self):
+        for procedure, guard, commit in (
+            ('fit_lock', 'if (!lock_fit_allowed(host, F.lock_kind, user))', 'F.make_lock(user)'),
+            ('remove_lock', 'if (!lock_removal_allowed(host, L, user))', 'host_set_lock(host, null)'),
+        ):
+            with self.subTest(procedure=procedure):
+                body = source_adapter.extract(self.SOURCE, '/proc/' + procedure)
+                before, after = body.split('do_after(', 1)
+                self.assertIn(guard, before)
+                commit_start = after.index(commit)
+                self.assertIn(guard + '\n\t\treturn FALSE', after[:commit_start])

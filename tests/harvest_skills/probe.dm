@@ -51,6 +51,7 @@ var/hs_runtime_error = FALSE
 		hs_butcher_checks()
 		hs_farming_checks()
 		hs_stacked_crop_checks()
+		hs_crop_radiation_checks()
 	catch(var/exception/e)
 		hs_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = hs_failures, "runtime_error" = hs_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -205,6 +206,35 @@ var/hs_runtime_error = FALSE
 	large.spawn_produce(1)
 	hs_check(hs_stack_total(T, hemp) == 60, "yield above one stack preserves all sixty units")
 	hs_check(hs_stack_bounds(T), "yield above one stack is split at capacity")
+	hs_clear(T)
+
+// Ordinary and pollination harvests must leave clean stock clean.
+/proc/hs_crop_radiation_checks()
+	var/turf/T = locate(9, 8, 1)
+	for (var/pollinated in list(FALSE, TRUE))
+		var/obj/item/stack/material/hemp/clean = new(T, 49, FALSE)
+		var/obj/structure/farming/plant/hemp/hs_probe/crop = new(T)
+		crop.radiation = 8
+		crop.plant_nutrition = 0
+		crop.stack_amount = 3
+		if (pollinated)
+			crop.spawn_pollinated_extra(T)
+		else
+			crop.spawn_produce()
+		var/irradiated = 0
+		for (var/obj/item/stack/material/hemp/pile in T)
+			if (pile.radiation == 4)
+				irradiated += pile.amount
+		hs_check(clean.amount == 49 && clean.radiation == 0 && irradiated == 3, "crop radiation stays with all three harvested units (pollinated=[pollinated])")
+		hs_clear(T)
+	var/obj/item/stack/material/hemp/treated = new(T, 49, FALSE)
+	treated.radiation = 4
+	var/obj/structure/farming/plant/hemp/hs_probe/another = new(T)
+	another.radiation = 8
+	another.plant_nutrition = 0
+	another.stack_amount = 3
+	another.spawn_produce()
+	hs_check(treated.amount == 50 && treated.radiation == 4 && hs_stack_total(T, /obj/item/stack/material/hemp) == 52, "equal radiation still consolidates without losing overflow")
 	hs_clear(T)
 
 /proc/hs_stack_bounds(turf/T)

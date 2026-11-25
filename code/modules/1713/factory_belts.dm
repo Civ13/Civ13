@@ -126,13 +126,15 @@ var/global/list/factory_belt_moved = list()
 
 // A belt runs while a powered drive on its level is within the drive's range.
 // The last drive is cached; only a lost drive searches the powered drives.
-/obj/structure/factory_belt/proc/belt_powered()
+/obj/structure/factory_belt/proc/belt_powered(cache_drive = TRUE)
 	if (drive && drive.drive_covers(src))
 		return TRUE
-	drive = null
+	if (cache_drive)
+		drive = null
 	for (var/obj/structure/factory_drive/D in factory_powered_drives)
 		if (D.drive_covers(src))
-			drive = D
+			if (cache_drive)
+				drive = D
 			return TRUE
 	return FALSE
 

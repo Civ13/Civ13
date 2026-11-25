@@ -31,7 +31,7 @@ def transform_sources(control=None):
     axis = (ROOT / AXIS).read_text(encoding='utf-8')
     wheels = (ROOT / WHEELS).read_text(encoding='utf-8')
     if control == 'forced-move':
-        start = human.index('/mob/living/human/forceMove(atom/destination, var/special_event)')
+        start = human.index('/mob/living/human/forceMove(atom/destination,')
         end = human.index('\n/mob/living/human/ex_act', start)
         human = human[:start] + human[end:]
     elif control in ('translation', 'rotation'):

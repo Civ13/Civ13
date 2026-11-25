@@ -26,6 +26,25 @@ class Wiring(unittest.TestCase):
         self.assertIn('H.burial_release()', grave)
         self.assertNotIn('buried_proc', grave)
 
+    def test_refused_cover_preserves_grave_contents_and_seated_occupant(self):
+        grave = read('code/game/objects/structures/religious.dm')
+        cover = grave.split('/proc/cover_grave()', 1)[1].split('/proc/uncover_grave()', 1)[0]
+        guard = cover.index('if (L.buckled || L.pinned.len)')
+        self.assertLess(guard, cover.index('open = FALSE'))
+        self.assertLess(guard, cover.index('forceMove(src)'))
+        self.assertIn('return FALSE', cover[guard:cover.index('open = FALSE')])
+        self.assertIn('return TRUE', cover)
+        self.assertLess(grave.index('if (!cover_grave())'), grave.index('filled in [src]'))
+
+    def test_operating_table_checks_drop_target_before_moving_them(self):
+        table = read('code/game/objects/structures/optable.dm')
+        drop = table.split('/MouseDrop_T(mob/target, mob/user)', 1)[1].split('/verb/climb_on()', 1)[0]
+        self.assertIn('user.stat || user.restrained() || !ishuman(target) || !check_table(target)', drop)
+        self.assertNotIn('check_table(user)', drop)
+        self.assertLess(drop.index('check_table(target)'), drop.index('take_victim(target,user)'))
+        guard = table.split('/proc/check_table(', 1)[1]
+        self.assertIn('if (patient.buckled)', guard)
+
     def test_resist_claws_out_before_closet_breakout(self):
         dme = read('civ13.dme').splitlines()
         burial = dme.index('#include "code\\modules\\1713\\burial.dm"')

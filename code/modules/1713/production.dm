@@ -2306,26 +2306,12 @@
 	if (!restoring)
 		initialize()
 
-/obj/structure/compost/proc/credit_compost(mob/living/human/H, item_name, credit)
-	current += credit
-	if (H)
-		H.visible_message("<span class='warning'>[H] places \the [item_name] in \the [src], composting it.</span>",
-			"<span class='notice'>You place \the [item_name] in \the [src], composting it.</span>")
-
+// Only the save marker may restore a legacy balance above the input cap.
 /obj/structure/compost/proc/add(obj/item/W, mob/living/human/H, amount_to_add, legacy_marker = FALSE)
 	if (!legacy_marker && amount_to_add > 10 - current)
 		return
 	credit_compost(H, W.name, amount_to_add)
 	qdel(W)
-
-/obj/structure/compost/proc/add_compost_stack(obj/item/stack/S, mob/living/human/H, units_per_compost)
-	// DM round() floors. Only take whole stack units, without the crafting discount.
-	var/units = min(S.amount, round(max(0, 10 - current) * units_per_compost + 0.00001))
-	if (units <= 0)
-		return
-	var/item_name = S.name
-	if (S.use(units))
-		credit_compost(H, item_name, min(10 - current, units / units_per_compost))
 
 /obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
 	if (nitrary_mode && !is_tool(W, TOOL_WRENCH) && !is_tool(W, TOOL_HAMMER))
@@ -2811,3 +2797,19 @@
 		cancel_primitive_work()
 	else
 		finish_work()
+
+// Compost loading helpers (both input paths share credit and messaging).
+/obj/structure/compost/proc/credit_compost(mob/living/human/H, item_name, credit)
+	current += credit
+	if (H)
+		H.visible_message("<span class='warning'>[H] places \the [item_name] in \the [src], composting it.</span>",
+			"<span class='notice'>You place \the [item_name] in \the [src], composting it.</span>")
+
+/obj/structure/compost/proc/add_compost_stack(obj/item/stack/S, mob/living/human/H, units_per_compost)
+	// DM round() floors. Only take whole stack units, without the crafting discount.
+	var/units = min(S.amount, round(max(0, 10 - current) * units_per_compost + 0.00001))
+	if (units <= 0)
+		return
+	var/item_name = S.name
+	if (S.use(units))
+		credit_compost(H, item_name, min(10 - current, units / units_per_compost))

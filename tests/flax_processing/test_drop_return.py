@@ -103,6 +103,13 @@ class HumanDropReturnContracts(unittest.TestCase):
             item = NS(loc=location)
             self.assertEqual(bool(result and item.loc is water), expected)
 
+    def test_click_resumes_retting_only_in_suitable_water(self):
+        flax = source('code/modules/1713/flax_processing.dm')
+        hand = block(flax, '/obj/item/flax_bundle/attack_hand')
+        self.assertIn('if (valid_water(W))\n\t\tsoak(user, W)\n\t\treturn\n\treturn ..()', hand)
+        water = block(flax, '/obj/item/flax_bundle/proc/valid_water')
+        self.assertIn('istype(W) && !W.salty && W.radiation <= 0 && loc == W', water)
+
     def test_tanning_keeps_direct_transfer_and_both_production_and_legacy_controls(self):
         rack = source('tests/animal_harvest/rack_transfer_probe.dm')
         self.assertIn('harvest_assert(drop_result && clear_batch.loc == site', rack)

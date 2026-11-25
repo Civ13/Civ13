@@ -3,6 +3,8 @@
 	w_class = 10
 
 	var/climbable = FALSE
+	// Saved as a scalar so a deployed ladder never holds a cross-level object reference.
+	var/siege_ladder_support_key
 	var/dismantle_wood_fallback = TRUE // FALSE: not wood, so no recipe means no wood back (crafted_refund_stack)
 	var/breakable = FALSE
 	var/crushable = TRUE // If the structure can be crushed by vehicles.
@@ -126,13 +128,32 @@
 	else
 		return ..()
 
+/obj/structure/proc/supports_siege_ladders()
+	return istype(src, /obj/structure/barricade) || istype(src, /obj/structure/gate) || istype(src, /obj/structure/grille/metalsheetfence)
+
+/obj/structure/proc/ensure_siege_ladder_support_key()
+	if (!siege_ladder_support_key)
+		siege_ladder_support_key = md5("\ref[src]-[world.realtime]-[rand(1, 1000000000)]")
+	return siege_ladder_support_key
+
+// A ladder is an extra route, not a change to the structure's own climbability.
+/obj/structure/proc/is_climbable_with_support()
+	if (climbable)
+		return TRUE
+	if (!isturf(loc) || !supports_siege_ladders())
+		return FALSE
+	for (var/obj/item/weapon/siegeladder/ladder in loc)
+		if (ladder.deployed_target() == src)
+			return TRUE
+	return FALSE
+
 /obj/structure/proc/can_climb(var/mob/living/user, post_climb_check=0)
 	var/movingto = get_step(get_turf(src), dir)
 	if (map && movingto && map.check_caribbean_block(user, movingto))
 		to_chat(user, SPAN_WARNING("You cannot pass the invisible wall until the <b>Grace Period</b> has ended."))
 		return FALSE
 	
-	if (!climbable || !can_touch(user) || (!post_climb_check && (user in climbers)))
+	if (!is_climbable_with_support() || !can_touch(user) || (!post_climb_check && (user in climbers)))
 		return FALSE
 	
 	if (!user.Adjacent(src) && !istype(src, /obj/structure/window/barrier))
@@ -164,7 +185,7 @@
 		if (istype(O, /obj/structure))
 			var/obj/structure/S = O
 			if (!S) continue  // Skip if S is not valid
-			if (S.climbable) continue  // Skip if the object is climbable   
+			if (S.is_climbable_with_support()) continue  // Skip if the object is climbable
 			if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
 				objects_blocked += O.name // Add the dense object's name to the list of objects that block the way.
 	
@@ -174,7 +195,7 @@
 			if (istype(O, /obj/structure))
 				var/obj/structure/S = O
 				if (!S) continue  // Skip if S is not valid
-				if (S.climbable) continue  // Skip if the object is climbable
+				if (S.is_climbable_with_support()) continue  // Skip if the object is climbable
 				if (O && O.density && !(O.flags & ON_BORDER)) //ON_BORDER structures are handled by the Adjacent() check.
 					objects_blocked_2 += O.name // Add the dense object's name to the list of objects that block the way.
 		if(!isemptylist(objects_blocked_2))
@@ -190,7 +211,7 @@
 	for (var/obj/O in T.contents)  // Iterate over all objects in the turf
 		if (istype(O, /obj/structure)) // Type-cast to the superclass which has `climbable` defined
 			var/obj/structure/S = O
-			if(S.climbable) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
+			if (S.is_climbable_with_support()) continue // We don't include this in the is-type checks because open crates aren't climbable if open, so that could lead to some technicalities
 			if (istype(O, /obj/structure/closet/crate))
 				continue // Allow us to climb onto crates
 			if (istype(O, /obj/structure/table))
@@ -225,7 +246,7 @@
 			if(box.opened)
 				to_chat(user, SPAN_WARNING("You can't climb onto an opened crate."))
 				return
-		if(src.climbable) // necessary to check if the siege-ladder has changed the climbable value for [sand]stone walls (barricades), good check regardless.
+		if (is_climbable_with_support())
 			if (!T || T.density)
 				return
 			user.visible_message(SPAN_WARNING("[user] starts climbing onto \the [src]!"), SPAN_WARNING("You start climbing onto \the [src]!"))

@@ -478,6 +478,18 @@ class RouletteSettlement(unittest.TestCase):
         broken, _ = self.collect(remaining, first, mutation=old)
         self.assertNotEqual(broken, [[second, 'won', 15]])
 
+    def test_safe_charges_space_only_after_an_admitted_hand_transfer(self):
+        path = 'code/game/objects/structures/safe.dm'
+        safe = (ROOT / path).read_text(encoding='utf-8')
+        store = safe.split('/obj/structure/safe/attackby(', 1)[1].split('obj/structure/safe/ex_act', 1)[0]
+        guard = store.index('!actor.transfer_held_item_to(I, src)')
+        charge = store.index('space += I.w_class')
+        self.assertLess(store.index('I.w_class + space <= maxspace'), guard)
+        self.assertLess(guard, charge)
+        self.assertIn('return', store[guard:charge])
+        self.assertNotIn('user.drop_item()', store)
+        self.assertNotIn('I.loc = src', store)
+
 
 if __name__ == '__main__':
     unittest.main()

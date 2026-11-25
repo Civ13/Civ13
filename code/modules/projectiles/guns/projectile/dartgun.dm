@@ -215,9 +215,10 @@
 			for (var/datum/reagent/R in B.reagents.reagent_list)
 				contents_text += "[R.volume] units of [R.name]"
 		var/mixed = check_beaker_mixing(B)
+		var/beaker_ref = "\ref[B]"
 		items += list(panel_item("[B] [i]", contents_text.len ? jointext(contents_text, ", ") : "Empty", list(
-			panel_button(mixed ? "Mixing" : "Not mixing", mixed ? "stop_mix" : "mix", i, selected = mixed),
-			panel_button("Eject", "eject", i))))
+			panel_button(mixed ? "Mixing" : "Not mixing", mixed ? "stop_mix" : "mix", beaker_ref, selected = mixed),
+			panel_button("Eject", "eject", beaker_ref))))
 		i++
 	var/list/sections = list(panel_section("Containers", items = items, empty = "There is no container inserted!"))
 	if (ammo_magazine)
@@ -234,29 +235,32 @@
 			return TRUE
 	return FALSE
 
+// Resolve only against the containers still attached to this gun. Stale panel
+// actions must not be interpreted as positions in a reordered list.
+/obj/item/weapon/gun/projectile/dartgun/proc/attached_beaker_with_ref(beaker_ref)
+	for (var/obj/item/weapon/reagent_containers/B in beakers)
+		if (!QDELETED(B) && B.loc == src && "\ref[B]" == beaker_ref)
+			return B
+	return null
+
 /obj/item/weapon/gun/projectile/dartgun/Topic(href, href_list)
-	if(..()) return TRUE
+	if (..()) return TRUE
 	add_fingerprint(usr)
-	if(href_list["stop_mix"])
-		var/index = text2num(href_list["stop_mix"])
-		if(index <= beakers.len)
-			for(var/obj/item/M in mixing)
-				if(M == beakers[index])
-					mixing -= M
-					break
+	if (href_list["stop_mix"])
+		var/obj/item/weapon/reagent_containers/B = attached_beaker_with_ref(href_list["stop_mix"])
+		if (B)
+			mixing -= B
 	else if (href_list["mix"])
-		var/index = text2num(href_list["mix"])
-		if(index <= beakers.len)
-			mixing += beakers[index]
+		var/obj/item/weapon/reagent_containers/B = attached_beaker_with_ref(href_list["mix"])
+		if (B)
+			mixing |= B
 	else if (href_list["eject"])
-		var/index = text2num(href_list["eject"])
-		if(index <= beakers.len)
-			if(beakers[index])
-				var/obj/item/weapon/reagent_containers/B = beakers[index]
-				to_chat(usr, "You remove [B] from [src].")
-				mixing -= B
-				beakers -= B
-				B.loc = get_turf(src)
+		var/obj/item/weapon/reagent_containers/B = attached_beaker_with_ref(href_list["eject"])
+		if (B)
+			to_chat(usr, "You remove [B] from [src].")
+			mixing -= B
+			beakers -= B
+			B.loc = get_turf(src)
 	else if (href_list["eject_cart"])
 		unload_ammo(usr)
 	updateUsrDialog()

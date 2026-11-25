@@ -37,7 +37,7 @@
 	var/obj/structure/bed/chair/gunner/gunner_chair = null
 	var/see_amount_loaded = FALSE
 	var/autoloader = FALSE
-	var/is_loading = FALSE
+	var/tmp/is_loading = FALSE // In-flight autoloader work must not survive a save.
 
 	var/azimuth = 180
 	var/distance = 5
