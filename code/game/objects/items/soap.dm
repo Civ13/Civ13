@@ -40,52 +40,44 @@
 /mob/living/human
 	var/soap_cooldown = 0 //Used to stop abuse from the mood boost that the soap gives
 
-//Cleaning with soap routines
+// Use the same reach, clothing and water rules before and after the wash.
+/mob/living/human/proc/soap_wash_available(mob/user)
+	if (QDELETED(src) || QDELETED(user) || (src != user && !user.Adjacent(src)) || !is_nude())
+		return FALSE
+	var/turf/T = get_turf(src)
+	return T && (istype(user.loc, /turf/floor/beach/water) || bath_water_at(T) || (locate(/obj/structure/sink) in T.contents))
+
 /mob/living/human/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (offline_sleep_refuses(user))
 		return TRUE
-	if(istype(W, /obj/item/weapon/soap))
-		var/obj/item/weapon/soap/S = W
-		if( src.is_nude())
-			var/keep_going = FALSE
-			var/turf/T = get_turf(src)
-			if(istype(user.loc, /turf/floor/beach/water))
-				keep_going = TRUE
-			else if(bath_water_at(T))
-				keep_going = TRUE
-			else if(locate(/obj/structure/sink) in T.contents)
-				keep_going = TRUE
-			else
-				keep_going = FALSE
-
-			if(keep_going)
-				if(S.washing) //No spam
-					return
-				if(src == user)
-					user.visible_message("<span class='notice'>[user] starts to wash himself with \the [W.name]</span>", "<span class = 'notice'>You start to wash yourself with \the [W.name].</span>")
-				else
-					user.visible_message("<span class='notice'>[user] start to wash [src.name] with \the [W.name]</span>", "<span class = 'notice'>You start to wash [src.name] with \the [W.name].</span>")
-				S.washing = TRUE
-				if(do_after(user, 40))
-					src.hygiene = HYGIENE_LEVEL_CLEAN //Very clean
-					S.washing = FALSE
-					S.used += 1
-					if(S.used >= 30) //Delete the soap if its used to it's maximum
-						qdel(S)
-					else
-						S.update_icon()
-					if((world.time - src.soap_cooldown >= S.mood_boost_wait) || !soap_cooldown)
-						src.adjust_mood(10, "a good wash") //Same mood boost as eating a delicious food
-						to_chat(src, "You really enjoy bathing with the [W.name]. You feel much better!")
-						src.soap_cooldown = world.time
-					else
-						to_chat(src, "You dont really enjoy bathing with the [W.name], you did that not long ago.")
-				else
-					S.washing = FALSE //Moved before finishing the do_after
-			else
-				return
-	else
+	if (!istype(W, /obj/item/weapon/soap))
 		return ..()
+	var/obj/item/weapon/soap/S = W
+	if (S.washing || !soap_wash_available(user))
+		return
+	if (src == user)
+		user.visible_message("<span class='notice'>[user] starts to wash with \the [S.name]</span>", "<span class='notice'>You start to wash yourself with \the [S.name].</span>")
+	else
+		user.visible_message("<span class='notice'>[user] starts to wash [src.name] with \the [S.name]</span>", "<span class='notice'>You start to wash [src.name] with \the [S.name].</span>")
+	S.washing = TRUE
+	var/finished = do_after(user, 40, src)
+	if (QDELETED(S))
+		return
+	S.washing = FALSE
+	if (!finished || !soap_wash_available(user) || user.get_active_hand() != S || offline_sleep_refuses(user))
+		return
+	hygiene = HYGIENE_LEVEL_CLEAN
+	if ((world.time - soap_cooldown >= S.mood_boost_wait) || !soap_cooldown)
+		src.adjust_mood(10, "a good wash")
+		to_chat(src, "You really enjoy bathing with the [S.name]. You feel much better!")
+		soap_cooldown = world.time
+	else
+		to_chat(src, "You don't really enjoy bathing with the [S.name], you did that not long ago.")
+	S.used += 1
+	if (S.used >= 30)
+		qdel(S)
+	else
+		S.update_icon()
 
 /obj/item/weapon/soap/lard/update_icon()
 	var/x

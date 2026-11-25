@@ -77,6 +77,16 @@ class CavitySurgery(unittest.TestCase):
         body = extract(type_body(read(SOURCE), CLOSE), 'end_step')
         self.assertRegex(body, r'(?m)^\s*affected\.cavity\s*=\s*FALSE\s*$')
 
+    def test_brain_damage_guard_only_applies_to_cranial_retrieval(self):
+        body = extract(type_body(read(SOURCE), REMOVAL), 'can_use')
+        parent = body.index('if (!..())')
+        region = body.index('if (!istype(target.get_organ(target_zone), /obj/item/organ/external/head))')
+        brain_check = body.index('return !sponge || !sponge.damage')
+        self.assertLess(parent, region)
+        self.assertLess(region, brain_check)
+        self.assertIn('return FALSE', body[parent:region])
+        self.assertIn('return TRUE', body[region:brain_check])
+
     def test_search_roll_scales_with_medical_skill(self):
         source = read(SOURCE)
         self.assertFalse(finds_implant(source, 0.5, 26))

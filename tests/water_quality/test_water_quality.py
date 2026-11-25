@@ -80,8 +80,9 @@ class WaterQualityTest(unittest.TestCase):
     def test_soap_cleans_only_after_the_wash(self):
         soap = read("code/game/objects/items/soap.dm")
         start = soap.index("S.washing = TRUE")
-        wash = soap.index("if(do_after(user, 40))", start)
-        self.assertNotIn("hygiene = HYGIENE_LEVEL_CLEAN", soap[start:wash])
+        wash = soap.index("var/finished = do_after(user, 40, src)", start)
+        guard = soap.index("if (!finished || !soap_wash_available(user)", wash)
+        self.assertGreater(soap.index("hygiene = HYGIENE_LEVEL_CLEAN", start), guard)
 
     def test_tubs_never_lower_hygiene(self):
         shower = read("code/game/objects/structures/watercloset.dm")

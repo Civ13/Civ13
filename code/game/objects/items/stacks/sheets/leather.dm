@@ -187,7 +187,7 @@
 /obj/item/stack/material/hairlesshide/proc/water_wash_valid(mob/living/user, atom/water)
 	return user.hide_research_allowed() && hide_worker_can_reach(user, src) && loc == user && user.item_is_in_hands(src) && amount >= 1 && !QDELETED(water) && user.Adjacent(water) && hide_wash_water(water)
 
-// The washed pieces gather in the free hand, so a river cannot carry them off.
+// An empty inactive hand gets the new hide before any ground-stack merge.
 /obj/item/stack/material/hairlesshide/proc/water_wash_output(mob/living/user, turf/site)
 	var/obj/item/stack/material/wethide/held = user.get_inactive_hand()
 	if (istype(held) && held.amount < held.max_amount)
@@ -195,10 +195,8 @@
 		held.update_icon()
 		held.update_strings()
 		return
-	var/has_free_hand = !user.get_inactive_hand()
-	// Reserve the new piece for a free hand before any ground-stack merge.
-	var/obj/item/stack/material/wethide/made = new /obj/item/stack/material/wethide(site, 1, !has_free_hand)
-	if (has_free_hand && !QDELETED(made) && made.loc == site && !user.get_inactive_hand())
+	var/obj/item/stack/material/wethide/made = new /obj/item/stack/material/wethide(site, 1, !!user.get_inactive_hand())
+	if (!QDELETED(made) && made.loc == site && !user.get_inactive_hand())
 		user.put_in_inactive_hand(made)
 
 /obj/item/stack/material/hairlesshide/proc/wash_in_water(mob/living/user, atom/water)

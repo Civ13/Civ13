@@ -928,6 +928,11 @@ SUITES = {
             'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
     # Complete monitor pipe rows with fake spatial/type boundaries; no native IO.
+    'factory_arm_custody': {'files': ('tests/factory_automation/test_arm_custody.py',),
+        'paths': ('tests/factory_automation/test_arm_custody.py',), 'shared_paths': (
+            'code/modules/1713/factory_arms.dm', 'code/modules/1713/factory_ports.dm',
+            'tests/save_movement/source_adapter.py', 'code/modules/1713/coin_mint.dm',
+            'code/modules/1713/fiatcurrency.dm')},
     'factory_monitor': {'files': ('tests/factory_automation/test_monitor_pipes.py',),
         'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
             'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
@@ -1041,6 +1046,11 @@ SUITES = {
                          'scripts/nomads-lifecycle/supervisor.py',
                          'scripts/nomads-lifecycle/canonical_update.py',
                          'scripts/nomads-lifecycle/bot_consumer.py', 'civ13.dme')},
+    'npc_vendor_checkout': {'files': ('tests/npc_vendor_checkout/test_checkout.py',),
+        'paths': ('tests/npc_vendor_checkout/',), 'shared_paths': (
+            'code/game/objects/structures/vending/npc_vendors.dm',
+            'code/game/objects/items/stacks/money.dm',
+            'code/game/objects/map_metadata/the_art_of_the_deal.dm')},
     'fuel_pump_variants': {'files': ('tests/fuel_pump/test_variants.py',),
         'paths': ('tests/fuel_pump/',), 'shared_paths': (
             'tests/save_movement/source_adapter.py',

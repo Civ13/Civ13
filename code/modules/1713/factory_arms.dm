@@ -121,9 +121,11 @@ var/global/list/factory_active_arms = list()
 
 /obj/structure/factory_arm/attackby(obj/item/W, mob/user)
 	// A wrench fastens or unfastens the arm through /obj/structure.
-	if (is_tool(W, TOOL_WRENCH) && on)
-		to_chat(user, SPAN_WARNING("Switch \the [src] off first."))
-		return
+	if (is_tool(W, TOOL_WRENCH))
+		if (on)
+			to_chat(user, SPAN_WARNING("Switch \the [src] off first."))
+			return
+		return ..()
 	if (istype(W, /obj/item/stack/cable_coil))
 		connect_cable(user, W)
 		return

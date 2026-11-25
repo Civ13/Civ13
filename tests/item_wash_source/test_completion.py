@@ -62,9 +62,8 @@ class WashSourceTests(unittest.TestCase):
         leather = (root / 'code/game/objects/items/stacks/sheets/leather.dm').read_text(encoding='utf-8')
         output = leather.split('/proc/water_wash_output(', 1)[1].split('\n/obj/', 1)[0]
         self.assertLess(output.index('if (istype(held) && held.amount < held.max_amount)'),
-                        output.index('var/has_free_hand = !user.get_inactive_hand()'))
-        self.assertIn('wethide(site, 1, !has_free_hand)', output)
-        self.assertIn('if (has_free_hand && !QDELETED(made) && made.loc == site && !user.get_inactive_hand())', output)
+                        output.index('wethide(site, 1, !!user.get_inactive_hand())'))
+        self.assertIn('if (!QDELETED(made) && made.loc == site && !user.get_inactive_hand())', output)
         self.assertIn('user.put_in_inactive_hand(made)', output)
 
 

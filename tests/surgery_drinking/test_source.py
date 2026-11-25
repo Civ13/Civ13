@@ -32,6 +32,18 @@ class DrinkingTests(unittest.TestCase):
         self.assertIn("[user] drinks from \\the [src].", GLASS)
         self.assertNotIn("[src] drinks from \\the [src].", GLASS)
 
+    def test_drinking_credits_half_the_amount_actually_swallowed(self):
+        containers = (ROOT / 'code/modules/reagents/reagent_containers.dm').read_text(encoding='utf-8')
+        feed = containers.split('/proc/standard_feed_mob(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('var/swallowed = reagents.trans_to_mob(target', feed)
+        self.assertIn('if (swallowed > 0)\n\t\ttarget.bladder += swallowed / 2', feed)
+        self.assertNotIn('target.bladder += amount_per_transfer_from_this', feed)
+        taste = (ROOT / 'code/game/mob/living/carbon/taste.dm').read_text(encoding='utf-8')
+        self.assertIn('var/swallowed = from.trans_to_holder(target,amount,multiplier,copy)', taste)
+        self.assertIn('return swallowed', taste)
+        holder = (ROOT / 'code/modules/reagents/Chemistry-Holder.dm').read_text(encoding='utf-8')
+        self.assertIn('return C.ingest(src,R, amount, multiplier, copy, smoked)', holder)
+
 
 if __name__ == "__main__":
     unittest.main()
