@@ -2678,6 +2678,9 @@ SUITES = {
         'code/processes/throwing.dm', 'code/modules/persistence/functions.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/human_defense.dm',
                          'code/game/mob/living/living_defense.dm')},
+    'terrain_tumble': {'files': ('tests/terrain_height/test_tumble.py',), 'paths': (
+        'tests/terrain_height/', 'code/modules/1713/terrain_height.dm'), 'shared_paths': (
+        'code/game/mob/mob_movement.dm', 'code/processes/throwing.dm')},
     'los_context': {'files': ('tests/los_context/test_offline.py',
                               'tests/los_context/test_production.py',
                               'tests/los_context/test_tile_motion.py',
