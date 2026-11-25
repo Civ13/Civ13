@@ -73,6 +73,23 @@ class HerbGardenSourceTests(unittest.TestCase):
             checked += 1
         self.assertGreaterEqual(checked, 12)
 
+    def test_dandelion_root_inherits_the_crop_radiation_dose(self):
+        harvest = self.source.split('/obj/structure/farming/plant/dandelion/spawn_produce(bonus = 0)', 1)[1]
+        harvest = harvest.split('\n/', 1)[0]
+        self.assertIn('new /obj/item/weapon/reagent_containers/food/snacks/grown/dandelion_root(loc)', harvest)
+        self.assertIn('root.radiation = radiation/2', harvest)
+
+    def test_contaminated_sunflower_is_not_consumed_and_clean_yield_is_preserved(self):
+        shelling = self.source.split('/obj/item/weapon/reagent_containers/food/snacks/grown/sunflower/attack_self(mob/user)', 1)[1]
+        shelling = shelling.split('\n/', 1)[0]
+        guard = shelling.index('if (radiation > 0)')
+        create = shelling.index('for (var/i = 1, i <= 3, i++)')
+        self.assertLess(guard, create)
+        self.assertIn('return', shelling[guard:create])
+        self.assertNotIn('qdel(src)', shelling[:create])
+        self.assertIn('new /obj/item/weapon/reagent_containers/food/snacks/grown/sunflower_seeds(T)', shelling[create:])
+        self.assertIn('qdel(src)', shelling[create:])
+
     def test_every_tea_is_defined(self):
         teas = set(re.findall(r'steep_reagent = "([^"]*)"', self.source))
         ids = set(re.findall(r'\tid = "([^"]*)"', self.source))
