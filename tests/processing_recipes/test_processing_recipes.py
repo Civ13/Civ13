@@ -8,6 +8,7 @@ the registry and checks the stations read it, and that the Crafting Atlas
 extractor reads the same rows.
 """
 from pathlib import Path
+import importlib.util
 import re
 import sys
 import unittest
@@ -51,6 +52,10 @@ FROZEN = {
 sys.path.insert(0, str(ROOT / 'scripts'))
 from atlas.interactions import registry_rows  # noqa: E402
 
+spec = importlib.util.spec_from_file_location('source_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+action_adapter = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(action_adapter)
+
 
 def read(path):
     return (ROOT / path).read_text(encoding='utf-8')
@@ -86,6 +91,177 @@ class ProcessingRecipeTest(unittest.TestCase):
         knap = flint[flint.index('/obj/item/weapon/flint/proc/knap('):].split('\n/', 1)[0]
         self.assertIn('if (sharpened)\n\t\toptions -= "Sharp flake"', knap)
         self.assertLess(knap.index('if (!R.output)\n\t\tsharpen()'), knap.index('processing_recipe_make(R, T, H)'))
+
+
+
+class MortarGrindContract(unittest.TestCase):
+    """Execute both grind bodies and the shared access check with fake engine boundaries."""
+
+    def setUp(self):
+        from types import SimpleNamespace
+        self.state = SimpleNamespace(grinding=False, deleted=False, opened=True)
+        self.worker_tile = ('turf', 0, 0, 1)
+        self.near = ('turf', 1, 0, 1)
+        self.far = ('turf', 4, 0, 1)
+        self.user = SimpleNamespace(loc=self.worker_tile, visible_message=lambda *args: None)
+        self.carrier = SimpleNamespace(loc=self.near)
+        self.bag = SimpleNamespace(loc=self.near, storage=True)
+        self.state.loc = self.near
+        self.noop = lambda: None
+        self.on_wait = self.noop
+        self.waits = 0
+        self.messages = []
+        self.flour = []
+        self.pigments = []
+        self.space = 30
+        self.state.reagents = SimpleNamespace(
+            get_free_space=lambda: self.space,
+            add_reagent=lambda reagent, amount: self.flour.append((reagent, amount)),
+        )
+        self.user.put_in_hands = self.pigments.append
+
+        def turf(value):
+            return isinstance(value, tuple) and value[0] == 'turf'
+
+        def depth(container=None):
+            found = self.state
+            count = 0
+            while found is not None and not turf(found):
+                parent = found.loc
+                if container is not None and parent is container:
+                    return count
+                count += int(getattr(parent, 'storage', False))
+                found = parent
+            return count if container is None and turf(found) else -1
+
+        def adjacent(user):
+            place = self.state.loc
+            if place is user:
+                return True
+            if getattr(place, 'storage', False):
+                place = place.loc  # item Adjacent recurses into one item
+            if place is user:
+                return True
+            return (
+                turf(place) and turf(user.loc) and place[3] == user.loc[3]
+                and max(abs(place[1] - user.loc[1]), abs(place[2] - user.loc[2])) <= 1
+            )
+
+        def wait(user, delay, target):
+            self.waits += 1
+            original_location = target.loc
+            self.on_wait()
+            return target.loc is original_location  # no check of carrier or lid here
+
+        env = {
+            'QDELETED': lambda thing: thing is None or getattr(thing, 'deleted', False),
+            'is_open_container': lambda: self.state.opened,
+            'storage_depth': depth, 'storage_depth_turf': depth,
+            'isturf': turf, 'Adjacent': adjacent, 'get_turf': lambda person: person.loc,
+            'to_chat': lambda user, message: self.messages.append(message),
+            'SPAN_WARNING': str, 'SPAN_NOTICE': str, 'do_after': wait,
+            'mortar_grind_result': lambda item: {'flour': 5} if item.kind == 'wheat' else None,
+            'mortar_pigment_result': lambda item: 'ochre' if item.kind == 'clay' else None,
+            'spawn_pigment': lambda pigment_type, _: pigment_type,
+            'parent_attack': lambda item, user: None,
+            'is_stack': lambda item: item.kind == 'clay', 'qdel': lambda item: setattr(item, 'deleted', True),
+            'persistence_save_in_progress': False, 'persistence_active_operation': False,
+            'persistence_load_recovery_required': False, 'MORTAR_GRIND_TIME': 30,
+            'PAINT_GRIND_TIME': 20, 'mortar': self.state,
+        }
+        # Replace only the unsupported engine syntax, not conditions or their order.
+        herbs = read('code/modules/1713/herbalism.dm')
+        paint = read('code/modules/paintings/paintings.dm')
+        prefix = '/obj/item/weapon/reagent_containers/glass/mortar'
+
+        def projected(source, name, arguments):
+            source = source.replace('if (grinding', 'if (mortar.grinding').replace('grinding = ', 'mortar.grinding = ')
+            source = source.replace('reagents.', 'mortar.reagents.').replace('isturf(loc)', 'isturf(src.loc)')
+            source = source.replace('istype(W, /obj/item/stack)', 'is_stack(W)')
+            source = source.replace('new pigment_type(get_turf(user))', 'spawn_pigment(pigment_type, get_turf(user))')
+            source = source.replace('return ..()', 'return parent_attack(W, user)')
+            return action_adapter.project(source, prefix + name, arguments, env)
+
+        env['grind_access'] = lambda actor: projected(herbs, '/proc/grind_access', 'src, user')(self.state, actor)
+        for func in ('can_grind', 'finish_grinding', 'start_grinding'):
+            env[func] = self.bound(projected(herbs, '/proc/' + func, 'src, W, user'))
+        env['grind_pigment'] = self.bound(projected(paint, '/proc/grind_pigment', 'src, W, user'))
+        self.attack = self.bound(projected(herbs, '/attackby', 'src, W, user'))
+        self.env = env
+
+    def bound(self, action):
+        return lambda item, actor: action(self.state, item, actor)
+
+    def grind(self, kind):
+        from types import SimpleNamespace
+        item = SimpleNamespace(kind=kind, remaining=2, deleted=False)
+        item.use = lambda n: setattr(item, 'remaining', item.remaining - n) or True
+        self.attack(item, self.user)
+        self.assertFalse(self.state.grinding)
+        return item
+
+    def assert_unspent(self, item):
+        self.assertFalse(item.deleted)
+        self.assertEqual(item.remaining, 2)
+        self.assertEqual((self.flour, self.pigments), ([], []))
+
+    def test_both_routes_refuse_a_closed_lid_before_wait_or_payment(self):
+        for kind in ('wheat', 'clay'):
+            with self.subTest(kind=kind):
+                self.setUp()
+                self.state.opened = False
+                self.assert_unspent(self.grind(kind))
+                self.assertEqual(self.waits, 0)
+                self.assertIn("Open the lid before grinding.", self.messages)
+
+    def test_both_routes_recheck_lid_after_the_wait(self):
+        for kind in ('wheat', 'clay'):
+            with self.subTest(kind=kind):
+                self.setUp()
+                self.on_wait = lambda: setattr(self.state, 'opened', False)
+                self.assert_unspent(self.grind(kind))
+                self.assertEqual(self.waits, 1)
+                self.assertIn("Open the lid before grinding.", self.messages)
+
+    def test_both_routes_recheck_floor_bag_reach_with_unchanged_bowl_loc(self):
+        for kind in ('wheat', 'clay'):
+            for destination in ('carried', 'far'):
+                with self.subTest(kind=kind, destination=destination):
+                    self.setUp()
+                    self.state.loc = self.bag
+                    self.on_wait = lambda: setattr(self.bag, 'loc', self.carrier if destination == 'carried' else self.far)
+                    self.assert_unspent(self.grind(kind))
+                    self.assertEqual(self.waits, 1)
+                    self.assertIs(self.state.loc, self.bag)
+                    self.assertIn("You cannot reach the mortar to grind in it.", self.messages)
+
+    def test_both_routes_preserve_ground_held_and_reachable_bag_success(self):
+        for kind in ('wheat', 'clay'):
+            for place in ('near', 'held', 'floor bag', 'own bag'):
+                with self.subTest(kind=kind, place=place):
+                    self.setUp()
+                    if place == 'held':
+                        self.state.loc = self.user
+                    elif place.endswith('bag'):
+                        self.state.loc = self.bag
+                        if place == 'own bag':
+                            self.bag.loc = self.user
+                    item = self.grind(kind)
+                    self.assertEqual(self.waits, 1)
+                    self.assertEqual((item.deleted, item.remaining), (True, 2) if kind == 'wheat' else (False, 1))
+                    self.assertEqual(self.flour, [('flour', 5)] if kind == 'wheat' else [])
+                    self.assertEqual(self.pigments, ['ochre'] if kind == 'clay' else [])
+
+    def test_food_still_checks_room_and_both_routes_still_respect_save_holds(self):
+        self.space = 4
+        self.assert_unspent(self.grind('wheat'))
+        self.assertEqual(self.waits, 0)
+        for kind in ('wheat', 'clay'):
+            with self.subTest(kind=kind):
+                self.setUp()
+                self.on_wait = lambda: self.env.update(persistence_active_operation=True)
+                self.assert_unspent(self.grind(kind))
+                self.assertEqual(self.waits, 1)
 
 
 if __name__ == '__main__':

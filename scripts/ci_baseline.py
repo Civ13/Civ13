@@ -1385,7 +1385,7 @@ SUITES = {
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
         'paths': ('tests/processing_recipes/', 'code/modules/1713/processing_recipes.dm'), 'shared_paths': (
             'code/modules/1713/herbalism.dm', 'code/modules/1713/flint_mining.dm', 'code/modules/1713/obsidian.dm',
-            'scripts/atlas/interactions.py')},
+            'code/modules/paintings/paintings.dm', 'tests/save_movement/source_adapter.py', 'scripts/atlas/interactions.py')},
     'resource_stock': {'files': ('tests/resource_stock/test_resource_stock.py',),
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm')},

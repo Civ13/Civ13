@@ -110,11 +110,15 @@
 	var/pigment_type = mortar_pigment_result(W)
 	if (grinding || !pigment_type || !user || QDELETED(W))
 		return FALSE
+	if (!grind_access(user))
+		return FALSE
 	grinding = TRUE
 	user.visible_message(SPAN_NOTICE("[user] starts grinding \the [W] in \the [src]."), SPAN_NOTICE("You start grinding \the [W] into pigment."))
 	var/completed = do_after(user, PAINT_GRIND_TIME, src)
 	grinding = FALSE
 	if (!completed || QDELETED(src) || QDELETED(W))
+		return FALSE
+	if (!grind_access(user))
 		return FALSE
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
 		to_chat(user, SPAN_WARNING("You cannot grind during persistence operations."))
