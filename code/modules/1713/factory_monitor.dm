@@ -76,6 +76,7 @@
 	var/belts = 0
 	var/carrying = 0
 	var/waiting = 0
+	var/unpowered = 0
 	var/turf/here = get_turf(src)
 	if (!here)
 		return rows
@@ -104,10 +105,19 @@
 				break
 			if (loaded)
 				carrying++
-				if (B.next_poll > factory_belt_tick)
+				if (!B.belt_powered(FALSE))
+					unpowered++
+				else if (B.next_poll > factory_belt_tick)
 					waiting++
 	if (belts)
-		rows[++rows.len] = list("belts", "belts", null, null, waiting ? "[waiting] blocked" : (carrying ? "running" : "idle"), 0, "[belts] belts, [carrying] carrying items", 0)
+		var/state = carrying ? "running" : "idle"
+		if (unpowered)
+			state = "[unpowered] no power"
+			if (waiting)
+				state += ", [waiting] blocked"
+		else if (waiting)
+			state = "[waiting] blocked"
+		rows[++rows.len] = list("belts", "belts", null, null, state, 0, "[belts] belts, [carrying] carrying items", 0)
 	return rows
 
 // Power for the listed machines: list(total PU drawn, list(list(used, capacity)) per grid).
