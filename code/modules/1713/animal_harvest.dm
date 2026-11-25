@@ -380,7 +380,8 @@
 			new /obj/item/weapon/pigleg(site)
 	else if (chicken)
 		for (var/i = 1, i <= portions, i++)
-			new /obj/item/weapon/chicken_carcass(site)
+			var/obj/item/weapon/chicken_carcass/carcass = new(site)
+			carcass.radiation = radiation/2
 	else
 		for (var/i = 1, i <= portions, i++)
 			var/obj/item/weapon/reagent_containers/food/snacks/F = harvest_food(meat_type, site)

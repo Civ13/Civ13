@@ -424,9 +424,9 @@
 		to_chat(user, "You start separating the chicken parts...")
 		if (do_after(user, 75, src))
 			to_chat(user, "You finish cutting the chicken.")
-			new/obj/item/weapon/reagent_containers/food/snacks/chicken/breast(loc)
-			new/obj/item/weapon/reagent_containers/food/snacks/chicken/wing(loc)
-			new/obj/item/weapon/reagent_containers/food/snacks/chicken/drumstick(loc)
+			for (var/part_type in list(/obj/item/weapon/reagent_containers/food/snacks/chicken/breast, /obj/item/weapon/reagent_containers/food/snacks/chicken/wing, /obj/item/weapon/reagent_containers/food/snacks/chicken/drumstick))
+				var/obj/item/weapon/reagent_containers/food/snacks/chicken/part = new part_type(loc)
+				part.radiation = radiation
 			qdel(src)
 		return
 	..()
