@@ -48,9 +48,9 @@
 		return
 	return ..()
 
-// Water for one load, or FALSE with the reason set.
-/obj/structure/drill/stamp_mill/water/mill/proc/mill_water()
-	if (station_take_water(null))
+// Check or take the water for one load, or return FALSE with the reason set.
+/obj/structure/drill/stamp_mill/water/mill/proc/mill_water(check_only = FALSE)
+	if (check_only ? station_has_water() : station_take_water(null))
 		return TRUE
 	mill_stop_reason = "it has run out of water"
 	return FALSE
@@ -91,6 +91,14 @@
 	if (!S)
 		mill_stop_reason = "there is no free sluice box beside it"
 		return FALSE
+	var/turf/T = get_turf(S)
+	if (!T)
+		return FALSE
+	var/stack_count = 0
+	for (var/obj/item/stack/stack in T)
+		if (++stack_count >= output_stack_limit)
+			mill_stop_reason = "clear the sluice output tile and restart it"
+			return FALSE
 	var/obj/item/stack/ore/pay_dirt/P = loaded_stone()
 	if (!P || !mill_water())
 		return FALSE
@@ -100,7 +108,7 @@
 	var/list/found = pay_dirt_wash(grade, "sluice", mercury)
 	if (mercury)
 		S.spend_mercury()
-	pay_dirt_output(found, get_turf(S))
+	pay_dirt_output(found, T)
 	return TRUE
 
 //////////////////////////////////////////////////////////////////////////////
@@ -141,6 +149,8 @@
 	var/spend = loss()
 	if (reagents.get_reagent_amount("mercury") < AMALGAM_WET_MERCURY + spend)
 		mill_stop_reason = "its quicksilver is spent"
+		return FALSE
+	if (!mill_water(TRUE))
 		return FALSE
 	var/turf/T = get_turf(src)
 	if (!T.deposit_small_resource(/obj/item/stack/ore/tailings/amalgam, 1, output_stack_limit))
@@ -183,6 +193,8 @@
 /obj/structure/drill/stamp_mill/water/mill/table/stamp_one_stone(roll = null)
 	var/obj/item/stack/ore/crushed_ore/C = loaded_stone()
 	if (!C)
+		return FALSE
+	if (!mill_water(TRUE))
 		return FALSE
 	var/turf/T = get_turf(src)
 	if (!T.deposit_small_resource(/obj/item/stack/ore/tailings, 1, output_stack_limit))
