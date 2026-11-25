@@ -3142,6 +3142,33 @@ var/global/platform_probe_runtime_error = FALSE
 /obj/structure/engine/train_probe_engine/New()
 	return
 
+/proc/platform_electric_isolation(obj/structure/train_catenary/M1, obj/structure/train_catenary/M2)
+	// A separate parallel row sits nine tiles away, within the old network
+	// radius but outside the feeder point's reach and off the wire centerline.
+	for (var/ty in 2 to 12)
+		platform_track(359, ty, NORTH)
+	var/obj/structure/train_catenary/parallel = new(platform_turf(361, 6))
+	var/parallel_up = parallel.put_up()
+	var/obj/structure/trains/locomotive/electric/unfed = platform_car("loco_electric", 359, 6, NORTH)
+	platform_check("electric/parallel_line_has_no_traction_power", parallel_up && !parallel.powersource && M1.line_live() && parallel.network() != M1.network() && unfed && train_catenary_over(unfed.loc) == parallel && findtext(unfed.start_problem(), "overhead line is dead"))
+	if (unfed)
+		qdel(unfed)
+	qdel(parallel)
+
+	// A five-tile offset stops the crossing wire one tile short; four joins.
+	platform_track(355, 6, EAST)
+	var/obj/structure/train_catenary/short_crossing = new(platform_turf(355, 4))
+	platform_check("electric/short_crossing_does_not_join", short_crossing.put_up() && short_crossing.dir == NORTH && short_crossing.network() != M1.network())
+	qdel(short_crossing)
+	platform_track(354, 6, EAST)
+	var/obj/structure/train_catenary/crossing = new(platform_turf(354, 4))
+	platform_check("electric/reaching_crossing_joins", crossing.put_up() && crossing.dir == NORTH && crossing.network() == M1.network())
+	qdel(crossing)
+
+	var/obj/structure/train_catenary/across_gap = new(platform_turf(352, 25))
+	platform_check("electric/one_tile_gap_breaks_wire", across_gap.put_up() && across_gap.dir == WEST && across_gap.network() != M2.network())
+	qdel(across_gap)
+
 /proc/platform_electric_run()
 	for (var/ty in 2 to 25)
 		platform_track(350, ty, NORTH)
@@ -3178,6 +3205,7 @@ var/global/platform_probe_runtime_error = FALSE
 	M1.net = null
 	M1.after_load()
 	platform_check("electric/line_is_fed_from_the_grid", one_line && M1.power_point == T && !M2.power_point && fed.len == 1 && fed[1] == M1 && live && idle_draw == 1 && (M1 in train_catenary) && M1.network() == M2.network() && findtext(M1.line_text(M1.network()), "The wire is live"))
+	platform_electric_isolation(M1, M2)
 	N = M1.network()
 
 	// The electric locomotive: a cab at each end, a hood between, no fuel.
