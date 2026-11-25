@@ -924,26 +924,36 @@
 
 			if (href_list["createpill_multiple"])
 				count = player_input(usr, "Select the number of pills to make.", "Max [max_pill_count]", pillamount, "num", null, FALSE)
-				count = Clamp(count, TRUE, max_pill_count)
+				if (!isnum(count))
+					return
+				count = Clamp(round(count), TRUE, max_pill_count)
 
 			if (reagents.total_volume/count < 1) //Sanity checking.
 				return
 
-			var/amount_per_pill = reagents.total_volume/count
-			if (amount_per_pill > 60) amount_per_pill = 60
-
-			var/name = sanitizeSafe(player_input(usr, "Name:", "Name your pill!", "[reagents.get_master_reagent_name()] ([amount_per_pill] units)", "text", null, FALSE), MAX_NAME_LEN)
-
-			if (reagents.total_volume/count < 1) //Sanity checking.
+			var/datum/reagents/batch = reagents
+			var/obj/item/weapon/reagent_containers/installed = beaker
+			var/amount_per_pill = min(batch.total_volume / count, 60)
+			var/default_name = batch.get_master_reagent_name()
+			var/list/ingredient_volumes = list()
+			for (var/datum/reagent/ingredient in batch.reagent_list)
+				ingredient_volumes[ingredient] = ingredient.volume
+			var/name = sanitizeSafe(player_input(usr, "Name:", "Name your pill!", "[default_name] ([amount_per_pill] units)", "text", null, FALSE), MAX_NAME_LEN)
+			if (QDELETED(src) || !installed || beaker != installed || reagents != batch || batch.total_volume / count < amount_per_pill || batch.reagent_list.len != ingredient_volumes.len)
+				to_chat(usr, SPAN_WARNING("The Pill Maker's contents changed. Start the batch again."))
 				return
+			for (var/datum/reagent/ingredient in batch.reagent_list)
+				if (!(ingredient in ingredient_volumes) || ingredient_volumes[ingredient] != ingredient.volume)
+					to_chat(usr, SPAN_WARNING("The Pill Maker's contents changed. Start the batch again."))
+					return
 			while (count--)
 				var/obj/item/weapon/reagent_containers/pill/P = new/obj/item/weapon/reagent_containers/pill(get_turf(src))
-				if (!name) name = reagents.get_master_reagent_name()
+				if (!name) name = default_name
 				P.name = "[name] pill"
 				P.pixel_x = rand(-7, 7) //random position
 				P.pixel_y = rand(-7, 7)
 				P.icon_state = "pill"+pillsprite
-				reagents.trans_to_obj(P,amount_per_pill)
+				batch.trans_to_obj(P, amount_per_pill)
 				if (loaded_pill_bottle)
 					if (loaded_pill_bottle.contents.len < loaded_pill_bottle.storage_slots)
 						P.loc = loaded_pill_bottle

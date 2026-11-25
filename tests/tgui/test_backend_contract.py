@@ -513,6 +513,19 @@ class BackendContract(unittest.TestCase):
         self.assertIn('assets[civ13_tgui_versioned_name(name, civ13_tgui_assets_version)] = sources[name]', assets)
         self.assertIn('digests += "[md5(sources[name])]"', assets)
 
+    def test_pill_batch_revalidates_dose_and_mixture_before_creating_outputs(self):
+        root = Path(__file__).resolve().parents[2]
+        source = (root / 'code/modules/reagents/Chemistry-Machinery.dm').read_text(encoding='utf-8')
+        batch = source.split('else if (href_list["createpill"] || href_list["createpill_multiple"])', 1)[1]
+        batch = batch.split('else if (href_list["createbottle"])', 1)[0]
+        naming = batch.index('var/name = sanitizeSafe(player_input(')
+        creation = batch.index('while (count--)')
+        self.assertIn('ingredient_volumes[ingredient] = ingredient.volume', batch[:naming])
+        for guard in ('reagents != batch', 'batch.total_volume / count < amount_per_pill',
+                      'ingredient_volumes[ingredient] != ingredient.volume'):
+            self.assertIn(guard, batch[naming:creation])
+        self.assertIn('batch.trans_to_obj(P, amount_per_pill)', batch[creation:])
+
 
 if __name__ == '__main__':
     unittest.main()
