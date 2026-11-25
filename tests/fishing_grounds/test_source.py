@@ -232,6 +232,15 @@ class FishingGrounds(unittest.TestCase):
             self.assertNotIn('nomads_fish_boot', text, path)
             self.assertNotIn('seaturfs', text, path)
 
+    def test_pen_accepts_only_fresh_raw_unsalted_stock(self):
+        pen = (ROOT / 'code/modules/1713/fish_pen.dm').read_text(encoding='utf-8')
+        allowed = pen.split('/proc/fish_pen_stock_ok(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('F.raw && !F.roasted && !F.rotten', allowed)
+        self.assertIn('!istype(F, /obj/item/weapon/reagent_containers/food/snacks/rawfish/cod/salted)', allowed)
+        handler = pen.split('/obj/structure/fish_pen/attackby(', 1)[1].split('\n/', 1)[0]
+        self.assertLess(handler.index('if (fish_pen_stock_ok(W))'), handler.index('stock++'))
+        self.assertLess(handler.index('Only fresh, raw fish'), handler.index('fish_pen_feed_value(W)'))
+
 
 if __name__ == '__main__':
     unittest.main()
