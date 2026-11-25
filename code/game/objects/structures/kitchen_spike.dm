@@ -11,6 +11,8 @@
 	var/meat = FALSE
 	var/occupied
 	var/meat_type
+	// The victim is removed when mounted; persist the dose of each remaining cut.
+	var/meat_radiation = 0
 	var/victim_name = "corpse"
 	not_movable = FALSE
 	not_disassemblable = TRUE
@@ -37,11 +39,13 @@
 		if (!issmall(H))
 			return FALSE
 		meat_type = H.species.meat_type
+		meat_radiation = H.radiation/10
 	else if (istype(victim, /mob/living/simple_animal))
 		var/mob/living/simple_animal/A = victim
 		if (!issmall(A) || !A.meat_type)
 			return FALSE
 		meat_type = A.meat_type
+		meat_radiation = A.radiation/2
 	else
 		return FALSE
 
@@ -55,10 +59,12 @@
 	if (..() || !occupied)
 		return
 	meat--
-	new meat_type(get_turf(src))
+	var/obj/item/cut = new meat_type(get_turf(src))
+	cut.radiation = meat_radiation
 	if (meat > 0)
 		to_chat(user, "You remove some meat from \the [victim_name].")
 	else
 		to_chat(user, "You remove the last piece of meat from \the [victim_name]!")
 		icon_state = "spike"
 		occupied = FALSE
+		meat_radiation = 0
