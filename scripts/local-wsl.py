@@ -21,7 +21,7 @@ PORTS = {'nomads': 1715, 'tdm': 1714}
 def config(server, root):
     mode = 'PERSISTENCE' if server == 'nomads' else 'TDM'
     return (f'SERVER_NAME Local Civ13 {server}\nMASTER_DIRECTORY {root}\n'
-            f'ALLOWED_GAMEMODES {mode}\nHUB NO\nTTS_ON 0\nSCRIPTS_DIRECTORY null\n'
+            f'ALLOWED_GAMEMODES {mode}\nHUB NO\nSCRIPTS_DIRECTORY null\n'
             'LOG_ACCESS\nLOG_GAME\nLOG_VOTE\nLOG_ADMIN\nLOBBY_COUNTDOWN 90\n')
 
 

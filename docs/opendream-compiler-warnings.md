@@ -19,9 +19,7 @@ just to obtain a clean build. Engine compatibility changes need focused native
 parity checks. External execution requires explicit process/security boundaries.
 This inventory does not establish graphical or live-server acceptance.
 
-OpenDream TTS returns before scheduling a job for each listener because its
-shell-backed generator cannot run. Native TTS remains available. Python control
-compiles its fixed OpenDream action path separately from native shell execution.
-The production-body fixture in `tests/opendream_shell` verifies both branches
-with counted external-effect adapters and omission controls. This removes five
-unsupported-shell warnings; it does not prove whole-server memory savings.
+Chat speech synthesis runs only in the client; neither engine generates speech
+audio. Python control compiles its fixed OpenDream action path separately from
+native shell execution. The production-body fixture in `tests/opendream_shell`
+verifies both script branches with counted external-effect adapters.

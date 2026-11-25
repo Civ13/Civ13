@@ -108,11 +108,16 @@
 			else
 				to_chat(src, "<span class='name'>[alt_name]</span> talks but you cannot hear.")
 	else
+		var/accent = ""
+		if (language && ishuman(speaker))
+			var/mob/living/human/accented = speaker
+			accent = accented.language_accent(language)
+		// Mark only the body already displayed to this listener. The browser
+		// decides whether to read it; overlays and alternate text are not inputs.
+		// Whisper italics also mark eavesdropping, which can mask words upstream.
+		if (understood && !italics && !animal && !accent && ishuman(src) && ishuman(speaker) && !(language && (language.flags & NONVERBAL)))
+			message = "<span class='chat-local-voice'>[message]</span>"
 		if (language)
-			var/accent = ""
-			if (ishuman(speaker))
-				var/mob/living/human/accented = speaker
-				accent = accented.language_accent(language)
 			on_hear_say("<span class='name'>[alt_name] <span class = 'small_message'>([language.name][accent])</span> </span> [track][language.format_message(message, verb)]",speaker, alt_message)
 		else
 			on_hear_say("<span class='name'>[alt_name]</span> [track][verb], \"[message]\"",speaker, alt_message)
@@ -133,9 +138,6 @@
 	if (speaker && message2 != "")
 		if (client && ((speaker in view(7,src)) || speaker == src))
 			show_chat_overlay(speaker, message2)
-
-			if (config.tts_on && ishuman(src) && ishuman(speaker) && client.is_preference_enabled(/datum/client_preference/play_chat_tts))
-				play_tts(message2, speaker)
 
 
 // Device speech shares comprehension, not presentation or ordinary speech learning.
