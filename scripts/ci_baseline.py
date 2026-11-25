@@ -1822,9 +1822,10 @@ SUITES = {
             'code/modules/1713/aqueducts.dm', 'icons/obj/aqueducts.dmi', 'tests/sprites/create_aqueducts.py',
             'code/modules/1713/mechanical_power.dm')},
     # Siege engines and castle defences: source contracts (the native probe is tests/siege_engines/probe.dm).
-    'siege_engines': {'files': ('tests/siege_engines/test_source.py',),
+    'siege_engines': {'files': ('tests/siege_engines/test_source.py', 'tests/siege_engines/test_turret_autoload.py'),
         'paths': ('tests/siege_engines/',), 'shared_paths': (
             'code/modules/1713/siege/siege_engines.dm', 'code/modules/1713/siege/catapult.dm',
+            'code/modules/1713/siege/turret.dm',
             'code/modules/1713/siege/portcullis_runs.dm', 'code/game/objects/controls.dm',
             'icons/obj/doors/material_doors.dmi', 'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
             'tests/sprites/create_siege_engines.py')},
