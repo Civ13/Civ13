@@ -12,6 +12,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 COUNTS = (ROOT / 'code/modules/1713/battlereport_variables.dm').read_text()
 REPORT = (ROOT / 'code/modules/admin/verbs/1713.dm').read_text()
+PROCESS = (ROOT / 'code/processes/battlereport.dm').read_text()
 FACTIONS = (ROOT / 'code/game/mob/groups/factions.dm').read_text()
 spec = importlib.util.spec_from_file_location('status_dm_adapter', ROOT / 'tests/save_movement/source_adapter.py')
 adapter = importlib.util.module_from_spec(spec)
@@ -246,7 +247,33 @@ class PersistenceStatus(unittest.TestCase):
             env.update(map=NS(persistence=persistence), persistence_load_recovery_required=recovery,
                        persistence_active_operation=operation)
             proc = project(source, '/proc/show_global_battle_report', 'shower, private=False', env)
-            self.assertEqual(proc(None), expected)
+            self.assertEqual(proc(object(), True), expected)
+
+    def test_persistence_suppresses_all_public_reports_before_the_census(self):
+        source = REPORT[REPORT.index('/proc/show_global_battle_report('):]
+        source = source.split('\n\tvar/total_pirates', 1)[0] + '\n\treturn TRUE\n'
+        for persistence in (True, False):
+            env = dict(map=NS(persistence=persistence), persistence_load_recovery_required=False,
+                       persistence_active_operation=None)
+            run = project(source, '/proc/show_global_battle_report', 'shower, private=False', env)
+            self.assertEqual(run(None), None if persistence else True)
+            self.assertEqual(run(object()), None if persistence else True)
+            self.assertTrue(run(object(), True))
+
+    def test_persistence_report_timer_never_advances(self):
+        prefix = PROCESS.split('/process/battle_report/fire()\n', 1)[1].split('\t++BR_ticks', 1)[0]
+        self.assertIn('show_global_battle_report(null)', PROCESS.split('/process/battle_report/fire()', 1)[1])
+        for persistence in (True, False):
+            run = adapter.project('/proc/guard()\n' + prefix + '\treturn TRUE\n',
+                                  '/proc/guard', '', {'map': NS(persistence=persistence)})
+            self.assertEqual(run(), None if persistence else True)
+
+    def test_admin_public_action_does_not_queue_or_claim_a_persistence_broadcast(self):
+        public = REPORT.split('/client/proc/show_battle_report()', 1)[1].split('/client/proc/see_battle_report()', 1)[0]
+        self.assertLess(public.index('if (map && map.persistence)'), public.index('message_admins('))
+        self.assertLess(public.index('\t\treturn'), public.index('BR_ticks ='))
+        private = REPORT.split('/client/proc/see_battle_report()', 1)[1].split('/proc/show_global_battle_report(', 1)[0]
+        self.assertIn('show_global_battle_report(src, TRUE)', private)
 
     def test_omitted_dead_branch_changes_census_control(self):
         old = COUNTS.replace('if (H.stat == DEAD)', 'if (FALSE)')

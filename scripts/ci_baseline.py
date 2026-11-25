@@ -3027,6 +3027,7 @@ SUITES = {
     'persistence_status': {'files': ('tests/persistence_status/test_status.py',),
         'paths': ('tests/persistence_status/',), 'shared_paths': (
             'code/modules/1713/battlereport_variables.dm', 'code/modules/admin/verbs/1713.dm',
+            'code/processes/battlereport.dm',
             'code/game/mob/groups/factions.dm', 'code/predefines.dm',
             'tests/save_movement/source_adapter.py')},
     # Status tab "Last save" wiring; native round trip via the berry_load fixture.
