@@ -20,11 +20,27 @@ class NodeLessons(unittest.TestCase):
  def test_explicit_controls_interrupt_between_ticks(self):
   telecom=(ROOT/'code/modules/1713/modern_telecom.dm').read_text()
   self.assertIn('if (choice == "Stop presenting")\n\t\tstop_presenting(H)',telecom)
-  self.assertIn('if (choice == "Power")\n\t\tinterrupt_node_reception()',telecom)
+  self.assertIn('if (choice == "Power")\n\t\ttoggle_equipment_power()',telecom)
+  power=telecom.split('/obj/structure/telecom/proc/toggle_equipment_power()')[1].split('\n/')[0]
+  self.assertLess(power.index('interrupt_node_reception()'),power.index('enabled = !enabled'))
+  station=telecom.split('/obj/structure/telecom/station/toggle_equipment_power()')[1].split('\n/')[0]
+  self.assertLess(station.index('..()'),station.index('if (!enabled && presenter)'))
+  self.assertIn('if (!enabled && presenter)\n\t\tstop_presenting(presenter)',station)
   self.assertIn('if (new_frequency != frequency)\n\t\t\t\tinterrupt_node_reception()',telecom)
   stop=self.s.split('/obj/structure/telecom/station/proc/stop_presenting')[1].split('/obj/structure/telecom/proc/interrupt_node_reception')[0]
   self.assertLess(stop.index('stop_node_lesson()'),stop.index('presenter = null'))
   self.assertIn('S.node_lesson_listeners.Remove(listener)',self.s)
+ def test_scheduled_and_live_station_delivery_share_eligibility(self):
+  telecom=(ROOT/'code/modules/1713/modern_telecom.dm').read_text()
+  for section, actor in (('transmit_lesson', 'H'), ('transmit_live', 'listener')):
+   delivery=telecom.split('/obj/structure/telecom/station/proc/'+section+'(')[1].split('\n/')[0]
+   self.assertIn('if (!node_receiver_available(R))',delivery)
+   self.assertIn('!'+actor+'.station_can_hear()',delivery)
+   self.assertLess(delivery.index('if (!node_receiver_available(R))'),delivery.index('in view(3, R)'))
+   self.assertLess(delivery.index('!'+actor+'.station_can_hear()'),delivery.index('delivered |= '+actor))
+  hearing=telecom.split('/mob/living/human/proc/station_can_hear()')[1].split('\n/')[0]
+  for condition in ('broadcast_online()', 'stat == CONSCIOUS', '!sleeping', '!(sdisabilities & DEAF)', '!ear_deaf', '!find_trait("Deaf")'):
+   self.assertIn(condition,hearing)
  def test_state_is_transient(self):
   telecom=(ROOT/'code/modules/1713/modern_telecom.dm').read_text()
   for key in ('node_lesson_id','node_lesson_teacher','node_lesson_listeners','node_lesson_progress','node_lesson_last_tick','node_lesson_cooldown_until'):
