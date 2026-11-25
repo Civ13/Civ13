@@ -63,6 +63,19 @@ class ItemPileTargetingTest(unittest.TestCase):
                          '!in_throw_mode', '!using_object', 'canClick()'):
             self.assertIn(required, site_gate)
 
+    def test_only_fully_overlapping_appearances_can_lose_duplicate_hitboxes(self):
+        key = proc(PILES, '/proc/item_pile_key(')
+        for field in ('I.pixel_x', 'I.pixel_y', 'I.step_x', 'I.step_y', 'I.invisibility'):
+            self.assertIn(field, key)
+        refresh = proc(PILES, '/proc/item_pile_refresh(')
+        self.assertIn('var/appearance = I.appearance', refresh)
+        self.assertIn('scratch.mouse_opacity = I.pile_opacity', refresh)
+        self.assertIn('appearances[key] != appearance', refresh)
+        self.assertIn('if (mixed[key] || top[key] == I)', refresh)
+        move = proc(PILES, '/proc/item_pile_moved(')
+        self.assertNotIn('if (!isturf(destination))', move)
+        self.assertLess(move.index('I.pile_reveal()'), move.index('item_pile_mark(destination)'))
+
     def test_paper_bundling_and_quantity_renames_keep_pile_state_current(self):
         join = proc(PAPER, '/obj/item/weapon/paper/attackby(')
         self.assertLess(join.index('pile_reveal()'), join.index('loc = B'))
