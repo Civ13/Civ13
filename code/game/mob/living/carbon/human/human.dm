@@ -103,6 +103,7 @@
 	spawn(5)
 		nomads_spawn(birth_area)
 /mob/living/human/Destroy()
+	close_faction_symbol_editor()
 	var/mob/living/simple_animal/old_mount = riding_mob
 	riding = FALSE
 	riding_mob = null

@@ -79,7 +79,9 @@ class DesignCodesTest(unittest.TestCase):
                 self.assertIn('"export_code", "import_code"', declared)
         editor = read('code/game/mob/groups/faction_symbol.dm')
         # A pasted symbol only fills the canvas, and only for the Leader; Save puts it on banners.
-        self.assertIn('if (imported && map.is_faction_leader(owner, faction))', editor)
+        self.assertIn('if (imported && can_edit())', editor)
+        guard = editor.split('/datum/nano_module/faction_symbol_editor/proc/can_edit()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('map.is_faction_leader(owner, faction)', guard)
         shared = read('code/modules/paintings/design_codes.dm')
         self.assertIn('design_code_log(user, "faction symbol", what, code)', shared)
 

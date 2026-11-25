@@ -504,6 +504,48 @@ class BackendContract(unittest.TestCase):
         book = (ROOT / 'code/modules/research_tree/book_interface.dm').read_text()
         self.assertIn('/obj/item/weapon/book/ui_actions(ui_key)\n\tif (ui_key == "research_book")', book)
 
+    def test_faction_emblem_stamps_resolve_shipped_icon_states(self):
+        from PIL import Image
+
+        source = (ROOT / 'code/game/mob/groups/faction_symbol.dm').read_text()
+        labels = re.search(r'/list/faction_symbol_shapes = list\(([^\n]+)\)', source)[1]
+        shapes = re.findall(r'"([^"]+)"', labels)
+        stamp = source.split('/proc/faction_symbol_stamp_grid(', 1)[1].split('\n/', 1)[0]
+        with Image.open(ROOT / 'icons/obj/banners.dmi') as banners:
+            states = set(re.findall(r'^state = "([^"]*)"', banners.info['Description'], re.M))
+        self.assertIn('big cross', shapes)
+        self.assertIn('var/shape_state = replacetext(shape, " ", "_")', stamp)
+        self.assertIn('"b_[shape_state]"', stamp)
+        self.assertLessEqual({'b_' + shape.replace(' ', '_') for shape in shapes}, states)
+
+    def test_faction_emblem_bucket_only_records_real_edits(self):
+        source = (ROOT / 'code/game/mob/groups/faction_symbol.dm').read_text()
+        fill = source.split('/proc/faction_symbol_bucket_fill_grid(', 1)[1].split('\n/', 1)[0]
+        save = fill.index('faction_symbol_push_undo(undo_stack, grid)')
+        self.assertLess(fill.index('if (!target || cmptext(target, new_color))'), save)
+        self.assertLess(save, fill.index('grid[faction_symbol_grid_index(px, py)] = new_color'))
+        creation = (ROOT / 'code/game/mob/groups/faction_creation.dm').read_text()
+        for editor, call in ((source, 'map.bucket_fill_faction_symbol(faction, x, y, color)'),
+                             (creation, 'faction_symbol_bucket_fill_grid(draft_grid, x, y, paint_color, undo_stack)')):
+            paint = editor.split('else if (href_list["paint"])', 1)[1].split('else if (href_list["stroke"])', 1)[0]
+            self.assertLess(paint.index(call), paint.index('faction_symbol_push_undo'))
+
+    def test_faction_emblem_window_identity_and_revocation(self):
+        source = (ROOT / 'code/game/mob/groups/faction_symbol.dm').read_text()
+        open_editor = source.split('/mob/living/human/proc/design_faction_symbol()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('editor = faction_symbol_editor_for_current_faction()', open_editor)
+        self.assertNotIn('new(src, src)', open_editor)
+        acquire = source.split('/mob/living/human/proc/faction_symbol_editor_for_current_faction()', 1)[1].split('\n/', 1)[0]
+        self.assertLess(acquire.index('return active_faction_symbol_editor'), acquire.index('new(src, src)'))
+        self.assertIn('active_faction_symbol_editor.owner == src', acquire)
+        self.assertIn('active_faction_symbol_editor.matches_current_faction()', acquire)
+        self.assertIn('editor_map != map', source)
+        self.assertIn('owner.active_faction_symbol_editor == src && map.is_faction_leader(owner, faction)', source)
+        revoke = source.split('/mob/living/human/proc/remove_faction_symbol_editor()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('close_faction_symbol_editor()', revoke)
+        human = (ROOT / 'code/game/mob/living/carbon/human/human.dm').read_text()
+        self.assertIn('/mob/living/human/Destroy()\n\tclose_faction_symbol_editor()', human)
+
     def test_assets_registered(self):
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()
         for name in ('civ13-tgui-bootstrap.js', 'civ13-tgui.js', 'civ13-tgui.css'):

@@ -50,3 +50,14 @@ the modern tgui shell; there is no classic template renderer.
 
 Native, browser and client checks are pending until separately executed. Source
 preparation is never reported as a native or live fix acceptance.
+
+## Emblem editor regressions
+
+Run the isolated emblem probe with the repository's pinned BYOND:
+
+    python3 tests/ecology_spawning/run_linux.py . tests/faction_ui_assets/emblem_probe.dm 300
+
+This validates the shipped Big Cross pixels, the real editor paint and Undo
+actions, real NanoUI window identity and refresh data, rename reuse, and
+retirement after a faction change or loss of the leader verb. It registers
+the first UI at the absent browse boundary; it does not show a game client.

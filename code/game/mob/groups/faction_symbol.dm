@@ -60,7 +60,8 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 /proc/faction_symbol_stamp_grid(list/grid, shape)
 	if (!(shape in faction_symbol_shapes))
 		return
-	var/icon/source = icon('icons/obj/banners.dmi', "b_[shape]")
+	var/shape_state = replacetext(shape, " ", "_")
+	var/icon/source = icon('icons/obj/banners.dmi', "b_[shape_state]")
 	for (var/y = 1, y <= FACTION_SYMBOL_SIZE, y++)
 		for (var/x = 1, x <= FACTION_SYMBOL_SIZE, x++)
 			var/px = source.GetPixel(x, FACTION_SYMBOL_SIZE - y + 1)
@@ -70,12 +71,15 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 // same-colored pixel with new_color. Iterative (own stack), not recursive --
 // a 32x32 grid can be up to 1024 cells deep in a pathological case, more
 // than comfortably safe for DM's call stack.
-/proc/faction_symbol_bucket_fill_grid(list/grid, x, y, new_color)
-	if (x < 1 || x > FACTION_SYMBOL_SIZE || y < 1 || y > FACTION_SYMBOL_SIZE)
+/proc/faction_symbol_bucket_fill_grid(list/grid, x, y, new_color, list/undo_stack)
+	if (!isnum(x) || !isnum(y) || x != round(x) || y != round(y) || x < 1 || x > FACTION_SYMBOL_SIZE || y < 1 || y > FACTION_SYMBOL_SIZE)
 		return
 	var/target = grid[faction_symbol_grid_index(x, y)]
-	if (!target || target == new_color)
+	if (!target || cmptext(target, new_color))
 		return
+	// Only a fill that will actually change a pixel spends one undo step.
+	if (undo_stack)
+		faction_symbol_push_undo(undo_stack, grid)
 	var/list/stack = list(list(x, y))
 	var/list/visited = list()
 	while (stack.len)
@@ -186,7 +190,7 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	faction_symbol_grid[faction] = faction_symbol_new_grid()
 
 /obj/map_metadata/proc/bucket_fill_faction_symbol(faction, x, y, new_color)
-	faction_symbol_bucket_fill_grid(ensure_faction_symbol_grid(faction), x, y, new_color)
+	faction_symbol_bucket_fill_grid(ensure_faction_symbol_grid(faction), x, y, new_color, ensure_faction_symbol_undo(faction))
 
 // Bakes the faction's grid into a real PNG via rust_g (the same primitive
 // already used by the -- currently non-functional -- painting canvas
@@ -350,22 +354,43 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 		civ_data[8] = secondary_color
 
 // ------------------------------------------------------------
-// Editor UI (Leader-only; see design_faction_symbol() below). Uses the
-// existing /datum/nano_module pattern (see appearance_changer.dm) rather
-// than a physical structure: created fresh per verb call, all real state
-// lives on map_metadata so re-opening or auto-refreshing always reflects the
-// current saved grid, no separate per-instance state to lose track of.
+// Editor UI (Leader-only). Reuse one source datum for a leader's current
+// faction so the browser id and the target of update_uis(src) stay the same.
+// The editable grid, color and tool still live on map_metadata.
 // ------------------------------------------------------------
+
+/mob/living/human/var/tmp/datum/nano_module/faction_symbol_editor/active_faction_symbol_editor
 
 /datum/nano_module/faction_symbol_editor
 	name = "Faction Symbol Editor"
 	var/mob/living/human/owner
 	var/faction
+	var/obj/map_metadata/editor_map
 
 /datum/nano_module/faction_symbol_editor/New(var/location, var/mob/living/human/H)
 	..(location)
 	owner = H
 	faction = H.civilization
+	editor_map = map
+
+/datum/nano_module/faction_symbol_editor/Destroy()
+	. = ..()
+	if (owner?.active_faction_symbol_editor == src)
+		owner.active_faction_symbol_editor = null
+	owner = null
+	host = null
+	editor_map = null
+
+/datum/nano_module/faction_symbol_editor/proc/matches_current_faction()
+	if (QDELETED(owner) || !map || editor_map != map || !faction || faction == "none")
+		return FALSE
+	// Keep the same editor when the faction itself was renamed.
+	if (owner.civilization != faction && map.faction_previous_name(owner.civilization) == faction)
+		faction = owner.civilization
+	return owner.civilization == faction
+
+/datum/nano_module/faction_symbol_editor/proc/can_edit()
+	return !QDELETED(src) && matches_current_faction() && !owner.stat && owner.active_faction_symbol_editor == src && map.is_faction_leader(owner, faction)
 
 /datum/nano_module/faction_symbol_editor/ui_actions(ui_key)
 	return list("set_tool", "pick_color", "paint", "stroke", "stamp", "clear", "undo", "export_code", "import_code", "save")
@@ -379,7 +404,7 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	return ..()
 
 /datum/nano_module/faction_symbol_editor/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
-	if (!map || !faction || faction == "none")
+	if (user != owner || !can_edit())
 		return
 	var/list/data = host.initial_data()
 
@@ -392,35 +417,27 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	data["shapes"] = faction_symbol_shapes
 	data["has_saved_icon"] = map.get_faction_symbol_icon(faction) ? TRUE : FALSE
 
-	open_tgui(user, ui_key, "faction_symbol.tmpl", name, 620, 760, data, ui, force_open)
+	return open_tgui(user, ui_key, "faction_symbol.tmpl", name, 620, 760, data, ui, force_open)
 
 /datum/nano_module/faction_symbol_editor/Topic(href, href_list)
-	if (!istype(owner) || owner.stat)
-		return
-	// An editor left open across a rename follows its faction to the new name.
-	if (map && faction && owner.civilization != faction && map.faction_previous_name(owner.civilization) == faction)
-		faction = owner.civilization
-	if (!map || !faction || faction == "none" || owner.civilization != faction)
-		return
-	if (!map.is_faction_leader(owner, faction))
-		to_chat(owner, SPAN_WARNING("Only your faction's Leader may redesign its symbol."))
+	if (!can_edit())
 		return
 
 	if (href_list["set_tool"])
 		map.faction_symbol_tool[faction] = href_list["set_tool"]
 	else if (href_list["pick_color"])
 		var/newcolor = player_input(owner, "Choose the active paint color:", "Faction Symbol", map.faction_symbol_color[faction] || "#000000", "color", null, FALSE)
-		if (newcolor)
+		if (newcolor && can_edit())
 			map.faction_symbol_color[faction] = newcolor
 	else if (href_list["paint"])
 		var/x = text2num(href_list["x"])
 		var/y = text2num(href_list["y"])
 		var/tool = map.faction_symbol_tool[faction]
 		var/color = map.faction_symbol_color[faction] || "#000000"
-		faction_symbol_push_undo(map.ensure_faction_symbol_undo(faction), map.ensure_faction_symbol_grid(faction))
 		if (tool == "bucket")
 			map.bucket_fill_faction_symbol(faction, x, y, color)
 		else
+			faction_symbol_push_undo(map.ensure_faction_symbol_undo(faction), map.ensure_faction_symbol_grid(faction))
 			map.set_faction_symbol_pixel(faction, x, y, color)
 	else if (href_list["stroke"])
 		// A whole client-side brush drag, batched into one action -- and, via
@@ -431,7 +448,7 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 		faction_symbol_apply_stroke(map.ensure_faction_symbol_grid(faction), href_list["cells"], color)
 	else if (href_list["stamp"])
 		var/choice = WWinput(owner, "Stamp which shape onto the canvas? This OVERWRITES the current drawing.", "Faction Symbol", "Cancel", list("Cancel") + faction_symbol_shapes)
-		if (choice && choice != "Cancel")
+		if ((choice in faction_symbol_shapes) && can_edit())
 			faction_symbol_push_undo(map.ensure_faction_symbol_undo(faction), map.ensure_faction_symbol_grid(faction))
 			map.stamp_faction_symbol(faction, choice)
 	else if (href_list["clear"])
@@ -442,7 +459,7 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	else if (href_list["import_code"])
 		// Fills the canvas only; the banner changes when the Leader saves.
 		var/list/imported = faction_symbol_ask_code(owner, "Faction Symbol", "the [faction] symbol")
-		if (imported && map.is_faction_leader(owner, faction))
+		if (imported && can_edit())
 			faction_symbol_push_undo(map.ensure_faction_symbol_undo(faction), map.ensure_faction_symbol_grid(faction))
 			map.faction_symbol_grid[faction] = imported
 			to_chat(owner, SPAN_NOTICE("The design is on the canvas. Save to put it on your banners."))
@@ -475,8 +492,21 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 	if (!map || !map.is_faction_leader(src, civilization))
 		to_chat(src, SPAN_WARNING("Only the Leader of your faction may modify its symbol."))
 		return
-	var/datum/nano_module/faction_symbol_editor/editor = new(src, src)
+	var/datum/nano_module/faction_symbol_editor/editor = faction_symbol_editor_for_current_faction()
 	editor.ui_interact(src)
+
+/mob/living/human/proc/faction_symbol_editor_for_current_faction()
+	if (!QDELETED(active_faction_symbol_editor) && active_faction_symbol_editor.owner == src && active_faction_symbol_editor.matches_current_faction())
+		return active_faction_symbol_editor
+	close_faction_symbol_editor()
+	active_faction_symbol_editor = new(src, src)
+	return active_faction_symbol_editor
+
+/mob/living/human/proc/close_faction_symbol_editor()
+	var/datum/nano_module/faction_symbol_editor/editor = active_faction_symbol_editor
+	active_faction_symbol_editor = null
+	if (!QDELETED(editor))
+		qdel(editor)
 
 // Paired grant/revoke helpers, mirroring make_commander()/remove_commander()
 // in officer.dm. The verb also re-checks is_faction_leader() itself, so a
@@ -487,4 +517,5 @@ var/global/list/faction_symbol_shapes = list("star", "sun", "moon", "cross", "bi
 
 /mob/living/human/proc/remove_faction_symbol_editor()
 	verbs -= /mob/living/human/proc/design_faction_symbol
+	close_faction_symbol_editor()
 	remove_faction_rename()
