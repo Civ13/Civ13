@@ -369,15 +369,15 @@
 	if (!do_after(user, LADDER_FORK_TIME, src) || !deployed)
 		return FALSE
 	var/turf/T = get_turf(src)
+	var/obj/structure/target = deployed_target()
+	if (!retract())
+		return FALSE
 	var/list/fallers = list()
-	for (var/obj/structure/S in T)
-		S.climbable = FALSE
-		for (var/mob/living/M in S.climbers)
-			fallers |= M
-		S.climbers.Cut()
-	anchored = FALSE
-	deployed = FALSE
-	icon_state = initial(icon_state)
+	// Climbers are tracked by structure, not per ladder. Only the loss of
+	// their target's last usable route can make them fall with this ladder.
+	if (target && !target.is_climbable_with_support())
+		fallers = target.climbers.Copy()
+		target.climbers.Cut()
 	var/turf/away = get_step(T, get_dir(user, T))
 	if (away && !away.density)
 		forceMove(away)
