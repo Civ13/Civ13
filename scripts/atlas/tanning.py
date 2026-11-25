@@ -96,6 +96,13 @@ def add_tanning(files, add, records, variants):
            'Each piece takes 30 ticks, normally 3 seconds, and washing carries on through the stack until it is done or you stop.',
            'Washed hides gather in your free hand, or drop at your feet when that hand is full. Open water is never used up; a puddle loses 5 water per hide. On ice, cut a hole first.'),
           ['Open water or a puddle'])
+    route('Wash a stack of prepared hides at a fitted well',
+          [(STACK+'hairlesshide', 'n pieces'), ('water', '5 per hide'), ('/obj/structure/sink/well', 'with fitting; not consumed')],
+          [(STACK+'wethide', 'n pieces')],
+          LEATHER, '/obj/item/stack/material/hairlesshide/proc/wash_in_water(',
+          ('Hold the prepared hides and click a nearby well with a windlass or pump.',
+           'Each hide takes 30 ticks and consumes 5 units of well water. Work stops if the water runs low, the fitting is removed, or you stop.',
+           'Washed hides gather in your free hand or drop at your feet.'), ['Well with a windlass or pump'])
     route('Rack-dry washed hides', [(STACK+'wethide', 'n pieces'), (STATION, 'station; not consumed')],
           [(STACK+'dryhide', 'n pieces')], RACK, '/obj/structure/converter/tanning\n',
           ('Put a held wet-hide stack on an empty nearby tanning rack; drying takes 300 ticks, normally 30 seconds.',

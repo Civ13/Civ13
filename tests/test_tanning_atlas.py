@@ -111,6 +111,16 @@ class TanningAtlasTests(unittest.TestCase):
         window = (ROOT/'code/game/objects/items/stacks/crafting_window_processing.dm').read_text()
         self.assertIn('if (hide_wash_water(A))', window)
 
+    def test_fitted_well_route_describes_the_real_cost_and_tool(self):
+        wash = self.recipe('Wash a stack of prepared hides at a fitted well')
+        self.assertEqual([(x['id'], x['quantity']) for x in wash['inputs']],
+                         [('/material/hairlesshide', 'n pieces'), ('water', '5 per hide'),
+                          ('/obj/structure/sink/well', 'with fitting; not consumed')])
+        self.assertEqual([(x['id'], x['quantity']) for x in wash['outputs']], [('/material/wethide', 'n pieces')])
+        self.assertIn('30 ticks', wash['conditions'])
+        route = next(r for r in self.catalog['acquisition']['/material/wethide'] if r['name'] == wash['name'])
+        self.assertEqual(route['tools'], ['Well with a windlass or pump'])
+
     def test_rack_is_linked_to_construction_research_and_not_consumed(self):
         rack = self.recipe('Rack-dry washed hides')
         self.assertEqual(rack['processor'], 'tanning_rack')
