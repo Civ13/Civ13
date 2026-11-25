@@ -13,7 +13,7 @@ def contract(source, oven, persistence):
     mixture = source.split("/proc/stone_boil_mixture()", 1)[1].split("\n/obj/", 1)[0]
     valid = source.split("/proc/stone_boil_valid(", 1)[1].split("\n/obj/", 1)[0]
     action = source.split("/verb/stone_boil_water()", 1)[1]
-    assert 'list("water" = 0, "sodiumchloride" = 0, "cholera" = 0, "food_poisoning" = 0, "coffee_grounds" = 0)' in mixture
+    assert 'list("water" = 0, "sodiumchloride" = 0, "cholera" = 0, "food_poisoning" = 0, "coffee_grounds" = 0, "coffee" = 0)' in mixture
     assert 'if (!(R.id in mixture))' in mixture
     assert 'get_reagent_amount("water") <= 0' in mixture
     for guard in ("persistence_save_in_progress", "persistence_active_operation", "persistence_load_recovery_required", "persistence_admission_identity != save_identity", "H.Adjacent(F)", "get_active_hand_owner(H)", "tool.loc != H", "F.loc != site", "S.loc != site", "S.amount < 1", "!F.stone_heat_ready()", "F.stone_heat_token() != epoch", "reagents != holder", "holder.my_atom != src", "stone_boil_reagent_identity != reagent_identity", "!is_open_container()", "current[id] != mixture[id]"):
@@ -141,6 +141,20 @@ class StoneBoilingSource(unittest.TestCase):
         self.source = SOURCE.read_text(encoding="utf-8")
         self.oven = OVEN.read_text(encoding="utf-8")
         self.persistence = PERSISTENCE.read_text(encoding="utf-8")
+
+    def test_both_heat_source_searches_reject_unreachable_candidates(self):
+        action = self.source.split("/verb/stone_boil_water()", 1)[1]
+        for path in ("oven/fireplace", "furnace/kiln/stone/campfire"):
+            with self.subTest(path=path):
+                loop = action.split(f"/obj/structure/{path}/candidate in range(1, H))", 1)[1].split("break", 1)[0]
+                self.assertRegex(loop, r"if \(candidate\.loc == T && H\.Adjacent\(candidate\) && .*\)\s+F = candidate")
+
+    def test_topped_up_coffee_mixture_is_allowed_but_milk_is_not(self):
+        mixture = self.source.split("/proc/stone_boil_mixture()", 1)[1].split("\n/obj/", 1)[0]
+        entries = mixture.split("var/list/mixture = list(", 1)[1].split(")", 1)[0]
+        ids = {entry.split("=", 1)[0].strip().strip('"') for entry in entries.split(",")}
+        self.assertLessEqual({"water", "coffee_grounds", "coffee"}, ids)
+        self.assertNotIn("milk", ids)
 
     def test_production_contract(self):
         contract(self.source, self.oven, self.persistence)
