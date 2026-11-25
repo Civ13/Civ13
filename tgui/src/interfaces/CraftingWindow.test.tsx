@@ -160,6 +160,30 @@ describe('Crafting window', () => {
     view.rerender(<CraftingWindow {...ui({ detail: { ...detail, id: '0:1:aaaaaaaa' } })} />);
     expect(within(screen.getByLabelText('Selected recipe')).getByText('Missing a tool, skill or second material')).toBeTruthy();
   });
+  it('loads a recipe selected during a craft when it finishes, without repeating for equivalent snapshots', () => {
+    const working = { id: '0:1:aaaaaaaa', name: 'campfire', time: 140 };
+    const props = ui({ working });
+    const view = render(<CraftingWindow {...props} />);
+    fireEvent.click(rowButton('hewn table (wooden pegs)'));
+    expect(props.act).not.toHaveBeenCalled();
+    view.rerender(<CraftingWindow {...ui({ amount: 2 })} act={props.act} />);
+    expect(props.act).toHaveBeenCalledExactlyOnceWith('detail', { value: '3:1:dddddddd' });
+    view.rerender(<CraftingWindow {...ui({ amount: 3 })} act={props.act} />);
+    expect(props.act).toHaveBeenCalledTimes(1);
+    view.rerender(<CraftingWindow {...ui({ detail: {
+      id: '3:1:dddddddd', needs: [{ label: 'You need a chisel in your other hand.', met: 0 }], fields: [],
+    } })} act={props.act} />);
+    expect(within(screen.getByLabelText('Selected recipe')).getByText('You need a chisel in your other hand.')).toBeTruthy();
+    expect(props.act).toHaveBeenCalledTimes(1);
+  });
+  it('loads missing selected details when a read-only window becomes interactive', () => {
+    const props = ui({}, false);
+    const view = render(<CraftingWindow {...props} />);
+    fireEvent.click(rowButton('campfire'));
+    expect(props.act).not.toHaveBeenCalled();
+    view.rerender(<CraftingWindow {...ui()} act={props.act} />);
+    expect(props.act).toHaveBeenCalledExactlyOnceWith('detail', { value: '0:1:aaaaaaaa' });
+  });
   it('shows a recipe choices as fields and sends the answers with the craft', () => {
     const fields = [
       { field: 'name', kind: 'text', question: 'Choose a name for this sign:', default: '', required: 0, max_length: 40 },
