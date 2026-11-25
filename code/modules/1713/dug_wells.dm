@@ -404,6 +404,13 @@
 			to_chat(user, SPAN_WARNING("A shovel will not shift the lining. Break it up with a hammer."))
 		return
 	var/obj/structure/well_fitting/F = well_fitting()
+	var/obj/item/stack/material/hairlesshide/H = O
+	if (istype(H))
+		if (F)
+			H.wash_in_water(user, src, F)
+		else
+			to_chat(user, SPAN_WARNING("Draw water into an open vessel to wash the hides, or fit the well with a windlass or pump."))
+		return TRUE
 	if (F && F.draw(src, O, user))
 		return
 	if (!dug_reach(user, O))

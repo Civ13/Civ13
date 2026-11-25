@@ -90,16 +90,16 @@ class TanningAtlasTests(unittest.TestCase):
         self.assertEqual(route['tools'], ['Open water or a puddle'])
         text = (ROOT/tanning.LEATHER).read_text()
         start = text.index('/obj/item/stack/material/hairlesshide/proc/wash_in_water(')
-        body = text[start:text.index('#undef HIDE_WASH_PUDDLE_COST')]
+        body = text[start:text.index('#undef HIDE_WASH_WATER_COST')]
         loop = body[body.index('while (water_wash_valid'):]
         # Each piece waits, is rechecked, then pays one hide (and puddle water) before its output.
         self.assertLess(loop.index('hide_wash_wait'), loop.index('use(1)'))
-        self.assertLess(loop.index('P.volume -= HIDE_WASH_PUDDLE_COST'), loop.index('use(1)'))
+        self.assertLess(loop.index('P.volume -= HIDE_WASH_WATER_COST'), loop.index('use(1)'))
         self.assertLess(loop.index('use(1)'), loop.index('water_wash_output'))
-        self.assertIn('#define HIDE_WASH_PUDDLE_COST 5', text)
+        self.assertIn('#define HIDE_WASH_WATER_COST 5', text)
         valid = text[text.index('/obj/item/stack/material/hairlesshide/proc/water_wash_valid('):]
         valid = valid[:valid.index('\n\n')]
-        for guard in ('hide_research_allowed()', 'hide_worker_can_reach(user, src)', 'loc == user',
+        for guard in ('hide_research_allowed()', 'hide_worker_can_reach(user, src)', 'loc != user',
                       'item_is_in_hands(src)', 'user.Adjacent(water)', 'hide_wash_water(water)'):
             self.assertIn(guard, valid)
         water = text[text.index('/proc/hide_wash_water('):]
