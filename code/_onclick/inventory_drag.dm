@@ -109,14 +109,14 @@
 	return null
 
 // Applies the item's pickup delay when it is not already in the user's hands.
-/obj/item/proc/inventory_drag_pickup_delay(mob/living/human/user)
+/obj/item/proc/inventory_drag_pickup_delay(mob/living/human/user, fixed_hand = FALSE)
 	if (equiptimer <= 0 || user.item_is_in_hands(src))
 		return TRUE
 	var/atom/source = loc
-	var/carried = (source in storage_window_carried_holders(user))
-	if (!do_after(user, equiptimer, src, needhand = !carried, can_move = equiptimer))
+	var/carried = (source == user || (source in storage_window_carried_holders(user)))
+	if (!do_after(user, equiptimer, src, needhand = !carried && !fixed_hand, can_move = equiptimer))
 		return FALSE
-	if (carried && (loc != source || !(source in storage_window_carried_holders(user))))
+	if (carried && (loc != source || (source != user && !(source in storage_window_carried_holders(user)))))
 		return FALSE
 	return inventory_drag_in_reach(src, user)
 
@@ -197,25 +197,37 @@
 	if (!inventory_drag_hand_usable(slot, user))
 		return TRUE
 
-	if (loc == user)
-		// Already carried: from the other hand or an equipment slot.
-		if (!user.canUnEquip(src))
+	var/atom/source = loc
+	var/source_slot = null
+	if (source == user)
+		source_slot = user.get_inventory_slot(src)
+		if (!source_slot || !user.canUnEquip(src))
+			return TRUE
+
+	// Hand-to-hand moves skip the delay. Worn and loose items must still
+	// be in their original source when the draw/pickup finishes.
+	if (!inventory_drag_pickup_delay(user, fixed_hand = TRUE))
+		return TRUE
+	if (QDELETED(src) || QDELETED(user) || loc != source || user.lying || user.incapacitated() || user.restrained())
+		return TRUE
+	if (user.get_equipped_item(slot) || !inventory_drag_in_reach(src, user) || !inventory_drag_hand_usable(slot, user))
+		return TRUE
+	if (source == user)
+		if (user.get_equipped_item(source_slot) != src || !user.canUnEquip(src))
 			return TRUE
 		user.u_equip(src)
-	else
-		if (!inventory_drag_pickup_delay(user))
-			return TRUE
-		if (user.get_equipped_item(slot) || !inventory_drag_in_reach(src, user))
-			return TRUE
-		var/atom/origin = inventory_drag_take_out(user)
-		if (!origin)
-			return TRUE
 		if (!inventory_drag_put_in_hand(slot, user))
-			inventory_drag_put_back(origin)
+			user.remove_from_mob(src)
 		return TRUE
 
+	var/obj/item/weapon/storage/S = source
+	if (istype(S) && (user.s_active != S || !S.storage_contents_accessible()))
+		return TRUE
+	var/atom/origin = inventory_drag_take_out(user)
+	if (!origin)
+		return TRUE
 	if (!inventory_drag_put_in_hand(slot, user))
-		user.remove_from_mob(src)
+		inventory_drag_put_back(origin)
 	return TRUE
 
 /obj/item/proc/inventory_drag_put_in_hand(slot, mob/living/human/user)
