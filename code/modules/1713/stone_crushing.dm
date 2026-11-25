@@ -56,8 +56,8 @@
 /obj/structure/stone_crusher
 	name = "stone crusher"
 	desc = "A heavy stone wheel rolled around a trough. Use stone blocks on it to crush them one at a time; most crumble to rubble, but some yield sand, ore or a rare mineral. Output collects under the crusher."
-	icon = 'icons/obj/structures.dmi'
-	icon_state = "grindstone"
+	icon = 'icons/obj/hopper_machines.dmi'
+	icon_state = "millstones"
 	anchored = TRUE
 	density = TRUE
 	flammable = FALSE
