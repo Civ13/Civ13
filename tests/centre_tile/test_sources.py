@@ -77,6 +77,20 @@ class CentreTileSources(unittest.TestCase):
         self.assertIn('H.loc != destination && !H.forceMove(destination)', body)
         self.assertIn('H.human_subtile_anchor()', body)
 
+    def test_wheelchairs_use_whole_tile_pull_and_skip_both_pixel_paths(self):
+        body = proc(SUBTILE, '/mob/living/human/proc/human_subtile_pull_follow()')
+        self.assertIn('var/wheelchair_tile_follow = istype(M, /obj/structure/bed/chair/wheelchair)', body)
+        chase = 'if (!moved && !wheelchair_tile_follow && human_subtile_pull_trail_chase(M, trail))'
+        self.assertIn(chase, body)
+        self.assertLess(body.index('moved = human_subtile_pull_into(M, trail)'), body.index(chase))
+        self.assertIn('if (!(trail in locs) && bounds_dist(M, trail) < 32 && !(M in obounds(src)))', body)
+        self.assertLess(body.index('if (pulling == M && bounds_dist(src, M) >= 32)'), body.index('return moved'))
+        self.assertLess(body.index('if (wheelchair_tile_follow)\n\t\treturn FALSE'),
+                        body.index('return human_subtile_pull_rope(M)'))
+        into = proc(SUBTILE, '/mob/living/human/proc/human_subtile_pull_into(')
+        self.assertIn('if (target.density)', into)
+        self.assertIn('M.Move(target, direction)', into)
+
     def test_native_probe_walks_every_direction(self):
         for direction in ('EAST', 'WEST', 'NORTH', 'SOUTH'):
             self.assertIn(f'centre_tile_probe_walk(', PROBE)

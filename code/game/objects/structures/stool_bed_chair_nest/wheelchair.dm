@@ -1,3 +1,6 @@
+// Set only while the wheelchair moves its rider with the buckle link temporarily clear.
+/mob/living/var/tmp/obj/structure/bed/chair/wheelchair/wheelchair_carrying
+
 /obj/structure/bed/chair/wheelchair
 	name = "wheelchair"
 	desc = "You sit in this. Either by will or force."
@@ -65,9 +68,7 @@
 	var/turf/T = null
 	//--1---Move occupant---1--//
 	if (buckled_mob)
-		buckled_mob.buckled = null
-		step(buckled_mob, direction)
-		buckled_mob.buckled = src
+		move_wheelchair_rider(buckled_mob, direction)
 	//--2----Move driver----2--//
 	if (pulling)
 		T = pulling.loc
@@ -102,9 +103,7 @@
 	if (buckled_mob)
 		var/mob/living/occupant = buckled_mob
 		if (!driving)
-			occupant.buckled = null
-			occupant.Move(loc)
-			occupant.buckled = src
+			move_wheelchair_rider(occupant)
 			if (occupant && (loc != occupant.loc))
 				if (propelled)
 					for (var/mob/O in loc)
@@ -119,6 +118,29 @@
 		else
 			if (occupant && (loc != occupant.loc))
 				forceMove(occupant.loc) // Failsafe to make sure the wheelchair stays beneath the occupant after driving
+
+/obj/structure/bed/chair/wheelchair/proc/move_wheelchair_rider(mob/living/occupant, direction = 0)
+	if (QDELETED(occupant) || occupant.buckled != src || occupant.wheelchair_carrying)
+		return FALSE
+	occupant.wheelchair_carrying = src
+	occupant.buckled = null
+	try
+		if (direction)
+			. = step(occupant, direction)
+		else
+			. = occupant.Move(loc)
+	catch (var/exception/E)
+		finish_wheelchair_rider_move(occupant)
+		throw E
+	finish_wheelchair_rider_move(occupant)
+
+/obj/structure/bed/chair/wheelchair/proc/finish_wheelchair_rider_move(mob/living/occupant)
+	if (QDELETED(occupant) || occupant.wheelchair_carrying != src)
+		return
+	occupant.wheelchair_carrying = null
+	// Do not restore a seat that released its occupant or overwrite a transfer.
+	if (!QDELETED(src) && buckled_mob == occupant && !occupant.buckled)
+		occupant.buckled = src
 
 /obj/structure/bed/chair/wheelchair/attack_hand(mob/living/user as mob)
 	if (pulling)

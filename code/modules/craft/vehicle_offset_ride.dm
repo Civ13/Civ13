@@ -125,7 +125,7 @@
 // one-object vehicle, or standing on a moving frame vehicle.
 // Carried steps make no footstep sounds; the engine has its own.
 /mob/living/human/proc/carried_by_vehicle()
-	if (buckled || driver || driver_vehicle)
+	if (buckled || wheelchair_carrying || driver || driver_vehicle)
 		return TRUE
 	var/turf/T = loc
 	if (!istype(T))
