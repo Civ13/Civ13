@@ -19,6 +19,7 @@ PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 PREFIX = '.faction_ui_assets_ci'
 ASSETS = 'code/modules/client/asset_cache.dm'
 CREATION = 'code/game/mob/groups/faction_creation.dm'
+TGUI = 'code/modules/nano/tgui.dm'
 OMISSION_FAILURES = {
     'cold lookup registers once', 'cold cache contains JavaScript',
     'cold cache contains modern screen assets', 'cold common contains styles',
@@ -42,18 +43,23 @@ def sources(omit_registration=False):
     # Read-only registration count; original flist/fcopy_rsc/cache code remains.
     assets = replace_once(assets, '/datum/asset/nanoui/register()\n',
                           '/datum/asset/nanoui/register()\n\tfaction_ui_registrations++\n')
-    creation = replace_once((ROOT / CREATION).read_text(encoding='utf-8'),
-                            'ui = new /datum/nanoui/tgui(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)',
-                            'ui = new /datum/nanoui/tgui/faction_assets_probe(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)')
+    # The creation handler calls the shared opener. Keep the real manager,
+    # state and model path; change only the open() receiver for this template.
+    constructor = ('new /datum/nanoui/tgui(user, src, ui_key, template, title, width, height, '
+                   '_state = state ? state : default_state)')
+    tgui = replace_once((ROOT / TGUI).read_text(encoding='utf-8'), '\tui = ' + constructor + '\n',
+                        '\tif (template == "faction_creation.tmpl")\n\t\tui = '
+                        + constructor.replace('/datum/nanoui/tgui(', '/datum/nanoui/tgui/faction_assets_probe(')
+                        + '\n\telse\n\t\tui = ' + constructor + '\n')
     dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
     replacements = [('code/world.dm', '_world.dm'), ('code/controllers/mc/globals.dm', '_globals.dm'),
-                    (ASSETS, '_assets.dm'), (CREATION, '_creation.dm')]
+                    (ASSETS, '_assets.dm'), (TGUI, '_tgui.dm')]
     for path, suffix in replacements:
         dme = replace_once(dme, path.replace('/', '\\'), PREFIX + suffix)
     dme = re.sub(r'^#include ".*\.dmm".*$', '', dme, flags=re.M)
     dme += '\n#include "tests/faction_ui_assets/probe.dm"\n'
     return {PREFIX + '_world.dm': world, PREFIX + '_globals.dm': globals_source,
-            PREFIX + '_assets.dm': assets, PREFIX + '_creation.dm': creation, PREFIX + '.dme': dme}
+            PREFIX + '_assets.dm': assets, PREFIX + '_tgui.dm': tgui, PREFIX + '.dme': dme}
 
 
 def prepare(destination, omit_registration=False):
@@ -63,7 +69,7 @@ def prepare(destination, omit_registration=False):
     destination.mkdir(parents=True, exist_ok=True)
     for name, text in generated.items():
         (destination / name).write_text(text, encoding='utf-8', newline='\n')
-    source_paths = [ASSETS, CREATION, 'code/game/mob/groups/factions.dm',
+    source_paths = [ASSETS, CREATION, TGUI, 'code/game/mob/groups/factions.dm',
                     'code/game/gameticker.dm', 'code/modules/nano/_nanoui.dm',
                     'code/modules/nano/nanomanager.dm', 'code/modules/nano/modules/nano_module.dm',
                     'tests/faction_ui_assets/probe.dm', 'tests/faction_ui_assets/run.py']

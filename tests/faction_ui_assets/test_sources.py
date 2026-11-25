@@ -96,10 +96,16 @@ class FactionAssets(unittest.TestCase):
         self.assertEqual(assets.replace('\t\tA.register()\n\t\treturn A\n', '\t\treturn A\n'), omission[PREFIX + '_assets.dm'])
         self.assertIn('/datum/asset/nanoui/register()\n\tfaction_ui_registrations++\n', assets)
         self.assertIn('fcopy_rsc(path + filename)', assets)
-        self.assertIn('/datum/nanoui/tgui/faction_assets_probe(user, src,', positive[PREFIX + '_creation.dm'])
+        self.assertIn('/datum/nanoui/tgui/faction_assets_probe(user, src,', positive[PREFIX + '_tgui.dm'])
         self.assertNotIn('.dmm"', positive[PREFIX + '.dme'])
         self.assertNotIn('CIV13_GAMEPLAY_BRIDGE', positive[PREFIX + '.dme'])
-        self.assertEqual(positive[PREFIX + '_creation.dm'], omission[PREFIX + '_creation.dm'])
+        constructor = 'new /datum/nanoui/tgui(user, src, ui_key, template, title, width, height, _state = state ? state : default_state)'
+        projected = positive[PREFIX + '_tgui.dm']
+        self.assertEqual(projected, omission[PREFIX + '_tgui.dm'])
+        self.assertIn('if (template == "faction_creation.tmpl")\n\t\tui = new /datum/nanoui/tgui/faction_assets_probe(', projected)
+        self.assertIn('else\n\t\tui = ' + constructor, projected)
+        self.assertIn('\tui.set_initial_data(data)\n\tui.open()\n', projected)
+        self.assertIn('#include "code\\game\\mob\\groups\\faction_creation.dm"', positive[PREFIX + '.dme'])
         for text in ('absent', 'duplicate duplicate'):
             with self.assertRaises(ValueError):
                 replace_once(text, 'duplicate', 'replacement')
