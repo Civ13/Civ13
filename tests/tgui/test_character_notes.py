@@ -1,6 +1,6 @@
 """Notes parser/lease source projections. No native DM or client acceptance."""
 from pathlib import Path
-import copy, importlib.util, json, re, unittest
+import copy, html, importlib.util, json, re, unittest
 from types import SimpleNamespace as Obj
 import reader_base
 from notes_projection import SOURCE,ROOT,Budget,body,parser,view
@@ -74,7 +74,7 @@ class NotesOwnership(unittest.TestCase):
   self.assertFalse(admitted(mind,owner,mind,new_body));self.assertTrue(admitted(mind,new_body,mind,new_body))
   new_body.mind=object();self.assertFalse(admitted(mind,new_body,mind,new_body))
  def test_complete_cached_snapshot_guarded_fallback_and_close_noninterference(self):
-  presentation=body(SOURCE,'/datum/mind/proc/present_character_notes_ui(mob/user, legacy_snapshot, discovery_snapshot)')
+  presentation=body(SOURCE,'/datum/mind/proc/present_character_notes_ui(mob/user, legacy_snapshot, discovery_snapshot, character_heading)')
   for marker in ('if (!user || !user.client || user.mind != src)','ui.legacy_snapshot = legacy_snapshot','if (isnull(data))','ui.plain_page = TRUE','ui.use_on_close_logic(FALSE)'):
    self.assertIn(marker,presentation)
   self.assertLess(presentation.index('!user.client'),presentation.index('character_notes_ui_data('))
@@ -95,16 +95,46 @@ class NotesOwnership(unittest.TestCase):
   old=dict(closed=False,snapshot='FULL_PRIVATE_SNAPSHOT',parent_closes=0);f(old)
   new=dict(closed=False,snapshot='REFRESHED_PRIVATE_SNAPSHOT',parent_closes=0);f(old)
   self.assertEqual(old,dict(closed=True,snapshot=None,parent_closes=1));self.assertEqual(new['snapshot'],'REFRESHED_PRIVATE_SNAPSHOT')
+ def test_bodyless_reader_uses_the_same_encoded_heading_in_both_outputs(self):
+  mind=(ROOT/'code/datums/mind.dm').read_text()
+  show=body(mind,'/datum/mind/proc/show_memory(mob/recipient)')
+  select='var/character_heading = html_encode(current ? current.real_name : recipient.real_name)'
+  self.assertLess(show.index('recipient.mind != src'), show.index(select))
+  self.assertLess(show.index('if(!C)'),show.index(select))
+  self.assertEqual(show.count('current.real_name'),1)
+  self.assertIn('[character_heading]</span>',show)
+  present=body(SOURCE,'/datum/mind/proc/present_character_notes_ui(mob/user, legacy_snapshot, discovery_snapshot, character_heading)')
+  self.assertIn('character_notes_ui_data(discovery_snapshot, character_heading)',present)
+  self.assertNotIn('current.real_name',SOURCE)
+  # Project the exact selected scalar and verify the retained mind's sections,
+  # memories and discovery snapshot still pass through the modern parser.
+  from notes_projection import project
+  select_name=project('\n/proc/selector\n\t'+select+'\n\treturn character_heading\n',
+                      '/proc/selector','current,recipient',
+                      {select:'character_heading = encode(current.real_name if current is not None else recipient.real_name)',
+                       'return character_heading':'return character_heading'},
+                      {'encode':lambda value: html.escape(value, quote=False)})
+  ghost=Obj(real_name='A & B <III>')
+  self.assertEqual(select_name(Obj(real_name='Living name'),ghost),'Living name')
+  heading=select_name(None,ghost)
+  data=view(dict(character=heading,notes={'Role':['Private']},memory='kept'), 'known')
+  self.assertEqual(html.unescape(data['character'][0]['text']),ghost.real_name)
+  self.assertIn('Private',str(data['sections']))
+  self.assertIn('kept',str(data['memory']))
+  self.assertIn('known',str(data['discoveries']))
  def test_classic_builder_exact_preimage_and_fixed_hook(self):
   mind=(ROOT/'code/datums/mind.dm').read_text()
   current='/datum/mind/proc/show_memory(mob/recipient)\n'+body(mind,'/datum/mind/proc/show_memory(mob/recipient)')
+  current=current.replace('\t// A ghost retains its character name and mind after body deletion.\n'
+                          '\tvar/character_heading = html_encode(current ? current.real_name : recipient.real_name)\n','')
+  current=current.replace('[character_heading]</span>','[current.real_name]</span>')
   current=current.replace('\tvar/discovery_snapshot = discoveries_html()\n\toutput += discovery_snapshot','\toutput += discoveries_html()')
   old_tail='\trecipient << browse(replacetext(memory_stylized, "PLACEHOLDER", output),"window=memory;size=625x650")'
   start=current.index('\tvar/legacy_snapshot = ');end=current.index('\n',current.index('\tshow_browse(recipient, legacy_snapshot',start))
   current=current[:start]+old_tail+current[end:]
   # The fixture excludes only blank lines separating top-level procs.
   self.assertEqual(current.rstrip('\n'),(ROOT/'tests/tgui/fixtures/notes-legacy-proc.dm.txt').read_text().rstrip('\n'))
-  self.assertIn('hascall(src, "present_character_notes_ui") && call(src, "present_character_notes_ui")(recipient, legacy_snapshot, discovery_snapshot)',mind)
+  self.assertIn('hascall(src, "present_character_notes_ui") && call(src, "present_character_notes_ui")(recipient, legacy_snapshot, discovery_snapshot, character_heading)',mind)
   transport=(ROOT/'code/modules/nano/tgui.dm').read_text();self.assertNotIn('character_notes.tmpl',transport)
   self.assertNotRegex(SOURCE,r'learned_discoveries\s*=|notes\[.*\]\s*=|memory\s*=|world <<|Topic\(')
 
