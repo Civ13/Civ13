@@ -2328,6 +2328,61 @@ var/global/platform_probe_runtime_error = FALSE
 	var/list/signals = train_hand_signals()
 	platform_check("conductor/hand_signals", crew == 2 && signals.len == 5 && flags.show_signal(guard, "Right away") == 2 && flags.show_signal(guard, "Danger") == 2 && !flags.show_signal(guard, "Wave") && !flags.show_signal(walker, "Stop") && ("signal_flags" in states))
 
+// Single-line isolation and footprint regressions.
+/proc/platform_token_isolation()
+	var/obj/structure/train_lineside/board/orphan_board = new(platform_turf(258, 9))
+	orphan_board.section = "101"
+	orphan_board.update_board()
+	var/obj/item/train_token/orphan_token = new(platform_turf(258, 10))
+	orphan_token.section = "102"
+	var/obj/structure/train_token_instrument/survivor = new(platform_turf(258, 11))
+	survivor.section = "103"
+	var/obj/structure/train_token_instrument/A = new(platform_turf(258, 4))
+	var/obj/structure/train_token_instrument/B = new(platform_turf(258, 6))
+	var/obj/structure/train_token_instrument/C = new(platform_turf(260, 4))
+	var/obj/structure/train_token_instrument/D = new(platform_turf(260, 6))
+	var/obj/item/train_signal_wire/W = new(platform_turf(257, 6))
+	W.run_to(A)
+	W.run_to(B)
+	platform_check("tokens/skip_all_reserved_sources", A.section == "104" && A.partner() == B)
+	W.run_from = null
+	W.run_to(C)
+	W.run_to(D)
+	var/obj/item/train_token/first = A.draw_token(null)
+	var/obj/item/train_token/second = C.draw_token(null)
+	platform_check("tokens/independent_sections_issue_independently", C.section && C.section != A.section && C.partner() == D && first && second)
+	var/original_board_name = orphan_board.name
+	W.run_from = null
+	W.run_to(survivor)
+	W.run_to(orphan_board)
+	platform_check("tokens/unpaired_instrument_preserves_board", orphan_board.section == "101" && orphan_board.name == original_board_name)
+	var/obj/structure/train_token_instrument/replacement = new(platform_turf(258, 13))
+	W.run_to(replacement)
+	W.run_to(orphan_board)
+	platform_check("tokens/replacement_keeps_section_and_can_mark_board", survivor.section == "103" && survivor.partner() == replacement && orphan_board.section == "103" && orphan_board.name != original_board_name)
+
+	platform_track(257, 21, NORTH)
+	var/obj/structure/trains/locomotive/coal/small = new(platform_turf(257, 21))
+	small.set_dir(NORTH)
+	small.refresh_consist()
+	var/obj/structure/train_lineside/board/check_board = new(platform_turf(258, 21))
+	check_board.section = A.section
+	var/mob/living/human/platform_rider/holder = new(platform_turf(258, 21))
+	first.loc = holder
+	platform_check("tokens/small_ignores_trackside_holder", !small.body_kind && !small.carries_token(A.section) && findtext(check_board.sighting(small), "not on the engine"))
+	check_board.passed_by(small)
+	platform_check("tokens/trackside_token_counts_passage", check_board.passed == 1)
+	first.loc = small.loc
+	check_board.passed_by(small)
+	platform_check("tokens/small_accepts_centre_token", small.carries_token(A.section) && check_board.passed == 1)
+	for (var/ty in 20 to 25)
+		platform_track(251, ty, NORTH)
+	var/obj/structure/trains/locomotive/wide = platform_car("loco_diesel", 251, 23, NORTH)
+	if (wide)
+		wide.refresh_consist()
+		first.loc = platform_turf(252, 23)
+	platform_check("tokens/wide_accepts_side_deck_token", wide && wide.body_kind && wide.carries_token(A.section))
+
 // Signals and single-line working (train_signals.dm), on column 266.
 /proc/platform_signals_run()
 	for (var/ty in 2 to 25)
@@ -3882,6 +3937,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_diesel_run()
 		platform_conductor_run()
 		platform_signals_run()
+		platform_token_isolation()
 		platform_derail_run()
 		platform_stations_run()
 		platform_big_warehouse_run()
