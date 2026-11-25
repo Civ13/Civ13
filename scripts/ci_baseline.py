@@ -1966,8 +1966,8 @@ SUITES = {
         'paths': ('tests/bee_products/test_mead_lid_timing.py',),
         'shared_paths': ('code/modules/1713/mead.dm', 'code/modules/reagents/reagent_containers/glass.dm')},
     'item_wash_source': {'files': ('tests/item_wash_source/test_completion.py',),
-        'paths': ('tests/item_wash_source/', 'code/game/objects/structures/watercloset.dm',
-                  'code/game/objects/items/stacks/sheets/leather.dm', 'code/modules/1713/dug_wells.dm')},
+        'paths': ('tests/item_wash_source/', 'code/game/objects/structures/watercloset.dm'),
+        'shared_paths': ('code/game/objects/items/stacks/sheets/leather.dm', 'code/modules/1713/dug_wells.dm')},
     # Water quality by kind, washing fixes and flea typhus; source checks only.
     'water_quality': {'files': ('tests/water_quality/test_water_quality.py',),
         'paths': ('tests/water_quality/', 'code/modules/1713/water_quality.dm'), 'shared_paths': (
