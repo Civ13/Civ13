@@ -195,8 +195,10 @@
 		held.update_icon()
 		held.update_strings()
 		return
-	var/obj/item/stack/material/wethide/made = new /obj/item/stack/material/wethide(site, 1)
-	if (!QDELETED(made) && made.loc == site && !user.get_inactive_hand())
+	var/has_free_hand = !user.get_inactive_hand()
+	// Reserve the new piece for a free hand before any ground-stack merge.
+	var/obj/item/stack/material/wethide/made = new /obj/item/stack/material/wethide(site, 1, !has_free_hand)
+	if (has_free_hand && !QDELETED(made) && made.loc == site && !user.get_inactive_hand())
 		user.put_in_inactive_hand(made)
 
 /obj/item/stack/material/hairlesshide/proc/wash_in_water(mob/living/user, atom/water)
