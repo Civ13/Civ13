@@ -2725,6 +2725,110 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual(before, len(self.machine.detached))
 
 
+class OceanBuildOrderingTests(unittest.TestCase):
+    setUp = ShardGroupTests.setUp
+    tearDown = ShardGroupTests.tearDown
+    write_group = ShardGroupTests.write_group
+
+    def configured_coasts(self):
+        self.group['regions'].extend(
+            {'id': name, 'name': name, 'kind': kind, 'port': 1730 + i, 'map': 'maps/small/tiny.dmm'}
+            for i, (name, kind) in enumerate((
+                ('atlantic', 'OCEANIC'), ('arctic', 'OCEANIC'), ('greenland', 'SURFACE'),
+                ('europe', 'SURFACE'), ('asia', 'SURFACE'), ('africa', 'TUTORIAL'))))
+        group = self.write_group()
+        hosts = {r['id']: h for r, h in shard_group.hosts(group, platform=self.machine)}
+        for host in hosts.values():
+            host.repo.mkdir(parents=True, exist_ok=True)
+            host.state_dir.mkdir(parents=True, exist_ok=True)
+        for name in ('atlantic', 'gaia', 'greenland', 'europe'):
+            self.set_build(hosts[name], REVISION)
+        return group, hosts
+
+    def set_build(self, host, revision, filename='region.dmb'):
+        (host.repo / filename).write_bytes(b'compiled region DMB fixture')
+        host.record_build(revision, filename)
+
+    def test_real_atlantic_edges_insets_and_ancestor_validation(self):
+        group, hosts = self.configured_coasts()
+        ocean = hosts['atlantic']
+        later = 'f' * 40
+        previous = self.machine.run
+
+        def git(argv, **kwargs):
+            if argv[1:3] == ['merge-base', '--is-ancestor']:
+                return (0 if argv[3:] == [NEWER, later] else 1), ''
+            return previous(argv, **kwargs)
+
+        with mock.patch.object(self.machine, 'run', side_effect=git):
+            self.assertEqual(['europe', 'gaia', 'greenland'], ocean.ocean_update_blockers(group, NEWER),
+                             'requires its configured lands, including insets; not other oceans or unrelated worlds')
+            self.assertEqual([], hosts['gaia'].ocean_update_blockers(group, NEWER))
+            self.set_build(hosts['europe'], NEWER)
+            self.set_build(hosts['gaia'], NEWER)
+            self.set_build(hosts['greenland'], later, filename='region.b.dmb')
+            self.assertEqual([], ocean.ocean_update_blockers(group, NEWER))
+            hosts['gaia'].lock.write_text('changing the installed slot')
+            self.assertEqual(['gaia'], ocean.ocean_update_blockers(group, NEWER))
+            hosts['gaia'].lock.unlink()
+            (hosts['greenland'].repo / 'region.b.dmb').write_bytes(b'manually replaced')
+            self.assertEqual(['greenland'], ocean.ocean_update_blockers(group, NEWER),
+                             'a staging record or a source checkout cannot attest a replaced DMB')
+
+    def test_no_change_or_missing_topology_keeps_the_known_build_available(self):
+        group, hosts = self.configured_coasts()
+        ocean = hosts['atlantic']
+        with mock.patch.object(shard_group, 'world_neighbours', return_value={}):
+            self.assertEqual([], ocean.ocean_update_blockers(group, REVISION))
+            self.assertEqual(['world links unavailable'], ocean.ocean_update_blockers(group, NEWER))
+            with mock.patch.object(ocean, 'latest_revision', return_value=NEWER), \
+                    mock.patch.object(ocean, 'record') as record, \
+                    mock.patch.object(shard_group, 'prepare_tree') as prepare:
+                ocean.do_refresh('op')
+                prepare.assert_not_called()
+                self.assertEqual(REVISION, record.call_args.kwargs['revision'])
+                self.assertIn('world links unavailable', record.call_args.kwargs['update_deferred'])
+            self.assertEqual('start-current', ocean.automatic_start_action())
+
+    def test_replaced_stage_does_not_take_over_the_installed_ocean_slot(self):
+        _group, hosts = self.configured_coasts()
+        ocean = hosts['atlantic']
+        installed = ocean.repo / 'region.dmb'
+        staged = ocean.stage_dir()
+        staged.mkdir(parents=True)
+        (staged / 'region.dmb').write_bytes(b'future DMB produces different data')
+        before = installed.read_bytes()
+        with mock.patch.object(ocean, 'staged_revision', side_effect=[NEWER, 'f' * 40]):
+            self.assertFalse(ocean.install_staged(NEWER))
+        self.assertEqual(REVISION, ocean.built_revision())
+        self.assertEqual(before, installed.read_bytes())
+        self.assertFalse((ocean.repo / 'region.dmb.staged').exists())
+
+    def test_blocked_candidate_does_not_stop_or_compile(self):
+        group, hosts = self.configured_coasts()
+        ocean = hosts['atlantic']
+        self.machine.revision = NEWER
+        with mock.patch.object(self.machine, 'run', side_effect=lambda args, **kw:
+                               (1, '') if args[1] == 'merge-base' else (0, NEWER + '\n')):
+            with mock.patch.object(ocean, 'record'), mock.patch.object(shard_group, 'prepare_tree') as prepare:
+                with self.assertRaisesRegex(shard_group.OceanUpdateDeferred, 'europe, gaia, greenland'):
+                    ocean.do_update('op')
+                prepare.assert_not_called()
+            with mock.patch.object(ocean, 'evict') as evict:
+                with self.assertRaises(shard_group.OceanUpdateDeferred):
+                    ocean.install_into_sleeper()
+                evict.assert_not_called()
+            with mock.patch.object(ocean, 'staged_revision', return_value=NEWER), \
+                    mock.patch.object(ocean, 'update_pending', return_value=True), \
+                    mock.patch.object(ocean, 'record') as record, \
+                    mock.patch.object(ocean, 'world') as running:
+                with self.assertRaises(shard_group.OceanUpdateDeferred):
+                    ocean.do_handover('op', automatic=True)
+                running.assert_not_called()
+                record.assert_called_with(retryable=True)
+                self.assertFalse(ocean.install_staged_while_down())
+
+
 class HandoverTests(unittest.TestCase):
     """handover: the staged build boots beside the running region, loads its save and takes over."""
     setUp = ShardGroupTests.setUp
