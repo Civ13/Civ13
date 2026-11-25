@@ -170,10 +170,10 @@ class CharacterSlotNameAdmission(unittest.TestCase):
         self.assertNotIn("qdel", release)
         self.assertNotIn("transfer_to", release)
 
-    def test_new_writes_follow_equipped_name_and_unlocked_siblings_only(self):
+    def test_new_writes_follow_equipped_name_and_existing_siblings_only(self):
         conflict = admission_body(SOURCE, "/proc/character_slot_name_conflict(account, slot, name)")
         self.assertIn("character_slot_state(account, TRUE)", conflict)
-        self.assertIn("other == slot || !character_slot_open(state, other)", conflict)
+        self.assertIn('other == slot || (!character_slot_open(state, other) && !locked["[other]"])', conflict)
         self.assertIn("region_home_living_body(owner_key_for(account, other))", conflict)
         self.assertIn("H ? H.real_name", conflict)
         equip = admission_body(JOBS, "/datum/controller/occupations/proc/EquipRank(var/mob/living/human/H, var/rank, var/joined_late = FALSE)")

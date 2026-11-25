@@ -289,8 +289,25 @@ var/acc_runtime_error = FALSE
 		list("id" = md5("rosterprobe3name"), "kind" = "character_named", "at" = "10000", "region" = "otherland", "body" = list("slot" = 3, "name" = "Ash North")))
 	text2file(json_encode(list("records" = records)), path)
 	acc_check(character_slot_name_conflict("rosterprobe", 1, "  ivy   NORTH  ") == 2, "an uncached shared snapshot prevents a collision with an unlocked remote sibling")
-	acc_check(character_slot_name_conflict("rosterprobe", 1, "Ash North") == 0, "names in a locked or unbought slot do not block admission")
+	acc_check(character_slot_name_conflict("rosterprobe", 1, "Ash North") == 0, "a name record alone for an unbought slot does not block admission")
 	acc_check(character_slot_name_conflict("rosterprobe", 2, "Ivy North") == 0, "a remote record for the slot being created does not block it")
+
+	var/list/purchased_slot = shared_records.add("lockedlocal", "character_slot", list("slot" = 2, "points" = 100))
+	shared_records.revoke(purchased_slot, "staff")
+	var/list/locked_local = character_slot_state("lockedlocal", TRUE)
+	acc_check(!character_slot_open(locked_local, 2) && locked_local["locked"]["2"], "staff lock retains the purchased slot as a real record")
+	var/mob/living/human/locked_sibling = new(locate(10, 8, 1))
+	locked_sibling.persistence_owner_ckey = "@2lockedlocal"
+	locked_sibling.real_name = "Lark Meadow"
+	acc_check(character_slot_name_conflict("lockedlocal", 1, "Lark Meadow") == 2, "a local body in a staff-locked slot still protects its name")
+
+	var/remote_path = "[shared_records.root()]players/l/lockedremote.json"
+	var/list/locked_remote_records = list(
+		list("id" = md5("lockedremote2"), "kind" = "character_slot", "at" = "10000", "region" = "otherland", "body" = list("slot" = 2, "points" = 100), "revoked" = list("by" = "staff")),
+		list("id" = md5("lockedremote2name"), "kind" = "character_named", "at" = "10000", "region" = "otherland", "body" = list("slot" = 2, "name" = "Lark Harbour")))
+	text2file(json_encode(list("records" = locked_remote_records)), remote_path)
+	acc_check(character_slot_name_conflict("lockedremote", 1, "Lark Harbour") == 2, "a shared snapshot preserves a staff-locked sibling's known name")
+	acc_check(character_slot_name_conflict("lockedremote", 1, "Lark Meadow") == 0, "a locked slot only reserves names on its own account")
 
 	// An existing first character can be asleep before any minute tick saw
 	// multiple slots. The fresh local body still protects its name.

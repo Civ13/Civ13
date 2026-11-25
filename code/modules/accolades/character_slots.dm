@@ -314,17 +314,18 @@ var/global/list/character_slot_cache = list() // ckey -> list(world.time, state)
 	var/static/regex/whitespace = regex(@"\s+", "g")
 	return lowertext(trim(whitespace.Replace(name, " ")))
 
-// Returns the other unlocked slot using this name, or 0. A living body
-// here takes priority over its last recorded name. Other lands are read
-// through this account's shared records; no world-wide name reservation.
+// Returns the other existing slot using this name, or 0. Staff locking a
+// purchased slot preserves its body. A living body here takes priority over
+// its last recorded name; other lands use this account's shared records.
 /proc/character_slot_name_conflict(account, slot, name)
 	var/name_key = character_slot_name_key(name)
 	if(!account || !slot || !name_key)
 		return 0
 	var/list/state = character_slot_state(account, TRUE)
 	var/list/names = state["names"]
+	var/list/locked = state["locked"]
 	for(var/other = 1 to character_slots_max)
-		if(other == slot || !character_slot_open(state, other))
+		if(other == slot || (!character_slot_open(state, other) && !locked["[other]"]))
 			continue
 		var/mob/living/human/H = region_home_living_body(owner_key_for(account, other))
 		var/list/entry = names["[other]"]
