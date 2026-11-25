@@ -71,6 +71,23 @@ refilling again but stays fouled. After a successful cleaning, let fresh
 water seep back in. This clears fecal fouling only, not mercury, radiation
 or an ongoing source of contamination.
 
+### Keeping runoff out
+
+Right-click a lined well and choose **Improve Well**. Hold the tool in one
+hand and the requested materials in the other. These improvements do not
+clean an already-fouled well or stop contamination seeping in from waste,
+sewage, or industrial pollution:
+
+| Improvement | Materials | Protection |
+| --- | --- | --- |
+| Raised rim | Hammer and 3 stone | Keeps out floodwater below waist depth |
+| Wooden cover | Hammer and 2 planks | A closed cover keeps out ankle-deep runoff; open it for manual access or windlass use. A hand pump still works while shut. |
+| Runoff drain | Shovel and 2 stone | Diverts ankle-deep runoff to lower, dry ground. Build while standing on a clear lower tile to the north, south, east, or west. A blocked or submerged outlet stops protecting the shaft. |
+
+The same tool removes an improvement through **Improve Well** without
+materials. Replacing a dug well's lining retains its improvements. No
+combination of these upgrades stops a waist-deep flood.
+
 ## Fittings
 
 `/obj/structure/well_fitting` is built standing on any lined well (a craft
