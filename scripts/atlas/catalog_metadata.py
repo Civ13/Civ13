@@ -106,6 +106,9 @@ def add_processors(files, add, records):
         raise ValueError('Sawmill source contract changed; review atlas quantities and conditions')
     if 'new(site, 1, FALSE)' not in primitive or 'flint_blade_uses--' not in primitive or 'cut_primitive_logs(W, H)' not in attack:
         raise ValueError('Primitive sawmill source contract changed; review atlas quantities and conditions')
+    bark_outputs = re.findall(r'new /obj/item/stack/bark\(site, (\d+)\)', primitive)
+    if bark_outputs != ['1']:
+        raise ValueError('Primitive sawmill bark yield changed; review atlas quantities')
     for required in ('!H.in_mood()', '!anchored', 'istype(src, /obj/structure/sawmill/powered) && powered == FALSE', 'if (current_work)', 'if (do_after(H, work_time_amount, src.loc))'):
         if required not in saw:
             raise ValueError('Sawmill source contract changed; review atlas conditions')
@@ -116,7 +119,10 @@ def add_processors(files, add, records):
             conditions = 'Anchored, idle primitive mill; held ordinary log and installed sharpened flint blade required. One log yields one plank and one bark in 20 deciseconds at strength coefficient 1. Each blade cuts 20 logs. Keeps cutting the held stack one log at a time until it runs out, the blade breaks or the worker stops. Interruption or saving cancels work without consuming a log or blade use.'
         if suffix == '/powered':
             conditions += ' Requires cable power (powerneeded = 1).'
-        add(name + ': logs to planks', 'Processor', [('/obj/item/stack/material/wood', 1)], [('/obj/item/stack/material/woodplank', amount + (' nominal' if suffix else ''))], path, primitive_line if not suffix else saw_line, conditions)
+        outputs = [('/obj/item/stack/material/woodplank', amount + (' nominal' if suffix else ''))]
+        if not suffix:
+            outputs.append(('/obj/item/stack/bark', bark_outputs[0]))
+        add(name + ': logs to planks', 'Processor', [('/obj/item/stack/material/wood', 1)], outputs, path, primitive_line if not suffix else saw_line, conditions)
         records[-1].update(processor='sawmill', processor_name='Sawmills', station=station)
     mill, line = body('/obj/structure/mill/attackby(')
     mill_finish, _ = body('/obj/structure/mill/proc/finish_work(')
