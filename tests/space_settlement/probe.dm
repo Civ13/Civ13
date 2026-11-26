@@ -659,8 +659,11 @@ var/space_runtime_error = FALSE
 	return TRUE
 /obj/structure/life_support/scrubber/space_test/has_power()
 	return TRUE
+/obj/structure/life_support/heater/space_test
+	var/test_power = TRUE
+
 /obj/structure/life_support/heater/space_test/has_power()
-	return TRUE
+	return test_power
 
 /proc/space_habitat_checks()
 	space_check(habitat_module_refusal(locate(2, 2, 1), null) && habitat_module_refusal(null, null), "a module that would not fit is refused")
@@ -813,6 +816,25 @@ var/space_runtime_error = FALSE
 	L.oxygen = HABITAT_MIN_OXYGEN_KPA * L.volume + 1
 	pressure_tank_refill_from_ledger(A, L, null, Q)
 	space_check(space_near(L.oxygen, HABITAT_MIN_OXYGEN_KPA * L.volume) && space_near(A.air_seconds, 1 / HABITAT_BREATH_PER_SECOND), "refilling never leaves the module unbreathable")
+	// A low-pressure module can have plentiful oxygen. Protect both floors.
+	L.oxygen = 21 * L.volume
+	L.co2 = 0
+	L.inert = 40 * L.volume
+	A.air_seconds = 0
+	oxygen = L.oxygen
+	used = pressure_tank_refill_from_ledger(A, L, null, Q)
+	space_check(L.breathable() && space_near(L.pressure_kpa(), 60) && space_near(A.air_seconds, 900) && space_near(oxygen - L.oxygen, used) && space_near(used, A.air_seconds * HABITAT_BREATH_PER_SECOND), "a 61 kPa habitat yields only 900 seconds while staying breathable at 60 kPa")
+	A.air_seconds = 0
+	oxygen = L.oxygen
+	space_check(!pressure_tank_refill_from_ledger(A, L, null, Q) && !A.air_seconds && oxygen == L.oxygen && L.breathable(), "a fresh tank cannot take air from a habitat at the pressure floor")
+
+	A.air_seconds = 0
+	var/obj/structure/landed_lander/reserve = new(R)
+	reserve.oxygen_reserve = 10
+	reserve.attackby(A, H)
+	space_check(!reserve.oxygen_reserve && space_near(A.air_seconds, 1000), "the lander's separate reserve still fills a tank")
+
+	space_heater_recharge_checks(R)
 	space_check(issaved(S.integrity) && issaved(S.heater_charge) && issaved(A.air_seconds), "suit and tank keep what is left as saved numbers")
 
 	// Hazards.
@@ -851,6 +873,32 @@ var/space_runtime_error = FALSE
 	var/datum/research_node/suits = get_research_node("pressure_suits")
 	space_check(suits && ("sealed_habitats" in suits.prereqs) && suits.mode == RESEARCH_MODE_ANALYSIS, "Pressure Suits follows Sealed Habitats as an ordinary node")
 	space_check(get_recipe_node_req("/obj/item/clothing/suit/pressure_suit") == "pressure_suits" && get_recipe_node_req("/obj/item/pressure_tank") == "pressure_suits" && get_recipe_node_req("/obj/item/pressure_suit_patch") == "pressure_suits", "suits, tanks and patches are gated on Pressure Suits")
+
+/proc/space_heater_recharge_checks(turf/T)
+	var/mob/living/human/space_probe_crew/H = new(T)
+	var/obj/item/clothing/suit/pressure_suit/S = new(H)
+	var/obj/structure/life_support/heater/space_test/W = new(T)
+	H.hand = FALSE
+	H.r_hand = S
+	S.heater_charge = 47
+	W.test_power = FALSE
+	W.attackby(S, H)
+	space_check(S.heater_charge == 47, "a heater without power cannot begin charging")
+	W.test_power = TRUE
+	var/start = world.time
+	spawn(10)
+		W.test_power = FALSE
+	W.attackby(S, H)
+	space_check(world.time >= start + 30 && S.heater_charge == 47, "losing power during the actual charge wait preserves the old charge")
+	W.test_power = TRUE
+	W.attackby(S, H)
+	space_check(S.heater_charge == SUIT_HEATER_SECONDS, "a powered retry fully charges the same suit")
+	S.heater_charge = 47
+	spawn(10)
+		qdel(W)
+	W.attackby(S, H)
+	space_check(QDELETED(W) && S.heater_charge == 47, "a removed heater cannot finish charging")
+	H.loc = null
 
 // Phase 5: surface mining, ice and printed kits.
 /obj/structure/reagent_dispensers/ice_melter/space_test/has_power()
