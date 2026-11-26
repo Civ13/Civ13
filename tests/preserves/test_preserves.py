@@ -52,6 +52,20 @@ class PreservesSourceTests(unittest.TestCase):
                 hits += len(re.findall(rf'(?m)^\tid = "{rid}"$', path.read_text(encoding='utf-8', errors='replace')))
             self.assertEqual(hits, 2 if rid == 'jam' else 1, rid)  # jam: reagent and reaction
 
+    def test_lid_cancels_unfinished_work_and_reseals_with_a_stoppable_timer(self):
+        def proc(suffix):
+            marker = f'/obj/item/weapon/reagent_containers/glass/crock/{suffix}'
+            return self.source.split(marker, 1)[1].split('\n/', 1)[0]
+
+        self.assertRegex(proc('attack_self(mob/user)'),
+                         r'if \(is_open_container\(\)\)\n\t\tcrock_cancel\(\)\n\telse\n\t\tcrock_schedule\(\)')
+        self.assertIn('CROCK_WORK_TIME, TIMER_STOPPABLE)', proc('proc/crock_schedule()'))
+        self.assertIn('deltimer(crock_timer)', proc('proc/crock_cancel()'))
+        self.assertIn('crock_timer = null', proc('proc/crock_cancel()'))
+        self.assertIn('crock_cancel()', proc('Destroy()'))
+        self.assertIn('key == "crock_timer"', proc('persistence_runtime_var(key)'))
+        self.assertIn('crock_schedule()', proc('after_load()'))
+
     def test_no_spawn(self):
         self.assertNotIn('spawn(', self.source)
 

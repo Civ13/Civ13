@@ -44,10 +44,10 @@
 	flammable = FALSE
 	value = 4
 	var/pickle_progress = 0
-	var/tmp/crock_working = FALSE
+	var/tmp/crock_timer
 
 /obj/item/weapon/reagent_containers/glass/crock/persistence_runtime_var(key)
-	return key == "crock_working" || ..()
+	return key == "crock_timer" || ..()
 
 /obj/item/weapon/reagent_containers/glass/crock/after_load()
 	..()
@@ -80,8 +80,15 @@
 		to_chat(user, SPAN_NOTICE("It is quietly working away."))
 
 /obj/item/weapon/reagent_containers/glass/crock/attack_self(mob/user)
-	..()
-	crock_schedule()
+	. = ..()
+	if (is_open_container())
+		crock_cancel()
+	else
+		crock_schedule()
+
+/obj/item/weapon/reagent_containers/glass/crock/Destroy()
+	crock_cancel()
+	return ..()
 
 /obj/item/weapon/reagent_containers/glass/crock/attackby(obj/item/W, mob/user)
 	if (istype(W, /obj/item/weapon/reagent_containers/food/snacks/butter))
@@ -176,17 +183,21 @@
 	return has_brine_for(food.len) || has_seal_for(to_pot.len)
 
 /obj/item/weapon/reagent_containers/glass/crock/proc/crock_schedule()
-	if (crock_working || QDELETED(src) || !crock_has_work())
+	if (crock_timer || QDELETED(src) || !crock_has_work())
 		return
-	crock_working = TRUE
-	addtimer(CALLBACK(src, PROC_REF(crock_work)), CROCK_WORK_TIME)
+	crock_timer = addtimer(CALLBACK(src, PROC_REF(crock_work)), CROCK_WORK_TIME, TIMER_STOPPABLE)
+
+/obj/item/weapon/reagent_containers/glass/crock/proc/crock_cancel()
+	if (crock_timer)
+		deltimer(crock_timer)
+		crock_timer = null
 
 // One working spell of a closed crock. Returns TRUE if anything changed.
 /obj/item/weapon/reagent_containers/glass/crock/proc/crock_work()
 	if (QDELETED(src))
 		return FALSE
-	crock_working = FALSE
-	if (is_open_container())
+	crock_cancel()
+	if (is_open_container() || !reagents)
 		return FALSE
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
 		crock_schedule()
