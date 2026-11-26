@@ -23,6 +23,12 @@
 /obj/structure/engine/shape_tester/New()
 	return
 
+/mob/living/human/cable_shape_tester/New()
+	return
+
+/mob/living/human/cable_shape_tester/can_use_hands()
+	return TRUE
+
 /obj/shape_lamp
 	powerneeded = 10
 	anchored = TRUE
@@ -132,6 +138,23 @@ var/global/shape_failures = 0
 		shape_check("corner over a crossing piece stays straight", cable_corner_for(locate(6, 6, 1), NORTH) ? 1 : 0, 0)
 		qdel(blocker)
 		shape_check("diagonal facing stays straight", cable_corner_for(locate(6, 6, 1), NORTHEAST) ? 1 : 0, 0)
+
+		// An overlapping straight would join an existing corner through the
+		// north neighbor, even though the pieces have different shape names.
+		var/turf/turn_tile = get_turf(turn1)
+		var/mob/living/human/cable_shape_tester/installer = new(turn_tile)
+		var/obj/item/stack/cable_coil/coil = new(installer)
+		installer.r_hand = coil
+		coil.amount = 2
+		shape_check("normal placement refuses a straight sharing the corner's north end", isnull(coil.place_turf(turn_tile, installer, NORTH)), TRUE)
+		shape_check("rejected placement preserves the coil", coil.amount, 2)
+		var/turn_pieces = 0
+		for (var/obj/structure/cable/piece in turn_tile)
+			turn_pieces++
+		shape_check("rejected placement creates no cable", turn_pieces, 1)
+		shape_check("north neighbor remains attached only to the existing turn", up.connections.len, 1)
+		shape_check("a complementary corner can use the two free ends", cable_endpoints_available(turn_tile, SOUTH, EAST), TRUE)
+		shape_check("a perpendicular straight can cross a horizontal piece", cable_endpoints_available(get_turf(h1), SOUTH, NORTH), TRUE)
 
 		// A craft turning a quarter turn turns the corner's ends with it.
 		turn1.craft_turned(null, 90)
