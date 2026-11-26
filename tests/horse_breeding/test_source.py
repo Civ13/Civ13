@@ -30,6 +30,14 @@ class HorseSource(unittest.TestCase):
         self.assertIn('move_delay = HH.riding_mob.ride_delay() + HH.riding_mob.hitch_drag()', move)
         self.assertIn('delay = H.riding_mob.ride_delay() + H.riding_mob.hitch_drag()', agent)
 
+    def test_shoeing_rechecks_the_horse_before_consuming_equipment(self):
+        shoe = SRC.split('/obj/item/horseshoes/proc/shoe(', 1)[1].split('\n/', 1)[0]
+        completion = shoe.split('do_after(user, 50, H)', 1)[1]
+        guard = completion.split('return FALSE', 1)[0]
+        self.assertIn('QDELETED(src) || QDELETED(H) || H.stat == DEAD || H.shod', guard)
+        self.assertLess(completion.index('return FALSE'), completion.index('H.shod = TRUE'))
+        self.assertLess(completion.index('H.shod = TRUE'), completion.index('qdel(src)'))
+
     def test_recipe_and_battle_maps(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
         research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')

@@ -233,7 +233,7 @@
 		to_chat(user, SPAN_WARNING("\The [H] is already shod."))
 		return FALSE
 	user.visible_message(SPAN_NOTICE("[user] starts to shoe \the [H]."), SPAN_NOTICE("You lift each hoof in turn and nail on a shoe."))
-	if (!do_after(user, 50, H) || QDELETED(src) || H.shod)
+	if (!do_after(user, 50, H) || QDELETED(src) || QDELETED(H) || H.stat == DEAD || H.shod)
 		return FALSE
 	H.shod = TRUE
 	H.shoe_wear = 0
