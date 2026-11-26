@@ -176,8 +176,9 @@ class ControlReaderTests(unittest.TestCase):
         manage = controller.split('\n  manage:\n')[1]
         self.assertNotIn('environment:', manage)
         self.assertNotIn('control-token', manage)
-        checks = (root / '.github/workflows/youtube-upload-checks.yml').read_text()
-        self.assertNotIn('capability-probe', checks)
+        # Upload validation remains available offline, but game PRs should
+        # not register the standalone YouTube checks workflow.
+        self.assertFalse((root / '.github/workflows/youtube-upload-checks.yml').exists())
 
     def test_app_probe_reports_named_status_without_values_and_never_touches_queue(self):
         pairs = [(scope, name) for scope, values in d.CONTROL_NAMES.items() for name in values]
