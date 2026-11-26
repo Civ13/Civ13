@@ -94,9 +94,13 @@
 /obj/item/kitchen/wood_bowl/proc/panning_tool_available(mob/living/human/H, atom/original_location)
 	return !QDELETED(src) && !QDELETED(H) && loc == original_location && (loc == H ? H.item_is_in_hands(src) : isturf(loc) && Adjacent(H))
 
+// Check the selected tile, independently of which neighbor a fresh search finds first.
+/turf/proc/valid_panning_water(turf/floor/beach/water/W)
+	return istype(W) && W.z == z && get_dist(src, W) <= 1 && !W.salty && W.water_level <= 30 && W.watertile && is_liquid_water(W)
+
 /turf/proc/panning_water()
 	for (var/turf/floor/beach/water/W in range(1, src))
-		if (!W.salty && W.water_level <= 30 && W.watertile && is_liquid_water(W))
+		if (valid_panning_water(W))
 			return W
 	return null
 

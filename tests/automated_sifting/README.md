@@ -1,10 +1,10 @@
 # Automated trace extraction
 
 ```powershell
-./tests/resource_extraction/run.ps1 -ByondBin '<BYOND 516.1681 bin directory>' -Probe tests/automated_sifting/probe.dm
+./tests/resource_extraction/run.ps1 -ByondBin '<pinned BYOND bin directory>' -Probe tests/automated_sifting/probe.dm
 ```
 
-Production sources run in a temporary constructor fixture with ordinary game startup disabled. A real cable/engine reservation supplies the machines. Tests cover non-mineable sand, repeated restarts, two-unit batches, capped output congestion, power release, freshwater requirements, river removal, inherited stopped load behavior and effective DMI states.
+Production sources run in a temporary constructor fixture with ordinary game startup disabled. A real cable/engine reservation supplies the machines. Tests cover non-mineable sand, repeated restarts, two-unit batches, capped output congestion, power release, freshwater requirements, a second eligible tile arriving mid-cycle, pinned-water replacement and removal, inherited stopped load behavior and effective DMI states.
 
 The soil sifter and river concentrator unlock at Electricity and use the same twenty electronics plus twenty steel construction contract as the drill. Both yield two random units every two minutes, leaving terrain intact. Manual gathering chooses one resource but requires uninterrupted player effort; finite deposits still provide much larger mined batches.
 
