@@ -61,6 +61,11 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 		if (CONTRACT_RETURNED)
 			. += " Ended: [returned_why]. The reward waits here for [party_train_party_name(poster_party)]."
 
+/obj/craft_contract/freight/take_refusal(mob/living/human/H, datum/craft/C)
+	. = ..()
+	if (!. && !destination())
+		return "the destination board is gone"
+
 /obj/craft_contract/freight/take(mob/living/human/H, datum/craft/C)
 	var/obj/structure/closet/crate/box = locate(/obj/structure/closet/crate) in contents
 	if (!box)
@@ -127,11 +132,22 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 	qdel(src)
 	return TRUE
 
-// The poster writes off a crate that no longer exists.
+// The poster can close freight whose crate or destination has been lost.
+/obj/craft_contract/freight/proc/write_off_reason()
+	if (!crate())
+		return "the crate was lost"
+	if (!destination())
+		return "the destination board is gone"
+	return null
+
 /obj/craft_contract/freight/proc/write_off(mob/living/human/H)
-	if (state != CONTRACT_TAKEN || crate() || !istype(H) || party_train_party_of(H) != poster_party)
+	if (state != CONTRACT_TAKEN || !istype(H) || party_train_party_of(H) != poster_party)
 		return FALSE
-	give_back("the crate was lost")
+	var/reason = write_off_reason()
+	if (!reason)
+		return FALSE
+	unseal(crate())
+	give_back(reason)
 	return TRUE
 
 // Everything comes out where the board stood.
@@ -304,7 +320,7 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 	for (var/obj/craft_contract/freight/F in contracts(with_state))
 		if (party && F.poster_party != party)
 			continue
-		if (lost_only && F.crate())
+		if (lost_only && !F.write_off_reason())
 			continue
 		n++
 		.["[n]. [F.describe(get_turf(src))]"] = F
@@ -386,7 +402,7 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 				to_chat(H, SPAN_NOTICE("You take the contract down."))
 		if ("Write off lost freight")
 			var/list/found = contract_choices(CONTRACT_TAKEN, party, TRUE)
-			var/pick = WWinput(H, "Write off which contract? Its crate no longer exists. The reward comes back to the board for you.", "Freight", "Cancel", found + list("Cancel"))
+			var/pick = WWinput(H, "Write off which contract? Its crate or destination is gone. The reward comes back to the board for you.", "Freight", "Cancel", found + list("Cancel"))
 			var/obj/craft_contract/freight/F = found[pick]
 			if (istype(F) && !QDELETED(F) && !QDELETED(src) && get_dist(H, src) <= 1 && F.write_off(H))
 				to_chat(H, SPAN_NOTICE("The freight is written off. Collect the reward from the board."))
