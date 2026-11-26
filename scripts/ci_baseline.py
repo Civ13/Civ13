@@ -3313,6 +3313,10 @@ SUITES = {
         'shared_paths': ('code/game/objects/structures/kitchen/oven.dm',
                          'code/modules/reagents/reagent_containers/food/snacks.dm',
                          'code/game/mob/living/simple_animal/friendly/birds.dm')},
+    'specialist_trader_quote': {'files': ('tests/specialist_traders/test_purchase_quote.py',),
+        'paths': ('tests/specialist_traders/test_purchase_quote.py',),
+        'shared_paths': ('code/game/objects/structures/vending/specialist_traders.dm',
+                         'tests/save_movement/source_adapter.py')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
