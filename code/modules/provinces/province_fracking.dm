@@ -20,16 +20,15 @@
 #define FRACK_POLLUTION_RADIUS 3
 #define FRACK_FOUL_RANGE 6
 #define FRACK_FOUL_TIME 864000 // a day, in world.realtime tenths
-#define FRACK_FOUL_SITES 64
 
-var/global/list/fracking_foul_sites = list() // list(x, y, realtime)
+var/global/list/fracking_foul_sites = list() // "x,y" -> last batch realtime, oldest batch first
 
 /proc/fracking_lands()
 	var/static/list/lands = list(MAP_NOMADS_AMERICAS_NORTH, MAP_NOMADS_AMERICAS_SOUTH)
 	return lands
 
-// Why H cannot frack at T, or null.
-/proc/fracking_refusal(mob/living/human/H, turf/T)
+// Why the initiating faction cannot frack at T, or null.
+/proc/fracking_refusal(faction, turf/T)
 	if (!continent_home()) // continent_resources.dm
 		return null
 	if (!(map.ID in fracking_lands()))
@@ -39,7 +38,7 @@ var/global/list/fracking_foul_sites = list() // list(x, y, realtime)
 	if (!c)
 		return null
 	var/holder = province_holder_of(c) // province_holding.dm
-	var/side = H && H.civilization && H.civilization != "none" ? province_group_of(H.civilization) : null
+	var/side = faction && faction != "none" ? province_group_of(faction) : null
 	if (!holder || holder != side)
 		return "Only the side that holds the [P.names[c]] may frack its ground."
 	return null
@@ -50,24 +49,36 @@ var/global/list/fracking_foul_sites = list() // list(x, y, realtime)
 	if (!T)
 		return
 	pollution_emit(T, FRACK_POLLUTION, FRACK_POLLUTION_RADIUS)
-	fracking_foul_sites.Insert(1, list(list(T.x, T.y, world.realtime)))
-	if (fracking_foul_sites.len > FRACK_FOUL_SITES)
-		fracking_foul_sites.Cut(FRACK_FOUL_SITES + 1)
+	fracking_record_foul_site(T.x, T.y)
 
-// TRUE when water drawn at A is fouled by a recent fracking batch nearby.
-/proc/fracking_fouls_near(atom/A)
+// Only successful batches refresh their own column. Prune the expired
+// prefix when writing, so unrelated activity cannot evict a live site.
+/proc/fracking_record_foul_site(x, y, now = world.realtime)
+	var/first_live = 1
+	while (first_live <= fracking_foul_sites.len)
+		var/oldest_key = fracking_foul_sites[first_live]
+		if (now - fracking_foul_sites[oldest_key] <= FRACK_FOUL_TIME)
+			break
+		first_live++
+	if (first_live > 1)
+		fracking_foul_sites.Cut(1, first_live)
+	var/site = "[x],[y]"
+	fracking_foul_sites -= site
+	fracking_foul_sites[site] = now
+
+// Search only the six-tile horizontal neighborhood, independent of map z
+// and the number of batches elsewhere. Check expiry even without new batches.
+/proc/fracking_fouls_near(atom/A, now = world.realtime)
 	if (!fracking_foul_sites.len || !A)
 		return FALSE
 	var/turf/T = get_turf(A)
 	if (!T)
 		return FALSE
-	for (var/i = fracking_foul_sites.len, i >= 1, i--)
-		var/list/S = fracking_foul_sites[i]
-		if (world.realtime - S[3] > FRACK_FOUL_TIME)
-			fracking_foul_sites.Cut(i, i + 1)
-			continue
-		if (max(abs(S[1] - T.x), abs(S[2] - T.y)) <= FRACK_FOUL_RANGE)
-			return TRUE
+	for (var/x in max(1, T.x - FRACK_FOUL_RANGE) to min(world.maxx, T.x + FRACK_FOUL_RANGE))
+		for (var/y in max(1, T.y - FRACK_FOUL_RANGE) to min(world.maxy, T.y + FRACK_FOUL_RANGE))
+			var/last_batch = fracking_foul_sites["[x],[y]"]
+			if (isnum(last_batch) && now - last_batch <= FRACK_FOUL_TIME)
+				return TRUE
 	return FALSE
 
 /proc/fracking_text()
@@ -81,4 +92,3 @@ var/global/list/fracking_foul_sites = list() // list(x, y, realtime)
 #undef FRACK_POLLUTION_RADIUS
 #undef FRACK_FOUL_RANGE
 #undef FRACK_FOUL_TIME
-#undef FRACK_FOUL_SITES
