@@ -1219,6 +1219,7 @@
 	// One pending callback per loop; runtime only, so a loaded jar starts clean.
 	var/tmp/ferment_loop = FALSE
 	var/tmp/growth_loop = FALSE
+	var/tmp/growth_generation = 0
 	flags = FALSE
 
 /obj/item/weapon/starterjar/attackby(obj/O as obj, mob/living/human/user as mob)
@@ -1277,18 +1278,29 @@
 			ferment_loop = FALSE
 			fermenting_process()
 
+/obj/item/weapon/starterjar/proc/cancel_yeast_growth()
+	growth_generation++
+	growth_loop = FALSE
+
 /obj/item/weapon/starterjar/proc/yeast_growth()
-	//Yeah there is a bug, form abuse load/unload yeast that may produce +4 fermenting_contents at time, BUT enzymes not essentials at this moment
-	//	and it will fixed, when working on TO DO part (look at the beginning of starterjar TODO)
 	if (growth_loop || fermenting_contents <= 0)
 		return
 	growth_loop = TRUE
+	var/generation = growth_generation
 	spawn(1500+rand(0,400))
-		growth_loop = FALSE
-		if (fermenting_contents > 0 && fermenting_contents < 5)
-			fermenting_contents++
-			icon_state = "jar[fermenting_contents]"
-		yeast_growth()
+		finish_yeast_growth_tick(generation)
+
+/obj/item/weapon/starterjar/proc/finish_yeast_growth_tick(generation)
+	// A stale callback must not clear the replacement culture's guard.
+	if (gcDestroyed || generation != growth_generation)
+		return
+	growth_loop = FALSE
+	if (fermenting != 2 || fermenting_contents <= 0)
+		return
+	if (fermenting_contents < 5)
+		fermenting_contents++
+		icon_state = "jar[fermenting_contents]"
+	yeast_growth()
 
 /obj/item/weapon/starterjar/attack_self(var/mob/living/human/user as mob)
 	if (fermenting==2 && fermenting_contents>0)
@@ -1300,6 +1312,7 @@
 		icon_state = "jar[fermenting_contents]"
 		if (fermenting_contents==0)
 			fermenting = 0
+			cancel_yeast_growth()
 	else
 		..()
 
@@ -1335,13 +1348,13 @@
 /obj/item/weapon/starterjar/after_load()
 	. = ..()
 	ferment_loop = FALSE
-	growth_loop = FALSE
+	cancel_yeast_growth()
 	restore_from_icon_state()
 	resume_fermentation()
 
 /obj/item/weapon/starterjar/get_saved_vars()
 	var/list/saved = ..()
-	saved -= list("ferment_loop", "growth_loop")
+	saved -= list("ferment_loop", "growth_loop", "growth_generation")
 	return saved
 
 ////////////////////////////////////////////////////////////////////////
