@@ -442,7 +442,9 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "valvemask"
 /obj/item/bag_valve_mask/attack(var/mob/living/human/M as mob, var/mob/user as mob)
-	if (M.wear_mask)
+	if (!ishuman(M) || QDELETED(M))
+		return
+	if (M.check_mouth_coverage())
 		to_chat(user, SPAN_WARNING("Uncover their mouth first!"))
 		return
 	user.visible_message("[user] starts to attach \the [src] to [M].", "You start to attach \the [src] to [M].")
@@ -450,7 +452,7 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 	if (do_after(user, 80, M)) // TO-DO: Make it dependent on medical skill
 		if (QDELETED(M) || loc != user || (M != user && !user.Adjacent(M)))
 			return
-		if (M.wear_mask)
+		if (M.check_mouth_coverage())
 			to_chat(user, SPAN_WARNING("Uncover their mouth first!"))
 			return
 		M.adjustOxyLoss(-7)

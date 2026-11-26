@@ -78,7 +78,7 @@ class TasteTaxonomy(unittest.TestCase):
 
     def test_egg_and_honey_have_production_routes(self):
         self.assertIn('snacks/egg/E = new', read('code/game/mob/living/simple_animal/friendly/birds.dm'))
-        self.assertIn('snacks/honeycomb(loc)', read('code/modules/1713/beekeeping.dm'))
+        self.assertRegex(read('code/modules/1713/beekeeping.dm'), r'new /obj/item/weapon/reagent_containers/food/snacks/honeycomb\([^)]+\)')
 
 
 class ExistingSystemsUnchanged(unittest.TestCase):

@@ -43,7 +43,7 @@
 	for (var/obj/structure/farming/plant/P in orange(1, src))
 		if (length(.) >= reach)
 			break
-		if (P.type == type && P.plant == plant && P.readyHarvest())
+		if (P.type == type && P.plant == plant && P.readyHarvest() && P.Adjacent(src))
 			. += P
 
 // The flint sickle's reaping in stone_age_extras.dm wraps this one; both
@@ -86,9 +86,8 @@
 		if (M && !M.flammable)
 			flammable = FALSE
 
-/obj/item/weapon/plough/hoe/after_load()
-	. = ..()
-	usespeed = initial(usespeed) * tool_speed(src)
+// Persistence restores usespeed, including the handle multiplier. Do not
+// rebuild it here from the head alone.
 
 #undef SICKLE_REACH_MIN
 #undef SICKLE_REACH_FIRMNESS

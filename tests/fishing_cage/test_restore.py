@@ -11,6 +11,9 @@ spec = importlib.util.spec_from_file_location('dm_adapter', ROOT / 'tests/save_m
 adapter = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(adapter)
 ENTRY = '/turf/floor/Entered'
+EXIT = '/turf/floor/beach/water/Exited'
+FINISH = '/obj/structure/fishing_cage/proc/finish_fishing_soak'
+CANCEL = '/obj/structure/fishing_cage/proc/cancel_fishing_soak'
 RESTORE = '/obj/structure/fishing_cage/after_load'
 POLICY = '/obj/structure/fishing_cage/persistence_runtime_var'
 WATER = '/turf/floor/beach/water'
@@ -37,10 +40,27 @@ def project_entry(source, constructing=False, parent=lambda: None, checks=None):
 def project_restore(source):
     body = adapter.extract(source, RESTORE).replace('..()', 'parent()')
     body = body.replace(WATER, repr(WATER))
-    for field in ('generating', 'found', 'loc', 'update_icon', 'generate_fish'):
+    for field in ('generating', 'found', 'loc', 'update_icon', 'generate_fish', 'cancel_fishing_soak'):
         body = re.sub(r'(?<![\w.])' + field + r'\b', 'src.' + field, body)
     env = {'parent': lambda: None, 'istype': lambda value, kind: kind in value.kinds}
     return adapter.project(RESTORE + '()\n' + body + '\n', RESTORE, 'src', env)
+
+
+def project_exit(source):
+    body = adapter.extract(source, EXIT).replace('..()', 'parent()')
+    body = body.replace(CAGE + ')', repr(CAGE) + ')').replace('var/obj/structure/fishing_cage/FC = O', 'FC = O')
+    env = {'parent': lambda: None, 'istype': lambda value, kind: kind in getattr(value, 'kinds', ())}
+    return adapter.project(EXIT + '(atom/movable/O, atom/new_loc)\n' + body + '\n', EXIT, 'src,O,new_loc', env)
+
+
+def project_cage_method(source, signature, fields, args):
+    name = signature.split('(', 1)[0]
+    body = adapter.extract(source, name).replace(WATER, repr(WATER))
+    for field in fields:
+        body = re.sub(r'(?<![\w.])' + field + r'\b', 'src.' + field, body)
+    env = {'QDELETED': lambda value: getattr(value, 'deleted', False),
+           'istype': lambda value, kind: kind in getattr(value, 'kinds', ())}
+    return adapter.project(signature + '\n' + body + '\n', name, args, env)
 
 
 def project_policy(source):
@@ -54,6 +74,7 @@ class Cage:
     def __init__(self, loc, found=None, restoring=False):
         self.loc, self.found, self.restoring = loc, found, restoring
         self.generating = False
+        self.soak_generation = 0
         self.timers = 0
         self.icons = 0
 
@@ -62,9 +83,14 @@ class Cage:
 
     def generate_fish(self):
         if not self.generating:
+            self.soak_generation += 1
             self.generating = True
             self.found = None
             self.timers += 1
+
+    def cancel_fishing_soak(self):
+        self.soak_generation += 1
+        self.generating = False
 
 
 class CageRestoreTests(unittest.TestCase):
@@ -76,6 +102,7 @@ class CageRestoreTests(unittest.TestCase):
     def test_runtime_policy_filters_new_and_legacy_timer_state(self):
         policy = project_policy(self.source)
         self.assertTrue(policy(None, 'generating'))
+        self.assertTrue(policy(None, 'soak_generation'))
         self.assertTrue(policy(None, 'appearance'))
         self.assertFalse(policy(None, 'found'))
         loading = (ROOT / 'code/modules/persistence/loading.dm').read_text(encoding='utf-8')
@@ -124,6 +151,76 @@ class CageRestoreTests(unittest.TestCase):
             self.assertEqual(cage.found, 'fish type')
             self.assertFalse(cage.generating)
             self.assertEqual(cage.timers, 0)
+
+    def test_old_callback_cannot_finish_or_clear_a_new_soak(self):
+        finish = project_cage_method(
+            self.source, FINISH + '(turf/site, generation)',
+            ('soak_generation', 'generating', 'found', 'loc', 'pick_catch', 'barren_water', 'generate_fish'),
+            'src,site,generation')
+        cancel = project_cage_method(
+            self.source, CANCEL + '()', ('soak_generation', 'generating'), 'src')
+        exit_water = project_exit(self.source)
+        enter = project_entry(self.source)
+        start = adapter.extract(self.source, CAGE + '/proc/generate_fish')
+        self.assertLess(start.index('soak_generation++'), start.index('spawn(rand(18000,24000))'))
+        self.assertIn('finish_fishing_soak(site, generation)', start)
+        for destination in (self.water, SimpleNamespace(kinds={WATER}, tile="other")):
+            with self.subTest(same_tile=destination is self.water):
+                cage = Cage(self.water)
+                cage.cancel_fishing_soak = lambda: cancel(cage)
+                debits = []
+                cage.pick_catch = lambda tile: debits.append(tile) or 'fish'
+                enter(self.water, cage)
+                first_timer = cage.soak_generation
+                cage.loc = self.land
+                exit_water(self.water, cage, self.land)
+                self.assertFalse(cage.generating)
+                cage.loc = destination
+                enter(destination, cage)
+                self.assertEqual(cage.timers, 2)
+                finish(cage, self.water, first_timer)
+                self.assertTrue(cage.generating, 'stale callback must not clear the current timer')
+                self.assertIsNone(cage.found)
+                self.assertEqual(debits, [])
+                finish(cage, destination, cage.soak_generation)
+                self.assertFalse(cage.generating)
+                self.assertEqual(cage.found, 'fish')
+                self.assertEqual(debits, [destination])
+                cage.loc = self.land
+                exit_water(destination, cage, self.land)
+                self.assertEqual(cage.found, 'fish')
+
+    def test_old_same_tile_callback_negative_control(self):
+        mutant = self.source.replace(' || generation != soak_generation', '', 1)
+        self.assertNotEqual(mutant, self.source)
+        finish = project_cage_method(
+            mutant, FINISH + '(turf/site, generation)',
+            ('soak_generation', 'generating', 'found', 'loc', 'pick_catch', 'barren_water', 'generate_fish'),
+            'src,site,generation')
+        cage = Cage(self.water)
+        cage.generate_fish()
+        old_timer = cage.soak_generation
+        cage.cancel_fishing_soak()
+        cage.generate_fish()
+        debits = []
+        cage.pick_catch = lambda tile: debits.append(tile) or 'fish'
+        finish(cage, self.water, old_timer)
+        self.assertFalse(cage.generating, 'the control must reproduce clearing the new timer')
+        self.assertEqual(debits, [self.water])
+
+    def test_empty_catch_retries_only_in_nonbarren_water(self):
+        finish = project_cage_method(
+            self.source, FINISH + '(turf/site, generation)',
+            ('soak_generation', 'generating', 'found', 'loc', 'pick_catch', 'barren_water', 'generate_fish'),
+            'src,site,generation')
+        for barren in (False, True):
+            cage = Cage(self.water)
+            cage.generate_fish()
+            cage.pick_catch = lambda tile: None
+            cage.barren_water = lambda tile: barren
+            finish(cage, self.water, cage.soak_generation)
+            self.assertEqual(cage.timers, 1 if barren else 2)
+            self.assertEqual(cage.generating, not barren)
 
     def test_nonobject_guard_preserves_callbacks_and_models_type_checks(self):
         guard = '\tif (!isobj(O))\n\t\treturn\n'

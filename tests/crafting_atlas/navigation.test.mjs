@@ -57,3 +57,16 @@ const badProcessor = template.replace('!p||r.processor===p', 'true');
 assert.notEqual(badProcessor, template);
 assert.throws(() => contract(badProcessor), /processor membership/);
 console.log('PASS: template sorting, era/multiple/unknown/processor filtering, diagram selection, resource navigation, reset and two omission controls; DOM contract, no browser visual claim.');
+
+const catalog = JSON.parse(fs.readFileSync(new URL('../../UI/crafting-atlas.json', import.meta.url), 'utf8'));
+const [primitive, large, powered] = ['Primitive', 'Large', 'Powered'].map(size =>
+  catalog.recipes.find(recipe => recipe.name === size + ' sawmill: logs to planks')
+);
+const bark = Object.entries(catalog.resources).find(([, resource]) => resource.type === '/obj/item/stack/bark');
+assert(bark, 'Bark exists in the generated resource registry');
+const [barkId] = bark;
+assert.equal(primitive.outputs.find(output => output.id === barkId)?.quantity, '1',
+  'Primitive sawmill declares one bark per log in structured outputs');
+for (const recipe of [large, powered]) {
+  assert(!recipe.outputs.some(output => output.id === barkId), 'Other sawmills do not produce bark');
+}

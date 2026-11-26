@@ -19,8 +19,10 @@ class MountedCombatSource(unittest.TestCase):
         shields = (ROOT / 'code/game/objects/items/weapons/shields.dm').read_text(encoding='utf-8')
         defense = (ROOT / 'code/game/mob/living/carbon/human/human_defense.dm').read_text(encoding='utf-8')
         self.assertIn('return base_block_chance + shield_wall_bonus(user)', shields)
-        self.assertEqual(defense.count('prob(min(SH.get_block_chance(src),92))'), 2)
-        self.assertNotIn('SH.base_block_chance', defense)
+        self.assertIn('if (prob(get_block_chance(user, damage, damage_source, attacker)))', shields)
+        self.assertIn('check_shields(P.damage*5, P, null, def_zone,', defense)
+        self.assertIn('check_shields(I.force, I, user, target_zone,', defense)
+        self.assertIn('shield.handle_shield(src, damage, damage_source, attacker, def_zone, attack_text)', defense)
 
     def test_shield_wall_checks_the_flanks_of_any_facing(self):
         # Issue 6921: a diagonal facing has diagonal flanks, not cardinal ones.

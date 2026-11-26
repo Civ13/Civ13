@@ -67,6 +67,9 @@
 	var/turf/floor/trench/dry = locate(2,2,1)
 	dry.trench_filling = 1
 	var/turf/floor/trench/flooded/wet = locate(7,2,1)
+	wet.trench_cut = 3
+	wet.trench_lining = "stone"
+	wet.trench_water_level = 0
 	var/obj/covers/repairedfloor/bridge = new(wet)
 	bridge.name = "saved trench bridge"
 	wet.check_bridge()
@@ -120,6 +123,11 @@
 		trench_check(istype(T, /turf/floor/trench), "trench type and coordinate survives [jointext(xyz,",")]")
 		trench_check(trench_appearance(T) == geometry[jointext(xyz,",")], "trench flooring, plane and neighbor overlays survive [jointext(xyz,",")]")
 	trench_check(locate(7,2,1):flooded && !locate(7,2,1):salty && locate(7,6,1):salty, "fresh and salty flooded state survives")
+	wet = locate(7,2,1)
+	trench_check(wet.trench_cut == 3 && wet.trench_lining == "stone", "cut depth and installed lining survive")
+	trench_check(!isnull(wet.trench_water_level) && wet.trench_water_level == 0, "explicit zero water surface survives")
+	var/turf/floor/trench/flooded/legacy = locate(8,2,1)
+	trench_check(isnull(legacy.trench_water_level) && legacy.trench_cut == 0 && isnull(legacy.trench_lining), "omitted legacy fields use defaults")
 	C = locate(/obj/structure/closet/crate) in locate(2,2,1)
 	trench_check(C && C.name == "saved trench crate", "trench crate survives at correct turf")
 	K = locate(/obj/item/weapon/material/kitchen/utensil/knife) in C
@@ -135,7 +143,6 @@
 	S = locate(3,6,1)
 	trench_check(D.trench_stage == 1 && S.trench_stage == 1, "dirt and sand partial digging survives")
 	// The preserved first dirt deposit must let the next deposit complete filling.
-	dry.trench_filling++
 	dry.check_filling()
 	trench_check(!istype(locate(2,2,1), /turf/floor/trench), "second deposit completes restored fill")
 	text2file("PASS: whole-world trench geometry, overlays, flooding, contents, partial digging and filling", "trench_result.txt")

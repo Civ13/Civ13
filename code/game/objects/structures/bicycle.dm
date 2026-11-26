@@ -1,4 +1,8 @@
 // Human-powered ground transport. Keep fuel, engine and crash damage out of it.
+// Ground bikes are registered on construction/restore and removed on deletion.
+// Recovery can check uniqueness without sweeping all atoms in the loaded world.
+var/global/list/region_edge_bikes
+
 /proc/bicycle_load_ratio(carried_weight, strength)
 	var/capacity = max(1, (((strength - 1) / 2) + 1) * 59)
 	return max(0, carried_weight) / capacity
@@ -89,6 +93,8 @@
 	// Pixels a seated rider is drawn above the ground, so the hips rest on the
 	// saddle and the feet on the pedals (tests/pedal_bicycle/sprites.py).
 	var/rider_lift = 6
+	// Saved scalar, also carried in land travel records. Not a runtime ref.
+	var/region_crossing_id = null
 
 // The handlebars' secondary action.
 /obj/structure/vehicle/bicycle/proc/secondary_control(mob/living/human/H)
@@ -122,8 +128,24 @@
 		dwheel = new control_type(src)
 		dwheel.origin = src
 
+/obj/structure/vehicle/bicycle/on_runtime_spawn()
+	..()
+	ensure_region_crossing_id()
+
+/obj/structure/vehicle/bicycle/proc/ensure_region_crossing_id()
+	if (!region_edge_bike_ok(type))
+		return null
+	if (!region_edge_bikes)
+		region_edge_bikes = list()
+	region_edge_bikes |= src
+	if (!region_edge_bike_id_valid(region_crossing_id))
+		region_crossing_id = md5("bicycle|[world.realtime]|[rand(1, 1000000000)]|\ref[src]")
+	return region_crossing_id
+
 /obj/structure/vehicle/bicycle/persistence_restore_finished()
 	..()
+	// Legacy saves gain an ID for a future checkpoint, not the old journal ID.
+	ensure_region_crossing_id()
 	stopmovementloop()
 	update_overlay()
 	if (!istype(dwheel, control_type))
@@ -306,6 +328,8 @@
 	return ..()
 
 /obj/structure/vehicle/bicycle/Destroy()
+	if (region_edge_bikes)
+		region_edge_bikes -= src
 	unbuckle_mob()
 	if (pedal_safety_timer)
 		deltimer(pedal_safety_timer)

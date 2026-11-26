@@ -378,8 +378,49 @@
 	var/tmp/complete_percent = 0 //for manual mills
 	var/tmp/list/workers_list = list() //mostly for team work possibility in manual mills
 	var/tmp/list/workers_work = list() // worker -> deciseconds of work on the current batch
-	var/tmp/batch_id = 0 // advanced when a batch finishes, so workers still waiting stop
+	var/tmp/batch_id = 0 // advanced when a batch ends, so workers still waiting stop
+	var/tmp/work_epoch = 0 // movement or unfastening interrupts the current interval only
 	var/tmp/obj/item/weapon/reagent_containers/current_material = null
+
+/obj/structure/mill/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous)
+		work_epoch++
+
+/obj/structure/mill/forceMove(atom/destination, special_event, list/throw_hop_token = null)
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous)
+		work_epoch++
+
+/obj/structure/mill/wrench_action(mob/living/human/H)
+	var/was_anchored = anchored
+	. = ..()
+	if (was_anchored && !anchored)
+		work_epoch++
+
+/obj/structure/mill/proc/has_hand_mill_input()
+	return !QDELETED(current_material) && current_material.loc == src
+
+/obj/structure/mill/proc/cancel_hand_mill_batch()
+	// Only completed intervals earn XP. A hammer has already released contents.
+	for (var/mob/living/human/worker in workers_list)
+		if (!QDELETED(worker) && workers_work[worker])
+			worker.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), workers_work[worker], TRUE, TRUE, 1, 0, 0, 0, 0)
+	qdel(current_work)
+	current_work = null
+	current_material = null
+	complete_percent = 0
+	batch_id++
+	workers_list.Cut()
+	workers_work.Cut()
+	icon_state = "flour_mill"
+
+/obj/structure/mill/Destroy()
+	if (!istype(src, /obj/structure/mill/large))
+		cancel_hand_mill_batch()
+	return ..()
 
 /obj/structure/mill/examine(mob/user, distance)
 	..(user, distance)
@@ -408,6 +449,9 @@
 
 /obj/structure/mill/proc/finish_work()
 	if (current_work)
+		if (!istype(src, /obj/structure/mill/large) && !has_hand_mill_input())
+			cancel_hand_mill_batch()
+			return
 		if (istype(src, /obj/structure/mill/large))
 			icon_state = "mill_large"
 			visible_message("<span class='notice'>You can see how [src.name] finish grind [current_material.name] to [current_work.name]</span>",
@@ -429,11 +473,16 @@
 	workers_work.Cut()
 
 /obj/structure/mill/proc/produce(var/obj/item/weapon/reagent_containers/W, var/mob/living/human/H, var/obj/item/weapon/reagent_containers/P)
-	if (!crafting_recipe_allowed(H, "[type]")) return
+	if (!istype(H) || !crafting_recipe_allowed(H, "[type]")) return
 	if(!anchored)
 		to_chat(H, "<span class='warning'>\The [src] needs to be locked in place before anything can be ground.</span>")
 		return
 	if (!istype(src, /obj/structure/mill/large))
+		if (!isturf(loc) || !in_range(H, src))
+			return
+		if (current_work && !has_hand_mill_input())
+			cancel_hand_mill_batch()
+			return
 		if (H.stats["stamina"][1] < H.stats["stamina"][2]*0.1)
 			to_chat(H, "<span class='warning'>You must restore your stamina before mill on [src].</span>")
 			return
@@ -457,10 +506,13 @@
 				"<span class='notice'>You started helping produce \a [current_work.name].</span>",
 				"<span class='notice'>The grinding sounds became more frequent.</span>")
 	else
-		current_work = new P(null)
+		if (istype(src, /obj/structure/mill/large))
+			H.drop_item()
+			W.loc = null
+		else if (!H.transfer_held_item_to(W, src) || QDELETED(W) || W.loc != src)
+			return
 		current_material = W
-		H.drop_item()
-		W.loc = null
+		current_work = new P(null)
 		H.visible_message(
 			"<span class='notice'>You can see how [H.name] began to grind [current_work.name] [istype(src, /obj/structure/mill/large) ? "on" : "in"] \the [src.name].</span>",
 			"<span class='notice'>You [istype(src, /obj/structure/mill/large) ? "put [current_work.name] to [src] for" : "start to"] produce \a [current_work.name].</span>",
@@ -488,10 +540,16 @@
 				some_work_done = TRUE
 				is_mentally_tired = TRUE
 				break
-			var/finished_work = do_after(H, 10, H.loc, TRUE, FALSE)
+			var/interval_epoch = work_epoch
+			var/finished_work = do_after(H, 10, src, TRUE, FALSE)
+			if (QDELETED(src))
+				return // Destroy already settled completed work.
 			if (batch_id != my_batch)
-				return // the batch finished during the wait and finish_work() already paid this worker
-			if (finished_work && crafting_recipe_allowed(H, "[type]"))
+				return // This batch ended during the wait and already settled completed work.
+			if (!has_hand_mill_input())
+				cancel_hand_mill_batch()
+				return
+			if (finished_work && interval_epoch == work_epoch && anchored && isturf(loc) && in_range(H, src) && crafting_recipe_allowed(H, "[type]"))
 				complete_percent += (6*H.getStatCoeff("strength") + 6*H.getStatCoeff("stamina") + 3*H.getStatCoeff("dexterity")) * machine_performance(src)
 				total_work += 10
 				workers_work[H] = total_work
@@ -501,9 +559,14 @@
 				some_work_done = TRUE
 				break
 		if (some_work_done)
-			H.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), total_work, TRUE, TRUE, 1, 0, 0, 0, 0)
+			if (total_work && !QDELETED(H))
+				H.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), total_work, TRUE, TRUE, 1, 0, 0, 0, 0)
 			workers_list -= H
 			workers_work -= H
+			if (QDELETED(H))
+				if (!workers_list.len)
+					icon_state = "flour_mill"
+				return
 			var/reason = "stopped"
 			if (is_mentally_tired) reason = "not in mood to"
 			if (is_tired) reason = "tired to"
@@ -1729,16 +1792,27 @@
 
 /obj/structure/oilwell/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
+		var/mob/living/loader = user
+		if (!istype(loader))
+			return
 		load_barrel(FALSE)
 		if (!work_barrel)
 			if (do_after(user, 35, src))
-				load_barrel(FALSE)
-				if (work_barrel || W.loc != user || get_dist(user, src) > 1)
+				if (QDELETED(src) || QDELETED(loader) || QDELETED(W))
 					return
-				user.drop_item(src.loc)
+				load_barrel(FALSE)
+				if (work_barrel || W.loc != user || user.z != z || get_dist(user, src) > 1)
+					return
+				if (!W.reagents || W.reagents.get_free_space() <= 0)
+					to_chat(user, SPAN_WARNING("The barrel has no room for oil."))
+					return
+				if (!loader.transfer_held_item_to(W, src))
+					return
+				load_barrel(FALSE)
+				if (work_barrel != W || W.loc != src)
+					return
 				user.visible_message("<span class='notice'>[user] puts \the [W] in \the [src].</span>",
 					"<span class='notice'>You put \the [W] in \the [src].</span>")
-				load_barrel()
 		else
 			to_chat(user, "<span class='warning'>There is already a connected [work_barrel].</span>")
 		return
@@ -2563,7 +2637,7 @@
 	P.customname = wood_customname
 	// Looped cuts pile onto one matching plank stack instead of one stack per log.
 	for (var/obj/item/stack/material/woodplank/existing in site)
-		if (existing != P && existing.type == P.type && existing.amount < existing.max_amount && existing.color == P.color && existing.customcolor == P.customcolor && existing.customcolor1 == P.customcolor1 && existing.customcolor2 == P.customcolor2 && existing.customname == P.customname)
+		if (existing != P && !existing.onfire && existing.type == P.type && existing.amount < existing.max_amount && existing.color == P.color && existing.customcolor == P.customcolor && existing.customcolor1 == P.customcolor1 && existing.customcolor2 == P.customcolor2 && existing.customname == P.customname)
 			P.merge(existing)
 			break
 	new /obj/item/stack/bark(site, 1)

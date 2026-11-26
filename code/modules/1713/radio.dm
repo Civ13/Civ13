@@ -152,8 +152,12 @@ var/global/FREQM = rand(101,120)
 			rows += list(panel_row("Receiver", R:receiver_on ? "On" : "Off", R:receiver_on ? "good" : "muted", list(panel_button(R:receiver_on ? "Turn off" : "Turn on", "receiver"))))
 	R.open_panel(user, R.name, 400, 300, list(panel_section(style, rows = rows)), ui = ui, force_open = force_open)
 
+// Prompts can suspend while either participant moves or becomes unusable.
+/proc/radio_tuning_available(obj/R, mob/user)
+	return !QDELETED(R) && !QDELETED(user) && !user.lying && (locate(user) in range(1,R)) && user.can_use_hands()
+
 /proc/radio_topic(obj/R, mob/user, list/href_list)
-	if (!user || user.lying)
+	if (QDELETED(R) || QDELETED(user) || user.lying)
 		return
 
 	user.face_atom(R)
@@ -169,7 +173,7 @@ var/global/FREQM = rand(101,120)
 	if (href_list["set_frequency"])
 		if (R:multifreq)
 			var/input = WWinput(user, "Choose the frequency to broadcast to:", "Radio", R:freq, R:multifreqlist_selectable)
-			if (!input || input == R:freq)
+			if (!input || !radio_tuning_available(R, user) || input == R:freq)
 				return
 			R:freq = input
 			to_chat(user, "Frequency set to <b>[R:freq]</b>.")
@@ -178,7 +182,7 @@ var/global/FREQM = rand(101,120)
 
 		else
 			var/input = player_input(user, "Choose the frequency to sintonize, in kHz: (150-300, no decimals)", null, null, "num", null, FALSE)
-			if (!input)
+			if (!input || !radio_tuning_available(R, user))
 				return
 			R:freq = sanitize_integer(input, min=150, max=300, default=150)
 			to_chat(user, "Frequency set to [R:freq]kHz.")

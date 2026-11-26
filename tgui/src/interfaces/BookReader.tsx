@@ -4,6 +4,7 @@ import { text } from './common';
 
 export type Face = 'times' | 'verdana' | 'comic';
 export type BookRun = { text?: string; br?: true; ink: string; face: Face; bold: boolean; italic: boolean };
+type BookNode = BookRun | { divider: true; text?: never };
 // Comic is used only by paper crayon writing; book snapshots never send it.
 const faces: Record<Face, string> = { times: '"Times New Roman", serif', verdana: 'Verdana', comic: '"Comic Sans MS", cursive' };
 const families: Record<Face, string> = { times: 'times new roman', verdana: 'verdana', comic: 'comic sans ms' };
@@ -33,11 +34,16 @@ const flag = (value: unknown): boolean => {
   if (value === false || value === 0) return false;
   throw new Error('Unsupported book flag');
 };
-export function bookRuns(data: Data): BookRun[] {
+export function bookRuns(data: Data): BookNode[] {
   if (Object.keys(data).sort().join(',') !== 'runs' || !Array.isArray(data.runs) || data.runs.length > 2048) throw new Error('Unsupported book snapshot');
   let units = 0;
   return data.runs.map(run => {
     if (!run || typeof run !== 'object' || Array.isArray(run)) throw new Error('Unsupported book node');
+    if (Object.hasOwn(run, 'divider')) {
+      if (Object.keys(run).join(',') !== 'divider' || (run.divider !== true && run.divider !== 1))
+        throw new Error('Unsupported book divider');
+      return { divider: true };
+    }
     const hasBreak = run.br === true || run.br === 1;
     const expected = hasBreak ? 'bold,br,face,ink,italic' : 'bold,face,ink,italic,text';
     if (Object.keys(run).sort().join(',') !== expected || !Object.hasOwn(faces, run.face) || typeof run.ink !== 'string' || !/^#[0-9a-f]{6}$/i.test(run.ink)) throw new Error('Unsupported book metadata');
@@ -57,11 +63,13 @@ const pageStyle: CSSProperties = {
   opacity: 1, filter: 'none', mixBlendMode: 'normal', WebkitTextFillColor: '#000000', WebkitTextStrokeWidth: 0,
   userSelect: 'text', WebkitUserSelect: 'text', padding: '8px', minHeight: '32px', overflow: 'auto',
 };
-export function BookPage({ runs, pageRef }: { runs: BookRun[]; pageRef?: RefObject<HTMLElement | null> }) {
+export function BookPage({ runs, pageRef }: { runs: BookNode[]; pageRef?: RefObject<HTMLElement | null> }) {
   // Ordinary DOM text stays selectable and accessible, including white ink.
   // No hidden-text summary, title, aria label, copy/search/reveal control.
   return <article ref={pageRef} className="book-page" style={pageStyle}>
-    {runs.map((run, index) => <span key={index} data-book-run={index} style={{
+    {runs.map((run, index) => 'divider' in run
+      ? <hr key={index} data-book-run={index} style={{ border: 0, borderTop: '1px solid #808080', margin: '8px 0' }} />
+      : <span key={index} data-book-run={index} style={{
       color: run.ink, WebkitTextFillColor: run.ink, WebkitTextStrokeWidth: 0,
       fontFamily: faces[run.face], fontSize: '16px', fontWeight: run.bold ? 700 : 400,
       fontStyle: run.italic ? 'italic' : 'normal', lineHeight: 'normal',
@@ -71,7 +79,7 @@ export function BookPage({ runs, pageRef }: { runs: BookRun[]; pageRef?: RefObje
   </article>;
 }
 const rgb = (ink: string) => `rgb(${parseInt(ink.slice(1, 3), 16)}, ${parseInt(ink.slice(3, 5), 16)}, ${parseInt(ink.slice(5, 7), 16)})`;
-export function bookRenderingSupported(page: HTMLElement, runs: BookRun[]): boolean {
+export function bookRenderingSupported(page: HTMLElement, runs: BookNode[]): boolean {
   const w = page.ownerDocument.defaultView;
   if (!w || typeof w.matchMedia !== 'function' || w.matchMedia('(forced-colors: active)').matches || w.matchMedia('print').matches) return false;
   const clean = (s: CSSStyleDeclaration) => s.opacity === '1' && s.filter === 'none' && s.mixBlendMode === 'normal' && s.textShadow === 'none';
@@ -84,7 +92,9 @@ export function bookRenderingSupported(page: HTMLElement, runs: BookRun[]): bool
   const elements = [...page.querySelectorAll<HTMLElement>('[data-book-run]')];
   if (elements.length !== runs.length) return false;
   return elements.every((element, index) => {
-    const run = runs[index], s = w.getComputedStyle(element), family = s.fontFamily.split(',')[0].replaceAll('"', '').trim().toLowerCase();
+    const run = runs[index], s = w.getComputedStyle(element);
+    if ('divider' in run) return element.tagName === 'HR' && !element.textContent && clean(s);
+    const family = s.fontFamily.split(',')[0].replaceAll('"', '').trim().toLowerCase();
     return clean(s) && s.color === rgb(run.ink) && s.webkitTextFillColor === rgb(run.ink) && s.webkitTextStrokeWidth === '0px'
       && s.backgroundColor === 'rgba(0, 0, 0, 0)' && s.backgroundImage === 'none' && s.fontSize === '16px'
       && family === families[run.face]

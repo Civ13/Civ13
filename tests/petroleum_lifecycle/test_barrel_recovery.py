@@ -191,6 +191,39 @@ class OilWellBarrelRecovery(unittest.TestCase):
         after_wait = body[body.index('if (do_after(user, 35, src))'):]
         self.assertLess(after_wait.index('load_barrel(FALSE)'), after_wait.index('work_barrel ||'))
 
+    def test_manual_load_transfers_selected_barrel_without_floor_scan(self):
+        body = vm.extract(PRODUCTION, '/obj/structure/oilwell/attackby')
+        transfer_call = 'loader.transfer_held_item_to(W, src)'
+        self.assertIn(transfer_call, body)
+        wait = body.index('do_after(user, 35, src)')
+        transfer = body.index(transfer_call)
+        self.assertIn('if (QDELETED(src) || QDELETED(loader) || QDELETED(W))', body[wait:transfer])
+        self.assertIn('load_barrel(FALSE)', body[wait:transfer])
+        self.assertIn('if (work_barrel || W.loc != user || user.z != z || get_dist(user, src) > 1)', body[wait:transfer])
+        self.assertIn('W.reagents.get_free_space() <= 0', body[wait:transfer])
+        message = body.index('user.visible_message')
+        self.assertIn('load_barrel(FALSE)', body[transfer:message])
+        self.assertIn('if (work_barrel != W || W.loc != src)', body[transfer:message])
+        self.assertNotIn('drop_item(', body)
+        self.assertNotIn('load_barrel()', body)
+        self.assertIn('load_barrel()', vm.extract(PRODUCTION, '/obj/structure/oilwell/attack_hand'))
+
+    def test_factory_acceptance_uses_extraction_source_contract(self):
+        accepts = vm.extract(CHEMISTRY, '/obj/structure/oilwell/factory_accepts')
+        self.assertIn('!has_source()', accepts)
+        self.assertNotIn('!base', accepts)
+        for guard in ('work_barrel', '!isturf(loc)', '!factory_movable_item(I)', 'I.reagents.get_free_space() > 0'):
+            self.assertIn(guard, accepts)
+        insert = vm.extract(CHEMISTRY, '/obj/structure/oilwell/factory_insert')
+        self.assertLess(insert.index('factory_accepts(I, from_dir)'), insert.index('I.forceMove(src)'))
+        self.assertIn('work_barrel == I', insert)
+        land = vm.extract(PRODUCTION, '/obj/structure/oilwell/proc/has_source')
+        self.assertIn('base.loc == loc && base.flows()', land)
+        spring = vm.extract(vm.read('code/modules/1713/oil_fires.dm'), '/obj/structure/oil_spring/proc/flows')
+        self.assertLess(spring.index('continent_land_oil_at'), spring.index('if (counter > 0)'))
+        offshore = vm.extract(vm.read('code/modules/1713/offshore_rig.dm'), '/obj/structure/oilwell/offshore/has_source')
+        self.assertIn('return richness() > 0', offshore)
+
     def test_save_hooks_rebuild_only_runtime_link_from_contents(self):
         after = vm.extract(PRODUCTION, '/obj/structure/oilwell/after_load')
         self.assertIn('link_to_spring()', after)

@@ -155,6 +155,47 @@ class EdgeCrossingTests(unittest.TestCase):
         self.assertIn('var/id = incoming ? P["from"] : E[3]', edge)
 
 
+class BicycleReplayTests(unittest.TestCase):
+    def setUp(self):
+        self.edge = (ROOT / 'code/modules/persistence/region_edge.dm').read_text(encoding='utf-8')
+        self.travel = (ROOT / 'code/modules/persistence/region_travel.dm').read_text(encoding='utf-8')
+        self.bike = (ROOT / 'code/game/objects/structures/bicycle.dm').read_text(encoding='utf-8')
+
+    def test_identity_is_saved_and_survives_arrival(self):
+        self.assertIn('var/region_crossing_id = null', self.bike)
+        self.assertIn('bicycle/on_runtime_spawn()\n\t..()\n\tensure_region_crossing_id()', self.bike)
+        restore = self.bike.split('bicycle/persistence_restore_finished()\n')[1].split('\n/obj/')[0]
+        self.assertIn('ensure_region_crossing_id()', restore)
+        exclusions = self.bike.split('bicycle/persistence_runtime_var(key)\n')[1].split('\n/obj/')[0]
+        self.assertNotIn('region_crossing_id', exclusions)
+        self.assertIn('.["bike_id"] = bike.ensure_region_crossing_id()', self.edge)
+        self.assertIn('"port", "bike_id"', self.travel)
+        self.assertIn('region_edge_bike_build(P["bike"], get_turf(H), P["bike_id"])', self.edge)
+        self.assertIn('B.region_crossing_id = id', self.edge)
+        self.assertIn('region_edge_bikes |= src', self.bike)
+        self.assertIn('region_edge_bikes -= src', self.bike)
+
+    def test_legacy_arrivals_remain_valid_but_naked_id_is_rejected(self):
+        self.assertIn('R.len != 3', self.edge)
+        self.assertIn('region_edge_bike_build(list/R, turf/T, id = null)', self.edge)
+        self.assertIn('isnull(P["wagon"]) && isnull(P["bike_id"])', self.edge)
+        self.assertIn('if (!isnull(P["bike_id"]) && (isnull(P["bike"]) || !region_edge_bike_id_valid(P["bike_id"])))', self.edge)
+
+    def test_replay_never_deletes_a_subtype_only_or_first_id_match(self):
+        self.assertIn('region_edge_bike_replayed(H, P["bike"], P["bike_id"])', self.edge)
+        dispatch = self.edge.split('/proc/region_edge_replayed(')[1].split('/proc/region_edge_bike_replayed(')[0]
+        self.assertNotIn('for (var/obj/structure/vehicle/bicycle', dispatch)
+        replay = self.edge.split('/proc/region_edge_bike_replayed(')[1].split('#undef')[0]
+        self.assertIn('if (!region_edge_bike_id_valid(id))', replay)
+        self.assertIn('B in region_edge_bikes)', replay)
+        self.assertIn('if (QDELETED(B) || B.region_crossing_id != id)\n\t\t\tcontinue', replay)
+        self.assertRegex(replay, r'if \(match\)\n\t{3}log_game[^\n]*duplicate bicycle ID[^\n]*\n\t{3}return')
+        self.assertIn('!match || match.type != text2path(R[1])', replay)
+        self.assertIn('(match.driver && match.driver != H)', replay)
+        self.assertEqual(replay.count('qdel('), 1)
+        self.assertIn('\n\tqdel(match)', replay)
+
+
 class SeaEdgeTests(unittest.TestCase):
     """Ships at the sea's edge: the helm, the hint and what counts as cargo."""
 

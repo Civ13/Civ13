@@ -552,7 +552,7 @@ var/global/list/tailoring_dye_tiers = list(
 	if (tailoring_overlays)
 		overlays -= tailoring_overlays
 	tailoring_overlays = tailoring_layers(design_body, design_colors, FALSE, design_pieces, design_fabric)
-	overlays += tailoring_overlays
+	overlays = tailoring_overlays + overlays.Copy() // Keep attachments and stains above the design.
 	update_clothing_icon()
 	return TRUE
 

@@ -8,6 +8,20 @@
 	embed = TRUE
 	sharp = TRUE
 	var/mob_passthrough_check = FALSE
+	var/shield_recovery_casing = null
+
+/obj/item/projectile/arrow/proc/recover_from_shield(mob/defender)
+	if (!shield_recovery_casing)
+		return
+	var/projectile_name = "arrow"
+	if (istype(src, /obj/item/projectile/arrow/bolt))
+		projectile_name = "bolt"
+	if (prob(50))
+		new shield_recovery_casing(get_turf(defender))
+		defender.visible_message(SPAN_WARNING("The [projectile_name] falls to the ground!"))
+	else
+		defender.visible_message(SPAN_WARNING("The [projectile_name] shatters!"))
+
 /obj/item/projectile/arrow/get_structure_damage()
 	if (damage_type == BRUTE)
 		return 0

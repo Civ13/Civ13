@@ -375,9 +375,12 @@ var/global/list/frame_hives = list()
 			return
 		if (QDELETED(src) || QDELETED(user) || !Adjacent(user))
 			return
+		var/turf/site = get_turf(src)
+		if (!site)
+			return
 		to_chat(user, SPAN_NOTICE("You take all filled honeycombs out."))
-		new /obj/item/weapon/reagent_containers/food/snacks/honeycomb(loc)
-		new /obj/item/honey_frame(loc)
+		new /obj/item/weapon/reagent_containers/food/snacks/honeycomb(site)
+		new /obj/item/honey_frame(site)
 		qdel(src)
 		return
 

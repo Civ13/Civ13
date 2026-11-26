@@ -1,10 +1,7 @@
 // Canals and pound locks (docs/canals.md).
 //
-// A dug trench next to water floods and boats can use it (trench.dm). Water
-// keeps to gravity: a trench floods only from water standing at least as high
-// as its own ground, so a canal can't climb a hill by itself. Where the ground
-// steps up or down, the canal water sits at different levels and no boat can
-// cross the step.
+// An open canal inherits the surface of the water that reached its bed.
+// Deepening the bed does not change that surface or the lock chamber level.
 //
 // A pound lock built on a flooded canal tile at a step lets boats pass. Its
 // chamber stands at the level of one side or the other; boats move between it
@@ -22,7 +19,19 @@
 		return 0
 	for (var/obj/structure/canal_lock/L in T)
 		return L.chamber_level
+	var/turf/floor/trench/flooded/F = T
+	if (istype(F) && !isnull(F.trench_water_level))
+		return F.trench_water_level
 	return terrain_height_at(T)
+
+// Locks have a navigable level but are not sources for new excavations.
+// In particular, opening paddles must not fill a dry cut beside the lock.
+/proc/canal_flood_source_level(turf/T)
+	if (!is_open_water(T) || istype(T, /turf/floor/beach/water/deep/saltwater/underwater))
+		return null
+	if (locate(/obj/structure/canal_lock) in T)
+		return null
+	return canal_level(T)
 
 /proc/canal_tile(turf/T)
 	return istype(T, /turf/floor/trench/flooded) || (locate(/obj/structure/canal_lock) in T)
@@ -45,9 +54,11 @@
 
 // Gravity for trench flooding: water standing at W can flood dry ground at T.
 /proc/canal_can_flood(turf/water, turf/T)
-	if (!water || !T)
+	var/level = canal_flood_source_level(water)
+	if (isnull(level) || !T)
 		return FALSE
-	return canal_level(water) >= terrain_height_at(T)
+	var/turf/floor/trench/cut = T
+	return level >= (istype(cut) ? cut.trench_bed_level() : terrain_height_at(T))
 
 /obj/structure/canal_lock
 	name = "pound lock"
@@ -89,7 +100,7 @@
 		var/turf/W = get_step(T, d)
 		if (!is_open_water(W) || (locate(/obj/structure/canal_lock) in W))
 			continue
-		var/level = terrain_height_at(W)
+		var/level = canal_level(W)
 		if (isnull(low) || level < low)
 			low = level
 		if (isnull(hi) || level > hi)
