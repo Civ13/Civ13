@@ -3,7 +3,7 @@
 	var/previous_turf = /turf/floor/dirt
 
 /turf/floor/trench
-	map_storage_saved_vars = "icon_state;name;trench_filling"
+	map_storage_saved_vars = "icon_state;name;trench_filling;trench_cut;trench_lining;trench_water_level"
 	name = "trench"
 	icon = 'icons/turf/trench.dmi'
 	icon_state = "trench"
@@ -12,6 +12,11 @@
 	plane = UNDERFLOOR_PLANE
 	initial_flooring = /decl/flooring/trench
 	var/trench_filling = 0
+	// Additional cuts below the original trench bed, not changes to the terrain grid.
+	var/trench_cut = 0
+	var/trench_lining = null
+	// Null for pre-existing/map-authored water, which keeps its legacy level.
+	var/trench_water_level = null
 	flooded = FALSE
 	salty = FALSE
 	var/message_cooldown = 0
@@ -21,43 +26,91 @@
 		icon_state = "trench"
 
 	..()
+	if (restoring || (persistence_active_operation && persistence_active_operation.kind == "load"))
+		return
+	var/datum/admission = persistence_admission_identity
 	spawn(4)
-		if (src && istype(src, /turf/floor/trench))
-			update_icon()
-			if (istype(src, /turf/floor/trench/flooded))
-				for (var/turf/floor/trench/TF in range(1, src))
-					if ((!TF.flooded || !istype(TF,/turf/floor/trench/flooded)) && canal_can_flood(src, TF))
-						if (salty)
-							TF.ChangeTurf(/turf/floor/trench/flooded/salty)
-						else
-							TF.ChangeTurf(/turf/floor/trench/flooded)
-				for (var/turf/floor/IF in range(1, src))
-					if (!IF.flooded && IF.irrigation)
-						if (salty)
-							IF.irrigate("salty")
-						else
-							IF.irrigate("fresh")
-			else
-				for (var/turf/floor/TF in range(1, src))
-					if (map && (istype(TF, /turf/floor/beach/water) || istype(TF, /turf/floor/trench/flooded)) && canal_can_flood(TF, src) && (map.civilizations || map.nomads || map.ID == MAP_COLONY || map.ID == MAP_FOUR_COLONIES || map.ID == MAP_PIONEERS || map.ID == MAP_BOHEMIA))
-						flooded = TRUE
-						if (istype(TF, /turf/floor/trench/flooded))
-							var/turf/floor/trench/flooded/WT = TF
-							if (WT.salty)
-								ChangeTurf(/turf/floor/trench/flooded/salty)
-							else
-								ChangeTurf(/turf/floor/trench/flooded)
-						else if (istype(TF, /turf/floor/beach/water))
-							var/turf/floor/beach/water/WT = TF
-							if (WT.salty)
-								ChangeTurf(/turf/floor/trench/flooded/salty)
-							else
-								ChangeTurf(/turf/floor/trench/flooded)
+		if (istype(src, /turf/floor/trench) && !persistence_admission_changed(admission))
+			trench_refresh()
 			for (var/direction in list(1,2,4,8,5,6,9,10))
-				if (istype(get_step(src,direction),/turf))
-					var/turf/FF = get_step(src,direction)
-					if (istype(FF, /turf/floor/trench))
-						FF.update_icon() //so siding get updated properly
+				var/turf/floor/trench/neighbor = get_step(src, direction)
+				if (istype(neighbor))
+					neighbor.update_icon()
+
+/turf/floor/trench/after_load()
+	..()
+	// Rebuild only appearance/movement after the complete level is loaded.
+	// A restored cut must not look for a new inlet or change its saved surface.
+	update_icon()
+	if (istype(src, /turf/floor/trench/flooded))
+		var/turf/floor/trench/flooded/water = src
+		water.check_bridge()
+
+/turf/floor/trench/proc/trench_refresh()
+	update_icon()
+	if (!flooded)
+		trench_try_flood()
+		return
+	var/level = canal_flood_source_level(src)
+	for (var/direction in cardinal)
+		var/turf/floor/neighbor = get_step(src, direction)
+		if (!istype(neighbor))
+			continue
+		if (istype(neighbor, /turf/floor/trench) && !isnull(level))
+			var/turf/floor/trench/cut = neighbor
+			cut.trench_try_flood()
+		else if (!isnull(level) && !neighbor.flooded && neighbor.irrigation)
+			neighbor.irrigate(salty ? "salty" : "fresh")
+
+// Take the highest eligible adjacent surface, with saltwater winning a tie.
+// A corner alone is not a navigable connection.
+/turf/floor/trench/proc/trench_best_inlet(require_reach = TRUE)
+	var/best_level = null
+	var/turf/floor/best
+	for (var/direction in cardinal)
+		var/turf/floor/water = get_step(src, direction)
+		var/level = canal_flood_source_level(water)
+		if (isnull(level) || (require_reach && !canal_can_flood(water, src)))
+			continue
+		if (!istype(water, /turf/floor/trench/flooded) && (!map || !(map.civilizations || map.nomads || map.ID == MAP_COLONY || map.ID == MAP_FOUR_COLONIES || map.ID == MAP_PIONEERS || map.ID == MAP_BOHEMIA)))
+			continue
+		if (isnull(best_level) || level > best_level || (level == best_level && water.salty && !best.salty))
+			best = water
+			best_level = level
+	return best
+
+/turf/floor/trench/proc/trench_bed_level()
+	return terrain_height_at(src) - trench_cut + trench_filling
+
+/turf/floor/trench/proc/trench_try_flood()
+	if (flooded || !map)
+		return FALSE
+	var/turf/floor/water = trench_best_inlet()
+	if (!water)
+		return FALSE
+	return trench_take_water(canal_flood_source_level(water), water.salty)
+
+// Keep persistent cut and fill state across the dry/wet turf subtype change.
+/turf/floor/trench/proc/trench_take_water(level, salt = FALSE)
+	var/obj/structure/canal_lock/dock_gate/gate = dock_basin_turfs[src]
+	if (flooded || isnull(level) || level < trench_bed_level() || (gate && !QDELETED(gate) && gate.drained))
+		return FALSE
+	trench_change_water(salt ? /turf/floor/trench/flooded/salty : /turf/floor/trench/flooded, level)
+	return TRUE
+
+/turf/floor/trench/proc/trench_change_water(path, level)
+	var/cut = trench_cut
+	var/fill = trench_filling
+	var/lining = trench_lining
+	var/base = previous_turf
+	var/turf/floor/trench/next = ChangeTurf(path)
+	next.trench_cut = cut
+	next.trench_filling = fill
+	next.trench_lining = lining
+	next.previous_turf = base
+	next.trench_water_level = level
+	return next
+
 /turf/floor/trench/make_grass()
 	overlays.Cut()
 	if (islist(decals))
@@ -67,7 +120,7 @@
 	set_light(0)
 	levelupdate()
 
-	ChangeTurf(/turf/floor/trench)
+	update_icon()
 
 /turf/floor/trench/flooded
 	name = "flooded trench"
@@ -90,34 +143,114 @@
 	salty = TRUE
 
 
+/turf/floor/trench/examine(mob/user, distance = -1, infix = "", suffix = "")
+	. = ..()
+	if (!user || get_dist(src, user) > 2)
+		return
+	to_chat(user, SPAN_NOTICE("Depth: [1 + trench_cut] step[trench_cut ? "s" : ""]. Lining: [trench_lining ? trench_lining : "none"]."))
+	if (!flooded)
+		var/turf/floor/water = trench_best_inlet(FALSE)
+		if (water)
+			var/difference = trench_bed_level() - canal_flood_source_level(water)
+			if (difference > 0)
+				to_chat(user, SPAN_NOTICE("The trench bed is [difference] level[difference == 1 ? "" : "s"] above the adjacent water."))
+
+/turf/floor/trench/proc/trench_max_cut()
+	switch (trench_lining)
+		if ("stone")
+			return 4
+		if ("timber")
+			return 2
+	return 1
+
+/turf/floor/trench/proc/trench_can_work(mob/living/human/H, obj/item/tool, datum/admission)
+	if (persistence_admission_changed(admission) || !istype(H) || QDELETED(H) || QDELETED(tool) || tool.loc != H || H.get_active_hand() != tool || !isturf(H.loc) || H.z != z || !H.Adjacent(src) || H.incapacitated() || H.restrained())
+		return FALSE
+	var/obj/structure/canal_lock/dock_gate/gate = dock_basin_turfs[src]
+	if ((gate && !QDELETED(gate) && gate.busy) || craft_at(src))
+		return FALSE
+	for (var/obj/O in src)
+		if (O.density || istype(O, /obj/covers) || istype(O, /obj/structure) || istype(O, /obj/roof))
+			return FALSE
+	for (var/mob/living/L in src)
+		if (L != H)
+			return FALSE
+	return TRUE
+
+/turf/floor/trench/proc/trench_deepen(mob/living/human/H, obj/item/tool)
+	var/datum/admission = persistence_admission_identity
+	if (!trench_can_work(H, tool, admission))
+		to_chat(H, SPAN_WARNING("You need clear access to the trench to deepen it."))
+		return
+	if (!trench_filling && trench_cut >= trench_max_cut())
+		to_chat(H, SPAN_WARNING(trench_lining == "stone" ? "You cannot safely dig this trench any deeper." : "You need stronger lining before you can dig any deeper."))
+		return
+	var/start_cut = trench_cut
+	var/start_fill = trench_filling
+	var/start_type = type
+	H.visible_message(SPAN_NOTICE("[H] starts deepening the trench."), SPAN_NOTICE("You start deepening the trench."))
+	if (!do_after(H, work_delay(H, 45, WORK_DIG, tool), src))
+		return
+	if (type != start_type || trench_cut != start_cut || trench_filling != start_fill || !trench_can_work(H, tool, admission) || (!trench_filling && trench_cut >= trench_max_cut()))
+		return
+	if (trench_filling)
+		trench_filling--
+	else
+		trench_cut++
+	excavation_spoil(get_turf(H), 1)
+	to_chat(H, SPAN_NOTICE("You dig out a pile of dirt and lower the trench bed."))
+	if (trench_try_flood())
+		to_chat(H, SPAN_NOTICE("Water flows into the deepened trench."))
+
+/turf/floor/trench/proc/trench_line(mob/living/human/H, obj/item/stack/S, lining)
+	var/datum/admission = persistence_admission_identity
+	var/cost = lining == "stone" ? 4 : 2
+	if (!trench_can_work(H, S, admission) || S.amount < cost)
+		to_chat(H, SPAN_WARNING("You need a clear trench and [cost] [lining == "stone" ? "stone" : "wood planks"]."))
+		return
+	if (trench_lining == "stone" || trench_lining == lining)
+		to_chat(H, SPAN_NOTICE("This trench already has lining at least that strong."))
+		return
+	var/start_lining = trench_lining
+	var/start_type = type
+	to_chat(H, SPAN_NOTICE("You start lining the trench with [lining]."))
+	if (!do_after(H, work_delay(H, 45, WORK_DIG, null), src))
+		return
+	if (type != start_type || trench_lining != start_lining || !trench_can_work(H, S, admission) || S.amount < cost || !S.use(cost))
+		return
+	trench_lining = lining
+	to_chat(H, SPAN_NOTICE("You reinforce the trench with [lining]."))
+
 /turf/floor/trench/attackby(obj/item/C as obj, mob/user as mob)
-	if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
+	if (ishuman(user) && is_tool(C, TOOL_SHOVEL) && user.a_intent == I_HARM)
+		trench_deepen(user, C)
+		return TRUE
+	if (ishuman(user) && user.a_intent == I_HELP)
+		if (istype(C, /obj/item/stack/material/woodplank))
+			trench_line(user, C, "timber")
+			return TRUE
+		if (istype(C, /obj/item/stack/material/stone))
+			trench_line(user, C, "stone")
+			return TRUE
+	if (ishuman(user) && istype(C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
+		var/datum/admission = persistence_admission_identity
+		if (!trench_can_work(user, C, admission))
+			to_chat(user, SPAN_WARNING("You need clear access to the trench to fill it."))
+			return TRUE
+		var/start_type = type
 		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
-		if (choice == "Yes" && !QDELETED(C) && C.loc == user)
+		if (choice == "Yes" && type == start_type && trench_can_work(user, C, admission))
 			to_chat(user, "You shove some dirt into the trench.")
-			if (istype(src, /turf/floor/trench))
-				trench_filling++
-				qdel(C)
-				check_filling()
-				return
-	..()
+			qdel(C)
+			check_filling()
+		return TRUE
+	return ..()
 
 /turf/floor/trench/flooded/attackby(obj/item/C as obj, mob/user as mob)
 	// A hole in a built hull sailing the canal (hull_ledger.dm).
 	if (hull_patch_attack(C, user, src))
 		return TRUE
-	if (istype (C, /obj/item/weapon/barrier) && !istype(C, /obj/item/weapon/barrier/sandbag))
-		var/choice = WWinput(user, "Do you want to start filling up the trench with \the [C]?","Trench","Yes",list("Yes","No"))
-		if (choice == "Yes" && !QDELETED(C) && C.loc == user)
-			to_chat(user, "You shove some dirt into the trench.")
-			if (istype(src, /turf/floor/trench))
-				trench_filling++
-				qdel(C)
-				check_filling()
-				return
-		else
-			return
-	else if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
+	if (istype(C, /obj/item/weapon/reagent_containers/glass) || istype(C, /obj/item/weapon/reagent_containers/food/drinks))
 		var/obj/item/weapon/reagent_containers/RG = C
 		if (istype(RG) && RG.is_open_container())
 			if (do_after(user, 15, src, check_for_repeats = FALSE))
@@ -153,11 +286,15 @@
 		..()
 
 /turf/floor/trench/proc/check_filling()
-	if (trench_filling < 0)
-		trench_filling = 0
-	if (trench_filling >= 2)
-		ChangeTurf(get_base_turf_by_area(src))
-	return
+	if (trench_cut > 0)
+		trench_cut--
+	else
+		trench_filling++
+		if (trench_filling >= 2)
+			ChangeTurf(get_base_turf_by_area(src))
+			return
+	if (flooded && trench_bed_level() > canal_level(src))
+		trench_change_water(/turf/floor/trench, null)
 
 /decl/flooring/trench
 	name = "trench"
