@@ -1779,16 +1779,27 @@
 
 /obj/structure/oilwell/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
+		var/mob/living/loader = user
+		if (!istype(loader))
+			return
 		load_barrel(FALSE)
 		if (!work_barrel)
 			if (do_after(user, 35, src))
-				load_barrel(FALSE)
-				if (work_barrel || W.loc != user || get_dist(user, src) > 1)
+				if (QDELETED(src) || QDELETED(loader) || QDELETED(W))
 					return
-				user.drop_item(src.loc)
+				load_barrel(FALSE)
+				if (work_barrel || W.loc != user || user.z != z || get_dist(user, src) > 1)
+					return
+				if (!W.reagents || W.reagents.get_free_space() <= 0)
+					to_chat(user, SPAN_WARNING("The barrel has no room for oil."))
+					return
+				if (!loader.transfer_held_item_to(W, src))
+					return
+				load_barrel(FALSE)
+				if (work_barrel != W || W.loc != src)
+					return
 				user.visible_message("<span class='notice'>[user] puts \the [W] in \the [src].</span>",
 					"<span class='notice'>You put \the [W] in \the [src].</span>")
-				load_barrel()
 		else
 			to_chat(user, "<span class='warning'>There is already a connected [work_barrel].</span>")
 		return
