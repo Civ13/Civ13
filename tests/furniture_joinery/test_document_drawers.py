@@ -45,23 +45,45 @@ class DocumentDrawers(unittest.TestCase):
         f.component.amount=0;self.assertFalse(f.valid())
 
     def test_actual_document_handler_keeps_purpose(self):
-        istype=lambda obj,kind:obj.type==kind or obj.type.startswith(kind+'/')
+        istype=lambda obj,kind='/mob/living':obj.type==kind or obj.type.startswith(kind+'/')
         predicate,_=compile_body(SOURCE,'/obj/structure/filingcabinet/proc/is_fileable_document(',
                                  'I',dict(istype=istype))
         body=block(SOURCE,'/obj/structure/filingcabinet/attackby(')
         # Chat text contains DM interpolation/ternary syntax; the inert chat
         # adapter removes those strings, preserving every admission/move branch.
-        body=re.sub(r'(?m)^(\t+)to_chat\(.*$',r'\1fixture_chat()',body)
+        body=re.sub(r'(?m)^(\t+)to_chat\((.*)$',
+                    lambda m:m[1]+'fixture_chat('+str('You put' in m[2])+')',body)
         cabinet=NS(icon_state='chestdrawer',anchored=True,loc='floor')
-        actor=NS(drop_item=lambda:None)
+        calls=[]
+        actor=NS(type='/mob/living/human', refuse=False)
+        def drop():
+            calls.append('floor drop')
+        def transfer(item,target):
+            calls.append('attempt')
+            if actor.refuse or item.loc is not actor:
+                return False
+            item.loc=target
+            return True
+        actor.drop_item=drop
+        actor.transfer_held_item_to=transfer
         env=dict(istype=istype,is_fileable_document=predicate,
                  to_chat=lambda *a:None,playsound=lambda *a:None,sleep=lambda *a:None,
-                 initial=lambda state:'chestdrawer',updateUsrDialog=lambda:None,fixture_chat=lambda:None)
+                 QDELETED=lambda obj:False,initial=lambda state:'chestdrawer',updateUsrDialog=lambda:calls.append('refresh'),fixture_chat=lambda success:calls.append('filed' if success else 'other chat'))
         action,_=compile_body(body,'/obj/structure/filingcabinet/attackby(', 'self,P,user',env,('loc','icon_state','anchored'))
         for kind in ('paper','paper/subtype','paper_bundle','paper_bundle/subtype','folder','folder/subtype','hammer','cloth'):
             item=NS(type='/obj/item/weapon/'+kind,loc=actor)
             action(cabinet,item,actor)
             self.assertIs(item.loc,cabinet if kind.split('/')[0] in ('paper','paper_bundle','folder') else actor)
+        self.assertNotIn('floor drop',calls)
+        self.assertEqual(calls.count('attempt'),6)
+        self.assertEqual(calls.count('filed'),6)
+        actor.refuse=True
+        refused=NS(type='/obj/item/weapon/paper',loc=actor)
+        calls.clear()
+        action(cabinet,refused,actor)
+        self.assertIs(refused.loc,actor)
+        self.assertEqual(calls,['attempt'])
+        self.assertEqual(cabinet.icon_state,'chestdrawer')
         initialize=block(SOURCE,'/obj/structure/filingcabinet/initialize(')
         self.assertIn('for (var/obj/item/I in loc)',initialize)
         initialize=initialize.replace('for (var/obj/item/I in loc)','for I in contents:')
