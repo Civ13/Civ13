@@ -600,7 +600,7 @@
 					if (!T || T.weather_snow > 0)
 						return
 					if (istype(T, /turf/floor/dirt/flooded))
-						ChangeTurf(/turf/floor/dirt/ploughed/flooded)
+						T.till_into_field(/turf/floor/dirt/ploughed/flooded)
 						if (ishuman(user))
 							H.adaptStat("farming", 2)
 						return
@@ -608,7 +608,7 @@
 						to_chat(user, SPAN_DANGER("You can't plough this type of terrain."))
 						return
 					else
-						ChangeTurf(/turf/floor/dirt/ploughed)
+						T.till_into_field(/turf/floor/dirt/ploughed)
 						if (ishuman(user))
 							H.adaptStat("farming", 2)
 						return

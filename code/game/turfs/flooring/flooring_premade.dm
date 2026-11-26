@@ -318,6 +318,29 @@
 	soil_recovery_index = 0
 	soil_recovery_deadline = null
 
+// Tilling changes the surface, not the amount of dirt or the health of the soil.
+/turf/proc/till_into_field(field_type)
+	var/turf/floor/dirt/soil = src
+	if (!istype(soil) || type == field_type)
+		return ChangeTurf(field_type)
+
+	var/dirt_stock = soil.available_dirt
+	var/nutrition = soil.soil_nutrition
+	var/recovery_delay = null
+	if (!isnull(soil.soil_recovery_deadline))
+		recovery_delay = max(0, soil.soil_recovery_deadline - world.time)
+	// The registry entry belongs to the old soil. Retire it before replacing
+	// the turf so the new one is registered with its own index.
+	soil.soil_recovery_unregister()
+	var/turf/floor/dirt/ploughed/field = ChangeTurf(field_type)
+	if (!istype(field))
+		return field
+	field.available_dirt = dirt_stock
+	field.soil_nutrition = nutrition
+	if (!isnull(recovery_delay))
+		field.soil_recovery_schedule(recovery_delay)
+	return field
+
 // One recovery step, called by the process once the deadline has passed.
 /turf/floor/dirt/proc/soil_nutrition_recover()
 	if(soil_nutrition < max_soil_nutrition)

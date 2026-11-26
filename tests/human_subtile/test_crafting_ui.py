@@ -188,6 +188,11 @@ def restore_crafting_projection(path, source):
              '\t\t\t\tif (!TB.is_diggable)\n\t\t\t\t\treturn\n'),
             ('\t\t\t\tvar/turf/below = locate(user.x, user.y, user.z-1)\n\t\t\t\tif (!TO.is_diggable || (locate(/obj/structure/multiz) in user.loc) || (below && (locate(/obj/structure/multiz) in below)))\n\t\t\t\t\treturn // another digger finished this entrance during the wait\n',
              '\t\t\t\tif (!TO.is_diggable)\n\t\t\t\t\treturn\n'),
+            # #7490: field construction transfers soil stock and recovery.
+            ('\t\t\t\t\t\tT.till_into_field(/turf/floor/dirt/ploughed/flooded)\n',
+             '\t\t\t\t\t\tChangeTurf(/turf/floor/dirt/ploughed/flooded)\n'),
+            ('\t\t\t\t\t\tT.till_into_field(/turf/floor/dirt/ploughed)\n',
+             '\t\t\t\t\t\tChangeTurf(/turf/floor/dirt/ploughed)\n'),
             # Dig-down maps hand tunnel digging to dug_underground_tunnel first.
             ('\tif (user.ant && dug_underground_tunnel(user))\n\t\treturn\n', ''),
             # Laundry: washing clothes in water shares the hand_wash proc (tests/laundry).

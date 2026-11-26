@@ -292,7 +292,7 @@
 			if(do_after(L2, plough_time, src))				//ape double code to not let it build infinite roads over the other
 				if(L.stat == CONSCIOUS)		//no memes for dead cattle  working
 					if(!plough_road)							//dirt/flooded needs to be away from other dirts because it's ploughted field
-						T.ChangeTurf(/turf/floor/dirt/ploughed/flooded)	//returns a different ploughted field than the regular dirt
+						T.till_into_field(/turf/floor/dirt/ploughed/flooded)	//returns a different ploughted field than the regular dirt
 					else
 						new/obj/covers/roads/dirt(O.loc)
 					simplehunger -= 65		//The hunger rates regenerates after doing brute damage, that's why it can take more than 1000 simplehunger
@@ -303,7 +303,7 @@
 			if(do_after(L2, plough_time, src))
 				if(L.stat == CONSCIOUS)
 					if(!plough_road)
-						T.ChangeTurf(/turf/floor/dirt/ploughed)
+						T.till_into_field(/turf/floor/dirt/ploughed)
 					else
 						new/obj/covers/roads/dirt(O.loc)
 					simplehunger -= 65
