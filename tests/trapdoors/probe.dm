@@ -174,9 +174,19 @@ var/trapdoors_runtime = null
 	var/obj/item/weapon/crowbar/bit = new(locate(7, 5, 2))
 	bit.forceMove(stairwell)
 	trapdoors_assert(bit.z == 2, "things_lie_on_it")
+	var/obj/structure/closet/crate/loose_crate = new(locate(7, 5, 2))
+	var/obj/structure/closet/crate/fixed_crate = new(locate(7, 5, 2))
+	loose_crate.anchored = FALSE
+	fixed_crate.anchored = TRUE
+	loose_crate.forceMove(stairwell)
+	fixed_crate.forceMove(stairwell)
+	trapdoors_assert(loose_crate.loc == stairwell && fixed_crate.loc == stairwell, "both_crates_rest_on_shut_hatch")
 	H.Open()
 	sleep(12)
 	trapdoors_assert(bit.z == 1, "things_drop_through")
+	trapdoors_assert(loose_crate.loc == locate(8, 5, 1), "loose_crate_falls_on_opening")
+	trapdoors_assert(fixed_crate.loc == stairwell, "anchored_crate_stays_when_opened")
+	fixed_crate.forceMove(locate(7, 5, 2))
 	trapdoors_assert(stairs_destination(climber, S) == locate(8, 6, 2), "stairs_climb_open")
 	H.Close()
 	sleep(12)
@@ -190,8 +200,13 @@ var/trapdoors_runtime = null
 	trapdoors_assert(!QDELETED(H), "hinges_below_refuse_above")
 	trapdoors_hands(above, null, null)
 	trapdoors_hands(climber, wrench, null)
+	bit.forceMove(stairwell)
+	fixed_crate.forceMove(stairwell)
+	trapdoors_assert(bit.loc == stairwell && get_turf(climber) != stairwell, "removal_starts_with_cargo_on_shut_hatch_at_a_different_turf")
 	S.attackby(wrench, climber)
 	trapdoors_assert(QDELETED(H) && (locate(/obj/item/trapdoor_kit/iron) in get_turf(climber)), "taken_out_from_below")
+	trapdoors_assert(bit.loc == locate(8, 5, 1), "loose_item_falls_on_wrench_removal")
+	trapdoors_assert(fixed_crate.loc == stairwell, "anchored_crate_stays_when_removed")
 
 	// Agents see which side they are on and what holds it; with no client, an
 	// agent character still opens it by hand.
