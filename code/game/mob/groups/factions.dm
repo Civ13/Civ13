@@ -662,20 +662,24 @@
 		return
 	show_faction_list()
 
+/obj/map_metadata/proc/faction_list_tally()
+	var/list/counts = list()
+	// Keep player-founded factions in their existing order, then add preset clans.
+	for (var/faction in custom_faction_nr)
+		counts[faction] = 0
+	for (var/faction in custom_civs)
+		counts[faction] = 0
+	for (var/mob/living/human/H in human_mob_list)
+		var/faction = H.civilization
+		if (H.stat != DEAD && !isnull(counts[faction]))
+			counts[faction] += 1
+	return counts
+
 /mob/proc/show_faction_list()
 	if (!client || !map || !map.civilizations)
 		return
 	// Preserve the existing map.facl tally side effect, only on explicit reopen.
-	map.facl = list()
-	for (var/i=1,i<=map.custom_faction_nr.len,i++)
-		var/nu = 0
-		map.facl += list(map.custom_faction_nr[i] = nu)
-
-	for (var/relf in map.facl)
-		map.facl[relf] = 0
-		for (var/mob/living/human/H in human_mob_list)
-			if (relf == H.civilization && H.stat != DEAD)
-				map.facl[relf] += 1
+	map.facl = map.faction_list_tally()
 
 	var/list/entries = list()
 	for (var/relf in map.facl)

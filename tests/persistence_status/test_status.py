@@ -208,9 +208,20 @@ class PersistenceStatus(unittest.TestCase):
         self.assertEqual(largest(bodies, ['B', 'A'])[0], 'B')
 
     def test_faction_list_and_largest_use_same_membership_predicate(self):
-        predicate = 'if (relf == H.civilization && H.stat != DEAD)'
-        self.assertIn(predicate, REPORT)
-        self.assertIn(predicate, FACTIONS)
+        bodies = [human(civilization='A'), human(civilization='A', stat=STATES['UNCONSCIOUS'], client=None),
+                  human(civilization='A', stat=STATES['DEAD']), human(civilization='Preset'),
+                  human(civilization='Unregistered')]
+        _, battle_counts = largest(bodies, ['A', 'B'])
+        env = environment(bodies)
+        env.update(custom_faction_nr=DMList('A', 'B'), custom_civs=DMList('A', 'Preset'),
+                   isnull=lambda value: value is None)
+        panel_counts = adapter.project(FACTIONS, '/obj/map_metadata/proc/faction_list_tally', '', env)()
+        self.assertEqual(panel_counts.keys, ['A', 'B', 'Preset'])
+        self.assertEqual({key: panel_counts[key] for key in battle_counts},
+                         {key: battle_counts[key] for key in battle_counts})
+        self.assertEqual(panel_counts['A'], 2)
+        self.assertEqual(panel_counts['Preset'], 1)
+        self.assertIsNone(panel_counts['Unregistered'])
 
     def test_all_29_factions_route_to_census_only_for_persistence(self):
         block = REPORT.split('\tvar/msg29 = ', 1)[1].split('\n\n\n', 1)[1].split('\n\tvar/msg_npcs', 1)[0]
