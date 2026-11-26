@@ -1137,8 +1137,10 @@ class RegionHost(Host):
     def compile_slot(self, wait_seconds=7200):
         """One staged compile per group at a time, so a deploy never compiles every region at once.
         A background stage lets a person's stage of another region go first."""
+        group = load_group(self.config['group_config'])
         def yield_to_urgent():
-            return not self.urgent_marker().exists() and self.urgent_stage_waiting()
+            if not self.urgent_marker().exists() and self.urgent_stage_waiting(group):
+                return 'waiting for a requested build of another region'
         with self.group_slot('compile.lock', 'compile', self.stage_record, wait_seconds, yield_to=yield_to_urgent):
             yield
 
@@ -1161,7 +1163,7 @@ class RegionHost(Host):
         except OSError:
             pass  # only the order of the queue depends on it
 
-    def urgent_stage_waiting(self):
+    def urgent_stage_waiting(self, group):
         """Whether another region has a stage a person is waiting on. A marker whose stage has
         ended (its stage.lock is gone) is stale and removed."""
         try:
@@ -1169,6 +1171,7 @@ class RegionHost(Host):
         except OSError:
             return False
         waiting = False
+        tier = self.compile_tier(group, self.config['region'])
         for entry in entries:
             if entry.name == self.config['region']:
                 continue
@@ -1177,7 +1180,7 @@ class RegionHost(Host):
             except OSError:
                 continue  # being written or removed right now
             if lock.name == 'stage.lock' and lock.exists():
-                waiting = True
+                waiting |= self.compile_tier(group, entry.name) == tier
                 continue
             try:
                 entry.unlink()
@@ -1191,24 +1194,84 @@ class RegionHost(Host):
         with self.group_slot('handover.lock', 'handover', self.record, wait_seconds):
             yield
 
+    @staticmethod
+    def compile_tier(group, region_id):
+        kind = next((r['kind'] for r in group['regions'] if r['id'] == region_id), None)
+        if region_id == group['mainland'] or kind == 'GATEWAY':
+            return 0
+        if kind in ('SURFACE', 'UNDERGROUND'):
+            return 1
+        if kind == 'OCEANIC':
+            return 2
+        return 3  # expedition, tutorial, orbital, rail yard, battle and other specialty worlds
+
+    def has_compile_priority(self, group=None):
+        group = group if group is not None else load_group(self.config['group_config'])
+        return self.compile_tier(group, self.config['region']) == 0
+
+    def higher_compile_waiting(self, directory, tier):
+        for marker in directory.glob('*.json'):
+            waiter = self.read_json(marker)
+            if not waiter:
+                continue  # a Windows sharing violation is retried on the next poll
+            pid, started, other_tier = waiter.get('pid'), waiter.get('started'), waiter.get('tier')
+            if type(pid) is not int or pid <= 0 or type(started) is not int or type(other_tier) is not int:
+                continue
+            worker_alive = getattr(self.platform, 'worker_alive', None)
+            alive = worker_alive(pid, started) if worker_alive else (pid == os.getpid() or self.platform.alive(pid))
+            if not alive or self.booted_since(started):
+                gaia_host.remove_file(marker, quiet=True)
+            elif 0 <= other_tier < tier:
+                return True
+        return False
+
     @contextlib.contextmanager
     def group_slot(self, name, what, record, wait_seconds, yield_to=None):
+        # Every compiler goes through this gate, including stopped-world updates and
+        # battle map rotations. Handover uses its own lock and is unchanged.
+        marker = None
+        if name == 'compile.lock':
+            group = load_group(self.config['group_config'])
+            tier = self.compile_tier(group, self.config['region'])
+            directory = self.repo.parent / '.staging' / 'compile-queue'
+            directory.mkdir(parents=True, exist_ok=True)
+            marker = directory / (secrets.token_hex(16) + '.json')
+            write_json_atomic(marker, {'pid': os.getpid(), 'started': int(time.time()), 'tier': tier})
+            if tier == 0:
+                yield_to = None  # neither first-priority world yields to the other
+            else:
+                ordinary_yield = yield_to
+                def priority_first():
+                    if self.higher_compile_waiting(directory, tier):
+                        return 'waiting for a higher-priority region compile'
+                    return ordinary_yield() if ordinary_yield else None
+                yield_to = priority_first
+        try:
+            with self.take_group_slot(name, what, record, wait_seconds, yield_to):
+                if marker is not None:
+                    gaia_host.remove_file(marker, quiet=True)
+                yield
+        finally:
+            if marker is not None:
+                gaia_host.remove_file(marker, quiet=True)
+
+    @contextlib.contextmanager
+    def take_group_slot(self, name, what, record, wait_seconds, yield_to=None):
         """Hold one of the group's slots (a lock file in .staging). yield_to: while it returns
-        True this waiter lets others take the slot first; that wait does not count against
-        wait_seconds, since the stages it waits for end on their own."""
+        a phase string this waiter lets others take the slot first; yielding to eligible
+        stages does not count against wait_seconds."""
         lock = self.repo.parent / '.staging' / name
         lock.parent.mkdir(parents=True, exist_ok=True)
         deadline = self.platform.now() + wait_seconds
         empty_since = None
         while True:
-            if yield_to is not None and yield_to():
-                record(phase='waiting for a requested build of another region')
+            if yield_to is not None and (waiting := yield_to()):
+                record(phase=waiting)
                 self.platform.sleep(10)
                 deadline = max(deadline, self.platform.now() + wait_seconds)
                 continue
             try:
                 descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                break
             except PermissionError:
                 # Windows: the lock is being deleted by its holder right now.
                 if self.platform.now() > deadline:
@@ -1241,17 +1304,24 @@ class RegionHost(Host):
                     raise RuntimeError('another region kept the %s slot busy too long' % what)
                 record(phase='waiting for another region\'s %s' % what)
                 self.platform.sleep(10)
-        with os.fdopen(descriptor, 'w') as handle:
-            handle.write(str(os.getpid()))
-        try:
-            yield
-        finally:
-            for _ in range(10):
-                try:
-                    lock.unlink(missing_ok=True)
-                    break
-                except PermissionError:  # Windows: another region is reading it
-                    self.platform.sleep(1)
+                continue
+            with os.fdopen(descriptor, 'w') as handle:
+                handle.write(str(os.getpid()))
+            try:
+                # A priority waiter may have arrived since the pre-claim check.
+                if yield_to is None or not (waiting := yield_to()):
+                    yield
+                    return
+            finally:
+                for _ in range(10):
+                    try:
+                        lock.unlink(missing_ok=True)
+                        break
+                    except PermissionError:  # Windows: another region is reading it
+                        self.platform.sleep(1)
+            record(phase=waiting)
+            self.platform.sleep(10)
+            deadline = self.platform.now() + wait_seconds
 
     SLOT_CLAIM_SECONDS = 60
 
@@ -1789,6 +1859,15 @@ class RegionHost(Host):
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
+
+    def request_operator_start(self):
+        # A plain Start must not queue the front door or mainland behind a compile
+        # when it has an intact installed build. Travel and explicit updating keep
+        # their own revision policies.
+        if (self.has_compile_priority() and self.built_revision() and not self.update_pending()
+                and (self.stage_running() or (self.repo.parent / '.staging' / 'compile.lock').exists())):
+            return self.request('start-current')
+        return self.request('start')
 
     def remember_failed_handover(self):
         # Called under the action lock, before replacing or after writing operation state.
@@ -2426,7 +2505,8 @@ class RegionHost(Host):
                 # the verified build, rather than staying down behind the policy.
                 self.record(phase='keeping the current ocean build', revision=current, update_deferred=str(delay))
             return
-        staged = self.staged_revision() if self.always_up() else None
+        prefer_staged = self.always_up() or (self.read_state().get('action') == 'start' and self.has_compile_priority())
+        staged = self.staged_revision() if prefer_staged else None
         if staged and self.update_pending():
             group = load_group(self.config['group_config'])
             region = next(r for r in group['regions'] if r['id'] == self.config['region'])
@@ -4961,6 +5041,8 @@ def main(argv=None):
                         host.wait_for_byond()
                     if args.action == 'force-restart':
                         accepted[region['id']] = host.force_restart()
+                    elif args.action == 'start':
+                        accepted[region['id']] = host.request_operator_start()
                     elif args.action == 'stage':  # deploy.bat and the launcher's Build update: a person waits
                         accepted[region['id']] = host.request_stage(urgent=True)
                     else:

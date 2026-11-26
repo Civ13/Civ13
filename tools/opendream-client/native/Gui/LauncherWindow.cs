@@ -87,12 +87,12 @@ internal sealed partial class LauncherWindow : Form {
     // What an action waits for. Region: the chosen region is idle. All: nothing (the group script skips a
     // busy region itself). AllIdle: every region is idle. Server: host.json's own server is idle. A Rescue
     // action (force stop) stays offered while its target is busy, because that is when a hung world needs it.
-    private enum HostGate { Region, RegionRescue, All, AllIdle, Server, ServerRescue }
+    private enum HostGate { Region, RegionStartStop, RegionRescue, All, AllIdle, Server, ServerRescue }
     private readonly List<(Button Button, HostGate Gate)> hostActions = [];
     private readonly List<(ToolStripItem Item, HostGate Gate)> hostMenuActions = [];
     private System.Windows.Forms.Timer? hostPoll, hostIdlePoll;
     private bool hostControlBusy;
-    private bool groupScriptRunning;
+    private bool groupScriptRunning, groupDeployBuilding;
     private CancellationTokenSource? groupScriptCancel;
     private Button? hostScriptCancel;
     // Busy is tracked per region, so one region's start or save never locks the others' buttons.
@@ -497,7 +497,8 @@ internal sealed partial class LauncherWindow : Form {
         row.Controls.Add(picker);
         foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Sleep now", "freeze"), ("Wake", "thaw"),
                 ("Save, update and restart", "deploy") })
-            row.Controls.Add(HostButton(text, () => GroupAction(action, text, Chosen()), HostGate.Region));
+            row.Controls.Add(HostButton(text, () => GroupAction(action, text, Chosen()),
+                action is "start" or "stop" ? HostGate.RegionStartStop : HostGate.Region));
         var menu = new List<(string, Func<Task>?, HostGate?)>();
         foreach (var (text, action) in new[] { ("Update", "update"), ("Build update", "stage"), ("Apply host settings", "config-apply"), ("Set up", "setup") })
             menu.Add((text, () => GroupAction(action, text, Chosen()), HostGate.Region));
@@ -1066,6 +1067,11 @@ internal sealed partial class LauncherWindow : Form {
                 groupScriptRunning = false;
                 await RefreshHostState();
             }
+            return;
+        }
+        // The rollout might have reached handover while the confirmation was open.
+        if (region != null && (action is "start" or "stop") && groupScriptRunning && !PriorityControlsDuringDeploy(region)) {
+            HostLine(label + " was not sent: the deployment is no longer only building updates.");
             return;
         }
         // Only what this request acts on is locked while it is sent: the one region, or the All regions row.
@@ -1673,10 +1679,21 @@ internal sealed partial class LauncherWindow : Form {
         try {
             var exit = await Task.Run(() => LocalHosting.RunStreamed(LocalHosting.GroupScriptStep(control, script, resume, regions), text => {
                 lock (output) output.AppendLine(text);
-                try { BeginInvoke(() => HostLine(text)); } catch (InvalidOperationException) { } // the window closed
+                try { BeginInvoke(() => {
+                    HostLine(text);
+                    if (script == "deploy" && ReferenceEquals(groupScriptCancel, cancel) && !cancel.IsCancellationRequested) {
+                        var building = HostBoard.DeployBuilding(groupDeployBuilding, text);
+                        if (building != groupDeployBuilding) {
+                            groupDeployBuilding = building;
+                            ApplyHostGates();
+                        }
+                    }
+                }); } catch (InvalidOperationException) { } // the window closed
             }, cancel.Token));
             lock (output) return (exit, output.ToString());
         } catch (IOException e) when (e is LocalHosting.StepTimedOut or LocalHosting.StepCancelled) {
+            groupDeployBuilding = false;
+            ApplyHostGates();
             // Both scripts end the host service task before they start it again (deploy.bat in its last step).
             // Cut short between the two, the service would stay down until the next logon: start it, which
             // does nothing while it runs. This step has its own limit and is not tied to the cancelled one.
@@ -1692,6 +1709,8 @@ internal sealed partial class LauncherWindow : Form {
                 "wait for the board to settle, then run the action again." + service, e);
         } finally {
             groupScriptCancel = null;
+            groupDeployBuilding = false;
+            ApplyHostGates();
             ShowGroupScriptCancel();
         }
     }
@@ -1712,12 +1731,19 @@ internal sealed partial class LauncherWindow : Form {
         // It may have finished while the question was open.
         if (!ReferenceEquals(groupScriptCancel, cancel)) return;
         hostScriptCancel!.Enabled = false;
+        groupDeployBuilding = false;
+        ApplyHostGates();
         HostLine("Cancelling the running script...");
         try { cancel.Cancel(); } catch (ObjectDisposedException) { }
     }
 
+    private bool PriorityControlsDuringDeploy(string region) =>
+        groupDeployBuilding && actingWhole == 0 && !actingRegions.Contains(region) && !busyRegions.Contains(region)
+        && HostBoard.IsPriorityRegion(groupStatusOutput, region);
+
     // Enables each host action by what it acts on, from the last status and the requests being sent now.
-    // A deploy or host-service restart (groupScriptRunning) and a whole-group action still lock every row.
+    // Whole-group changes and actual handovers still lock conflicting actions. Only the two
+    // priority regions' Start/Stop controls are exempt while deploy is building beside them.
     private void ApplyHostGates() {
         var locked = groupScriptRunning || actingWhole > 0;
         var region = chosenRegion?.Invoke();
@@ -1725,7 +1751,9 @@ internal sealed partial class LauncherWindow : Form {
         var regionBusy = regionActing || (region != null && busyRegions.Contains(region));
         var ownBusy = serverBusy || actingServer;
         var anyBusy = locked || ownBusy || actingAll > 0 || actingRegions.Count > 0 || busyRegions.Count > 0;
-        bool Open(HostGate gate) => !locked && gate switch {
+        bool Open(HostGate gate) => gate == HostGate.RegionStartStop
+            ? !regionBusy && (!locked || (region != null && PriorityControlsDuringDeploy(region)))
+            : !locked && gate switch {
             HostGate.Region => !regionBusy,
             HostGate.RegionRescue => !regionActing,
             HostGate.All => actingAll == 0,

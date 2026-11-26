@@ -592,6 +592,22 @@ region is in `<root>/.maintenance/state.json`, `maintenance-status` and the
 group status; the launcher's **Daily maintenance...** sets it and **Run daily
 maintenance now** starts a run at once.
 
+**Compile priority:** The configured mainland (Gaia in the Earth group) and
+the Gateway share first priority for the next free compile slot, then surface
+and underground lands, then oceans, then expeditions and other specialty
+worlds. A compile already in progress finishes normally. Requested stages
+go before background stages within the same tier. The Gateway's existing exclusions
+from bulk updates and maintenance do not change.
+
+Background builds use a separate lock from live region actions. **Start** on
+the mainland or Gateway can use the verified installed build during a compile
+instead of waiting for an unstaged update; a ready newer build is still
+installed if available. **Save and stop** remains independent of background
+staging. In the Windows launcher's deploy flow, these two per-region controls
+stay available for Gaia and the Gateway during the build step unless the
+region has a live operation. The safeguards for saves, handovers, and the
+other deploy steps still apply.
+
 **Update when empty** (`update_when_empty`, group key, default `true`): the host
 service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
 As soon as an awake region that saves is empty and has saved since its last
