@@ -19,6 +19,31 @@ def proc(name):
     return SOURCE[start:end if end > 0 else len(SOURCE)]
 
 
+def project_renewal(source):
+    """Execute the deadline branch only; reaching the end means consent is next."""
+    start = source.index('\tvar/open_for = IMMIGRATION_OPEN_TIME')
+    end = source.index('\t// Someone who said no', start)
+    statements = {
+        'var/open_for = IMMIGRATION_OPEN_TIME': 'open_for = 18000',
+        'var/now = world.time': 'now = clock',
+        'if (immigration_until && now >= immigration_until)': 'if state["until"] and now >= state["until"]:',
+        'immigration_close()': 'close()',
+        'if (immigration_until)': 'if state["until"]:',
+        'var/renewed = world.time + open_for': 'renewed = clock + open_for',
+        'immigration_until = renewed': 'state["until"] = renewed',
+        'immigration_until = now + open_for': 'state["until"] = now + open_for',
+        'return': 'return "renewed"',
+    }
+    lines = ['def apply(state, clock, close):']
+    for line in source[start:end].splitlines():
+        indent = len(line) - len(line.lstrip('\t'))
+        lines.append('    ' * indent + statements[line.strip()])
+    lines.append('    return "ask"')
+    env = {}
+    exec('\n'.join(lines), env)
+    return env['apply']
+
+
 class ImmigrationFires(unittest.TestCase):
     def test_compiled_once_after_signal_fires(self):
         dme = read('civ13.dme')
@@ -59,6 +84,20 @@ class ImmigrationFires(unittest.TestCase):
         self.assertIn('immigration_fire_choice = fires[answer]', prompt)
         self.assertIn('"calling" = immigration_faction_calling(relf) ? 1 : 0', read('code/game/mob/groups/factions.dm'))
         self.assertIn('Calling newcomers by smoke signal.', read('tgui/src/interfaces/FactionList.tsx'))
+
+    def test_expired_or_exact_deadline_closes_before_fresh_consent(self):
+        apply = project_renewal(proc('/obj/structure/oven/fireplace/proc/immigration_offer('))
+        for deadline in (99, 100, 101, 0):
+            with self.subTest(deadline=deadline):
+                state = dict(until=deadline, host='old' if deadline else None, registered=bool(deadline))
+                def close():
+                    state.update(until=0, host=None, registered=False)
+                if deadline > 100:
+                    self.assertEqual(apply(state, 100, close), 'renewed')
+                    self.assertEqual(state, dict(until=18100, host='old', registered=True))
+                else:
+                    self.assertEqual(apply(state, 100, close), 'ask')
+                    self.assertEqual(state, dict(until=0, host=None, registered=False))
 
     def test_someone_who_declined_is_not_asked_on_every_signal(self):
         self.assertIn('if (immigration_declined && (account in immigration_declined))\n\t\treturn', proc('/obj/structure/oven/fireplace/proc/immigration_offer('))
