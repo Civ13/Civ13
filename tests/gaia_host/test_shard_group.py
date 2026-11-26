@@ -1306,8 +1306,8 @@ class ShardGroupTests(unittest.TestCase):
                 calls.append(('wait', self.name))
                 return True
 
-            def request(self, action):
-                calls.append((action, self.name))
+            def request_operator_start(self):
+                calls.append(('start', self.name))
                 return {'accepted': True}
 
         regions = [({'id': 'deep'}, Region('deep', False)), ({'id': 'gaia'}, Region('gaia', True)),
@@ -2194,6 +2194,126 @@ class StagedBuildTests(unittest.TestCase):
             self.assertEqual(slot.read_text(), str(os.getpid()))
         self.assertEqual(waits, [])
 
+    def priority_group(self):
+        self.group.update(relay_port=1730, gate='lobby')
+        self.group['regions'].append({'id': 'lobby', 'name': 'Front Door', 'kind': 'GATEWAY',
+                                      'port': 1722, 'map': 'maps/small/tiny.dmm'})
+        return self.write_group()
+
+    def test_both_priority_regions_ignore_ordinary_urgent_waiters(self):
+        group = self.priority_group()
+        self.assertFalse(self.host(group, 'deep').has_compile_priority())
+        for id in ('gaia', 'lobby'):
+            with self.subTest(id=id):
+                host = self.host(group, id)
+                self.assertTrue(host.has_compile_priority())
+                with host.group_slot('compile.lock', 'compile', lambda **_: self.fail('yielded'), 1,
+                                     yield_to=lambda: 'an ordinary urgent build is waiting'):
+                    self.assertTrue((host.repo.parent / '.staging' / 'compile.lock').exists())
+                self.assertFalse(list((host.repo.parent / '.staging' / 'compile-queue').glob('*.json')))
+
+    def test_compile_tiers_and_urgent_stages_do_not_invert_them(self):
+        self.group['regions'] += [
+            {'id': 'shore', 'name': 'Shore', 'kind': 'SURFACE', 'port': 1723, 'map': 'maps/small/tiny.dmm'},
+            {'id': 'sea', 'name': 'Sea', 'kind': 'OCEANIC', 'port': 1724, 'map': 'maps/small/tiny.dmm'},
+            {'id': 'yard', 'name': 'Yard', 'kind': 'RAILYARD', 'port': 1725, 'map': 'maps/small/tiny.dmm'},
+        ]
+        group = self.priority_group()
+        self.assertEqual([0, 0, 1, 1, 2, 3], [shard_group.RegionHost.compile_tier(group, id)
+                         for id in ('gaia', 'lobby', 'deep', 'shore', 'sea', 'yard')])
+        land, ocean, yard = [self.host(group, id) for id in ('shore', 'sea', 'yard')]
+        for host in (land, ocean, yard):
+            host.state_dir.mkdir(parents=True)
+            host.stage_lock.write_text('stage')
+        ocean.mark_stage_urgent()
+        yard.mark_stage_urgent()
+        self.assertFalse(land.urgent_stage_waiting(group))
+        self.assertFalse(ocean.urgent_stage_waiting(group))
+        directory = land.repo.parent / '.staging' / 'compile-queue'
+        directory.mkdir()
+        self.machine.pids.add(4141)
+        for tier in (1, 2):
+            shard_group.write_json_atomic(directory / 'active.json',
+                                          {'pid': 4141, 'started': int(time.time()), 'tier': tier})
+            self.assertFalse(land.higher_compile_waiting(directory, 1))
+            self.assertEqual(tier == 1, ocean.higher_compile_waiting(directory, 2))
+            self.assertTrue(yard.higher_compile_waiting(directory, 3))
+
+    def test_waiting_priority_stage_does_not_preempt_an_active_compile(self):
+        group = self.priority_group()
+        host = self.host(group, 'lobby')
+        slot = host.repo.parent / '.staging' / 'compile.lock'
+        slot.parent.mkdir(parents=True)
+        slot.write_text('4141')
+        self.machine.pids.add(4141)
+        phases = []
+        def sleep(seconds):
+            self.assertEqual('4141', slot.read_text())
+            self.assertTrue(list((slot.parent / 'compile-queue').glob('*.json')))
+            slot.unlink()  # the current compiler finishes on its own
+        self.machine.sleep = sleep
+        with host.group_slot('compile.lock', 'compile', lambda **v: phases.append(v['phase']), 30):
+            self.assertEqual(str(os.getpid()), slot.read_text())
+        self.assertEqual(["waiting for another region's compile"], phases)
+        self.assertFalse(slot.exists())
+
+    def test_normal_compile_yields_even_when_slot_is_free_and_reaps_stale_waiter(self):
+        group = self.priority_group()
+        normal = self.host(group, 'deep')
+        slot = normal.repo.parent / '.staging' / 'compile.lock'
+        directory = slot.parent / 'compile-queue'
+        directory.mkdir(parents=True)
+        waiting = directory / 'active.json'
+        stale = directory / 'stale.json'
+        shard_group.write_json_atomic(waiting, {'pid': 4141, 'started': int(time.time()), 'tier': 0})
+        shard_group.write_json_atomic(stale, {'pid': 4242, 'started': int(time.time()), 'tier': 0})
+        self.machine.pids.add(4141)
+        phases = []
+        def sleep(seconds):
+            self.assertFalse(slot.exists())
+            waiting.unlink()
+        self.machine.sleep = sleep
+        with normal.group_slot('compile.lock', 'compile', lambda **v: phases.append(v['phase']), 30):
+            self.assertFalse(stale.exists())
+            self.assertEqual(str(os.getpid()), slot.read_text())
+        self.assertEqual(['waiting for a higher-priority region compile'], phases)
+
+    def test_priority_arriving_at_claim_gets_next_slot(self):
+        group = self.priority_group()
+        normal = self.host(group, 'deep')
+        slot = normal.repo.parent / '.staging' / 'compile.lock'
+        phases = []
+        normal.higher_compile_waiting = lambda directory, tier: slot.exists() and not phases
+        self.machine.sleep = lambda seconds: self.assertFalse(slot.exists())
+        with normal.group_slot('compile.lock', 'compile', lambda **v: phases.append(v['phase']), 30):
+            self.assertEqual(str(os.getpid()), slot.read_text())
+        self.assertEqual(['waiting for a higher-priority region compile'], phases)
+
+    def test_priority_world_can_start_current_and_accept_save_stop_while_a_stage_waits(self):
+        group = self.priority_group()
+        shard_group.setup(group, self.machine)
+        for id in ('gaia', 'lobby'):
+            with self.subTest(id=id):
+                host = self.host(group, id)
+                host.log = lambda values: None
+                host.work('update', host.request('update')['operation'])
+                compile_lock = host.repo.parent / '.staging' / 'compile.lock'
+                compile_lock.write_text('4141')
+                host.stage_record(phase="waiting for another region's compile")
+                self.assertFalse(host.status()['busy'], 'the stage is not a live operation')
+                accepted = host.request_operator_start()
+                self.assertEqual('start-current', accepted['action'])
+                started = []
+                host.do_start = lambda operation: started.append(host.startup_revision())
+                host.work(accepted['action'], accepted['operation'])
+                self.assertEqual([REVISION], started)
+                self.assertEqual('4141', compile_lock.read_text(), 'start does not take the compile slot')
+                self.assertEqual('done', host.read_state()['phase'])
+                self.machine.up.add(host.config['port'])
+                self.assertEqual('stop', host.request('stop')['action'])
+                self.assertEqual("waiting for another region's compile", host.read_json(host.stage_file)['phase'])
+                compile_lock.unlink()
+
     def test_stage_compiles_beside_the_running_region_and_update_installs_it(self):
         group, host = self.built()
         live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'
@@ -2227,7 +2347,11 @@ class StagedBuildTests(unittest.TestCase):
     def test_a_background_stage_lets_a_requested_stage_compile_first(self):
         # Val (2026-11-18): Save, update and restart for one region queued behind the host
         # service's background stages of every other region, one compile at a time.
-        group, host = self.built()
+        self.group['regions'].append({'id': 'shore', 'name': 'Shore', 'kind': 'SURFACE',
+                                      'port': 1723, 'map': 'maps/small/tiny.dmm'})
+        group, _mainland = self.built()
+        host = self.host(group, 'shore')
+        host.log = lambda values: None
         deep = self.host(group, 'deep')
         deep.log = lambda values: None
         background = deep.request_stage()  # the host service's own stage of another region
@@ -2244,26 +2368,29 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual('ready', host.read_json(host.stage_file)['phase'])
         self.assertEqual('ready', deep.read_json(deep.stage_file)['phase'])
         self.assertFalse(host.urgent_marker().exists(), 'the marker ends with its stage')
-        self.assertFalse(host.urgent_stage_waiting())
+        self.assertFalse(host.urgent_stage_waiting(group))
 
     def test_a_queued_background_stage_is_moved_up_when_a_person_asks(self):
-        group, host = self.built()
+        self.group['regions'].append({'id': 'shore', 'name': 'Shore', 'kind': 'SURFACE',
+                                      'port': 1723, 'map': 'maps/small/tiny.dmm'})
+        group, _mainland = self.built()
+        host = self.host(group, 'shore')
         queued = host.request_stage()
         self.assertFalse(host.urgent_marker().exists())
         with self.assertRaisesRegex(shard_group.Refused, 'already being staged'):
             host.request_stage(urgent=True)
         self.assertTrue(host.urgent_marker().exists())
         deep = self.host(group, 'deep')
-        self.assertTrue(deep.urgent_stage_waiting())
-        self.assertFalse(host.urgent_stage_waiting(), 'a region never waits for itself')
+        self.assertTrue(deep.urgent_stage_waiting(group))
+        self.assertFalse(host.urgent_stage_waiting(group), 'a region never waits for itself')
         host.work('stage', queued['operation'])
-        self.assertFalse(deep.urgent_stage_waiting())
+        self.assertFalse(deep.urgent_stage_waiting(group))
 
     def test_a_stale_urgent_marker_is_ignored_and_removed(self):
         group, host = self.built()
         host.mark_stage_urgent()  # its stage ended without clearing it (a killed worker)
         deep = self.host(group, 'deep')
-        self.assertFalse(deep.urgent_stage_waiting())
+        self.assertFalse(deep.urgent_stage_waiting(group))
         self.assertFalse(host.urgent_marker().exists())
 
     def test_a_stage_builds_the_revision_current_when_its_compile_slot_comes_round(self):
