@@ -173,7 +173,9 @@
 	if (A.refill_need() <= 0)
 		to_chat(user, SPAN_NOTICE("\The [A] is already full."))
 		return 0
-	var/spare = max(0, L.oxygen - HABITAT_MIN_OXYGEN_KPA * L.volume)
+	var/oxygen_spare = L.oxygen - HABITAT_MIN_OXYGEN_KPA * L.volume
+	var/pressure_spare = L.oxygen + L.co2 + L.inert - HABITAT_MIN_PRESSURE_KPA * L.volume
+	var/spare = max(0, min(oxygen_spare, pressure_spare))
 	var/used = A.refill(spare)
 	if (used <= 0)
 		to_chat(user, SPAN_WARNING("\The [source] has no oxygen to spare; fill the module first."))
@@ -192,7 +194,10 @@
 			to_chat(user, SPAN_WARNING("\The [src] has no power to charge it."))
 			return
 		to_chat(user, SPAN_NOTICE("You plug \the [S] into \the [src]..."))
-		if (!do_after(user, 30, src) || QDELETED(S))
+		if (!do_after(user, 30, src) || QDELETED(src) || QDELETED(S))
+			return
+		if (!has_power())
+			to_chat(user, SPAN_WARNING("\The [src] lost power before charging finished."))
 			return
 		S.heater_charge = SUIT_HEATER_SECONDS
 		to_chat(user, SPAN_NOTICE("\The [S]'s heater battery is full."))
