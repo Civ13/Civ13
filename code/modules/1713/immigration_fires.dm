@@ -74,9 +74,11 @@ var/global/list/immigration_fires = list()
 	if (!istype(user) || !user.client || !immigration_land() || !immigration_standing())
 		return
 	var/open_for = IMMIGRATION_OPEN_TIME
+	var/now = world.time
+	if (immigration_until && now >= immigration_until)
+		immigration_close()
 	if (immigration_until)
-		var/renewed = world.time + open_for
-		immigration_until = renewed
+		immigration_until = now + open_for
 		return
 	// Someone who said no at this fire is not asked again on every signal.
 	var/account = user.client.ckey
