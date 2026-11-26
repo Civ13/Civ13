@@ -84,6 +84,24 @@
 	clean = trim(clean)
 	return length(clean) <= JUSTICE_TEXT_MAX ? clean : ""
 
+// Numbered labels are menu choices, never the law text or a reserved control.
+/proc/justice_law_choices(list/laws)
+	var/list/choices = list()
+	for (var/i in 1 to laws.len)
+		choices["[i]. [laws[i]]"] = i
+	return choices
+
+// An open prompt cannot repeal a different row after the list changes.
+/proc/justice_repeal_law_at(list/laws, list/offered, index)
+	if (!isnum(index) || index < 1 || index > offered.len || laws.len != offered.len)
+		return null
+	for (var/i in 1 to offered.len)
+		if (laws[i] != offered[i])
+			return null
+	var/law = laws[index]
+	laws.Cut(index, index + 1)
+	return law
+
 // --- Rulings -----------------------------------------------------------------------
 
 /obj/map_metadata/proc/justice_warrant(faction, account, name, charge, issuer)
@@ -285,12 +303,17 @@
 			if (!laws.len)
 				to_chat(src, SPAN_NOTICE("[faction] has no laws to repeal."))
 				return
-			var/pick = WWinput(src, "Repeal which law?", "Repeal", "Cancel", laws + "Cancel")
-			if (!pick || pick == "Cancel" || !(pick in R["laws"]) || !map.is_faction_leader(src, faction))
+			var/list/offered = laws.Copy()
+			var/list/options = justice_law_choices(offered)
+			var/pick = WWinput(src, "Repeal which law?", "Repeal", "Cancel", options + "Cancel")
+			if (!pick || !(pick in options) || civilization != faction || stat != CONSCIOUS || !map.is_faction_leader(src, faction))
 				return
-			R["laws"] -= pick
-			map.justice_log(faction, "[real_name] repealed a law: [pick]")
-			map.office_announce(faction, "[faction] repeals a law: [pick]")
+			var/list/current = map.justice_record(faction)
+			var/law = justice_repeal_law_at(current["laws"], offered, options[pick])
+			if (isnull(law))
+				return
+			map.justice_log(faction, "[real_name] repealed a law: [law]")
+			map.office_announce(faction, "[faction] repeals a law: [law]")
 		if ("Hold a trial")
 			justice_hold_trial(faction)
 		if ("Issue a warrant")
@@ -319,16 +342,15 @@
 
 /mob/living/human/proc/justice_charge(faction, question)
 	var/list/R = map.justice_record(faction)
-	var/list/options = list()
-	for (var/law in R["laws"])
-		options += law
-	options += "Something else"
-	var/pick = WWinput(src, question, "Charge", "Something else", options + "Cancel")
-	if (!pick || pick == "Cancel" || !(pick in options))
-		return ""
+	var/list/laws = R["laws"]
+	var/list/offered = laws.Copy()
+	var/list/options = justice_law_choices(offered)
+	var/pick = WWinput(src, question, "Charge", "Something else", options + list("Something else", "Cancel"))
 	if (pick == "Something else")
 		return justice_text_clean(player_input(src, "Name the charge:", "Charge", "", "text", null, TRUE))
-	return pick
+	if (!pick || !(pick in options))
+		return ""
+	return offered[options[pick]]
 
 /mob/living/human/proc/justice_hold_trial(faction)
 	var/obj/item/weapon/gavelblock/G = justice_court_near(src)
