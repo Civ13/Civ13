@@ -174,8 +174,8 @@
 // As such this all gets counted as a single line.
 // The braces and semicolons are there to be able to do this on a single line.
 
-#define APPLY_CORNER(C)			  \
-	. = LUM_FALLOFF(C, source_turf); \
+#define APPLY_CORNER(C, RANGE_DIVISOR)			  \
+	. = LUM_FALLOFF(C, source_turf, RANGE_DIVISOR); \
 									 \
 	. *= light_power;				\
 									 \
@@ -199,7 +199,7 @@
 	);
 
 // This is the define used to calculate falloff.
-#define LUM_FALLOFF(C, T) (1 - CLAMP01(sqrt((C.x - T.x) ** 2 + (C.y - T.y) ** 2 + LIGHTING_HEIGHT) / max(1, light_range)))
+#define LUM_FALLOFF(C, T, RANGE_DIVISOR) (1 - CLAMP01(sqrt((C.x - T.x) ** 2 + (C.y - T.y) ** 2 + LIGHTING_HEIGHT) / (RANGE_DIVISOR)))
 
 /datum/light_source/proc/apply_lum()
 	applied = TRUE
@@ -210,6 +210,7 @@
 	applied_lum_b = lum_b
 
 	if (istype(source_turf))
+		var/falloff_range = max(1, light_range)
 		FOR_DVIEW(var/turf/T, light_range, source_turf, INVISIBILITY_LIGHTING)
 			for (var/A in T.get_corners())
 				if (!A)
@@ -225,7 +226,7 @@
 				if (!C.affecting)
 					C.affecting = list()
 				C.affecting += src
-				APPLY_CORNER(C)
+				APPLY_CORNER(C, falloff_range)
 
 			if (!T.affecting_lights)
 				T.affecting_lights = list()
@@ -269,7 +270,7 @@
 	if (effect_str.Find(C)) // Already have one.
 		REMOVE_CORNER(C)
 
-	APPLY_CORNER(C)
+	APPLY_CORNER(C, max(1, light_range))
 
 /datum/light_source/proc/smart_vis_update()
 	var/list/datum/lighting_corner/corners = list()
@@ -294,7 +295,7 @@
 		if (!C.affecting)
 			C.affecting = list()
 		C.affecting += src
-		APPLY_CORNER(C)
+		APPLY_CORNER(C, max(1, light_range))
 
 	for (var/A in effect_str - corners) // Old, now gone, corners.
 		if (!A)
