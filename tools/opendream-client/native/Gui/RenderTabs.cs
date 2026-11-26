@@ -45,7 +45,9 @@ internal sealed partial class LauncherWindow {
     private void VerifyDisabledButtonInk(Bitmap image) {
         var button = signInButton;
         if (button.Enabled) return;
-        var start = PointToClient(button.PointToScreen(Point.Empty));
+        // DrawToBitmap includes the non-client frame, unlike PointToClient.
+        var start = button.PointToScreen(Point.Empty);
+        start.Offset(-Left, -Top);
         var bounds = Rectangle.Intersect(new Rectangle(start, button.ClientSize), new Rectangle(0, 0, image.Width, image.Height));
         var ink = LauncherSkin.Muted;
         var samples = 0;
