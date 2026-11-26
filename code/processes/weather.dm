@@ -69,5 +69,6 @@
 	fires_at_gamestates = list(GAME_STATE_PLAYING)
 
 /process/weather_chunks/fire()
+	weather_tornado_step()
 	weather_chunks_step()
 	weather_fog_view_step() // weather_fog.dm

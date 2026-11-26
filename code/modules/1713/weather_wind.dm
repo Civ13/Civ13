@@ -193,16 +193,48 @@ var/global/list/weather_beaufort_ms = list(0.5, 1.6, 3.4, 5.5, 8, 10.8, 13.9, 17
 	var/datum/weather_air_grid/G = weather_air
 	return list(G.value_at(G.wind_x, T.x, T.y), G.value_at(G.wind_y, T.x, T.y))
 
+// Exposed land gusts are directional. Keep the raw grid reader separate so
+// weather admission, advection and sea mechanics never feed on these gusts.
+/proc/weather_effective_wind_vector_at(atom/A, storm_strength = null, severe_convection = FALSE)
+	var/list/v = weather_wind_vector_at(A)
+	if (!weather_storm_count)
+		return v
+	var/turf/T = get_turf(A)
+	if (!T || T.z != underground_surface_z() || !weather_tornado_land(T) || home_turf_inside(T))
+		return v
+	if (isnull(storm_strength))
+		storm_strength = weather_storm_strength(T.x, T.y)
+		severe_convection = weather_storm_severe && weather_storm_convective
+	if (severe_convection && weather_tornado_rain_sky(T, storm_strength))
+		var/phase = sin((world.time % 180) * 2 + T.x * 11 + T.y * 7)
+		var/speed = sqrt(v[1] * v[1] + v[2] * v[2])
+		if (speed < 1)
+			v = weather_wind_unit()
+			speed = 1
+		v = weather_turn_vector(v[1], v[2], phase * 25)
+		var/gust_scale = (max(speed, 11) + (5 + phase * 5) * storm_strength) / speed
+		v[1] *= gust_scale
+		v[2] *= gust_scale
+	var/list/rotation = weather_tornado?.gust(T, world.time)
+	if (rotation)
+		v[1] += rotation[1]
+		v[2] += rotation[2]
+	return v
+
 // Wind speed over A in m/s, with the gale under a storm.
 /proc/weather_wind_ms_at(atom/A)
-	var/list/v = weather_wind_vector_at(A)
-	. = sqrt(v[1] * v[1] + v[2] * v[2])
 	var/turf/T = get_turf(A)
-	if (!T || !weather_storm_count)
-		return
-	var/strength = weather_storm_strength(T.x, T.y)
+	var/strength = 0
+	var/severe = FALSE
+	var/severe_convection = FALSE
+	if (T && weather_storm_count)
+		strength = weather_storm_strength(T.x, T.y)
+		severe = weather_storm_severe
+		severe_convection = severe && weather_storm_convective
+	var/list/v = weather_effective_wind_vector_at(T, strength, severe_convection)
+	. = sqrt(v[1] * v[1] + v[2] * v[2])
 	if (strength >= WEATHER_BAND_HEAVY)
-		. = max(., weather_storm_severe ? 20 : 14)
+		. = max(., severe ? 20 : 14)
 	else if (strength >= WEATHER_BAND_STEADY)
 		. = max(., 7)
 
@@ -228,7 +260,7 @@ var/global/list/weather_beaufort_ms = list(0.5, 1.6, 3.4, 5.5, 8, 10.8, 13.9, 17
 // The compass direction (a BYOND dir) the wind over A blows from. A calm
 // keeps the map's heading.
 /proc/weather_wind_dir_at(atom/A)
-	var/list/v = weather_wind_vector_at(A)
+	var/list/v = weather_effective_wind_vector_at(A)
 	return weather_wind_dir_from_vector(v[1], v[2])
 
 /proc/weather_wind_dir_from_vector(east, north)

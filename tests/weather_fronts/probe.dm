@@ -5,7 +5,7 @@
 	hub_password = ""
 	maxx = 96
 	maxy = 64
-	maxz = 1
+	maxz = 2
 	turf = /turf
 	area = /area
 	visibility = 0
@@ -28,8 +28,17 @@ var/wf_runtime_error = FALSE
 /world/New()
 	OpenPort("none")
 	try
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
+		GLOB.global_listen_count = list()
+		GLOB.event_sources_count = list()
+		GLOB.event_listen_count = list()
+		movementMachine = new
 		map = new /obj/map_metadata/wf_probe
 		wf_checks()
+		wf_tornado_checks()
 	catch(var/exception/e)
 		wf_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = wf_failures, "runtime_error" = wf_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -180,3 +189,133 @@ var/wf_runtime_error = FALSE
 	weather_centre_spawn(WEATHER_CENTRE_LOW)
 	var/list/data = weather_centres_map_data()
 	wf_check(data.len == 1 && data[1][2] == "low", "the weather map lists the centres")
+
+/obj/roof/thatch/wf_test/New()
+	return
+
+/mob/living/wf_tornado_fixture/New(newloc)
+	loc = newloc
+	status_flags |= CANWEAKEN
+
+/proc/wf_tornado_checks()
+	weather_systems_clear()
+	map.persistence = TRUE
+	map.underground_compiled_z = 2
+	underground_levels_refresh()
+	wf_area("temperate", 1, 96)
+	for (var/turf/T in block(locate(50, 22, 1), locate(80, 38, 1)))
+		T.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	var/datum/weather_air_grid/G = weather_air
+	for (var/i in 1 to G.temp.len)
+		G.temp[i] = 27
+		G.dew[i] = 18
+		G.wind_x[i] = 3
+		G.wind_y[i] = 8
+
+	var/datum/weather_system/S = weather_convective_storm(60, 30, TRUE)
+	S.set_course(0.02, 0)
+	S.born = world.time - 1200
+	var/turf/forming = locate(69, 30, 1)
+	wf_check(S.strength_at(69, 30) >= WEATHER_BAND_HEAVY && weather_tornado_shear(S, forming) < 0, "strong mature moist convection with crosswind shear qualifies")
+	var/area/formation_area = forming.loc
+	formation_area.climate = "desert"
+	wf_check(!weather_tornado_shear(S, forming), "an extreme sand sky does not qualify even with warm air and shear")
+	formation_area.climate = "temperate"
+	var/list/surface = weather_wind_vector_at(forming)
+	var/list/gusting = weather_effective_wind_vector_at(forming)
+	wf_check(surface[1] == 3 && surface[2] == 8 && (gusting[1] != surface[1] || gusting[2] != surface[2]), "a severe gust changes the effective vector without feeding it into environmental shear")
+	S.convective = FALSE
+	wf_check(!weather_tornado_shear(S, forming), "ordinary severe fronts and non-convective storms cannot qualify")
+	S.convective = TRUE
+	S.severe = FALSE
+	wf_check(!weather_tornado_shear(S, forming), "ordinary thunderstorms cannot qualify")
+	S.severe = TRUE
+	for (var/i in 1 to G.temp.len)
+		G.dew[i] = 10
+	wf_check(!weather_tornado_shear(S, forming), "dry air cannot qualify")
+	for (var/i in 1 to G.temp.len)
+		G.dew[i] = 18
+		G.wind_x[i] = 15
+		G.wind_y[i] = 0
+	wf_check(!weather_tornado_shear(S, forming), "uniform winds without shear cannot qualify")
+	for (var/i in 1 to G.temp.len)
+		G.wind_x[i] = 3
+		G.wind_y[i] = 8
+	var/turf/water = locate(69, 31, 1)
+	water.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	wf_check(!weather_tornado_shear(S, water), "does not form over water")
+	water.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	map.weather_transitions = list("ANY" = list("WET"))
+	weather_tornado_consider(0)
+	wf_check(!S.tornado_support, "map policy can disallow extremes")
+	map.weather_transitions = null
+	weather_tornado_consider(0)
+	weather_tornado_consider(0)
+	wf_check(!weather_tornado && S.tornado_support == 2, "two qualifying samples cannot spawn a tornado")
+	weather_tornado_consider(99)
+	wf_check(!weather_tornado && S.tornado_support == 3, "sustained support is not a guaranteed spawn")
+	weather_tornado_consider(0)
+	var/datum/weather_tornado/V = weather_tornado
+	wf_check(V && V.parent_storm == S && V.landfall - world.time == 450 && S.tornado_spawned, "one storm-owned funnel forms with a 45-second lead")
+	if (!V)
+		return
+	wf_check(!V.should_save, "the active tornado is not a saved world object")
+	wf_check(V.threatens(forming, world.time) && !V.threatens(locate(69, 38, 1), world.time) && !V.threatens(locate(69, 30, 2), world.time), "warns on the corridor but not eight tiles sideways or below ground")
+	wf_check(!V.gust(forming, world.time), "the warning phase has no impact gust")
+	var/active_at = V.landfall + 200
+	// Keep the parent over the test during this injected future step.
+	S.origin_x = 71
+	S.origin_y = 30
+	S.origin_time = world.time
+	var/turf/upper = locate(73, 32, 1)
+	var/turf/lower = locate(73, 28, 1)
+	var/list/up_wind = V.gust(upper, active_at)
+	var/list/down_wind = V.gust(lower, active_at)
+	wf_check(up_wind && down_wind && up_wind[1] * down_wind[1] < 0, "opposite sides of the funnel blow in opposite directions")
+
+	var/area/caribbean/wf_probe/inside = new
+	inside.location = AREA_INSIDE
+	var/turf/protected = locate(71, 30, 1)
+	inside.contents += protected
+	wf_check(!weather_tornado_sheltered(protected), "a roof alone does not shelter")
+	for (var/direction in cardinal)
+		var/turf/boundary = get_step(protected, direction)
+		boundary.ChangeTurf(/turf/wall, FALSE, FALSE)
+	wf_check(weather_tornado_sheltered(protected) && V.gust(protected, active_at), "four sealed walls and a roof give shelter inside the active gust")
+	wf_check(weather_tornado_sheltered(locate(73, 30, 2)), "compiled underground terrain is sheltered even with an outdoor area flag")
+	var/obj/item/loose = new(lower)
+	loose.w_class = ITEM_SIZE_SMALL
+	var/obj/item/heavy = new(lower)
+	heavy.w_class = ITEM_SIZE_LARGE
+	var/obj/item/anchored_item = new(lower)
+	anchored_item.w_class = ITEM_SIZE_SMALL
+	anchored_item.anchored = TRUE
+	var/mob/living/wf_tornado_fixture/exposed = new(upper)
+	var/mob/living/wf_tornado_fixture/covered = new(protected)
+	var/obj/structure/farming/plant/crop = new(lower)
+	var/obj/roof/thatch/wf_test/roof = new(upper)
+
+	weather_tornado_step(V.landfall - 1)
+	wf_check(!exposed.weakened && loose.loc == lower && roof.health == 100, "warning phase does not move or damage anything")
+	weather_tornado_step(active_at)
+	wf_check(exposed.weakened == 2 && exposed.loc != upper, "gust moves and weakens the exposed mob (moved [exposed.loc != upper], weakened [exposed.weakened])")
+	wf_check(loose.loc != lower, "gust displaces small loose debris along a clear route")
+	wf_check(!covered.weakened && covered.loc == protected && anchored_item.loc == lower && heavy.loc == lower, "sheltered player, anchored item and heavy item stay untouched")
+	wf_check(crop.stage > crop.readyStageMax && roof.health == 92, "strong gusts batter crops and damage light roofs without collapse")
+	weather_tornado_step(active_at)
+	wf_check(roof.health == 92, "the same track does not repeatedly damage the same roof")
+	var/turf/gap = get_step(protected, WEST)
+	gap.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	wf_check(!weather_tornado_sheltered(protected), "an opening removes protection immediately")
+	weather_system_end(S)
+	wf_check(!weather_tornado && weather_tornado_cooldown_until > world.time, "removing the parent immediately cleans up the funnel but keeps cooldown")
+
+	S = weather_convective_storm(73, 30, TRUE)
+	S.born = world.time - 1200
+	V = weather_tornado_form(S, locate(75, 30, 1), 4)
+	persistence_save_in_progress = TRUE
+	weather_tornado_step(V.landfall)
+	persistence_save_in_progress = FALSE
+	wf_check(!weather_tornado, "a persistence hold dissipates the tornado rather than replaying impacts after a save")
+	weather_systems_clear()
+	wf_check(!weather_tornado && !weather_tornado_cooldown_until, "clearing the sky also clears the tornado cooldown")

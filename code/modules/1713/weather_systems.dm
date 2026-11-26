@@ -91,6 +91,8 @@ var/global/weather_storm_count = 0
 /proc/weather_system_end(datum/weather_system/S)
 	if (!S || !(S in weather_systems))
 		return
+	if (weather_tornado?.parent_storm == S)
+		weather_tornado_clear()
 	weather_systems -= S
 	weather_sample_time = -1
 	if (S.kind == WEATHER_SYSTEM_STORM)
@@ -106,11 +108,15 @@ var/global/weather_storm_count = 0
 	for (var/datum/weather_system/S in weather_systems)
 		if (S.kind == WEATHER_SYSTEM_STORM && S.strength_at(T.x, T.y) > 0)
 			S.lifetime = min(S.lifetime, (world.time - S.born) + 1200)
+			if (weather_tornado?.parent_storm == S)
+				weather_tornado_clear()
 	weather_sample_time = -1
 	if (weather == WEATHER_WET || weather == WEATHER_EXTREME)
 		change_weather(WEATHER_NONE)
 
 /proc/weather_systems_clear()
+	weather_tornado_clear()
+	weather_tornado_cooldown_until = 0
 	for (var/datum/weather_system/S in weather_systems.Copy())
 		weather_system_end(S)
 
@@ -436,6 +442,7 @@ var/global/weather_sample_zone_look = null
 			S.set_course(new_x, new_y)
 	weather_systems_tell()
 	weather_air_step()
+	weather_tornado_consider()
 
 /proc/weather_bearing(dx, dy)
 	if (abs(dx) > abs(dy) * 2)
@@ -504,4 +511,9 @@ var/global/weather_sample_zone_look = null
 		var/what = S.kind == WEATHER_SYSTEM_HEAT ? "heat wave" : (S.severe ? "severe storm" : "storm")
 		var/heading = (S.vel_x || S.vel_y) ? weather_bearing(S.vel_x, S.vel_y) : "nowhere"
 		lines += "#[S.id] [what] at [x],[y], about [round(S.radius_x)] by [round(S.radius_y)] tiles, strength [round(S.power() * 100)]%, heading [heading], [max(0, round((S.lifetime - (world.time - S.born)) / 600))] min left"
+	var/datum/weather_tornado/V = weather_tornado
+	if (V)
+		var/at = max(world.time, V.landfall)
+		var/state = world.time < V.landfall ? "forming" : "on the ground"
+		lines += "Tornado [state] near [round(V.x_at(at))],[round(V.y_at(at))],[V.z], tracking [weather_bearing(V.vel_x, V.vel_y)]"
 	return lines

@@ -34,6 +34,8 @@ the sum of:
 
 A storm overhead still raises the wind as before: a gale under a severe storm's
 heavy core.
+Severe convective storms also bring directional gusts over exposed land;
+see [weather-tornadoes.md](weather-tornadoes.md).
 
 ## Readers
 
@@ -41,6 +43,7 @@ heavy core.
 | --- | --- |
 | `weather_wind_at(atom)` | 0 (calm) to 4 (gale), the old scale, now from the local wind |
 | `weather_wind_vector_at(atom)` | list(east, north) in m/s, before storm gusts |
+| `weather_effective_wind_vector_at(atom)` | exposed surface wind, including directional severe gusts and tornado circulation |
 | `weather_wind_ms_at(atom)` | speed in m/s, with storm gusts |
 | `weather_wind_beaufort_at(atom)` | Beaufort force 0 to 12 |
 | `weather_wind_dir_at(atom)` | the BYOND dir the wind blows from; a calm keeps the map's heading |
