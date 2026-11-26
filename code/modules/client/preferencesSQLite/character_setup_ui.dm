@@ -76,6 +76,15 @@
 	for (var/color_name in named)
 		. += list(list("name" = color_name, "hex" = named[color_name]))
 
+// RGB drives both the preview and the character. Stored labels can be stale
+// after randomisation or loading old preferences.
+/datum/preferences/proc/setup_color_name(list/named, red, green, blue)
+	var/actual = lowertext(rgb(red, green, blue))
+	for (var/color_name in named)
+		if (lowertext(named[color_name]) == actual)
+			return color_name
+	return null
+
 /datum/preferences/proc/character_setup_data(mob/user)
 	var/list/data = list()
 	var/locked = setup_locked(user)
@@ -105,11 +114,11 @@
 	character["facial_style"] = f_style
 	character["facial_styles"] = setup_facial_styles()
 	if (S && (S.appearance_flags & HAS_HAIR_COLOR))
-		character["hair_color"] = hair_color
-		character["facial_color"] = facial_color
+		character["hair_color"] = setup_color_name(hair_colors, r_hair, g_hair, b_hair)
+		character["facial_color"] = setup_color_name(hair_colors, r_facial, g_facial, b_facial)
 		character["hair_colors"] = setup_colors(hair_colors)
 	if (S && (S.appearance_flags & HAS_EYE_COLOR))
-		character["eye_color"] = eye_color
+		character["eye_color"] = setup_color_name(eye_colors, r_eyes, g_eyes, b_eyes)
 		character["eye_colors"] = setup_colors(eye_colors)
 	if (!locked)
 		character["previews"] = setup_previews(user)

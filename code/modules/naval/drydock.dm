@@ -4,7 +4,7 @@
 // Dig a basin of trench beside the water and build a dock gate on the
 // flooded trench at its mouth. The basin is every trench tile joined to the
 // gate's tile, not counting the gate; it must touch open water nowhere but at
-// its gates (diagonals count, as water runs over corners), and holds at most
+// its gates (the dock survey conservatively counts diagonals), and holds at most
 // DRYDOCK_MAX_TILES tiles.
 //
 // - Open, the gate lets a built hull sail into the flooded basin, which is a
@@ -68,9 +68,15 @@ var/global/list/dock_basin_turfs = list()
 	var/list/B = basin()
 	for (var/d in cardinal)
 		var/turf/W = get_step(T, d)
-		if (W && is_open_water(W) && !(B && (W in B)) && !(locate(/obj/structure/canal_lock/dock_gate) in W))
-			return terrain_height_at(W)
-	return T ? terrain_height_at(T) : 0
+		if (B && (W in B))
+			continue
+		var/level = canal_flood_source_level(W)
+		if (!isnull(level))
+			return level
+	var/turf/floor/trench/flooded/mouth = T
+	if (istype(mouth) && !isnull(mouth.trench_water_level))
+		return mouth.trench_water_level
+	return terrain_height_at(T)
 
 /obj/structure/canal_lock/dock_gate/proc/set_shut(state)
 	shut = state
@@ -268,9 +274,8 @@ var/global/list/dock_basin_turfs = list()
 	if (!B)
 		return FALSE
 	var/list/hulls = hulls_in_basin()
-	for (var/turf/T in B)
-		if (istype(T, /turf/floor/trench/flooded))
-			T.ChangeTurf(/turf/floor/trench)
+	for (var/turf/floor/trench/flooded/T in B)
+		T.trench_change_water(/turf/floor/trench, null)
 	pumped = 0
 	for (var/obj/structure/canal_lock/dock_gate/G in all_gates())
 		G.drained = TRUE
@@ -295,9 +300,13 @@ var/global/list/dock_basin_turfs = list()
 	var/turf/floor/G = get_turf(src)
 	if (istype(G) && G.salty)
 		salt = TRUE
-	for (var/turf/T in B)
-		if (!istype(T, /turf/floor/trench/flooded))
-			T.ChangeTurf(salt ? /turf/floor/trench/flooded/salty : /turf/floor/trench/flooded)
+	var/surface = sea_level()
+	for (var/turf/floor/trench/T in B)
+		if (T.trench_bed_level() > surface)
+			visible_message(SPAN_WARNING("The sluices cannot fill the basin: part of its bed is higher than the water."))
+			return FALSE
+	for (var/turf/floor/trench/T in B)
+		T.trench_change_water(salt ? /turf/floor/trench/flooded/salty : /turf/floor/trench/flooded, surface)
 	pumped = 0
 	for (var/obj/structure/canal_lock/dock_gate/D in all_gates())
 		D.drained = FALSE

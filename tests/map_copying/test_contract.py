@@ -2,8 +2,11 @@
 
 Not native gameplay evidence: it reads the production sources.
 """
+import json
 from pathlib import Path
 import re
+import shutil
+import subprocess
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -127,6 +130,50 @@ class MapCopyContract(unittest.TestCase):
         self.assertIn("/datum/craft_body/built", ground)
         self.assertIn("TB.open_turf", ground)
         self.assertIn("return T.type", ground)
+
+    @unittest.skipUnless(shutil.which('node'), 'node not installed')
+    def test_editor_pointer_uses_map_content_for_ink_erase_and_notes(self):
+        codec = read('code/modules/paintings/painting_codec.dm')
+        def raw_script(source, name):
+            return proc(source, '/proc/' + name).split('return @{"', 1)[1].split('"}', 1)[0]
+        stub = """
+var w=5,h=4,k=4,P='',N=[],E=1,REF='map',px=0,py=0,s='g'.repeat(20);
+var C={g:'#0f0'},IC={'1':'#000'},calls=[];
+var context={fillRect:function(){},beginPath:function(){},arc:function(){},
+  fill:function(){},stroke:function(){},fillText:function(){}};
+var canvas={clientLeft:3,clientTop:3,getBoundingClientRect:function(){return {left:11,top:7};},
+  getContext:function(){return context;}};
+var document={getElementById:function(){return canvas;},getElementsByTagName:function(){return [];}};
+var location={set href(url){calls.push(url);}};
+"""
+        trial = """
+function point(x,y){return {clientX:14+x,clientY:10+y};}
+function click(x,y){cv.onmousedown(point(x,y));document.onmouseup();}
+tool('note');click(2,2);click(19,15);
+click(-1,4);click(20,4);click(4,-1);click(4,16);
+var noteOnly=calls.slice(),before=A.join('');
+tool('ink','1');cv.onmousedown(point(2,2));cv.onmousemove(point(19,15));document.onmouseup();
+var painted=A.join('');
+tool('erase');cv.onmousedown(point(2,2));cv.onmousemove(point(-1,2));document.onmouseup();
+click(20,11);click(3,16);click(3,-1);
+var erased=A.join('');
+tool('note');click(2,2);
+var packed=calls[calls.length-1].split(';ink=')[1]||'';
+console.log(JSON.stringify({noteOnly:noteOnly,before:before,painted:painted,
+  erased:erased,decoded:unpackArt(packed,w*h),last:calls[calls.length-1]}));
+"""
+        result = subprocess.run(['node', '-e', stub + raw_script(codec, 'painting_draw_script') +
+                                 raw_script(self.notes, 'cartography_marks_script') + trial],
+                                capture_output=True, text=True, timeout=60)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        trace = json.loads(result.stdout)
+        self.assertEqual(trace['noteOnly'], ['byond://?src=map;note=1;x=1;y=4',
+                                             'byond://?src=map;note=1;x=5;y=1'])
+        self.assertEqual(trace['before'], '0' * 20)
+        self.assertEqual([i for i, c in enumerate(trace['painted']) if c == '1'], [4, 15])
+        self.assertEqual([i for i, c in enumerate(trace['erased']) if c == '1'], [4])
+        self.assertIn(';note=1;x=1;y=4;ink=', trace['last'])
+        self.assertEqual(trace['decoded'], trace['erased'])
 
     def test_included(self):
         dme = read("civ13.dme")

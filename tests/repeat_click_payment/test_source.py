@@ -270,8 +270,16 @@ class RepeatClickPayment(unittest.TestCase):
                           'if (!QDELETED(I) && I.loc == user)', 'current_bets += ')
         wall = proc('code/game/objects/covers_types/covers_buildable.dm', '/obj/covers/brick_wall/incomplete/attackby')
         self.assert_order(wall, 'What type of wall?', 'if (QDELETED(src) || QDELETED(W) || W.loc != user)', 'new /obj/covers/brick_wall(loc)')
-        trench = read('code/modules/1713/trench.dm')
-        self.assertEqual(trench.count('if (choice == "Yes" && !QDELETED(C) && C.loc == user)'), 2)
+        trench_path = 'code/modules/1713/trench.dm'
+        trench = proc(trench_path, '/turf/floor/trench/attackby')
+        wet = proc(trench_path, '/turf/floor/trench/flooded/attackby')
+        guard = proc(trench_path, '/turf/floor/trench/proc/trench_can_work')
+        self.assert_order(trench, 'var/choice = WWinput', 'type == start_type && trench_can_work(user, C, admission)',
+                          'qdel(C)', 'check_filling()')
+        self.assertIn('QDELETED(tool) || tool.loc != H || H.get_active_hand() != tool', guard)
+        self.assertIn('persistence_admission_changed(admission)', guard)
+        self.assertIn('..()', wet)
+        self.assertNotIn('qdel(C)', wet)
 
     def test_market_programs_and_vendor(self):
         programs = read('code/modules/1713/computers/programs.dm')

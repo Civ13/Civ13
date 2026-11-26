@@ -61,6 +61,49 @@ class FlameSourceTests(unittest.TestCase):
         self.assertIn('A != src', placed)
         self.assertLess(placed.index('light_from'), placed.index('return ..()'))
 
+    def test_processor_registration_follows_ignition_and_snuffing(self):
+        text = source(CANDLE)
+        light = block(text, '/obj/item/weapon/flame/candle/proc/light(')
+        snuff = block(text, '/obj/item/weapon/flame/candle/attack_self(')
+        self.assertIn('processing_objects |= src', light)
+        self.assertNotIn('processing_objects += src', light)
+        self.assertLess(light.index('lit = TRUE'), light.index('processing_objects |= src'))
+        self.assertLess(snuff.index('lit = FALSE'), snuff.index('processing_objects -= src'))
+
+    def test_restore_reconciles_previously_lit_and_prelit_candle_types(self):
+        text = source(CANDLE)
+        spec = importlib.util.spec_from_file_location('candle_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+        decl = '/obj/item/weapon/flame/candle/after_load'
+        body = adapter.extract(text, decl).replace('..()', 'parent()')
+        body = body.replace('if (lit)', 'if (src.lit)')
+        body = body.replace('processing_objects |= src', 'register(src)')
+        body = body.replace('processing_objects -= src', 'unregister(src)')
+        registrations, parent_calls = [], []
+        def register(candle):
+            if candle not in registrations:
+                registrations.append(candle)
+
+        restore = adapter.project(decl + '()\n' + body + '\n', decl, 'src', {
+            'parent': lambda: parent_calls.append(True),
+            'register': register, 'unregister': lambda candle: registrations.remove(candle)
+            if candle in registrations else None,
+        })
+        for kind in ('ordinary', 'lard'):
+            for prelit in (False, True):
+                for saved_lit in (False, True):
+                    with self.subTest(kind=kind, prelit=prelit, saved_lit=saved_lit):
+                        candle = SimpleNamespace(lit=saved_lit, wax=413.5)
+                        registrations[:] = [candle] if prelit else []
+                        parent_calls.clear()
+                        restore(candle)
+                        restore(candle)
+                        self.assertEqual(registrations, [candle] if saved_lit else [])
+                        self.assertEqual(candle.wax, 413.5)
+                        self.assertEqual(parent_calls, [True, True])
+        self.assertNotIn('light(', body)
+
     def test_candle_appearance_stages_and_variant_states(self):
         text = source(CANDLE)
         spec = importlib.util.spec_from_file_location('candle_adapter', ROOT / 'tests/save_movement/source_adapter.py')

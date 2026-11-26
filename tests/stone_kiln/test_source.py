@@ -1,4 +1,5 @@
 """Source-bound checks only; no native world or gameplay is run."""
+import importlib.util
 from pathlib import Path
 import re
 import unittest
@@ -9,6 +10,17 @@ OVEN = ROOT / 'code/game/objects/structures/kitchen/oven.dm'
 HEAT = ROOT / 'code/modules/1713/machinery/engines/heatsource.dm'
 POT = ROOT / 'code/modules/reagents/reagent_containers/glass.dm'
 MATERIAL = ROOT / 'code/modules/materials/material_sheets.dm'
+REFINING = ROOT / 'code/game/objects/structures/blacksmithing/refining.dm'
+MOVABLE = ROOT / 'code/game/atoms_movable.dm'
+STRUCTURE = ROOT / 'code/game/objects/structures.dm'
+FURNACE_TOOL = '/obj/structure/furnace/proc/handle_structure_tool'
+DISMANTLE_GUARD = '/obj/structure/proc/can_dismantle_with_hammer'
+CAMPFIRE_GUARD = '/obj/structure/furnace/kiln/stone/campfire/can_dismantle_with_hammer'
+POT_TYPE = '/obj/item/weapon/reagent_containers/glass/small_pot'
+
+spec = importlib.util.spec_from_file_location('kiln_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+adapter = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(adapter)
 
 
 def guard_contract(source, oven):
@@ -69,6 +81,70 @@ class KilnSourceTests(unittest.TestCase):
         self.source = UPGRADE.read_text(encoding='utf-8')
         self.oven = OVEN.read_text(encoding='utf-8')
         self.heat = HEAT.read_text(encoding='utf-8')
+
+    def test_hammer_preserves_pots_installed_before_or_during_dismantling(self):
+        refining = REFINING.read_text(encoding='utf-8')
+        empty = adapter.extract(refining, '/obj/structure/furnace/verb/empty')
+        destroy = adapter.extract(MOVABLE.read_text(encoding='utf-8'), '/atom/movable/Destroy')
+        # The engine boundaries below model the inherited empty and deletion paths.
+        self.assertNotIn('contents', empty)
+        self.assertIn('for (var/atom/movable/AM in contents)\n\t\tqdel(AM)', destroy)
+        parent_guard = adapter.project(STRUCTURE.read_text(encoding='utf-8'), DISMANTLE_GUARD, 'user', {})
+        tool = refining
+        for kind in ('wrench', 'hammer'):
+            tool = tool.replace('/obj/item/weapon/' + kind + ')', repr(kind) + ')')
+
+        scenarios = (
+            ('already installed', True, False, True, False, 0),
+            ('installed during wait', False, True, True, False, 1),
+            ('empty kiln', False, False, True, True, 1),
+            ('interrupted wait', False, False, False, False, 1),
+        )
+        for name, installed, during_wait, completed, should_delete, wait_count in scenarios:
+            with self.subTest(name=name):
+                pot = {'type': POT_TYPE, 'water': 10}
+                contents = [pot] if installed else []
+                waits = []
+                deleted = []
+                emptied = []
+
+                def do_after(*_):
+                    waits.append(True)
+                    if during_wait:
+                        contents.append(pot)
+                    return completed
+
+                def qdel(src):
+                    deleted.append(src)
+                    contents.clear()
+
+                guard = parent_guard
+                if CAMPFIRE_GUARD in self.source:
+                    # Bind implicit DM receiver state and parent dispatch.
+                    guard = adapter.project(self.source.replace('return ..()', 'return parent(user)'),
+                                            CAMPFIRE_GUARD, 'user', {
+                        'contents': contents,
+                        'typed_iter': lambda objects, kind: (obj for obj in objects if obj['type'] == kind),
+                        'parent': parent_guard,
+                        'to_chat': lambda *_: None,
+                        'SPAN_NOTICE': str,
+                    })
+                dismantle = adapter.project(tool, FURNACE_TOOL, 'src, I, H', {
+                    'istype': lambda item, kind: item == kind,
+                    'visible_message': lambda *_: None,
+                    'playsound': lambda *_: None,
+                    'do_after': do_after,
+                    'QDELETED': lambda src: src in deleted,
+                    'can_dismantle_with_hammer': guard,
+                    'empty': lambda: emptied.append(True),
+                    'qdel': qdel,
+                })
+                kiln = object()
+                dismantle(kiln, 'hammer', object())
+                self.assertEqual(contents, [pot] if installed or during_wait else [])
+                self.assertEqual(deleted, [kiln] if should_delete else [])
+                self.assertEqual(bool(emptied), should_delete)
+                self.assertEqual(len(waits), wait_count)
 
     def test_upgrade_ownership_and_causal_guard_controls(self):
         guard_contract(self.source, self.oven)

@@ -35,6 +35,14 @@ class PrimitiveSawmillContracts(unittest.TestCase):
         self.assertLess(cut.index('flint_blade_uses--'), cut.index('new(site, 1, FALSE)'))
         self.assertIn('P.customcolor = wood_customcolor', cut)
 
+    def test_primitive_cut_does_not_merge_into_a_burning_plank_stack(self):
+        cut = body(SOURCE, '/obj/structure/sawmill/proc/cut_primitive_log(')
+        loop = cut.split('for (var/obj/item/stack/material/woodplank/existing in site)', 1)[1]
+        gate = loop.split('P.merge(existing)', 1)[0]
+        self.assertIn('&& !existing.onfire &&', gate)
+        self.assertIn('existing.amount < existing.max_amount', gate)
+        self.assertIn('existing.type == P.type', gate)
+
     def test_wrong_and_broken_blades_and_consumption(self):
         install = body(SOURCE, '/obj/structure/sawmill/proc/install_flint(')
         self.assertIn('!F.sharpened', install)

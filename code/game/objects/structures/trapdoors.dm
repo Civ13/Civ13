@@ -85,12 +85,17 @@
 	opacity = FALSE
 	..()
 	update_fitting_overlays()
-	// Whatever lay on it drops through.
-	var/turf/T = loc
-	if (istype(T))
-		for (var/obj/item/I in T)
-			if (!QDELETED(I) && I.loc == T)
-				T.Entered(I)
+	trapdoor_recheck_loose_cargo(loc)
+
+// Opening and dismantling remove support without moving the cargo. Replay the
+// turf's normal entry checks rather than bypassing covers, ladders or landings.
+/proc/trapdoor_recheck_loose_cargo(turf/T)
+	if (!istype(T))
+		return
+	for (var/obj/O in T.contents.Copy())
+		if (QDELETED(O) || O.loc != T || O.anchored || (!isitem(O) && !istype(O, /obj/structure)))
+			continue
+		T.Entered(O)
 
 /obj/structure/simple_door/key_door/anyone/trapdoor/door_closed()
 	density = FALSE
@@ -241,6 +246,7 @@
 		return TRUE
 	if (QDELETED(src) || user.get_active_hand() != W || !door_workable() || (inner && door_side_of(user) != inner) || !trapdoor_within_reach(user))
 		return TRUE
+	var/turf/unsupported_site = state ? null : loc
 	var/turf/T = get_turf(user)
 	if (door_lock)
 		lock_to_item(door_lock, T)
@@ -249,6 +255,8 @@
 	new kit_type(T)
 	user.visible_message(SPAN_NOTICE("[user] takes \the [src] out."), SPAN_NOTICE("You take \the [src] out."))
 	qdel(src)
+	if (unsupported_site)
+		trapdoor_recheck_loose_cargo(unsupported_site)
 	return TRUE
 
 /obj/structure/simple_door/key_door/anyone/trapdoor/examine(mob/user, distance = -1)

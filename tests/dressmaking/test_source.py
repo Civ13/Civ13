@@ -296,6 +296,36 @@ class TailoringTests(unittest.TestCase):
         self.assertIn('standing.overlays += tailored_suit.worn_design_layers()', icons)
         self.assertIn('standing.overlays += tailored_head.worn_design_layers()', icons)
 
+    def test_live_alterations_replace_design_before_other_overlays(self):
+        class Overlays(list):
+            def __isub__(self, removing):
+                for entry in removing:
+                    while entry in self:
+                        self.remove(entry)
+                return self
+
+            def Copy(self):
+                return list(self)
+
+        proc = '/obj/item/clothing/proc/tailoring_refresh'
+        render = adapter.extract(SOURCE, proc)
+        tail = render[render.index('\tif (tailoring_overlays)') : render.index('\treturn TRUE')]
+        extras = ['accessory', 'blood', 'unrelated']
+        updates = []
+        replacement = adapter.project(
+            proc + '()\n' + tail + '\treturn overlays, tailoring_overlays\n',
+            proc, 'overlays, tailoring_overlays, design_colors',
+            dict(tailoring_layers=lambda _body, color, *_: [color + ':body', color + ':trim'],
+                 design_body='tunic', design_pieces=None, design_fabric='cloth',
+                 update_clothing_icon=lambda: updates.append(True)))
+        old = ['white:body', 'white:trim']
+        overlays, design = replacement(Overlays(old + extras), old, 'blue')
+        self.assertEqual(overlays, ['blue:body', 'blue:trim'] + extras)
+        overlays, design = replacement(Overlays(overlays), design, 'red')
+        self.assertEqual(overlays, ['red:body', 'red:trim'] + extras)
+        self.assertEqual(design, ['red:body', 'red:trim'])
+        self.assertEqual(len(updates), 2)
+
     def test_pattern_book(self):
         self.assertIn('#define TAILORING_BOOK_MAX 20', SOURCE)
         path = adapter.extract(SOURCE, '/proc/tailoring_book_path')
@@ -387,6 +417,100 @@ class TailoringTests(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+
+ALTERATIONS = (ROOT / 'code/modules/1713/tailoring_alterations.dm').read_text()
+
+
+class Indexed(list):
+    @property
+    def len(self):
+        return len(self)
+
+    def __getitem__(self, index):
+        return super().__getitem__(index - 1)
+
+    def __setitem__(self, index, value):
+        return super().__setitem__(index - 1, value)
+
+
+class TailoringAlterationDyes(unittest.TestCase):
+    def setUp(self):
+        # Model the game's named list lookup and 1-based colour list. The
+        # production count, menu slots and applied colours are projected below.
+        self.options = {
+            'Pattern': {'Plain': None, 'Stripes': 'tl_shirt_stripes'},
+            'Sleeves': {'Short': 'tl_sleeve_short'},
+            'Neckline': {'Plain': None}, 'Legwear': {'Trousers': 'tl_legs_trousers'},
+            'Waist': {'None': None},
+        }
+        shirt = next(line for line in SOURCE.splitlines() if 'C["made_shirt"]' in line)
+        self.assertIn('"Pattern" = list("Plain" = null, "Stripes" = "tl_shirt_stripes"', shirt)
+        self.assertIn('"Sleeves" = sleeves.Copy(), "Neckline" = necks.Copy()', shirt)
+        self.bodies = {
+            'made_shirt': {'options': self.options, 'panels': {}},
+            'peaked_cap': {'options': None, 'panels': {'Band': 'customcap_l2', 'Badge': 'customcap_l3'}},
+        }
+        self.env = dict(tailoring_body=self.bodies.get, tailoring_piece_labels=self.labels,
+                        tailoring_colors=self.colors, tailoring_pieces=self.pieces,
+                        jointext=lambda values, sep: sep.join(values), dict=dict, range=range)
+        visible = '/proc/tailoring_alteration_dye_slots'
+        if visible in ALTERATIONS:
+            source = ALTERATIONS.replace('var/list/visible = list()', 'var/list/visible = dict()')
+            source = source.replace('options ? options[label] : null', '(options.get(label) if options else None)')
+            source = source.replace('var/i = 1, i <= labels.len, i++', 'var/i in range(1, labels.len + 1)')
+            self.env['tailoring_alteration_dye_slots'] = adapter.project(
+                source, visible, 'body_id, pieces_text', self.env)
+        # The legacy counting loop is deliberately supported so this
+        # regression measures behavior on both the parent and the fix.
+        source = ALTERATIONS.replace('var/i = 1, i <= before.len, i++', 'var/i in range(1, before.len + 1)')
+        self.changes = adapter.project(source, '/proc/tailoring_alteration_changes',
+                                       'body_id, old_colors, old_pieces, new_colors, new_pieces', self.env)
+
+    @staticmethod
+    def labels(body):
+        return Indexed(['Body', *body['panels'], *(body['options'] or {})])
+
+    def colors(self, body, text):
+        return Indexed((text.split('|') + ['#ffffff'] * self.labels(self.bodies[body]).len)
+                       [:self.labels(self.bodies[body]).len])
+
+    def pieces(self, body, text):
+        options = self.bodies[body]['options'] or {}
+        return {label: (text if label == 'Pattern' else next(iter(variants)))
+                for label, variants in options.items()}
+
+    def test_plain_pattern_change_is_not_a_paid_alteration(self):
+        self.assertEqual(self.changes('made_shirt', '#ffffff', 'Plain',
+                                      '#ffffff|#a01020', 'Plain'), 0)
+        self.assertEqual(self.changes('made_shirt', '#ffffff', 'Stripes',
+                                      '#ffffff|#a01020', 'Stripes'), 1)
+
+    def test_menu_keeps_full_indices_for_painted_pieces(self):
+        slots = self.env['tailoring_alteration_dye_slots']
+        self.assertEqual(slots('made_shirt', 'Plain'), {'Body': 1, 'Sleeves': 3, 'Legwear': 5})
+        self.assertEqual(slots('made_shirt', 'Stripes')['Pattern'], 2)
+        self.assertEqual(slots('peaked_cap', ''), {'Body': 1, 'Band': 2, 'Badge': 3})
+
+    def test_visible_edit_preserves_stored_dye_of_newly_hidden_pattern(self):
+        store = adapter.project(ALTERATIONS, '/proc/tailoring_alteration_colors',
+                                'body_id, old_colors, new_colors, new_pieces', self.env)
+        old = '#ffffff|#ddeeff'
+        new = '#203040|#a01020'
+        self.assertEqual(self.changes('made_shirt', old, 'Stripes', new, 'Plain'), 2)
+        self.assertEqual(store('made_shirt', old, new, 'Plain').split('|')[:2], ['#203040', '#ddeeff'])
+        self.assertEqual(store('made_shirt', old, new, 'Stripes').split('|')[:2], ['#203040', '#a01020'])
+
+    def test_menu_validation_and_save_use_the_proposed_state(self):
+        menu = adapter.extract(ALTERATIONS, '/obj/item/tailoring_project/proc/alter_garment_menu')
+        self.assertIn('tailoring_alteration_dye_slots(body_id, new_pieces)', menu)
+        self.assertIn('null, visible)', menu)
+        self.assertIn('var/index = visible[piece]', menu)
+        problem = adapter.extract(ALTERATIONS, '/proc/tailoring_alteration_problem')
+        self.assertLess(problem.index('tailoring_alteration_dye_slots(G.design_body, new_pieces)'),
+                        problem.index('crafting_node_allowed(H, tailoring_dye_node(after[i]))'))
+        sewing = adapter.extract(ALTERATIONS, '/obj/item/tailoring_project/proc/sew_alteration')
+        self.assertLess(sewing.index('if (problem)'), sewing.index('spend_alteration_sheet(user, site)'))
+        self.assertIn('G.design_colors = tailoring_alteration_colors(body_id, old_colors, new_colors, new_pieces)', sewing)
 
 if __name__ == '__main__':
     unittest.main()

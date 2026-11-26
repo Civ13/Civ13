@@ -47,6 +47,8 @@ class Animal:
     def __init__(self, world, species='horse'):
         self.world=world;self.species=species;self.contents=DMList();self.deleted=False
         self.stat=0;self.ride=False;self.rider=None;self.buckled=None;self.loc=world.site
+        self.hitched_cart = None
+        self.hitched_train = None
         self.messages=[]
     def get_animal_tack(self, kind, ignore=None):return self.world.call(ANIMAL+'/proc/get_animal_tack','src,tack_type,ignore',self,kind,ignore)
     def can_handle_animal_tack(self,user):return self.world.call(ANIMAL+'/proc/can_handle_animal_tack','src,user',self,user)
@@ -152,6 +154,34 @@ class TackTests(unittest.TestCase):
         w=World();s=w.held();s.nodrop=True;self.assertFalse(w.fit(s));self.assertIs(s.loc,w.actor)
         w=World();s=w.held();s.forceMove(w.site);self.assertFalse(w.fit(s));self.assertIs(s.loc,w.site)
         w=World();old=Item(w,'saddle',w.animal);s=w.held();self.assertFalse(w.fit(s));self.assertIs(s.loc,w.actor);self.assertIs(old.loc,w.animal)
+
+    def test_cart_and_train_hitches_block_fit_and_removal(self):
+        for hitch in ('hitched_cart', 'hitched_train'):
+            with self.subTest(hitch=hitch, action='fit'):
+                w = World()
+                saddle = w.held()
+                setattr(w.animal, hitch, object())
+                self.assertFalse(w.fit(saddle))
+                self.assertIs(saddle.loc, w.actor)
+                setattr(w.animal, hitch, None)
+                self.assertTrue(w.fit(saddle))
+
+            with self.subTest(hitch=hitch, action='remove'):
+                w = World()
+                harness = Item(w, 'harness', w.animal)
+                setattr(w.animal, hitch, object())
+                self.assertFalse(w.animal.remove_animal_tack(harness, w.actor))
+                self.assertIs(harness.loc, w.animal)
+                setattr(w.animal, hitch, None)
+                self.assertTrue(w.animal.remove_animal_tack(harness, w.actor))
+
+            with self.subTest(hitch=hitch, action='hitch while removal menu is open'):
+                w = World()
+                harness = Item(w, 'harness', w.animal)
+                w.choice = harness
+                w.menu_hook = lambda: setattr(w.animal, hitch, object())
+                w.menu()
+                self.assertIs(harness.loc, w.animal)
 
     def test_inventory_callbacks_revalidate_exact_item_actor_target_and_epoch(self):
         for mutation in ('item','actor','hitch','death','slot','epoch','target_deleted','actor_deleted','item_deleted'):

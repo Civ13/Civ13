@@ -1,4 +1,5 @@
-"""Replay cooking-pot pouring from source, not BYOND: lids, water top-ups and partial refills."""
+"""Offline source checks for cooking-pot filling, emptying and serving."""
+from math import ceil
 from pathlib import Path
 import re
 import unittest
@@ -60,13 +61,7 @@ class CookingPotPourTest(unittest.TestCase):
         self.assertNotIn('is_open_container', OLD_POUR)
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
-class PotKeepsDissolvedReagentsTest(unittest.TestCase):
-    """Salt and germs follow the water into the pot instead of staying in the vessel."""
-
+class PotSourceTest(unittest.TestCase):
     def setUp(self):
         self.pot = SOURCE.read_text(encoding='utf-8')
         self.meals = (ROOT / 'code/game/objects/structures/kitchen/cooked_meals.dm').read_text(encoding='utf-8')
@@ -75,6 +70,10 @@ class PotKeepsDissolvedReagentsTest(unittest.TestCase):
         start = text.index(header)
         end = text.find('\n/', start + 1)
         return text[start:] if end < 0 else text[start:end]
+
+
+class PotKeepsDissolvedReagentsTest(PotSourceTest):
+    """Salt and germs follow the water into the pot instead of staying in the vessel."""
 
     def test_water_fill_takes_dissolved_share(self):
         water = self.pot[self.pot.index('var/rem = min(R.volume, 100 - fullness)'):]
@@ -110,3 +109,53 @@ class PotKeepsDissolvedReagentsTest(unittest.TestCase):
     def test_negative_control(self):
         old = 'var/rem = min(R.volume, 100 - fullness)\n\t\t\tI.reagents.remove_reagent(R.id, rem)'
         self.assertNotIn('take_dissolved', old)
+
+class PotLiquidLifecycleTest(PotSourceTest):
+    def test_partial_water_and_reagent_only_pots_can_be_emptied(self):
+        empty = self.body(self.pot, '/obj/structure/pot/verb/empty()')
+        self.assertIn('if (meal_cooking || (state == STATE_EMPTY && fullness <= 0 && reagents.total_volume <= 0))', empty)
+        wait = empty.index('if (do_after(usr, 100, src) && !meal_cooking)')
+        for reset in ('state = STATE_EMPTY', 'reagents.clear_reagents()', 'salt_water = FALSE', 'fullness = 0'):
+            self.assertGreater(empty.index(reset), wait)
+        # A 30-unit partial saltwater fill can be emptied, then refilled with
+        # 30 fresh units without retaining its water level or brine markers.
+        partial, _ = water_top_up(self.pot, 0, 30)
+        self.assertEqual(partial, 30)
+        self.assertIn('salt_water = FALSE\n\t\tfullness = 0', empty)
+        self.assertEqual(water_top_up(self.pot, 0, 30), (30, 30))
+
+    def test_glass_and_drinks_share_additive_path_after_full_water(self):
+        attack = self.body(self.pot, '/obj/structure/pot/attackby(')
+        self.assertIn('var/liquid_vessel = istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/glass)', attack)
+        self.assertIn('if (liquid_vessel && state == STATE_EMPTY)', attack)
+        additive = attack[attack.index('if (liquid_vessel || istype(I, /obj/item/weapon/reagent_containers/food))'):]
+        branch = additive[:additive.index('else if (istype(I, /obj/item/weapon/reagent_containers/food/condiment))')]
+        self.assertIn('if (state != STATE_WATER && state != STATE_BOILING)', branch)
+        self.assertLess(branch.index('if (liquid_vessel)'), branch.index('if (!I.is_open_container())'))
+        self.assertLess(branch.index('if (!I.is_open_container())'), branch.index('pour_into_pot(I, H)'))
+        self.assertEqual(pour(self.pot, 90, 18), (100, 8))
+
+    def test_ordinary_stew_serves_its_stored_share_once(self):
+        attack = self.body(self.pot, '/obj/structure/pot/attackby(')
+        serve = attack[attack.index('var/obj/item/weapon/reagent_containers/food/snacks/stew_wood/w_stew = new'):]
+        cook = self.body(self.pot, '/obj/structure/pot/process()')
+        self.assertIn('R.volume /= bowls', cook)
+        self.assertIn('w_stew.reagents.maximum_volume += R.volume', serve)
+        self.assertIn('w_stew.reagents.add_reagent(R.id, R.volume)', serve)
+        self.assertNotIn('ceil(', serve)
+        self.assertNotIn('initial_bowls', serve)
+        self.assertLess(serve.index('--bowls'), serve.index('reagents.clear_reagents()'))
+        for added, expected in ((18, 6), (0.75, 0.25)):
+            stored = added / 3
+            self.assertEqual([stored] * 3, [expected] * 3)
+            self.assertNotEqual([ceil(stored / 3)] * 3, [expected] * 3)
+
+    def test_prepared_meal_keeps_its_separate_remaining_pool(self):
+        attack = self.body(self.pot, '/obj/structure/pot/attackby(')
+        self.assertLess(attack.index('serve_meal(I, H)'), attack.index('I.reagents.get_master_reagent()'))
+        meal = self.body(self.meals, '/obj/structure/pot/proc/serve_meal(')
+        self.assertIn('reagents.trans_to_holder(M.reagents, reagents.total_volume / meal_portions)', meal)
+
+
+if __name__ == '__main__':
+    unittest.main()

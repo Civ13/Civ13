@@ -10,15 +10,44 @@
 #define TAILORING_ALTER_MAX 2
 #define TAILORING_ALTER_TIME 40
 
-// How many parts differ between two designs of one body: each re-dyed part
-// and each swapped piece counts once.
+// Menu labels mapped to their full colour indices. Body and panels are
+// always drawn; an optional piece only draws when its selected state exists.
+/proc/tailoring_alteration_dye_slots(body_id, pieces_text)
+	var/list/visible = list()
+	var/list/body = tailoring_body(body_id)
+	if (!body)
+		return visible
+	var/list/labels = tailoring_piece_labels(body)
+	var/list/options = body["options"]
+	var/list/chosen = tailoring_pieces(body_id, pieces_text)
+	for (var/i = 1, i <= labels.len, i++)
+		var/label = labels[i]
+		var/list/variants = options ? options[label] : null
+		if (!variants || variants[chosen[label]])
+			visible[label] = i
+	return visible
+
+// Keep the stored colour of any piece the altered garment will not draw.
+/proc/tailoring_alteration_colors(body_id, old_colors, new_colors, new_pieces)
+	var/list/colors = tailoring_colors(body_id, old_colors)
+	var/list/proposed = tailoring_colors(body_id, new_colors)
+	var/list/visible = tailoring_alteration_dye_slots(body_id, new_pieces)
+	for (var/label in visible)
+		var/i = visible[label]
+		colors[i] = proposed[i]
+	return jointext(colors, "|")
+
+// How many parts differ: each changed dye visible in the new design and
+// each swapped piece counts once.
 /proc/tailoring_alteration_changes(body_id, old_colors, old_pieces, new_colors, new_pieces)
 	var/list/before = tailoring_colors(body_id, old_colors)
 	var/list/after = tailoring_colors(body_id, new_colors)
 	if (!before || !after)
 		return 0
 	var/changes = 0
-	for (var/i = 1, i <= before.len, i++)
+	var/list/visible = tailoring_alteration_dye_slots(body_id, new_pieces)
+	for (var/label in visible)
+		var/i = visible[label]
 		if (before[i] != after[i])
 			changes++
 	var/list/had = tailoring_pieces(body_id, old_pieces)
@@ -60,11 +89,13 @@
 			return "You don't know how to make that [lowertext(label)]."
 	if (tailoring_alteration_covers(G.design_body, new_pieces) != tailoring_alteration_covers(G.design_body, G.design_pieces))
 		return "An alteration cannot change what the garment covers."
-	// Only a newly chosen dye must be known; the old colours can stay.
+	// Only a newly chosen, visible dye must be known.
 	var/list/before = tailoring_colors(G.design_body, G.design_colors)
 	var/list/after = tailoring_colors(G.design_body, new_colors)
 	if (tailoring_known_dyes(H)) // null: this person can mix any colour
-		for (var/i = 1, i <= after.len, i++)
+		var/list/visible = tailoring_alteration_dye_slots(G.design_body, new_pieces)
+		for (var/label in visible)
+			var/i = visible[label]
 			if (before[i] != after[i] && !crafting_node_allowed(H, tailoring_dye_node(after[i])))
 				return "You don't know how to make that dye."
 	return null
@@ -119,11 +150,11 @@
 				new_colors = jointext(tailoring_colors(body_id, G.design_colors), "|")
 				new_pieces = G.design_pieces
 			if ("Colours")
-				var/list/labels = tailoring_piece_labels(body)
-				var/piece = WWinput(user, "Choose a piece to re-dye.", "Pieces", null, labels)
-				if (!alteration_ready(user, site, save_epoch, G) || !(piece in labels))
+				var/list/visible = tailoring_alteration_dye_slots(body_id, new_pieces)
+				var/piece = WWinput(user, "Choose a piece to re-dye.", "Pieces", null, visible)
+				if (!alteration_ready(user, site, save_epoch, G) || !(piece in visible))
 					continue
-				var/index = labels.Find(piece)
+				var/index = visible[piece]
 				var/list/colors = tailoring_colors(body_id, new_colors)
 				var/selected = choose_dye(user, piece, colors[index])
 				if (alteration_ready(user, site, save_epoch, G) && tailoring_color_valid(selected))
@@ -184,7 +215,7 @@
 		return FALSE
 	if (!spend_alteration_sheet(user, site))
 		return FALSE
-	G.design_colors = jointext(tailoring_colors(body_id, new_colors), "|")
+	G.design_colors = tailoring_alteration_colors(body_id, old_colors, new_colors, new_pieces)
 	G.design_pieces = length(body_options(body_id)) ? tailoring_pieces_text(tailoring_pieces(body_id, new_pieces)) : null
 	G.tailoring_refresh()
 	user.update_inv_l_hand()

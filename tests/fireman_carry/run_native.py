@@ -15,10 +15,13 @@ sys.path.insert(0, str(ROOT / 'scripts/gameplay_bridge'))
 from prepare_native import isolated_startup  # noqa: E402
 
 PREFIX = '.fireman_carry_ci'
-CHECKS = ('downed-target', 'plain-grab-delay', 'carry-starts', 'carried-on-carrier-tile',
+CHECKS = ('downed-target', 'plain-grab-delay', 'prone-carrier-cannot-begin-lift',
+          'going-prone-cancels-timed-lift', 'carry-starts', 'carried-on-carrier-tile',
           'carried-over-shoulders', 'carry-faster-than-grab', 'carry-follows-walk',
           'no-grip-upgrade-while-carrying', 'click-self-puts-down', 'click-self-carries-again',
-          'standing-up-ends-carry', 'standing-target-not-carried', 'grab-release-clears-carry')
+          'prone-carrier-gets-no-carry-discount', 'movement-drops-patient-before-repositioning',
+          'standing-carrier-can-lift-again', 'standing-up-ends-carry', 'standing-target-not-carried',
+          'grab-release-clears-carry')
 
 
 def sources(root=ROOT):

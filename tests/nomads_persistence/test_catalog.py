@@ -3,11 +3,15 @@ import importlib.util
 import json
 from pathlib import Path
 import re
+import sys
 import tempfile
+from types import SimpleNamespace as NS
 import unittest
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+from source_adapter import extract, project
 spec = importlib.util.spec_from_file_location('nomads_catalog_supervisor', ROOT/'scripts/nomads-lifecycle/supervisor.py')
 core = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(core)
@@ -153,6 +157,56 @@ class NomadsCatalogTests(unittest.TestCase):
         self.assertLess(constructor.index('lava_turfs[src] = TRUE'), constructor.index('..(loc, floortype)'))
         self.assertLess(constructor.index('lava_turfs[src] = TRUE'), constructor.index('if (dries)'))
 
+
+
+class OilRushTreasuryTests(unittest.TestCase):
+    def setUp(self):
+        self.map_source = (ROOT/'code/game/objects/map_metadata/nomads/nomads_extended.dm').read_text()
+        self.prefix = '/obj/map_metadata/nomads/extended'
+
+    def test_status_win_and_restore_never_reuse_the_faction_tax_field(self):
+        status = extract(self.map_source, self.prefix + '/proc/check_oil')
+        win = extract(self.map_source, self.prefix + '/update_win_condition')
+        self.assertNotIn('custom_civs', self.map_source)
+        self.assertIn('oil_rush_progress = sample_oil_progress()', status)
+        self.assertIn('oil_rush_progress[faction]', status)
+        self.assertIn('oil_rush_progress[faction]', win)
+        self.assertIn('durable_schedule("nomads_oil_check", 1200)', status)
+        restore = (ROOT/'code/modules/persistence/durable_nomads.dm').read_text()
+        section = restore.split('/map_storage/proc/restore_durable_nomads(', 1)[1].split('\n/obj/map_metadata/', 1)[0]
+        self.assertIn('oil_map.oil_rush_progress = null', section)
+        schema = restore.split('/obj/map_metadata/proc/durable_nomads_schema(', 1)[1].split('\n/obj/map_metadata/', 1)[0]
+        self.assertNotIn('oil_rush_progress', schema)
+
+    def test_oil_liters_not_coin_balance_determine_the_winner(self):
+        class Assoc(dict):
+            def __missing__(self, key):
+                return None
+        deposits = [NS(faction='Wolves', storedvalue=1000), NS(faction='Wolves', storedvalue=2000),
+                    NS(faction='Bears', storedvalue=20), NS(faction=None, storedvalue=4000),
+                    NS(faction='Bears', storedvalue=5000, deleted=True)]
+        sample = project(self.map_source, self.prefix + '/proc/sample_oil_progress', '',
+                         dict(world=deposits, list=Assoc, typed_iter=lambda entries, _: entries,
+                              QDELETED=lambda atom: getattr(atom, 'deleted', False)))
+        liters = sample()
+        self.assertEqual(liters, {'Wolves': 3000, 'Bears': 20})
+        taxes = {'Wolves': 2, 'Bears': 3500}
+
+        def win(progress, after_grace):
+            reports = []
+            ticker = NS(finished=False)
+            check = project(self.map_source, self.prefix + '/update_win_condition', 'win_condition_spam_check',
+                            dict(win_condition_spam_check=False, oil_rush_open=lambda: after_grace,
+                                 oil_rush_progress=progress, custom_faction_nr=['Bears', 'Wolves'],
+                                 custom_civs=taxes, oiltarget=3000, world=None, to_chat=lambda *_: None,
+                                 show_global_battle_report=reports.append, ticker=ticker))
+            return check(False), reports, ticker.finished
+
+        self.assertEqual(win(None, True), (False, [], False))
+        self.assertEqual(win(liters, False), (False, [], False))
+        self.assertEqual(win(Assoc(Bears=20), True), (None, [], False))
+        self.assertEqual(win(liters, True), (True, [None], True))
+        self.assertEqual(taxes, {'Wolves': 2, 'Bears': 3500})
 
 
 if __name__ == '__main__':

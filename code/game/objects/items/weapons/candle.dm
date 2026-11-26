@@ -67,9 +67,17 @@
 		for (var/mob/O in viewers(viewer_center, null))
 			O.show_message(flavor_text, TRUE)
 		set_light(CANDLE_LUM)
-		processing_objects += src
+		processing_objects |= src
 		update_icon()
 
+
+// A saved candle's lit state can differ from its type's constructor default.
+/obj/item/weapon/flame/candle/after_load()
+	..()
+	if (lit)
+		processing_objects |= src
+	else
+		processing_objects -= src
 
 /obj/item/weapon/flame/candle/process()
 	return process_interval(2)
@@ -92,6 +100,7 @@
 /obj/item/weapon/flame/candle/attack_self(mob/user as mob)
 	if (lit)
 		lit = FALSE
+		processing_objects -= src
 		update_icon()
 		set_light(0)
 

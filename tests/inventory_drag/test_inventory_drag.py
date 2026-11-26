@@ -1,8 +1,12 @@
 """Offline source contracts for inventory drag-and-drop transfers; no BYOND runtime."""
 from pathlib import Path
+import sys
+from types import SimpleNamespace as NS
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+from source_adapter import extract, project
 
 
 def read(path):
@@ -157,6 +161,52 @@ class InventoryDragTests(unittest.TestCase):
         self.assertEqual(proc_body(MAIL, '/obj/item/weapon/storage/envelope/accepts_inventory_drag').strip(), 'return storage_contents_accessible()')
         self.assertEqual(proc_body(MAIL, '/obj/item/weapon/storage/envelope/storage_contents_accessible').strip(), 'return opened')
         self.assertEqual(proc_body(DRAG, '/obj/item/weapon/storage/proc/accepts_inventory_drag').strip(), 'return TRUE')
+
+
+class KeychainStorageTests(unittest.TestCase):
+    def test_keychain_storage_admission_is_key_only(self):
+        self.assertIn('can_hold = list(/obj/item/weapon/key)', KEYCHAIN)
+        self.assertIn('merges_stacks = FALSE', KEYCHAIN)
+        window = read('code/modules/storage_window/storage_window.dm')
+        self.assertIn('S.can_be_inserted(I, TRUE)', window)
+        self.assertIn('S.handle_item_insertion(I, TRUE)', window)
+        self.assertIn('S.remove_from_storage(I, get_turf(H))', window)
+        insert = STORAGE.split('\n/obj/item/weapon/storage/proc/handle_item_insertion(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('update_icon()', insert)
+        self.assertIn('update_icon()', proc_body(STORAGE, '/obj/item/weapon/storage/proc/remove_from_storage'))
+
+    def test_keychain_uses_physical_contents_for_lock_picker_examine_and_icon(self):
+        base = '/obj/item/weapon/storage/belt/keychain'
+        body = proc_body(KEYCHAIN, base + '/attack_hand')
+        self.assertIn('var/list/choices = key_items()', body)
+        self.assertIn('!(which in choices) || which.loc != src', body)
+        self.assertIn('key_items()', proc_body(KEYCHAIN, base + '/proc/print_keys'))
+        self.assertIn('length(key_items())', proc_body(KEYCHAIN, base + '/update_icon'))
+        self.assertIn('update_icon()', proc_body(KEYCHAIN, base + '/after_load'))
+        reader = read('code/game/objects/structures/key_doors/keyslot.dm')
+        self.assertIn('belt.keychain.key_items()', reader)
+        self.assertIn('keys |= ring.key_items()', reader)
+        self.assertIn('in keychain.key_items()', reader)
+        self.assertNotIn('keychain.keys', reader)
+        self.assertNotIn('var/list/keys', KEYCHAIN)
+        self.assertNotIn('keys +=', KEYCHAIN)
+        self.assertIn('handle_item_insertion(key, TRUE)', proc_body(KEYCHAIN, base + '/attackby'))
+
+        proc = base + '/proc/key_items'
+        body = extract(KEYCHAIN, proc).replace('. += key', 'result.append(key)')
+        contents = []
+        resolve = project(proc + '()\n' + body + '\n\treturn result\n', proc, '',
+                          dict(contents=contents, list=list,
+                               typed_iter=lambda atoms, _: [a for a in atoms if a.kind == 'key'],
+                               QDELETED=lambda a: a.deleted))
+        key = NS(kind='key', deleted=False)
+        contents[:] = [NS(kind='pen', deleted=False), NS(kind='key', deleted=True)]
+        self.assertEqual(resolve(), [])
+        # Untracked physical entry/removal (the storage window) does not need a shadow list.
+        contents.append(key)
+        self.assertEqual(resolve(), [key])
+        contents.remove(key)
+        self.assertEqual(resolve(), [])
 
 
 if __name__ == '__main__':
