@@ -157,6 +157,9 @@
 		return "you are too far away"
 	return null
 
+/obj/structure/vehicle/proc/small_craft_bucket_ready(obj/item/weapon/reagent_containers/glass/bucket/B)
+	return !QDELETED(B) && B.is_open_container() && B.reagents && B.reagents.total_volume <= 0
+
 // H bails with W until she is dry or they stop. Returns the bucketfuls out.
 /obj/structure/vehicle/proc/small_craft_bail(mob/living/human/H, obj/item/weapon/reagent_containers/glass/bucket/W)
 	. = 0
@@ -168,7 +171,7 @@
 	while (bilge > 0)
 		if (!do_after(H, SMALL_CRAFT_BAIL_TIME, src))
 			break
-		if (QDELETED(src) || QDELETED(W) || H.get_active_hand() != W || small_craft_work_refusal(H))
+		if (QDELETED(src) || !small_craft_bucket_ready(W) || H.get_active_hand() != W || small_craft_work_refusal(H))
 			break
 		var/out = min(bilge, SMALL_CRAFT_BAIL)
 		bilge -= out
@@ -212,7 +215,7 @@
 		return TRUE
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/bucket))
 		var/obj/item/weapon/reagent_containers/glass/bucket/B = W
-		if (bilge > 0 && !(B.reagents && B.reagents.total_volume > 0))
+		if (bilge > 0 && small_craft_bucket_ready(B))
 			small_craft_bail(H, B)
 			return TRUE
 		return FALSE
