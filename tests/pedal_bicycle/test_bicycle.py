@@ -2,7 +2,9 @@
 
 These offline projections do not establish native collision or graphical riding.
 """
+from math import floor
 from pathlib import Path
+from struct import pack, unpack
 from types import SimpleNamespace as NS
 import re
 import sys
@@ -357,6 +359,53 @@ class BicycleArt(unittest.TestCase):
             # A standing body has its crotch at row 21 and soles at row 31.
             self.assertEqual(saddle_top, 22 - 6)
             self.assertEqual(pedal_row, 32 - 6)
+
+
+class BicycleCatchup(unittest.TestCase):
+    def pulse(self, offset, rest, ticks, *, direction=1, wall=False):
+        source = (ROOT / 'code/modules/craft/vehicle_offset_ride.dm').read_text()
+        loop = extract(source, BASE + '/movementloop')
+        start = loop.index('\t\tvehicle_offset_sync()')
+        end = loop.index('\n\tcatch', start)
+        block = '\n'.join(line[1:] for line in loop[start:end].splitlines())
+        declaration = '/proc/project_bike_pulse'
+        # Pretend only the physical motor and tick clock are native boundaries.
+        # Test the production pulse budget, with DM single-precision remainder.
+        tick_lag = 0.4
+        commits = []
+        distances = []
+
+        def roll(pixels):
+            distances.append(pixels)
+            whole = floor(unpack('f', pack('f', direction * pixels + rest))[0])
+            crossings = abs(floor((offset + whole + 16) / 32))
+            if crossings and not wall:
+                commits.append(1)
+            # A second crossing hits the exact same-tick pedal deadline.
+            return (wall and crossings > 0) or crossings > 1
+
+        env = dict(world=NS(time=3.2, tick_lag=tick_lag), min=min, vehicle_m_delay=1.2375,
+                   vehicle_offset_sync=lambda: None, vehicle_offset_ticks=lambda: ticks,
+                   vehicle_offset_speed=lambda delay: 32 * tick_lag / delay,
+                   vehicle_offset_roll=roll, pedal_next_move=None)
+        run = project(declaration + '()\n' + block + '\n\treturn blocked\n', declaration, '', env)
+        return run(), sum(commits), distances[0]
+
+    def test_catchup_crosses_once_and_does_not_stop_pedaling(self):
+        for kwargs in ({'offset': 8, 'rest': 0.0, 'direction': 1},
+                       {'offset': 15, 'rest': 0.99999994, 'direction': 1},
+                       {'offset': -16, 'rest': 0.0, 'direction': -1}):
+            with self.subTest(**kwargs):
+                self.assertEqual(self.pulse(**kwargs, ticks=4)[:2], (False, 1))
+
+    def test_normal_pace_and_real_collision_are_unchanged(self):
+        blocked, commits, speed = self.pulse(8, 0, 1)
+        self.assertEqual((blocked, commits), (False, 1))
+        self.assertAlmostEqual(speed, 32 * 0.4 / 1.2375)
+        self.assertEqual(self.pulse(8, 0.25, 4, wall=True)[:2], (True, 0))
+        self.assertIn('if (blocked || !moving)',
+                      extract((ROOT / 'code/modules/craft/vehicle_offset_ride.dm').read_text(),
+                              BASE + '/movementloop'))
 
 
 class BicycleWiring(unittest.TestCase):

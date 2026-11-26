@@ -231,7 +231,11 @@
 		var/ticks = vehicle_offset_ticks()
 		// The tile step inside the roll keeps its own schedule; the pixels are the pace now.
 		pedal_next_move = world.time
-		blocked = vehicle_offset_roll(vehicle_offset_speed(vehicle_m_delay) * ticks)
+		// After one tile commit the pedal deadline moves forward. A second
+		// commit in the same pulse would be misread as a collision.
+		// Reserve a pixel for the offset mover's fractional remainder.
+		var/pixels = min(vehicle_offset_speed(vehicle_m_delay) * ticks, vehicle_offset_speed(world.tick_lag) - 1)
+		blocked = vehicle_offset_roll(pixels)
 	catch (var/exception/E)
 		pedal_busy = FALSE
 		stopmovementloop()
