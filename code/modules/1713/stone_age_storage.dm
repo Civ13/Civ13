@@ -260,6 +260,7 @@
 // inner one as the water evaporates. Pour water into it and it keeps food far
 // longer until the sand dries out; it works best in dry heat, where the water
 // evaporates fastest. Dry, it keeps food like the jar it still is.
+#define ZEER_SAMPLE_INTERVAL 100 // deciseconds between ambient samples while wet
 #define ZEER_WATER_MAX 60 // units of water the sand holds
 #define ZEER_STEP_WET 100 // decay step while the sand is wet
 #define ZEER_STEP_ARID 75 // ...in dry climates
@@ -279,10 +280,29 @@
 	slots = 5
 	max_space = 10
 	var/water = 0 // units in the sand
-	var/tmp/water_tick = 0 // world.time the water was last brought up to date
+	var/tmp/water_tick = null // world.time the water was last brought up to date
+	var/tmp/water_sample_rate = 0 // rate that applies until the next sample
 
 /obj/structure/storage_container/storage_jar/zeer_pot/persistence_runtime_var(key)
-	return key == "water_tick" || ..()
+	return key == "water_tick" || key == "water_sample_rate" || ..()
+
+/obj/structure/storage_container/storage_jar/zeer_pot/after_load()
+	..()
+	water_tick = null
+	water_sample_rate = 0
+	if (water > 0)
+		processing_objects |= src
+	else
+		processing_objects -= src
+
+/obj/structure/storage_container/storage_jar/zeer_pot/process_interval(configured_seconds = 2)
+	if (QDELETED(src) || water <= 0)
+		processing_objects -= src
+		return PROCESS_KILL
+	if (isnull(water_tick) || world.time - water_tick >= ZEER_SAMPLE_INTERVAL)
+		settle_water()
+	if (water <= 0)
+		return PROCESS_KILL
 
 /obj/structure/storage_container/storage_jar/zeer_pot/update_icon()
 	var/full = storage && storage.contents.len
@@ -298,21 +318,23 @@
 		rate *= 1.25
 	return rate
 
-// Brings the water down to now. Time before the first check after a load or
-// a restart does not count, the same as the ice house and food decay.
+// Charge elapsed time at the last observed rate, then sample the present
+// surroundings. A newly hot or cold tile cannot rewrite the prior interval.
 /obj/structure/storage_container/storage_jar/zeer_pot/proc/settle_water()
-	if (!water_tick || water_tick > world.time)
-		water_tick = world.time
+	if (water <= 0)
 		return water
-	var/minutes = (world.time - water_tick) / 600
-	if (minutes <= 0)
-		return water
-	water_tick = world.time
-	if (water > 0)
-		water = max(0, water - minutes * evaporation_rate())
-		if (water <= 0)
-			water = 0
-			update_icon()
+	var/now = world.time
+	if (!isnull(water_tick) && water_tick <= now)
+		var/minutes = (now - water_tick) / 600
+		water = max(0, water - minutes * water_sample_rate)
+	if (water <= 0)
+		water_tick = null
+		water_sample_rate = 0
+		processing_objects -= src
+		update_icon()
+	else
+		water_tick = now
+		water_sample_rate = evaporation_rate()
 	return water
 
 /obj/structure/storage_container/storage_jar/zeer_pot/food_keeping_step()
@@ -350,6 +372,8 @@
 	RC.reagents.remove_reagent("water", amount)
 	water = min(ZEER_WATER_MAX, water + amount)
 	water_tick = world.time
+	water_sample_rate = evaporation_rate()
+	processing_objects |= src
 	update_icon()
 	user.visible_message(SPAN_NOTICE("[user] pours water into the sand of \the [src]."), SPAN_NOTICE("You soak the sand of \the [src] with [amount] units of water."))
 	return TRUE
@@ -366,6 +390,7 @@
 		return
 	to_chat(user, SPAN_NOTICE("The sand is wet and will stay damp for about [round(water / rate)] more minutes."))
 
+#undef ZEER_SAMPLE_INTERVAL
 #undef ZEER_WATER_MAX
 #undef ZEER_STEP_WET
 #undef ZEER_STEP_ARID
