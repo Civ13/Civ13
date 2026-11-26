@@ -268,6 +268,22 @@ var/naval_runtime_error = FALSE
 	load.forceMove(locate(21, 45, 2))
 	bob.forceMove(locate(21, 44, 2))
 	naval_check(B.hand_in(bob) == 1 && QDELETED(F), "and the harbour pays for it")
+
+	// The destination can disappear after posting or after the carrier leaves.
+	var/obj/structure/berth/quay/depot/missing = new(locate(8, 42, 2))
+	var/obj/structure/closet/crate/on_offer = freight_crate(4, 10)
+	var/obj/craft_contract/freight/waiting = D1.offer_freight(ann, on_offer, missing, null)
+	load.forceMove(locate(4, 10, 2))
+	bob.forceMove(locate(6, 11, 2))
+	pay = freight_reward(ann)
+	F = D1.offer_freight(ann, load, missing, pay)
+	naval_check(F.take(bob, truck) && !F.write_off(ann) && !length(D1.contract_choices(CONTRACT_TAKEN, reds, TRUE)), "intact freight for a standing destination cannot be written off")
+	var/atom/carrier_crate_location = load.loc
+	qdel(missing)
+	naval_check(!waiting.take(bob, truck) && waiting.state == CONTRACT_OPEN && on_offer.loc == waiting && waiting.withdraw(ann), "an offer to a missing board stays open for withdrawal")
+	naval_check(length(D1.contract_choices(CONTRACT_TAKEN, reds, TRUE)) == 1 && !F.write_off(bob) && F.write_off(ann), "only the poster can write off taken freight whose destination is gone")
+	naval_check(load.loc == carrier_crate_location && !length(load.freight_id) && length(load.contents) && pay.loc == F && F.collect(ann) && pay.loc == ann, "write-off leaves the crate and cargo with the carrier and returns escrow to the poster")
+
 	D1.owner_party = party_train_party_of(cat)
 	D1.welcome = BERTH_WELCOME_OWNERS
 	naval_check(!D1.may_post(reds) && D1.may_post(party_train_party_of(cat)) && findtext(D1.status_text(), "only they may offer freight"), "a claimed depot can keep its board to its own party")
