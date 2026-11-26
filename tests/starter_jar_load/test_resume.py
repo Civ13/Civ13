@@ -46,6 +46,30 @@ class StarterJarResumeTest(unittest.TestCase):
         saved = block(self.source, '/obj/item/weapon/starterjar/get_saved_vars()')
         self.assertIn('"ferment_loop", "growth_loop"', saved)
 
+    def test_final_harvest_invalidates_the_old_tick(self):
+        harvest = block(self.source, '/obj/item/weapon/starterjar/attack_self(')
+        self.assertIn('if (fermenting_contents==0)\n\t\t\tfermenting = 0\n\t\t\tcancel_yeast_growth()', harvest)
+        cancel = block(self.source, '/obj/item/weapon/starterjar/proc/cancel_yeast_growth()')
+        self.assertIn('growth_generation++', cancel)
+        self.assertIn('growth_loop = FALSE', cancel)
+
+    def test_old_tick_cannot_change_replacement_culture_or_its_guard(self):
+        schedule = block(self.source, '/obj/item/weapon/starterjar/proc/yeast_growth()')
+        self.assertLess(schedule.index('var/generation = growth_generation'), schedule.index('spawn(1500+rand(0,400))'))
+        self.assertIn('finish_yeast_growth_tick(generation)', schedule)
+        tick = block(self.source, '/obj/item/weapon/starterjar/proc/finish_yeast_growth_tick(')
+        stale_guard = tick.index('if (gcDestroyed || generation != growth_generation)\n\t\treturn')
+        self.assertLess(stale_guard, tick.index('growth_loop = FALSE'))
+        self.assertLess(stale_guard, tick.index('fermenting_contents++'))
+        self.assertLess(stale_guard, tick.index('yeast_growth()'))
+
+    def test_load_invalidates_pending_growth_without_saving_the_token(self):
+        load = block(self.source, '/obj/item/weapon/starterjar/after_load()')
+        self.assertLess(load.index('cancel_yeast_growth()'), load.index('restore_from_icon_state()'))
+        self.assertIn('var/tmp/growth_generation', self.source)
+        saved = block(self.source, '/obj/item/weapon/starterjar/get_saved_vars()')
+        self.assertIn('"growth_generation"', saved)
+
     def test_negative_control_old_hook_never_resumes(self):
         self.assertFalse(resumes(OLD, 1))
         self.assertFalse(resumes(OLD, 2))
