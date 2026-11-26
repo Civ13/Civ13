@@ -54,6 +54,19 @@
 		overlays.Cut()
 		return
 
+/obj/structure/closet/body_bag/finish_open_closet_drop(atom/movable/O, mob/user)
+	var/mob/living/M = O
+	var/turf/destination = loc
+	if (!istype(M) || M == user || QDELETED(M) || !isturf(M.loc) || !isturf(destination) || M.loc == destination)
+		return FALSE
+	if (M.buckled || length(M.pinned) || (M.stat == CONSCIOUS && !M.lying && !M.prone))
+		return FALSE
+	// Place the casualty on the bag, not in it. Closing the bag packs its tile.
+	if (!M.Move(destination, get_dir(M, destination)) || M.loc != destination)
+		return FALSE
+	user.show_viewers(SPAN_NOTICE("[user] moves [M] onto [src]."))
+	return TRUE
+
 /obj/structure/closet/body_bag/store_mobs(var/stored_units)
 	contains_body = ..()
 	return contains_body
