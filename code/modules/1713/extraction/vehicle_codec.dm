@@ -137,6 +137,9 @@
 				if (W.wconfig) node["wheel_config"] = config(W.wconfig, "wheel")
 			if (istype(O, /obj/structure/vehicleparts/frame))
 				var/obj/structure/vehicleparts/frame/F = O
+				// Keep the strict schema-1 scalar map unchanged. Older readers
+				// ignore this optional frame-node field and can still load the vehicle.
+				if (!isnull(F.hull_material)) node["hull_material"] = F.hull_material
 				var/list/walls = list()
 				for (var/side in list("front", "back", "left", "right")) walls[side] = config(F.walls.vars[side], "wall")
 				node["walls"] = walls
@@ -219,6 +222,9 @@
 				if (!istext(wall[1])) return FALSE
 				for (var/j in 2 to wall.len)
 					if (!isnum(wall[j])) return FALSE
+			if ("hull_material" in N)
+				var/material = N["hull_material"]
+				if (!ispath(path, /obj/structure/vehicleparts/frame) || (!isnull(material) && (!istext(material) || !vehicle_hull_stats(material)))) return FALSE
 			if (!isnull(N["walls"]) && !ispath(path, /obj/structure/vehicleparts/frame)) return FALSE
 			if (ispath(path, /obj/structure/vehicleparts/frame))
 				if (!islist(N["walls"]) || N["walls"].len != 4) return FALSE
@@ -301,6 +307,8 @@
 				for (var/key in N["wheel_config"]) W.wconfig.vars[key] = N["wheel_config"][key]
 			if (N["walls"])
 				var/obj/structure/vehicleparts/frame/F = O
+				// Wall values are already stored at their built strength and damage.
+				F.hull_material = N["hull_material"]
 				for (var/side in N["walls"])
 					var/datum/wall_config/C = F.walls.vars[side]
 					for (var/key in N["walls"][side]) C.vars[key] = N["walls"][side][key]
