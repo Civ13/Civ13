@@ -43,6 +43,7 @@
 	sharp = FALSE
 
 /obj/item/projectile/arrow/arrow
+	shield_recovery_casing = /obj/item/ammo_casing/arrow
 	damage = DAMAGE_LOW-28
 	penetrating = 0
 	armor_penetration = 0
@@ -69,48 +70,56 @@
 	crushes = TRUE
 
 /obj/item/projectile/arrow/arrow/flint
+	shield_recovery_casing = /obj/item/ammo_casing/arrow/flint
 	damage = DAMAGE_MEDIUM
 	penetrating = 0
 	armor_penetration = ARMOR_CLASS
 	icon_state = "arrow_flint"
 
 /obj/item/projectile/arrow/arrow/stone
+	shield_recovery_casing = /obj/item/ammo_casing/arrow/stone
 	damage = DAMAGE_MEDIUM
 	penetrating = 0
 	armor_penetration = ARMOR_CLASS
 	icon_state = "arrow_stone"
 
 /obj/item/projectile/arrow/arrow/sandstone
+	shield_recovery_casing = /obj/item/ammo_casing/arrow/sandstone
 	damage = DAMAGE_MEDIUM
 	penetrating = 0
 	armor_penetration = ARMOR_CLASS
 	icon_state = "arrow_sandstone"
 
 /obj/item/projectile/arrow/arrow/copper
+	shield_recovery_casing = /obj/item/ammo_casing/arrow/copper
 	damage = DAMAGE_MEDIUM+1
 	penetrating = 0
 	armor_penetration = ARMOR_CLASS
 	icon_state = "arrow_copper"
 
 /obj/item/projectile/arrow/arrow/iron
+	shield_recovery_casing = /obj/item/ammo_casing/arrow/iron
 	damage = DAMAGE_MEDIUM+2
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS
 	icon_state = "arrow_iron"
 
 /obj/item/projectile/arrow/arrow/bronze
+	shield_recovery_casing = /obj/item/ammo_casing/arrow/bronze
 	damage = DAMAGE_MEDIUM+3
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS*2
 	icon_state = "arrow_bronze"
 
 /obj/item/projectile/arrow/arrow/steel
+	shield_recovery_casing = /obj/item/ammo_casing/arrow/steel
 	damage = DAMAGE_MEDIUM+4
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS*2
 	icon_state = "arrow_steel"
 
 /obj/item/projectile/arrow/arrow/modern
+	shield_recovery_casing = /obj/item/ammo_casing/arrow/modern
 	damage = DAMAGE_MEDIUM+5
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS*2
@@ -149,54 +158,63 @@
 
 //BOLTS
 /obj/item/projectile/arrow/bolt
+	shield_recovery_casing = /obj/item/ammo_casing/bolt
 	damage = DAMAGE_LOW-20+5
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS*1
 	icon_state = "bolt_iron"
 
 /obj/item/projectile/arrow/bolt/flint
+	shield_recovery_casing = /obj/item/ammo_casing/bolt/flint
 	damage = DAMAGE_MEDIUM+5
 	penetrating = 0
 	armor_penetration = ARMOR_CLASS*1
 	icon_state = "bolt_flint"
 
 /obj/item/projectile/arrow/bolt/stone
+	shield_recovery_casing = /obj/item/ammo_casing/bolt/stone
 	damage = DAMAGE_MEDIUM+5
 	penetrating = 0
 	armor_penetration = ARMOR_CLASS*1
 	icon_state = "bolt_stone"
 
 /obj/item/projectile/arrow/bolt/sandstone
+	shield_recovery_casing = /obj/item/ammo_casing/bolt/sandstone
 	damage = DAMAGE_MEDIUM+5
 	penetrating = 0
 	armor_penetration = ARMOR_CLASS*1
 	icon_state = "bolt_sandstone"
 
 /obj/item/projectile/arrow/bolt/copper
+	shield_recovery_casing = /obj/item/ammo_casing/bolt/copper
 	damage = DAMAGE_MEDIUM+1+5
 	penetrating = 0
 	armor_penetration = ARMOR_CLASS*1
 	icon_state = "bolt_copper"
 
 /obj/item/projectile/arrow/bolt/iron
+	shield_recovery_casing = /obj/item/ammo_casing/bolt/iron
 	damage = DAMAGE_MEDIUM+5+5
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS*2
 	icon_state = "bolt_iron"
 
 /obj/item/projectile/arrow/bolt/bronze
+	shield_recovery_casing = /obj/item/ammo_casing/bolt/bronze
 	damage = DAMAGE_MEDIUM+8+5
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS*2
 	icon_state = "bolt_bronze"
 
 /obj/item/projectile/arrow/bolt/steel
+	shield_recovery_casing = /obj/item/ammo_casing/bolt/steel
 	damage = DAMAGE_MEDIUM+11+5
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS*2
 	icon_state = "bolt_steel"
 
 /obj/item/projectile/arrow/bolt/modern
+	shield_recovery_casing = /obj/item/ammo_casing/bolt/modern
 	damage = DAMAGE_MEDIUM+11+5
 	penetrating = 1
 	armor_penetration = ARMOR_CLASS*2
