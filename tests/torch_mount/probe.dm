@@ -54,11 +54,13 @@ var/eco_runtime_error = FALSE
 	var/obj/structure/torch_stand/S = new(locate(5, 6, 1))
 	S.dir = NORTH
 	eco_check(S.storage, "a new mount has its holder")
+	eco_check(S.can_dismantle_with_hammer(H), "empty mount can be dismantled")
 	// Unlit torch, through the item click path.
 	var/obj/item/flashlight/torch/T = new(locate(5, 5, 1))
 	torch_mount_hold(H, T)
 	T.resolve_attackby(S, H)
 	eco_check(T.loc == S.storage, "an unlit torch goes into the mount (loc [T.loc])")
+	eco_check(!S.can_dismantle_with_hammer(H) && T.loc == S.storage, "hammering an occupied mount leaves the torch in place")
 	eco_check(S.icon_state == "torch_stand1", "the mount shows an unlit torch ([S.icon_state])")
 	// Lighting it in the mount lights the mount.
 	T.on = TRUE
@@ -67,6 +69,7 @@ var/eco_runtime_error = FALSE
 	// Taking it out.
 	S.storage.remove_from_storage(T, get_turf(S))
 	eco_check(T.loc == get_turf(S), "the torch comes back out")
+	eco_check(S.can_dismantle_with_hammer(H), "after removing the torch the mount can be dismantled again")
 	eco_check(S.icon_state == "torch_stand" && !S.light_range, "an empty mount is dark ([S.icon_state])")
 	qdel(T)
 	// A lit torch.
@@ -81,6 +84,7 @@ var/eco_runtime_error = FALSE
 	torch_mount_hold(H, N)
 	N.resolve_attackby(S, H)
 	eco_check(N.loc == S.storage, "a lantern goes into the mount (loc [N.loc])")
+	eco_check(!S.can_dismantle_with_hammer(H), "an occupied lantern mount also refuses dismantling")
 	S.storage.remove_from_storage(N, get_turf(S))
 	// A load: the saved holder (with its torch) replaces the constructor's.
 	var/obj/structure/torch_stand/R = new(locate(7, 6, 1))

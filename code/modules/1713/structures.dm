@@ -1758,6 +1758,12 @@
 	storage.can_hold = list(/obj/item/flashlight/torch, /obj/item/flashlight/lantern)
 	return storage
 
+/obj/structure/torch_stand/can_dismantle_with_hammer(mob/user)
+	if (storage && storage.contents.len)
+		to_chat(user, SPAN_WARNING("Remove the light from \the [src] first."))
+		return FALSE
+	return ..()
+
 /obj/structure/torch_stand/Destroy()
 	qdel(storage)
 	storage = null
