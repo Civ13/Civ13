@@ -4,9 +4,10 @@
   "commit": "a0f014bc5b8c84d3d9905a88a167ea22e2f70dcf",
   "messages": [
     {
-      "state": "pending",
+      "state": "sent",
       "chunk": 0,
-      "contentHash": "418f1acfe8ecc7512f05ab931f3086acd17d0240ef6c85346f7a88150cdbce35"
+      "contentHash": "418f1acfe8ecc7512f05ab931f3086acd17d0240ef6c85346f7a88150cdbce35",
+      "id": "1575531798035693599"
     }
   ],
   "skip": ""
