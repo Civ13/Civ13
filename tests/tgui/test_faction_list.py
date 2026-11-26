@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/game/mob/groups/factions.dm').read_text()
 VERB = SOURCE.split('/mob/proc/faction_list()', 1)[1].split('/mob/proc/show_faction_list()', 1)[0]
 OPEN = SOURCE.split('/mob/proc/show_faction_list()', 1)[1].split('/datum/topic_state/reader/faction_list/reader_allowed', 1)[0]
+TALLY = SOURCE.split('/obj/map_metadata/proc/faction_list_tally()', 1)[1].split('/mob/proc/show_faction_list()', 1)[0] if '/obj/map_metadata/proc/faction_list_tally()' in SOURCE else OPEN
 RULE = reader_base.rule(SOURCE, 'faction_list')
 UPDATE = reader_base.UPDATE
 
@@ -16,19 +17,29 @@ class FactionListContract(unittest.TestCase):
             self.assertIn(marker, VERB)
         self.assertLess(VERB.index('usr != src'), VERB.index('show_faction_list()'))
         self.assertIn('if (!client || !map || !map.civilizations)', OPEN)
-        self.assertLess(OPEN.index('!map.civilizations'), OPEN.index('map.facl = list()'))
+        self.assertLess(OPEN.index('!map.civilizations'), OPEN.index('map.facl = map.faction_list_tally()'))
 
-    def test_preserves_explicit_tally_and_all_non_dead_humans_without_player_or_member_filter(self):
-        for marker in ('map.facl = list()', 'map.custom_faction_nr.len', 'map.facl += list(map.custom_faction_nr[i] = nu)',
-                       'map.facl[relf] = 0', 'for (var/mob/living/human/H in human_mob_list)',
-                       'if (relf == H.civilization && H.stat != DEAD)', 'map.facl[relf] += 1', 'if (map.facl[relf] > 0)'):
-            self.assertIn(marker, OPEN)
-        self.assertNotIn('H.client', OPEN)
-        self.assertNotIn('sort', OPEN)
-        guard = re.search(r'if \((relf == H.civilization && H.stat != DEAD)\)', OPEN).group(1)
-        expression = guard.replace('H.civilization', 'civilization').replace('H.stat', 'stat').replace('&&', 'and')
-        for faction, stat, expected in [('A', 0, True), ('A', 1, True), ('A', 2, False), ('B', 0, False)]:
-            self.assertEqual(eval(expression, {'__builtins__': {}}, dict(relf='A', civilization=faction, stat=stat, DEAD=2)), expected)
+    def test_seeds_unique_founded_then_preset_clans_and_counts_all_living_humans(self):
+        self.assertIn('map.facl = map.faction_list_tally()', OPEN)
+        self.assertIn('if (map.facl[relf] > 0)', OPEN)
+        seeds = re.findall(r'for \(var/faction in (custom_\w+)\)\n\s+counts\[faction\] = 0', TALLY)
+        self.assertEqual(seeds, ['custom_faction_nr', 'custom_civs'])
+        self.assertIn('for (var/mob/living/human/H in human_mob_list)', TALLY)
+        self.assertIn('if (H.stat != DEAD && !isnull(counts[faction]))', TALLY)
+        self.assertIn('counts[faction] += 1', TALLY)
+        self.assertNotRegex(TALLY, r'H\.(?:client|ckey)|sort|custom_\w+\[[^]]+\]\s*=')
+
+        registries = {'custom_faction_nr': ['Founders', 'Mixed'],
+                      'custom_civs': ['Orc Horde', 'Mixed', 'Empty']}
+        tally = {faction: 0 for registry in seeds for faction in registries[registry]}
+        humans = [('Orc Horde', 0), ('Orc Horde', 1), ('Orc Horde', 2),
+                  ('Mixed', 0), ('Founders', 0), ('Unregistered', 0)]
+        for faction, stat in humans:
+            if stat != 2 and faction in tally:
+                tally[faction] += 1
+        self.assertEqual(list(tally.items()), [('Founders', 1), ('Mixed', 1), ('Orc Horde', 2), ('Empty', 0)])
+        self.assertEqual([faction for faction, members in tally.items() if members],
+                         ['Founders', 'Mixed', 'Orc Horde'])
 
     def test_cached_custom_symbol_precedes_existing_tinted_fallback_and_delivery_precedes_open(self):
         for marker in ('map.get_faction_symbol_icon(relf)', 'if (!symbol)', 'civ_data && civ_data.len >= 7',
