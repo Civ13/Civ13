@@ -24,11 +24,33 @@ class HorseSource(unittest.TestCase):
             self.assertIn(f'foal{n}_dead', states)
         self.assertTrue({'horseshoe', 'horseshoe_worn'} <= dmi_states('icons/obj/horseshoes.dmi'))
 
-    def test_ride_delay_is_used_by_players_and_agents(self):
-        move = (ROOT / 'code/game/mob/mob_movement.dm').read_text(encoding='utf-8')
+    def test_agent_ride_delay_includes_hitch_drag(self):
         agent = (ROOT / 'code/modules/agent_control/agent_movement.dm').read_text(encoding='utf-8')
-        self.assertIn('move_delay = HH.riding_mob.ride_delay() + HH.riding_mob.hitch_drag()', move)
         self.assertIn('delay = H.riding_mob.ride_delay() + H.riding_mob.hitch_drag()', agent)
+
+    def test_cart_cost_enters_shared_deadline_before_dispatch(self):
+        move = (ROOT / 'code/game/mob/mob_movement.dm').read_text(encoding='utf-8')
+        client_move = move.split("/client/Move(", 1)[1].split("\n/mob/proc/lastMovedRecently(", 1)[0]
+        apply_drag = "if (mob_is_human)\n\t\t\tmove_delay += H.ridden_handcart_drag()"
+        self.assertEqual(client_move.count("ridden_handcart_drag()"), 1)
+        before, after = client_move.split(apply_drag)
+        self.assertIn("move_delay = world.time + mob.movement_delay()//set move delay", before)
+        self.assertIn("H.human_subtile_deadline(move_delay, world.time, ordinal)", after)
+        self.assertIn("mob.SelfMove(n, direct)", after)
+        self.assertIn("move_delay /= t_movement_speed_multiplier", after)
+        self.assertNotIn("istype(src, /mob/living/human)", client_move)
+
+    def test_only_the_current_rider_pays_handcart_drag(self):
+        hitch = (ROOT / 'code/game/objects/structures/cart_hitch.dm').read_text(encoding='utf-8')
+        rider = hitch.split("/mob/living/human/proc/ridden_handcart_drag()", 1)[1].split("// ----", 1)[0]
+        self.assertIn("!riding || QDELETED(riding_mob) || riding_mob.rider != src", rider)
+        self.assertIn("return 0\n\treturn riding_mob.handcart_hitch_drag()", rider)
+        self.assertNotIn("ride_delay()", rider)
+        self.assertNotIn("hitched_train", rider)
+        cart = hitch.split("/mob/living/simple_animal/proc/handcart_hitch_drag()", 1)[1].split("\n/mob/", 1)[0]
+        self.assertIn("cart.hitched_to != src", cart)
+        self.assertIn("cart.drag_delay(src) / max(1, draft_animal_pull(src))", cart)
+
 
     def test_shoeing_rechecks_the_horse_before_consuming_equipment(self):
         shoe = SRC.split('/obj/item/horseshoes/proc/shoe(', 1)[1].split('\n/', 1)[0]

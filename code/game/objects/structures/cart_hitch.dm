@@ -205,10 +205,19 @@
 	// Drawing a train on rails (train_early.dm).
 	if (hitched_train && hitched_train.draft_animal == src)
 		return hitched_train.draft_drag(src)
+	return handcart_hitch_drag()
+
+/mob/living/simple_animal/proc/handcart_hitch_drag()
 	var/obj/structure/closet/crate/cart/cart = hitched_cart
 	if (!cart || QDELETED(cart) || cart.hitched_to != src)
 		return 0
 	return cart.drag_delay(src) / max(1, draft_animal_pull(src))
+
+// Player movement keeps its usual pace when no hand cart follows this mount.
+/mob/living/human/proc/ridden_handcart_drag()
+	if (!riding || QDELETED(riding_mob) || riding_mob.rider != src)
+		return 0
+	return riding_mob.handcart_hitch_drag()
 
 // ---- The carriage end ----
 

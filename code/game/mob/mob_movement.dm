@@ -918,10 +918,9 @@
 				move_delay += 2
 				return mob.buckled.relaymove(mob,direct)
 
-		if (istype(src, /mob/living/human))
-			var/mob/living/human/HH = src
-			if (HH.riding == TRUE && !isnull(HH.riding_mob))
-				move_delay = world.time + 0.5
+		// Choose the mounted cart cost once before the smooth/legacy step split.
+		if (mob_is_human)
+			move_delay += H.ridden_handcart_drag()
 
 		// A preceding climb wait/callback may have changed the body or links.
 		if (fine_step && (mob != input_actor || !H.human_subtile_fine_ready(direct)))
@@ -1102,16 +1101,9 @@
 			t_movement_speed_multiplier *= 0.9
 		if (move_delay > world.time)
 			move_delay -= world.time
-		if (istype(src, /mob/living/human))
-			var/mob/living/human/HH = src
-			if (HH.riding == TRUE && !isnull(HH.riding_mob))
-				move_delay = HH.riding_mob.ride_delay() + HH.riding_mob.hitch_drag()
-			else
-				move_delay /= t_movement_speed_multiplier
-		else
-			move_delay /= t_movement_speed_multiplier
-			if (ordinal)
-				move_delay *= ROOT2_FAST
+		move_delay /= t_movement_speed_multiplier
+		if (ordinal)
+			move_delay *= ROOT2_FAST
 		move_delay += world.time
 
 		return .
