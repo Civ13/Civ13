@@ -12,6 +12,13 @@
 				if (!persistence_saved_atom_construction && !FC.restoring && !FC.found && !FC.generating)
 					FC.generate_fish()
 
+/turf/floor/beach/water/Exited(atom/movable/O, atom/new_loc)
+	. = ..()
+	if (new_loc != src && istype(O, /obj/structure/fishing_cage))
+		var/obj/structure/fishing_cage/FC = O
+		if (FC.generating)
+			FC.cancel_fishing_soak()
+
 /obj/structure/buoy
 	name = "buoy"
 	desc = "A colorful buoy, marking something."
@@ -67,14 +74,15 @@
 	not_disassemblable = TRUE
 	var/found = null
 	var/generating = FALSE //so it doesn't run twice
+	var/soak_generation = 0
 
 /obj/structure/fishing_cage/persistence_runtime_var(key)
-	return key == "generating" || ..()
+	return key == "generating" || key == "soak_generation" || ..()
 
 /obj/structure/fishing_cage/after_load()
 	..()
 	// A pending spawn is process-local. Keep a saved catch, or start a fresh wait.
-	generating = FALSE
+	cancel_fishing_soak()
 	update_icon()
 	if (!found && istype(loc, /turf/floor/beach/water))
 		generate_fish()
@@ -137,18 +145,27 @@
 		return null
 	return picked
 
+/obj/structure/fishing_cage/proc/cancel_fishing_soak()
+	soak_generation++
+	generating = FALSE
+
 /obj/structure/fishing_cage/proc/generate_fish()
-	if (generating)
+	if (generating || found || !istype(loc, /turf/floor/beach/water))
 		return
+	soak_generation++
+	var/generation = soak_generation
+	var/turf/site = loc
 	generating = TRUE
-	found = null
-	if (!istype(loc, /turf/floor/beach/water))
-		generating = FALSE
-		return
 	spawn(rand(18000,24000))
-		generating = FALSE
-		if (QDELETED(src) || found || !istype(loc, /turf/floor/beach/water))
-			return
-		found = pick_catch(loc)
-		if (!found && !barren_water(loc))
-			generate_fish() // nothing this time; leave it down and wait again
+		finish_fishing_soak(site, generation)
+
+/obj/structure/fishing_cage/proc/finish_fishing_soak(turf/site, generation)
+	// An old wake-up must not clear a newer soak, even on the same water tile.
+	if (QDELETED(src) || generation != soak_generation)
+		return
+	generating = FALSE
+	if (found || loc != site || !istype(site, /turf/floor/beach/water))
+		return
+	found = pick_catch(site)
+	if (!found && !barren_water(site))
+		generate_fish() // nothing this time; leave it down and wait again
