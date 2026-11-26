@@ -50,12 +50,13 @@
 	if (..(user, TRUE) && !opened)
 		if(istype(src, /obj/structure/closet/crate/wall_mailbox))
 			var/obj/structure/closet/crate/wall_mailbox/WM = src
-			if (WM.contents_stored == 0)
+			var/item_count = closet_item_count(WM)
+			if (!item_count)
 				to_chat(user, "It is empty.")
-			else if  (WM.contents_stored <= 4 && WM.contents_stored != 0)
-				to_chat(user, "There is something inside.")
-			else if  (WM.contents_stored == 5)
+			else if (item_count >= WM.storagecap)
 				to_chat(user, "It is full.")
+			else
+				to_chat(user, "There is something inside.")
 		else
 			var/content_size = FALSE
 			for (var/obj/item/I in contents)

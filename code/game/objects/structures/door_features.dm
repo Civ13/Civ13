@@ -196,7 +196,7 @@
 		to_chat(user, SPAN_WARNING("Something on the other side blocks the slot."))
 		return FALSE
 	user.drop_from_inventory(I)
-	var/obj/receiver = door_mail_receiver(drop)
+	var/obj/receiver = door_mail_receiver(drop, I)
 	if (receiver)
 		I.forceMove(receiver)
 	else
@@ -206,9 +206,9 @@
 	return TRUE
 
 // A wall mailbox, crate or basket standing under the slot catches the post.
-/proc/door_mail_receiver(turf/T)
+/proc/door_mail_receiver(turf/T, obj/item/I)
 	for (var/obj/structure/closet/crate/C in T)
-		if (C.opened)
+		if (C.opened || !closet_has_room(C, I, quiet = TRUE))
 			continue
 		return C
 	for (var/obj/item/weapon/storage/S in T)
