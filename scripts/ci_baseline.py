@@ -399,7 +399,10 @@ SUITES = {
                   'code/game/objects/structures/animalspawner/wolfcave.dm')},
     'shield_block': {'files': ('tests/shield_block/test_block.py',),
         'paths': ('tests/shield_block/', 'code/game/objects/items/weapons/shields.dm'),
-        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+        'shared_paths': ('code/game/mob/living/carbon/human/human_defense.dm',
+                         'code/modules/projectiles/__projectiles.dm',
+                         'code/modules/projectiles/projectile/arrows.dm',
+                         'tests/save_movement/source_adapter.py')},
     'shove': {'files': ('tests/shove/test_shove.py',), 'paths': ('tests/shove/',),
         'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/carbon/human/subtile_movement.dm',
@@ -2613,6 +2616,7 @@ SUITES = {
     'furnace_manual': {'files': ('tests/furnace_manual/test_transaction.py',),
         'paths': ('tests/furnace_manual/',), 'shared_paths': (
             'tests/grinder/test_transaction.py',
+            'code/game/objects/structures.dm',
             'code/game/objects/structures/blacksmithing/refining.dm')},
     'grinder': {'files': ('tests/grinder/test_transaction.py',),
         'paths': ('tests/grinder/',), 'shared_paths': (
@@ -2835,7 +2839,10 @@ SUITES = {
     'water_treatment': {'files': ('tests/stone_boiling/test_source.py',
                                   'tests/stone_kiln/test_source.py'), 'paths': (
         'tests/stone_boiling/', 'tests/stone_kiln/',
-        'code/modules/persistence/functions.dm')},
+        'code/modules/persistence/functions.dm'), 'shared_paths': (
+            'code/game/atoms_movable.dm', 'code/game/objects/structures.dm',
+            'code/game/objects/structures/blacksmithing/refining.dm',
+            'tests/save_movement/source_adapter.py')},
     'lipstick_restore': {'files': ('tests/lipstick_restore/test_restore.py',),
         'paths': ('tests/lipstick_restore/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm',
@@ -3306,6 +3313,10 @@ SUITES = {
         'shared_paths': ('code/game/objects/structures/kitchen/oven.dm',
                          'code/modules/reagents/reagent_containers/food/snacks.dm',
                          'code/game/mob/living/simple_animal/friendly/birds.dm')},
+    'specialist_trader_quote': {'files': ('tests/specialist_traders/test_purchase_quote.py',),
+        'paths': ('tests/specialist_traders/test_purchase_quote.py',),
+        'shared_paths': ('code/game/objects/structures/vending/specialist_traders.dm',
+                         'tests/save_movement/source_adapter.py')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

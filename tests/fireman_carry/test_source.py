@@ -66,6 +66,33 @@ class FiremanCarrySource(unittest.TestCase):
         pull = float(re.search(r'istype\(mob\.pulling, /mob\)\)\n\t+move_delay \+= ([0-9.]+)', movement).group(1))
         self.assertLess(float(defines['FIREMAN_CARRY_GRAB_DELAY']), pull)
 
+    def test_prone_blocks_start_and_completion_of_the_lift(self):
+        self.assertIn('/proc/fireman_carrier_ready()', self.carry)
+        readiness = proc(self.carry, '/proc/fireman_carrier_ready()')
+        for guard in ('QDELETED(assailant)', 'assailant.stat == CONSCIOUS', 'assailant.canmove', '!assailant.lying', '!assailant.prone'):
+            self.assertIn(guard, readiness)
+        click = proc(self.carry, '/proc/fireman_carry_click()')
+        wait = click.index('do_mob(')
+        self.assertIn('!fireman_carrier_ready()', click[:wait])
+        self.assertIn('!fireman_carrier_ready()', click[wait:click.index('affecting.persistence_set_loc')])
+
+    def test_movement_rechecks_carry_before_repositioning_patient(self):
+        periodic = proc(self.carry, '/proc/check_fireman_carry()')
+        self.assertIn('!fireman_carrier_ready()', periodic)
+        self.assertIn('stop_fireman_carry(TRUE)', periodic)
+        position = proc(self.carry, '/proc/fireman_carry_position()')
+        self.assertIn('check_fireman_carry()', position)
+        self.assertLess(position.index('check_fireman_carry()'), position.index('if (!carrying ||'))
+        self.assertLess(position.index('if (!carrying ||'), position.index('affecting.persistence_set_loc'))
+        release = proc(self.carry, '/proc/stop_fireman_carry(')
+        self.assertIn('carrying = FALSE', release)
+        self.assertIn('pixel_y = FALSE', release)
+        self.assertNotIn('qdel', release)
+
+    def test_prone_does_not_receive_carry_movement_discount(self):
+        for header in ('/mob/proc/grab_move_delay()', '/mob/proc/grab_move_cost()'):
+            self.assertIn('G.carrying && G.fireman_carrier_ready()', proc(self.carry, header))
+
     def test_carry_never_becomes_a_new_grab_state(self):
         # Neck/kill checks compare state numerically; a carry is a flag on an aggressive grab.
         self.assertNotIn('GRAB_CARRY', read('code/predefines.dm'))

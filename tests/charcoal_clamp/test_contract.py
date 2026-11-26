@@ -79,7 +79,10 @@ class CharcoalClamp(unittest.TestCase):
     def test_dig_out_refuses_while_burning_and_returns_logs(self):
         dig = proc_body('/obj/structure/charcoal_clamp/proc/dig_out(')
         self.assertLess(dig.index('if (burning)'), dig.index('do_after'))
-        self.assertIn('/obj/item/stack/material/wood/W = new(T, wood_charge)', dig)
+        self.assertIn('/obj/item/stack/material/wood/W = new(T, wood_charge, FALSE)', dig)
+        self.assertLess(dig.index('if (!T)'), dig.index('wood_charge = 0'))
+        self.assertLess(dig.index('pile.onfire || pile.type != W.type'), dig.index('W.merge(pile)'))
+        self.assertIn('if (QDELETED(W))\n\t\t\t\tbreak', dig)
         self.assertNotIn('W.amount = wood_charge', dig)
 
     def test_burn_survives_save_and_load(self):

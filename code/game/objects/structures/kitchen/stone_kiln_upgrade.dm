@@ -178,6 +178,12 @@
 		return TRUE
 	return ..()
 
+/obj/structure/furnace/kiln/stone/campfire/can_dismantle_with_hammer(mob/user)
+	for (var/obj/item/weapon/reagent_containers/glass/small_pot/P in contents)
+		to_chat(user, SPAN_NOTICE("Remove the boiling pot before dismantling the kiln."))
+		return FALSE
+	return ..()
+
 /obj/structure/furnace/kiln/stone/campfire/verb/remove_boiling_pot()
 	set name = "Remove boiling pot"
 	set category = null

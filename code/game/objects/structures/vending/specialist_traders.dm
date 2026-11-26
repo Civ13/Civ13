@@ -395,13 +395,14 @@ var/global/list/specialist_trader_sell_floor = null
 		var/atom/proto = path
 		var/item_name = initial(proto.name)
 		var/label = entry[2] > 1 ? "[entry[2]] x [item_name]" : "[item_name]"
-		var/price = specialist_trader_price_text(T.price_for(i, H), T.accepts)
+		var/price = T.price_for(i, H)
+		var/price_text = specialist_trader_price_text(price, T.accepts)
 		if (T.stock_left[i] <= 0)
-			items += list(panel_item(label, "[price] (sold out)"))
+			items += list(panel_item(label, "[price_text] (sold out)"))
 		else if (!T.entry_researched(entry, H))
-			items += list(panel_item(label, "[price] (your people have not researched it)"))
+			items += list(panel_item(label, "[price_text] (your people have not researched it)"))
 		else
-			items += list(panel_item(label, "[price], [T.stock_left[i]] left", list(panel_button("Buy", "buy", i))))
+			items += list(panel_item(label, "[price_text], [T.stock_left[i]] left", list(panel_button("Buy", "buy", "[i]:[price]"))))
 	open_panel(H, "[T.dealer], [T.title]", 520, 480, list(
 		panel_section(null, notes = notes),
 		panel_section("Stock", items = items, empty = "Nothing for sale in this age.")), ui_key = ui_key, ui = ui, force_open = force_open)
@@ -413,12 +414,21 @@ var/global/list/specialist_trader_sell_floor = null
 	var/datum/specialist_trader/T = trader()
 	if (!T || busy)
 		return TRUE
+	if (!istext(params["value"]))
+		return TRUE
+	var/list/quote = splittext(params["value"], ":")
+	if (quote.len != 2)
+		return TRUE
+	var/index = text2num(quote[1])
+	var/quoted_price = text2num(quote[2])
+	if (!isnum(index) || index != round(index) || !isnum(quoted_price))
+		return TRUE
 	busy = TRUE
-	buy(H, text2num("[params["value"]]"))
+	buy(H, index, quoted_price)
 	busy = FALSE
 	return TRUE
 
-/obj/structure/specialist_trader/proc/buy(mob/living/human/H, index)
+/obj/structure/specialist_trader/proc/buy(mob/living/human/H, index, quoted_price = null)
 	if (!open_for_trade(H))
 		return FALSE
 	var/datum/specialist_trader/T = trader()
@@ -433,6 +443,9 @@ var/global/list/specialist_trader_sell_floor = null
 		to_chat(H, "<span class='warning'>Your people would not know what to do with that yet.</span>")
 		return FALSE
 	var/price = T.price_for(index, H)
+	if (!isnull(quoted_price) && price != quoted_price)
+		to_chat(H, "<span class='warning'>The price has changed. Review the new price before buying.</span>")
+		return FALSE
 	if (!specialist_trader_take_payment(H, price, T.accepts, get_turf(H)))
 		to_chat(H, "<span class='warning'>That costs [specialist_trader_price_text(price, T.accepts)], in [specialist_trader_coin_list_text(T.accepts)]. Hold them or keep them in your pockets.</span>")
 		return FALSE

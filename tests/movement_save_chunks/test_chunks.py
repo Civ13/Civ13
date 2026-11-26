@@ -169,7 +169,16 @@ class ProductionBoundaryTests(unittest.TestCase):
             '/mob/living/simple_animal/bison/persistence_runtime_var',
             # Audited for mouse nests: a nonyielding key comparison of tmp nest links.
             '/mob/living/simple_animal/mouse/persistence_runtime_var',
+            # Audited for K-9 cease orders: a nonyielding comparison of a
+            # timer-only scalar, with no movement or graph side effects.
+            '/mob/living/simple_animal/complex_animal/dog/persistence_runtime_var',
         }, 'New animal projection hooks require a nonyielding/ownership audit')
+
+    def test_dog_bite_epoch_exclusion_is_only_a_key_check(self):
+        dog = (ROOT / 'code/modules/1713/complex_animal/dog.dm').read_text()
+        hook = dog.split('/mob/living/simple_animal/complex_animal/dog/persistence_runtime_var(key)\n', 1)[1]
+        self.assertEqual(hook.split('\n/mob/', 1)[0].strip(),
+                         'return key == "bite_order_epoch" || ..()')
 
     def test_packet_materializes_only_hashed_sources(self):
         spec = importlib.util.spec_from_file_location('moving_packet', ROOT / 'tests/movement_save_chunks/prepare.py')

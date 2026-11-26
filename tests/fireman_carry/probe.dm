@@ -40,6 +40,16 @@ var/global/carry_errors = 0
 	G.state = GRAB_AGGRESSIVE
 	carry_check(G.carry_target_downed(), "downed-target")
 	carry_check(A.grab_move_delay() == 1, "plain-grab-delay")
+	var/turf/initial_patient_turf = get_turf(V)
+	A.prone = TRUE
+	G.fireman_carry_click()
+	carry_check(!G.carrying && V.loc == initial_patient_turf, "prone-carrier-cannot-begin-lift")
+	A.prone = FALSE
+	spawn(5)
+		A.prone = TRUE
+	G.fireman_carry_click()
+	carry_check(A.prone && !G.carrying && V.loc == initial_patient_turf, "going-prone-cancels-timed-lift")
+	A.prone = FALSE
 	G.fireman_carry_click()
 	carry_check(G.carrying, "carry-starts")
 	carry_check(V.loc == A.loc, "carried-on-carrier-tile")
@@ -57,6 +67,16 @@ var/global/carry_errors = 0
 	G.last_action = 0
 	G.attack(A, A)
 	carry_check(G.carrying, "click-self-carries-again")
+	var/turf/putdown_site = get_turf(A)
+	A.prone = TRUE
+	carry_check(A.grab_move_cost() == 1, "prone-carrier-gets-no-carry-discount")
+	A.forceMove(get_step(A, EAST))
+	G.adjust_position()
+	sleep(4)
+	carry_check(!G.carrying && V.loc == putdown_site && V.pixel_y == 0 && V.layer == 4 && G.state == GRAB_AGGRESSIVE, "movement-drops-patient-before-repositioning")
+	A.prone = FALSE
+	G.fireman_carry_click()
+	carry_check(G.carrying, "standing-carrier-can-lift-again")
 	V.SetWeakened(0)
 	V.lying = FALSE
 	V.stat = CONSCIOUS

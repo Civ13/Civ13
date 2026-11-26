@@ -59,6 +59,20 @@ class BookReaderContract(unittest.TestCase):
    self.assertIsNone(parse('A<br>B',Budget(nodes=2)))
    self.assertIsNone(parse('A<font>B</font>',Budget(nodes=2)))
    self.assertIsNotNone(parse('A<br>B',Budget(nodes=3)))
+ def test_bare_page_divider_keeps_ink_order_and_uses_the_node_budget(self):
+  writer=(ROOT/'code/modules/research_tree/book_pages.dm').read_text()
+  self.assertIn('"<hr>"',writer)
+  value='<font color=white>First</font><hr><font color=black>Second</font>'
+  for byte_mode in (False,True):
+   parse,_,_=parser(bytes_mode=byte_mode)
+   runs=parse(value,Budget())
+   self.assertEqual(runs,[dict(text='First',ink='#ffffff',face='times',bold=False,italic=False),
+                          dict(divider=True),
+                          dict(text='Second',ink='#000000',face='times',bold=False,italic=False)])
+   self.assertIsNone(parse('A<hr>B',Budget(nodes=2)))
+   self.assertIsNotNone(parse('A<hr>B',Budget(nodes=3)))
+   for unsupported in ('<hr title=label>','<b><hr></b>','<hr/>','<hr><u>Later</u>'):
+    self.assertIsNone(parse('Earlier'+unsupported,Budget()))
  def test_metadata_rejects_whole_view(self):
   _,_,metadata=parser()
   self.assertTrue(metadata('Ordinary title'))

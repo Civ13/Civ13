@@ -7,16 +7,24 @@
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern
 	var/pipe_connected = FALSE
+	// Zero is a same-turf fitting. Old saves only record pipe_connected.
+	var/pipe_fitting_direction = null
 
-// The open pipe this barrel stands on or beside, if any.
+// Find a pipe at the recorded fitting, or look around for a new fitting.
 /obj/item/weapon/reagent_containers/glass/barrel/modern/proc/pipe_beside()
 	if (!isturf(loc))
 		return null
-	var/list/turfs = list(loc)
-	for (var/d in cardinal)
-		var/turf/T = get_step(loc, d)
-		if (T)
-			turfs += T
+	var/list/turfs = list()
+	if (isnull(pipe_fitting_direction))
+		turfs += loc
+		for (var/d in cardinal)
+			var/turf/T = get_step(loc, d)
+			if (T)
+				turfs += T
+	else
+		var/turf/fitting_turf = pipe_fitting_direction ? get_step(loc, pipe_fitting_direction) : loc
+		if (fitting_turf)
+			turfs += fitting_turf
 	for (var/turf/T in turfs)
 		for (var/obj/structure/fluid_pipe/P in T)
 			if (P.fluid_open() && !QDELETED(P))
@@ -27,12 +35,27 @@
 	if (!pipe_connected)
 		return
 	pipe_connected = FALSE
+	pipe_fitting_direction = null
 	fluid_mark_dirty()
 	if (user)
 		to_chat(user, SPAN_NOTICE("You detach \the [src] from the pipe."))
 
-/obj/item/weapon/reagent_containers/glass/barrel/modern/fluid_pipe_joinable()
-	return pipe_connected
+/proc/fluid_barrel_fitting_restore_blocked()
+	return persistence_active_operation?.kind == "load" || persistence_load_recovery_required
+
+/obj/item/weapon/reagent_containers/glass/barrel/modern/fluid_pipe_joinable(obj/structure/fluid_pipe/pipe)
+	if (!pipe_connected)
+		return FALSE
+	var/obj/structure/fluid_pipe/fitting = pipe_beside()
+	if (!fitting)
+		return FALSE
+	// Recover a fitting once for legacy barrels, but never choose from a partial map.
+	if (isnull(pipe_fitting_direction))
+		if (fluid_barrel_fitting_restore_blocked())
+			fluid_barrel_fittings_pending = TRUE
+			return FALSE
+		pipe_fitting_direction = get_dir(loc, fitting.loc)
+	return pipe == fitting
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/fluid_supply_tier()
 	return pipe_connected && pipe_beside() ? FLUID_TIER_SOURCE : 0
@@ -47,9 +70,11 @@
 		playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
 		pipe_disconnect(user)
 		return TRUE
-	if (!isturf(loc) || !pipe_beside())
+	var/obj/structure/fluid_pipe/fitting = pipe_beside()
+	if (!fitting)
 		to_chat(user, SPAN_WARNING("\The [src] needs to stand on or next to a fastened pipe."))
 		return TRUE
+	pipe_fitting_direction = get_dir(loc, fitting.loc)
 	pipe_connected = TRUE
 	fluid_mark_dirty()
 	playsound(loc, 'sound/items/Ratchet.ogg', 50, TRUE)
@@ -68,9 +93,7 @@
 		pipe_disconnect()
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/Destroy()
-	if (pipe_connected)
-		pipe_connected = FALSE
-		fluid_mark_dirty()
+	pipe_disconnect()
 	return ..()
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/after_load()
@@ -80,7 +103,9 @@
 
 /obj/item/weapon/reagent_containers/glass/barrel/modern/examine(mob/user)
 	..()
-	if (pipe_connected)
+	if (pipe_connected && pipe_beside())
 		to_chat(user, SPAN_NOTICE("It is fitted to a pipe, and supplies its network while a pump runs. Use a wrench to detach it."))
+	else if (pipe_connected)
+		to_chat(user, SPAN_NOTICE("Its fitting has no open pipe. Use a wrench to detach it."))
 	else
 		to_chat(user, SPAN_NOTICE("Use a wrench while it stands on or next to a pipe to fit it to the network."))

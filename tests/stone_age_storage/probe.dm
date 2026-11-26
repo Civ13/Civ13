@@ -170,16 +170,40 @@ var/store_runtime_error = FALSE
 	store_check(storage_food_decay_step(Z.storage) == 100 && Z.icon_state == "zeer_pot_wet", "wet, it keeps food longer and looks wet")
 	store_check(!Z.pour_water(B, M), "soaked sand takes no more water")
 	Z.water_tick = world.time - 600 * 600 // ten hours
-	var/rate = Z.evaporation_rate()
+	var/rate = Z.water_sample_rate
 	Z.settle_water()
 	store_check(rate <= 0 ? Z.water == 60 : (Z.water == 0 && Z.icon_state == "zeer_pot"), "the sand dries out over time unless it is freezing")
-	Z.water_tick = 0
 	Z.water = 30
+	Z.after_load()
+	store_check(Z in processing_objects, "wet pots resume ambient sampling after load")
 	Z.settle_water()
 	store_check(Z.water == 30 && Z.water_tick == world.time, "time before a load does not dry it")
-	store_check(Z.persistence_runtime_var("water_tick") && !Z.persistence_runtime_var("water"), "the water is saved, its clock is not")
+	store_check(Z.persistence_runtime_var("water_tick") && Z.persistence_runtime_var("water_sample_rate") && !Z.persistence_runtime_var("water"), "the water is saved, its clock is not")
 	var/obj/item/weapon/clay/storage_jar/zeer_pot/wet = new(T)
 	store_check(wet.result == /obj/structure/storage_container/storage_jar/zeer_pot, "the unfired pot fires into a zeer pot")
+	store_zeer_transition_checks(T)
+
+// Force the current ambient rate without requiring a real weather transition.
+/obj/structure/storage_container/storage_jar/zeer_pot/probe_sampler
+	var/probe_rate = 0
+
+/obj/structure/storage_container/storage_jar/zeer_pot/probe_sampler/evaporation_rate()
+	return probe_rate
+
+/proc/store_zeer_transition_checks(turf/T)
+	var/obj/structure/storage_container/storage_jar/zeer_pot/probe_sampler/Z = new(T)
+	Z.water = 2
+	Z.after_load()
+	Z.process_interval()
+	Z.water_tick = world.time - 6000
+	Z.probe_rate = 0.33
+	Z.settle_water()
+	store_check(Z.water == 2 && Z.water_sample_rate == 0.33, "warming does not evaporate water from a prior frozen interval")
+	Z.water_tick = world.time - 6000
+	Z.probe_rate = 0
+	Z.process_interval()
+	store_check(Z.water == 0 && !(Z in processing_objects), "freezing does not restore water from a prior warm interval, and dry pots stop processing")
+	qdel(Z)
 
 /proc/store_jar_firing_checks()
 	var/turf/T = locate(14, 14, 1)

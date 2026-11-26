@@ -23,6 +23,7 @@ var/global/list/fluid_pipes = list()
 var/global/list/fluid_pumps = list()
 var/global/list/fluid_networks = list()
 var/global/fluid_networks_dirty = TRUE
+var/global/fluid_barrel_fittings_pending = FALSE
 var/global/fluid_tick = 0
 var/global/fluid_steps_since_rebuild = 0
 var/global/fluid_step_serial = 0
@@ -46,7 +47,7 @@ var/global/fluid_step_serial = 0
 
 // Whether pipes join this object. Items stay out unless they opt in, like a
 // steel barrel fitted with a wrench (piped_barrel.dm).
-/obj/proc/fluid_pipe_joinable()
+/obj/proc/fluid_pipe_joinable(obj/structure/fluid_pipe/pipe)
 	return !istype(src, /obj/item)
 
 // Whether this machine lets reagent id out through pipes.
@@ -206,7 +207,7 @@ var/global/fluid_step_serial = 0
 		for (var/obj/structure/fluid_pipe/P in N.pipes)
 			for (var/turf/T in list(P.loc) + P.fluid_adjacent_turfs())
 				for (var/obj/O in T)
-					if (!istype(O, /obj/structure/fluid_pipe) && O.fluid_pipe_joinable() && fluid_has_role(O))
+					if (!istype(O, /obj/structure/fluid_pipe) && O.fluid_pipe_joinable(P) && fluid_has_role(O))
 						N.members |= O
 		fluid_networks += N
 	for (var/obj/structure/fluid_pipe/P in fluid_pipes)
@@ -221,6 +222,11 @@ var/global/fluid_step_serial = 0
 // One network step: pumps draw power, then each awake network moves reagents.
 /proc/factory_fluids_step()
 	fluid_step_serial++
+	// A rebuild during import can clear its ordinary dirty flag. Reconcile
+	// deferred barrel migrations on the first step that sees a complete map.
+	if (fluid_barrel_fittings_pending && !fluid_barrel_fitting_restore_blocked())
+		fluid_barrel_fittings_pending = FALSE
+		fluid_mark_dirty()
 	if (fluid_networks_dirty || ++fluid_steps_since_rebuild >= FLUID_REBUILD_STEPS)
 		fluid_rebuild_networks()
 	for (var/obj/structure/fluid_pump/P in fluid_pumps.Copy())
@@ -331,7 +337,7 @@ var/global/fluid_step_serial = 0
 				if (P.fluid_open())
 					dirs |= d
 					break
-			else if (O.fluid_pipe_joinable() && fluid_has_role(O))
+			else if (O.fluid_pipe_joinable(src) && fluid_has_role(O))
 				dirs |= d
 				break
 	return dirs

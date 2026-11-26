@@ -62,6 +62,20 @@ class LatrineWasteTest(unittest.TestCase):
         self.assertIn("H.soil(0, DIRTY_HANDS_WASTE)", draw)
         self.assertIn("I.is_open_container()", SOURCE)
 
+    def test_drawing_rechecks_the_outhouse_door_after_wait(self):
+        draw = proc(SOURCE, "/obj/structure/toilet/proc/draw_urine(")
+        after_wait = draw.split("do_after(user, 15, src)", 1)[1]
+        gate = after_wait.split("var/amount", 1)[0]
+        self.assertRegex(gate, r"!latrine_reachable\(user\)\)\n\t\treturn")
+
+    def test_drawing_rechecks_the_receiving_vessel_after_wait(self):
+        draw = proc(SOURCE, "/obj/structure/toilet/proc/draw_urine(")
+        after_wait = draw.split("do_after(user, 15, src)", 1)[1]
+        gate = after_wait.split("var/amount", 1)[0]
+        for check in ("QDELETED(RC)", "!RC.is_open_container()", "!RC.reagents"):
+            self.assertIn(check, gate)
+        self.assertRegex(gate, r"if \(.*!RC.is_open_container\(\).*\)\n\t\treturn")
+
     def test_outhouse_must_be_open(self):
         self.assertIn("istype(src, /obj/structure/toilet/outhouse) && !open", SOURCE)
 

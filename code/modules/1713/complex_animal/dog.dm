@@ -40,6 +40,7 @@
 	var/prioritizes = "attacking"
 	
 	var/pounce_range = 3 // How far the mob can be away from a target in order for it to pounce
+	var/tmp/bite_order_epoch = 0
 	var/next_shred = -1 
 
 	var/last_patrol_area = null
@@ -348,12 +349,17 @@
 	wander_probability = 20
 	onModeChange()
 
+/mob/living/simple_animal/complex_animal/dog/persistence_runtime_var(key)
+	return key == "bite_order_epoch" || ..()
+
 /mob/living/simple_animal/complex_animal/dog/proc/passive(var/mob/living/human/H)
 	if (attack_mode != -1)
 		visible_message("<span class = 'notice'>\The [src] looks calm.</span>")
 	attack_mode = -1
-	onModeChange()
+	bite_order_epoch++
 	enemies = list()
+	walking_to = following
+	onModeChange()
 	if (H && !following)
 		follow(H)
 
@@ -361,8 +367,6 @@
 	passive()
 	stop_patrol()
 	visible_message("<span class = 'notice'>\The [src] stops doing everything they were doing.</span>")
-	onModeChange()
-	enemies = list()
 	if (H && !following)
 		follow(H)
 
@@ -489,6 +493,15 @@
 // dog combat
 
 
+// Timers belong to the attack order in force when they were scheduled.
+/mob/living/simple_animal/complex_animal/dog/proc/queue_bite(mob/living/human/H, delay, autonomous_only = FALSE)
+	addtimer(CALLBACK(src, PROC_REF(bite_if_current), H, bite_order_epoch, autonomous_only), delay)
+
+/mob/living/simple_animal/complex_animal/dog/proc/bite_if_current(mob/living/human/H, order_epoch, autonomous_only)
+	if (QDELETED(src) || QDELETED(H) || order_epoch != bite_order_epoch || (autonomous_only && client))
+		return
+	shred(H)
+
 /mob/living/simple_animal/complex_animal/dog/proc/shred(var/mob/living/human/H)
 	if (stat == CONSCIOUS && !resting && H.stat != DEAD && H.getBruteLoss() <= 500)
 		if (world.time >= next_shred)
@@ -505,9 +518,7 @@
 						H.apply_damage((rand(8,12)/H.getStatCoeff("strength")), BRUTE, "groin", FALSE, sharp = TRUE, used_weapon = "Teeth")
 				playsound(get_turf(src), 'sound/weapons/bite.ogg', rand(70, 80))
 				next_shred = world.time + 20
-				spawn (20)
-					if (!client)
-						shred(H)
+				queue_bite(H, 20, TRUE)
 
 /*
 /mob/living/simple_animal/complex_animal/dog/proc/pounce(var/mob/living/human/H)
@@ -544,8 +555,7 @@
 
 				enemies |= H
 
-				spawn (rand(2,3))
-					shred(H)
+				queue_bite(H, rand(2,3))
 
 				// make other dogs go after them too
 				for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, H))
@@ -559,7 +569,7 @@
 		if (W.force > resistance)
 
 			enemies |= H
-			processes.callproc.queue(src, /mob/living/simple_animal/complex_animal/dog/proc/shred, list(H), 2)
+			queue_bite(H, 2)
 
 			// make other dogs go after them too
 			for (var/mob/living/simple_animal/complex_animal/dog/D in view(7, H))

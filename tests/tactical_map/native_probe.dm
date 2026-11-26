@@ -128,6 +128,21 @@ var/global/datum/tactical_map_probe/tactical_map_probe = new
 				downs++
 		require(downs == 1, "downed trooper not shown as down")
 		trooper2.stat = CONSCIOUS
+		// A passenger's coordinates come from its resolved transport turf.
+		var/turf/passenger_home = get_turf(trooper)
+		var/turf/transport_turf = locate(cx + 12, cy + 3, z)
+		var/obj/structure/closet/transport = new(transport_turf)
+		trooper.forceMove(transport)
+		blips = tactical_maps.blips_for(side, z, officer)
+		var/passenger_shown = FALSE
+		for (var/list/B in blips)
+			if (B[1] == transport_turf.x && B[2] == transport_turf.y)
+				passenger_shown = TRUE
+		require(blips.len == 4 && passenger_shown, "ally in transport not shown at transport turf")
+		for (var/list/B in tactical_maps.blips_for(side, z + 1, officer))
+			require(B[1] != transport_turf.x || B[2] != transport_turf.y, "off-level ally leaked")
+		trooper.forceMove(passenger_home)
+		qdel(transport)
 		pass("blips", list("count" = blips.len))
 
 		phase = "markers"
