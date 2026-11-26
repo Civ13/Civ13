@@ -2341,7 +2341,8 @@ SUITES = {
             'code/modules/1713/telegraph.dm', 'tests/save_movement/source_adapter.py')},
     'telephone_recipients': {'files': ('tests/telephone/test_recipients.py',),
         'paths': ('tests/telephone/',), 'shared_paths': (
-            'code/modules/1713/telephone.dm', 'tests/save_movement/source_adapter.py')},
+            'code/modules/1713/telephone.dm', 'code/game/objects/map_metadata/campaign_old.dm',
+            'tests/save_movement/source_adapter.py')},
 
     # Stdlib + reviewed source projection only; frozen DM is offline data.
     # No native runner, engine process, socket or network boundary is imported.

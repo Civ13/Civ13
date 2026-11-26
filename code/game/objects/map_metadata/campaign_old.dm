@@ -501,7 +501,8 @@ var/no_loop_ca = FALSE
 		else
 			return
 
-		ring_phone(tgtnum,phonenumber, src, user)
+		if (!ring_phone(tgtnum,phonenumber, src, user))
+			return
 		spawn(200)
 			if (!connected || !origincall)
 				to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
