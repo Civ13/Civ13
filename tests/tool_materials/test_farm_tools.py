@@ -13,9 +13,12 @@ import json
 import re
 import subprocess
 import sys
+from types import SimpleNamespace as NS
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+from source_adapter import extract, project
 SOURCE = (ROOT / 'code/modules/materials/farm_tools.dm').read_text(encoding='utf-8')
 PROPERTIES = (ROOT / 'code/modules/materials/material_properties.dm').read_text(encoding='utf-8')
 RESEARCH = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8', errors='ignore')
@@ -52,6 +55,32 @@ class FarmTools(unittest.TestCase):
         self.assertIn('if (!sickle_reaping && istype(S) && S.material && stage >= readyStageMin && readyHarvest())', body)
         self.assertLess(body.index('. = ..()'), body.index('sickle_reaping = TRUE'))
         self.assertLess(body.index('sickle_reaping = TRUE'), body.index('sickle_reaping = FALSE'))
+
+    def test_sickle_sweep_skips_blocked_crops_without_spending_its_limit(self):
+        stone = (ROOT / 'code/modules/1713/stone_age_extras.dm').read_text()
+        flint_limit = int(re.search(r'#define SICKLE_EXTRA_REAP (\d+)', stone)[1])
+        center = object()
+
+        def plant(label, *, touching=True, ripe=True, kind='wheat'):
+            return NS(label=label, type='crop', plant=kind, readyHarvest=lambda: ripe,
+                      Adjacent=lambda origin: touching and origin is center)
+
+        for source, name, limit in ((SOURCE, 'metal_sickle_neighbours', reach('steel')),
+                                    (stone, 'sickle_neighbours', flint_limit)):
+            with self.subTest(sickle=name):
+                candidates = [plant('behind window', touching=False), plant('not ripe', ripe=False),
+                              plant('different species', kind='oats')]
+                clear = [plant(f'clear route {i}') for i in range(limit + 1)]
+                candidates.extend(clear)
+                proc = '/obj/structure/farming/plant/proc/' + name
+                # BYOND accumulates the return list with . +=; Python uses append.
+                code = extract(source, proc).replace('. += P', 'result.append(P)').replace('length(.)', 'length(result)')
+                sweep = project(proc + '()\n' + code + '\n\treturn result\n', proc, '',
+                                dict(list=list, src=center, plant='wheat', type='crop',
+                                     reach=limit, SICKLE_EXTRA_REAP=limit, length=len,
+                                     orange=lambda _, target: candidates if target is center else [],
+                                     typed_iter=lambda values, _: values))
+                self.assertEqual([p.label for p in sweep()], [p.label for p in clear[:limit]])
 
     def test_hoe_is_a_plough_at_its_materials_speed(self):
         block = re.search(r'^' + re.escape(HOE) + r'\n((?:\t[^\n]*\n)+)', SOURCE, re.M)[1]
