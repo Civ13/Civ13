@@ -80,25 +80,71 @@ export function format(m) {
   if (current) chunks.push(current);
   return chunks;
 }
-export async function request(url, options = {}, { fetcher = fetch, sleep = ms => new Promise(r => setTimeout(r, ms)) } = {}) {
-  for (let attempt = 0; attempt < 5; attempt++) {
+const maxAttempts = 5;
+const newRateBudget = () => ({ remaining: 180_000 });
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+class RateLimitRejected extends Error {
+  constructor(service) {
+    super(service + ' rate limit: retry later (request was rejected, not delivered).');
+    this.service = service;
+  }
+}
+function secondsDelay(value) {
+  if ((typeof value !== 'number' && typeof value !== 'string') || String(value).trim() === '') return null;
+  const seconds = Number(value);
+  return Number.isFinite(seconds) && seconds >= 0 ? Math.ceil(seconds * 1000) : null;
+}
+function headerDelay(value, now) {
+  const seconds = secondsDelay(value);
+  if (seconds !== null) return seconds;
+  const date = typeof value === 'string' && /^[A-Z][a-z]{2}, .* GMT$/.test(value) ? Date.parse(value) : NaN;
+  return Number.isFinite(date) ? Math.max(0, date - now) : null;
+}
+function rateLimitDelay(service, response, body, now, count) {
+  const retries = [headerDelay(response.headers.get('retry-after'), now)];
+  if (service === 'GitHub') {
+    if (response.headers.get('x-ratelimit-remaining') === '0') {
+      const reset = secondsDelay(response.headers.get('x-ratelimit-reset'));
+      if (reset !== null) retries.push(Math.max(0, reset - now) + 1000);
+    }
+    // GitHub's secondary limit may not advertise a retry time.
+    if (retries.every(delay => delay === null)) return 60_000 * 2 ** count;
+  } else {
+    retries.push(secondsDelay(body?.retry_after));
+  }
+  const valid = retries.filter(delay => delay !== null);
+  return valid.length ? Math.max(250, ...valid) : null;
+}
+export async function request(url, options = {}, { fetcher = fetch, sleep = wait, now = Date.now, rateBudget = newRateBudget(), onThrottle = () => {} } = {}) {
+  const host = new URL(url).hostname;
+  const service = host === 'api.github.com' ? 'GitHub' : host === 'discord.com' ? 'Discord' : 'HTTP';
+  const method = options.method ?? 'GET';
+  let rateCount = 0;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
     let response;
     try { response = await fetcher(url, { ...options, redirect: 'error', signal: AbortSignal.timeout(15000) }); }
     catch { throw new Error('Transport failed; delivery may be uncertain. Inspect receipt before retrying.'); }
     const body = await response.json().catch(() => null);
     if (response.status === 404 && options.allowNotFound) return null;
-    if (response.status === 429) {
-      const seconds = Number(body?.retry_after ?? response.headers.get('retry-after'));
-      requireValue(Number.isFinite(seconds) && seconds > 0 && seconds <= 60, 'Rate limit requires later reconciliation');
-      await sleep(Math.ceil(seconds * 1000)); continue;
+    const githubLimited = service === 'GitHub' && response.status === 403 &&
+      (response.headers.get('x-ratelimit-remaining') === '0' ||
+       /(?:secondary rate limit|api rate limit exceeded)/i.test(typeof body?.message === 'string' ? body.message : ''));
+    if (response.status === 429 || githubLimited) {
+      const delay = rateLimitDelay(service, response, body, now(), rateCount++);
+      if (attempt + 1 === maxAttempts || delay === null || delay > rateBudget.remaining)
+        throw new RateLimitRejected(service);
+      rateBudget.remaining -= delay;
+      onThrottle(service, delay);
+      await sleep(delay);
+      continue;
     }
-    if (response.status >= 500 && (!options.method || options.method === 'GET')) {
-      await sleep(1000 * 2 ** attempt); continue;
+    if (response.status >= 500 && method === 'GET' && attempt + 1 < maxAttempts) {
+      await sleep(1000 * 2 ** attempt);
+      continue;
     }
     requireValue(response.ok, 'HTTP ' + response.status + '; inspect receipt before retrying');
     return body;
   }
-  throw new Error('Retry budget exhausted; inspect receipt');
 }
 export async function deliver(m, { load, save, post, verify }) {
   const chunks = format(m), digest = hash(m);
@@ -113,7 +159,18 @@ export async function deliver(m, { load, save, post, verify }) {
   for (let i = receipt.messages.length; i < chunks.length; i++) {
     receipt.messages.push({ state: 'pending', chunk: i, contentHash: hash(chunks[i]) });
     await save(m.id, receipt); // Durable reservation BEFORE external side effect.
-    const message = await post(chunks[i]);
+    let message;
+    try { message = await post(chunks[i]); }
+    catch (error) {
+      // All POST attempts returned a definite throttle rejection. Persist removal
+      // of only this unsent reservation so a rerun can pick up after sent chunks.
+      // A failed cleanup write, timeout, or 5xx still fails closed.
+      if (error instanceof RateLimitRejected && error.service === 'Discord') {
+        receipt.messages.pop();
+        await save(m.id, receipt);
+      }
+      throw error;
+    }
     requireValue(/^\d+$/.test(message?.id) && message.channel_id === channel, 'Invalid Discord confirmation; delivery uncertain');
     receipt.messages[i] = { ...receipt.messages[i], state: 'sent', id: message.id };
     await save(m.id, receipt); // Failure leaves pending and forbids automatic replay.
@@ -122,10 +179,15 @@ export async function deliver(m, { load, save, post, verify }) {
 }
 export async function run(env, event, deps = {}) {
   requireValue(env.GITHUB_REPOSITORY === 'Civ13/Civ13', 'Unexpected repository');
-  const http = deps.http ?? request;
+  // Bound accumulated rate-limit waiting across both services for this run.
+  const transport = {
+    fetcher: deps.fetcher, sleep: deps.sleep, now: deps.now, rateBudget: newRateBudget(),
+    onThrottle: deps.onThrottle ?? ((service, delay) => console.log(service + ' rate limit: waiting ' + delay + ' ms'))
+  };
+  const http = deps.http ?? ((url, options) => request(url, options, transport));
   const api = deps.api ?? ((path, options) => request('https://api.github.com/repos/Civ13/Civ13' + (path ? '/' + path : ''), {
     ...options, headers: { Authorization: 'Bearer ' + env.GITHUB_TOKEN, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' }
-  }, { fetcher: deps.fetcher }));
+  }, transport));
   const repo = await api('');
   const branch = repo.default_branch;
   let commit, name, m;
