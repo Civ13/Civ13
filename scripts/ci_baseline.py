@@ -2772,7 +2772,9 @@ SUITES = {
     # Source contracts only; this suite does not run DM.
     'road_garden': {'files': ('tests/road_garden/test_contract.py',), 'paths': ('tests/road_garden/',),
         'shared_paths': ('code/game/objects/covers_types/cover_roads.dm',
-                         'code/game/turfs/floor_attackby.dm', 'code/game/turfs/turf_changing.dm')},
+                         'code/game/turfs/floor_attackby.dm', 'code/game/turfs/turf_changing.dm',
+                         'code/game/turfs/flooring/flooring_premade.dm',
+                         'code/game/mob/living/simple_animal/friendly/farm_animals.dm')},
     'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
         'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
         'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
