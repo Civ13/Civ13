@@ -39,7 +39,7 @@ internal sealed partial class LauncherWindow : Form {
     private readonly Label statusLabel = new() { AutoSize = true, ForeColor = HeaderMuted, Text = "Starting..." };
     private readonly Button signInButton = new() { Text = "BYOND sign in", AutoSize = true, Enabled = false, FlatStyle = FlatStyle.System };
     private readonly Button setupButton = new() { Text = "Set up BYOND", AutoSize = true, Visible = false, FlatStyle = FlatStyle.System };
-    private readonly CheckBox darkMode = new() { Text = "Dark mode", AutoSize = true, Anchor = AnchorStyles.Left };
+    private readonly CheckBox darkMode = new() { Text = "Dark mode", AutoSize = true, Anchor = AnchorStyles.Left, ForeColor = HeaderText };
     private readonly TabControl tabs = new() { Dock = DockStyle.Fill };
     private readonly RadioButton officialRadio = new() { Text = "Civ13.com", AutoSize = true, Enabled = false };
     private readonly RadioButton valRadio = new() { Text = "ValZarGaming.com", AutoSize = true, Enabled = false };
@@ -152,10 +152,18 @@ internal sealed partial class LauncherWindow : Form {
         darkMode.Checked = LauncherSkin.Load(root);
         LauncherSkin.Choose(darkMode.Checked);
         LauncherSkin.Apply(this);
+        var effectiveDark = LauncherSkin.Dark;
+        void ReapplySkin() {
+            effectiveDark = LauncherSkin.Dark;
+            foreach (var form in Application.OpenForms.Cast<Form>().ToArray()) LauncherSkin.Apply(form);
+            RefreshPlayStatusColors();
+        }
+        // High Contrast changes the system colors at runtime. Reapply all open launcher
+        // forms on the UI thread without altering the player's stored preference.
+        SystemColorsChanged += (_, _) => { if (effectiveDark != LauncherSkin.Dark) ReapplySkin(); };
         darkMode.CheckedChanged += (_, _) => {
             LauncherSkin.Choose(darkMode.Checked);
-            LauncherSkin.Apply(this);
-            RefreshPlayStatusColors();
+            ReapplySkin();
             if (renderTo != null) return; // A visual review must never rewrite the launcher preference.
             try { LauncherSkin.Save(root, darkMode.Checked); }
             catch (Exception e) when (e is IOException or UnauthorizedAccessException) {

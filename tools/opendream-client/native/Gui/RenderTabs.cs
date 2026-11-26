@@ -30,25 +30,36 @@ internal sealed partial class LauncherWindow {
         return exit;
     }
 
-    private static void VerifyDarkSurfaces(Bitmap image, string page) {
-        int canvas = 0, surface = 0;
-        for (var y = 0; y < image.Height; y += 16)
-            for (var x = 0; x < image.Width; x += 16) {
+    private Rectangle RenderBounds(Bitmap image, Control control) {
+        // DrawToBitmap includes the non-client frame, unlike PointToClient.
+        var start = control.PointToScreen(Point.Empty);
+        start.Offset(-Left, -Top);
+        return Rectangle.Intersect(new Rectangle(start, control.ClientSize), new Rectangle(0, 0, image.Width, image.Height));
+    }
+
+    private void VerifyDarkSurfaces(Bitmap image, TabPage page) {
+        int canvas = 0, content = 0;
+        var bounds = RenderBounds(image, page);
+        for (var y = bounds.Top; y < bounds.Bottom; y += 16)
+            for (var x = bounds.Left; x < bounds.Right; x += 16) {
                 var pixel = image.GetPixel(x, y).ToArgb();
                 if (pixel == LauncherSkin.Canvas.ToArgb()) canvas++;
-                if (pixel == LauncherSkin.Surface.ToArgb()) surface++;
+                if (pixel == LauncherSkin.Surface.ToArgb() || pixel == LauncherSkin.Raised.ToArgb()) content++;
             }
-        if (canvas < 10 || surface < 10)
-            throw new InvalidOperationException($"Dark surfaces missing from the {page} render.");
+        if (canvas < 10 || content < 5)
+            throw new InvalidOperationException($"Dark surfaces missing from the {page.Text} render.");
+        var logArea = RenderBounds(image, log);
+        var logSurface = 0;
+        for (var y = logArea.Top; y < logArea.Bottom; y += 16)
+            for (var x = logArea.Left; x < logArea.Right; x += 16)
+                if (image.GetPixel(x, y).ToArgb() == LauncherSkin.Surface.ToArgb()) logSurface++;
+        if (logSurface < 10) throw new InvalidOperationException("The launcher log is not using the dark skin.");
     }
 
     private void VerifyDisabledButtonInk(Bitmap image) {
         var button = signInButton;
         if (button.Enabled) return;
-        // DrawToBitmap includes the non-client frame, unlike PointToClient.
-        var start = button.PointToScreen(Point.Empty);
-        start.Offset(-Left, -Top);
-        var bounds = Rectangle.Intersect(new Rectangle(start, button.ClientSize), new Rectangle(0, 0, image.Width, image.Height));
+        var bounds = RenderBounds(image, button);
         var ink = LauncherSkin.Muted;
         var samples = 0;
         for (var y = bounds.Top; y < bounds.Bottom; y++)
@@ -83,7 +94,7 @@ internal sealed partial class LauncherWindow {
                     throw new InvalidOperationException("The stored dark skin did not reach the host board.");
                 darkMode.Checked = false;
                 if (BackColor == LauncherSkin.Canvas || hostBoard?.BackColor != Color.White
-                    || tabs.DrawMode != TabDrawMode.Normal || serverList.OwnerDraw)
+                    || tabs.DrawMode != TabDrawMode.Normal || serverList.OwnerDraw || darkMode.ForeColor != HeaderText)
                     throw new InvalidOperationException("The standard skin was not restored.");
                 darkMode.Checked = true;
                 if (!LauncherSkin.Load(root) || BackColor != LauncherSkin.Canvas || hostBoard?.BackColor != LauncherSkin.Surface
@@ -116,7 +127,7 @@ internal sealed partial class LauncherWindow {
                 using var image = new Bitmap(Width, Height);
                 DrawToBitmap(image, new Rectangle(0, 0, Width, Height));
                 if (LauncherSkin.Dark) {
-                    VerifyDarkSurfaces(image, page.Text);
+                    VerifyDarkSurfaces(image, page);
                     if (page == tabs.TabPages[0]) VerifyDisabledButtonInk(image);
                 }
                 var name = new string(page.Text.ToLowerInvariant().Where(char.IsAsciiLetterLower).ToArray()) + ".png";
