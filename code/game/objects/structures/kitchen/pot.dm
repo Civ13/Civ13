@@ -80,7 +80,8 @@
 	if (is_tool(I, TOOL_WRENCH))
 		timed_toggle_anchor(H, 50, "the pot")
 		return
-	else if ((istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/glass)) && state == STATE_EMPTY)
+	var/liquid_vessel = istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/glass)
+	if (liquid_vessel && state == STATE_EMPTY)
 		if (!I.reagents)
 			return
 		var/datum/reagent/R = I.reagents.get_master_reagent()
@@ -104,38 +105,35 @@
 				update_icon()
 			to_chat(H, "<span class = 'notice'>[H] fills the pot with some water. It's about [fullness]% full.</span>")
 			return
-	else if (!istype(I, /obj/item/kitchen/snack_bowl) || !istype(I, /obj/item/kitchen/wood_bowl))
-		if (istype(I, /obj/item/weapon/reagent_containers/food))
-			if (!list(STATE_WATER, STATE_BOILING).Find(state))
-				return
+	if (liquid_vessel || istype(I, /obj/item/weapon/reagent_containers/food))
+		if (state != STATE_WATER && state != STATE_BOILING)
+			return
 
-			if (istype(I, /obj/item/weapon/reagent_containers/food/drinks))
-				if (I.reagents && I.reagents.reagent_list.len)
-					if (!I.is_open_container())
-						to_chat(H, "<span class = 'warning'>Take the lid off \the [I] first.</span>")
-						return
-					pour_into_pot(I, H)
-			else if (istype(I, /obj/item/weapon/reagent_containers/food/condiment))
-				var/obj/item/weapon/reagent_containers/food/condiment/C = I
-				C.standard_pour_into(H, src)
-			else
-				if (contents.len >= 15)
-					to_chat(H, "<span class = 'warning'>There's too much in the pot already.</span>")
+		if (liquid_vessel)
+			if (I.reagents && I.reagents.reagent_list.len)
+				if (!I.is_open_container())
+					to_chat(H, "<span class = 'warning'>Take the lid off \the [I] first.</span>")
 					return
-				if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/stew))
-					to_chat(H, "<span class = 'warning'>This won't fit in the pot.</span>")
-					return
-				var/list/boiling_recipes = BOIL_MAP
-				if (boiling_recipes[I.type] && !crafting_node_allowed(H, "pottery_storage")) return
-				H.remove_from_mob(I)
-				I.loc = src
-				visible_message("<span class = 'notice'>[H] puts [I] in the pot.</span>")
-				stew_ticks = max(stew_ticks - 5, 0)
-				if (state == STATE_WATER)
-					state = STATE_BOILING
-					update_icon()
-	else
-		return
+				pour_into_pot(I, H)
+		else if (istype(I, /obj/item/weapon/reagent_containers/food/condiment))
+			var/obj/item/weapon/reagent_containers/food/condiment/C = I
+			C.standard_pour_into(H, src)
+		else
+			if (contents.len >= 15)
+				to_chat(H, "<span class = 'warning'>There's too much in the pot already.</span>")
+				return
+			if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/stew))
+				to_chat(H, "<span class = 'warning'>This won't fit in the pot.</span>")
+				return
+			var/list/boiling_recipes = BOIL_MAP
+			if (boiling_recipes[I.type] && !crafting_node_allowed(H, "pottery_storage")) return
+			H.remove_from_mob(I)
+			I.loc = src
+			visible_message("<span class = 'notice'>[H] puts [I] in the pot.</span>")
+			stew_ticks = max(stew_ticks - 5, 0)
+			if (state == STATE_WATER)
+				state = STATE_BOILING
+				update_icon()
 	if (state != STATE_STEWING)
 		return
 	if (istype(I, /obj/item/kitchen/snack_bowl) || istype(I, /obj/item/kitchen/wood_bowl))
@@ -155,10 +153,10 @@
 			w_stew.reagents.remove_reagent("protein", 500)
 			w_stew.reagents.add_reagent("protein", stew_protein)
 
+		// Ordinary stew stores the per-bowl amounts when it cooks, including in existing saves.
 		for (var/datum/reagent/R in reagents.reagent_list)
-			var/amt = ceil(R.volume/initial_bowls)
-			w_stew.reagents.maximum_volume += amt
-			w_stew.reagents.add_reagent(R.id, amt)
+			w_stew.reagents.maximum_volume += R.volume
+			w_stew.reagents.add_reagent(R.id, R.volume)
 		if (food_toxin_amounts(w_stew.reagents).len)
 			w_stew.note_food_toxin("[food_toxin_cause(src)], ladled from [name]")
 
@@ -301,7 +299,7 @@
 	set src in range(1)
 	set name = "Empty"
 	set category = null
-	if (state == STATE_EMPTY || meal_cooking)
+	if (meal_cooking || (state == STATE_EMPTY && fullness <= 0 && reagents.total_volume <= 0))
 		return
 	visible_message("<span class = 'warning'>[usr] starts to empty the pot...</span>")
 	if (do_after(usr, 100, src) && !meal_cooking)
