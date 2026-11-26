@@ -262,4 +262,82 @@ class ContainerRows(unittest.TestCase):
   for name,text in (('clipboard',clipboard),('folder',folder)):
    self.assertNotIn('show_browse(',text,name)
 
+class ClipboardTopPaper(unittest.TestCase):
+ PREFIX='/obj/item/weapon/clipboard'
+ PAPER='/obj/item/weapon/paper'
+ PHOTO='/obj/item/weapon/photo'
+
+ def setUp(self):
+  self.source=(ROOT/'code/game/objects/items/clipboard.dm').read_text(encoding='utf-8')
+  self.board=type('Clipboard',(),{})()
+  self.board.contents=[]
+  self.board.toppaper=None
+  self.icons=0
+
+ def make(self,kind,owner=None,deleted=False):
+  item=type('Item',(),{})()
+  item.kind=kind
+  item.loc=self.board if owner is None else owner
+  item.deleted=deleted
+  self.board.contents.append(item)
+  return item
+
+ def refresh(self):
+  self.icons+=1
+
+ def project(self,signature,adapters,env):
+  source=self.source
+  for before,after in adapters:
+   source=source.replace(before,after)
+  allowed=set(vm.ALLOWED)
+  try:
+   vm.ALLOWED.update(env)
+   return vm.project(source,self.PREFIX+signature,'board',env)(self.board)
+  finally:
+   vm.ALLOWED.clear()
+   vm.ALLOWED.update(allowed)
+
+ def selected(self):
+  return self.project('/proc/contained_top_paper',[
+   ('for (var/obj/item/weapon/paper/P in contents)','for (var/obj/item/weapon/paper/P in paper_contents(board))'),
+   ('toppaper','board.toppaper'),(' == src',' == board')
+  ],{'istype':lambda item,kind:bool(item and item.kind==kind),
+     'QDELETED':lambda item:not item or item.deleted,
+     'paper_contents':lambda board:[item for item in board.contents if item.kind==self.PAPER]})
+
+ def test_prefill_assigns_the_last_created_sheet_and_refreshes_once(self):
+  self.project('/full/New',[
+   ('\t..()','\tparent_new()'),('var/i=1, i<= 20','var/i = 1, i <= 20'),
+   ('new /obj/item/weapon/paper(src)','spawn_sheet()'),
+   ('toppaper','board.toppaper')
+  ],{'parent_new':lambda:None,'spawn_sheet':lambda:self.make(self.PAPER),'update_icon':self.refresh})
+  self.assertEqual(len(self.board.contents),20)
+  self.assertIs(self.board.toppaper,self.board.contents[-1])
+  self.assertEqual(self.icons,1)
+
+ def test_valid_selection_survives_and_missing_or_removed_top_recovers(self):
+  first=self.make(self.PAPER)
+  newest=self.make(self.PAPER)
+  self.make(self.PHOTO)
+  self.make(self.PAPER,owner=object())
+  self.make(self.PAPER,deleted=True)
+  self.board.toppaper=first
+  self.assertIs(self.selected(),first)
+  self.board.toppaper=None
+  self.assertIs(self.selected(),newest)
+  newest.loc=object()
+  self.assertIs(self.selected(),first)
+  first.deleted=True
+  self.assertIsNone(self.selected())
+  self.assertIsNone(self.board.toppaper)
+
+ def test_all_display_and_write_paths_resolve_a_contained_top_sheet(self):
+  for entry in ('/update_icon','/attackby','/ui_interact','/Topic'):
+   self.assertIn('contained_top_paper()',vm.body(self.source,self.PREFIX+entry))
+  direct=vm.body(self.source,self.PREFIX+'/attackby')
+  self.assertRegex(direct,r'/pen\) \|\| istype\(W, /obj/item/weapon/stamp\)')
+  self.assertIn('if (P)\n\t\t\tP.attackby(W, user)',direct)
+  self.assertNotIn('attackby(W, usr)',direct)
+
+
 if __name__=='__main__':unittest.main()
