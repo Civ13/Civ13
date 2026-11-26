@@ -601,6 +601,10 @@
 
 // ---- Synthetic ruby (flame fusion, 1902) and the ruby laser rod (1960) ----
 
+// Item targets can be held or on a reachable turf, never inside a container.
+/proc/ruby_workpiece_reachable(obj/item/target, mob/living/human/H)
+	return !QDELETED(target) && (target.loc == H || (isturf(target.loc) && target.Adjacent(H)))
+
 // Four pinches of emery fused in the flame of a lit furnace beside you.
 /obj/item/stack/emery_powder/attack_self(mob/user)
 	var/mob/living/human/H = user
@@ -608,7 +612,7 @@
 		return ..()
 	var/obj/structure/furnace/F = null
 	for (var/obj/structure/furnace/candidate in range(1, H))
-		if (candidate.is_open_flame())
+		if (candidate.is_open_flame() && candidate.Adjacent(H))
 			F = candidate
 			break
 	if (!F)
@@ -621,7 +625,7 @@
 	to_chat(H, SPAN_NOTICE("You start sifting emery into the hottest part of \the [F]'s flame, a little at a time..."))
 	if (!do_after(H, 100, F))
 		return
-	if (QDELETED(src) || QDELETED(F) || !F.is_open_flame() || loc != H || !use(BOULE_EMERY))
+	if (QDELETED(src) || QDELETED(F) || !F.is_open_flame() || !F.Adjacent(H) || loc != H || !use(BOULE_EMERY))
 		return
 	H.put_in_hands(new /obj/item/ruby_boule(get_turf(H)))
 	to_chat(H, SPAN_NOTICE("A pink boule of synthetic ruby grows in the flame."))
@@ -639,15 +643,16 @@
 /obj/item/ruby_boule/attackby(obj/item/W, mob/user)
 	if (is_tool(W, TOOL_CHISEL) && ishuman(user))
 		var/mob/living/human/H = user
-		if (!is_tool(H.get_inactive_hand(), TOOL_HAMMER))
+		var/obj/item/hammer = H.get_inactive_hand()
+		if (!is_tool(hammer, TOOL_HAMMER))
 			to_chat(H, SPAN_WARNING("You need a hammer in your other hand to drill jewel bearings."))
 			return
-		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "optics_instruments"))
+		if (H.get_active_hand() != W || !ruby_workpiece_reachable(src, H) || !H.may_do_after || !crafting_node_allowed_or_warn(H, "optics_instruments"))
 			return
 		to_chat(H, SPAN_NOTICE("You start slicing \the [src] and drilling the slices..."))
 		if (!do_after(H, 80, src))
 			return
-		if (QDELETED(src) || H.get_active_hand() != W || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+		if (QDELETED(W) || H.get_active_hand() != W || !is_tool(W, TOOL_CHISEL) || QDELETED(hammer) || H.get_inactive_hand() != hammer || !is_tool(hammer, TOOL_HAMMER) || !ruby_workpiece_reachable(src, H))
 			return
 		var/obj/item/stack/jewel_bearing/J = new(get_turf(src))
 		J.amount = BOULE_BEARINGS
@@ -658,7 +663,7 @@
 	..()
 
 /obj/structure/lapping_wheel/proc/make_ruby_rod(obj/item/ruby_boule/B, mob/living/human/H)
-	if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "consumer_electronics"))
+	if (!Adjacent(H) || !H.may_do_after || !crafting_node_allowed_or_warn(H, "consumer_electronics"))
 		return
 	if (charges < ROD_CHARGES)
 		to_chat(H, SPAN_WARNING("\The [src] needs at least [ROD_CHARGES] charges of diamond grit to grind a rod."))
@@ -666,7 +671,7 @@
 	to_chat(H, SPAN_NOTICE("You start grinding \the [B] into a rod and polishing its ends flat..."))
 	if (!do_after(H, 100, src))
 		return
-	if (QDELETED(B) || B.loc != H || charges < ROD_CHARGES)
+	if (QDELETED(src) || !Adjacent(H) || QDELETED(B) || B.loc != H || charges < ROD_CHARGES)
 		return
 	charges -= ROD_CHARGES
 	H.drop_from_inventory(B)
@@ -686,12 +691,12 @@
 /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars/attackby(obj/item/W, mob/user)
 	if (istype(W, /obj/item/ruby_rod) && type == /obj/item/weapon/attachment/scope/adjustable/binoculars/binoculars && ishuman(user))
 		var/mob/living/human/H = user
-		if (!H.may_do_after || !crafting_node_allowed_or_warn(H, "consumer_electronics"))
+		if (W.loc != H || !ruby_workpiece_reachable(src, H) || !H.may_do_after || !crafting_node_allowed_or_warn(H, "consumer_electronics"))
 			return
 		to_chat(H, SPAN_NOTICE("You start fitting the ruby rod and a flash lamp into \the [src]..."))
 		if (!do_after(H, 60, src))
 			return
-		if (QDELETED(src) || QDELETED(W) || W.loc != H || !(loc == H || (isturf(loc) && get_dist(src, H) <= 1)))
+		if (QDELETED(W) || W.loc != H || !ruby_workpiece_reachable(src, H))
 			return
 		var/turf/T = get_turf(src)
 		var/was_held = (loc == H)
