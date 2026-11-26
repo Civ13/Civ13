@@ -87,7 +87,7 @@
 	return ..()
 
 /obj/structure/cutting_board/proc/actor_ready(mob/living/user, turf/site, datum/save_epoch)
-	return !QDELETED(src) && !QDELETED(user) && istype(user, /mob/living) && site && isturf(user.loc) && loc == site && user.z == site.z && get_dist(user, site) <= 1 && !user.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && save_epoch == persistence_admission_identity
+	return !QDELETED(src) && !QDELETED(user) && istype(user, /mob/living) && site && isturf(user.loc) && loc == site && user.z == site.z && Adjacent(user) && !user.incapacitated() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && save_epoch == persistence_admission_identity
 
 /obj/structure/cutting_board/proc/wait_for_preparation(mob/living/user, delay)
 	return do_after(user, delay, src)

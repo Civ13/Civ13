@@ -93,6 +93,9 @@ class Fixture:
             item.loc = self.actor.loc
         self.actor.remove_from_mob = remove
         self.board = NS(type=BOARD, loc=self.site, input=None, icon_state='cutting_board', deleted=False)
+        self.touch_blocked = False
+        self.board.Adjacent = lambda user: not self.touch_blocked and user.z == self.board.loc.z and max(
+            abs(user.loc.x - self.board.loc.x), abs(user.loc.y - self.board.loc.y)) <= 1
         self.outputs, self.food_outputs, self.delays, self.parents = [], [], [], []
         self.after = lambda: True
         self.epoch = object()
@@ -120,7 +123,7 @@ class Fixture:
         self.env['cutting_board_food_effects'] = self.effects
         self.transfer = project('/proc/cutting_board_transfer_food(', 'food,output,remaining,effects=None,count=1', self.env)
         self.env.update(cutting_board_food_is_safe=self.safe, cutting_board_transfer_food=self.transfer)
-        fields = ('loc', 'input', 'icon_state', 'normalize_input', 'actor_ready', 'wait_for_preparation')
+        fields = ('loc', 'input', 'icon_state', 'normalize_input', 'actor_ready', 'wait_for_preparation', 'Adjacent')
         normalize = project(BOARD + '/proc/normalize_input(', 'self', self.env, fields)
         self.ready = project(BOARD + '/proc/actor_ready(', 'self,user,site,save_epoch', self.env, fields)
         wait = project(BOARD + '/proc/wait_for_preparation(', 'self,user,delay', self.env, fields)
@@ -329,6 +332,30 @@ class CuttingBoard(unittest.TestCase):
                 f.after = after; f.cut()
                 self.assertIsNotNone(f.board.input); self.assertEqual(f.outputs, [])
                 self.assertFalse(paid.deleted)
+
+    def test_stationary_loss_of_touch_reach_preserves_food_until_retry(self):
+        for action in ('cut', 'scrape'):
+            with self.subTest(action=action):
+                f = Fixture()
+                f.actor.loc = NS(type='/turf', x=2, y=2, z=1)
+                paid = f.load('rawfish')
+                old_icon = f.board.icon_state
+                act = f.cut if action == 'cut' else lambda: f.scrape(f.board, f.actor)
+                f.after = lambda: setattr(f, 'touch_blocked', True) or True
+                act()
+                self.assertEqual(f.actor.loc.x, 2)
+                self.assertEqual(f.actor.loc.y, 2)
+                self.assertIs(f.board.input, paid)
+                self.assertIs(paid.loc, f.board)
+                self.assertFalse(paid.deleted)
+                self.assertEqual(f.board.icon_state, old_icon)
+                self.assertEqual(f.outputs, [])
+                f.touch_blocked = False
+                f.after = lambda: True
+                act()
+                self.assertTrue(paid.deleted)
+                self.assertIsNone(f.board.input)
+                self.assertEqual(f.outputs, [FOOD + 'mince'] * 2 if action == 'cut' else [])
 
     def test_competing_processing_and_constructor_reentry_cannot_duplicate(self):
         f = Fixture(); f.load('rawfish')
