@@ -296,6 +296,36 @@ class TailoringTests(unittest.TestCase):
         self.assertIn('standing.overlays += tailored_suit.worn_design_layers()', icons)
         self.assertIn('standing.overlays += tailored_head.worn_design_layers()', icons)
 
+    def test_live_alterations_replace_design_before_other_overlays(self):
+        class Overlays(list):
+            def __isub__(self, removing):
+                for entry in removing:
+                    while entry in self:
+                        self.remove(entry)
+                return self
+
+            def Copy(self):
+                return list(self)
+
+        proc = '/obj/item/clothing/proc/tailoring_refresh'
+        render = adapter.extract(SOURCE, proc)
+        tail = render[render.index('\tif (tailoring_overlays)') : render.index('\treturn TRUE')]
+        extras = ['accessory', 'blood', 'unrelated']
+        updates = []
+        replacement = adapter.project(
+            proc + '()\n' + tail + '\treturn overlays, tailoring_overlays\n',
+            proc, 'overlays, tailoring_overlays, design_colors',
+            dict(tailoring_layers=lambda _body, color, *_: [color + ':body', color + ':trim'],
+                 design_body='tunic', design_pieces=None, design_fabric='cloth',
+                 update_clothing_icon=lambda: updates.append(True)))
+        old = ['white:body', 'white:trim']
+        overlays, design = replacement(Overlays(old + extras), old, 'blue')
+        self.assertEqual(overlays, ['blue:body', 'blue:trim'] + extras)
+        overlays, design = replacement(Overlays(overlays), design, 'red')
+        self.assertEqual(overlays, ['red:body', 'red:trim'] + extras)
+        self.assertEqual(design, ['red:body', 'red:trim'])
+        self.assertEqual(len(updates), 2)
+
     def test_pattern_book(self):
         self.assertIn('#define TAILORING_BOOK_MAX 20', SOURCE)
         path = adapter.extract(SOURCE, '/proc/tailoring_book_path')
