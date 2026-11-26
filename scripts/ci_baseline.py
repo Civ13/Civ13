@@ -1211,6 +1211,11 @@ SUITES = {
             'code/game/turfs/floor_icon.dm',
             'code/game/turfs/floor.dm',
             'icons/turf/floors.dmi')},
+    'lanyards': {'files': ('tests/lanyards/test_lanyards.py',), 'paths': (
+        'tests/lanyards/', 'code/modules/1713/lanyards.dm',
+        'icons/obj/lanyards.dmi', 'icons/mob/lanyards.dmi'), 'shared_paths': (
+        'code/_onclick/inventory_drag.dm', 'code/game/objects/items.dm',
+        'code/modules/storage_window/storage_window.dm')},
     # Inventory drag-and-drop transfer source contracts; no BYOND runtime.
     'inventory_drag': {'files': ('tests/inventory_drag/test_inventory_drag.py',),
         'paths': ('tests/inventory_drag/',), 'shared_paths': (

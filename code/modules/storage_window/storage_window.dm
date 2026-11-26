@@ -754,6 +754,7 @@
 				if (!detach(I))
 					return FALSE
 				if (I.inventory_drag_put_in_hand(hand_slot, H))
+					I.restore_lanyard_draw(source, H)
 					return TRUE
 				if (old_slot)
 					H.equip_to_slot_if_possible(I, old_slot, FALSE, TRUE)
@@ -762,10 +763,12 @@
 				return FALSE
 			if (H.l_hand && H.r_hand)
 				return FALSE
+			var/atom/source = I.loc
 			if (!detach(I))
 				return FALSE
 			if (!H.put_in_hands(I))
 				return FALSE
+			I.restore_lanyard_draw(source, H)
 			return TRUE
 		if (STORAGE_WINDOW_KIND_POCKETS)
 			var/slot = pocket_slot_for(I)

@@ -226,7 +226,9 @@
 	var/atom/origin = inventory_drag_take_out(user)
 	if (!origin)
 		return TRUE
-	if (!inventory_drag_put_in_hand(slot, user))
+	if (inventory_drag_put_in_hand(slot, user))
+		restore_lanyard_draw(origin, user)
+	else
 		inventory_drag_put_back(origin)
 	return TRUE
 
