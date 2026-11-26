@@ -43,7 +43,7 @@
 	return BOAT_HAUL_HEAVY
 
 /obj/structure/vehicle/proc/afloat()
-	return istype(loc, /turf/floor/beach/water) || istype(loc, /turf/floor/trench/flooded)
+	return is_open_water(loc)
 
 // People beside her, other than whoever drags, fit to lend a hand.
 /obj/structure/vehicle/proc/haul_helpers(mob/puller)
@@ -63,9 +63,9 @@
 		return BOAT_DRAG_EASY
 	return hands == 1 ? BOAT_DRAG_LIGHT : BOAT_DRAG_HEAVY
 
-// Why she cannot be dragged from where she lies, or null.
-/obj/structure/vehicle/proc/haul_refusal()
-	if (!haul_class() || afloat())
+// A loaded boat can be towed only if the whole step stays afloat.
+/obj/structure/vehicle/proc/haul_refusal(atom/destination = loc)
+	if (!haul_class() || (afloat() && is_open_water(destination)))
 		return null
 	if (length(ontop) || length(ontop_o))
 		return "She will not budge over land with anyone or anything aboard."
@@ -73,21 +73,35 @@
 
 /obj/structure/vehicle/Move(newloc, direct)
 	var/mob/puller = pulledby
-	if (puller && isturf(loc))
-		var/why = haul_refusal()
+	var/turf/old = loc
+	var/is_tow = puller && isturf(old) && haul_class()
+	if (is_tow)
+		var/why = haul_refusal(newloc)
 		if (why)
 			to_chat(puller, SPAN_WARNING("[why]"))
 			puller.stop_pulling()
 			return FALSE
-	var/turf/old = loc
 	var/was_afloat = afloat()
 	. = ..()
-	if (loc != old && was_afloat != afloat())
+	if (loc == old)
+		return
+	var/is_afloat = afloat()
+	if (is_tow && . && was_afloat && is_afloat)
+		// Pulling moves the hull through Move(), not the powered movement path.
+		// Carry only riders and cargo still registered and on its old turf.
+		var/turf/destination = loc
+		for (var/mob/living/rider in ontop.Copy())
+			if (rider.loc == old && (rider in ontop))
+				rider.forceMove(destination)
+		for (var/obj/cargo in ontop_o.Copy())
+			if (cargo.loc == old && (cargo in ontop_o))
+				cargo.forceMove(destination)
+	if (was_afloat != is_afloat)
 		if (was_afloat)
 			came_ashore() // naval/small_boat_upkeep.dm
 		else
 			took_water()
-	if (on_rollers && loc != old && afloat())
+	if (on_rollers && is_afloat)
 		shed_rollers(old)
 		if (puller)
 			to_chat(puller, SPAN_NOTICE("\The [src] floats off her rollers."))

@@ -123,5 +123,30 @@ class DugoutSource(unittest.TestCase):
             self.assertNotIn(pattern, self.text)
 
 
+    def test_tow_checks_destination_and_carries_only_aboard_load_after_success(self):
+        haul = (ROOT / 'code/modules/naval/boat_hauling.dm').read_text(encoding='utf-8')
+        afloat = proc_body(haul, '/obj/structure/vehicle/proc/afloat()')
+        self.assertEqual(afloat.strip(), 'return is_open_water(loc)')
+        refusal = proc_body(haul, '/obj/structure/vehicle/proc/haul_refusal(atom/destination = loc)')
+        self.assertIn('afloat() && is_open_water(destination)', refusal)
+        self.assertIn('length(ontop) || length(ontop_o)', refusal)
+        move = proc_body(haul, '/obj/structure/vehicle/Move(newloc, direct)')
+        self.assertLess(move.index('haul_refusal(newloc)'), move.index('. = ..()'))
+        self.assertLess(move.index('. = ..()'), move.index('if (is_tow && . && was_afloat && is_afloat)'))
+        for label, manifest in [('rider', 'ontop'), ('cargo', 'ontop_o')]:
+            self.assertIn(f'if ({label}.loc == old && ({label} in {manifest}))\n\t\t\t\t{label}.forceMove(destination)', move)
+        self.assertIn('if (on_rollers && is_afloat)', move)
+
+    def test_canoe_updates_roller_offset_and_preserves_rollers_on_replacement(self):
+        outrigger = (ROOT / 'code/modules/naval/outrigger_canoe.dm').read_text(encoding='utf-8')
+        convert = proc_body(outrigger, '/obj/structure/vehicle/raft/dugout/proc/become_outrigger(mob/user)')
+        copy = convert.index('C.on_rollers = on_rollers')
+        redraw = convert.index('C.dress_rollers()')
+        self.assertLess(copy, redraw)
+        self.assertLess(redraw, convert.index('qdel(src)'))
+        update = proc_body(self.text, '/obj/structure/vehicle/raft/dugout/update_icon()')
+        self.assertIn('on_rollers && (pixel_w != old_w || pixel_z != old_z)', update)
+
+
 if __name__ == '__main__':
     unittest.main()
