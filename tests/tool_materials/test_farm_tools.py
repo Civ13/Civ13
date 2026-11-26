@@ -57,7 +57,15 @@ class FarmTools(unittest.TestCase):
         block = re.search(r'^' + re.escape(HOE) + r'\n((?:\t[^\n]*\n)+)', SOURCE, re.M)[1]
         for line in ('tool_material = "wood"', 'tool_noun = "hoe"', 'tool_role = ROLE_WORK_HEAD', 'usespeed = 1'):
             self.assertIn(line, block)
-        self.assertEqual(SOURCE.count('usespeed = initial(usespeed) * tool_speed(src)'), 2)
+        init = SOURCE.split(HOE + '/set_tool_material(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('usespeed = initial(usespeed) * tool_speed(src)', init)
+
+    def test_hoe_load_keeps_the_saved_head_and_handle_speed(self):
+        match = re.search(r'^' + re.escape(HOE) + r'/after_load\(\)\n((?:\t[^\n]*\n)+)', SOURCE, re.M)
+        if match:
+            self.assertNotRegex(match[1], r'\busespeed\s*[-+*/]?=')
+        material = (ROOT / 'code/game/objects/items/weapons/material/material_weapons.dm').read_text()
+        self.assertIn(HOE + '/apply_handle_speed(multiplier, head_name)\n\tusespeed *= multiplier', material)
 
     def test_recipes_and_research(self):
         for name in ('copper', 'bronze', 'iron', 'steel'):

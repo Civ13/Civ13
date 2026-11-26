@@ -86,9 +86,8 @@
 		if (M && !M.flammable)
 			flammable = FALSE
 
-/obj/item/weapon/plough/hoe/after_load()
-	. = ..()
-	usespeed = initial(usespeed) * tool_speed(src)
+// Persistence restores usespeed, including the handle multiplier. Do not
+// rebuild it here from the head alone.
 
 #undef SICKLE_REACH_MIN
 #undef SICKLE_REACH_FIRMNESS
