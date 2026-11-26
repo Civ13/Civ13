@@ -322,11 +322,13 @@
 	var/area/A = get_area(src)
 	if (istype(A, /area/caribbean/no_mans_land/invisible_wall) && map && (!map.faction1_can_cross_blocks() || map.faction2_can_cross_blocks()))
 		return
-	//step_towards(O, loc) - We can just bump into the crate, this is a convoluted way of pushing it and fucks up with do_climbs()
-	if (user != O)
-		user.show_viewers("<span class='danger'>[user] stuffs [O] into [src]!</span>") // This code does nothing.
+	finish_open_closet_drop(O, user)
 	add_fingerprint(user)
-	return
+
+/obj/structure/closet/proc/finish_open_closet_drop(atom/movable/O, mob/user)
+	// Ordinary open closets can be walked into. Do not move things by dragging
+	// them onto a closet; that interferes with the climbing interaction.
+	return FALSE
 
 /obj/structure/closet/relaymove(mob/user as mob)
 	if (..(user))
