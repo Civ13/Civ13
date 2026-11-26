@@ -190,8 +190,8 @@ class Washing(unittest.TestCase):
         self.assertIn('round(S.amount / SAND_PER_WASH)', wash)
         self.assertIn('S.amount != initial_amount', wash)
         self.assertLess(wash.index('do_after'), wash.index('S.use(batches * SAND_PER_WASH)'))
-        bowl = proc_body(SOURCE, '/obj/item/kitchen/wood_bowl/attackby(')
-        self.assertIn('T.panning_water()', bowl)
+        bowl = proc_body(SOURCE, '/obj/item/kitchen/wood_bowl/proc/pan_sand(')
+        self.assertIn('T?.panning_water()', bowl)
         self.assertIn('map.ordinal_age < 1', bowl)
         routes = {r['name'] for r in ATLAS['mechanisms']}
         self.assertIn('Wash hillside soil in a washing channel', routes)

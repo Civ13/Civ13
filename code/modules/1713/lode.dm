@@ -102,21 +102,24 @@
 	.[/obj/item/stack/ore/tailings] = 1
 
 // Panning crushed ore in a wooden bowl beside water: slow and wasteful.
-/obj/item/kitchen/wood_bowl/attackby(obj/item/I, mob/living/human/H)
-	if (!istype(I, /obj/item/stack/ore/crushed_ore) || !istype(H))
-		return ..()
-	var/obj/item/stack/ore/crushed_ore/C = I
+/obj/item/kitchen/wood_bowl/proc/pan_crushed_ore(obj/item/stack/ore/crushed_ore/C, mob/living/human/H)
 	var/turf/T = get_turf(H)
-	if (!T || !T.panning_water())
+	var/turf/water = T?.panning_water()
+	if (!water)
 		to_chat(H, SPAN_WARNING("Stand beside shallow fresh water to pan crushed ore."))
 		return
+	var/atom/bowl_location = loc
+	if (!panning_tool_available(H, bowl_location))
+		return
 	to_chat(H, SPAN_NOTICE("You swirl a load of [C.name] in \the [src]."))
-	if (!do_after(H, PAN_CRUSHED_TIME, T) || QDELETED(C) || C.amount < 1)
+	if (!do_after(H, PAN_CRUSHED_TIME, T) || QDELETED(C) || C.amount < 1 || !panning_tool_available(H, bowl_location))
+		return
+	if (get_turf(H) != T || !water || T.panning_water() != water)
 		return
 	var/metal = C.metal_type
 	C.use(1)
 	var/list/names = pay_dirt_output(crushed_ore_wash(metal, LODE_PAN_RECOVERY), T)
-	river_mercury_pan_message(H, T.panning_water())
+	river_mercury_pan_message(H, water)
 	to_chat(H, SPAN_NOTICE("You keep: [english_list(names)]. A buddle would save more of it."))
 
 //////////////////////////////////////////////////////////////////////////////

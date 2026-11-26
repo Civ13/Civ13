@@ -94,7 +94,12 @@ var/global/list/pay_dirt_stock = list()
 	visible_message(SPAN_NOTICE("[src] starts shovelling gravel from the bank."))
 	var/done = do_after(src, work_delay(src, PAY_DIRT_DIG_TIME, WORK_DIG, get_active_hand()), T)
 	digging_pay_dirt = FALSE
-	if (!done || get_active_hand() != S || loc != T || !stock.take(1))
+	if (!done || get_active_hand() != S || loc != T)
+		return
+	if (!T.pay_dirt_bank())
+		to_chat(src, SPAN_WARNING("The bank is no longer suitable for digging pay dirt."))
+		return
+	if (!stock.take(1))
 		return
 	spawn_stack(pay_dirt_type(pay_dirt_grade(T.x, T.y)), T, 1)
 	to_chat(src, SPAN_NOTICE("You shovel up a load of pay dirt."))
@@ -145,21 +150,25 @@ var/global/list/pay_dirt_stock = list()
 
 // Panning pay dirt in a wooden bowl beside water: slow, but it tells you what
 // the ground carries.
-/obj/item/kitchen/wood_bowl/attackby(obj/item/I, mob/living/human/H)
-	if (!istype(I, /obj/item/stack/ore/pay_dirt) || !istype(H))
-		return ..()
-	var/obj/item/stack/ore/pay_dirt/P = I
+/obj/item/kitchen/wood_bowl/proc/pan_pay_dirt(obj/item/stack/ore/pay_dirt/P, mob/living/human/H)
 	var/turf/T = get_turf(H)
-	if (!T || !T.panning_water())
+	var/turf/water = T?.panning_water()
+	if (!water)
 		to_chat(H, SPAN_WARNING("Stand beside shallow fresh water to pan pay dirt."))
 		return
+	var/atom/bowl_location = loc
+	if (!panning_tool_available(H, bowl_location))
+		return
 	to_chat(H, SPAN_NOTICE("You swirl a load of pay dirt in \the [src]."))
-	if (!do_after(H, PAN_PAY_DIRT_TIME, T) || QDELETED(P) || P.amount < 1)
+	if (!do_after(H, PAN_PAY_DIRT_TIME, T) || QDELETED(P) || P.amount < 1 || !panning_tool_available(H, bowl_location))
+		return
+	if (get_turf(H) != T || !water || T.panning_water() != water)
+		to_chat(H, SPAN_WARNING("The shallow fresh water is no longer available for panning."))
 		return
 	var/grade = P.grade
 	P.use(1)
 	var/list/names = pay_dirt_output(pay_dirt_wash(grade, "pan"), T)
-	river_mercury_pan_message(H, T.panning_water())
+	river_mercury_pan_message(H, water)
 	switch (grade)
 		if ("rich")
 			to_chat(H, SPAN_NOTICE("Yellow flecks glint in the black sand at the bottom of the pan. This ground carries gold."))
