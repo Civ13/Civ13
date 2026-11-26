@@ -161,7 +161,7 @@
 		if (!ending)
 			return null
 		var/first = text2ascii(value, opening + 1)
-		if (!(first in list(66, 73, 70, 98, 105, 102, 47)))
+		if (!(first in list(66, 73, 70, 72, 98, 105, 102, 104, 47)))
 			return null
 		var/tag = trim(copytext(value, opening + 1, ending))
 		var/lower_tag = lowertext(tag)
@@ -170,6 +170,12 @@
 				return null
 			budget.nodes_left--
 			runs += list(list("br" = TRUE, "ink" = ink, "face" = face, "bold" = bold, "italic" = italic))
+		else if (lower_tag == "hr")
+			// The writer joins complete pages with a bare, top-level divider.
+			if (stack.len || budget.nodes_left <= 0)
+				return null
+			budget.nodes_left--
+			runs += list(list("divider" = TRUE))
 		else if (lower_tag == "b" || lower_tag == "i" || lower_tag == "font" || (copytext(lower_tag, 1, 5) == "font" && book_page_space(text2ascii(tag, 5))))
 			if (stack.len >= budget.max_depth || budget.nodes_left <= 0)
 				return null
