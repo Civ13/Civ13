@@ -374,5 +374,43 @@ class BenchMaintenance(unittest.TestCase):
         self.assertEqual(c.count(c.map, 'A'), 1)  # Deleted bench wrongly keeps its slot.
 
 
+class FactionBenchSchedulerAndAssignment(unittest.TestCase):
+    def test_tick_refreshes_once_per_change_and_never_for_idle_ticks(self):
+        for removes_queued, contributes, expected in ((False, False, 0), (True, False, 1),
+                                                     (False, True, 1), (True, True, 1)):
+            with self.subTest(removes_queued=removes_queued, contributes=contributes):
+                events = []
+                bench = NS(faction="A", assigned_node="study", research_queue="queued")
+                def advance():
+                    if removes_queued:
+                        bench.research_queue = ""
+                bench.book_mode = lambda: False
+                bench.try_advance_queue = advance
+                def study():
+                    events.append("study")
+                    return contributes
+                env = dict(map=NS(), analysis_elapsed_scale=lambda: 1, faction_analysis_tick=study,
+                           get_research_node=lambda _: None,
+                           GLOB=NS(nanomanager=NS(update_uis=lambda target: events.append(target))))
+                tick = project(SOURCE, BENCH + "/proc/analysis_tick", "src", env,
+                               fields=("faction", "assigned_node", "research_queue", "analysis_scale"))
+                tick(bench)
+                self.assertEqual(events, ["study"] + [bench] * expected)
+
+    def test_active_faction_subject_is_ineligible_but_other_progress_can_continue(self):
+        bench = NS(faction="A", assigned_node="active", book_mode=lambda: False, bench_tier=lambda: 1)
+        available, in_progress = 1, 2
+        env = dict(map=NS(node_status=lambda *_: in_progress),
+                   get_research_node=lambda _: NS(min_bench_tier=1),
+                   research_node_dormant=lambda _: False, RNODE_AVAILABLE=available, RNODE_IN_PROGRESS=in_progress,
+                   book_can_assign_node=lambda node_id: node_id == "active")
+        can_assign = project(SOURCE, BENCH + "/proc/can_assign_node", "src, node_id", env,
+                             fields=("faction", "assigned_node"))
+        self.assertFalse(can_assign(bench, "active"))
+        self.assertTrue(can_assign(bench, "other"))
+        bench.book_mode = lambda: True
+        self.assertTrue(can_assign(bench, "active"))
+
+
 if __name__ == '__main__':
     unittest.main()

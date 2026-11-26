@@ -74,6 +74,25 @@ class ResearchInterfaceContract(unittest.TestCase):
             self.assertIn(guard, queue)
         tick = proc(self.research, "/obj/structure/research_bench/proc/book_analysis_tick")
         self.assertLess(tick.index("book_advance_queue()"), tick.index("if (!B || !assigned_node)"))
+    def test_faction_assignment_does_not_reset_active_sample_history(self):
+        eligible = proc(self.bench, "/obj/structure/research_bench/proc/can_assign_node")
+        self.assertLess(eligible.index("return book_can_assign_node(node_id)"), eligible.index("node_id == assigned_node"))
+        self.assertLess(eligible.index("node_id == assigned_node"), eligible.index("map.node_status"))
+        assign = proc(self.bench, "/obj/structure/research_bench/proc/try_assign_node")
+        self.assertLess(assign.index("if (!can_assign_node(node_id))"), assign.index("studied_samples = null"))
+        self.assertRegex(self.bench, r'"assignable"\s*=.*can_assign_node')
+
+    def test_faction_tick_pushes_queue_only_changes_and_skips_idle_ui(self):
+        tick = proc(self.bench, "/obj/structure/research_bench/proc/analysis_tick")
+        for capture in ("queue_before = research_queue", "subject_before = assigned_node"):
+            self.assertLess(tick.index(capture), tick.index("try_advance_queue()"))
+        self.assertIn("if (faction_analysis_tick() || research_queue != queue_before || assigned_node != subject_before)\n\t\tGLOB.nanomanager.update_uis(src)", tick)
+        self.assertEqual(tick.count("GLOB.nanomanager.update_uis(src)"), 1)
+        study = proc(self.bench, "/obj/structure/research_bench/proc/faction_analysis_tick")
+        self.assertLess(study.index("map.is_node_done"), study.index("map.add_research_ticks"))
+        self.assertLess(study.index("map.add_research_ticks"), study.index("return TRUE"))
+        self.assertNotIn("update_uis", study)
+
     def test_screen_data_is_read_only(self):
         for name in ("/obj/structure/research_bench/proc/book_node_ui", "/obj/structure/research_bench/proc/book_assigned_ui",
                      "/obj/structure/research_bench/proc/book_row_ui", "/proc/book_viewer_ui", "/obj/item/weapon/book/proc/research_book_ui_data"):
