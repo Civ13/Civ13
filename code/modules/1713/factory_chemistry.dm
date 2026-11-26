@@ -30,7 +30,7 @@
 
 /obj/structure/oilwell/factory_accepts(obj/item/I, from_dir = 0)
 	load_barrel(FALSE)
-	if (work_barrel || !base || !isturf(loc) || !istype(I, /obj/item/weapon/reagent_containers/glass/barrel) || !factory_movable_item(I))
+	if (work_barrel || !isturf(loc) || !has_source() || !istype(I, /obj/item/weapon/reagent_containers/glass/barrel) || !factory_movable_item(I))
 		return 0
 	return I.reagents && I.reagents.get_free_space() > 0 ? 1 : 0
 

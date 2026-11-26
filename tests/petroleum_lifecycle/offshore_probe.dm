@@ -86,9 +86,26 @@ var/offshore_runtime_error = FALSE
 		dry_rig.extraction_due = 0
 		sleep(21)
 		offshore_check(D.loc == dry_rig && !dry_rig.extracting_now && !D.reagents.total_volume, "a rig moved over dry seabed pumps nothing")
+		dry_rig.unload_barrel()
+		offshore_check(!dry_rig.factory_accepts(D) && !dry_rig.factory_insert(D) && D.loc == dry, "feeder rejects a dry field without taking its barrel")
+		dry_rig.load_barrel()
 		qdel(dry_rig)
 		offshore_check(D.loc == dry, "destroying a rig returns its barrel")
+
+		var/turf/staging = locate(12, 2, 1)
+		var/obj/item/weapon/reagent_containers/glass/barrel/incoming = new(staging)
+		incoming.reagents.add_reagent("petroleum", 17)
+		offshore_check(R.factory_accepts(incoming) && R.factory_insert(incoming) && !R.base && R.work_barrel == incoming && incoming.loc == R && incoming.reagents.get_reagent_amount("petroleum") == 17, "feeder accepts exact part-filled barrel on productive offshore field without a spring")
+		offshore_check(!R.factory_accepts(B) && !R.factory_insert(B) && B.loc == rich, "occupied rig refuses another barrel")
 		qdel(R)
+
+		var/turf/land = locate(15, 2, 1)
+		var/obj/structure/oil_spring/spring = new(land)
+		spring.counter = 0
+		var/obj/structure/oilwell/land_well = new(land)
+		offshore_check(land_well.base == spring && spring.flows() && land_well.factory_accepts(B), "working land spring accepts while its stock is temporarily empty")
+		qdel(land_well)
+		qdel(spring)
 	catch(var/exception/e)
 		offshore_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = offshore_failures, "runtime_error" = offshore_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
