@@ -2616,6 +2616,7 @@ SUITES = {
     'furnace_manual': {'files': ('tests/furnace_manual/test_transaction.py',),
         'paths': ('tests/furnace_manual/',), 'shared_paths': (
             'tests/grinder/test_transaction.py',
+            'code/game/objects/structures.dm',
             'code/game/objects/structures/blacksmithing/refining.dm')},
     'grinder': {'files': ('tests/grinder/test_transaction.py',),
         'paths': ('tests/grinder/',), 'shared_paths': (
@@ -2838,7 +2839,10 @@ SUITES = {
     'water_treatment': {'files': ('tests/stone_boiling/test_source.py',
                                   'tests/stone_kiln/test_source.py'), 'paths': (
         'tests/stone_boiling/', 'tests/stone_kiln/',
-        'code/modules/persistence/functions.dm')},
+        'code/modules/persistence/functions.dm'), 'shared_paths': (
+            'code/game/atoms_movable.dm', 'code/game/objects/structures.dm',
+            'code/game/objects/structures/blacksmithing/refining.dm',
+            'tests/save_movement/source_adapter.py')},
     'lipstick_restore': {'files': ('tests/lipstick_restore/test_restore.py',),
         'paths': ('tests/lipstick_restore/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm',

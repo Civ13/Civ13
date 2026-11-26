@@ -57,9 +57,13 @@
 			if (timed_toggle_anchor(H))
 				return TRUE
 		else if (istype(I, /obj/item/weapon/hammer))
+			if (!can_dismantle_with_hammer(H))
+				return TRUE
 			visible_message("<span class='warning'>[H] starts to deconstruct \the [src].</span>")
 			playsound(src, 'sound/items/Ratchet.ogg', 100, TRUE)
-			if (do_after(H,50,src))
+			if (do_after(H,50,src) && !QDELETED(src))
+				if (!can_dismantle_with_hammer(H))
+					return TRUE
 				visible_message("<span class='warning'>[H] deconstructs \the [src].</span>")
 				empty()
 				qdel(src)
