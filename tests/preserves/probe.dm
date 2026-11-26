@@ -44,6 +44,7 @@ var/preserve_runtime_error = FALSE
 		preserve_vinegar_checks()
 		preserve_pickle_checks()
 		preserve_jam_checks()
+		preserve_reseal_checks()
 	catch(var/exception/e)
 		preserve_check(FALSE, "exception [e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = preserve_failures, "runtime_error" = preserve_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
@@ -68,7 +69,7 @@ var/preserve_runtime_error = FALSE
 	preserve_check(!C.crock_has_work(), "nothing left to do")
 	C.reagents.add_reagent("water", 10)
 	preserve_check(!C.crock_has_work(), "water does not sour")
-	preserve_check(C.persistence_runtime_var("crock_working") && !C.persistence_runtime_var("pickle_progress"), "work timer is runtime, pickle progress is saved")
+	preserve_check(C.persistence_runtime_var("crock_timer") && !C.persistence_runtime_var("pickle_progress") && !C.persistence_runtime_var("pot_progress"), "work timer is runtime, pickle progress is saved")
 	qdel(C)
 
 /proc/preserve_pickle_checks()
@@ -141,4 +142,49 @@ var/preserve_runtime_error = FALSE
 	qdel(J)
 	for (var/obj/item/I in stand)
 		qdel(I)
+	qdel(H)
+
+// Run the real timer subsystem without bringing up the game master loop.
+/proc/preserve_run_timers_until(deadline)
+	while (world.time < deadline)
+		sleep(world.tick_lag)
+		SStimer.state = SS_RUNNING
+		SStimer.fire()
+
+/proc/preserve_reseal_checks()
+	var/turf/stand = locate(15, 15, 1)
+	var/mob/living/human/preserve_probe/H = new(stand)
+	var/obj/item/weapon/reagent_containers/glass/crock/C = new(stand)
+	var/obj/item/weapon/reagent_containers/food/snacks/grown/tomato/T = new(stand)
+	var/obj/item/weapon/reagent_containers/food/snacks/meat/M = new(stand)
+	M.raw = FALSE
+	preserve_check(C.pack_food(T, H) && C.pack_food(M, H), "reseal fixture packs a tomato and cooked meat")
+	C.reagents.add_reagent("wine", 10)
+	C.reagents.add_reagent("vinegar", 5)
+	C.reagents.add_reagent("sodiumchloride", 2)
+	C.reagents.add_reagent("butter", 5)
+	C.pickle_progress = 1 // One completed working spell before these lid actions.
+	C.pot_progress = 1
+
+	var/first_close = world.time
+	C.attack_self(H)
+	var/first_timer = C.crock_timer
+	var/first_deadline = first_close + 2 MINUTES
+	preserve_check(first_timer && timeleft(first_timer) >= 2 MINUTES - world.tick_lag, "closing schedules a full work interval")
+	preserve_run_timers_until(first_close + 5 SECONDS)
+	C.attack_self(H)
+	preserve_check(C.is_open_container() && !C.crock_timer && isnull(timeleft(first_timer)), "opening cancels the unfinished interval")
+	C.attack_self(H)
+	var/second_timer = C.crock_timer
+	var/second_deadline = world.time + 2 MINUTES
+	preserve_check(second_timer && second_timer != first_timer && timeleft(second_timer) >= 2 MINUTES - world.tick_lag, "resealing schedules a new full interval")
+
+	preserve_run_timers_until(first_deadline + 1 SECOND)
+	preserve_check(C.reagents.get_reagent_amount("wine") == 10 && C.pickle_progress == 1 && C.pot_progress == 1, "the stale deadline cannot sour, pickle, or pot")
+	preserve_run_timers_until(second_deadline + 1 SECOND)
+	preserve_check(C.reagents.get_reagent_amount("wine") == 4 && C.reagents.get_reagent_amount("vinegar") == 11 && C.pickle_progress == 2 && C.pot_progress == 2, "the new deadline advances all three jobs exactly once")
+	var/follow_up_timer = C.crock_timer
+	preserve_check(follow_up_timer && follow_up_timer != second_timer, "unfinished work schedules the next interval")
+	qdel(C)
+	preserve_check(isnull(timeleft(follow_up_timer)), "destroying the crock cancels its timer")
 	qdel(H)
