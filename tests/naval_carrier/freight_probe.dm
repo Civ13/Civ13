@@ -272,6 +272,25 @@ var/naval_runtime_error = FALSE
 	D1.welcome = BERTH_WELCOME_OWNERS
 	naval_check(!D1.may_post(reds) && D1.may_post(party_train_party_of(cat)) && findtext(D1.status_text(), "only they may offer freight"), "a claimed depot can keep its board to its own party")
 
+	var/obj/structure/berth/quay/depot/same_name_below = new(locate(8, 20, 1))
+	var/obj/structure/berth/quay/depot/same_name_above = new(locate(8, 20, 3))
+	same_name_below.harbour = "Mill Yard"
+	same_name_above.harbour = "Mill Yard"
+	var/list/destinations = D1.freight_destination_choices()
+	var/list/mill_levels = list()
+	var/same_level = FALSE
+	var/origin_listed = FALSE
+	for (var/label in destinations)
+		var/obj/structure/berth/quay/choice = destinations[label]
+		if (choice == D1)
+			origin_listed = TRUE
+		if (choice == D2 && findtext(label, "30 tiles north"))
+			same_level = TRUE
+		if (choice == same_name_below || choice == same_name_above)
+			if (findtext(label, "Mill Yard") && findtext(label, "(8, 20, level [choice.z])"))
+				mill_levels += choice.z
+	naval_check(mill_levels.len == 2 && (1 in mill_levels) && (3 in mill_levels) && same_level && !origin_listed, "same-named destinations on other levels are separately selectable, with same-level bearings preserved")
+
 /proc/naval_run()
 	try
 		naval_checks()
