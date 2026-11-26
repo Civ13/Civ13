@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import struct
 import unittest
+from types import SimpleNamespace
 import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -52,6 +53,41 @@ class SignalFireSourceTests(unittest.TestCase):
     def test_roof_blocks_both_ways(self):
         watchers = self.source[self.source.index('proc/signal_fire_watchers'):self.source.index('proc/send_smoke_signal')]
         self.assertEqual(watchers.count('signal_fire_open_sky('), 2)
+
+    def test_only_recipients_count_without_losing_witness_geometry(self):
+        source = self.source.split('for (var/mob/living/human/H in human_mob_list)', 1)[1]
+        source = source.split('\n\t\t. += H', 1)[0].strip('\n')
+        statements = {
+            'if (!H.client && !agent_characters[H])': 'if not H.client and not any(H is agent for agent in agents):',
+            ('if (H == signaller || !signal_fire_level_sees(H.z, T) || '
+             'signal_fire_flat_dist(H, T) > signal_fire_range(T) || !signal_fire_can_see(H))'):
+                'if H is signaller or not H.level or not H.in_range or not H.awake:',
+            'if (!signal_fire_open_sky(H))': 'if not H.outdoors:',
+            'continue': 'return False',
+        }
+        lines = ['def sees(H, signaller, agents):']
+        for line in source.splitlines():
+            if line.lstrip().startswith('//'):
+                continue
+            indent = len(line) - len(line.lstrip('\t')) - 1
+            lines.append('    ' * indent + statements[line.strip()])
+        lines.append('    return True')
+        env = {}
+        exec('\n'.join(lines), env)
+        sees = env['sees']
+        good = dict(client=True, level=True, in_range=True, awake=True, outdoors=True)
+        body = SimpleNamespace(**(good | {'client': False}))
+        player = SimpleNamespace(**good)
+        self.assertFalse(sees(body, player, []), 'disconnected and uncontrolled body is not a witness')
+        self.assertFalse(sees(body, player, [SimpleNamespace(**vars(body))]))
+        self.assertTrue(sees(body, player, [body]), 'registered agent still receives its bearing')
+        self.assertTrue(sees(player, body, []), 'connected awake player still sees smoke')
+        self.assertFalse(sees(player, player, []), 'the signaller is notified separately')
+        for attr in ('level', 'in_range', 'awake', 'outdoors'):
+            with self.subTest(attr=attr):
+                blocked = SimpleNamespace(**(good | {attr: False}))
+                self.assertFalse(sees(blocked, body, []))
+        self.assertIn('watchers.len ? "Someone out there can see it."', self.source)
 
     def test_the_fire_and_the_signal_say_how_it_works(self):
         examine = self.source.split('/obj/structure/oven/fireplace/examine(mob/user)', 1)[1]
