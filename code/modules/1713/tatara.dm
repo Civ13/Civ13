@@ -437,7 +437,7 @@ var/global/list/kanna_channel_stock = list()
 	return ..()
 
 // Washes the held sand in batches; TRUE when any iron sand came out.
-/proc/wash_sand(obj/item/stack/S, mob/living/human/H, atom/where)
+/proc/wash_sand(obj/item/stack/S, mob/living/human/H, atom/where, obj/item/kitchen/wood_bowl/bowl = null, atom/bowl_location = null, turf/water = null)
 	var/batches = round(S.amount / SAND_PER_WASH)
 	if (batches < 1)
 		to_chat(H, SPAN_WARNING("Wash at least [SAND_PER_WASH] sand at a time."))
@@ -446,6 +446,10 @@ var/global/list/kanna_channel_stock = list()
 	to_chat(H, SPAN_NOTICE("You start washing the sand, letting the water carry the light grains away."))
 	if (!do_after(H, SAND_WASH_TIME * batches, where) || QDELETED(S) || S.amount != initial_amount)
 		return FALSE
+	if (bowl_location)
+		var/turf/bank = get_turf(H)
+		if (QDELETED(bowl) || !bowl.panning_tool_available(H, bowl_location) || !bank || bank.panning_water() != water)
+			return FALSE
 	var/units = batches * (map && map.iron_sand_rich ? 2 : 1)
 	S.use(batches * SAND_PER_WASH)
 	spawn_stack(/obj/item/stack/ore/iron_sand, get_turf(H), units)
@@ -453,17 +457,19 @@ var/global/list/kanna_channel_stock = list()
 	return TRUE
 
 // A wooden bowl pans ordinary sand the same way beside shallow fresh water.
-/obj/item/kitchen/wood_bowl/attackby(obj/item/I, mob/living/human/H)
-	if (!istype(I, /obj/item/stack/ore/glass) || !istype(H))
-		return ..()
+/obj/item/kitchen/wood_bowl/proc/pan_sand(obj/item/stack/ore/glass/I, mob/living/human/H)
 	var/turf/T = get_turf(H)
-	if (!T || !T.panning_water())
+	var/turf/water = T?.panning_water()
+	if (!water)
 		to_chat(H, SPAN_WARNING("Stand beside shallow fresh water to wash sand."))
 		return
 	if (map && map.ordinal_age < 1)
 		to_chat(H, SPAN_WARNING("You see nothing worth keeping in the sand."))
 		return
-	wash_sand(I, H, H)
+	var/atom/bowl_location = loc
+	if (!panning_tool_available(H, bowl_location))
+		return
+	wash_sand(I, H, H, src, bowl_location, water)
 
 #undef KANNA_WASH_UNITS
 #undef KANNA_STOCK

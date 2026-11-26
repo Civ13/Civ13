@@ -79,9 +79,24 @@
 		var/mob/living/human/H = user
 		H.choose_resource_sifting(src)
 
+// One dispatch point so every feed works regardless of .dme include order.
+/obj/item/kitchen/wood_bowl/attackby(obj/item/I, mob/living/human/H)
+	if (istype(H))
+		if (istype(I, /obj/item/stack/ore/pay_dirt))
+			return pan_pay_dirt(I, H)
+		if (istype(I, /obj/item/stack/ore/crushed_ore))
+			return pan_crushed_ore(I, H)
+		if (istype(I, /obj/item/stack/ore/glass))
+			return pan_sand(I, H)
+	return ..()
+
+// A pan must stay in the user's hands or on the same reachable ground.
+/obj/item/kitchen/wood_bowl/proc/panning_tool_available(mob/living/human/H, atom/original_location)
+	return !QDELETED(src) && !QDELETED(H) && loc == original_location && (loc == H ? H.item_is_in_hands(src) : isturf(loc) && Adjacent(H))
+
 /turf/proc/panning_water()
 	for (var/turf/floor/beach/water/W in range(1, src))
-		if (!W.salty && W.water_level <= 30 && W.watertile)
+		if (!W.salty && W.water_level <= 30 && W.watertile && is_liquid_water(W))
 			return W
 	return null
 
