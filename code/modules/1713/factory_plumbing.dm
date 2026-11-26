@@ -140,9 +140,12 @@
 	to_chat(user, SPAN_NOTICE("Water in the line: [round(water_stored)]/[PLUMBING_SHOWER_VOLUME] units."))
 
 /obj/structure/shower/piped/attack_hand(mob/M as mob)
-	if (!on && water_stored < PLUMBING_SHOWER_USE)
-		to_chat(M, SPAN_WARNING("Nothing comes out of \the [src]. Its pipe has no water."))
-		return
+	if (!on)
+		if (water_stored < PLUMBING_SHOWER_USE)
+			to_chat(M, SPAN_WARNING("Nothing comes out of \the [src]. Its pipe has no water."))
+			return
+		// The parent washes the occupant as soon as the shower turns on.
+		water_stored -= PLUMBING_SHOWER_USE
 	return ..()
 
 /obj/structure/shower/piped/process()

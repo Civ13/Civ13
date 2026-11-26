@@ -256,6 +256,17 @@ var/pipe_runtime_error = FALSE
 	for (var/obj/O in list(P, V, pump, T))
 		qdel(O)
 
+// Observe the actual inherited activation path without a full player body.
+/mob/living/pipe_shower_probe/New()
+	return
+
+/obj/structure/shower/piped/pipe_probe
+	var/washes = 0
+	var/water_at_wash
+	wash(atom/movable/O)
+		washes++
+		water_at_wash = water_stored
+
 // Holding tank (buffer) -> water tap and piped shower (sinks).
 /proc/pipe_plumbing_checks()
 	var/list/pipes = pipe_line(3, 6, 4)
@@ -263,7 +274,7 @@ var/pipe_runtime_error = FALSE
 	T.reagents.add_reagent("water", 45)
 	T.reagents.add_reagent("cholera", 5)
 	var/obj/structure/water_tap/tap = new(locate(4, 5, 1))
-	var/obj/structure/shower/piped/shower = new(locate(6, 5, 1))
+	var/obj/structure/shower/piped/pipe_probe/shower = new(locate(6, 5, 1))
 	pipe_check(!tap.reagents.total_volume && !shower.water_stored, "a new tap and piped shower start dry")
 	shower.attack_hand(null)
 	pipe_check(!shower.on, "a dry piped shower will not turn on")
@@ -284,6 +295,15 @@ var/pipe_runtime_error = FALSE
 	var/before = tap.reagents.total_volume
 	tap.reagents.trans_to_obj(B, 10)
 	pipe_check(B.reagents.total_volume == 10 && tap.reagents.total_volume == before - 10, "filling a container at a tap empties the tap by as much")
+	var/mob/living/pipe_shower_probe/occupant = new(shower.loc)
+	shower.water_stored = 5
+	shower.attack_hand(occupant)
+	pipe_check(shower.on && !shower.water_stored && shower.washes == 1 && !shower.water_at_wash, "the activation wash happens only after paying its five units")
+	shower.attack_hand(occupant)
+	pipe_check(!shower.on && !shower.water_stored && shower.washes == 1, "switching off uses none of the supply and does not wash")
+	shower.attack_hand(occupant)
+	pipe_check(!shower.on && !shower.water_stored && shower.washes == 1, "cycling a dry shower cannot trigger a wash")
+	occupant.loc = null
 	shower.water_stored = 7
 	shower.on = TRUE
 	shower.process()
