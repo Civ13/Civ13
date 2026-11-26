@@ -27,7 +27,8 @@
 	var/list/sea = list()
 	var/list/ships = list()
 	var/navmoving = FALSE //if the ship is moving
-	var/navdirection = "North"
+	var/navdirection = "North" // Last cardinal heading, even while approaching a destination.
+	var/list/nav_approach
 	var/navprogress = 0 //how far along on moving to a neighbouring tile the ship is
 	var/navspeed = 0
 	var/inzone = FALSE //if the ship is currently in an event zone
@@ -85,6 +86,39 @@
 	to_chat(world, "<font size=4 color='yellow'>	Galleons (lvl 5): [statistics[3][5]]</font>")
 	to_chat(world, "<font size=4 color='yellow'>	Man-O-Wars (lvl 6): [statistics[3][6]]</font>")
 	no_spam = TRUE
+/obj/map_metadata/voyage/proc/approach_kind(destination)
+	if (destination == "island" || destination == "fort")
+		return destination
+	if (findtext(destination, "ship") == 1)
+		return "ship"
+	return null
+
+/obj/map_metadata/voyage/proc/current_approach()
+	var/list/cell = mapgen["[latitude],[longitude]"]
+	if (!cell)
+		return null
+	var/destination = cell[3]
+	var/kind = approach_kind(destination)
+	if (!kind)
+		return null
+	return list(latitude, longitude, kind, destination)
+
+/obj/map_metadata/voyage/proc/approach_is_current(list/order)
+	if (!order || order[1] != latitude || order[2] != longitude)
+		return FALSE
+	var/list/cell = mapgen["[latitude],[longitude]"]
+	return cell && cell[3] == order[4]
+
+/obj/map_metadata/voyage/proc/approach_is_on_cooldown(list/order)
+	var/list/places = order[3] == "island" ? islands : (order[3] == "fort" ? forts : null)
+	for (var/list/place in places)
+		if (place[2] == order[1] && place[3] == order[2] && world.time <= place[4])
+			return TRUE
+	return FALSE
+
+/obj/map_metadata/voyage/proc/navigation_course()
+	return nav_approach ? nav_approach[3] : navdirection
+
 /obj/map_metadata/voyage/proc/nav()
 	check_roundend_conditions()
 	if (navmoving && !ship_anchored)
@@ -93,9 +127,10 @@
 			navprogress += navspeed
 			if (navprogress >= 100)
 				navprogress = 0
-				if (navdirection == "island" || findtext(navdirection,"ship") || findtext(navdirection,"fort"))
-					enter_event()
+				if (approach_is_current(nav_approach) && !approach_is_on_cooldown(nav_approach))
+					enter_event(nav_approach[3], nav_approach[4])
 				else
+					nav_approach = null
 					switch(navdirection)
 						if ("North")
 							if(latitude < 27)
@@ -179,7 +214,7 @@
 	spd*=33 //how much % of progress per minute for each spd unit, ex: 2 masts in full condition = 1*33 = 33, 3 mins to change tiles
 	return spd+1
 
-/obj/map_metadata/voyage/proc/enter_event()
+/obj/map_metadata/voyage/proc/enter_event(kind, destination)
 	navmoving = FALSE
 	for(var/obj/effect/sailing_effect/S in world)
 		S.icon_state = "sailing_effect_stopped"
@@ -189,19 +224,20 @@
 	for(var/obj/structure/voyage/anchor_capstan/AC in world)
 		AC.update_icon()
 	to_chat(world, "<font size=4 color='yellow'>The ship arrives at the destination.</font>")
-	if (navdirection == "island")
+	if (kind == "island")
 		if (prob(50))
 			load_map(pick("island1","island2","island3","piratetown","cursed_island"),"north")
 		else
 			load_map(pick("island1","island2","island3","piratetown"),"south")
 		return
-	else if (navdirection == "fort")
+	else if (kind == "fort")
 		load_map(pick("islandfort1","islandfort2"),"south")
-	else
-		load_map(mapgen["[latitude],[longitude]"][3])
+	else if (kind == "ship")
+		load_map(destination)
 	return
 
 /obj/map_metadata/voyage/proc/abandon_event()
+	nav_approach = null
 	navmoving = TRUE
 	for(var/obj/effect/sailing_effect/S in world)
 		S.icon_state = "sailing_effect"
@@ -222,10 +258,16 @@
 		new/obj/structure/grapplehook(D.loc)
 		qdel(D)
 
-	for(var/list/L in ships)
-		if (L[3] == latitude && L[4] == longitude)
-			statistics[3][L[1]]++
-			ships -= L
+	var/retired_ship = FALSE
+	for (var/i = ships.len, i >= 1, i--)
+		var/list/encounter = ships[i]
+		if (encounter[3] == latitude && encounter[4] == longitude)
+			statistics[3][encounter[1]]++
+			ships.Cut(i, i + 1)
+			retired_ship = TRUE
+	var/list/cell = mapgen["[latitude],[longitude]"]
+	if (retired_ship && cell && approach_kind(cell[3]) == "ship")
+		cell[3] = "sea"
 	for(var/list/L1 in islands)
 		if (L1[2] == latitude && L1[3] == longitude)
 			statistics[2]++
@@ -456,36 +498,58 @@
 	anchored = TRUE
 	attack_hand(mob/living/human/H)
 		var/obj/map_metadata/voyage/nmap = map
-		if (nmap)
-			if (nmap.ship_anchored)
-				WWalert(H, "The ship is anchored! Raise the anchor first","Ship Anchored")
+		if (!istype(nmap) || !can_use_wheel(H))
+			return
+		if (nmap.ship_anchored)
+			WWalert(H, "The ship is anchored! Raise the anchor first", "Ship Anchored")
+			return
+
+		var/list/options = list("North", "South", "East", "West")
+		var/list/offered = nmap.current_approach()
+		var/approach_choice
+		if (offered)
+			approach_choice = "Approach [offered[3]]"
+			options.Insert(1, approach_choice)
+		var/choice = choose_course(H, nmap.navigation_course(), approach_choice ? approach_choice : nmap.navdirection, options)
+		if (!(choice in options) || !steering_is_allowed(H, nmap))
+			return
+		var/approaching = choice == approach_choice
+		if (approaching && !can_approach(H, nmap, offered))
+			return
+		if (!approaching && choice == nmap.navdirection && !nmap.nav_approach)
+			return
+		if (!turn_wheel(H) || !steering_is_allowed(H, nmap))
+			return
+		if (approaching)
+			if (!can_approach(H, nmap, offered))
 				return
-			var/optlist = list("North","South","East","West")
-			var/def_dir = nmap.navdirection
-			var/currtile = nmap.mapgen["[nmap.latitude],[nmap.longitude]"][3]
-			if (currtile != "sea")
-				var/parsed_currtile = currtile
-				if (findtext(parsed_currtile,"ship"))
-					parsed_currtile = "ship"
-				optlist = list("Approach [parsed_currtile]","North","South","East","West")
-				def_dir = "Approach [parsed_currtile]"
-			var/newdir = WWinput(H, "The Ship is currently heading to the [nmap.navdirection]. Which direction to you want to head to?","Ship Wheel",def_dir,optlist)
-			if (findtext(newdir,"Approach "))
-				for(var/list/L in nmap.islands)
-					if (L[2] == nmap.latitude && L[3] == nmap.longitude && world.time <= L[4])
-						WWalert(H, "You've visited this island too recently!", "Island")
-						return
-				for(var/list/L2 in nmap.forts)
-					if (L2[2] == nmap.latitude && L2[3] == nmap.longitude && world.time <= L2[4])
-						WWalert(H, "You've visited this island fort too recently!", "Fort")
-						return
-			if (newdir != nmap.navdirection)
-				if (do_after(H, 50, src))
-					nmap.navdirection = newdir
-					if (findtext(nmap.navdirection,"Approach "))
-						nmap.navdirection = replacetext(nmap.navdirection,"Approach ","")
-					visible_message("<font size=3 color='yellow'>The ship heads to the <b>[nmap.navdirection]</b>.</font>")
-					return
+			nmap.nav_approach = offered
+		else
+			nmap.navdirection = choice
+			nmap.nav_approach = null
+		visible_message("<font size=3 color='yellow'>The ship heads to the <b>[nmap.navigation_course()]</b>.</font>")
+
+/obj/structure/voyage/shipwheel/proc/can_use_wheel(mob/living/human/H)
+	return istype(H) && !QDELETED(H) && !QDELETED(src) && !H.incapacitated() && Adjacent(H)
+
+/obj/structure/voyage/shipwheel/proc/steering_is_allowed(mob/living/human/H, obj/map_metadata/voyage/nmap)
+	return map == nmap && !nmap.ship_anchored && !nmap.inzone && can_use_wheel(H)
+
+/obj/structure/voyage/shipwheel/proc/can_approach(mob/living/human/H, obj/map_metadata/voyage/nmap, list/offered)
+	if (!nmap.approach_is_current(offered))
+		to_chat(H, SPAN_WARNING("That destination has changed. Use the ship wheel again."))
+		return FALSE
+	if (nmap.approach_is_on_cooldown(offered))
+		WWalert(H, "You've visited this destination too recently!", "Destination")
+		return FALSE
+	return TRUE
+
+/obj/structure/voyage/shipwheel/proc/choose_course(mob/living/human/H, course, default_course, list/options)
+	return WWinput(H, "The ship is currently heading to the [course]. Which direction do you want to head?", "Ship Wheel", default_course, options)
+
+/obj/structure/voyage/shipwheel/proc/turn_wheel(mob/living/human/H)
+	return do_after(H, 50, src)
+
 /obj/structure/voyage/tablemap
 	name = "map"
 	desc = "A map of the region. Used by the captain to plan the next moves."
@@ -736,7 +800,7 @@
 			var/obj/map_metadata/voyage/nmap = map
 			if (nmap)
 				to_chat(H, "The ship is currently at <b>[nmap.latitude]</b>°N, <b>[nmap.longitude]</b>°W.")
-				to_chat(H, "The ship is heading to the <b>[nmap.navdirection]</b>, progress: <b>[nmap.navprogress]%</b>")
+				to_chat(H, "The ship is heading to the <b>[nmap.navigation_course()]</b>, progress: <b>[nmap.navprogress]%</b>")
 				to_chat(H, "Sinking progress: <b>[nmap.get_sink()]%</b>")
 				if(nmap.ship_anchored)
 					to_chat(H, "The ship is <font color='red'><b>anchored</b></font>.")
