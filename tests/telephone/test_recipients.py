@@ -371,7 +371,43 @@ class TelephoneCharacterization(unittest.TestCase):
                 ringing=[e[2] for e in n.trace if e[0]=='ring']
                 self.assertEqual(ringing,[] if busy else ['first match','second match'])
                 results.append((n.trace,n.state()))
-            self.assertEqual(*results)
+            if not busy:
+                self.assertEqual(*results)
+            else:
+                before, after = results
+                self.assertEqual(before[1], after[1])
+                self.assertEqual([e for e in before[0] if e[0] != 'scheduled'], after[0])
+
+    def test_failed_dials_do_not_schedule_unanswered_callbacks(self):
+        for number in (6789, 911, 1001, 2002):
+            with self.subTest(number=number):
+                n=Network(self.after);a=n.human('caller');b=n.human('busy')
+                p=n.phone('source',1001,a);q=n.phone('busy',2002,b)
+                q.connected=3003
+                n.next_number=number;p.attack_self(a)
+                phrase='Number occupied.' if number == 2002 else 'Number not found.'
+                self.assertTrue(any(e[0]=='chat' and phrase in e[-1] for e in n.trace))
+                self.assertFalse(n.queue)
+                n.advance(20);r=n.phone('idle',4004,b)
+                n.next_number=4004;p.attack_self(a)
+                n.advance(200)
+                self.assertTrue(p.ringing and r.ringing)
+                n.advance(220)
+                self.assertFalse(r.ringing)
+
+    def test_idle_then_busy_duplicate_keeps_success(self):
+        n=Network(self.after);a=n.human('caller');b=n.human('callee')
+        p=n.phone('source',1001,a);q=n.phone('idle',2002,b);r=n.phone('busy',2002,b)
+        r.connected=3003
+        n.next_number=2002;p.attack_self(a)
+        self.assertTrue(p.ringing and q.ringing)
+        self.assertTrue(any(e[0]=='scheduled' and e[2]=='source' and e[3]==200 for e in n.trace))
+        self.assertFalse(any(e[0]=='chat' and 'Number occupied.' in e[-1] for e in n.trace))
+
+    def test_contact_and_campaign_callbacks_are_behind_success_gate(self):
+        campaign = (ROOT / 'code/game/objects/map_metadata/campaign_old.dm').read_text()
+        for text in (extract(self.after, BASE+'/mobile/attack_self'), extract(campaign, BASE+'/mobile/campaign/attack_self')):
+            self.assertRegex(text, r'(?m)^(\t+)if \(!ring_phone\(tgtnum,phonenumber, src, user\)\)\n\1\treturn\n\1spawn\(200\)')
 
     def test_outgoing_cancel_does_not_silently_change_legacy_remote_ring_semantics(self):
         results=[]
@@ -397,7 +433,7 @@ class TelephoneCharacterization(unittest.TestCase):
         self.assertEqual(*results)
 
     def test_call_state_and_ring_procedures_remain_exactly_unchanged(self):
-        for declaration in [BASE+'/proc/ringproc',BASE+'/proc/ring',BASE+'/attack_self','/proc/ring_phone']:
+        for declaration in [BASE+'/proc/ringproc',BASE+'/proc/ring']:
             # Fixture separators may add blank lines after a complete procedure.
             self.assertEqual(extract(self.after,declaration).rstrip(),extract(self.before,declaration).rstrip())
 
