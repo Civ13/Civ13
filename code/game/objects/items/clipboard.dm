@@ -42,7 +42,18 @@
 			add_fingerprint(usr)
 			return
 
+/obj/item/weapon/clipboard/proc/contained_top_paper()
+	if (istype(toppaper, /obj/item/weapon/paper) && !QDELETED(toppaper) && toppaper.loc == src)
+		return toppaper
+	// Older clipboards may have papers but no selection. Match the order of clipping new sheets.
+	toppaper = null
+	for (var/obj/item/weapon/paper/P in contents)
+		if (!QDELETED(P) && P.loc == src)
+			toppaper = P
+	return toppaper
+
 /obj/item/weapon/clipboard/update_icon()
+	contained_top_paper()
 	if (GLOB.nanomanager)
 		GLOB.nanomanager.update_uis(src)
 	overlays.Cut()
@@ -64,13 +75,11 @@
 		to_chat(user, SPAN_NOTICE("You clip the [W] onto \the [src]."))
 		update_icon()
 
-	else if (istype(toppaper) && istype(W, /obj/item/weapon/pen))
-		toppaper.attackby(W, usr)
-		update_icon()
-
-	else if (istype(toppaper) && istype(W, /obj/item/weapon/stamp))
-		toppaper.attackby(W, user)
-		update_icon()
+	else if (istype(W, /obj/item/weapon/pen) || istype(W, /obj/item/weapon/stamp))
+		var/obj/item/weapon/paper/P = contained_top_paper()
+		if (P)
+			P.attackby(W, user)
+			update_icon()
 
 	return
 
@@ -86,9 +95,9 @@
 	sections += list(panel_section("Pen", rows = list(panel_row("Pen", haspen ? "Clipped on" : "None", haspen ? "good" : "muted",
 		list(haspen ? panel_button("Remove Pen", "pen") : panel_button("Add Pen", "addpen"))))))
 
-	//The topmost paper. I don't think there's any way to organise contents in byond, so this is what we're stuck with.	-Pete
-	if (toppaper)
-		var/obj/item/weapon/paper/P = toppaper
+	var/obj/item/weapon/paper/top = contained_top_paper()
+	if (top)
+		var/obj/item/weapon/paper/P = top
 		sections += list(panel_section("Top paper", items = list(panel_item(P.name, null, list(
 			panel_button("Read", "read", "\ref[P]"), panel_button("Write", "write", "\ref[P]"),
 			panel_button("Rename", "rename", "\ref[P]"), panel_button("Remove", "remove", "\ref[P]"))))))
@@ -129,7 +138,7 @@
 		else if (href_list["write"])
 			var/obj/item/weapon/P = locate(href_list["write"])
 
-			if (P && (P.loc == src) && istype(P, /obj/item/weapon/paper) && (P == toppaper) )
+			if (P && (P.loc == src) && istype(P, /obj/item/weapon/paper) && (P == contained_top_paper()) )
 
 				var/obj/item/I = usr.get_active_hand()
 
@@ -144,13 +153,6 @@
 
 				P.loc = usr.loc
 				usr.put_in_hands(P)
-				if (P == toppaper)
-					toppaper = null
-					var/obj/item/weapon/paper/newtop = locate(/obj/item/weapon/paper) in src
-					if (newtop && (newtop != P))
-						toppaper = newtop
-					else
-						toppaper = null
 
 		else if (href_list["rename"])
 			var/obj/item/weapon/O = locate(href_list["rename"])
@@ -189,4 +191,5 @@
 /obj/item/weapon/clipboard/full/New()
 	..()
 	for (var/i=1, i<= 20, i++)
-		new /obj/item/weapon/paper(src)
+		toppaper = new /obj/item/weapon/paper(src)
+	update_icon()

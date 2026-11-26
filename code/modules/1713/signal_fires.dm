@@ -101,6 +101,9 @@
 		return
 	// The whole human list, not range(): a turf scan this wide would be slow.
 	for (var/mob/living/human/H in human_mob_list)
+		// Match to_chat_wrapper's recipient routes for human mobs.
+		if (!H.client && !agent_characters[H])
+			continue
 		if (H == signaller || !signal_fire_level_sees(H.z, T) || signal_fire_flat_dist(H, T) > signal_fire_range(T) || !signal_fire_can_see(H))
 			continue
 		if (!signal_fire_open_sky(H))
