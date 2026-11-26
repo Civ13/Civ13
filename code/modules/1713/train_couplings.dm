@@ -303,10 +303,10 @@
 	if (v <= 0)
 		to_chat(user, coupling_text(front))
 		return TRUE
+	if (train_under_power())
+		to_chat(user, SPAN_WARNING("The coupling is pulled tight. Shut the throttle first."))
+		return TRUE
 	if (other)
-		if (train_under_power())
-			to_chat(user, SPAN_WARNING("The coupling is pulled tight. Shut the throttle first."))
-			return TRUE
 		// Two automatic couplers let go at once by the lever (train_shunting.dm).
 		if (lever_uncouples(front))
 			user.visible_message("[user] lifts the uncoupling lever of \the [src].", "You lift the uncoupling lever.")
