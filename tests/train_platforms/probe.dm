@@ -1687,6 +1687,12 @@ var/global/platform_probe_runtime_error = FALSE
 	var/shp = S.health
 	var/ran = platform_step(E, 10)
 	platform_check("shunting/slow_approach_buffers_up", ran == 3 && E.y == 9 && E.health == hp && S.health == shp && S.y == 10 && S.train_head() == S && !S.roll_speed)
+	// A manual click on the approaching engine's free coupler must not hitch.
+	var/obj/structure/trains/prior_link = E.connected
+	E.throttle = 1
+	var/refused_free = E.train_under_power() && E.coupler_use(shunter, TRUE) && !S.connected && E.connected == prior_link
+	E.throttle = 0
+	platform_check("shunting/free_coupler_not_under_power", refused_free)
 	// Brisker, it is a bump again; one automatic coupler alone does not lock.
 	E.rail_speed = 1.3
 	ran = platform_step(E, 2)

@@ -344,6 +344,10 @@ class TrainPlatformSourceTests(unittest.TestCase):
         # The lever skips the wait, never the rule about a tight coupling.
         use = couplings[couplings.index('/obj/structure/trains/proc/coupler_use('):]
         self.assertLess(use.index('if (train_under_power())'), use.index('if (lever_uncouples(front))'))
+        hand = use.split('damage_coupling(front, W.force)', 1)[1]
+        self.assertLess(hand.index('if (train_under_power())'), hand.index('if (other)'))
+        self.assertLess(hand.index('if (train_under_power())'), hand.index('if (!couple_end('))
+        self.assertIn('end_neighbour(front) != other || train_under_power()', hand)
         self.assertIn('RECIPE: /material/steel/,automatic coupler,/obj/item/train_coupling/automatic,6,120,0,0,trains,140,', RECIPES)
         self.assertIn('"/obj/item/train_coupling/automatic" = "assembly_line"', NODES)
         states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')
