@@ -11,19 +11,25 @@ internal enum Tone { Good, Info, Idle, Busy, Bad }
 internal enum Glyph { None, Dot, Ring, Moon, Sun, Arc, Alert, Check, Down, Box, Dash, Person }
 
 internal static class StatusPaint {
-    public static readonly Color Ink = Color.FromArgb(28, 33, 40);
-    public static readonly Color Muted = Color.FromArgb(96, 105, 118);
-    public static readonly Color Line = Color.FromArgb(222, 226, 232);
-    public static readonly Color Band = Color.FromArgb(246, 247, 249);
-    public static readonly Color Selected = Color.FromArgb(226, 238, 255);
-    public static readonly Color SelectedEdge = Color.FromArgb(64, 120, 216);
-    public static readonly Color Hover = Color.FromArgb(243, 246, 250);
-    public static readonly Color ProblemBack = Color.FromArgb(255, 245, 244);
+    public static Color Ink => LauncherSkin.Dark ? LauncherSkin.Ink : Color.FromArgb(28, 33, 40);
+    public static Color Muted => LauncherSkin.Dark ? LauncherSkin.Muted : Color.FromArgb(96, 105, 118);
+    public static Color Line => LauncherSkin.Dark ? LauncherSkin.Border : Color.FromArgb(222, 226, 232);
+    public static Color Band => LauncherSkin.Dark ? LauncherSkin.Canvas : Color.FromArgb(246, 247, 249);
+    public static Color Selected => LauncherSkin.Dark ? LauncherSkin.Selection : Color.FromArgb(226, 238, 255);
+    public static Color SelectedEdge => LauncherSkin.Dark ? LauncherSkin.Accent : Color.FromArgb(64, 120, 216);
+    public static Color Hover => LauncherSkin.Dark ? LauncherSkin.Raised : Color.FromArgb(243, 246, 250);
+    public static Color ProblemBack => LauncherSkin.Dark ? LauncherSkin.Problem : Color.FromArgb(255, 245, 244);
     // The board's fix buttons: a plain outline, and the text of one that cannot be used now.
-    public static readonly Color ButtonEdge = Color.FromArgb(190, 197, 207);
-    public static readonly Color Disabled = Color.FromArgb(150, 157, 168);
+    public static Color ButtonEdge => LauncherSkin.Dark ? LauncherSkin.Border : Color.FromArgb(190, 197, 207);
+    public static Color Disabled => LauncherSkin.Dark ? LauncherSkin.Muted : Color.FromArgb(150, 157, 168);
 
-    public static Color Fore(Tone tone) => tone switch {
+    public static Color Fore(Tone tone) => LauncherSkin.Dark ? tone switch {
+        Tone.Good => Color.FromArgb(148, 222, 159),
+        Tone.Info => LauncherSkin.Accent,
+        Tone.Busy => Color.FromArgb(255, 208, 117),
+        Tone.Bad => Color.FromArgb(255, 171, 167),
+        _ => LauncherSkin.Muted,
+    } : tone switch {
         Tone.Good => Color.FromArgb(22, 101, 46),
         Tone.Info => Color.FromArgb(29, 78, 160),
         Tone.Busy => Color.FromArgb(133, 77, 0),
@@ -33,10 +39,16 @@ internal static class StatusPaint {
 
     // A region's local day or night on the board. Not a status: the sun is a warmer gold than the amber
     // of "in progress" and the moon is slate, not the blue of "Asleep", so neither reads as a state pill.
-    public static readonly Color Day = Color.FromArgb(196, 124, 0);
-    public static readonly Color Night = Color.FromArgb(84, 96, 132);
+    public static Color Day => LauncherSkin.Dark ? Color.FromArgb(255, 208, 117) : Color.FromArgb(196, 124, 0);
+    public static Color Night => LauncherSkin.Dark ? Color.FromArgb(183, 198, 248) : Color.FromArgb(84, 96, 132);
 
-    public static Color Back(Tone tone) => tone switch {
+    public static Color Back(Tone tone) => LauncherSkin.Dark ? tone switch {
+        Tone.Good => Color.FromArgb(41, 66, 48),
+        Tone.Info => Color.FromArgb(40, 59, 83),
+        Tone.Busy => Color.FromArgb(73, 55, 30),
+        Tone.Bad => LauncherSkin.Problem,
+        _ => LauncherSkin.Raised,
+    } : tone switch {
         Tone.Good => Color.FromArgb(220, 243, 225),
         Tone.Info => Color.FromArgb(222, 233, 251),
         Tone.Busy => Color.FromArgb(255, 238, 190),
