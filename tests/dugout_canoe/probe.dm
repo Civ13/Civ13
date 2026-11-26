@@ -188,8 +188,11 @@ var/canoe_runtime_error = FALSE
 	D.ontop += B
 	canoe_check(D.canoe_work_refusal(), "a canoe with someone aboard cannot")
 	D.ontop -= B
+	D.on_rollers = TRUE
+	D.dress_rollers()
 	D.booms_fitted = TRUE
 	D.update_icon()
+	canoe_check(D.roller_image?.pixel_x == 32 && D.roller_image?.pixel_y == 32 && D.underlays.len == 1, "fitting the booms keeps the rollers centered")
 	canoe_check(D.icon == OUTRIGGER_ICON && D.icon_state == "outrigger_fitted" && D.pixel_w == -32 && D.pixel_z == -32, "booms fitted shows the half-built outrigger")
 	D.driver = B
 	B.dir = EAST
@@ -204,6 +207,8 @@ var/canoe_runtime_error = FALSE
 	canoe_check(C && QDELETED(D) && C.bilge == 2, "lashing turns the dugout into an outrigger, water and all")
 	if (!C)
 		return
+	canoe_check(C.on_rollers && C.roller_image?.pixel_x == 32 && C.roller_image?.pixel_y == 32 && C.underlays.len == 1, "the outrigger keeps exactly one correctly offset roller underlay")
+	C.shed_rollers(get_turf(C))
 	C.bilge = 0
 	canoe_check(C.icon_state == "outrigger" && C.pixel_w == -32 && C.mobcapacity == 2 && C.storagecapacity == 1, "the outrigger's sprite and seats")
 	// The open sea and the wind.
@@ -317,8 +322,32 @@ var/canoe_runtime_error = FALSE
 	C.Move(locate(10, 15, 1), EAST)
 	canoe_check(C.x == 10 && !C.on_rollers && !C.underlays.len && (locate(/obj/item/boat_rollers) in locate(9, 15, 1)), "she floats off her rollers, which stay ashore")
 	canoe_check(C.drag_delay(P) == BOAT_DRAG_EASY && !C.haul_text(), "afloat she tows easily")
-	C.ontop_o += new /obj/structure/closet/crate(C.loc)
-	canoe_check(!C.haul_refusal(), "afloat, cargo does not stop a tow")
+	var/obj/structure/closet/crate/load = new(C.loc)
+	var/obj/structure/closet/crate/stale = new(locate(11, 16, 1))
+	var/mob/living/human/canoe_probe/rider = new(C.loc)
+	load.anchored = TRUE
+	C.ontop_o += list(load, stale)
+	C.ontop += rider
+	var/turf/land = locate(9, 15, 1)
+	var/turf/ice = locate(10, 14, 1)
+	ice = ice.ChangeTurf(/turf/floor/beach/water/ice, FALSE, FALSE)
+	for (var/turf/blocked in list(land, ice))
+		C.pulledby = P
+		P.pulling = C
+		canoe_check(!C.Move(blocked, get_dir(C, blocked)) && C.x == 10 && C.y == 15 && load.loc == C.loc && rider.loc == C.loc && !P.pulling, "loaded tow refuses [blocked.type] without moving the hull or load")
+	var/turf/wet = locate(11, 15, 1)
+	C.pulledby = P
+	P.pulling = C
+	canoe_check(!C.haul_refusal(wet) && C.Move(wet, EAST) && C.loc == wet && load.loc == wet && rider.loc == wet && stale.loc == locate(11, 16, 1), "successful afloat tow carries only co-located riders and cargo")
+	C.ontop.Cut()
+	C.ontop_o.Cut()
+
+	var/turf/shore = locate(9, 14, 1)
+	var/obj/structure/vehicle/raft/ice_haul = new(shore)
+	ice_haul.on_rollers = TRUE
+	ice_haul.dress_rollers()
+	canoe_check(ice_haul.Move(ice, EAST) && !ice_haul.afloat() && ice_haul.on_rollers && !(locate(/obj/item/boat_rollers) in shore), "solid ice keeps fitted rollers in place")
+	canoe_check(ice_haul.Move(locate(11, 14, 1), EAST) && !ice_haul.on_rollers && (locate(/obj/item/boat_rollers) in ice), "she sheds the rollers only on reaching liquid water")
 	canoe_check(findtext(D.haul_text(), "light enough") && findtext(R.small_craft_text(), "light enough"), "a look says how she drags")
 
 // Upkeep from use (code/modules/naval/small_boat_upkeep.dm).
