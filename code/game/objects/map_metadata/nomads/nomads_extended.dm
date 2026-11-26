@@ -20,6 +20,8 @@
 	gamemode_vote = FALSE
 
 	var/oiltarget = 3000
+	// Derived only from deposits, never stored in the faction tax ledger.
+	var/tmp/list/oil_rush_progress
 
 /obj/map_metadata/nomads/extended/New()
 	..()
@@ -27,17 +29,28 @@
 		spawn(1200)
 			check_oil()
 
+/obj/map_metadata/nomads/extended/proc/oil_rush_open()
+	return admin_ended_all_grace_periods || (processes && processes.ticker && processes.ticker.playtime_elapsed >= grace_wall_timer)
+
+/obj/map_metadata/nomads/extended/persistence_runtime_var(key)
+	return key == "oil_rush_progress" || ..()
+
+/obj/map_metadata/nomads/extended/proc/sample_oil_progress()
+	var/list/totals = list()
+	for (var/obj/structure/oil_deposits/OD in world)
+		if (!QDELETED(OD) && OD.faction && OD.storedvalue > 0)
+			totals[OD.faction] = (totals[OD.faction] || 0) + OD.storedvalue
+	return totals
+
 /obj/map_metadata/nomads/extended/proc/check_oil()
-	if (processes.ticker.playtime_elapsed >= 24000 || admin_ended_all_grace_periods)
-		if (custom_faction_nr.len >= 1)
+	if (oil_rush_open())
+		oil_rush_progress = sample_oil_progress()
+		if (custom_faction_nr.len)
 			to_chat(world, "<big><b>Current Status:</b></big>")
-		for(var/i = 1, i <= custom_faction_nr.len, i++)
-			custom_civs[custom_faction_nr[i]][5]=0
-			for (var/obj/structure/oil_deposits/OD in world)
-				if (OD.faction == custom_faction_nr[i])
-					custom_civs[custom_faction_nr[i]][5] += OD.storedvalue
-			if (custom_civs[custom_faction_nr[i]][5] > 0)
-				to_chat(world, "<b>[custom_faction_nr[i]]:</b> [custom_civs[custom_faction_nr[i]][5]] of 3000")
+		for (var/faction in custom_faction_nr)
+			var/total = oil_rush_progress[faction]
+			if (total > 0)
+				to_chat(world, "<b>[faction]:</b> [total] of [oiltarget]")
 
 	if(durable_schedule("nomads_oil_check", 1200)) return
 	spawn(1200)
@@ -47,11 +60,11 @@
 	return "<big><b>The grace wall is lifted!</b></big>"
 
 /obj/map_metadata/nomads/extended/update_win_condition()
-	if (win_condition_spam_check)
+	if (win_condition_spam_check || !oil_rush_open() || !oil_rush_progress)
 		return FALSE
-	for(var/i = 1, i <= custom_faction_nr.len, i++)
-		if (custom_civs[custom_faction_nr[i]][5] >= oiltarget)
-			var/message = "[custom_faction_nr[i]] has reached [oiltarget] liters of oil! They have won!"
+	for (var/faction in custom_faction_nr)
+		if ((oil_rush_progress[faction] || 0) >= oiltarget)
+			var/message = "[faction] has reached [oiltarget] liters of oil! They have won!"
 			to_chat(world, "<font size = 4><span class = 'notice'>[message]</span></font>")
 			show_global_battle_report(null)
 			win_condition_spam_check = TRUE

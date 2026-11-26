@@ -97,6 +97,10 @@
 	var/list/fields = list()
 	for(var/key in encoded) fields[key] = values[encoded[key]]
 	durable_metadata_restore_fields(map, fields, map.durable_nomads_schema())
+	// The running map may outlive a restore; its old sample must not decide a win.
+	if (istype(map, /obj/map_metadata/nomads/extended))
+		var/obj/map_metadata/nomads/extended/oil_map = map
+		oil_map.oil_rush_progress = null
 	var/list/names = profile["civilization_names"]
 	civname_a = names[1]
 	civname_b = names[2]
