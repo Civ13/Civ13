@@ -284,7 +284,7 @@ var/global/list/region_travel_carry_types = list(
 			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "sea_edge", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon", "station_plan", "port"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "sea_edge", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon", "station_plan", "port", "bike_id"))
 			P[key] = extra[key]
 		// Where an admin chose to land them (region_admin_send.dm).
 		else if(key == "admin_send")
