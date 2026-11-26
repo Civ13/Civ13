@@ -30,6 +30,18 @@ internal sealed partial class LauncherWindow {
         return exit;
     }
 
+    private static void VerifyDarkSurfaces(Bitmap image, string page) {
+        int canvas = 0, surface = 0;
+        for (var y = 0; y < image.Height; y += 16)
+            for (var x = 0; x < image.Width; x += 16) {
+                var pixel = image.GetPixel(x, y).ToArgb();
+                if (pixel == LauncherSkin.Canvas.ToArgb()) canvas++;
+                if (pixel == LauncherSkin.Surface.ToArgb()) surface++;
+            }
+        if (canvas < 10 || surface < 10)
+            throw new InvalidOperationException($"Dark surfaces missing from the {page} render.");
+    }
+
     private int renderExit = 1;
 
     private async Task RenderTabsTo(string output) {
@@ -45,6 +57,37 @@ internal sealed partial class LauncherWindow {
             await RefreshHostState();
             if (botProfile != null) await RefreshBot();
             if (host.Control is { Group: not null } helpControl) await RefreshHelp(helpControl);
+            if (darkMode.Checked && !SystemInformation.HighContrast) {
+                // The dark fixture starts from its persisted setting, then exercises the same
+                // toggle used by players after the host tabs and their child controls exist.
+                if (BackColor != LauncherSkin.Canvas || hostBoard?.BackColor != LauncherSkin.Surface)
+                    throw new InvalidOperationException("The stored dark skin did not reach the host board.");
+                darkMode.Checked = false;
+                if (BackColor == LauncherSkin.Canvas || hostBoard?.BackColor != Color.White
+                    || tabs.DrawMode != TabDrawMode.Normal || serverList.OwnerDraw)
+                    throw new InvalidOperationException("The standard skin was not restored.");
+                darkMode.Checked = true;
+                if (!LauncherSkin.Load(root) || BackColor != LauncherSkin.Canvas || hostBoard?.BackColor != LauncherSkin.Surface
+                    || tabs.DrawMode != TabDrawMode.OwnerDrawFixed || !serverList.OwnerDraw)
+                    throw new InvalidOperationException("The dark skin could not be reapplied.");
+
+                var scratch = Directory.CreateTempSubdirectory("ci-launcher-appearance-");
+                try {
+                    if (LauncherSkin.Load(scratch.FullName))
+                        throw new InvalidOperationException("The standard skin should be the default.");
+                    File.WriteAllText(Path.Combine(scratch.FullName, LauncherSkin.FileName), "unsupported");
+                    if (LauncherSkin.Load(scratch.FullName))
+                        throw new InvalidOperationException("An unknown appearance must not enable the dark skin.");
+                    LauncherSkin.Save(scratch.FullName, true);
+                    if (!LauncherSkin.Load(scratch.FullName))
+                        throw new InvalidOperationException("The dark skin preference did not round-trip.");
+                    LauncherSkin.Save(scratch.FullName, false);
+                    if (LauncherSkin.Load(scratch.FullName))
+                        throw new InvalidOperationException("The standard skin preference did not round-trip.");
+                } finally {
+                    scratch.Delete(true);
+                }
+            }
             Directory.CreateDirectory(output);
             var written = new List<string>();
             foreach (TabPage page in tabs.TabPages) {
@@ -53,11 +96,13 @@ internal sealed partial class LauncherWindow {
                 for (var pass = 0; pass < 5; pass++) { Application.DoEvents(); await Task.Delay(100); }
                 using var image = new Bitmap(Width, Height);
                 DrawToBitmap(image, new Rectangle(0, 0, Width, Height));
+                if (LauncherSkin.Dark) VerifyDarkSurfaces(image, page.Text);
                 var name = new string(page.Text.ToLowerInvariant().Where(char.IsAsciiLetterLower).ToArray()) + ".png";
                 image.Save(Path.Combine(output, name), ImageFormat.Png);
                 written.Add(name);
             }
             Console.SetOut(console);
+            if (LauncherSkin.Dark) Console.WriteLine("Dark skin rendering verified.");
             Console.WriteLine("Rendered " + string.Join(", ", written) + " to " + output);
             renderExit = 0;
         } catch (Exception e) when (e is IOException or UnauthorizedAccessException or InvalidDataException or JsonException or System.ComponentModel.Win32Exception

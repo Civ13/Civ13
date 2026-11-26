@@ -52,10 +52,26 @@ jobs:
             $png = Join-Path $render "$tab.png"
             if (!(Test-Path -LiteralPath $png -PathType Leaf) -or (Get-Item -LiteralPath $png).Length -lt 2000) { throw "No render of the $tab tab." }
           }
+      - name: Verify and render the dark launcher skin
+        shell: pwsh
+        run: |
+          $root = Join-Path $env:RUNNER_TEMP 'launcher-fixture/launcher'
+          $render = Join-Path $env:RUNNER_TEMP 'launcher-render'
+          $dark = Join-Path $render 'dark'
+          Set-Content -LiteralPath (Join-Path $root 'appearance.txt') -Value 'dark' -NoNewline -Encoding utf8
+          $output = & ./tools/opendream-client/native/publish/Civ13.exe --render-tabs $root $dark
+          $code = $LASTEXITCODE
+          $output | ForEach-Object { Write-Output $_ }
+          if ($code -ne 0) { exit $code }
+          if ($output -notcontains 'Dark skin rendering verified.') { throw 'The dark render did not load the requested skin.' }
+          foreach ($tab in 'play', 'hostserver', 'civilizationbot', 'playerhelp', 'translator', 'updates') {
+            $png = Join-Path $dark "$tab.png"
+            if (!(Test-Path -LiteralPath $png -PathType Leaf) -or (Get-Item -LiteralPath $png).Length -lt 2000) { throw "No dark render of the $tab tab." }
+          }
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: Civ13-launcher-tabs-${{ github.event.pull_request.head.sha || github.sha }}
-          path: ${{ runner.temp }}/launcher-render/*.png
+          path: ${{ runner.temp }}/launcher-render/**/*.png
           if-no-files-found: error
       - name: Isolated updater contracts and actual executable replacement
         shell: pwsh
