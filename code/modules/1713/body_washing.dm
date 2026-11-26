@@ -192,7 +192,7 @@ var/global/list/wash_zone_order = list("head", "chest", "groin", "l_arm", "r_arm
 			return zone
 	return null
 
-// Pays for one part's wash from `source`. TRUE while it can pay for another.
+// Pays for one part's wash from `source`. TRUE if this part was paid for.
 // Open water never runs out.
 /atom/proc/wash_spend(mob/living/human/user)
 	return TRUE
@@ -215,16 +215,18 @@ var/global/list/wash_zone_order = list("head", "chest", "groin", "l_arm", "r_arm
 /mob/living/human/proc/wash_part_of(mob/living/human/target, zone, source_name, atom/source)
 	. = FALSE
 	var/list/done = list()
+	var/uses_source = !!source
 	while (zone)
-		if (!wash_one_part_of(target, zone, source_name))
+		if (uses_source && (QDELETED(source) || !source.wash_ready()))
+			return
+		if (!wash_one_part_of(target, zone, source_name, source))
 			return
 		. = TRUE
 		done += zone
-		if (source && !source.wash_spend(src))
-			return
 		zone = target.next_dirty_zone(done)
 
-/mob/living/human/proc/wash_one_part_of(mob/living/human/target, zone, source_name)
+/mob/living/human/proc/wash_one_part_of(mob/living/human/target, zone, source_name, atom/source)
+	var/uses_source = !!source
 	var/part = wash_zone_name(zone)
 	var/obj/item/organ/external/E = target.get_organ(zone)
 	if (!E || E.is_stump())
@@ -237,6 +239,9 @@ var/global/list/wash_zone_order = list("head", "chest", "groin", "l_arm", "r_arm
 	if (!do_after(src, WASH_PART_TIME, target, check_for_repeats = FALSE))
 		return FALSE
 	if (target != src && !Adjacent(target))
+		return FALSE
+	// The wash wait does not reserve water; pay before hygiene or soap changes.
+	if (uses_source && (QDELETED(source) || !source.wash_spend(src)))
 		return FALSE
 	var/obj/item/weapon/soap/S = held_soap()
 	target.wash_body_part(zone, !!S)
@@ -277,12 +282,14 @@ var/global/list/wash_zone_order = list("head", "chest", "groin", "l_arm", "r_arm
 	user.wash_part_of(M, user.targeted_organ, "\the [src]", src)
 	return TRUE
 
+/obj/item/weapon/reagent_containers/wash_ready()
+	return is_open_container() && reagents && reagents.get_reagent_amount("water") >= WASH_PART_WATER && !reagents.has_reagent("food_poisoning")
+
 /obj/item/weapon/reagent_containers/wash_spend(mob/living/human/user)
-	if (!reagents)
+	if (!wash_ready() || !reagents.remove_reagent("water", WASH_PART_WATER))
 		return FALSE
-	reagents.remove_reagent("water", WASH_PART_WATER)
 	update_icon()
-	return reagents.get_reagent_amount("water") >= WASH_PART_WATER
+	return TRUE
 
 /obj/item/weapon/reagent_containers/glass/attack(mob/living/M, mob/living/user, target_zone)
 	if (!washes_on_click(M, user))
@@ -315,18 +322,18 @@ var/global/list/wash_zone_order = list("head", "chest", "groin", "l_arm", "r_arm
 	var/mob/living/human/H = user
 	if (!ishuman(H) || H.a_intent != I_HELP || !source_washes_zone(H.targeted_organ) || !Adjacent(H) || busy)
 		return ..()
-	if (reagents.get_reagent_amount("water") < WASH_PART_WATER)
+	if (!wash_ready())
 		to_chat(H, SPAN_WARNING("\The [src] has no clean water to wash with."))
 		return
 	busy = TRUE
 	H.wash_part_of(H, H.targeted_organ, "\the [src]", src)
 	busy = FALSE
 
+/obj/structure/water_tap/wash_ready()
+	return reagents && reagents.get_reagent_amount("water") >= WASH_PART_WATER
+
 /obj/structure/water_tap/wash_spend(mob/living/human/user)
-	if (!reagents)
-		return FALSE
-	reagents.remove_reagent("water", WASH_PART_WATER)
-	return reagents.get_reagent_amount("water") >= WASH_PART_WATER
+	return wash_ready() && reagents.remove_reagent("water", WASH_PART_WATER)
 
 /turf/floor/beach/water/attack_hand(mob/living/human/H)
 	if (!ishuman(H) || H.a_intent != I_HELP || salty || !Adjacent(H) || istype(src, /turf/floor/beach/water/ice) || !source_washes_zone(H.targeted_organ))
