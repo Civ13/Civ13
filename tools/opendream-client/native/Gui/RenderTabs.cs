@@ -42,6 +42,23 @@ internal sealed partial class LauncherWindow {
             throw new InvalidOperationException($"Dark surfaces missing from the {page} render.");
     }
 
+    private void VerifyDisabledButtonInk(Bitmap image) {
+        var button = signInButton;
+        if (button.Enabled) return;
+        var start = PointToClient(button.PointToScreen(Point.Empty));
+        var bounds = Rectangle.Intersect(new Rectangle(start, button.ClientSize), new Rectangle(0, 0, image.Width, image.Height));
+        var ink = LauncherSkin.Muted;
+        var samples = 0;
+        for (var y = bounds.Top; y < bounds.Bottom; y++)
+            for (var x = bounds.Left; x < bounds.Right; x++) {
+                var pixel = image.GetPixel(x, y);
+                // Allow modest antialiasing variation; neither the native rim nor the raised surface is this color.
+                if (Math.Abs(pixel.R - ink.R) < 12 && Math.Abs(pixel.G - ink.G) < 12
+                    && Math.Abs(pixel.B - ink.B) < 12 && ++samples >= 4) return;
+            }
+        throw new InvalidOperationException("Disabled buttons are not using readable dark-mode ink.");
+    }
+
     private int renderExit = 1;
 
     private async Task RenderTabsTo(string output) {
@@ -96,7 +113,10 @@ internal sealed partial class LauncherWindow {
                 for (var pass = 0; pass < 5; pass++) { Application.DoEvents(); await Task.Delay(100); }
                 using var image = new Bitmap(Width, Height);
                 DrawToBitmap(image, new Rectangle(0, 0, Width, Height));
-                if (LauncherSkin.Dark) VerifyDarkSurfaces(image, page.Text);
+                if (LauncherSkin.Dark) {
+                    VerifyDarkSurfaces(image, page.Text);
+                    if (page == tabs.TabPages[0]) VerifyDisabledButtonInk(image);
+                }
                 var name = new string(page.Text.ToLowerInvariant().Where(char.IsAsciiLetterLower).ToArray()) + ".png";
                 image.Save(Path.Combine(output, name), ImageFormat.Png);
                 written.Add(name);

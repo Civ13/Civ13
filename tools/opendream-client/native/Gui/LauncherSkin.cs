@@ -115,6 +115,12 @@ internal static class LauncherSkin {
             button.FlatStyle = FlatStyle.Flat;
             button.UseVisualStyleBackColor = false;
         }
+        if (control is Button or CheckBox or RadioButton or LinkLabel)
+            control.Paint += PaintDisabledText;
+        if (control is ComboBox { DropDownStyle: ComboBoxStyle.DropDownList, DrawMode: DrawMode.Normal } combo) {
+            combo.DrawMode = DrawMode.OwnerDrawFixed;
+            combo.DrawItem += PaintChoice;
+        }
         if (control is TabControl tabs) {
             tabs.DrawMode = TabDrawMode.OwnerDrawFixed;
             tabs.DrawItem += PaintTab;
@@ -130,6 +136,8 @@ internal static class LauncherSkin {
     }
 
     private static void DetachPainters(Control control) {
+        control.Paint -= PaintDisabledText;
+        if (control is ComboBox combo) combo.DrawItem -= PaintChoice;
         if (control is TabControl tabs) {
             tabs.DrawItem -= PaintTab;
             tabs.SelectedIndexChanged -= RedrawTabs;
@@ -139,6 +147,43 @@ internal static class LauncherSkin {
             list.DrawItem -= DefaultListItem;
             list.DrawSubItem -= DefaultListCell;
         }
+    }
+
+    // WinForms' flat text renderer otherwise substitutes a near-black disabled
+    // system color even when ForeColor is set. Keep the native button/radio frame.
+    private static void PaintDisabledText(object? sender, PaintEventArgs e) {
+        var control = (Control)sender!;
+        if (control.Enabled || control.Text.Length == 0) return;
+
+        var rect = control.ClientRectangle;
+        var flags = TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis;
+        if (control is Button) {
+            rect.Inflate(-2, -2);
+            flags |= TextFormatFlags.HorizontalCenter;
+        } else if (control is CheckBox or RadioButton) {
+            // The launcher's checkboxes and radio buttons all use the standard left glyph.
+            var glyph = control.LogicalToDeviceUnits(17);
+            if (control.RightToLeft != RightToLeft.Yes) rect.X += glyph;
+            else flags |= TextFormatFlags.Right | TextFormatFlags.RightToLeft;
+            rect.Width -= glyph;
+        }
+        if (rect.Width <= 0 || rect.Height <= 0) return;
+        using var fill = new SolidBrush(control.BackColor);
+        e.Graphics.FillRectangle(fill, rect);
+        TextRenderer.DrawText(e.Graphics, control.Text, control.Font, rect, Muted, flags);
+    }
+
+    private static void PaintChoice(object? sender, DrawItemEventArgs e) {
+        var combo = (ComboBox)sender!;
+        var selected = (e.State & DrawItemState.Selected) != 0;
+        using var fill = new SolidBrush(selected ? Selection : Surface);
+        e.Graphics.FillRectangle(fill, e.Bounds);
+        if (e.Index >= 0 && e.Index < combo.Items.Count) {
+            var rect = Rectangle.Inflate(e.Bounds, -2, 0);
+            TextRenderer.DrawText(e.Graphics, combo.GetItemText(combo.Items[e.Index]) ?? "", combo.Font, rect,
+                combo.Enabled ? Ink : Muted, TextFormatFlags.VerticalCenter | TextFormatFlags.EndEllipsis);
+        }
+        e.DrawFocusRectangle();
     }
 
     private static void RedrawTabs(object? sender, EventArgs e) => ((TabControl)sender!).Invalidate();
