@@ -227,30 +227,23 @@
 			dirn = get_dir(T, user)
 	else
 		dirn = dirnew
-	var/currdir = "horizontal"
-	if (dirn == 8 || dirn == 4)
-		currdir = "horizontal"
-	else if (dirn == 1 || dirn == 2)
-		currdir = "vertical"
-	// A corner when this continues a loose end from the side (cable_shapes.dm).
+	var/vertical = dirn == NORTH || dirn == SOUTH
+	// Check the actual final endpoints, including the straight fallback.
 	var/list/corner = cable_corner_for(T, dirn)
-	if (!corner)
-		for(var/obj/structure/cable/LC in T)
-			if(LC.tiledir == currdir)
-				to_chat(user, "<span class='warning'>There's already a cable at that position with the same direction!</span>")
-				return
+	var/end_a = corner ? corner[1] : (vertical ? NORTH : EAST)
+	var/end_b = corner ? corner[2] : (vertical ? SOUTH : WEST)
+	if (!cable_endpoints_available(T, end_a, end_b))
+		to_chat(user, SPAN_WARNING("There's already a cable using one of those ends!"))
+		return
 
 	var/obj/structure/cable/C = new /obj/structure/cable(T)
 	C.color = color
 	C.cable_color = cable_color
 	amount -= 1
-	C.d1 = 0 //it's a O-X node cable
-	C.d2 = dirn
-	C.tiledir = currdir
-	if (corner)
-		C.set_cable_shape(corner[1], corner[2])
+	C.set_cable_shape(end_a, end_b)
+	if (!corner)
+		C.d2 = dirn
 	C.add_fingerprint(user)
-	C.update_icon()
 	C.link_end_neighbors(user)
 	// Crossing directions join only through a secured connector.
 	for (var/obj/item/connector/junction in T)

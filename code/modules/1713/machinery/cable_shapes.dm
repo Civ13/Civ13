@@ -98,6 +98,17 @@
 			return TRUE
 	return FALSE
 
+// Two pieces may share a tile, but never share a directional end there:
+// an adjacent cable would otherwise link them even without a connector.
+/proc/cable_endpoints_available(turf/T, end_a, end_b)
+	for (var/obj/structure/cable/C in T)
+		if (QDELETED(C))
+			continue
+		var/list/ends = C.cable_ends()
+		if ((end_a in ends) || (end_b in ends))
+			return FALSE
+	return TRUE
+
 // The corner a cable laid on T facing dirn should be, as its two ends, or
 // null for the usual straight piece. A corner only when nothing waits behind
 // and exactly one side has a loose end: it turns from that side into dirn.
@@ -115,11 +126,7 @@
 			side = p
 	if (!side)
 		return null
-	for (var/obj/structure/cable/existing in T)
-		var/list/ends = existing.cable_ends()
-		if ((side in ends) || (dirn in ends))
-			return null
-	return list(side, dirn)
+	return cable_endpoints_available(T, side, dirn) ? list(side, dirn) : null
 
 // Map-placed wiring joins once the map is in. Holds are nested: the compiled
 // map holds until world/New, and each runtime map read holds while it runs.
