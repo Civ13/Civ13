@@ -309,6 +309,16 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 		n++
 		.["[n]. [F.describe(get_turf(src))]"] = F
 
+/obj/structure/berth/quay/proc/freight_destination_choices()
+	. = list()
+	var/n = 0
+	for (var/obj/structure/berth/quay/Q in sea_harbours)
+		if (Q == src || QDELETED(Q))
+			continue
+		var/where = Q.z == z ? ", [get_dist(src, Q)] tiles [submarine_bearing(get_turf(src), get_turf(Q))]" : ""
+		n++
+		.["[n]. [capitalize(Q.berth_name())][where] ([Q.x], [Q.y], level [Q.z])"] = Q
+
 /obj/structure/berth/quay/proc/freight_menu(mob/living/human/H)
 	var/party = party_train_party_of(H)
 	var/list/options = list()
@@ -332,11 +342,7 @@ var/global/list/freight_crates = list()    // contract id = sealed crate
 			if (!box)
 				to_chat(H, SPAN_WARNING("Stand a closed crate within [FREIGHT_REACH] tiles of the post first. Whatever is in it is the freight."))
 				return
-			var/list/ports = list()
-			for (var/obj/structure/berth/quay/Q in sea_harbours)
-				if (Q == src || QDELETED(Q))
-					continue
-				ports["[capitalize(Q.berth_name())][Q.z == z ? ", [get_dist(src, Q)] tiles [submarine_bearing(get_turf(src), get_turf(Q))]" : ", on another level"]"] = Q
+			var/list/ports = freight_destination_choices()
 			if (!ports.len)
 				to_chat(H, SPAN_WARNING("There is no other harbour or depot to send it to."))
 				return
