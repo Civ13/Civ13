@@ -320,7 +320,7 @@ class MedicalCare(unittest.TestCase):
     def test_splinted_fracture_heals_over_time(self):
         heal = block(ORGAN, "/obj/item/organ/external/proc/handle_fracture_healing")
         for term in ("ORGAN_BROKEN", "ORGAN_SPLINTED", "owner.lying ? 2 : 1", "FRACTURE_HEAL_TICKS",
-                     "mend_fracture()", "status &= ~ORGAN_SPLINTED", "/obj/item/stack/medical/splint/small"):
+                     "mend_fracture()", "recover_splint(get_turf(owner), /obj/item/stack/medical/splint/small)"):
             self.assertIn(term, heal)
         self.assertIn("fracture_heal_ticks = 0", block(ORGAN, "/obj/item/organ/external/proc/fracture"))
         self.assertIn("handle_fracture_healing()", block(ORGAN, "/obj/item/organ/external/process"))

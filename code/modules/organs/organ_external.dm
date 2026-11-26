@@ -70,6 +70,7 @@
 	var/tourniquet = FALSE				// A tourniquet is tightened on this limb.
 	var/tourniquet_ticks = 0			// Life ticks the tourniquet has been on (not world.time, so it survives saves).
 	var/tourniquet_makeshift = 0		// Rope or twine: Life ticks until it slips loose (0 = a proper tourniquet).
+	var/splint_type = null			// Item subtype consumed when this limb was splinted.
 	var/fracture_heal_ticks = 0			// Life ticks of splinted healing toward a mended fracture.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
@@ -431,6 +432,7 @@ This function completely restores a damaged organ to perfect condition.
 /obj/item/organ/external/rejuvenate()
 	damage_state = "00"
 	status = FALSE
+	clear_splint()
 	tourniquet = FALSE
 	tourniquet_ticks = 0
 	tourniquet_makeshift = 0
@@ -1060,9 +1062,20 @@ Note that amputating the affected organ does in fact remove the infection from t
 		return
 	mend_fracture()
 	perma_injury = 0
-	status &= ~ORGAN_SPLINTED
-	new /obj/item/stack/medical/splint/small(get_turf(owner))
+	recover_splint(get_turf(owner), /obj/item/stack/medical/splint/small)
 	to_chat(owner, SPAN_NOTICE("The bone in your [name] has knit back together. You take off the splint."))
+
+// One unit returns, even when the original item was taken from a full stack.
+/obj/item/organ/external/proc/recover_splint(turf/drop_site, fallback_type)
+	if (!(status & ORGAN_SPLINTED))
+		return null
+	var/refund_type = ispath(splint_type, /obj/item/stack/medical/splint) ? splint_type : fallback_type
+	clear_splint()
+	return new refund_type(drop_site, 1, FALSE)
+
+/obj/item/organ/external/proc/clear_splint()
+	status &= ~ORGAN_SPLINTED
+	splint_type = null
 
 /obj/item/organ/external/proc/can_take_tourniquet()
 	return limb_name in list("l_arm", "r_arm", "l_leg", "r_leg", "l_hand", "r_hand", "l_foot", "r_foot")
