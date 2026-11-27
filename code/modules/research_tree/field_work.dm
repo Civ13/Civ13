@@ -207,7 +207,7 @@ var/global/list/field_activity_caps = null
 	return experiment_id in field_work_list()
 
 // Writes one experiment into the book. Returns the points added, or 0.
-/obj/item/weapon/book/proc/record_field_work(experiment_id)
+/obj/item/weapon/book/proc/record_field_work(experiment_id, mob/living/human/contributor = null)
 	var/list/E = field_experiments[experiment_id]
 	if (!E || has_field_work(experiment_id) || has_research_chapter(E[FIELD_EXP_NODE]))
 		return 0
@@ -218,7 +218,7 @@ var/global/list/field_activity_caps = null
 	done += experiment_id
 	research_fieldwork = jointext(done, ";")
 	var/points = max(1, round(N.cost_ticks * E[FIELD_EXP_SHARE]))
-	add_research_work(N.id, points)
+	add_research_work(N.id, points, FALSE, null, contributor)
 	return points
 
 // A finished chapter no longer needs its field work remembered.
@@ -251,7 +251,7 @@ var/global/list/field_activity_caps = null
 			var/list/E = field_experiments[id]
 			if (H.field_work_amount(E[FIELD_EXP_ACTIVITY]) < E[FIELD_EXP_NEEDED])
 				continue
-			var/points = B.record_field_work(id)
+			var/points = B.record_field_work(id, H)
 			if (!points)
 				continue
 			open -= id

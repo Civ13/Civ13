@@ -37,15 +37,14 @@
 /mob/living/human/var/sleep_comfort = 0
 
 #define RESTED_LEARNING_MIN_SLEEP (10 MINUTES)
-#define RESTED_LEARNING_WINDOW (45 MINUTES)
-#define RESTED_LEARNING_MULTIPLIER 1.15
+#define RESTED_RESEARCH_POINTS 10
 
-// Save wall-clock pairs with the body so offline time and restarts count.
-// Realtime is too coarse for either deadline; use it only to resolve day wraps.
+// Save the wall-clock pair with the body so offline time and restarts count.
+// Realtime is too coarse for the sleep threshold; use it only for day wraps.
 /mob/living/human/var/rested_learning_sleep_timeofday
 /mob/living/human/var/rested_learning_sleep_realtime
-/mob/living/human/var/rested_learning_wake_timeofday
-/mob/living/human/var/rested_learning_wake_realtime
+// One banked bonus, saved with the body. No countdown and no stacking.
+/mob/living/human/var/rested_research_ready = FALSE
 
 /mob/living/human/proc/rested_learning_bed_here()
 	if (!isturf(loc))
@@ -66,7 +65,7 @@
 	rested_learning_sleep_realtime = null
 
 /mob/living/human/proc/begin_rested_learning_sleep()
-	if (isnull(rested_learning_sleep_timeofday) && !droid && mood_needs_mode() && rested_learning_bed_here())
+	if (isnull(rested_learning_sleep_timeofday) && !droid && map?.book_research_enabled() && rested_learning_bed_here())
 		rested_learning_sleep_timeofday = rested_learning_timeofday()
 		rested_learning_sleep_realtime = rested_learning_realtime()
 
@@ -77,29 +76,24 @@
 	var/now_realtime = rested_learning_realtime()
 	var/duration = wall_clock_elapsed(rested_learning_sleep_timeofday, rested_learning_sleep_realtime, now_timeofday, now_realtime)
 	clear_rested_learning_sleep()
-	if (duration < RESTED_LEARNING_MIN_SLEEP || stat == DEAD || droid || !mood_needs_mode() || !rested_learning_bed_here())
+	if (duration < RESTED_LEARNING_MIN_SLEEP || stat == DEAD || droid || !map?.book_research_enabled() || !rested_learning_bed_here())
 		return FALSE
-	rested_learning_wake_timeofday = now_timeofday
-	rested_learning_wake_realtime = now_realtime
-	to_chat(src, SPAN_NOTICE("You wake up refreshed. You'll learn skills faster for 45 minutes."))
+	if (!rested_research_ready)
+		rested_research_ready = TRUE
+		to_chat(src, SPAN_NOTICE("You wake up refreshed. Your next book research contribution can gain [RESTED_RESEARCH_POINTS] extra points."))
 	return TRUE
 
-/mob/living/human/proc/rested_learning_multiplier(statname)
-	if (isnull(rested_learning_wake_timeofday) || inducedSSD || sleeping || stat != CONSCIOUS || droid || !mood_needs_mode())
-		return 1
-	var/elapsed = wall_clock_elapsed(rested_learning_wake_timeofday, rested_learning_wake_realtime, rested_learning_timeofday(), rested_learning_realtime())
-	if (elapsed < 0 || elapsed >= RESTED_LEARNING_WINDOW)
-		rested_learning_wake_timeofday = null
-		rested_learning_wake_realtime = null
-		return 1
-	switch (statname)
-		if ("strength", "stamina", "dexterity", "magic")
-			return 1
-	return RESTED_LEARNING_MULTIPLIER
+// Called only after a positive contribution with room left on the chapter.
+/mob/living/human/proc/use_rested_research_bonus(room)
+	if (!rested_research_ready || room <= 0 || inducedSSD || sleeping || stat != CONSCIOUS || droid || !map?.book_research_enabled())
+		return 0
+	var/points = min(room, RESTED_RESEARCH_POINTS)
+	rested_research_ready = FALSE
+	to_chat(src, SPAN_NOTICE("Being well rested adds [points] extra research point[points == 1 ? "" : "s"]."))
+	return points
 
 #undef RESTED_LEARNING_MIN_SLEEP
-#undef RESTED_LEARNING_WINDOW
-#undef RESTED_LEARNING_MULTIPLIER
+#undef RESTED_RESEARCH_POINTS
 
 // The comfort of the place a sleeper lies in. Chairs and seats count for nothing.
 /mob/living/human/proc/sleeping_place_comfort()

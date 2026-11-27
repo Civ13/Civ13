@@ -26,6 +26,8 @@
 	return
 /mob/living/human/ml_probe/update_icons()
 	return
+/obj/item/weapon/book/ml_book/New()
+	return
 /obj/structure/bed/ml_bed/New()
 	return
 /obj/structure/bed/bedroll/ml_roll/New()
@@ -76,7 +78,7 @@ var/ml_runtime_error = FALSE
 		map = new /obj/map_metadata/ml_probe
 		map.nomads = TRUE
 		map.civilizations = TRUE
-		ml_rested_learning_checks()
+		ml_rested_research_checks()
 		ml_checks()
 	catch(var/exception/e)
 		ml_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -396,44 +398,62 @@ var/ml_runtime_error = FALSE
 	if (!succeeded)
 		CRASH("Rested learning probe could not [sleep ? "enter bed sleep" : "wake up"]")
 
-/proc/ml_rested_learning_checks()
+/proc/ml_rested_research_checks()
+	map.persistence = TRUE
+	build_research_tree()
 	var/mob/living/human/ml_probe/H = ml_human(12, 12)
+	var/mob/living/human/ml_probe/other = ml_human(13, 12)
 	var/turf/T = get_turf(H)
 	var/obj/structure/bed/bedroll/ml_roll/R = new(T)
-	var/obj/item/weapon/bedsheet/ml_sheet/sheet = new(T)
+	var/obj/item/weapon/book/ml_book/B = new(T)
 	var/normal = ml_skill_progress(H, "medical", 20)
-	var/normal_strength = ml_skill_progress(H, "strength", 20)
-	var/normal_loss = ml_skill_progress(H, "medical", -20)
-	ml_bed_transition(H, TRUE, -12 MINUTES)
-	ml_bed_transition(H, FALSE, 0)
-	ml_check(ml_skill_progress(H, "medical", 20) == normal, "sleeping on a bedroll with a sheet does not boost skill gain")
+	ml_bed_transition(H, TRUE, -20 MINUTES)
+	ml_bed_transition(H, FALSE, -8 MINUTES)
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 2, "a bedroll does not bank research points")
 	R.loc = null
-	sheet.loc = null
+	var/obj/structure/bed/ml_bed/bed = new(T)
 
-	var/obj/structure/bed/ml_bed/B = new(T)
 	ml_bed_transition(H, TRUE, -5 MINUTES)
 	ml_bed_transition(H, FALSE, 5 MINUTES - 1)
-	ml_check(ml_skill_progress(H, "medical", 20) == normal, "one decisecond short of ten minutes across midnight does not qualify")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 4, "one decisecond short of ten minutes across midnight does not qualify")
 
 	ml_bed_transition(H, TRUE, -5 MINUTES)
 	H.rested_test_time = 0
-	H.sleep_update() // Also called on reconnect; it must not reset the sleep start.
+	H.sleep_update() // Also called on reconnect; it must preserve the start.
 	ml_bed_transition(H, FALSE, 5 MINUTES)
-	var/rested = ml_skill_progress(H, "medical", 20)
-	ml_check(abs((rested - 100) - (normal - 100) * 1.15) <= 0.15, "exactly ten minutes across midnight boosts real skill gains immediately (from [normal - 100] to [rested - 100])")
-	ml_check(ml_skill_progress(H, "strength", 20) == normal_strength && ml_skill_progress(H, "medical", -20) == normal_loss, "rest does not boost Strength or amplify skill loss")
+	ml_check(ml_skill_progress(H, "medical", 20) == normal, "bed rest no longer changes ordinary skill gains")
+	// A full prototype study waiting for its installation, anonymous work, and
+	// a second researcher's points must not spend H's rested bonus.
+	var/datum/research_node/prototype = get_research_node("bronze_working")
+	B.add_research_work("bronze_working", prototype.cost_ticks, FALSE, H)
+	B.add_research_work("bronze_working", 0, FALSE, H)
+	B.add_research_work("basic_tools", 1)
+	B.add_research_work("basic_tools", 2, FALSE, other)
+	ml_check(B.research_ticks("basic_tools") == 7, "unattributed and other researchers' work gets no bonus")
+	H.rested_test_time = 5 MINUTES + 864000
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 19, "a full rest adds ten points after an offline day, even after zero-point and capped work")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 21, "the bonus does not apply to a second contribution")
 
-	ml_bed_transition(H, TRUE, 6 MINUTES)
-	ml_bed_transition(H, FALSE, 18 MINUTES)
-	ml_check(ml_skill_progress(H, "medical", 20) == rested, "another full rest refreshes, rather than stacking, the bonus")
-	H.rested_test_time = 63 MINUTES - 1
-	ml_check(ml_skill_progress(H, "medical", 20) == rested, "the bonus still applies one decisecond before expiry")
-	H.rested_test_time = 63 MINUTES
-	ml_check(ml_skill_progress(H, "medical", 20) == normal, "skill gains return to normal at exactly 45 minutes")
+	ml_bed_transition(H, TRUE, 6 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 16 MINUTES + 864000)
+	ml_bed_transition(H, TRUE, 17 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 27 MINUTES + 864000)
+	var/points = B.record_field_work("soil_science_harvests", H)
+	ml_check(points > 0 && B.research_ticks("soil_science") == points + 10, "field work uses one banked bonus and sleeping twice does not stack it")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 23, "crediting field work spends the same one-use bonus")
 
-	ml_bed_transition(H, TRUE, 64 MINUTES)
-	ml_bed_transition(H, FALSE, 74 MINUTES)
-	ml_check(ml_skill_progress(H, "medical", 20) == rested, "later sleep can earn the bonus again after expiry")
-	H.rested_test_time = 74 MINUTES + 864000
-	ml_check(ml_skill_progress(H, "medical", 20) == normal, "a full day offline expires the bonus even at the same time of day")
-	B.loc = null
+	ml_bed_transition(H, TRUE, 28 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 38 MINUTES + 864000)
+	var/obj/item/weapon/book/ml_book/near_cap = new(T)
+	near_cap.add_research_work("bronze_working", prototype.cost_ticks - 4)
+	near_cap.add_research_work("bronze_working", 1, FALSE, H)
+	ml_check(near_cap.research_ticks("bronze_working") == prototype.cost_ticks && !near_cap.has_research_chapter("bronze_working"), "the bonus respects the chapter cap and does not replace a required prototype")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 25, "using part of the bonus near a cap does not carry leftovers to another chapter")
+	bed.loc = null
+	map.persistence = FALSE

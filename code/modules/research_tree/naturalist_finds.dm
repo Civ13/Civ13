@@ -181,14 +181,14 @@ var/global/list/find_not_animals = list(
 	return max(0, min(room, max(1, round(N.cost_ticks * FIND_POINTS * (double ? 2 : 1)))))
 
 // Writes one find into the book. Returns the points added, or 0.
-/obj/item/weapon/book/proc/record_find(node_id, kind, double = FALSE)
+/obj/item/weapon/book/proc/record_find(node_id, kind, double = FALSE, mob/living/human/contributor = null)
 	var/points = find_room(node_id, kind, double)
 	if (points <= 0)
 		return 0
 	var/list/done = find_list()
 	done += "[node_id]>[kind]>[points]"
 	research_finds = jointext(done, ";")
-	add_research_work(node_id, points)
+	add_research_work(node_id, points, FALSE, null, contributor)
 	return points
 
 // Subjects of a discipline that H could research now and this book has room for.
@@ -253,7 +253,7 @@ var/global/list/find_not_animals = list(
 	var/obj/item/weapon/book/B = carrier
 	if (!find_book_ok(B) || !(node_id in find_subjects(H, discipline, B, kind, double)))
 		return 0
-	. = B.record_find(node_id, kind, double)
+	. = B.record_find(node_id, kind, double, H)
 	H.gain_active_scholarship(node_id, ., "find:[kind]")
 
 /mob/living/human/proc/record_a_find(obj/item/carrier)
@@ -362,7 +362,7 @@ var/global/list/find_not_animals = list(
 	var/kind = P.find_kind
 	var/double = P.find_double
 	qdel(P)
-	var/points = B.record_find(N.id, kind, double)
+	var/points = B.record_find(N.id, kind, double, user)
 	user.gain_active_scholarship(N.id, points, "find:[kind]")
 	to_chat(user, SPAN_NOTICE("You copy the notes into [B]: <b>[N.name]</b> advances by [points] points[B.has_research_chapter(N.id) ? " and the chapter is finished" : ""]."))
 	book_refresh_ui()
