@@ -2461,6 +2461,60 @@ class StagedBuildTests(unittest.TestCase):
         host.record_build('f' * 40)
         self.assertFalse(host.update_pending())
 
+    def test_matching_mainland_ignores_staged_builds_away_from_the_pin(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        self.assertTrue(host.update_pending())
+        revision = host.built_revision()
+        pin = shard_group.daily_maintenance.folder(group) / 'pin.json'
+        shard_group.daily_maintenance.write_json(pin, {'revision': revision, 'started': int(time.time()),
+                                                       'mode': 'match-mainland'})
+        self.assertFalse(host.update_pending(), 'an automatic update must not move Gaia off the active pin')
+        pin.unlink()
+        self.assertTrue(host.update_pending(), 'normal update policy resumes after the match')
+
+    def test_matching_mainland_stages_the_local_pin_without_fetching(self):
+        group, host = self.built()
+        revision = host.built_revision()
+        pin = shard_group.daily_maintenance.folder(group) / 'pin.json'
+        shard_group.daily_maintenance.write_json(pin, {'revision': revision, 'started': int(time.time()),
+                                                       'mode': 'match-mainland'})
+        before = len(self.machine.calls)
+        self.assertEqual(revision, host.latest_revision())
+        self.assertEqual(before, len(self.machine.calls), 'a local match does not consult mutable remote refs')
+
+    def test_matching_mainland_will_not_install_over_an_unknown_build(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        pin = shard_group.daily_maintenance.folder(group) / 'pin.json'
+        shard_group.daily_maintenance.write_json(pin, {'revision': host.staged_revision(), 'started': int(time.time()),
+                                                       'mode': 'match-mainland'})
+        host.build_file().unlink()
+        self.assertFalse(host.update_pending(), 'a missing build stamp cannot authorize a match')
+        pin.unlink()
+        self.assertTrue(host.update_pending(), 'ordinary recovery can still install a ready build')
+
+    def test_matching_mainland_rechecks_ancestry_before_replacing_an_installed_build(self):
+        group, host = self.built()
+        revision = host.built_revision()
+        running = 'f' * 40
+        host.record_build(running)
+        pin = shard_group.daily_maintenance.folder(group) / 'pin.json'
+        shard_group.daily_maintenance.write_json(pin, {'revision': revision, 'started': int(time.time()),
+                                                       'mode': 'match-mainland'})
+        real = self.machine.run
+
+        def run(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[1:3] == ['merge-base', '--is-ancestor']:
+                self.assertEqual([running, revision], argv[-2:])
+                return 1, ''
+            return real(argv, cwd, timeout, low_priority)
+
+        self.machine.run = run
+        with self.assertRaisesRegex(shard_group.Refused, 'cannot replace'):
+            host.do_update('operator-match', revision=revision)
+        self.assertEqual(running, host.built_revision())
+
     def test_regions_take_turns_at_the_staging_compiler(self):
         group, host = self.built()
         lock = self.base / 'regions' / '.staging' / 'compile.lock'
