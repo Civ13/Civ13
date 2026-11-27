@@ -165,6 +165,12 @@ var/save_failures = 0
 	qdel(map)
 	map = null
 
+// This fixture has only the surface level, with no upper storey.
+/proc/building_upper_z(z)
+	if (world.maxz > 1)
+		CRASH("Wall appearance fixture requires the production upper-level lookup on multi-level worlds")
+	return 0
+
 /world
 	maxx = 32
 	maxy = 32

@@ -52,6 +52,8 @@ constructor = re.search(r'^/turf/wall/New\([\s\S]*?(?=^/turf/wall/Destroy)', wal
 abashiri_new = re.search(r'^/turf/wall/abashiri/New\(\)\n[\s\S]*?(?=^/turf/wall/abashiri/Destroy)', types, re.M).group()
 old_new = re.search(r'^/turf/wall/old_stone/New\(\)\n\treturn\n', types, re.M).group()
 source = ''.join(variant(body + abashiri + old_stone + constructor + abashiri_new + old_new, name) for name, body in [('baseline', baseline), ('candidate', candidate)])
+building_levels = (repo / 'code/game/objects/building_levels.dm').read_text()
+source += re.search(r'^/proc/building_recheck_storeys_above\([^\n]*\)\n(?:\t[^\n]*\n|\n)+', building_levels, re.M).group()
 probe = Path(__file__).with_name('probe.dm').read_text()
 head = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=repo, text=True).strip()
 if args.output.exists():
