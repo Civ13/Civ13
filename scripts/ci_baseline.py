@@ -2809,6 +2809,10 @@ SUITES = {
     'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
         'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
+    'clay_doorway_stucco': {'files': ('tests/wall_appearance/test_stucco_doorways.py',), 'paths': (
+        'tests/wall_appearance/test_stucco_doorways.py', 'code/game/objects/covers_types/covers_rendered.dm',
+        'code/game/objects/covers_types/covers_buildable.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
         'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
         'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},

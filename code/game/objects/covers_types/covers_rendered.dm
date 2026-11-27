@@ -59,14 +59,22 @@
 			return
 	..()
 
-/obj/covers/claydoorway/attackby(obj/item/W as obj, mob/user as mob)
+/obj/covers/clay_wall/claydoorway/attackby(obj/item/W as obj, mob/user as mob)
+	if (!istype(W, /obj/item/weapon/stucco/generic))
+		return ..()
+	to_chat(user, "You start adding stucco to the doorway...")
+	if (do_after(user, 20, src))
+		to_chat(user, "You finish adding stucco to the doorway, rendering over it.")
+		qdel(W)
+		var/obj/covers/clay_wall/redearth_doorway/S = new /obj/covers/clay_wall/redearth_doorway(loc)
+		S.dir = dir
+		qdel(src)
+
+/obj/covers/clay_wall/redearth_doorway/attackby(obj/item/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/stucco/generic))
-		to_chat(user, "You start adding stucco to the doorway...")
-		if (do_after(user, 20, src))
-			to_chat(user, "You finish adding stucco to the doorway, rendering over it.")
-			qdel(W)
-			new /obj/covers/clay_wall/redearth_doorway(loc)
-			qdel(src)
+		to_chat(user, "This doorway is already rendered.")
+		return
+	return ..()
 
 // Roman Render
 
