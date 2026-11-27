@@ -53,7 +53,7 @@
 		update_icon()
 		return
 
-	if (ishuman(over_object) && get_dist(over_object, src) <= 1)
+	if (ishuman(over_object) && can_reach_patient(over_object))
 		visible_message("[usr] attaches \the [src] to \the [over_object].")
 		attached = over_object
 		update_icon()
@@ -74,11 +74,15 @@
 	else
 		return ..()
 
+/obj/structure/iv_drip/proc/can_reach_patient(mob/living/human/patient)
+	// get_dist() also counts adjacent levels as one tile apart.
+	return patient.z == z && isturf(patient.loc) && get_dist(src, patient) <= 1
+
 /obj/structure/iv_drip/process()
 
 	if (attached)
 
-		if (!(get_dist(src, attached) <= 1 && isturf(attached.loc)))
+		if (!can_reach_patient(attached))
 		/*	visible_message("The needle is ripped out of [attached], doesn't that hurt?")
 			attached:apply_damage(3, BRUTE, pick("r_arm", "l_arm"))*/ // this is dumb - Kachnov
 			attached = null
