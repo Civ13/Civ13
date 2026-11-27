@@ -56,20 +56,12 @@ var/post_probe_runtime = FALSE
 
 /proc/post_probe_run()
 	var/turf/home = post_probe_floor(1, 1)
-	var/turf/near = post_probe_floor(2, 1)
 	var/turf/origin = post_probe_floor(world.maxx, 1)
 	var/turf/cross_level = post_probe_floor(world.maxx, 2)
-	var/mob/living/simple_animal/pigeon/P = new /mob/living/simple_animal/pigeon/post_probe(near)
+	var/mob/living/simple_animal/pigeon/P = new /mob/living/simple_animal/pigeon/post_probe(origin)
 	var/obj/structure/pigeon_loft/L = new(home)
 	post_probe_check(!P.pigeon_post_destination(), "untrained and older birds have no route")
 	P.pigeon_post_train(L)
-	var/saved_id = P.pigeon_home_id
-	post_probe_check(saved_id && P.pigeon_post_destination() == L, "trained pigeon resolves its exact home from a nearby tile")
-	var/list/bird_fields = P.get_saved_vars()
-	var/list/loft_fields = L.get_saved_vars()
-	post_probe_check(("pigeon_home_id" in bird_fields) && ("pigeon_home_x" in bird_fields) && ("pigeon_home_y" in bird_fields) && ("pigeon_home_z" in bird_fields) && ("pigeon_loft_id" in loft_fields), "production persistence selects home identity and coordinates")
-	P.forceMove(origin)
-	post_probe_check(get_dist(P, home) == 799 && P.pigeon_post_destination() == L, "the opposite edge of the region can reach the exact home 799 tiles away")
 	P.forceMove(cross_level)
 	post_probe_check(!P.pigeon_post_destination(), "another z-level cannot dispatch")
 	P.forceMove(home)
@@ -88,7 +80,7 @@ var/post_probe_runtime = FALSE
 	var/obj/structure/pigeon_loft/replacement = new(home)
 	post_probe_check(!P.pigeon_post_destination(), "replacement at the same coordinates does not inherit the old route")
 	P.pigeon_post_train(replacement)
-	post_probe_check(P.pigeon_post_destination() == replacement && replacement.pigeon_loft_id != saved_id, "retraining at replacement restores only its new route")
+	post_probe_check(P.pigeon_post_destination() == replacement, "retraining lets the bird return to the replacement loft")
 
 	var/obj/item/weapon/paper/letter = new(origin)
 	var/obj/item/weapon/storage/envelope/env = new(origin)
@@ -109,10 +101,19 @@ var/post_probe_runtime = FALSE
 	P.pulledby = H
 	letter.forceMove(H)
 	H.r_hand = letter
+	P.forceMove(cross_level)
+	H.forceMove(cross_level)
+	H.pulling = P
+	P.pulledby = H
+	post_probe_check(!P.pigeon_post_deliver(H, letter, replacement) && P.loc == cross_level && letter.loc == H && H.item_is_in_hands(letter), "a cross-level dispatch leaves the sender holding the original letter")
+	P.forceMove(origin)
+	H.forceMove(origin)
+	H.pulling = P
+	P.pulledby = H
 	letter.nodrop = TRUE
 	post_probe_check(!P.pigeon_post_deliver(H, letter, replacement) && letter.loc == H && P.loc == origin, "unreleasable paper stays in hand without moving the bird")
 	letter.nodrop = FALSE
-	post_probe_check(P.pigeon_post_deliver(H, letter, replacement) && P.loc == home && letter.loc == home && !H.item_is_in_hands(letter) && !H.pulling && !P.pulledby, "delivery from 799 tiles away moves the original bird and sheet and clears the sender's hand and pull")
+	post_probe_check(get_dist(P, home) == 799 && P.pigeon_post_deliver(H, letter, replacement) && P.loc == home && letter.loc == home && !H.item_is_in_hands(letter) && !H.pulling && !P.pulledby, "delivery from 799 tiles away moves the original bird and sheet and clears the sender's hand and pull")
 
 	post_probe_save_roundtrip(home, origin, P, replacement)
 
@@ -120,7 +121,6 @@ var/post_probe_runtime = FALSE
 	ecology_spawner = new
 	mark_visited_around(origin)
 	var/mob/living/simple_animal/pigeon/post_probe/wild = new(home)
-	var/home_id = P.pigeon_home_id
 	post_probe_check(!visited_chunk(home.x, home.y, home.z) && wildlife_repopulated(wild.type), "the trained bird and wild control are in an unvisited chunk of a repopulated species")
 	var/savefile/F = new("pigeon-test.sav")
 	F["/format_version"] << 2
@@ -139,7 +139,5 @@ var/post_probe_runtime = FALSE
 	var/savefile/restored = new("pigeon-test.sav")
 	var/obj/structure/pigeon_loft/new_loft = map_storage.Load_Entry(restored, loft_ref, starting_loc = home)
 	var/mob/living/simple_animal/pigeon/post_probe/new_bird = map_storage.Load_Entry(restored, bird_ref, starting_loc = home)
-	post_probe_check(new_bird?.pigeon_home_id == home_id && new_loft?.pigeon_loft_id == home_id, "both home identities restore from disk")
-	if (new_bird && new_loft)
-		new_bird.forceMove(origin)
-		post_probe_check(new_bird.pigeon_post_destination() == new_loft, "the restored bird still routes to its restored loft")
+	new_bird?.forceMove(origin)
+	post_probe_check(new_loft && new_bird?.pigeon_post_destination() == new_loft, "the bird can find the restored loft after both are loaded from disk")

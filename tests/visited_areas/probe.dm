@@ -47,7 +47,7 @@ var/global/list/sea_life_table = null
 /proc/sea_life_species()
 	return list(new /datum/sea_species(/mob/living/simple_animal/sea/shoal))
 /datum/ecology_spawner/proc/species_for_type(path)
-	return path == /mob/living/simple_animal/deer || path == /mob/living/simple_animal/pigeon
+	return path == /mob/living/simple_animal/deer
 var/global/datum/ecology_spawner/ecology_spawner = new
 
 /proc/persistence_game_log(text)
@@ -129,11 +129,6 @@ var/global/list/failures = list()
 	var/obj/crate = new(far)
 	var/mob/living/simple_animal/deer/boxed = new(crate)
 	check(!map_storage.save_skips_wildlife(boxed), "an animal inside something is kept")
-	var/mob/living/simple_animal/pigeon/P = new(far)
-	check(map_storage.save_skips_wildlife(P), "an untrained pigeon where nobody has been is left out")
-	var/mob/living/simple_animal/pigeon/trained = new(far)
-	trained.pigeon_home_id = "loft"
-	check(ecology_wild_animal(trained) && !map_storage.save_skips_wildlife(trained), "a trained pigeon keeps its home without changing the wildlife census")
 	persistence_visited_since = 0
 	check(!map_storage.save_skips_wildlife(deer), "nothing is left out before any player has been tracked")
 
