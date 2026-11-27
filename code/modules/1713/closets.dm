@@ -90,6 +90,24 @@
 		opened = !opened
 	update_icon()
 
+/obj/structure/closet/cabinet/extinguisher_cabinet/open()
+	if (opened || !can_open())
+		return FALSE
+	opened = TRUE
+	density = FALSE
+	update_icon()
+	playsound(loc, open_sound, 100, TRUE, -3)
+	return TRUE
+
+/obj/structure/closet/cabinet/extinguisher_cabinet/close()
+	if (!opened || !can_close())
+		return FALSE
+	opened = FALSE
+	density = FALSE
+	update_icon()
+	playsound(loc, close_sound, 100, TRUE, -3)
+	return TRUE
+
 /obj/structure/closet/cabinet/extinguisher_cabinet/update_icon()
 	if(!opened)
 		icon_state = "extinguisher_closed"

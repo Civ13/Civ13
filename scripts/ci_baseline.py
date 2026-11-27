@@ -850,6 +850,7 @@ SUITES = {
             'code/game/objects/items/weapons/mop.dm', 'code/game/turfs/turf.dm', 'tests/save_movement/source_adapter.py')},
     'extinguisher_cabinet': {'files': ('tests/extinguisher_cabinet/test_alt_click.py',),
         'paths': ('tests/extinguisher_cabinet/',), 'shared_paths': (
+            'code/game/objects/structures/crates_lockers/closets.dm',
             'code/modules/1713/closets.dm', 'tests/save_movement/source_adapter.py')},
     'ration_diets': {'files': ('tests/ration_diets/test_ration_diets.py',),
         'paths': ('tests/ration_diets/',), 'shared_paths': (
