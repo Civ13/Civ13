@@ -176,7 +176,14 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		require(west.recall(H), "recall refused after cooldown")
 		require(west.state == "inbound" && west.fuel == 1, "west not inbound or fuel not burned: [west.fuel]")
 		require(!west.recall(H) && west.fuel == 1, "second recall charged fuel")
+		// The automatic approach may match speed long before coming alongside.
+		west.speed_updated_at = world.time - 100
+		west.tick()
+		require(west.shuttle_speed == 5 && isnull(west.speed_matched_since), "pre-arrival match started the boarding clock")
+		sleep(31) // Longer than the dwell, but still en route.
 		west.state_until = world.time
+		west.tick()
+		require(west.state == "inbound" && west.speed_matched_since == world.time && bridges_of("west", TRUE) == 36, "pre-matched shuttle opened bridges on arrival")
 		require(west.set_approach_speed(4), "approach trim refused")
 		west.speed_updated_at = world.time - 100
 		west.tick()

@@ -128,6 +128,8 @@ class TrainRaidMapTests(unittest.TestCase):
 
     def test_matching_gates_docking_but_never_blocks_an_abort(self):
         mode = self.mode
+        approach = mode.split("/datum/train_raid_crew/proc/update_approach()", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(approach.index("now >= state_until && shuttle_target"), approach.index("speed_matched_since = now"))
         dock = mode.split("/datum/train_raid_crew/proc/dock(", 1)[1].split("\n/datum/", 1)[0]
         self.assertLess(dock.index("!boarding_ready()"), dock.index("set_bridges(TRUE)"))
         departure = mode.split("/datum/train_raid_crew/proc/depart()", 1)[1].split("\n/datum/", 1)[0]

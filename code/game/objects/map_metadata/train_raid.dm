@@ -337,7 +337,8 @@ var/global/list/train_raid_loot_pads = list()
 	var/change = max(0, now - speed_updated_at) / (1 SECOND) * TRAIN_RAID_SHUTTLE_ACCEL
 	speed_updated_at = now
 	shuttle_speed += clamp(shuttle_target - shuttle_speed, -change, change)
-	if (speed_matches())
+	// A match on approach does not count toward a safe crossing.
+	if (now >= state_until && shuttle_target == TRAIN_RAID_HAULER_SPEED && speed_matches())
 		if (isnull(speed_matched_since))
 			speed_matched_since = now
 	else
