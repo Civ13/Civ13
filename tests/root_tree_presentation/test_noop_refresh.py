@@ -79,12 +79,14 @@ class NoOpRefresh(unittest.TestCase):
             self.assertIn(field+' -= old',refresh)
             self.assertIn(field+'.Cut()',P.fragment(TREE,'/datum/root_tree_presenter/proc/release_owned_scene('))
 
-    def commit_tail(self,old_invalidation=False):
+    def commit_tail(self,old_invalidation=False, *, replace=None):
         source=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
         proc=P.fragment(source,'/atom/movable/lighting_overlay/proc/update_overlay(')
         tail=proc[proc.index('\t// Check against last values'):]
         tail='\n'.join(line for line in tail.splitlines() if not line.strip().startswith('#'))+'\n'
-        tail=tail.replace('for (var/i = 1; i <= L.len; i++)','for(var/i = 1, i <= 20, i++)')
+        if replace:
+            self.assertIn(replace[0], tail)
+            tail = tail.replace(*replace, 1)
         tail=tail.replace('if (','if(')
         if old_invalidation:
             tail=tail.replace('\troot_tree_light_changed(loc)\n','')
@@ -107,6 +109,42 @@ class NoOpRefresh(unittest.TestCase):
         self.assertEqual(calls,['root'])
         mutant,calls=self.commit_tail(old_invalidation=True)
         mutant(Values(old),True,True,old,True);self.assertEqual(calls,['root'])
+
+    def test_matrix_comparison_checks_both_ends_and_mismatched_lengths(self):
+        class MatrixValues(Values):
+            def __bool__(self):
+                return True
+
+        commit, notifications = self.commit_tail()
+        for length in (0, 1, 12, 20, 24):
+            displayed = MatrixValues([0.25] * length)
+            incoming_cases = [MatrixValues([0.25] * (length + 1))]
+            if length:
+                incoming_cases.append(MatrixValues([0.25] * (length - 1)))
+                for index in (1, length):
+                    changed = MatrixValues(displayed)
+                    changed[index] = 0.5
+                    incoming_cases.append(changed)
+
+            with self.subTest(length=length):
+                notifications.clear()
+                self.assertIsNone(commit(MatrixValues(displayed), True, True, displayed, True))
+                self.assertEqual(notifications, [])
+                for incoming in incoming_cases:
+                    notifications.clear()
+                    result = commit(incoming, True, True, displayed, True)
+                    self.assertEqual(result[3], incoming)
+                    self.assertEqual(notifications, ['root'])
+
+        displayed = MatrixValues([0.25] * 20)
+        changed_tail = MatrixValues(displayed)
+        changed_tail[20] = 0.5
+        truncated, notifications = self.commit_tail(replace=('1 to L.len', '1 to L.len - 1'))
+        self.assertIsNone(truncated(changed_tail, True, True, displayed, True))
+        self.assertEqual(notifications, [])
+        ignored_length, notifications = self.commit_tail(replace=('L.len != last_color.len', 'FALSE'))
+        self.assertIsNone(ignored_length(MatrixValues([0.25] * 19), True, True, displayed, True))
+        self.assertEqual(notifications, [])
 
     def test_one_neighborhood_materialization_for_audit_and_roots(self):
         refresh=P.fragment(TREE,'/datum/root_tree_presenter/proc/refresh(')

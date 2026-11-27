@@ -66,7 +66,11 @@ def compile_proc(text,signature,args,env,method=False):
         if method:
             for field in ['root_trees','owner','images','owned_images','work_images','retired','context','frames','frame_keys','frame_appearances','frame_lights','frame_dirs','published_frames','source_appearances','light_keys','light_values','screens','leased_planes','lease_targets','game_plane','original_filters','scene_plane','scene_active','fallback_reason','fallback_count','release_owned_scene','foreground_verdicts']:
                 line=re.sub(r'(?<![.\w])'+field+r'\b','self.'+field,line)
-        if line.startswith('for(var/i = 1, i <= 20, i++)'):line='for i in range(1,21):'
+        numeric_range = re.fullmatch(r'for\s*\(var/(\w+) in 1 to (.+)\)', line)
+        if numeric_range:
+            line = f'for {numeric_range[1]} in range(1, ({numeric_range[2]}) + 1):'
+        elif line == 'for(var/i = 1, i <= 20, i++)':
+            line = 'for i in range(1,21):'
         else:
             loop=re.fullmatch(r'for\(var/(?:\w+/)*(\w+) in (.+)\)',line)
             if loop:line='for '+loop[1]+' in '+loop[2]+':'
