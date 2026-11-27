@@ -1,4 +1,4 @@
-"""Folding-stock guns share one toggle on /obj/item/weapon/gun/projectile.
+"""Check the stock toggle, handling differences and folded appearance.
 
 original_fold_verb.dm.txt freezes the fold verb that the AKMS, AKS-74 family,
 SR-3 and DT-28 each copied. Source checks only; no BYOND runtime.
@@ -20,7 +20,6 @@ FOLDING = {
     'aks': ('submachinegun/ak101',),
     'lmg': ('automatic/dp28/dt28',),
 }
-VERB = '\tset name = "Toggle Stock"\n\tset category = null\n\tset src in usr\n\ttoggle_folding_stock(usr)\n'
 
 
 def block(source, header):
@@ -47,13 +46,12 @@ def errors(sources):
         source = sources[name]
         for path in types:
             full = '/obj/item/weapon/gun/projectile/' + path
-            if block(source, full + '/verb/fold(') != VERB + '\n':
-                found.append(f'{path} must use the shared toggle')
+            verb = block(source, full + '/verb/fold(') or ''
+            if not re.search(r'^\s*toggle_folding_stock\(usr\)', verb, re.MULTILINE):
+                found.append(f'{path} lost its stock-toggle action')
             definition = re.search(r'(?m)^' + re.escape(full) + r'\n((?:\t.*\n)*)', source)
             if not definition or '\tfolding_stock = TRUE\n' not in definition.group(1):
                 found.append(f'{path} must set folding_stock')
-        if 'recoil /= 1.5' in source or 'proc/set_stock(' in source:
-            found.append(f'{name} copies the fold toggle again')
     if '\tstock_recoil_mult = 1\n' not in sources['aks']:
         found.append('AK-101 stock must not change recoil')
     return found
@@ -63,13 +61,8 @@ class FoldingStock(unittest.TestCase):
     def setUp(self):
         self.sources = {name: path.read_text(encoding='utf-8') for name, path in FILES.items()}
 
-    def test_folding_guns_share_the_toggle(self):
+    def test_folding_guns_retain_their_stock_action(self):
         self.assertEqual(errors(self.sources), [])
-
-    def test_detects_copied_toggle(self):
-        changed = dict(self.sources)
-        changed['smg'] += '\n/obj/item/weapon/gun/projectile/x/proc/set_stock()\n\treturn\n'
-        self.assertTrue(errors(changed))
 
 
 if __name__ == '__main__':

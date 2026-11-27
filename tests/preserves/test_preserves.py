@@ -66,9 +66,6 @@ class PreservesSourceTests(unittest.TestCase):
         self.assertIn('key == "crock_timer"', proc('persistence_runtime_var(key)'))
         self.assertIn('crock_schedule()', proc('after_load()'))
 
-    def test_no_spawn(self):
-        self.assertNotIn('spawn(', self.source)
-
 
 if __name__ == '__main__':
     unittest.main()

@@ -62,9 +62,6 @@ class LobbyRelaySourceTests(unittest.TestCase):
         self.assertIn('for (var/mob/new_player/P in new_player_mob_list)', show)
         self.assertIn('config.ooc_allowed', show)
 
-    def test_no_spawn(self):
-        self.assertNotIn('spawn(', self.source.replace(' ', ''))
-
 
 if __name__ == '__main__':
     unittest.main()

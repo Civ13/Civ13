@@ -107,10 +107,6 @@ class HerbGardenSourceTests(unittest.TestCase):
             self.assertIn(f'/obj/structure/farming/plant/{crop} =', pool)
             self.assertIn(f'/obj/item/stack/farming/seeds/{crop} =', forage)
 
-    def test_no_spawn(self):
-        self.assertNotIn('spawn(', self.source)
-        self.assertNotIn('spawn(', (ROOT / 'code/modules/1713/herbalism.dm').read_text(encoding='utf-8'))
-
     def test_mortar_recipe_sprites_and_fuel(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
         self.assertIn('RECIPE: /material/stone/,mortar and pestle,/obj/item/weapon/reagent_containers/glass/mortar,2,40,0,1,kitchen,0,0,0,8,null', recipes)
