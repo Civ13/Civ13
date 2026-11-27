@@ -138,7 +138,8 @@ Some dry underground pockets have **hard quarry rock**. Pickaxes and shovels
 cannot open these walls. Ordinary blasting charges open shallow hard bands
 on the first two cave levels. On the third and fourth cave levels, **deep
 quarry rock** needs a **reinforced quarry charge**, unlocked by **Deep
-Quarrying** after Gunpowder and Ore Dressing. The stronger charge reaches
+Quarrying** after Ore Dressing. Both charges still need gunpowder to use.
+The stronger charge reaches
 harder rock, not farther. Examine the wall before using a charge.
 
 For the same stone roll, shallow hard bands leave one-third more stone

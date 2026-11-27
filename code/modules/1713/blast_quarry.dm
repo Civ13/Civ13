@@ -27,7 +27,7 @@
 	return
 
 /turf/floor/dirt/underground/quarry_hard/attackby(obj/item/W, mob/user)
-	if (istype(W, /obj/item/weapon/material/pickaxe) || is_tool(W, TOOL_SHOVEL))
+	if (is_tool(W, TOOL_PICKAXE) || is_tool(W, TOOL_SHOVEL))
 		to_chat(user, SPAN_NOTICE(desc))
 		return TRUE
 	return ..()
@@ -109,7 +109,7 @@
 	return !QDELETED(src) && !QDELETED(H) && !QDELETED(W) && site && loc == site && H.z == site.z && Adjacent(H) && H.pickaxe_mining_ready() && W.loc == H && (H.l_hand == W || H.r_hand == W) && !persistence_admission_changed(identity)
 
 /obj/structure/quarry_cluster/attackby(obj/item/W, mob/user)
-	if (!istype(W, /obj/item/weapon/material/pickaxe) || !ishuman(user))
+	if (!is_tool(W, TOOL_PICKAXE) || !ishuman(user))
 		return ..()
 	var/mob/living/human/H = user
 	var/turf/site = get_turf(src)

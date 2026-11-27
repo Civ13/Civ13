@@ -294,7 +294,7 @@ var/global/list/node_grid_col_cache = null
 	// Ore processing and quicksilver (mercury.dm, docs/mercury.md): washing and
 	// stamping ore, then mercury amalgamation, then powered milling.
 	register_research_node(new /datum/research_node("ore_dressing", "Ore Dressing", "Industrial", 165, 1, RESEARCH_MODE_ANALYSIS, list("resource_processing"), 2))
-	register_research_node(new /datum/research_node("deep_quarrying", "Deep Quarrying", "Industrial", 185, 3, RESEARCH_MODE_ANALYSIS, list("ore_dressing", "gunpowder"), 4))
+	register_research_node(new /datum/research_node("deep_quarrying", "Deep Quarrying", "Industrial", 185, 3, RESEARCH_MODE_ANALYSIS, list("ore_dressing"), 4))
 	register_research_node(new /datum/research_node("amalgamation", "Amalgamation", "Industrial", 200, 2, RESEARCH_MODE_ANALYSIS, list("ore_dressing","apothecary"), 3))
 	// Open hearth steel (steel_works.dm): pig iron and scrap melted slowly into fine steel.
 	register_research_node(new /datum/research_node("open_hearth", "Open Hearth Steel", "Industrial", 235, 4, RESEARCH_MODE_ANALYSIS, list("steelmaking","factories"), 5))

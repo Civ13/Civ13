@@ -49,7 +49,9 @@ class Wiring(unittest.TestCase):
         research = read('code/modules/research_tree/research_node.dm')
         self.assertIn('"/obj/item/weapon/grenade/blasting_charge/reinforced" = "deep_quarrying"', research)
         deep = next(line for line in research.splitlines() if 'new /datum/research_node("deep_quarrying"' in line)
-        self.assertIn('list("ore_dressing", "gunpowder")', deep)
+        self.assertIn('list("ore_dressing")', deep)
+        self.assertNotIn('"gunpowder"', deep)
+        self.assertIn('has_reagent("gunpowder", BLASTING_POWDER)', read('code/modules/1713/earthworking_heavy.dm'))
         charge = read('code/modules/1713/earthworking_heavy.dm')
         reinforced = charge.split('/obj/item/weapon/grenade/blasting_charge/reinforced\n', 1)[1].split('\n/obj/', 1)[0]
         self.assertIn('quarry_grade = 2', reinforced)

@@ -86,6 +86,9 @@ def restore_crafting_projection(path, source):
     elif path == FLOOR:
         # Dug pits: invert only the two exact tunnel construction changes.
         for current, previous in (
+            # Hands cannot bypass the hard quarry wall's tool gate.
+            ('if (H.ant && H.a_intent == I_GRAB && !quarry_hardness())',
+             'if (H.ant && H.a_intent == I_GRAB)'),
             ('\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop/pit(locate(user.x, user.y, user.z+1))\n',
              '\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop(locate(user.x, user.y, user.z+1))\n\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunnelbottom(user.loc)\n'),
             ('\t\t\t\tnew/obj/structure/multiz/ladder/ww2/tunneltop/pit(user.loc)\n',
@@ -109,11 +112,11 @@ def restore_crafting_projection(path, source):
         # (tests/mining_yields), each continent's ore rates (tests/provinces) and
         # an ore vein counted as Natural Science field work (tests/late_research),
         # deeper underground levels reading the surface area (tests/building_levels --cave)
-        # and zero-chance guards on the fuel ore rolls (tests/mining_yields).
+        # zero-chance guards on fuel ore rolls, and the finite blast quarry ore split.
         mining_start = source.index('/turf/proc/mining_proc(')
         mining_end = source.index('/turf/floor/dirt/underground/attack_hand(', mining_start)
         mining = source[mining_start:mining_end]
-        if hashlib.sha256(mining.encode()).hexdigest() != '3110c270cda123a01729e00da31f73a38714a9499ae26b3f33f9ad3838c5d60a':
+        if hashlib.sha256(mining.encode()).hexdigest() != '13ec6b5c13459ec03f5cc27a8580221834cc076558e5727e5c9f4f8b7257b64f':
             raise AssertionError('unreviewed mining yield projection drift')
         previous = read('tests/human_subtile/fixtures/mining_before_multi_drop.dm.txt').rstrip('\n') + '\n' * 2
         source = source[:mining_start] + previous + source[mining_end:]
