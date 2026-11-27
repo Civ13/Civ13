@@ -37,6 +37,13 @@ class VoyageSettlement(unittest.TestCase):
         self.assertIn('/airship_voyage/departure_in_place()\n\treturn TRUE', VOYAGE)
         self.assertIn('/airship_voyage/departure_whole_party()\n\treturn TRUE', VOYAGE)
 
+    def test_mutable_deck_cargo_waits_for_a_durable_source_save(self):
+        party = REGION.split('/obj/structure/region_gate/proc/depart_party(', 1)[1]
+        self.assertIn('begin_escrow(destination, payloads, departure_fast_escrow())', party)
+        self.assertIn('/airship_voyage/departure_fast_escrow()\n\treturn FALSE', VOYAGE)
+        self.assertNotIn('airship_voyage_replay_departure', REGION)
+        self.assertIn('request_save_soon()', party)
+
     def test_mixed_build_travel_requires_an_explicit_fresh_capability(self):
         escrow = BRIDGE.split('/datum/transfer_bridge/proc/begin_escrow(', 1)[1]
         self.assertLess(escrow.index('!shard_group.poll_peer(peer)'), escrow.index('begin_effect("/escrow"'))

@@ -77,7 +77,10 @@ land from the flight chart. The helm asks for confirmation and can wake a
 sleeping destination. Crossing itself is abstracted; it does not burn
 plane-style cruise fuel or create a separate travel map.
 
-The same ledger entry carries the whole crew and the airship. Every passenger
+The same ledger entry carries the whole crew and the airship. Arrival waits
+for the source region's next successful save, so there cannot be a second
+copy of the equipment aboard after a crash. Crew wait in the lobby rather
+than being redirected to the destination immediately. Every passenger
 must be able to travel; a refusal leaves the entire party and ship where they
 are. Supported cargo includes loose items, chests with their contents, and
 deck engines with nearby attached fuel barrels. The deck materials, damage,

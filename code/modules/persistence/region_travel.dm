@@ -496,14 +496,11 @@ var/global/list/region_travel_carry_types = list(
 // here is the one that left (one durable body per account), so it goes again,
 // with what it carries. A player already back in it is sent to the lobby.
 /proc/region_travel_replay_departure(list/payloads)
-	var/list/airships = list()
 	for(var/payload in payloads)
 		var/list/P = region_travel_decode(payload)
 		if(!P)
 			message_admins("Region travel: an unreadable departure could not be replayed.")
 			continue
-		if(islist(P["airship"]))
-			airships += list(P)
 		for(var/mob/living/human/H in human_mob_list.Copy())
 			if(H.persistence_owner_ckey != P["owner"] || QDELETED(H)) continue
 			log_game("Region travel: replayed [P["owner"]]'s departure; [H.real_name] leaves again.")
@@ -531,8 +528,6 @@ var/global/list/region_travel_carry_types = list(
 			sea_crossing_replayed(H, P)
 			region_edge_replayed(H, P)
 			qdel(H)
-	for(var/list/P in airships)
-		airship_voyage_replay_departure(P)
 
 /proc/region_travel_build(list/P, turf/T)
 	var/mob/living/human/H = new /mob/living/human(T)
@@ -924,6 +919,11 @@ var/global/list/region_stopped_alerted = list()
 /obj/structure/region_gate/proc/departure_before_finish(mob/living/human/H, list/leave_behind, turf/origin)
 	return
 
+// A convoy with mutable world cargo must settle after the durable source
+// snapshot, not by replaying removals against older copies of the world.
+/obj/structure/region_gate/proc/departure_fast_escrow()
+	return TRUE
+
 // A vehicle can require every manifest member before any can be escrowed.
 /obj/structure/region_gate/proc/departure_whole_party()
 	return FALSE
@@ -1050,7 +1050,7 @@ var/global/list/region_stopped_alerted = list()
 	else
 		for(var/mob/living/human/H in packed)
 			H.forceMove(src)
-	var/list/result = transfer_bridge.begin_escrow(destination, payloads, TRUE)
+	var/list/result = transfer_bridge.begin_escrow(destination, payloads, departure_fast_escrow())
 	busy = FALSE
 	if(!result)
 		for(var/mob/living/human/H in packed)
@@ -1082,18 +1082,25 @@ var/global/list/region_stopped_alerted = list()
 		if(!istype(I, /obj/item/organ) && !QDELETED(I)) qdel(I)
 	for(var/obj/item/I in contents)
 		qdel(I)
+	var/fast = departure_fast_escrow()
 	if(C)
 		var/mob/new_player/lobby = new
 		lobby.key = C.key
-		to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
-		shard_group.send_player_soon(C, destination)
+		if(fast)
+			to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
+			shard_group.send_player_soon(C, destination)
+		else
+			to_chat(C, SPAN_NOTICE("You set out for [destination_name()]. Your group will arrive after this region finishes its next save. If the voyage is turned back, you will find your character here."))
 	var/account = H.persistence_owner_ckey
 	// Tells the agent where its character went, so it can follow (agent_travel.dm).
-	if(!C)
+	if(!C && fast)
 		agent_note_departure(H, destination, destination_name())
 	qdel(H)
-	spawn(0)
-		region_home_note(account, "depart", destination)
+	// Tentative trips must not change home outside the durable transaction.
+	// The active escrow bars duplicate login; arrival sets the new home.
+	if(fast)
+		spawn(0)
+			region_home_note(account, "depart", destination)
 
 // An admin ghost can follow a trail: their client goes to that land's server,
 // nothing travels with them. Others' ghosts do nothing here.

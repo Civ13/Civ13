@@ -4,7 +4,7 @@
 	hub_password = ""
 	maxx = 40
 	maxy = 40
-	maxz = 2
+	maxz = 3
 	turf = /turf
 	area = /area
 	visibility = 0
@@ -132,12 +132,25 @@ var/voyage_probe_runtime = FALSE
 	voyage_probe_check(arrived.craft.anchored && arrived.craft.name == "Halcyon" && arrived.voyage_hull_id == wire["id"], "the original hull identity and name return with the ship holding position")
 	var/turf/away = airship_voyage_anchorage(wire, TRUE)
 	voyage_probe_check(away && away.z == 2 && away.x == 8, "the incoming flight searches the matching coast on the open-air level ([away?.x],[away?.z])")
-	airship_voyage_replay_departure(P)
-	voyage_probe_check(QDELETED(arrived) && QDELETED(new_rope), "a journal replay finds and removes the same durable hull")
+	// Block the whole search plane except for the three cells of a depth-9 berth.
+	for (var/x = 1 to world.maxx)
+		for (var/y = 1 to world.maxy)
+			if (y != 21 || x < 8 || x > 10)
+				new /turf/floor/dirt(locate(x, y, 2))
+	voyage_probe_check(airship_voyage_anchorage(wire, TRUE) == locate(9, 21, 2), "a berth in between the preferred old depth steps is found")
+	// The next level remains usable after the lower berth is filled.
+	new /turf/floor/dirt(locate(9, 21, 2))
+	for (var/x = 1 to world.maxx)
+		for (var/y = 1 to world.maxy)
+			new /turf/sky/building(locate(x, y, 3))
+	var/turf/high = airship_voyage_anchorage(wire, TRUE)
+	voyage_probe_check(high && high.z == 3, "a clear higher berth works when all lower ones are blocked")
 	// No summit or sky on the whole test map: do not lose the credited ship.
 	for (var/x = 1 to world.maxx)
 		for (var/y = 1 to world.maxy)
 			new /turf/floor/dirt(locate(x, y, 2))
+			new /turf/floor/dirt(locate(x, y, 3))
+	P["airship_flight"] = md5("voyage reserve probe")
 	var/turf/fallback = locate(10, 10, 1)
 	voyage_probe_check(airship_voyage_arrival(P, TRUE, fallback) == fallback, "without sky crew arrive on solid ground")
 	var/obj/structure/airship_recovery/cache = locate() in fallback

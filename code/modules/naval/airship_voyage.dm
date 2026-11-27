@@ -38,8 +38,10 @@
 		return "Fly within [AIRSHIP_VOYAGE_EDGE] tiles of the [air_edge_travel_on() ? "edge ahead" : "edge of the land"] before setting out."
 	if (!shard_group.enabled || !transfer_bridge.ready())
 		return "No other land can answer just now."
-	if (persistence_save_active())
-		return "Wait for the world to finish saving."
+	if (!map || !map.persistence || config.skip_persistence_saving || !shard_group.save_minutes)
+		return "This region cannot save a voyage safely."
+	if (persistence_admission_blocked())
+		return "Wait for the world to finish saving or restoring."
 	return B.lift_refusal()
 
 /obj/structure/airship_helm/proc/airship_voyage_route()
@@ -91,7 +93,7 @@
 	if (!islist(peer) || !(id in transfer_bridge.peers) || shard_group.peer_closed(id) || shard_group.peer_transfers_held(id))
 		to_chat(pilot, SPAN_WARNING("There is no open route to that land right now."))
 		return
-	var/confirmed = WWinput(pilot, "Fly to [peer["name"]] with everyone and everything aboard? You will arrive holding position over the far coast.", name, "Stay", list("Set out", "Stay"))
+	var/confirmed = WWinput(pilot, "Fly to [peer["name"]] with everyone and everything aboard? The crossing completes after this region's next save. You will arrive holding position over the far coast.", name, "Stay", list("Set out", "Stay"))
 	if (confirmed != "Set out" || QDELETED(src) || voyage_pending)
 		return
 	why = airship_voyage_refusal(pilot)
@@ -189,6 +191,9 @@
 
 /obj/structure/region_gate/airship_voyage/attack_ghost(mob/user)
 	return
+
+/obj/structure/region_gate/airship_voyage/departure_fast_escrow()
+	return FALSE
 
 /obj/structure/region_gate/airship_voyage/departure_whole_party()
 	return TRUE
@@ -460,9 +465,6 @@
 		var/turf/back = locate(origin[1], origin[2], origin[3])
 		if (airship_voyage_clear(R, back))
 			return back
-	var/z = air_crossing_flight_z()
-	if (!z)
-		return null
 	var/side = R["side"]
 	if (!incoming)
 		// A returned voyage searches the coast where it set out instead.
@@ -474,24 +476,28 @@
 	var/depth_max = horizontal ? world.maxy : world.maxx
 	var/along = incoming ? R["along"] : null
 	var/start = isnum(along) ? 1 + round(along * (length - 1)) : clamp(horizontal ? origin[1] : origin[2], 1, length)
-	// Vary the depth as well as the edge coordinate to fit an irregular deck.
-	// Keep the search bounded on large maps; recovery handles a coast with no room.
-	for (var/depth = min(AIRSHIP_VOYAGE_EDGE, depth_max), depth <= min(depth_max, AIRSHIP_VOYAGE_OFFSET + 1), depth += 4)
-		for (var/delta = 0, delta <= min(64, length), delta++)
-			for (var/sign in list(1, -1))
-				if (!delta && sign < 0)
-					continue
-				var/at = start + delta * sign
-				if (at < 1 || at > length)
-					continue
-				var/turf/T
-				switch (side)
-					if (NORTH) T = locate(at, world.maxy + 1 - depth, z)
-					if (SOUTH) T = locate(at, depth, z)
-					if (EAST) T = locate(world.maxx + 1 - depth, at, z)
-					if (WEST) T = locate(depth, at, z)
-				if (airship_voyage_clear(R, T))
-					return T
+	// Search from the lowest eligible flight levels first. Keep the candidate
+	// budget bounded on tall maps and prefer a little room from the edge.
+	for (var/z = 2, z <= min(world.maxz, 9), z++)
+		for (var/pass = 1 to 2)
+			var/first = pass == 1 ? min(AIRSHIP_VOYAGE_EDGE, depth_max) : 1
+			var/last = pass == 1 ? min(depth_max, AIRSHIP_VOYAGE_OFFSET + 1) : min(depth_max, AIRSHIP_VOYAGE_EDGE - 1)
+			for (var/depth = first, depth <= last, depth++)
+				for (var/delta = 0, delta <= min(64, length), delta++)
+					for (var/sign in list(1, -1))
+						if (!delta && sign < 0)
+							continue
+						var/at = start + delta * sign
+						if (at < 1 || at > length)
+							continue
+						var/turf/T
+						switch (side)
+							if (NORTH) T = locate(at, world.maxy + 1 - depth, z)
+							if (SOUTH) T = locate(at, depth, z)
+							if (EAST) T = locate(world.maxx + 1 - depth, at, z)
+							if (WEST) T = locate(depth, at, z)
+						if (airship_voyage_clear(R, T))
+							return T
 	return null
 
 /proc/airship_voyage_make_entry(list/E, turf/T)
@@ -594,50 +600,6 @@
 		to_chat(H, SPAN_NOTICE(incoming ? "The airship holds position over the far coast." : "The voyage was turned back. The airship is holding position here."))
 	else
 		to_chat(H, SPAN_WARNING("There was not enough clear sky. Your airship and cargo are packed at the arrival point. The pilot can redeploy them."))
-
-// Ledger replay removes the original copy after a crash before a new snapshot.
-// The saved hull id wins even when that snapshot had her at another position.
-/proc/airship_voyage_replay_departure(list/P)
-	var/list/R = P["airship"]
-	if (!islist(R))
-		return
-	// Like ordinary character replay, remove only the number and kind of
-	// cargo nodes recorded as having left. The save can be older than loading.
-	var/list/shipped = list()
-	for (var/list/tile in R["tiles"])
-		for (var/list/E in tile[6])
-			var/path
-			if (E[1] == "cell")
-				path = text2path(E[2])
-			else
-				var/list/cargo = region_travel_generic_record(E[2], TRUE)
-				path = text2path(cargo["t"])
-			shipped[path] = (shipped[path] || 0) + 1
-	for (var/datum/craft/air/C in air_hull_crafts.Copy())
-		var/datum/craft_body/built/air/B = C.body
-		if (!B || !B.placed())
-			continue
-		var/turf/T = locate(B.px, B.py, B.z)
-		var/obj/structure/airship_helm/helm = T ? locate(/obj/structure/airship_helm) in T : null
-		if (QDELETED(helm) || helm.craft != C || helm.voyage_hull_id != R["id"])
-			continue
-		var/list/objects = list()
-		var/turf/arrival = region_travel_arrival_turf()
-		for (var/turf/D in B.cells())
-			for (var/atom/movable/M in D.contents.Copy())
-				if (M.loc != D || M == helm || QDELETED(M) || !M.craft_cargo() || region_travel_ignorable(M))
-					continue
-				if (istype(M, /obj/covers/airship_deck))
-					objects += M
-				else if (shipped[M.type])
-					shipped[M.type]--
-					objects += M
-				else
-					var/turf/safe = air_hull_solid_below(D) || arrival
-					if (safe)
-						M.forceMove(safe)
-		airship_voyage_remove(helm, objects)
-		return
 
 // Construction may close the sky while the escrow is committed.
 // Keep the exact ship record in a normal world-persisted recovery object rather

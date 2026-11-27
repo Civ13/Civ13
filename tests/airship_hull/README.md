@@ -9,5 +9,6 @@ python3 -B tests/ecology_spawning/run_linux.py . tests/airship_hull/voyage_probe
 ```
 
 This exercises the actual hull and cargo round-trip, crew deck positions,
-collision-free arrival footprint, journal removal, and blocked-sky recovery.
+collision-free arrival footprints on multiple levels, source removal, and
+blocked-sky recovery.
 It does not connect two live BYOND clients or shards.
