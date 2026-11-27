@@ -405,8 +405,12 @@ var/global/list/root_tree_presenters
 	budget[1]--
 	if(depth >= 8)
 		return TRUE
-	var/p = A:plane == FLOAT_PLANE ? inherited_plane : A:plane
-	var/l = A:layer < 0 ? inherited_layer : A:layer
+	var/p = A:plane
+	if(p == FLOAT_PLANE)
+		p = inherited_plane
+	var/l = A:layer
+	if(l < 0)
+		l = inherited_layer
 	if(p == GAME_PLANE && l >= 5.11 && (A:icon || A:maptext || A:render_source))
 		return TRUE
 	for(var/O in A:overlays)
