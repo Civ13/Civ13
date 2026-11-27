@@ -1847,6 +1847,7 @@
 #include "code\modules\multiz\building_lighting.dm"
 #include "code\modules\multiz\open_air_view.dm"
 #include "code\modules\multiz\look_up.dm"
+#include "code\modules\multiz\window_lob.dm"
 #include "code\modules\multiz\standing_building_level.dm"
 #include "code\modules\multiz\mine_floor_registry.dm"
 #include "code\modules\naval\berth.dm"
