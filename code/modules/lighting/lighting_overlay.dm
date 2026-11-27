@@ -186,18 +186,18 @@
 		var/adjusted_g = C.lum_g + TOD_g
 		var/adjusted_b = C.lum_b + TOD_b
 
-		// Huge switch to determine i based on D.
-		switch(turn(C.master_direction(T), 180))
-			if (NORTHEAST)
+		// The master direction points toward the turf. Use the slot for the opposite corner.
+		switch(C.master_direction(T))
+			if (SOUTHWEST)
 				i = AR
 
-			if (SOUTHEAST)
+			if (NORTHWEST)
 				i = GR
 
-			if (SOUTHWEST)
+			if (NORTHEAST)
 				i = RR
 
-			if (NORTHWEST)
+			if (SOUTHEAST)
 				i = BR
 
 		var/mx = max(adjusted_r, adjusted_g, adjusted_b) // Scale it so 1 is the strongest lum, if it is above 1.
