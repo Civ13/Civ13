@@ -1,6 +1,6 @@
 // Upgrade the existing campfire into the existing stone kiln, without creating fuel.
 /obj/structure/oven/fireplace/proc/stone_kiln_upgrade_valid(obj/item/stack/material/stone/S, mob/living/human/H, turf/site, epoch, datum/save_identity)
-	if (QDELETED(src) || QDELETED(S) || QDELETED(H) || type != /obj/structure/oven/fireplace || S.type != /obj/item/stack/material/stone)
+	if (QDELETED(src) || QDELETED(S) || QDELETED(H) || type != /obj/structure/oven/fireplace || !istype(S, /obj/item/stack/material/stone))
 		return FALSE
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required || persistence_admission_identity != save_identity)
 		return FALSE

@@ -145,6 +145,7 @@ var/recipe_ci_files = 0
 	recipe_ci_craft_fixture()
 	recipe_ci_handles()
 	recipe_ci_furniture_joinery()
+	recipe_ci_blast_quarry()
 	recipe_ci_stone_molds()
 	recipe_ci_cloth_substitution()
 	recipe_ci_dressmaking()

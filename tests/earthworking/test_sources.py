@@ -43,6 +43,21 @@ class Wiring(unittest.TestCase):
         self.assertIn('is_hot(W)', module)
         self.assertIn('#define BLASTING_POWDER 15', module)
 
+    def test_reinforced_quarry_charge_has_its_own_recipe_and_gate(self):
+        self.assertIn('empty reinforced quarry charge,/obj/item/weapon/grenade/blasting_charge/reinforced',
+                      read('config/crafting/material_recipes_global.txt'))
+        research = read('code/modules/research_tree/research_node.dm')
+        self.assertIn('"/obj/item/weapon/grenade/blasting_charge/reinforced" = "deep_quarrying"', research)
+        deep = next(line for line in research.splitlines() if 'new /datum/research_node("deep_quarrying"' in line)
+        self.assertIn('list("ore_dressing")', deep)
+        self.assertNotIn('"gunpowder"', deep)
+        self.assertIn('has_reagent("gunpowder", BLASTING_POWDER)', read('code/modules/1713/earthworking_heavy.dm'))
+        charge = read('code/modules/1713/earthworking_heavy.dm')
+        reinforced = charge.split('/obj/item/weapon/grenade/blasting_charge/reinforced\n', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('quarry_grade = 2', reinforced)
+        self.assertNotIn('explosion', reinforced)
+        self.assertIn('blasting_charge_break_rock(O, quarry_grade)', charge)
+
     def test_steam_shovel_offers_a_cut_job(self):
         works = read('code/modules/1713/earthworks.dm')
         self.assertIn('/obj/structure/workshop_machine/steam_site/steam_shovel/proc/cuttings()', works)

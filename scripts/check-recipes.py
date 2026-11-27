@@ -52,6 +52,7 @@ def main():
                    "code/game/objects/items.dm", "config/crafting/material_recipes_global.txt",
                    "code/game/objects/items/stacks/furniture_joinery.dm", "config/crafting/furniture_joinery.json",
                    "tests/crafting/furniture_joinery.dm", "tests/crafting/cloth_bedroll.dm",
+                   "tests/crafting/blast_quarry.dm", "code/modules/1713/blast_quarry.dm",
                    "code/game/objects/items/weapons/nomadstuff.dm", "code/game/objects/structures.dm",
                    "code/game/objects/structures/stool_bed_chair_nest/bed.dm", "tests/crafting/rope_hammock.dm",
                    "code/game/objects/structures/filingcabinet.dm", "tests/crafting/document_drawers.dm",
@@ -134,6 +135,7 @@ def main():
         dme += f'\n#include "{root.as_posix()}/tests/crafting/energy_progression.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/handles.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/furniture_joinery.dm"\n'
+        dme += f'\n#include "{root.as_posix()}/tests/crafting/blast_quarry.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/cloth_bedroll.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/rope_hammock.dm"\n'
         dme += f'\n#include "{root.as_posix()}/tests/crafting/document_drawers.dm"\n'

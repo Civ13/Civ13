@@ -83,6 +83,8 @@ var/global/list/region_travel_carry_types = list(
 		var/obj/item/weapon/book/node_book/B = I
 		return valid_recipe_node_id(B.node_id) && !length(B.contents) && !B.dat ? "node:[B.node_id]" : null
 	if(istype(I, /obj/item/stack))
+		if(region_travel_quarry_stack(I.type) && !length(I.contents))
+			return "stack:quarry:[I.type]"
 		var/kind = transfer_trade_kind(I)
 		if(kind) return "stack:[kind]"
 		for(var/coin in region_travel_coins)
@@ -412,6 +414,15 @@ var/global/list/region_travel_carry_types = list(
 		if(abs(value[id] - clean[id]) > 0.001) return FALSE
 	return TRUE
 
+// Quarry feed stores its mineral identity in a bounded stack subtype, not vars.
+/proc/region_travel_quarry_stack(path)
+	if(path == /obj/item/stack/material/stone/quarried)
+		return path
+	if(!ispath(path, /obj/item/stack/quarry_rubble))
+		return null
+	var/obj/item/stack/quarry_rubble/sample = path
+	return ispath(initial(sample.ore_type), /obj/item/stack/ore) ? path : null
+
 // The path an item entry rebuilds, or null when it is not allowed.
 /proc/region_travel_item_path(kind, amount)
 	if(copytext(kind, 1, 12) == "compendium:")
@@ -420,7 +431,11 @@ var/global/list/region_travel_carry_types = list(
 		return amount == 1 && valid_recipe_node_id(copytext(kind, 6)) ? /obj/item/weapon/book/node_book : null
 	if(copytext(kind, 1, 7) == "stack:")
 		var/good = copytext(kind, 7)
-		var/obj/item/stack/path = transfer_trade_goods[good] || region_travel_coins[good] || region_travel_stack_goods[good]
+		var/obj/item/stack/path
+		if(copytext(good, 1, 8) == "quarry:")
+			path = region_travel_quarry_stack(text2path(copytext(good, 8)))
+		else
+			path = transfer_trade_goods[good] || region_travel_coins[good] || region_travel_stack_goods[good]
 		if(!path || amount < 1 || amount != round(amount) || amount > min(2000, initial(path.max_amount))) return null
 		return path
 	if(copytext(kind, 1, 6) == "ammo:")

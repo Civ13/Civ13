@@ -116,7 +116,41 @@ Only the first level feels the water above it; the deeper levels lie under its r
 
 ## Blasting rock
 
-A **blasting charge** breaks rock faster than a pickaxe. Once your people know **Gunpowder**, make an empty one from 1 wood under **Tools**. Pour 15 units of gunpowder into it from a container, fit a rope fuse, and light the fuse with a flame such as a lit match, torch or lighter. Stand well back: it goes off after 6 seconds. The blast breaks all the underground rock on its tile and the tiles around it, just as if they had been mined, and it hurts anyone close by.
+Once your faction knows **Gunpowder**, find the in-game blasting charge entry in the
+**Crafting Atlas**. A detonated blasting charge near ordinary mineable rock leaves
+finite **blasted rock clusters** where the rock opened. It does not refill
+exposed floors, spent clusters, or loose debris. Stay clear of the game's
+ordinary blast damage. The wall rolls its source geology once. Part of a
+multi-unit ore find comes loose, and the rest stays in the cluster as
+**ore-bearing rubble**. Deeper rock gives more building stone, not more ore
+rolls.
+
+Use a **pickaxe** on a cluster to break off up to **five units** at a time.
+Inspect the cluster to see what's left. Clear the output from the floor if
+it backs up. The cluster shrinks as you work; it disappears when exhausted
+and does not refill on restart. Use the stone for **stone bricks** or crush it
+for sand. When you harvest named rubble, such as **iron-bearing rubble**, use a
+stone crusher or stamp mill to recover one unit of that ore per chunk. The
+rubble keeps the same ore when you carry it to another region. Sandstone and
+marble use their own ordinary crafting routes.
+
+Some dry underground pockets have **hard quarry rock**. Pickaxes and shovels
+cannot open these walls. Ordinary blasting charges open shallow hard bands
+on the first two cave levels. On the third and fourth cave levels, **deep
+quarry rock** needs a **reinforced quarry charge**, unlocked by **Deep
+Quarrying** after Ore Dressing. Both charges still need gunpowder to use.
+The stronger charge reaches
+harder rock, not farther. Examine the wall before using a charge.
+
+For the same stone roll, shallow hard bands leave one-third more stone
+than blasting ordinary rock; deep bands leave about two-thirds more.
+The bands are pockets: use ordinary rock or an open pocket to dig around
+one if you are only trying to reach the next cave level.
+
+In the dedicated **Tutorial** region, read **Quarry stone and process it** on
+the camp lesson board. A sample cluster, pickaxe, and crusher are in the yard
+past the camp's north door. It teaches collection and processing without
+needing a charge.
 
 ## Digging for dirt underground
 
@@ -137,7 +171,7 @@ Groundwater cannot seep into packed earth, so packing a tunnel that runs under a
 
 ## Stone crushing
 
-Surplus stone blocks can be crushed for a chance of sand, ore and rare minerals: by hand with a **stone crusher** (Resource Processing), or with a **powered stamp mill** (Electricity) that arms and belts can feed. See [Factory Automation](Guide_to_Factory_Automation.md#stone-crushing).
+Use a **stone crusher** (Resource Processing) or **powered stamp mill** (Electricity) for named ore-bearing rubble or excess stone. Plain stone from a mined deposit can yield sand but no more ore. Older or otherwise unmarked stone blocks still work and have a small chance of trace ore from the Gaia table, regardless of where you crush them. See [Factory Automation](Guide_to_Factory_Automation.md#stone-crushing).
 
 ## Petroleum wells
 

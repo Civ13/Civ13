@@ -1,0 +1,126 @@
+/proc/recipe_ci_blast_quarry()
+	var/turf/site = locate(2, 1, 1)
+	if (!site)
+		recipe_ci_fail("blast quarry", "test site missing")
+		return
+	var/turf/wall_site = site.ChangeTurf(/turf/floor/dirt/underground)
+	if (!wall_site?.quarry_blast_eligible())
+		recipe_ci_fail("blast quarry", "solid rock must be eligible")
+		return
+	wall_site.mining_in_progress = TRUE
+	if (wall_site.quarry_blast_eligible())
+		recipe_ci_fail("blast quarry", "already-working rock accepted")
+	wall_site.mining_in_progress = FALSE
+	if (blasting_charge_break_rock(wall_site) != 1)
+		recipe_ci_fail("blast quarry", "blasting charge should open one wall")
+	site = locate(2, 1, 1)
+	var/obj/structure/quarry_cluster/Q = locate() in site
+	if (!Q || site.quarry_blast_eligible() || site.density || Q.stone_left < 12)
+		recipe_ci_fail("blast quarry", "blast did not replace a wall with finite stock")
+		return
+	if (blasting_charge_break_rock(site))
+		recipe_ci_fail("blast quarry", "a second charge found no new wall but reported breaking rock")
+	var/cluster_count = 0
+	for (var/obj/structure/quarry_cluster/unused in site)
+		cluster_count++
+	if (cluster_count != 1)
+		recipe_ci_fail("blast quarry", "open floor was mined again")
+	for (var/obj/item/stack/S in site)
+		qdel(S)
+	for (var/n in 1 to 12)
+		new /obj/item/stack/material/wood(site, 1, FALSE)
+	var/original = Q.stone_left
+	if (Q.quarry_take_load() || Q.stone_left != original)
+		recipe_ci_fail("blast quarry", "full output was not lossless")
+	for (var/obj/item/stack/S in site)
+		qdel(S)
+	while (length(Q.rubble_left) && Q.quarry_take_load())
+		continue
+	if (!Q.quarry_take_load() || Q.stone_left != original - 5)
+		recipe_ci_fail("blast quarry", "one load should cost five units from the deposit")
+	var/savefile/F = new("blast-quarry.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, Q, 1)
+	map_storage.clear_bookkeeping()
+	var/obj/structure/quarry_cluster/restored = map_storage.Load_Entry(F, ref, starting_loc = site)
+	if (!restored || restored.stone_left != Q.stone_left || restored.stone_type != Q.stone_type)
+		recipe_ci_fail("blast quarry", "disk round-trip refilled or changed the remaining stock")
+	qdel(restored)
+	for (var/i in 1 to 12)
+		if (QDELETED(Q) || !Q.quarry_take_load())
+			break
+	if (!QDELETED(Q))
+		recipe_ci_fail("blast quarry", "finished stock did not disappear")
+		qdel(Q)
+	for (var/obj/item/stack/S in site)
+		qdel(S)
+
+	recipe_ci_hard_quarry(site)
+	recipe_ci_quarry_rubble(site)
+
+/proc/recipe_ci_hard_quarry(turf/site)
+	var/turf/deep = site.ChangeTurf(/turf/floor/dirt/underground/quarry_hard/deep)
+	deep.ex_act(1)
+	deep.mining_proc()
+	if (!deep.density || deep.is_mineable || deep.quarry_hardness() != 2 || !underground_shaft_blocked(deep) || region_edge_deep_diggable(deep))
+		recipe_ci_fail("blast quarry", "ordinary damage or a shaft can bypass deep hard rock")
+	if (blasting_charge_break_rock(deep, 1) || !deep.density || (locate(/obj/structure/quarry_cluster) in deep))
+		recipe_ci_fail("blast quarry", "an ordinary charge opened deep hard rock")
+	if (blasting_charge_break_rock(deep, 2) != 1 || deep.density)
+		recipe_ci_fail("blast quarry", "reinforced charge did not open deep hard rock")
+	var/obj/structure/quarry_cluster/Q = locate() in deep
+	if (!Q || Q.stone_left < 20)
+		recipe_ci_fail("blast quarry", "deep rock did not pay the higher stock")
+	qdel(Q)
+	var/turf/hard = deep.ChangeTurf(/turf/floor/dirt/underground/quarry_hard)
+	if (!hard.density || hard.is_mineable || hard.quarry_hardness() != 1 || blasting_charge_break_rock(hard, 1) != 1 || hard.density)
+		recipe_ci_fail("blast quarry", "ordinary charge did not open shallow hard rock")
+	Q = locate() in hard
+	if (!Q || Q.stone_left < 16)
+		recipe_ci_fail("blast quarry", "shallow hard rock did not pay the higher stock")
+	qdel(Q)
+	for (var/obj/item/stack/S in hard)
+		qdel(S)
+
+/proc/recipe_ci_quarry_rubble(turf/site)
+	var/turf/rock = site.ChangeTurf(/turf/floor/dirt/underground/quarry_hard/deep)
+	var/list/stock = list()
+	var/obj/item/stack/ore/loose = rock.quarry_drop_ore(/obj/item/stack/ore/iron, 13, stock)
+	var/obj/item/stack/ore/gold = rock.quarry_drop_ore(/obj/item/stack/ore/gold, 4, stock)
+	var/obj/item/stack/ore/untouched = rock.quarry_drop_ore(/obj/item/stack/ore/tin, 9, null)
+	if (loose.amount != 7 || gold.amount != 2 || untouched.amount != 9 || stock[/obj/item/stack/quarry_rubble/iron] != 6 || stock[/obj/item/stack/quarry_rubble/gold] != 2)
+		recipe_ci_fail("quarry rubble", "source ore budget was not split exactly or hand-mining was changed")
+	var/obj/structure/quarry_cluster/Q = rock.quarry_open(/obj/item/stack/material/stone, 20, stock)
+	site = get_turf(Q)
+	if (!Q || !site || Q.stone_left != 50 || !Q.quarry_take_load() || Q.rubble_left[/obj/item/stack/quarry_rubble/iron] != 1 || Q.stone_left != 50)
+		recipe_ci_fail("quarry rubble", "deeper wall multiplied ore or the first load miscounted")
+		return
+	var/obj/item/stack/quarry_rubble/iron/R = locate() in site
+	if (!R || R.amount != 5 || stone_crush_result(R, TRUE, 10000) != /obj/item/stack/ore/iron)
+		recipe_ci_fail("quarry rubble", "cluster did not produce portable fixed-ore feed")
+		return
+
+	var/savefile/F = new("quarry-rubble.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = 1
+	var/ref = map_storage.BuildVarDirectory(F, Q, 1)
+	var/feed_ref = map_storage.BuildVarDirectory(F, R, 2)
+	var/obj/item/stack/material/stone/legacy = new(site, 2, FALSE)
+	var/legacy_ref = map_storage.BuildVarDirectory(F, legacy, 3)
+	map_storage.clear_bookkeeping()
+	var/obj/structure/quarry_cluster/restored = map_storage.Load_Entry(F, ref, starting_loc = site)
+	var/obj/item/stack/quarry_rubble/iron/restored_feed = map_storage.Load_Entry(F, feed_ref, starting_loc = site)
+	var/obj/item/stack/material/stone/restored_legacy = map_storage.Load_Entry(F, legacy_ref, starting_loc = site)
+	if (!restored || restored.stone_left != 50 || restored.rubble_left[/obj/item/stack/quarry_rubble/iron] != 1 || restored.rubble_left[/obj/item/stack/quarry_rubble/gold] != 2)
+		recipe_ci_fail("quarry rubble", "world save changed the remaining ore budget")
+	if (!istype(restored_feed) || restored_feed.amount != 5 || stone_crush_result(restored_feed, FALSE, 10000) != /obj/item/stack/ore/iron)
+		recipe_ci_fail("quarry rubble", "world save changed the ore-bearing stack")
+	if (!restored_legacy || restored_legacy.amount != 2 || stone_crush_result(restored_legacy, FALSE, 2001) != /obj/item/stack/ore/copper)
+		recipe_ci_fail("quarry rubble", "old stone with no source was not accepted as Gaia stone after load")
+	qdel(restored)
+	qdel(Q)
+	for (var/obj/item/stack/S in site)
+		qdel(S)

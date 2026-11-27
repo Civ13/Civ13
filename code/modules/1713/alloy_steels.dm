@@ -48,26 +48,26 @@
 	flammable = FALSE
 
 // Nickel and cobalt found in one mined wall, independent of the other ore rolls.
-/turf/proc/mining_alloy_ores(mob/living/human/H)
+/turf/proc/mining_alloy_ores(mob/living/human/H, list/rubble = null)
 	. = 0
 	if (!map || map.ordinal_age < NICKEL_ORE_AGE)
 		return
 	var/doubled = istype(get_area(src), /area/caribbean/void/caves/special)
 	if (prob(NICKEL_ORE_CHANCE * continent_ore_factor("nickel", src)))
 		var/amount = rand(8, 16) * (doubled ? 2 : 1)
-		spawn_stack(/obj/item/stack/ore/nickel, src, amount)
+		quarry_drop_ore(/obj/item/stack/ore/nickel, amount, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#c9bd84><b>nickel</b></font> ore!"))
 		. += amount
 	if (map.ordinal_age >= COBALT_ORE_AGE && prob(COBALT_ORE_CHANCE * continent_ore_factor("cobalt", src)))
 		var/amount = rand(4, 8) * (doubled ? 2 : 1)
-		spawn_stack(/obj/item/stack/ore/cobalt, src, amount)
+		quarry_drop_ore(/obj/item/stack/ore/cobalt, amount, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#c8b6c6><b>cobalt</b></font> ore!"))
 		. += amount
 	if (map.ordinal_age >= CHROMITE_ORE_AGE && prob(CHROMITE_ORE_CHANCE * continent_ore_factor("chromite", src)))
 		var/amount = rand(8, 16) * (doubled ? 2 : 1)
-		spawn_stack(/obj/item/stack/ore/chromite, src, amount)
+		quarry_drop_ore(/obj/item/stack/ore/chromite, amount, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#5d5a63><b>chromite</b></font>!"))
 		. += amount

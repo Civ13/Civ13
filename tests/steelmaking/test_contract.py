@@ -210,10 +210,10 @@ class SteelWorks(unittest.TestCase):
 class AlloySteels(unittest.TestCase):
     def test_compiled_and_mined(self):
         self.assertIn('#include "code\\modules\\1713\\alloy_steels.dm"', DME)
-        self.assertIn('if (mining_alloy_ores(H))', MINING)
+        self.assertIn('if (mining_alloy_ores(H, rubble))', MINING)
         mine = proc(ALLOYS, '/turf/proc/mining_alloy_ores(')
         for ore in ('nickel', 'cobalt'):
-            self.assertIn(f'spawn_stack(/obj/item/stack/ore/{ore}, src, amount)', mine)
+            self.assertIn(f'quarry_drop_ore(/obj/item/stack/ore/{ore}, amount, rubble)', mine)
 
     def test_nickel_begins_at_the_first_open_hearth_research_bench_tier(self):
         hearth = re.search(
@@ -247,7 +247,7 @@ class AlloySteels(unittest.TestCase):
                 self.assertIn(
                     f'if ({guard}prob({prefix}_ORE_CHANCE * continent_ore_factor("{ore}", src)))\n'
                     f'\t\tvar/amount = rand({roll}) * (doubled ? 2 : 1)\n'
-                    f'\t\tspawn_stack(/obj/item/stack/ore/{ore}, src, amount)', mine
+                    f'\t\tquarry_drop_ore(/obj/item/stack/ore/{ore}, amount, rubble)', mine
                 )
 
     def test_nickel_steel_grade(self):

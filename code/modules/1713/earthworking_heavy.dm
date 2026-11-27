@@ -178,6 +178,14 @@
 	explosion_size = 1
 	explosion_sound = 'sound/weapons/Explosives/Dynamite.ogg'
 	var/state = 0 // 0 empty, 1 filled, 2 fused
+	var/quarry_grade = 1
+	var/charge_label = "blasting charge"
+
+/obj/item/weapon/grenade/blasting_charge/reinforced
+	name = "empty reinforced quarry charge"
+	desc = "An industrial quarry charge for deep hard-rock bands. Greater rock penetration, not a wider blast."
+	quarry_grade = 2
+	charge_label = "reinforced quarry charge"
 
 /obj/item/weapon/grenade/blasting_charge/ready
 	name = "blasting charge"
@@ -206,14 +214,14 @@
 			return TRUE
 		W.reagents.remove_reagent("gunpowder", BLASTING_POWDER)
 		state = 1
-		name = "filled blasting charge"
+		name = "filled [charge_label]"
 		to_chat(user, SPAN_NOTICE("You fill \the [src] with gunpowder."))
 		return TRUE
 	if (state == 1 && istype(W, /obj/item/stack/material/rope))
 		var/obj/item/stack/material/rope/R = W
 		R.use(1)
 		state = 2
-		name = "blasting charge"
+		name = charge_label
 		to_chat(user, SPAN_NOTICE("You fit a cord fuse to \the [src]."))
 		return TRUE
 	if (state == 2 && !active && is_hot(W))
@@ -231,17 +239,15 @@
 	if (!O)
 		return
 	explosion(O, -1, 0, 2, 1, sound = explosion_sound)
-	blasting_charge_break_rock(O)
+	blasting_charge_break_rock(O, quarry_grade)
 	qdel(src)
 
-// Breaks the mineable rock on and around T as if it had been mined.
-/proc/blasting_charge_break_rock(turf/T)
+// One geology pass and one finite stone cluster per solid tile opened.
+/proc/blasting_charge_break_rock(turf/T, charge_grade = 1)
 	var/broken = 0
 	for (var/turf/floor/dirt/underground/U in range(1, T))
-		if (!U.density || !U.is_mineable)
-			continue
-		U.mining_proc()
-		broken++
+		if (U.mining_proc(null, charge_grade))
+			broken++
 	return broken
 
 #undef SCRAPER_LOADS

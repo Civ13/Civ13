@@ -11,6 +11,7 @@
 var/global/list/transfer_trade_goods = list(
 	"wood" = /obj/item/stack/material/wood,
 	"stone" = /obj/item/stack/material/stone,
+	"quarried stone" = /obj/item/stack/material/stone/quarried,
 	"clay" = /obj/item/stack/material/clay,
 	"rope" = /obj/item/stack/material/rope,
 	"cloth" = /obj/item/stack/material/cloth,

@@ -73,7 +73,7 @@ var/global/list/expedition_lode_types = expedition_lode_types_table()
 )
 
 // Leaves a lode of kind on src. Returns the item, or null for an unknown kind.
-/turf/proc/expedition_lode(kind)
+/turf/proc/expedition_lode(kind, list/rubble = null)
 	if (kind == "flint")
 		var/obj/item/weapon/flint/F = null
 		var/count = rand(2, 4)
@@ -85,13 +85,10 @@ var/global/list/expedition_lode_types = expedition_lode_types_table()
 		return null
 	var/path = lode[1]
 	var/amount = rand(lode[2], lode[3])
-	var/obj/item/stack/ore/O = new path(src)
-	O.amount = amount
-	O.update_icon()
-	return O
+	return quarry_drop_ore(path, amount, rubble)
 
 // One more roll per mined wall on a land across the sea (mining_proc).
-/turf/proc/mining_expedition_lode(mob/living/human/H)
+/turf/proc/mining_expedition_lode(mob/living/human/H, list/rubble = null)
 	var/list/res = expedition_land_resources()
 	if (!res)
 		return null
@@ -99,7 +96,7 @@ var/global/list/expedition_lode_types = expedition_lode_types_table()
 	var/list/kinds = expedition_lode_kinds()
 	if (length(kinds) && prob(expedition_lode_chance()))
 		var/kind = pick(kinds)
-		found = expedition_lode(kind)
+		found = expedition_lode(kind, rubble)
 		if (found && H)
 			to_chat(H, SPAN_GREEN_BOLD("You struck a rich lode of [kind]!"))
 	var/list/rare = islist(res["rare"]) ? res["rare"] : list()
@@ -111,24 +108,15 @@ var/global/list/expedition_lode_types = expedition_lode_types_table()
 			if (H)
 				to_chat(H, SPAN_GREEN_BOLD("You found \a [G.singular_name]!"))
 	if (("rich gold vein" in rare) && prob(3))
-		var/obj/item/stack/ore/gold/AU = new /obj/item/stack/ore/gold(src)
-		AU.amount = 8
-		AU.update_icon()
-		found = AU
+		found = quarry_drop_ore(/obj/item/stack/ore/gold, 8, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You broke into a rich vein of <b>gold</b>!"))
 	if (("rich silver vein" in rare) && prob(3))
-		var/obj/item/stack/ore/silver/AG = new /obj/item/stack/ore/silver(src)
-		AG.amount = 8
-		AG.update_icon()
-		found = AG
+		found = quarry_drop_ore(/obj/item/stack/ore/silver, 8, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You broke into a rich vein of <b>silver</b>!"))
 	if (("diamonds" in rare) && prob(1))
-		var/obj/item/stack/ore/diamond/D = new /obj/item/stack/ore/diamond(src)
-		D.amount = 2
-		D.update_icon()
-		found = D
+		found = quarry_drop_ore(/obj/item/stack/ore/diamond, 2, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found rough <b>diamonds</b>!"))
 	return found

@@ -54,7 +54,8 @@ var/global/list/cement_mixer_charge = list(
 		var/list/part = cement_mixer_charge[kind]
 		var/held = vars[part[2]]
 		if (held > 0)
-			var/obj/item/stack/S = new kind(get_turf(src))
+			var/refund_type = kind == /obj/item/stack/material/stone ? /obj/item/stack/material/stone/quarried : kind
+			var/obj/item/stack/S = new refund_type(get_turf(src))
 			S.amount = held
 			S.update_icon()
 			vars[part[2]] = 0
@@ -75,7 +76,7 @@ var/global/list/cement_mixer_charge = list(
 		return
 	if (handle_machine_tool(I, H))
 		return
-	var/list/part = cement_mixer_charge[I.type]
+	var/list/part = cement_mixer_charge[stone_workshop_feed_type(I)]
 	if (!part)
 		return ..()
 	var/obj/item/stack/S = I

@@ -59,6 +59,17 @@
 	var/static/list/rates = list("tin" = 1, "bauxite" = 0, "uranium" = 0)
 	return rates
 
+// Source-unknown legacy stone takes Gaia's settled, province-neutral rates.
+/proc/continent_gaia_base_rate(resource)
+	var/list/homes = continent_home_resources()
+	if (resource in homes[MAP_NOMADS_GAIA])
+		return CONTINENT_HOME
+	var/list/gaia = continent_gaia_rates()
+	if (!isnull(gaia[resource]))
+		return gaia[resource]
+	var/list/away = continent_away_rates()
+	return isnull(away[resource]) ? 1 : away[resource]
+
 // The resources this land is rich in, or null when it is not a continent.
 /proc/continent_home()
 	if (!map)

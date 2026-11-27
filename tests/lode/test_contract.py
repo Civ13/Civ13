@@ -88,7 +88,7 @@ class Wiring(unittest.TestCase):
     def test_crushers_take_lode(self):
         self.assertIn('return is_crushable_stone(I) || lode_crushed_type(I)', CRUSH)
         self.assertIn('if (!is_mill_feed(W) || !istype(H))', CRUSH)
-        self.assertIn('lode_crushed_type(S) || roll_stone_crushing', CRUSH)
+        self.assertIn('var/crushed = lode_crushed_type(S)', CRUSH)
 
     def test_manual_stone_crusher_uses_the_existing_millstone_frame(self):
         crusher = CRUSH.split('/obj/structure/stone_crusher\n', 1)[1].split('\n/obj/', 1)[0]

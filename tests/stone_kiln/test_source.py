@@ -26,7 +26,7 @@ spec.loader.exec_module(adapter)
 def guard_contract(source, oven):
     valid = source.split('/proc/stone_kiln_upgrade_valid(', 1)[1].split('\n/obj/', 1)[0]
     upgrade = source.split('/proc/upgrade_to_stone_kiln(', 1)[1].split('\n/obj/', 1)[0]
-    for guard in ('persistence_admission_identity != save_identity', 'persistence_active_operation', 'research_node_known(H, "pottery_storage")', 'S.type != /obj/item/stack/material/stone', 'H.get_active_hand() != S', 'S.amount < 10', 'stone_boil_epoch != epoch', 'stone_boil_busy', 'contents.len', 'P.on_stove'):
+    for guard in ('persistence_admission_identity != save_identity', 'persistence_active_operation', 'research_node_known(H, "pottery_storage")', '!istype(S, /obj/item/stack/material/stone)', 'H.get_active_hand() != S', 'S.amount < 10', 'stone_boil_epoch != epoch', 'stone_boil_busy', 'contents.len', 'P.on_stove'):
         assert guard in valid, guard
     for required in ('stone_upgrade_busy = TRUE', 'do_after(H, 150, src)', 'stone_kiln_upgrade_valid(S, H, site, epoch, save_identity)', 'S.can_use(10)', 'stone_before = S.amount', 'S.use(10)', 'S.amount != stone_before - 10', 'K.fuel = fuel', 'fuel = 0', 'K.wood_residue = account', 'wood_residue = null', 'qdel(src)'):
         assert required in upgrade, required

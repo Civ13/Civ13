@@ -351,8 +351,13 @@ var/global/multiz_column_practice = 0
 	var/salt = depth > 1 ? "[depth]" : ""
 	if (dug_underground_noise("pocket[salt]", x, y) > 0.8 && dug_underground_jitter(x, y, depth) < 0.7)
 		return /turf/floor/dirt
-	if (dug_underground_noise("vein[salt]", x, y) > 0.82)
+	var/vein = dug_underground_noise("vein[salt]", x, y)
+	if (vein > 0.82)
 		return /turf/wall/rockwall
+	if (rock == /turf/floor/dirt/underground)
+		var/band = quarry_band_type(x, y, depth, vein)
+		if (band)
+			return band
 	return rock
 
 // Unformed rock (docs/underground-level.md): the cave level is grown as the
@@ -735,6 +740,9 @@ var/global/dug_underground_boot_done = FALSE
 	if (!dug)
 		return !open // the level is generated when the digging finishes
 	var/turf/below = dug_underground_form(locate(here.x, here.y, dug))
+	if (below?.quarry_hardness())
+		to_chat(user, SPAN_WARNING("A hard quarry band blocks the shaft. Try a nearby tile."))
+		return null
 	if (!below || istype(below, /turf/wall) || istype(below, /turf/floor/dirt/underground/hot) || (locate(/obj/structure/multiz) in below))
 		if (istype(below, /turf/floor/dirt/underground/hot))
 			to_chat(user, SPAN_WARNING("The rock below is searing hot. You cannot dig down here."))
@@ -787,7 +795,7 @@ var/global/dug_underground_boot_done = FALSE
 // An underground cell a shaft from below cannot open: solid stone, hot rock,
 // or something already standing there.
 /proc/underground_shaft_blocked(turf/T)
-	if (!T || dug_underground_unformed(T) || istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground/hot))
+	if (!T || T.quarry_hardness() || dug_underground_unformed(T) || istype(T, /turf/wall) || istype(T, /turf/floor/dirt/underground/hot))
 		return TRUE
 	for (var/obj/O in T)
 		if (O.density || istype(O, /obj/structure/multiz))

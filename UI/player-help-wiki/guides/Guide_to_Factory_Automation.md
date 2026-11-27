@@ -142,10 +142,10 @@ The monitor also lists each pipe network within seven tiles once: how many pipes
 
 ## Stone crushing
 
-Surplus stone can be turned into a chance of sand, ore and rare minerals.
+Crush **ore-bearing rubble** from a blasted rock cluster to recover one unit of its named ore per chunk. The ore depends on where the rock was quarried, not where you crush it. Ordinary mined stone can yield sand, but it does not give a second chance at ore. Old or unmarked stone still works and uses Gaia's trace-ore table. Gold-bearing quartz and silver lode ore still yield crushed ore for washing.
 
-- The **stone crusher** is a hand-worked stone wheel (Resource Processing research, 10 stone). Anchor it and use stone blocks on it; it keeps crushing your stack one stone at a time until the stack runs out or you stop. Roughly one stone in five gives sand and, from the Medieval age, about one in seven gives ore; the rest is rubble. Clear the output under it before twelve stacks pile up.
-- The **powered stamp mill** (Electricity research) holds up to fifty stone blocks, needs 150 cable power and crushes one stone every four seconds with better recovery than the hand crusher. Arms can load it.
+- The **stone crusher** is a hand-worked stone wheel (Resource Processing research, 10 stone). Anchor it and use your held stack on it. It works one unit at a time until the stack runs out or you stop. Clear the output before twelve stacks pile up.
+- The **powered stamp mill** (Electricity research) holds up to fifty units of mixed feed, needs 150 cable power and works one unit every four seconds. It recovers sand more often, but extracts the same amount of ore from each chunk of named rubble. Arms can load it.
 
 The **primitive saw mill** works the same way as the hand crusher: it keeps cutting your held log stack one log at a time until the stack or the blade runs out, or you stop.
 

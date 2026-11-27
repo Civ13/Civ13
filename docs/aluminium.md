@@ -9,7 +9,7 @@ vehicle load rules (`vehicle_load.dm`, docs/craft-core.md "Vehicle load").
 
 | Step | Where | In | Out | Power |
 | --- | --- | --- | --- | --- |
-| Bauxite | mined walls from the Industrial age (6%, 12% under jungle or savanna, 24-36 per find); stone crushers (1.5%) | - | bauxite | - |
+| Bauxite | mined walls from the Industrial age (6%, 12% under jungle or savanna, 24-36 per find); bauxite-bearing quarry rubble processed at a crusher or stamp mill | - | bauxite | - |
 | Bayer process | alumina digester | 2 bauxite + 1 unit of sodium hydroxide or lye | 1 alumina; red mud every 10 | 10 |
 | Hall-Heroult process | reduction pot | 1 alumina, 1 coal or charcoal per 2 ingots | 1 aluminium ingot | 40 |
 

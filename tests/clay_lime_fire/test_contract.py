@@ -172,7 +172,7 @@ class ClayLimeFire(unittest.TestCase):
     def test_lime_kiln_is_manual_and_keeps_its_charge_apart(self):
         self.assertIn('/obj/structure/furnace/lime_kiln/factory_port_ready()\n\treturn FALSE', SOURCE)
         load = proc_body('/obj/structure/furnace/lime_kiln/attackby(')
-        self.assertIn('S.type != /obj/item/stack/material/stone && !is_marble', load)
+        self.assertIn('!istype(S, /obj/item/stack/material/stone) && !is_marble', load)
         self.assertIn('solid_fuel_value(S, furnace_fuel_rates)', load)
         burn = proc_body('/obj/structure/furnace/lime_kiln/process()')
         self.assertIn('/obj/item/stack/ore/quicklime', burn)

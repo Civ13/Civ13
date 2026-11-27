@@ -516,6 +516,9 @@
 					// Unformed rock below (dug_underground.dm) forms first;
 					// solid stone stops the shaft.
 					var/turf/BL = dug_underground_form(get_turf(locate(user.x, user.y, user.z-1)))
+					if (BL?.quarry_hardness())
+						to_chat(user, SPAN_WARNING("A hard quarry band blocks the shaft. Try a nearby tile."))
+						return
 					if (istype(BL, /turf/wall) || istype(BL, /turf/floor/dirt/underground/hot))
 						to_chat(user, SPAN_WARNING(istype(BL, /turf/wall) ? "You hit solid stone. You cannot dig down here." : "The rock below is searing hot. You cannot dig down here."))
 						return
