@@ -93,6 +93,8 @@
 /obj/structure/closet/cabinet/extinguisher_cabinet/open()
 	if (opened || !can_open())
 		return FALSE
+	// Release stray contents and occupants while keeping the cabinet's own stock.
+	dump_contents(has_extinguisher)
 	opened = TRUE
 	density = FALSE
 	update_icon()

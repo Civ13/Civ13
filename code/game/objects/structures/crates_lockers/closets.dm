@@ -94,10 +94,11 @@
 			return FALSE
 	return TRUE
 
-/obj/structure/closet/proc/dump_contents()
+/obj/structure/closet/proc/dump_contents(obj/retained_item = null)
 	//Cham Projector Exception
 	for (var/obj/I in src)
-		I.forceMove(loc)
+		if (I != retained_item)
+			I.forceMove(loc)
 
 	for (var/mob/M in src)
 		M.forceMove(loc)

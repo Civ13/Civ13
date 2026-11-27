@@ -62,12 +62,14 @@ class CabinetLidTest(unittest.TestCase):
         self.stock.forceMove = lambda loc: setattr(self.stock, 'loc', loc)
         self.cabinet.has_extinguisher = self.stock
 
+        self.contents_by_type = {'/obj': [self.stock], '/mob': []}
         dump = adapter.project(
-            self.base_source, BASE_CLOSET + 'dump_contents', 'src',
-            {'typed_iter': lambda cabinet, kind: (self.stock,) if kind == '/obj' else ()},
+            self.base_source, BASE_CLOSET + 'dump_contents', 'src, retained_item=None',
+            {'typed_iter': lambda cabinet, kind: self.contents_by_type[kind],
+             'MOB_PERSPECTIVE': 'mob'},
             method=True,
         )
-        self.cabinet.dump_contents = lambda: dump(self.cabinet)
+        self.cabinet.dump_contents = lambda retained_item=None: dump(self.cabinet, retained_item)
         update_icon = adapter.project(self.source, CABINET + 'update_icon', 'src', {}, method=True)
         self.cabinet.update_icon = lambda: update_icon(self.cabinet)
 
@@ -95,7 +97,22 @@ class CabinetLidTest(unittest.TestCase):
         self.assertFalse(self.cabinet.density)
         self.assertEqual(self.sounds, ['open'])
 
-    def test_close_preserves_passability_and_does_not_store_floor_item(self):
+    def test_open_releases_existing_stray_contents_and_restores_occupant_view(self):
+        stray = SimpleNamespace(loc=self.cabinet)
+        stray.forceMove = lambda loc: setattr(stray, 'loc', loc)
+        occupant = SimpleNamespace(loc=self.cabinet)
+        occupant.forceMove = lambda loc: setattr(occupant, 'loc', loc)
+        occupant.client = SimpleNamespace(mob=occupant, eye=self.cabinet, perspective='eye')
+        self.contents_by_type['/obj'].append(stray)
+        self.contents_by_type['/mob'].append(occupant)
+
+        self.assertTrue(self.lid_action('open'))
+        self.assertIs(stray.loc, self.cabinet.loc)
+        self.assertIs(occupant.loc, self.cabinet.loc)
+        self.assertIs(occupant.client.eye, occupant)
+        self.assertEqual(occupant.client.perspective, 'mob')
+
+    def test_close_leaves_cabinet_non_dense_and_does_not_store_floor_item(self):
         self.cabinet.opened = True
         floor_stores = []
         self.cabinet.store_items = lambda stored_units: floor_stores.append(stored_units) or 1
