@@ -1,7 +1,8 @@
 // An upstairs lob uses one visible edge or window, never a generic cross-level
 // throw. The same flight mechanism handles all eligible held items.
+#define WINDOW_LOB_MAX_RANGE 7
 /proc/window_lob_range(strength, size)
-	return clamp(round(5 + 3 * (strength - 1)) - max(0, size - ITEM_SIZE_SMALL), 2, 7)
+	return clamp(round(5 + 3 * (strength - 1)) - max(0, size - ITEM_SIZE_SMALL), 2, WINDOW_LOB_MAX_RANGE)
 
 /proc/window_lob_accuracy(skill, distance)
 	return clamp(93 + round((skill - 100) / 2) - 4 * (distance - 1), 50, 100)
@@ -46,7 +47,10 @@
 	if (!ground || !upper_z || los_turf_roofed(ground) || (locate(/obj/roof) in ground))
 		return FALSE
 	var/turf/sky = locate(ground.x, ground.y, upper_z)
-	return building_open_turf(sky) && !(locate(/obj/covers) in sky) && !(locate(/obj/roof) in sky) && !trapdoor_shut_at(sky) && window_lob_clear(sky)
+	return window_lob_sky_clear(sky)
+
+/proc/window_lob_sky_clear(turf/T)
+	return building_open_turf(T) && !(locate(/obj/covers) in T) && !(locate(/obj/roof) in T) && !trapdoor_shut_at(T) && window_lob_clear(T)
 
 /proc/window_lob_floor(turf/T)
 	if (!T)
@@ -74,7 +78,7 @@
 	if (!window_lob_open_column(outside, opening.z) || !window_lob_has_opening(opening, H) || !window_lob_clear(opening, TRUE))
 		return null
 	var/turf/upper_outside = locate(outside.x, outside.y, opening.z)
-	if (get_step(upper_outside, direction) != opening)
+	if (!(direction in cardinal) || get_step(upper_outside, direction) != opening)
 		return null
 	var/turf/inside = get_step(opening, direction)
 	if (!window_lob_floor(inside) || !window_lob_clear(inside))
@@ -94,17 +98,31 @@
 	var/above_z = building_upper_z(T.z)
 	return !above_z || window_lob_open_column(T, above_z)
 
+/proc/window_lob_exposed_clear(mob/living/human/H, turf/T)
+	return window_lob_exposed_floor(T, H) && window_lob_clear(T) && !window_lob_grace_blocked(H, T)
+
 /proc/window_lob_landing(mob/living/human/H, turf/outside, turf/target, direction, via_window)
 	if (via_window)
 		return window_lob_inside(H, outside, target, direction)
 	if (QDELETED(H) || !outside || !target || building_upper_z(outside.z) != target.z || !window_lob_open_column(outside, target.z))
 		return null
 	var/turf/upper_outside = locate(outside.x, outside.y, target.z)
-	if (get_step(upper_outside, direction) != target || !window_lob_exposed_floor(target, H) || !window_lob_clear(target))
+	var/distance = get_dist(upper_outside, target)
+	if (!distance || distance > WINDOW_LOB_MAX_RANGE || window_lob_grace_blocked(H, upper_outside))
 		return null
-	if (window_lob_grace_blocked(H, upper_outside) || window_lob_grace_blocked(H, target))
-		return null
+	var/turf/previous = upper_outside
+	for (var/turf/T in getline2(upper_outside, target, FALSE))
+		if (!window_lob_exposed_clear(H, T))
+			return null
+		var/step_dir = get_dir(previous, T)
+		if (step_dir in cornerdirs)
+			if (!window_lob_upper_corner_clear(H, get_step(previous, step_dir & (NORTH|SOUTH))) && !window_lob_upper_corner_clear(H, get_step(previous, step_dir & (EAST|WEST))))
+				return null
+		previous = T
 	return target
+
+/proc/window_lob_upper_corner_clear(mob/living/human/H, turf/T)
+	return !window_lob_grace_blocked(H, T) && (window_lob_exposed_clear(H, T) || window_lob_sky_clear(T))
 
 /mob/living/human/proc/window_lob_can_hold(obj/item/I, turf/ground)
 	if (QDELETED(I) || I.nothrow || I.anchored || I.wrist_looped || I.lanyard_tied || istype(I, /obj/item/weapon/grab))
@@ -117,16 +135,93 @@
 
 // Keep both aim and resolution bounded. A failed attempt lands on the last
 // clear exterior tile rather than crossing the first obstruction.
-/proc/window_lob_approach(mob/living/human/H, turf/ground, turf/target, direction, reach)
+/proc/window_lob_exterior_hop_clear(mob/living/human/H, turf/origin, turf/destination, upper_z)
+	var/step_dir = get_dir(origin, destination)
+	if (!step_dir || get_step(origin, step_dir) != destination || !window_lob_exterior_step(H, destination, upper_z))
+		return FALSE
+	if (step_dir in cornerdirs)
+		if (!window_lob_exterior_step(H, get_step(origin, step_dir & (NORTH|SOUTH)), upper_z) && !window_lob_exterior_step(H, get_step(origin, step_dir & (EAST|WEST)), upper_z))
+			return FALSE
+	return TRUE
+
+/proc/window_lob_approach(mob/living/human/H, turf/ground, turf/target, reach)
 	var/list/path = list()
-	var/turf/step = ground
-	for (var/i in 1 to reach)
-		var/turf/next = get_step(step, direction)
-		if (!next || (next.x == target.x && next.y == target.y) || !window_lob_exterior_step(H, next, target.z))
+	if (!ground || !target || max(abs(target.x - ground.x), abs(target.y - ground.y)) > reach)
+		return path
+	var/turf/previous = ground
+	for (var/turf/step in getline2(ground, target, FALSE))
+		if ((step.x == target.x && step.y == target.y) || !window_lob_exterior_hop_clear(H, previous, step, target.z))
 			break
-		path += next
-		step = next
+		path += step
+		previous = step
 	return path
+
+/mob/living/human/proc/window_lob_release(obj/item/I, turf/ground, turf/target, direction, list/path, can_land, via_window)
+	if (!window_lob_can_hold(I, ground) || !window_lob_floor(ground) || !persistence_movement_allowed(I, ground))
+		return FALSE
+	if (!unEquip(I, Target = ground) || QDELETED(I) || I.loc != ground)
+		return FALSE
+	body_motion_throw(target)
+	throw_mode_off()
+	playsound(src, 'sound/effects/throw.ogg', 50, TRUE)
+	visible_message(SPAN_WARNING("[src] lobs \the [I] upstairs!"), SPAN_WARNING("You lob \the [I] upstairs!"))
+	adaptStat("throwing", 0.05)
+	return I.start_window_lob(src, target, direction, path, can_land, via_window)
+
+// Directly clicking the tile just inside an aimed window is equivalent to
+// clicking its frame. Never treat a deeper room tile as a window target.
+/proc/window_lob_clicked_window(mob/living/human/H, turf/eye, turf/target)
+	if (!eye || !target || eye.z != target.z)
+		return null
+	var/distance = get_dist(eye, target)
+	if (distance < 2 || distance > WINDOW_LOB_MAX_RANGE)
+		return null
+	var/list/line = getline2(eye, target, FALSE)
+	var/turf/frame = line[length(line) - 1]
+	if (window_lob_has_opening(frame, H) && (get_dir(frame, target) in cardinal))
+		return frame
+	return null
+
+// An unmodified click in Throw mode while using the actual Look Up eye aims
+// at the turf, never the item, mob, or inventory that happened to be clicked.
+/mob/living/human/proc/window_lob_click(atom/A, right_click)
+	var/turf/target = isturf(A) ? A : A.loc
+	if (!in_throw_mode || !looking_up_at || !isturf(target) || target.z != looking_up_at.z)
+		return FALSE
+	// Own this cross-level input even when refused; never fall through to
+	// weapon use or the ordinary XY throw on the lower level.
+	if (right_click || !canClick())
+		return TRUE
+	var/turf/ground = loc
+	var/turf/upper_eye = looking_up_at
+	var/obj/item/I = get_active_hand()
+	if (!client || client.eye != upper_eye || !isturf(ground) || !window_lob_can_hold(I, ground) || look_up_target() != upper_eye || !window_lob_open_column(ground, upper_eye.z) || orbit_world() || underground_added(ground.z))
+		to_chat(src, SPAN_WARNING("You can only throw a loose item upstairs from under open sky."))
+		return TRUE
+	for (var/obj/structure/noose/N in ground)
+		if (N.hanging == src)
+			return TRUE
+	var/reach = window_lob_range(getStatCoeff("strength"), I.w_class)
+	var/distance = get_dist(upper_eye, target)
+	if (!distance || distance > reach || !(target in view(reach, upper_eye)))
+		to_chat(src, SPAN_WARNING("That upstairs tile is not visible and within reach."))
+		return TRUE
+	var/via_window = window_lob_has_opening(target, src)
+	if (!via_window)
+		var/turf/frame = window_lob_clicked_window(src, upper_eye, target)
+		if (frame)
+			target = frame
+			via_window = TRUE
+			distance = get_dist(upper_eye, target)
+		else if (!window_lob_exposed_floor(target, src))
+			to_chat(src, SPAN_WARNING("Aim at an exposed upper floor, a window, or the first tile just inside it."))
+			return TRUE
+	var/list/path = window_lob_approach(src, ground, target, reach)
+	var/turf/outside = length(path) ? path[length(path)] : ground
+	var/direction = get_dir(locate(outside.x, outside.y, target.z), target)
+	var/turf/landing = window_lob_landing(src, outside, target, direction, via_window)
+	window_lob_release(I, ground, target, direction, path, landing && prob(window_lob_accuracy(getStat("throwing"), distance)), via_window)
+	return TRUE
 
 /mob/living/human/verb/lob_upstairs()
 	set name = "Lob Upstairs"
@@ -180,7 +275,7 @@
 		return
 	var/direction = get_dir(upper_eye, target)
 	var/distance = get_dist(upper_eye, target)
-	var/list/path = window_lob_approach(src, ground, target, direction, distance)
+	var/list/path = window_lob_approach(src, ground, target, distance)
 	var/turf/outside = length(path) ? path[length(path)] : ground
 	var/turf/landing = window_lob_landing(src, outside, target, direction, via_window)
 	var/aim = landing ? "[via_window ? "Just inside the window" : "On the exposed upper floor"] ([landing.x], [landing.y], level [landing.z]). A miss falls outside." : "Stops outside at ([outside.x], [outside.y], level [outside.z]); the path is blocked."
@@ -189,21 +284,12 @@
 		return
 	if (!window_lob_can_hold(I, ground) || looking_up_at != upper_eye || look_up_target() != upper_eye || window_lob_range(getStatCoeff("strength"), I.w_class) < distance)
 		return
-	var/list/current_path = window_lob_approach(src, ground, target, direction, distance)
+	var/list/current_path = window_lob_approach(src, ground, target, distance)
 	var/turf/current_outside = length(current_path) ? current_path[length(current_path)] : ground
 	if (outside != current_outside || landing != window_lob_landing(src, current_outside, target, direction, via_window))
 		to_chat(src, SPAN_WARNING("The path changed. Aim again to see the new landing spot."))
 		return
-	if (!window_lob_floor(ground) || !persistence_movement_allowed(I, ground))
-		return
-	if (!unEquip(I, Target = ground) || QDELETED(I) || I.loc != ground)
-		return
-	body_motion_throw(target)
-	throw_mode_off()
-	playsound(src, 'sound/effects/throw.ogg', 50, TRUE)
-	visible_message(SPAN_WARNING("[src] lobs \the [I] upstairs!"), SPAN_WARNING("You lob \the [I] upstairs!"))
-	adaptStat("throwing", 0.05)
-	I.start_window_lob(src, target, direction, current_path, landing && prob(accuracy), via_window)
+	window_lob_release(I, ground, target, direction, current_path, landing && prob(accuracy), via_window)
 
 /obj/item/proc/start_window_lob(mob/living/human/H, turf/opening, direction, list/path, can_enter, via_window = TRUE)
 	var/list/previous = throw_flight_token
@@ -235,7 +321,7 @@
 	var/list/path = flight["window_lob_path"]
 	if (length(path))
 		var/turf/target = path[1]
-		if (get_step(here, direction) != target || !window_lob_exterior_step(H, target, opening.z) || !forceMove_nondenseturf(target))
+		if (!window_lob_exterior_hop_clear(H, here, target, opening.z) || !forceMove_nondenseturf(target))
 			if (!QDELETED(src) && throw_flight_token == flight)
 				finished_throwing()
 			return
@@ -254,3 +340,5 @@
 			finished_throwing()
 	else
 		finished_throwing()
+
+#undef WINDOW_LOB_MAX_RANGE

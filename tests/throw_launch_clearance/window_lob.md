@@ -3,6 +3,8 @@
 In-game entry: stand outdoors in line with a visible window or exposed upper floor,
 hold a throwable item in the active hand, and use **IC → Lob Upstairs**. This
 opens Look Up if needed. Pick a target and check the preview before confirming.
+Alternatively, while in Look Up, toggle ordinary Throw and click the visible
+upper-floor tile, the window, or the first tile inside the window directly.
 A miss or blocked opening stops outside. This action does not prime, pause, or
 extend a fuse. Ordinary Throw is unchanged. Grabs, tied items and lit bottles are not admitted.
 
