@@ -6,8 +6,8 @@ pigeons on temperate, semiarid or savanna land.
 
 1. Pull a live pigeon next to the loft. Right-click the loft and choose
    **Train Homing Pigeon**. Keep the pigeon with you until training finishes.
-2. Lead the pigeon to a different open tile on the same level, within
-   160 tiles. With **Help** intent, use a held sheet of paper on the bird.
+2. Lead the pigeon to any other open tile on the same level in the region.
+   With **Help** intent, use a held sheet of paper on the bird.
    You can also use a closed envelope containing exactly one sheet.
 3. Stay put with the bird and letter for the short release action. The
    bird and the same letter arrive together at the foot of the home loft.

@@ -1,6 +1,5 @@
 // One physical dispatch, one living bird, one fixed home. No tick processor,
 // world scan, pending mail, or references to other atoms in persistence.
-#define PIGEON_POST_RANGE 160
 #define PIGEON_POST_TRAIN_TIME (5 SECONDS)
 #define PIGEON_POST_RELEASE_TIME (3 SECONDS)
 
@@ -69,7 +68,8 @@
 	if (!pigeon_home_id || !isturf(loc) || z != pigeon_home_z)
 		return null
 	var/turf/destination = locate(pigeon_home_x, pigeon_home_y, pigeon_home_z)
-	if (!destination || destination == loc || get_dist(src, destination) > PIGEON_POST_RANGE)
+	// The saved coordinates resolve only in this region; flight has no distance cap.
+	if (!destination || destination == loc)
 		return null
 	for (var/obj/structure/pigeon_loft/L in destination)
 		if (L.pigeon_loft_id == pigeon_home_id && L.pigeon_loft_open())
@@ -100,7 +100,7 @@
 	var/obj/structure/pigeon_loft/L = pigeon_post_destination()
 	var/turf/release_site = loc
 	if (!L || !pigeon_post_open_ground(release_site))
-		to_chat(H, SPAN_WARNING("The pigeon needs a trained home loft within 160 tiles on this level, and clear ground to take off and land."))
+		to_chat(H, SPAN_WARNING("The pigeon needs a trained home loft on this level and clear ground to take off and land."))
 		return TRUE
 
 	var/client/handler = H.client
@@ -129,6 +129,5 @@
 		return FALSE
 	return TRUE
 
-#undef PIGEON_POST_RANGE
 #undef PIGEON_POST_TRAIN_TIME
 #undef PIGEON_POST_RELEASE_TIME

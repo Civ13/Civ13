@@ -6,7 +6,7 @@ With the repository's pinned BYOND:
 python3 tests/ecology_spawning/run_linux.py . tests/pigeon_post/probe.dm 240
 ```
 
-The native fixture verifies exact-home routing, distance and level limits,
+The native fixture verifies exact-home routing from the far edge of the region, the level limit,
 blocked and missing lofts, retraining, scalar persistence fields and payload
 admission. For client acceptance, craft an outdoor pigeon loft from soft wood,
 pull a live pigeon beside it, and select **Train Homing Pigeon**. Lead the bird

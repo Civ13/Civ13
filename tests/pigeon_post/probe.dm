@@ -1,7 +1,7 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 164
+	maxx = 800
 	maxy = 4
 	maxz = 2
 	turf = /turf
@@ -55,21 +55,21 @@ var/post_probe_runtime = FALSE
 	return T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
 
 /proc/post_probe_run()
-	var/turf/home = post_probe_floor(2, 1)
-	var/turf/origin = post_probe_floor(162, 1)
-	var/turf/far = post_probe_floor(163, 1)
-	var/turf/cross_level = post_probe_floor(162, 2)
-	var/mob/living/simple_animal/pigeon/P = new /mob/living/simple_animal/pigeon/post_probe(origin)
+	var/turf/home = post_probe_floor(1, 1)
+	var/turf/near = post_probe_floor(2, 1)
+	var/turf/origin = post_probe_floor(world.maxx, 1)
+	var/turf/cross_level = post_probe_floor(world.maxx, 2)
+	var/mob/living/simple_animal/pigeon/P = new /mob/living/simple_animal/pigeon/post_probe(near)
 	var/obj/structure/pigeon_loft/L = new(home)
 	post_probe_check(!P.pigeon_post_destination(), "untrained and older birds have no route")
 	P.pigeon_post_train(L)
 	var/saved_id = P.pigeon_home_id
-	post_probe_check(saved_id && P.pigeon_post_destination() == L, "trained pigeon resolves its exact home at 160 tiles")
+	post_probe_check(saved_id && P.pigeon_post_destination() == L, "trained pigeon resolves its exact home from a nearby tile")
 	var/list/bird_fields = P.get_saved_vars()
 	var/list/loft_fields = L.get_saved_vars()
 	post_probe_check(("pigeon_home_id" in bird_fields) && ("pigeon_home_x" in bird_fields) && ("pigeon_home_y" in bird_fields) && ("pigeon_home_z" in bird_fields) && ("pigeon_loft_id" in loft_fields), "production persistence selects home identity and coordinates")
-	P.forceMove(far)
-	post_probe_check(!P.pigeon_post_destination(), "over-range release is refused")
+	P.forceMove(origin)
+	post_probe_check(get_dist(P, home) == 799 && P.pigeon_post_destination() == L, "the opposite edge of the region can reach the exact home 799 tiles away")
 	P.forceMove(cross_level)
 	post_probe_check(!P.pigeon_post_destination(), "another z-level cannot dispatch")
 	P.forceMove(home)
@@ -112,4 +112,4 @@ var/post_probe_runtime = FALSE
 	letter.nodrop = TRUE
 	post_probe_check(!P.pigeon_post_deliver(H, letter, replacement) && letter.loc == H && P.loc == origin, "unreleasable paper stays in hand without moving the bird")
 	letter.nodrop = FALSE
-	post_probe_check(P.pigeon_post_deliver(H, letter, replacement) && P.loc == home && letter.loc == home && !H.item_is_in_hands(letter) && !H.pulling && !P.pulledby, "delivery moves the original bird and sheet and clears the sender's hand and pull")
+	post_probe_check(P.pigeon_post_deliver(H, letter, replacement) && P.loc == home && letter.loc == home && !H.item_is_in_hands(letter) && !H.pulling && !P.pulledby, "delivery from 799 tiles away moves the original bird and sheet and clears the sender's hand and pull")
