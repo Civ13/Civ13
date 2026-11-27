@@ -31,6 +31,22 @@ class CoinMintSource(unittest.TestCase):
         research = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
         self.assertIn('"/obj/item/coin_die" = "early_economy",', research)
 
+    def test_marking_and_predicate_use_the_coin_metal_classification(self):
+        predicate = self.text.split('/proc/is_metal_coin()\n', 1)[1].split('\n/', 1)[0]
+        classification = self.text.split('/proc/coin_metal()\n', 1)[1].split('\n/', 1)[0]
+        marking = self.text.split('/proc/apply_coin_mark(new_issuer, new_fineness)\n', 1)[1].split('\n/', 1)[0]
+
+        predicate_call = re.escape('!isnull(coin_metal())')
+        self.assertRegex(predicate.strip(), rf'^return[ \t]+(?:{predicate_call}|\([ \t]*{predicate_call}[ \t]*\))$')
+        self.assertEqual(
+            re.findall(r'istype\(src, /obj/item/stack/money/(\w+)coin\)\)\n\t\treturn "(\w+)"', classification),
+            [('copper', 'copper'), ('silver', 'silver'), ('gold', 'gold')],
+        )
+        self.assertTrue(classification.rstrip().endswith('\n\treturn null'))
+        self.assertTrue(marking.startswith('\tvar/metal = coin_metal()\n\tif (isnull(metal))\n\t\treturn\n'))
+        self.assertEqual(marking.count('coin_metal()'), 1)
+        self.assertIn('fineness = metal == "copper" ? 1 : mint_fineness_clean(new_fineness)', marking)
+
     def test_merges_are_guarded_and_call_parent(self):
         for header in ('/obj/item/stack/merge(obj/item/stack/S)', '/obj/item/stack/transfer_to(obj/item/stack/S, var/_amount=null)'):
             block = self.text.split(header)[1].split('\n/')[0]

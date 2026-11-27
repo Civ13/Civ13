@@ -26,7 +26,7 @@
 
 // Metal coins only; other money types keep the old behaviour.
 /obj/item/stack/money/proc/is_metal_coin()
-	return istype(src, /obj/item/stack/money/coppercoin) || istype(src, /obj/item/stack/money/silvercoin) || istype(src, /obj/item/stack/money/goldcoin)
+	return !isnull(coin_metal())
 
 /obj/item/stack/money/proc/coin_metal()
 	if (istype(src, /obj/item/stack/money/coppercoin))
@@ -44,13 +44,13 @@
 
 // Value follows metal content: the named metal for its share, copper for the rest.
 /obj/item/stack/money/proc/apply_coin_mark(new_issuer, new_fineness)
-	if (!is_metal_coin())
+	var/metal = coin_metal()
+	if (isnull(metal))
 		return
 	issuer = istext(new_issuer) ? copytext(new_issuer, 1, MINT_ISSUER_MAX + 1) : ""
-	fineness = coin_metal() == "copper" ? 1 : mint_fineness_clean(new_fineness)
+	fineness = metal == "copper" ? 1 : mint_fineness_clean(new_fineness)
 	var/base = initial(value)
 	value = base * fineness + 0.1 * (1 - fineness)
-	var/metal = coin_metal()
 	if (length(issuer))
 		name = "[issuer] [metal] coins"
 		singular_name = "[issuer] [metal] coin"
