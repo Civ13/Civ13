@@ -865,10 +865,14 @@ proc/admin_notice(var/message, var/rights)
 
 	load_admins(1)
 
-	if (!reload_verified_access_list("approved"))
-		message_admins("<span class='danger'>Failed to load approved list; prior membership and readiness retained.</span>", key_name(usr))
-	if (!reload_verified_access_list("whitelist"))
-		message_admins("<span class='danger'>Failed to load whitelist; prior membership and readiness retained.</span>", key_name(usr))
+	if (gateway_access_enabled())
+		if (!reload_gateway_verified_access(TRUE))
+			message_admins("<span class='danger'>Gateway verified-access snapshot unavailable; protected grants are disabled.</span>", key_name(usr))
+	else
+		if (!reload_verified_access_list("approved"))
+			message_admins("<span class='danger'>Failed to load approved list; prior membership and readiness retained.</span>", key_name(usr))
+		if (!reload_verified_access_list("whitelist"))
+			message_admins("<span class='danger'>Failed to load whitelist; prior membership and readiness retained.</span>", key_name(usr))
 
 	var/F3 = file("SQL/factionlist.txt")
 	if (fexists(F3))

@@ -3,8 +3,8 @@
 A Persistence or Barracks/Battle TDM group with a dedicated relay gateway can opt in to one
 durable, gateway-owned version of the normal approved and job-whitelist lists.
 These are the existing Discord-linked lists, not any other allowlist. The
-default is unchanged. This slice provides the private publication and game
-reader; it does not switch CivilizationBot's deployed writer.
+default is unchanged. CivilizationBot #127 provides the matching proposal
+producer; neither change switches its deployed writer automatically.
 
 ## Publication contract
 
@@ -26,7 +26,8 @@ the producer cannot choose paths or allocate revisions. The existing
 host supervision checks this fixed inbox on its normal cadence. A local
 operator can also check it using `consume-verified-access`. A missing
 proposal does not revoke lists; an explicitly empty validated pair does.
-The direct stdin publisher refuses to run in inbox mode.
+The direct stdin publisher refuses to run in inbox mode. Neither publication
+command rewrites the group configuration or reserves its ports.
 
 Run only one authorized bot producer per group. Give it write access to
 its own private inbox, not to the gateway SQL directory. Do not roll back
@@ -74,3 +75,37 @@ durability still belongs to the transfer coordinator's shared player records;
 the gateway's existing `bans.txt` projection remains the bot's compatibility
 view. It does not add bot command routing, change who can ban or unban, or
 rework existing ban startup admission.
+
+## What remains for bans
+
+The group coordinator, not the gateway world, still commits the shared
+moderation ledger. A region may continue to apply a ban from its own pending
+journal while the coordinator is unavailable. The gateway's legacy
+`SQL/bans.txt` export is not an authority and must not be used to seed an empty
+ban database or silently override a newer coordinator record.
+
+Implement strict gateway ban ownership as a separate rollout: first capture
+the existing coordinator ledger and outstanding regional journals by group
+and verify that a complete, current ban snapshot can reconstruct active bans,
+revocations and expirations. Then exercise gateway-side submission and
+read-only regional enforcement through both group types, including revocation,
+gateway outage, initial snapshot absence and restart, before removing any
+legacy writer. Under the existing behavior, no ban enforcement or bot routing
+changes with the verified-access option.
+
+## Isolated verification
+
+`python3 -B tests/access_lists/test_access_lists.py` exercises the host CLI and
+DM reader projection against disposable Persistence and TDM fixtures. To run
+the native reader with the pinned BYOND tools available:
+
+```sh
+fixture=$(mktemp -d)
+mkdir -p "$fixture/front-door/SQL"
+TMPDIR="$fixture" python3 -B tests/ecology_spawning/run_linux.py . tests/access_lists/gateway_probe.dm 180
+```
+
+Keep this fixture in a private temporary directory: it writes synthetic
+snapshots to a directory beside the isolated world. This checks the game
+reader, including its forced warm-connection read, without a client, a live
+bot account, or a service restart.

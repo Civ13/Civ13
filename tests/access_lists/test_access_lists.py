@@ -132,6 +132,9 @@ class AccessLists(unittest.TestCase):
         setup=(ROOT/'code/setup.dm').read_text(encoding='utf-8-sig')
         admin=adapter.extract((ROOT/'code/modules/admin/admin.dm').read_text(encoding='utf-8-sig'),'/client/proc/reload_admins')
         for source in (setup,admin):
+            self.assertEqual(source.count('reload_gateway_verified_access(TRUE)'), 1)
+            self.assertIn('protected grants are disabled', source)
+            self.assertLess(source.index('if (gateway_access_enabled())'),source.index('reload_verified_access_list'))
             self.assertIn('reload_verified_access_list("approved")',source)
             self.assertIn('reload_verified_access_list("whitelist")',source)
             self.assertNotIn('approved_list +=',source)
@@ -424,6 +427,8 @@ class GatewayPublisher(unittest.TestCase):
                           relay_port=port+40, relay_control_port=port+41, doorman_port=port+42)
             for offset, region in enumerate(config["regions"]):
                 region.update(port=port+offset)
+            # A pending automatic region port must not make an access publication rewrite this config.
+            config["regions"][-1].pop("port")
             config["regions"].append(dict(id="gateway", name="Gateway", kind="GATEWAY", port=port+20,
                                           map="maps/special/gateway.dmm"))
             cfg = base / (name + ".json")
@@ -447,6 +452,7 @@ class GatewayPublisher(unittest.TestCase):
             self.assertFalse(run("consume-verified-access")["changed"])
             self.assertFalse(run("publish-verified-access", 1, json.dumps(pair))["ok"])
             self.assertEqual(config, json.loads(cfg.read_text(encoding="utf-8")))
+            self.assertEqual(list(cfg.parent.glob(cfg.name + ".bak*")), [])
 
     def test_running_consumer_never_falls_back_when_gateway_enabled(self):
         body = adapter.extract(SOURCE, '/proc/reload_verified_access_list')

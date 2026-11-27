@@ -4904,7 +4904,9 @@ def main(argv=None):
         RegionHost(config).work(*args.worker)
         return 0
     try:
-        group = load_group(args.config)
+        # These private publishers own the access snapshot, not the region ports.
+        publishing_access = args.action in ('publish-verified-access', 'consume-verified-access')
+        group = load_group(args.config, persist_ports=not publishing_access)
     except (OSError, ValueError) as error:
         print(json.dumps({'ok': False, 'error': 'config: %s' % error}))
         return 2
