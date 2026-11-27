@@ -1579,30 +1579,40 @@ def entry_terms(entry):
     return terms
 
 
+def acquire_worker_lock(lock):
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        lock.mkdir()
+    except FileExistsError:
+        # A live or unreadable owner must never be dislodged.
+        if not stale_lock(lock):
+            raise
+        (lock / 'pid').unlink(missing_ok=True)
+        lock.rmdir()
+        lock.mkdir()
+    (lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
+
+
+def release_worker_lock(lock):
+    (lock / 'pid').unlink(missing_ok=True)
+    lock.rmdir()
+
+
 class Bridge:
-    def __init__(self, root, config, corpus, transport=network, wiki_status=None):
+    def __init__(self, root, config, corpus, transport=network, wiki_status=None, executor=None, queue_regions=1):
         self.root, self.config, self.corpus, self.transport = root, config, corpus, transport
         self.wiki_status = dict(wiki_status) if wiki_status is not None else None
         self._weights = None
-        self.executor = ThreadPoolExecutor(max_workers=config.get('workers', 1))
         self.active = {}
         self.limiter = RequestLimiter(config)
         self.running = True
+        self.closed = False
         self.heartbeat_at, self.heartbeat_enabled = None, None
-        self.root.mkdir(parents=True, exist_ok=True)
         self.lock = self.root / 'worker.lock'
-        try:
-            self.lock.mkdir()
-        except FileExistsError:
-            # A bridge that died without its shutdown (a reboot, a kill) leaves its lock
-            # behind and every later start would refuse. Replace it only when the pid it
-            # names is provably gone; an unreadable lock or a live pid still refuses.
-            if not stale_lock(self.lock):
-                raise
-            (self.lock / 'pid').unlink(missing_ok=True)
-            self.lock.rmdir()
-            self.lock.mkdir()
-        (self.lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
+        acquire_worker_lock(self.lock)
+        self.owns_executor = executor is None
+        self.executor = ThreadPoolExecutor(max_workers=config.get('workers', 1)) if self.owns_executor else executor
+        self.queue_regions = queue_regions
 
     def term_weights(self):
         """1 (a word in every entry) to 4 (a word in one entry), computed once per corpus."""
@@ -1877,22 +1887,27 @@ class Bridge:
             return False
         self.heartbeat_at, self.heartbeat_enabled = now, enabled
         atomic_json(self.root / 'limits.json', self.limiter.limits)
-        atomic_json(self.root / 'health.json', {'enabled': enabled, 'sequence': uuid.uuid4().hex, 'conversation_protocol': 1, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 / self.config.get('workers', 1)) + 15)})
+        atomic_json(self.root / 'health.json', {'enabled': enabled, 'sequence': uuid.uuid4().hex, 'conversation_protocol': 1, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 * self.queue_regions / self.config.get('workers', 1)) + 15)})
         return True
 
-    def tick(self, admit=True):
+    def tick(self, admit=True, dispatch=True, capacity=None):
         self.heartbeat(admit)
         for slot, (request_id, future) in list(self.active.items()):
-            ready = self.root / f'{slot}.ready'
-            current = read_ready_id(ready)
             if future.done():
-                if current == request_id:
+                ready = self.root / f'{slot}.ready'
+                if read_ready_id(ready) == request_id:
                     atomic_json(self.root / f'{slot}.response.json', future.result())
                 del self.active[slot]
-        if not self.config['enabled'] or not admit:
-            return
+        if not self.config['enabled'] or not admit or not dispatch:
+            return 0
+        remaining = self.config['workers'] - len(self.active)
+        if capacity is not None:
+            remaining = min(remaining, capacity)
+        admitted = 0
         for slot in range(1, 9):
-            if slot in self.active or len(self.active) >= self.config['workers']:
+            if remaining <= 0:
+                break
+            if slot in self.active:
                 continue
             ready = self.root / f'{slot}.ready'
             response = self.root / f'{slot}.response.json'
@@ -1920,38 +1935,238 @@ class Bridge:
                 atomic_json(response, {'id': request['id'], 'status': 'unavailable'})
                 continue
             self.active[slot] = (request['id'], self.executor.submit(self.answer_selected, request, selected_format))
+            remaining -= 1
+            admitted += 1
+        return admitted
 
     def close(self):
-        if not self.running and not self.lock.exists():
+        if self.closed:
             return
+        self.closed = True
         self.running = False
-        atomic_json(self.root / 'health.json', {'enabled': False, 'sequence': uuid.uuid4().hex})
-        self.executor.shutdown(wait=True, cancel_futures=True)
-        (self.lock / 'pid').unlink(missing_ok=True)
-        self.lock.rmdir()
+        try:
+            atomic_json(self.root / 'health.json', {'enabled': False, 'sequence': uuid.uuid4().hex})
+        finally:
+            if self.owns_executor:
+                self.executor.shutdown(wait=True, cancel_futures=True)
+            release_worker_lock(self.lock)
+
+
+def load_corpus(game_root, config):
+    corpus = bounded_json(game_root / 'UI/player-help.json', 32768)
+    if not isinstance(corpus, list) or not 1 <= len(corpus) <= 100 or any(not isinstance(entry, dict) or not isinstance(entry.get('topic'), str) or not isinstance(entry.get('text'), str) for entry in corpus):
+        raise ValueError('Invalid approved player corpus')
+    corpus += recipe_context(game_root / 'UI/crafting-atlas.json')
+    corpus += acquisition_context(game_root / 'UI/crafting-atlas.json')
+    corpus += tips_knowledge(game_root)
+    wiki_status = {}
+    corpus += gameplay_knowledge(game_root, config.get('wiki_root'), wiki_status=wiki_status)
+    return corpus, wiki_status
+
+
+def prepare_bridge(bridge):
+    bridge.term_weights()
+    # Never re-send questions left behind by a stopped bridge.
+    for slot in range(1, 9):
+        for suffix in ('ready', 'request.json', 'response.json'):
+            (bridge.root / f'{slot}.{suffix}').unlink(missing_ok=True)
+
+
+class GroupBridge:
+    """Multiplex independent world spools without multiplying Ollama concurrency."""
+    def __init__(self, manifest, config, transport=network, corpus_loader=load_corpus):
+        self.manifest, self.config = manifest, config
+        self.transport, self.corpus_loader = transport, corpus_loader
+        self.bridges = {}
+        self.retry_at = {}
+        self.failed = set()
+        self.loading = None
+        self.regions = {}
+        self.refresh_at = 0
+        self.last_dispatched = None
+        self.lock = manifest.parent / 'shared' / 'worker.lock'
+        acquire_worker_lock(self.lock)
+        self.workers = config.get('workers', 1)
+        self.executor = ThreadPoolExecutor(max_workers=self.workers)
+        self.loader = ThreadPoolExecutor(max_workers=1)
+
+    def wanted(self, region, listed):
+        folder = self.manifest.parent
+        return (not (folder / 'stopped').exists() and not (folder / f'{region}.off').exists()
+                and (listed or (folder / f'{region}.on').exists()))
+
+    def report_failure(self, region, now, error):
+        if region not in self.failed and now >= self.retry_at.get(region, 0):
+            # Never include private paths, endpoints, or request data in logs.
+            print(f'Player Help region {region}: {type(error).__name__}; retrying in 30 seconds.', flush=True)
+        self.retry_at[region] = now + 30
+
+    def load_region(self, root):
+        corpus, wiki_status = self.corpus_loader(root, self.config)
+        fingerprint = hashlib.sha256(json.dumps(corpus, sort_keys=True).encode('ascii')).digest()
+        return corpus, wiki_status, fingerprint
+
+    def tick(self, stopping=False, now=None):
+        now = time.monotonic() if now is None else now
+        if not stopping and now >= self.refresh_at:
+            self.refresh_at = now + 1
+            try:
+                raw = bounded_json(self.manifest, 262144)
+                self.regions = {
+                    region: (Path(entry['game_root']), entry['listed'])
+                    for region, entry in raw.items()
+                    if re.fullmatch(r'[a-z0-9_-]{1,32}', region) and isinstance(entry, dict)
+                    and isinstance(entry.get('game_root'), str) and Path(entry['game_root']).is_absolute()
+                    and type(entry.get('listed')) is bool
+                } if isinstance(raw, dict) else {}
+                self.retry_at = {region: retry for region, retry in self.retry_at.items() if region in self.regions}
+            except (OSError, ValueError):
+                # Fail closed if the private registry is unreadable.
+                self.regions = {}
+        desired = {} if stopping else {
+            region: root for region, (root, listed) in self.regions.items() if self.wanted(region, listed)
+        }
+
+        for region, bridge in list(self.bridges.items()):
+            admit = region not in self.failed and region in desired and bridge.root == desired[region] / 'SQL/player-help'
+            bridge.queue_regions = max(1, len(desired))
+            try:
+                if region not in self.failed:
+                    bridge.tick(admit=admit, dispatch=False)
+            except Exception as error:
+                self.report_failure(region, now, error)
+                self.failed.add(region)
+                admit = False
+            if not admit and all(future.done() for _, future in bridge.active.values()):
+                try:
+                    bridge.close()
+                except OSError as error:
+                    self.report_failure(region, now, error)
+                del self.bridges[region]
+                self.failed.discard(region)
+
+        if self.loading is not None:
+            region, root, future = self.loading
+            if future.done():
+                self.loading = None
+                if desired.get(region) == root:
+                    try:
+                        corpus, wiki_status, fingerprint = future.result()
+                        cached = next((current for current in self.bridges.values()
+                                       if current.corpus_fingerprint == fingerprint), None)
+                        if cached is not None:
+                            corpus = cached.corpus
+                        bridge = Bridge(root / 'SQL/player-help', self.config, corpus, self.transport,
+                                        wiki_status, executor=self.executor, queue_regions=max(1, len(desired)))
+                        bridge.corpus_fingerprint = fingerprint
+                        if cached is not None:
+                            bridge._weights = cached.term_weights()
+                        try:
+                            prepare_bridge(bridge)
+                        except Exception:
+                            bridge.close()
+                            raise
+                        self.bridges[region] = bridge
+                    except FileExistsError:
+                        # An old standalone worker or another supervisor has this spool.
+                        self.retry_at[region] = now + 5
+                    except Exception as error:
+                        self.report_failure(region, now, error)
+        if not stopping and self.loading is None:
+            for region, root in desired.items():
+                if region in self.bridges or now < self.retry_at.get(region, 0):
+                    continue
+                lock = root / 'SQL/player-help/worker.lock'
+                if lock.exists() and not stale_lock(lock):
+                    continue
+                self.loading = (region, root, self.loader.submit(self.load_region, root))
+                break
+
+        order = [region for region in desired if region in self.bridges and region not in self.failed
+                 and self.bridges[region].root == desired[region] / 'SQL/player-help']
+        if self.last_dispatched in order:
+            index = order.index(self.last_dispatched) + 1
+            order = order[index:] + order[:index]
+        remaining = self.workers - sum(len(bridge.active) for bridge in self.bridges.values())
+        # Round-robin across spools. Only model calls already admitted to the
+        # bounded pool exist in memory; waiting work stays in its own spool.
+        while remaining > 0:
+            admitted = 0
+            for region in order:
+                if remaining <= 0:
+                    break
+                bridge = self.bridges[region]
+                if region in self.failed or not self.wanted(region, self.regions[region][1]):
+                    continue
+                try:
+                    count = bridge.tick(capacity=1)
+                except Exception as error:
+                    self.report_failure(region, now, error)
+                    self.failed.add(region)
+                    continue
+                if count:
+                    self.last_dispatched = region
+                    admitted += count
+                    remaining -= count
+            if not admitted:
+                break
+
+    def close(self):
+        try:
+            while self.bridges:
+                self.tick(stopping=True)
+                if self.bridges:
+                    time.sleep(self.config.get('poll_seconds', DEFAULT_POLL_SECONDS))
+        finally:
+            self.loader.shutdown(wait=True, cancel_futures=True)
+            self.executor.shutdown(wait=True, cancel_futures=True)
+            release_worker_lock(self.lock)
+
+
+def serve_group(manifest, config):
+    group = GroupBridge(manifest, config)
+    running = True
+
+    def stop(*_):
+        nonlocal running
+        running = False
+
+    signal.signal(signal.SIGTERM, stop)
+    signal.signal(signal.SIGINT, stop)
+    try:
+        while running and not (manifest.parent / 'stopped').exists():
+            group.tick()
+            time.sleep(config.get('poll_seconds', DEFAULT_POLL_SECONDS))
+    finally:
+        group.close()
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--game-root', type=Path, required=True)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--game-root', type=Path)
+    mode.add_argument('--group-manifest', type=Path)
     parser.add_argument('--config', type=Path, required=True)
     parser.add_argument('--stop-file', type=Path)
     args = parser.parse_args()
     config = load_config(args.config)
-    corpus = bounded_json(args.game_root / 'UI/player-help.json', 32768)
-    if not isinstance(corpus, list) or not 1 <= len(corpus) <= 100 or any(not isinstance(entry, dict) or not isinstance(entry.get('topic'), str) or not isinstance(entry.get('text'), str) for entry in corpus):
-        raise ValueError('Invalid approved player corpus')
-    corpus += recipe_context(args.game_root / 'UI/crafting-atlas.json')
-    corpus += acquisition_context(args.game_root / 'UI/crafting-atlas.json')
-    corpus += tips_knowledge(args.game_root)
-    wiki_status = {}
-    corpus += gameplay_knowledge(args.game_root, config.get('wiki_root'), wiki_status=wiki_status)
+    if args.group_manifest is not None:
+        if args.stop_file is not None:
+            parser.error('--stop-file is only supported with --game-root')
+        try:
+            serve_group(args.group_manifest, config)
+        except FileExistsError:
+            # Another host worker won startup. It will pick up the registry.
+            pass
+        return
+    corpus, wiki_status = load_corpus(args.game_root, config)
     bridge = Bridge(args.game_root / 'SQL/player-help', config, corpus, wiki_status=wiki_status)
-    bridge.term_weights()  # weigh the corpus now, not during the first question
-    # Old questions are not re-sent after a bridge restart; game timeout informs players.
-    for slot in range(1, 9):
-        for suffix in ('ready', 'request.json', 'response.json'):
-            (bridge.root / f'{slot}.{suffix}').unlink(missing_ok=True)
+    try:
+        prepare_bridge(bridge)
+    except Exception:
+        bridge.close()
+        raise
+
     def stop(*_):
         bridge.running = False
     signal.signal(signal.SIGTERM, stop)

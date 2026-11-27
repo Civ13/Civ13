@@ -5,9 +5,9 @@ using System.Windows.Forms;
 
 namespace Civ13.Launcher.Gui;
 
-// Player help tab: the "Ask for help" bridges the host service keeps running, one per region. Stop asks
-// them to finish their answers and keeps them stopped (the host service will not restart them) until Start.
-// Unlike the bot, they belong to the host service, so closing the launcher leaves them as they are.
+// Player help tab: per-region status for the host service's shared "Ask for help" worker. Stop asks
+// the worker to drain the chosen region queues and keep them stopped until Start.
+// Closing the launcher leaves the host service and its help worker running.
 internal sealed partial class LauncherWindow {
     private StatusLine? helpState;
     private TextBox? helpLog;

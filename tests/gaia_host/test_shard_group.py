@@ -1980,7 +1980,7 @@ class ShardGroupTests(unittest.TestCase):
 
 
 class PlayerHelpTests(unittest.TestCase):
-    """The host service keeps one Player Help bridge per region; the launcher stops and starts them."""
+    """The host manages shared Player Help while interoperating with old standalone workers."""
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -2022,33 +2022,100 @@ class PlayerHelpTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'player_help'):
                 self.load()
 
-    def test_supervise_starts_missing_bridges_with_the_stop_file(self):
+    def shared_lock(self, group, pid):
+        lock = shard_group.help_dir(group) / 'shared' / 'worker.lock'
+        lock.mkdir(parents=True)
+        (lock / 'pid').write_text(str(pid))
+        return lock
+
+    def test_supervise_starts_one_shared_bridge_with_an_isolated_registry(self):
         group = self.load()
-        started = []
+        workers = []
         def start(argv, cwd, log):
-            started.append((argv, Path(cwd), Path(log)))
-            return 7000 + len(started)
-        stale = self.lock('gaia', 99)  # a bridge that died: its lock would refuse a new one
+            workers.append((argv, Path(cwd), Path(log)))
+            self.alive.add(7000 + len(workers))
+            return 7000 + len(workers)
+        stale = self.lock('gaia', 99)
         self.assertEqual({'player_help': ['gaia', 'deep']}, shard_group.supervise(group, start))
-        self.assertFalse(stale.exists())
-        argv, cwd, log = started[0]
-        self.assertEqual(['python.exe', '-I', str(cwd / 'scripts' / 'player_help_bridge.py'), '--game-root', str(cwd),
-                          '--config', str(self.base / 'help.json'), '--stop-file', str(self.base / 'regions' / 'player-help' / 'gaia.off')], argv)
-        self.assertEqual(self.base / 'regions' / 'player-help' / 'gaia.log', log)
-        # Starting (pid file, before the lock) and running (lock) bridges are both left alone.
-        self.alive.update({7001, 7002})
+        self.assertTrue(stale.exists(), 'lock replacement belongs to the worker')
+        self.assertEqual(1, len(workers))
+        argv, cwd, log = workers[0]
+        manifest = cwd / 'regions.json'
+        self.assertEqual(['python.exe', '-I', '-B', str(shard_group.HERE.parent / 'player_help_bridge.py'),
+                          '--group-manifest', str(manifest), '--config', str(self.base / 'help.json')], argv)
+        self.assertEqual(cwd / 'shared' / 'worker.log', log)
+        self.assertEqual({region: {'game_root': str(self.base / 'regions' / region), 'listed': True}
+                          for region in ('gaia', 'deep')}, json.loads(manifest.read_text()))
+        self.assertEqual({}, shard_group.supervise(group, start))  # in startup
+        lock = self.shared_lock(group, 7001)
         self.lock('gaia', 7001)
         self.assertEqual({}, shard_group.supervise(group, start))
-        self.assertEqual(2, len(started))
-        # A bridge that exits is started again.
-        self.alive.discard(7002)
-        self.assertEqual({'player_help': ['deep']}, shard_group.supervise(group, start))
+        status = shard_group.help_status(group)
+        self.assertEqual(str(log), status['regions']['gaia']['log'])
+        self.assertEqual(1, len(workers))
+        self.alive.remove(7001)
+        self.assertEqual({'player_help': ['gaia', 'deep']}, shard_group.supervise(group, start))
+        self.assertEqual(2, len(workers))
+        self.assertTrue(lock.exists())
 
-    def test_a_region_without_the_bridge_does_not_keep_the_others_down(self):
-        (self.base / 'regions' / 'gaia' / 'scripts' / 'player_help_bridge.py').unlink()
-        started = shard_group.supervise(self.load(), lambda argv, cwd, log: 1)
+    def test_relative_help_config_is_shared_beside_the_group_file(self):
+        self.group['player_help']['config'] = 'private/help.json'
+        group = self.load()
+        calls = []
+        shard_group.ensure_help(group, lambda argv, *_: calls.append(argv) or 123)
+        self.assertEqual(str(self.base / 'private/help.json'), calls[0][-1])
+
+    def test_existing_bridge_keeps_its_lock_while_shared_group_starts(self):
+        group = self.load()
+        self.alive.add(99)
+        old = self.lock('gaia', 99)
+        started = shard_group.supervise(group, lambda argv, cwd, log: 1)
         self.assertEqual(['deep'], started['player_help'])
-        self.assertIn('missing', started['player_help_errors']['gaia'])
+        self.assertEqual('99', (old / 'pid').read_text())
+
+    def test_stop_one_shared_region_never_kills_worker_or_removes_other_lock(self):
+        group = self.load()
+        self.alive.add(100)
+        self.shared_lock(group, 100)
+        gaia, deep = self.lock('gaia', 100), self.lock('deep', 100)
+        no_kill = mock.Mock(side_effect=AssertionError('must not kill the shared process'))
+        result = shard_group.help_stop(group, timeout=0, region_id='gaia', kill=no_kill)
+        self.assertEqual([], result['stopped'])
+        self.assertIn('still draining', result['not_ended']['gaia'])
+        self.assertTrue(gaia.exists())
+        clock = [0]
+        def sleep(seconds):
+            clock[0] += seconds
+            (gaia / 'pid').unlink()
+            gaia.rmdir()
+        self.assertEqual({'stopped': ['gaia'], 'forced': []},
+                         shard_group.help_stop(group, timeout=5, region_id='gaia', kill=no_kill,
+                                               sleep=sleep, clock=lambda: clock[0]))
+        self.assertTrue(deep.exists())
+        status = shard_group.help_status(group)['regions']
+        self.assertFalse(status['gaia']['wanted'])
+        self.assertTrue(status['deep']['running'])
+        self.assertEqual({'started': [], 'errors': {}},
+                         shard_group.help_start(group, no_kill, region_id='gaia'))
+        self.assertTrue(shard_group.help_status(group)['regions']['gaia']['wanted'])
+        no_kill.assert_not_called()
+
+    def test_stop_all_waits_for_shared_host_before_allowing_a_clean_restart(self):
+        group = self.load()
+        self.alive.add(100)
+        host_lock = self.shared_lock(group, 100)
+        gaia = self.lock('gaia', 100)
+        steps = []
+        def sleep(seconds):
+            steps.append(seconds)
+            lock = gaia if len(steps) == 1 else host_lock
+            (lock / 'pid').unlink()
+            lock.rmdir()
+        no_kill = mock.Mock(side_effect=AssertionError('must not kill the shared process'))
+        result = shard_group.help_stop(group, timeout=5, sleep=sleep, clock=lambda: len(steps), kill=no_kill)
+        self.assertEqual({'stopped': ['gaia'], 'forced': []}, result)
+        self.assertEqual([1, 1], steps, 'stop-all must not finish with the shared service still shutting down')
+        no_kill.assert_not_called()
 
     def test_stop_keeps_them_stopped_until_start(self):
         group = self.load()
@@ -2066,7 +2133,7 @@ class PlayerHelpTests(unittest.TestCase):
         result = shard_group.help_stop(group, timeout=5, sleep=sleep, clock=lambda: clock[0], kill=kill)
         self.assertEqual({'stopped': ['deep', 'gaia'], 'forced': ['deep']}, result)
         self.assertEqual([12], killed)
-        self.assertFalse((self.base / 'regions' / 'deep' / 'SQL' / 'player-help' / 'worker.lock').exists())
+        self.assertFalse(shard_group.help_pid(group, 'deep'), 'a stopped legacy owner no longer appears live')
         status = shard_group.help_status(group)
         self.assertTrue(status['stopped'])
         self.assertFalse(status['regions']['gaia']['running'])
@@ -2102,6 +2169,8 @@ class PlayerHelpTests(unittest.TestCase):
         self.assertEqual({'player_help': ['gaia']}, shard_group.supervise(group, start))
         self.alive.add(101)
         self.lock('gaia', 101)
+        # Simulate a standalone Gaia bridge pre-dating the new group worker.
+        (shard_group.help_dir(group) / 'shared' / 'pid').unlink()
         # Starting an unlisted region keeps it running from then on.
         self.assertEqual({'started': ['deep'], 'errors': {}}, shard_group.help_start(group, start, region_id='deep'))
         self.assertTrue(shard_group.help_status(group)['regions']['deep']['wanted'])
@@ -2120,6 +2189,7 @@ class PlayerHelpTests(unittest.TestCase):
         # A stop of the whole group, then one region started: the others stay stopped.
         shard_group.help_stop(group, timeout=0, sleep=lambda s: None, clock=lambda: 0.0, kill=kill)
         self.assertTrue(shard_group.help_status(group)['stopped'])
+        self.alive.discard(101)
         self.assertEqual(['deep'], shard_group.help_start(group, start, region_id='deep')['started'])
         self.assertEqual((False, True), tuple(shard_group.help_status(group)['regions'][r]['wanted'] for r in ('gaia', 'deep')))
         with self.assertRaises(shard_group.Refused):

@@ -810,41 +810,45 @@ needs about 1 GB for a few minutes. The state is in `<root>/.validator/state.jso
 
 ## Player help ("Ask for help")
 
-With a `player_help` key, the host service (`gaia_host.py serve`) also keeps
-one Player Help bridge per region running, so help starts with the host:
+With a `player_help` key, the host service (`gaia_host.py serve`) runs one
+shared Python worker for this group:
 
 ```json
 "player_help": {"config": "D:/GitHub/Civ13/data/player-help-config.json", "regions": ["gaia", "railyard"]}
 ```
 
-`regions` (the regions whose bridge starts with the host) defaults to every region.
-Each bridge is the region's own
-`scripts/player_help_bridge.py --game-root <region> --config <config>`, run with
-the group `python` and `--stop-file <root>/player-help/<id>.off`, logging to
-`<root>/player-help/<id>.log`. Every half minute a wanted region without a live
-bridge (its `SQL/player-help/worker.lock` names a dead pid, or there is none) gets
-one, after a lock left by a dead bridge is removed. One region that cannot start
-its bridge does not keep the others down. A region is wanted when it is in
-`regions` or was started on request (`<id>.on`), unless it was stopped on request
-(`<id>.off`, or `stopped` for the whole group).
+`config` names one private config for the group; a relative path is resolved
+next to the group JSON. `regions` defaults to every region. The worker watches each enabled region's
+private `SQL/player-help` folder independently. Requests, replies, limits,
+heartbeats, and knowledge for different game builds stay separate; identical
+knowledge indexes can share memory. `workers` limits total concurrent model
+requests for the group; ready regions take turns. Do not point different game
+worlds at the same spool or share it between Persistence and TDM.
 
-- `help-status` prints every region of the group with `running`, `pid`, `wanted`
-  (kept running by the host service), `listed` (in `regions`), `enabled`, `log`
-  and `heartbeat_age_seconds` (how old its `health.json` is), and `stopped` when
-  no region is wanted.
-- `help-stop [--region ID]` writes the stop files, waits up to 60 seconds for the
-  bridges to finish their answers and exit, then ends any still running (a bridge
-  started with another stop file, such as one from before per-region stop files,
-  never sees it). The host service leaves them stopped.
-- `help-start [--region ID]` removes the stop files and starts the missing
-  bridges at once. A region outside `regions` started this way stays wanted
-  until it is stopped. Starting one region after a whole-group stop keeps the
-  others stopped.
+Update the source checkout used by the host service and restart the **host
+service** through the usual host controls to pick up these scripts. Game worlds
+do not need a rebuild or restart for this change. Old standalone workers will
+keep their spool locks; the shared worker does not take them over while they
+are alive. To migrate an existing host, record which regions are wanted in
+**Player help**, then use **Stop all**, followed by **Start all** for the
+configured regions (or **Start region** only for those previously wanted).
+This briefly interrupts help, not gameplay. If a stop still shows an answer
+draining, wait for it to finish before starting again.
 
-The launcher's **Player help** tab shows this status for every region and has Start all, Stop all, and Start region and Stop region for the region chosen in its list.
-Run only one supervisor per region: a bridge started some other way still holds
-the region's lock, so the host service leaves it alone, but it is not restarted
-when it exits and ignores the stop file until it is ended.
+- `help-status` lists per-region status, PID, and heartbeat freshness. Shared
+  regions have the same PID and log, `player-help/shared/worker.log` under
+  the group directory.
+- `help-stop [--region ID]` stops admitting new questions and lets in-flight
+  answers finish. Stopping one region does not terminate the shared process or
+  interrupt other regions. A stop that times out reports the still-draining
+  region rather than killing the shared process.
+- `help-start [--region ID]` re-enables the configured regions or the chosen
+  region. Explicitly starting an unlisted region keeps it wanted until stopped.
+  Starting one region after a group stop leaves the others stopped.
+
+The launcher's **Player help** tab exposes the same controls. Individual game
+directories can still run a standalone bridge when not managed by a group, but
+do not run two workers against one spool.
 
 ## Fresh world (unlinked regions)
 

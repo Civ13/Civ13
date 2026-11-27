@@ -148,8 +148,10 @@ The game never performs model HTTP calls. A separately supervised Python 3.10+
 worker exchanges small local files under `SQL/player-help`. This supports native
 the current BYOND 516.1688 pin without rust-g or shell execution in the game.
 OpenDream compatibility has not been established for this change.
-Run one worker per game directory, with the same OS user as the game or suitable
-private directory permissions. Do not share a spool across Nomads and TDM.
+For a [host-managed region group](../scripts/shard-group/README.md#player-help-ask-for-help),
+run one shared worker with a separate spool per world. For a standalone game,
+run one worker for its game directory. Use the same OS user as the game or
+suitable private directory permissions. Do not share a spool across worlds.
 
 1. Install an Ollama model on your own Ollama host. This integration does not
    download a model, expose the host, or change its network configuration.
@@ -227,7 +229,7 @@ not cancel a pending model call; the game retains its account lock until a
 response or timeout. After changing worker configuration, restart the worker
 through the normal authorized service procedure.
 
-## Running the bridge
+## Running a standalone bridge
 
 The worker atomically claims `SQL/player-help/worker.lock`; a second instance
 refuses to start. After an abrupt crash, confirm that the PID in `worker.lock/pid`

@@ -12,8 +12,8 @@ controls = {
         "not isinstance(request.get('id'), str) or not re.fullmatch(r'[0-9-]{1,100}', request['id'])"),
     'raw-admission-marker': ('marker = read_ready_id(ready)',
                              "marker = ready.read_text(encoding='utf-8')"),
-    'raw-completion-marker': ('current = read_ready_id(ready)',
-                              "current = ready.read_text(encoding='utf-8')"),
+    'raw-completion-marker': ('if read_ready_id(ready) == request_id:',
+                              "if ready.read_text(encoding='utf-8') == request_id:"),
 }
 for name, (original, mutation) in controls.items():
     if source.count(original) != 1:
