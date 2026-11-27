@@ -36,7 +36,81 @@ var/global/list/approved_discord_ids = list()
 		seen_ids += discord_id
 	return staged_keys
 
+// The mode is set by the host-generated shard directory, not by the
+// authority bundle. An unreadable access bundle cannot turn the mode off.
+/proc/gateway_access_enabled()
+	return shard_group && shard_group.enabled && shard_group.gateway_verified_access
+
+// The host's protected gateway directory is the trust boundary. Publishing an
+// atomic bundle is also a reload notice: worlds poll only this one authority,
+// not one another. There is no Topic endpoint, credential, or public output.
+/proc/reload_gateway_verified_access(force = FALSE)
+	var/static/next_read = 0
+	var/static/loaded_revision = 0
+	var/static/loaded_text = null
+	if (!force && world.time < next_read)
+		return approved_list_ready && whitelist_list_ready
+	next_read = world.time + 5 SECONDS
+	var/path = "../front-door/SQL/verified-access.json"
+	var/access_text = null
+	try
+		access_text = file2text(path)
+	catch
+		return gateway_access_unavailable()
+	if (access_text == loaded_text && loaded_revision && approved_list_ready && whitelist_list_ready)
+		return TRUE
+	if (!istext(access_text) || !length(access_text) || length(access_text) > 8388608)
+		return gateway_access_unavailable()
+	var/list/staged = stage_gateway_verified_access(access_text, shard_group.group, loaded_revision, loaded_text)
+	if (!islist(staged))
+		return gateway_access_unavailable()
+	approved_list = staged["approved"]
+	approved_discord_ids = staged["ids"]
+	whitelist_list = staged["whitelist"]
+	loaded_revision = staged["revision"]
+	loaded_text = access_text
+	approved_list_ready = TRUE
+	whitelist_list_ready = TRUE
+	return TRUE
+
+// Parse both halves before the caller publishes any membership or grant.
+/proc/stage_gateway_verified_access(access_text, group, loaded_revision, loaded_text)
+	var/list/bundle = null
+	try
+		bundle = json_decode(access_text)
+	catch
+		return null
+	if (!islist(bundle) || bundle.len != 5 || bundle["schema"] != 1 || bundle["group"] != group)
+		return null
+	var/revision = bundle["revision"]
+	if (!isnum(revision) || round(revision) != revision || revision < 1 || revision > 8000000 || revision < loaded_revision)
+		return null
+	if (revision == loaded_revision && access_text != loaded_text)
+		return null
+	var/list/staged_approved = parse_verified_access_text(bundle["approved"])
+	var/list/staged_whitelist = parse_verified_access_text(bundle["whitelist"])
+	if (isnull(staged_approved) || isnull(staged_whitelist))
+		return null
+	var/list/staged_ids = verified_access_discord_ids(bundle["approved"], staged_approved)
+	if (staged_ids.len != staged_approved.len)
+		return null
+	return list("revision" = revision, "approved" = staged_approved, "ids" = staged_ids, "whitelist" = staged_whitelist)
+
+/proc/gateway_access_unavailable()
+	// Some existing loadout readers inspect the lists directly; clear all three
+	// rather than let a stale list grant admission while readiness is false.
+	approved_list_ready = FALSE
+	whitelist_list_ready = FALSE
+	approved_list = list()
+	whitelist_list = list()
+	approved_discord_ids = list()
+	return FALSE
+
 /proc/reload_verified_access_list(access_kind)
+	if (access_kind != "approved" && access_kind != "whitelist")
+		return FALSE
+	if (gateway_access_enabled())
+		return reload_gateway_verified_access(TRUE)
 	var/access_filename = null
 	if (access_kind == "approved")
 		access_filename = "SQL/approved.txt"
@@ -65,6 +139,8 @@ var/global/list/approved_discord_ids = list()
 	return TRUE
 
 /proc/verified_access_member(access_kind, candidate_key)
+	if (gateway_access_enabled() && !reload_gateway_verified_access())
+		return FALSE
 	if (access_kind == "approved")
 		return approved_list_ready && (candidate_key in approved_list)
 	if (access_kind == "whitelist")
@@ -95,6 +171,8 @@ var/global/list/approved_discord_ids = list()
 	return ids
 
 /proc/verified_discord_id(candidate_key)
+	if (gateway_access_enabled() && !reload_gateway_verified_access())
+		return null
 	if (!approved_list_ready || !istext(candidate_key))
 		return null
 	var/id = approved_discord_ids[candidate_key]
@@ -113,6 +191,10 @@ var/global/list/approved_discord_ids = list()
 	if (watching)
 		return
 	watching = TRUE
+	if (gateway_access_enabled())
+		while (TRUE)
+			reload_gateway_verified_access()
+			sleep(5 SECONDS)
 	var/list/loaded_text = list()
 	for (var/access_kind in list("approved", "whitelist"))
 		loaded_text[access_kind] = verified_access_file_text(access_kind)

@@ -35,15 +35,21 @@
 		area.initialize()
 #endif
 
-	admin_notice("<span class='danger'>Initializing approved list...</span>", R_DEBUG)
-	sleep(-1)
-	if (!reload_verified_access_list("approved"))
-		admin_notice("<span class='danger'>Failed to load approved list; prior membership and readiness retained.</span>", R_DEBUG)
+	if (gateway_access_enabled())
+		admin_notice("<span class='danger'>Initializing gateway verified-access snapshot...</span>", R_DEBUG)
+		sleep(-1)
+		if (!reload_gateway_verified_access(TRUE))
+			admin_notice("<span class='danger'>Gateway verified-access snapshot unavailable; protected grants are disabled.</span>", R_DEBUG)
+	else
+		admin_notice("<span class='danger'>Initializing approved list...</span>", R_DEBUG)
+		sleep(-1)
+		if (!reload_verified_access_list("approved"))
+			admin_notice("<span class='danger'>Failed to load approved list; prior membership and readiness retained.</span>", R_DEBUG)
 
-	admin_notice("<span class='danger'>Initializing whitelist...</span>", R_DEBUG)
-	sleep(-1)
-	if (!reload_verified_access_list("whitelist"))
-		admin_notice("<span class='danger'>Failed to load whitelist; prior membership and readiness retained.</span>", R_DEBUG)
+		admin_notice("<span class='danger'>Initializing whitelist...</span>", R_DEBUG)
+		sleep(-1)
+		if (!reload_verified_access_list("whitelist"))
+			admin_notice("<span class='danger'>Failed to load whitelist; prior membership and readiness retained.</span>", R_DEBUG)
 	watch_verified_access_lists() // picks up verifications made while the world runs
 
 	admin_notice("<span class='danger'>Initializing factionlist...</span>", R_DEBUG)

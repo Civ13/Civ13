@@ -136,6 +136,10 @@
 	// Once an empty-world cutover has been released, retry on the new world.
 	if(!nomads_lifecycle.admit_client())
 		return null
+	// A frozen region's world.time has not advanced. Re-read the gateway
+	// notice before Login can use a cached grant, even during the poll window.
+	if (gateway_access_enabled())
+		reload_gateway_verified_access(TRUE)
 	clients += src
 	directory[ckey] = src
 
