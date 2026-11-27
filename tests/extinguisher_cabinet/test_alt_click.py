@@ -123,6 +123,31 @@ class CabinetLidTest(unittest.TestCase):
         self.assertEqual(floor_stores, [])
         self.assertEqual(self.sounds, ['close'])
 
+    def test_restore_reconciles_old_stock_reference_and_density(self):
+        declaration = CABINET + 'persistence_restore_finished'
+
+        for stock_inside in (True, False):
+            with self.subTest(stock_inside=stock_inside):
+                self.cabinet.opened = True
+                self.cabinet.density = True
+                self.cabinet.icon_state = 'extinguisher_full'
+                self.stock.loc = self.cabinet if stock_inside else self.cabinet.loc
+                self.cabinet.has_extinguisher = self.stock
+                old_location = self.stock.loc
+
+                # The parent restore hook is an engine boundary for this fixture.
+                if declaration + '(' in self.source:
+                    source = adapter.extract(self.source, declaration)
+                    self.assertEqual(source.count('\t..()\n'), 1)
+                    fixture = declaration + '()\n' + source.replace('\t..()\n', '\tparent_restore()\n')
+                    restore = adapter.project(fixture, declaration, 'src', {'parent_restore': lambda: None}, method=True)
+                    restore(self.cabinet)
+
+                self.assertIs(self.stock.loc, old_location)
+                self.assertIs(self.cabinet.has_extinguisher, self.stock if stock_inside else None)
+                self.assertEqual(self.cabinet.icon_state, 'extinguisher_full' if stock_inside else 'extinguisher_empty')
+                self.assertFalse(self.cabinet.density)
+
     def test_lid_still_checks_open_and_close_guards(self):
         self.cabinet.can_open = lambda: False
         self.assertFalse(self.lid_action('open'))

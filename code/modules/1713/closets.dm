@@ -110,6 +110,14 @@
 	playsound(loc, close_sound, 100, TRUE, -3)
 	return TRUE
 
+/obj/structure/closet/cabinet/extinguisher_cabinet/persistence_restore_finished()
+	..()
+	density = FALSE
+	// Older saves can point to stock that the generic lid spilled onto the floor.
+	if (has_extinguisher && has_extinguisher.loc != src)
+		has_extinguisher = null
+	update_icon()
+
 /obj/structure/closet/cabinet/extinguisher_cabinet/update_icon()
 	if(!opened)
 		icon_state = "extinguisher_closed"
