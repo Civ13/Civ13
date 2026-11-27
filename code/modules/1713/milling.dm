@@ -159,13 +159,7 @@
 		return FALSE
 	var/metal = C.metal_type
 	take_feed()
-	reagents.remove_reagent("mercury", spend)
-	river_mercury_spill(T, spend)
-	if (isnull(roll))
-		roll = rand(1, 1000) / 10
-	if (roll <= LODE_METAL * DRUM_RECOVERY * 100)
-		reagents.remove_reagent("mercury", AMALGAM_WET_MERCURY)
-		spawn_stack(amalgam_type_for(metal), T, 1)
+	finish_amalgam_load(T, metal, spend, DRUM_RECOVERY, roll)
 	return TRUE
 
 /obj/structure/mercury_separator
@@ -278,14 +272,17 @@
 	S.amount--
 	if (S.amount <= 0)
 		qdel(S)
-	reagents.remove_reagent("mercury", PLATES_LOSS)
-	river_mercury_spill(T, PLATES_LOSS)
+	finish_amalgam_load(T, metal, PLATES_LOSS, PLATES_RECOVERY, roll)
+	return TRUE
+
+/obj/structure/drill/stamp_mill/proc/finish_amalgam_load(turf/T, metal, spend, recovery, roll)
+	reagents.remove_reagent("mercury", spend)
+	river_mercury_spill(T, spend)
 	if (isnull(roll))
 		roll = rand(1, 1000) / 10
-	if (roll <= LODE_METAL * PLATES_RECOVERY * 100)
+	if (roll <= LODE_METAL * recovery * 100)
 		reagents.remove_reagent("mercury", AMALGAM_WET_MERCURY)
 		spawn_stack(amalgam_type_for(metal), T, 1)
-	return TRUE
 
 // Pours quicksilver from an open container into A. TRUE when handled.
 /proc/pour_mercury_into(atom/A, obj/item/W, mob/living/human/H)
