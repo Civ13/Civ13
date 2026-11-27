@@ -90,6 +90,34 @@
 		opened = !opened
 	update_icon()
 
+/obj/structure/closet/cabinet/extinguisher_cabinet/open()
+	if (opened || !can_open())
+		return FALSE
+	// Release stray contents and occupants while keeping the cabinet's own stock.
+	dump_contents(has_extinguisher)
+	opened = TRUE
+	density = FALSE
+	update_icon()
+	playsound(loc, open_sound, 100, TRUE, -3)
+	return TRUE
+
+/obj/structure/closet/cabinet/extinguisher_cabinet/close()
+	if (!opened || !can_close())
+		return FALSE
+	opened = FALSE
+	density = FALSE
+	update_icon()
+	playsound(loc, close_sound, 100, TRUE, -3)
+	return TRUE
+
+/obj/structure/closet/cabinet/extinguisher_cabinet/persistence_restore_finished()
+	..()
+	density = FALSE
+	// Older saves can point to stock that the generic lid spilled onto the floor.
+	if (has_extinguisher && has_extinguisher.loc != src)
+		has_extinguisher = null
+	update_icon()
+
 /obj/structure/closet/cabinet/extinguisher_cabinet/update_icon()
 	if(!opened)
 		icon_state = "extinguisher_closed"

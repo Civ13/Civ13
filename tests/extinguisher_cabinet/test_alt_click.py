@@ -1,4 +1,4 @@
-"""Project the cabinet's real AltClick with inert spatial and actor boundaries."""
+"""Project the cabinet's lid interactions with inert engine boundaries."""
 from pathlib import Path
 import importlib.util
 from types import SimpleNamespace
@@ -6,11 +6,18 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'code/modules/1713/closets.dm'
+BASE_SOURCE = ROOT / 'code/game/objects/structures/crates_lockers/closets.dm'
+CABINET = '/obj/structure/closet/cabinet/extinguisher_cabinet/'
+BASE_CLOSET = '/obj/structure/closet/proc/'
 spec = importlib.util.spec_from_file_location('cabinet_adapter', ROOT / 'tests/save_movement/source_adapter.py')
 adapter = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(adapter)
-adapter.FIELDS += ('opened', 'update_icon')
-DECL = '/obj/structure/closet/cabinet/extinguisher_cabinet/AltClick'
+adapter.FIELDS += (
+    'opened', 'update_icon', 'can_open', 'can_close', 'keep_items', 'dump_contents',
+    'icon_opened', 'icon_closed', 'open_sound', 'close_sound', 'density',
+    'has_extinguisher', 'store_misc', 'store_items', 'store_mobs',
+)
+DECL = CABINET + 'AltClick'
 
 
 def toggle(source, near, incapacitated, human=True, opened=False):
@@ -36,6 +43,121 @@ class CabinetAltClickTest(unittest.TestCase):
         self.assertEqual(toggle(source, True, False), (True, 1))
         self.assertEqual(toggle(source, True, False, opened=True), (False, 1))
         self.assertEqual(toggle(source, True, False, human=False), (False, 0))
+
+
+
+class CabinetLidTest(unittest.TestCase):
+    def setUp(self):
+        self.source = SOURCE.read_text(encoding='utf-8-sig')
+        self.base_source = BASE_SOURCE.read_text(encoding='utf-8-sig')
+        self.sounds = []
+        self.cabinet = SimpleNamespace(
+            opened=False, density=False, loc=object(), keep_items=False,
+            icon_state='extinguisher_closed', icon_opened='extinguisher_empty',
+            icon_closed='extinguisher_closed', open_sound='open', close_sound='close',
+            can_open=lambda: True, can_close=lambda: True,
+            store_misc=False, store_items=False, store_mobs=False,
+        )
+        self.stock = SimpleNamespace(loc=self.cabinet)
+        self.stock.forceMove = lambda loc: setattr(self.stock, 'loc', loc)
+        self.cabinet.has_extinguisher = self.stock
+
+        self.contents_by_type = {'/obj': [self.stock], '/mob': []}
+        dump = adapter.project(
+            self.base_source, BASE_CLOSET + 'dump_contents', 'src, retained_item=None',
+            {'typed_iter': lambda cabinet, kind: self.contents_by_type[kind],
+             'MOB_PERSPECTIVE': 'mob'},
+            method=True,
+        )
+        self.cabinet.dump_contents = lambda retained_item=None: dump(self.cabinet, retained_item)
+        update_icon = adapter.project(self.source, CABINET + 'update_icon', 'src', {}, method=True)
+        self.cabinet.update_icon = lambda: update_icon(self.cabinet)
+
+    def lid_action(self, action):
+        declaration = CABINET + action
+        source = self.source
+        if declaration + '(' not in source:
+            declaration = BASE_CLOSET + action
+            source = self.base_source
+        proc = adapter.project(
+            source, declaration, 'src',
+            {'playsound': lambda loc, sound, *args: self.sounds.append(sound)},
+            method=True,
+        )
+        result = proc(self.cabinet)
+        if result:
+            self.cabinet.update_icon()  # The inherited Toggle Open dispatcher refreshes the icon.
+        return result
+
+    def test_open_full_cabinet_keeps_stock_inside(self):
+        self.assertTrue(self.lid_action('open'))
+        self.assertTrue(self.cabinet.opened)
+        self.assertEqual(self.cabinet.icon_state, 'extinguisher_full')
+        self.assertIs(self.stock.loc, self.cabinet)
+        self.assertFalse(self.cabinet.density)
+        self.assertEqual(self.sounds, ['open'])
+
+    def test_open_releases_existing_stray_contents_and_restores_occupant_view(self):
+        stray = SimpleNamespace(loc=self.cabinet)
+        stray.forceMove = lambda loc: setattr(stray, 'loc', loc)
+        occupant = SimpleNamespace(loc=self.cabinet)
+        occupant.forceMove = lambda loc: setattr(occupant, 'loc', loc)
+        occupant.client = SimpleNamespace(mob=occupant, eye=self.cabinet, perspective='eye')
+        self.contents_by_type['/obj'].append(stray)
+        self.contents_by_type['/mob'].append(occupant)
+
+        self.assertTrue(self.lid_action('open'))
+        self.assertIs(stray.loc, self.cabinet.loc)
+        self.assertIs(occupant.loc, self.cabinet.loc)
+        self.assertIs(occupant.client.eye, occupant)
+        self.assertEqual(occupant.client.perspective, 'mob')
+
+    def test_close_leaves_cabinet_non_dense_and_does_not_store_floor_item(self):
+        self.cabinet.opened = True
+        floor_stores = []
+        self.cabinet.store_items = lambda stored_units: floor_stores.append(stored_units) or 1
+        self.assertTrue(self.lid_action('close'))
+        self.assertFalse(self.cabinet.opened)
+        self.assertEqual(self.cabinet.icon_state, 'extinguisher_closed')
+        self.assertFalse(self.cabinet.density)
+        self.assertEqual(floor_stores, [])
+        self.assertEqual(self.sounds, ['close'])
+
+    def test_restore_reconciles_old_stock_reference_and_density(self):
+        declaration = CABINET + 'persistence_restore_finished'
+
+        for stock_inside in (True, False):
+            with self.subTest(stock_inside=stock_inside):
+                self.cabinet.opened = True
+                self.cabinet.density = True
+                self.cabinet.icon_state = 'extinguisher_full'
+                self.stock.loc = self.cabinet if stock_inside else self.cabinet.loc
+                self.cabinet.has_extinguisher = self.stock
+                old_location = self.stock.loc
+
+                # The parent restore hook is an engine boundary for this fixture.
+                if declaration + '(' in self.source:
+                    source = adapter.extract(self.source, declaration)
+                    self.assertEqual(source.count('\t..()\n'), 1)
+                    fixture = declaration + '()\n' + source.replace('\t..()\n', '\tparent_restore()\n')
+                    restore = adapter.project(fixture, declaration, 'src', {'parent_restore': lambda: None}, method=True)
+                    restore(self.cabinet)
+
+                self.assertIs(self.stock.loc, old_location)
+                self.assertIs(self.cabinet.has_extinguisher, self.stock if stock_inside else None)
+                self.assertEqual(self.cabinet.icon_state, 'extinguisher_full' if stock_inside else 'extinguisher_empty')
+                self.assertFalse(self.cabinet.density)
+
+    def test_lid_still_checks_open_and_close_guards(self):
+        self.cabinet.can_open = lambda: False
+        self.assertFalse(self.lid_action('open'))
+        self.assertFalse(self.cabinet.opened)
+
+        self.cabinet.opened = True
+        self.cabinet.can_close = lambda: False
+        self.assertFalse(self.lid_action('close'))
+        self.assertTrue(self.cabinet.opened)
+        self.assertEqual(self.sounds, [])
 
 
 if __name__ == '__main__':

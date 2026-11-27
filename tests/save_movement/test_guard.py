@@ -274,7 +274,7 @@ class GuardTests(unittest.TestCase):
         human.client = None
         item = f.actor(box, human=False)
         dump = project(read('code/game/objects/structures/crates_lockers/closets.dm'),
-                       '/obj/structure/closet/proc/dump_contents', 'src', f.env, True)
+                       '/obj/structure/closet/proc/dump_contents', 'src, retained_item=None', f.env, True)
         f.begin(f.store, 'save')
         box.gc_destroyed = -1
         dump(box)
