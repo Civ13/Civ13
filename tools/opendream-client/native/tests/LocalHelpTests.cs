@@ -47,8 +47,12 @@ static class LocalHelpTests {
         Require(LocalHelp.DescribeAction("help-stop", 0, "{\"stopped\": [\"gaia\", \"railyard\"], \"forced\": [\"railyard\"], \"ok\": true}") ==
             "Player help stopped (gaia, railyard); ended without finishing: railyard.", "stop text");
         Require(LocalHelp.DescribeAction("help-start", 0, "{\"started\": [\"gaia\"], \"errors\": {\"barren\": \"bridge is missing\"}, \"ok\": true}") ==
-            "Player help started (gaia). Could not start barren: bridge is missing.", "start text");
-        Require(LocalHelp.DescribeAction("help-start", 0, "{\"started\": [], \"errors\": {}, \"ok\": true}") == "Player help is running.", "already running");
+            "Player help start requested (gaia). Could not start barren: bridge is missing.", "start text");
+        Require(LocalHelp.DescribeAction("help-start", 0, "{\"started\": [], \"errors\": {}, \"ok\": true}") == "Player help settings applied.", "already running");
+        Require(LocalHelp.DescribeAction("help-stop", 0, "{\"ok\": true, \"not_ended\": {\"gaia\": \"draining\"}}") ==
+            "Player help stop pending: gaia: draining.", "a shared spool that is still draining is not reported stopped");
+        Require(LocalHelp.DescribeAction("help-stop", 0, "{\"ok\": true, \"not_ended\": {\"gaia\": \"draining\"}, \"stopped\": [\"deep\"], \"forced\": [\"deep\"]}") ==
+            "Player help stop pending: gaia: draining. Player help stopped (deep); ended without finishing: deep.", "mixed stop outcomes");
         Require(LocalHelp.DescribeAction("help-stop", 1, "{\"ok\": false, \"refused\": \"player_help is not configured for this group\"}") ==
             "Player help: player_help is not configured for this group", "refusal");
         Console.WriteLine($"PASS local help: {assertions} assertions; help-status/start/stop argv, status and action answers for the Player help tab.");

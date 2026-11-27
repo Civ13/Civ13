@@ -30,7 +30,7 @@ Sleeping (freeze after idle, wake on a connection or a launcher request, cold
 start after a power-down) is done by the host service:
 `gaia_host.py [--config gaia.json] --group group.json serve`, which also keeps
 the group's transfer agents and coordinator running, and (when the group
-config has "player_help") one "Ask for help" bridge per region, and (with
+config has "player_help") one shared "Ask for help" bridge, and (with
 "chat_translator") the Edge chat translator, whose address every region's config gets.
 
 Each region is driven by the same host logic as scripts/gaia-host/gaia_host.py
@@ -61,6 +61,7 @@ import subprocess
 import sys
 import threading
 import time
+import tempfile
 import traceback
 import urllib.request
 
@@ -101,8 +102,9 @@ MAGIC_WHITELIST_HEADER = '# Magic whitelist: one player key per line. Shared by 
 # Kinds nobody can start in: worlds that reset, transit/orbit, battles, events,
 # expedition slots, practice rooms and the gateway (the mainland's own rules).
 START_REGION_REFUSED_KINDS = ('RAID', 'ORBIT', 'BATTLE', 'EVENT', 'EXPEDITION', 'TUTORIAL', 'GATEWAY')
-HELP_STOP_SECONDS = 60  # help-stop waits this long for bridges to finish their answers before ending them
-HELP_STARTING_SECONDS = 300  # a bridge we started may load its corpus this long before it takes the lock
+HELP_STOP_SECONDS = 60  # help-stop waits this long for answers to drain
+HELP_STARTING_SECONDS = 300  # compatibility with a standalone bridge still starting
+HELP_SHARED_START_SECONDS = 10  # group bridge claims its host lock before loading corpora
 # Chat translator (tools/edge-translator): the host service runs one for the whole group.
 TRANSLATOR_PORT = 55581
 TRANSLATOR_SOURCE = 'tools/edge-translator'
@@ -577,8 +579,7 @@ def check_group(group, path):
             ok = type(value) in (int, float) and value >= 0
         if not ok:
             raise ValueError('%s has the wrong type' % key)
-    # Player Help ("Ask for help"): the host service keeps one bridge per listed region
-    # running (scripts/player_help_bridge.py against that region's SQL/player-help spool).
+    # Player Help ("Ask for help"): one bridge watches separate region spools.
     settings = group.get('player_help')
     if settings is not None:
         if type(settings) is not dict or type(settings.get('config')) is not str or not settings['config']:
@@ -3952,8 +3953,8 @@ def region_summary(group, platform=None):
 
 
 def help_dir(group):
-    """Where the group keeps its Player Help bridge logs, pids and stop marker."""
-    return Path(group['root']) / 'player-help'
+    """Where the group keeps the shared Player Help control files and log."""
+    return Path(group['root']).absolute() / 'player-help'
 
 
 def help_stop_file(group):
@@ -3962,7 +3963,7 @@ def help_stop_file(group):
 
 
 def help_region_file(group, region_id, kind):
-    """<id>.off: that region's bridge is stopped on request (and is its --stop-file);
+    """<id>.off: stop admitting work in that spool (also the legacy --stop-file);
     <id>.on: a region outside player_help's "regions" was started on request."""
     return help_dir(group) / ('%s.%s' % (region_id, kind))
 
@@ -3986,15 +3987,6 @@ def help_pid(group, region_id, now=time.time):
     return None
 
 
-def clear_help_lock(group, region_id):
-    """Remove a worker.lock left by a bridge that is gone (a reboot, a crash, a forced stop);
-    a new bridge refuses to start while it exists."""
-    lock = help_spool(group, region_id) / 'worker.lock'
-    if lock.exists():
-        (lock / 'pid').unlink(missing_ok=True)
-        lock.rmdir()
-
-
 def help_settings(group):
     settings = group.get('player_help')
     if not settings:
@@ -4011,35 +4003,67 @@ def help_wanted(group, region_id):
     return region_id in settings['regions'] or help_region_file(group, region_id, 'on').exists()
 
 
+def help_shared_pid(group):
+    return recorded_pid(help_dir(group) / 'shared' / 'worker.lock' / 'pid')
+
+
+def help_shared_starting_pid(group):
+    path = help_dir(group) / 'shared' / 'pid'
+    try:
+        if time.time() - path.stat().st_mtime < HELP_SHARED_START_SECONDS:
+            return recorded_pid(path)
+    except OSError:
+        pass
+    return None
+
+
 def ensure_help(group, start=detach):
-    """Start a Player Help bridge for every wanted region (help_wanted) that has none.
-    Returns the started region ids and per-region errors."""
+    """Reconcile one worker for this region group, retaining isolated region spools."""
     settings = group.get('player_help')
-    started, errors = [], {}
-    if not settings or help_stop_file(group).exists():
-        return started, errors
     folder = help_dir(group)
-    folder.mkdir(parents=True, exist_ok=True)
-    for region in group['regions']:
-        region_id = region['id']
-        # One region that cannot start its bridge must not keep the others down.
+    manifest = folder / 'regions.json'
+    if not settings and not manifest.is_file():
+        return [], {}
+    try:
+        folder.mkdir(parents=True, exist_ok=True)
+        regions = {region['id']: {'game_root': str(region_dir(group, region['id']).absolute()),
+                                  'listed': region['id'] in settings['regions']}
+                   for region in group['regions']} if settings else {}
         try:
-            if not help_wanted(group, region_id) or help_pid(group, region_id):
-                continue
-            game = region_dir(group, region_id)
-            bridge = game / 'scripts' / 'player_help_bridge.py'
-            if not bridge.exists():
-                raise OSError('%s is missing (run setup)' % bridge)
-            clear_help_lock(group, region_id)
-            # Each bridge watches its own region's stop file, so one region stops without the others.
-            argv = [group['python'], '-I', str(bridge), '--game-root', str(game), '--config', settings['config'],
-                    '--stop-file', str(help_region_file(group, region_id, 'off'))]
-            pid = start(argv, game, folder / ('%s.log' % region_id))
-            (folder / ('%s.pid' % region_id)).write_text('%d\n' % pid, encoding='utf-8')
-            started.append(region_id)
-        except OSError as error:
-            errors[region_id] = str(error)[:300]
-    return started, errors
+            current = json.loads(manifest.read_text(encoding='utf-8'))
+        except (OSError, ValueError):
+            current = None
+        if current != regions:
+            # Supervise and an operator's help-start can run at the same time.
+            temp = None
+            try:
+                with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=folder,
+                                                 prefix='regions-', delete=False) as handle:
+                    temp = Path(handle.name)
+                    json.dump(regions, handle)
+                gaia_host.replace_file(temp, manifest)
+            finally:
+                if temp is not None:
+                    temp.unlink(missing_ok=True)
+        if not settings or help_stop_file(group).exists():
+            return [], {}
+        wanted = [region_id for region_id in regions if help_wanted(group, region_id) and not help_pid(group, region_id)]
+        if not wanted or help_shared_pid(group) or help_shared_starting_pid(group):
+            return [], {}
+        shared = folder / 'shared'
+        shared.mkdir(exist_ok=True)
+        starting = shared / 'pid'
+        bridge = HERE.parent / 'player_help_bridge.py'
+        if not bridge.is_file():
+            raise OSError('Host Player Help bridge is missing; update the host scripts together.')
+        config = Path(group['_path']).parent / settings['config']
+        argv = [group['python'], '-I', '-B', str(bridge), '--group-manifest', str(manifest),
+                '--config', str(config)]
+        pid = start(argv, folder, shared / 'worker.log')
+        starting.write_text('%d\n' % pid, encoding='utf-8')
+        return wanted, {}
+    except OSError as error:
+        return [], {'host': str(error)[:300]}
 
 
 def help_status(group, now=time.time):
@@ -4048,15 +4072,19 @@ def help_status(group, now=time.time):
     if not settings:
         return {'configured': False}
     regions = {}
+    shared = help_shared_pid(group)
     for region in group['regions']:
         region_id = region['id']
         pid = help_pid(group, region_id, now)
-        entry = {'running': pid is not None, 'pid': pid, 'wanted': help_wanted(group, region_id),
-                 'listed': region_id in settings['regions'], 'log': str(help_dir(group) / ('%s.log' % region_id))}
+        wanted = help_wanted(group, region_id)
+        shared_log = shared is not None and (pid == shared or (pid is None and wanted))
+        entry = {'running': pid is not None, 'pid': pid, 'wanted': wanted,
+                 'listed': region_id in settings['regions'],
+                 'log': str(help_dir(group) / ('shared/worker.log' if shared_log else '%s.log' % region_id))}
         health = help_spool(group, region_id) / 'health.json'
         try:
             answer = json.loads(health.read_text(encoding='utf-8'))
-            entry['enabled'] = type(answer) is dict and answer.get('enabled') is True
+            entry['enabled'] = pid is not None and type(answer) is dict and answer.get('enabled') is True
             entry['heartbeat_age_seconds'] = max(0, int(now() - health.stat().st_mtime))
         except (OSError, ValueError):
             entry['enabled'] = False
@@ -4073,7 +4101,7 @@ def help_region_ids(group, region_id):
 
 
 def help_start(group, start=detach, region_id=None):
-    """Clear the stop requests (of every region, or one) and start the missing bridges now.
+    """Clear stop markers so the shared bridge can attach the requested spools.
     One region outside player_help's "regions" is kept running from then on."""
     settings = help_settings(group)
     folder = help_dir(group)
@@ -4096,8 +4124,8 @@ def help_start(group, start=detach, region_id=None):
 
 def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.monotonic, kill=None, region_id=None):
     """Stop the bridges (of every region, or one) and keep them stopped until help-start.
-    Bridges see their stop file and finish the answers they are writing; one that has not
-    exited by the timeout (or was started with another stop file) is ended."""
+    The shared worker drains the chosen spools without stopping other regions.
+    A legacy standalone worker that ignores its marker may be ended."""
     help_settings(group)
     help_dir(group).mkdir(parents=True, exist_ok=True)
     ids = help_region_ids(group, region_id)
@@ -4109,23 +4137,41 @@ def help_stop(group, timeout=HELP_STOP_SECONDS, sleep=time.sleep, clock=time.mon
     running = {r: help_pid(group, r) for r in ids}
     running = {r: pid for r, pid in running.items() if pid}
     stopped = sorted(running)
+    shared = help_shared_pid(group)
+
+    def still_running(region, pid):
+        if pid == shared:
+            # The shared process remains alive when a single spool detaches.
+            return recorded_pid(help_spool(group, region) / 'worker.lock' / 'pid') == pid
+        return process_alive(pid)
+
+    def host_draining():
+        return region_id is None and (help_shared_pid(group) or help_shared_starting_pid(group))
+
     deadline = clock() + timeout
-    while running and clock() < deadline:
+    while (running or host_draining()) and clock() < deadline:
         sleep(1)
-        running = {r: pid for r, pid in running.items() if process_alive(pid)}
+        running = {r: pid for r, pid in running.items() if still_running(r, pid)}
     kill = kill or Platform().kill_tree
     refused = {}
     for one, pid in running.items():
-        # A pid file can outlive its bridge (a reboot, a crash) and name a reused pid: end only
-        # a Python process that is older than the file that names it.
+        if pid == shared or pid == help_shared_pid(group):
+            # Do not interrupt unrelated regions or steal the spool during drain.
+            refused[one] = 'Shared Player Help is still draining this region; retry after its answer finishes'
+            continue
+        # Compatibility for older standalone workers. Verify process identity
+        # through the same guard as before; never clear a refused owner's lock.
         try:
             kill(pid, expect=process_safety.python_expect(born_before=help_pid_written(group, one, pid)))
         except Unverified as error:
             refused[one] = str(error)
-        clear_help_lock(group, one)
+    if host_draining():
+        refused['shared worker'] = 'Still shutting down; wait before starting Player Help again'
     for one in ids:
-        (help_dir(group) / ('%s.pid' % one)).unlink(missing_ok=True)
-    result = {'stopped': stopped, 'forced': sorted(r for r in running if r not in refused)}
+        if one not in refused:
+            (help_dir(group) / ('%s.pid' % one)).unlink(missing_ok=True)
+    result = {'stopped': [region for region in stopped if region not in refused],
+              'forced': sorted(r for r in running if r not in refused)}
     if refused:
         result['not_ended'] = refused
     return result

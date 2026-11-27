@@ -2,7 +2,7 @@ using System.Text.Json;
 
 namespace Civ13.Launcher;
 
-// The "Ask for help" (Player Help) bridges of the region group, which the host service keeps running
+// The per-region "Ask for help" status. A host can use one Python process for several regional queues.
 // (shard_group.py help-status / help-start / help-stop, configured by "player_help" in the group config).
 // Wanted: the host service keeps it running (null from an older shard_group.py, which listed only those).
 public sealed record HelpRegion(string Id, bool Running, int? Pid, bool Enabled, int? HeartbeatAgeSeconds, string? Log, bool? Wanted = null) {
@@ -13,8 +13,8 @@ public sealed record HelpRegion(string Id, bool Running, int? Pid, bool Enabled,
         if (!Running) return Wanted == false ? "stopped (Start region to run it)" : "not running";
         var line = $"running (PID {Pid})";
         if (HeartbeatAgeSeconds is { } age) line += age > 60 ? $", no heartbeat for {age} s" : ", answering";
-        if (!Enabled) line += ", help switched off in its config";
         if (Wanted == false) line += ", stopping";
+        else if (!Enabled) line += ", not accepting questions";
         return line;
     }
 }
@@ -66,16 +66,25 @@ public static class LocalHelp {
             if (!LocalBot.Bool(json, "ok")) return "Player help: " + (LocalBot.Str(json, "refused") ?? LocalBot.Str(json, "error") ?? $"exit {exit}");
             if (action == "help-stop") {
                 var forced = Names(json, "forced");
-                return "Player help stopped" + (Names(json, "stopped") is { Count: > 0 } stopped ? " (" + string.Join(", ", stopped) + ")" : "") +
+                var stopped = Names(json, "stopped");
+                var pending = Problems(json, "not_ended");
+                var outcome = "Player help stopped" + (stopped.Count > 0 ? " (" + string.Join(", ", stopped) + ")" : "") +
                     (forced.Count > 0 ? "; ended without finishing: " + string.Join(", ", forced) : "") + ".";
+                if (pending.Count == 0) return outcome;
+                var waiting = "Player help stop pending: " + string.Join("; ", pending) + ".";
+                return stopped.Count > 0 || forced.Count > 0 ? waiting + " " + outcome : waiting;
             }
-            var errors = json.TryGetProperty("errors", out var list) && list.ValueKind == JsonValueKind.Object
-                ? list.EnumerateObject().Where(e => e.Value.ValueKind == JsonValueKind.String).Select(e => $"{e.Name}: {e.Value.GetString()}").ToList() : [];
+            var errors = Problems(json, "errors");
             var started = Names(json, "started");
-            return (started.Count > 0 ? "Player help started (" + string.Join(", ", started) + ")." : "Player help is running.") +
+            if (started.Count == 0 && errors.Count > 0) return "Player help could not start: " + string.Join("; ", errors) + ".";
+            return (started.Count > 0 ? "Player help start requested (" + string.Join(", ", started) + ")." : "Player help settings applied.") +
                 (errors.Count > 0 ? " Could not start " + string.Join("; ", errors) + "." : "");
         } catch (JsonException) { return $"Player help: exit {exit}"; }
     }
+
+    private static List<string> Problems(JsonElement json, string name) =>
+        json.TryGetProperty(name, out var entries) && entries.ValueKind == JsonValueKind.Object
+            ? entries.EnumerateObject().Where(e => e.Value.ValueKind == JsonValueKind.String).Select(e => $"{e.Name}: {e.Value.GetString()}").ToList() : [];
 
     private static List<string> Names(JsonElement json, string name) =>
         json.TryGetProperty(name, out var list) && list.ValueKind == JsonValueKind.Array
