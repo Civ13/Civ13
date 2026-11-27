@@ -45,7 +45,12 @@
 	if (is_tool(tool, TOOL_HAMMER) && isturf(user.loc))
 		var/direction = WWinput(user, "Fasten it to which direction?", "Select a direction.", "North", WWinput_list_or_null(list("North", "East", "South", "West")))
 		if (direction)
-			var/obj/structure/sign/S = new(user.loc)
+			var/obj/structure/sign/S
+			// Loose signposts already store the pole state, including in older saves.
+			if (sign_state == "signpost_pole")
+				S = new /obj/structure/sign/signpost(user.loc)
+			else
+				S = new(user.loc)
 			switch(direction)
 				if ("North")
 					S.pixel_y = 32
@@ -60,6 +65,7 @@
 			S.desc = desc
 			S.icon = icon
 			S.icon_state = sign_state
+			S.update_icon()
 			to_chat(user, "You fasten \the [S] with your [tool].")
 			qdel(src)
 	else ..()
