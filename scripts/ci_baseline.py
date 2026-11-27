@@ -2811,7 +2811,10 @@ SUITES = {
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
     'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
         'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
-        'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
+        'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py'),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'code/modules/1713/glass_stone_machines.dm',
+                         'code/modules/1713/rolling_mill.dm', 'code/modules/1713/wire_bench.dm',
+                         'code/modules/materials/lathes.dm')},
     'charcoal_clamp': {'files': ('tests/charcoal_clamp/test_contract.py',), 'paths': (
         'tests/charcoal_clamp/', 'code/modules/1713/charcoal_clamp.dm',
         'icons/obj/charcoal_clamp.dmi', 'tests/sprites/create_charcoal_clamp.py')},
