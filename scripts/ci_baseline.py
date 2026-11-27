@@ -2908,7 +2908,6 @@ SUITES = {
         'code/modules/1713/cutting_board.dm', 'tests/primitive_woodworking/source_adapter.py',
         'code/game/objects/structures/table.dm', 'code/game/objects/structures/table_rack.dm',
         'icons/obj/objects.dmi', 'icons/obj/structures.dmi', 'tools/dmi/__init__.py',
-        'tests/save_movement/source_adapter.py',
         'code/modules/persistence/functions.dm', 'code/modules/reagents/reagent_containers/food.dm')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',

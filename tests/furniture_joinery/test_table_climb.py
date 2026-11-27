@@ -10,9 +10,9 @@ from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
-sys.path.insert(0, str(ROOT / 'tests' / 'save_movement'))
+sys.path.insert(0, str(ROOT / 'tests' / 'primitive_woodworking'))
 sys.path.insert(0, str(ROOT))
-from source_adapter import extract, project
+from source_adapter import block, compile_body
 from tools.dmi import Dmi
 SOURCE = (ROOT / 'code/game/objects/structures/table.dm').read_text()
 
@@ -109,22 +109,23 @@ class FancyTableAppearance(unittest.TestCase):
 
         # The smoothing branch applies only to non-fixed table sprites.
         base = '/obj/structure/table/update_icon'
-        parent = extract(SOURCE, base)
+        parent = block(SOURCE, base + '(')
         parent = (parent.split('\n\telse if', 1)[0] + '\n\telse\n'
                   + parent.rsplit('\n\telse\n', 1)[1])
         parent = parent.replace('"[initial(icon_state)]"', 'upright_state')
         env = dict(upright_icon=upright_icon, upright_state=upright_state, SOUTH=2)
-        fields = r'\b(icon|icon_state|flipped|flipped_icon|dir|layer)\b'
+        fields = ('icon', 'icon_state', 'flipped', 'flipped_icon', 'dir', 'layer')
 
         def method(source, declaration):
-            body = re.sub(fields, r'src.\1', extract(source, declaration))
-            return project(declaration + '()\n' + body, declaration, 'src', env)
+            source = re.sub(r"'([^']+\.dmi)'", r'"\1"', source)
+            projected, _ = compile_body(source, declaration + '(', 'self', env, fields)
+            return projected
 
-        env['parent_update'] = method(base + '()\n' + parent, base)
+        env['parent_update'] = method(parent, base)
         update = env['parent_update']
         if self.kind + '/update_icon()' in self.rack_source:
             update = method(
-                self.rack_source.replace('initial(icon)', 'upright_icon').replace('..()', 'parent_update(src)'),
+                self.rack_source.replace('initial(icon)', 'upright_icon').replace('..()', 'parent_update(self)'),
                 self.kind + '/update_icon',
             )
 
@@ -143,7 +144,7 @@ class FancyTableAppearance(unittest.TestCase):
         env['parent_load'] = lambda src: None
         env['update'] = update
         restore = method(
-            self.rack_source.replace('..()', 'parent_load(src)').replace('update_icon()', 'update(src)'),
+            self.rack_source.replace('..()', 'parent_load(self)').replace('update_icon()', 'update(self)'),
             self.kind + '/after_load',
         )
         table.flipped, table.icon_state = True, 'table-flipped'
