@@ -3958,6 +3958,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_bends_run()
 		platform_arcs_run()
 		platform_rail_plans_run()
+		platform_rail_grade_run()
 	catch (var/exception/E)
 		platform_probe_runtime_error = TRUE
 		world.log << "Fixture aborted: [E] at [E.file]:[E.line]"

@@ -135,8 +135,24 @@ steam train reaches 5 tiles/s in about ten seconds and 25 tiles, and a train at
 its rated load takes twice as long. Coasting and engine braking take a fixed
 amount of speed each second (0.2, or 0.6 against a lower notch), divided by the
 train's weight over six, so a long heavy train rolls a long way; each step
-counts the seconds it takes (`train_step_seconds()`). Free-rolling cars
-(`train_rolling.dm`) still lose speed per tile.
+counts the seconds it takes (`train_step_seconds()`).
+
+### Track grade
+
+Track on natural ground follows the terrain heights at the two ends of the
+next rail step. Level maps, built floors, and bridge decks (including their
+approaches) are treated as flat. Switches, wide curves, and reversing use the
+actual route from the leading end of the train, not the locomotive's facing.
+The leading section represents the grade for the whole train.
+
+An uphill grade uses some of the engine's pull, leaving less to accelerate and
+lowering the speed it can hold. A lightly powered train may stop on a steep
+climb. Downhill, a moving train can keep coasting or gain speed with its throttle
+shut, still subject to visibility, snow, and leading-car speed limits. Brake
+before curves and stops: the brakes
+still slow the train, but a descent gives them more work. Parked trains stay
+put; there is no automatic rollback. This applies to the locomotive drive loop;
+free-rolling uncoupled cars (`train_rolling.dm`) keep their existing per-tile drag.
 
 ## Brakes
 

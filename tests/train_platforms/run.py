@@ -17,7 +17,7 @@ sys.path.insert(0, str(ROOT / 'scripts/gameplay_bridge'))
 from prepare_native import isolated_startup  # noqa: E402
 
 PREFIX = '.train_platforms_ci'
-EXPECTED_CHECKS = 456
+EXPECTED_CHECKS = 466
 
 
 def replace_once(source, old, new):
@@ -35,7 +35,7 @@ def sources(root=ROOT):
                      ('code\\controllers\\mc\\globals.dm', PREFIX + '_globals.dm')]:
         dme = replace_once(dme, old, new)
     dme = re.sub(r'^#include ".*\.dmm".*$', '', dme, flags=re.M)
-    dme += '\n#include "tests/train_platforms/probe.dm"\n'
+    dme += '\n#include "tests/train_platforms/rail_grade.dm"\n#include "tests/train_platforms/probe.dm"\n'
     return {PREFIX + '_world.dm': world, PREFIX + '_globals.dm': globals_source, PREFIX + '.dme': dme}
 
 
