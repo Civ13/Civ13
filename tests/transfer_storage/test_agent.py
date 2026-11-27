@@ -1,6 +1,7 @@
 """The loopback agent and coordinator relay, end to end over HTTP."""
 import contextlib
 import io
+import json
 import os
 import sys
 import tempfile
@@ -90,6 +91,33 @@ class AgentTests(unittest.TestCase):
             status = path('/status')['result']
             self.assertEqual([], status['active'])
         self.assertEqual([], self.a('/outbox')['result']['envelopes'])
+
+    def test_airship_escrow_waits_for_a_save_and_rolls_back_as_one_party(self):
+        flight = 'c' * 32
+        payloads = [
+            json.dumps({'kind': 'character', 'owner': 'captain', 'airship_flight': flight,
+                        'airship': {'name': 'Halcyon', 'tiles': [[0, 0, 'deck']]}}),
+            json.dumps({'kind': 'character', 'owner': 'passenger', 'airship_flight': flight}),
+        ]
+        source = self.stores['alpha']
+        self.a('/escrow', {'peer': 'beta', 'fast': 0, 'payloads': payloads})
+        self.assertEqual([], source.outbox())
+        self.assertEqual(0, self.coordinator.relay_once())
+        self.assertEqual([], self.b('/status')['result']['pending_transfers'])
+        # A crash/lost reply with the original ship and cargo still in the last
+        # source snapshot leaves no fast debit to replay or remote copy to import.
+        source.reconcile_load('alpha-g0', [], source.ledger_seq())
+        self.assertEqual([], source.replay())
+        self.assertEqual([], source.status()['active'])
+        self.assertEqual([], source.outbox())
+
+        escrow = self.a('/escrow', {'peer': 'beta', 'fast': 0, 'payloads': payloads})['result']
+        self.a('/save', {'generation': 'alpha-g1', 'effects': [escrow['effect_id']],
+                         'ledger_seq': source.ledger_seq()})
+        for _ in range(3):
+            self.coordinator.relay_once()
+        arrived = self.b('/import', {'transfer_id': escrow['transfer_id'], 'fast': 1})['result']
+        self.assertEqual(payloads, arrived['payloads'])
 
     def test_a_down_agent_does_not_hold_up_the_others(self):
         # One agent restarting (refused connection) used to abort the whole relay pass

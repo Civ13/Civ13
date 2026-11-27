@@ -289,8 +289,8 @@ var/global/list/region_travel_carry_types = list(
 		// Where an admin chose to land them (region_admin_send.dm).
 		else if(key == "admin_send")
 			P[key] = extra[key]
-		// A plane flying on to another continent (aircraft_crossing.dm).
-		else if(key in list("flight", "pilot", "plane"))
+		// An aircraft or crewed airship flying to another land.
+		else if(key in list("flight", "pilot", "plane", "airship", "airship_flight", "airship_seat"))
 			P[key] = extra[key]
 	return json_encode(P)
 
@@ -303,8 +303,8 @@ var/global/list/region_travel_carry_types = list(
 	catch
 		return null
 	if(!islist(P) || !(P["v"] in list(1, 2, 3)) || P["kind"] != "character") return null
-	// Only a crossing ship's record makes a payload longer than a character's.
-	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX && !islist(P["ship"]) && !islist(P["plane"])) return null
+	// Only a crossing vessel's record makes a payload longer than a character's.
+	if(length(payload) > REGION_TRAVEL_PAYLOAD_MAX && !islist(P["ship"]) && !islist(P["plane"]) && !islist(P["airship"])) return null
 	if(P["v"] >= 2)
 		if(!region_travel_knowledge_valid(P["known_recipe_nodes"]) || !(P["recipe_knowledge_initialized"] in list(FALSE, TRUE))) return null
 	else if(("known_recipe_nodes" in P) || ("recipe_knowledge_initialized" in P))
@@ -366,7 +366,7 @@ var/global/list/region_travel_carry_types = list(
 	if(!space_flight_payload_ok(P)) return null
 	if(!sea_crossing_payload_ok(P)) return null
 	if(!sea_edge_payload_ok(P)) return null
-	if(!air_crossing_payload_ok(P)) return null
+	if(!air_crossing_payload_ok(P) || !airship_voyage_payload_ok(P)) return null
 	if(!region_edge_payload_ok(P)) return null
 	if(!region_admin_send_payload_ok(P)) return null
 	return P
@@ -472,11 +472,12 @@ var/global/list/region_travel_carry_types = list(
 		// A ship's crew arrive aboard her (naval/ship_crossing.dm).
 		// A walker over a shared map edge comes out on the facing edge (region_edge.dm).
 		// Someone an admin sent lands where the admin chose (region_admin_send.dm).
-		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || air_crossing_arrival_turf(P, incoming) || region_admin_send_arrival_turf(P, incoming) || party_train_arrival_turf(P) || region_edge_arrival_turf(P, incoming) || (incoming ? region_travel_return_trail_turf(P) : null) || T
+		var/turf/at = space_flight_arrival_turf(P, incoming) || sea_crossing_arrival_turf(P, incoming) || air_crossing_arrival_turf(P, incoming) || airship_voyage_arrival(P, incoming, T) || region_admin_send_arrival_turf(P, incoming) || party_train_arrival_turf(P) || region_edge_arrival_turf(P, incoming) || (incoming ? region_travel_return_trail_turf(P) : null) || T
 		var/mob/living/human/H = region_travel_build(P, at)
 		space_flight_arrived(H, P, incoming)
 		sea_crossing_arrived(H, P, incoming)
 		air_crossing_arrived(H, P, incoming)
+		airship_voyage_arrived(H, P, incoming)
 		region_edge_arrived(H, P, incoming)
 		region_admin_send_arrived(H, P, incoming, get_turf(H) || at)
 		// A recorded trip (or a refused one coming back) makes this land the home.
@@ -918,6 +919,25 @@ var/global/list/region_stopped_alerted = list()
 /obj/structure/region_gate/proc/departure_before_finish(mob/living/human/H, list/leave_behind, turf/origin)
 	return
 
+// A convoy with mutable world cargo must settle after the durable source
+// snapshot, not by replaying removals against older copies of the world.
+/obj/structure/region_gate/proc/departure_fast_escrow()
+	return TRUE
+
+// A vehicle can require every manifest member before any can be escrowed.
+/obj/structure/region_gate/proc/departure_whole_party()
+	return FALSE
+
+/obj/structure/region_gate/proc/departure_member_near(mob/living/human/H)
+	return !QDELETED(H) && (H.loc == loc || H.loc == src || Adjacent(H))
+
+// Run after remote checks and before the payload loop; never sleep here.
+/obj/structure/region_gate/proc/departure_prepare_party(list/ready)
+	return null
+
+/obj/structure/region_gate/proc/departure_party_finished()
+	return
+
 // Sends several characters as one transfer: one escrow carries them all, so
 // a ship's crew (naval/ship_crossing.dm) leave together and arrive together.
 // The transfer agent keeps one transfer in flight per land, so travellers sent
@@ -952,13 +972,13 @@ var/global/list/region_stopped_alerted = list()
 			stayed[H] = reason
 		else if(border)
 			stayed[H] = border + "."
-		else if(QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H))
+		else if(!departure_member_near(H))
 			stayed[H] = "You are too far from the trail."
 		else if(!H.persistence_owner_ckey)
 			stayed[H] = "Only players with a BYOND account can travel."
 		else
 			ready += H
-	if(!ready.len) return
+	if(!ready.len || (departure_whole_party() && ready.len != members.len)) return
 	// The travellers are sent to the destination at once, so it must be awake (travel() wakes it).
 	var/expected = destination
 	if(shard_group.peers[destination]["state"] != "UP" && !shard_group.poll_peer(destination))
@@ -975,12 +995,17 @@ var/global/list/region_stopped_alerted = list()
 		for(var/mob/living/human/H in ready)
 			stayed[H] = build_problem || "The trail changed. Try again."
 		return
+	var/preparation = departure_prepare_party(ready)
+	if(preparation)
+		for(var/mob/living/human/H in ready)
+			stayed[H] = preparation
+		return
 	var/list/payloads = list()
 	var/list/packed = list()
 	var/total = 0
 	for(var/mob/living/human/H in ready)
 		// The status checks above can yield. Never pack a body that moved away.
-		if(QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H))
+		if(!departure_member_near(H))
 			stayed[H] = "You are too far from the trail."
 			continue
 		var/refused = departure_refused(H)
@@ -993,7 +1018,7 @@ var/global/list/region_stopped_alerted = list()
 			stayed[H] = items
 			continue
 		var/payload = H.region_travel_payload(items, travel_party(H), region_raid_peer(destination), travel_extra(H), leave_behind)
-		if(length(payload) > ((findtext(payload, "\"ship\":") || findtext(payload, "\"plane\":")) ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX))
+		if(length(payload) > ((findtext(payload, "\"ship\":") || findtext(payload, "\"plane\":") || findtext(payload, "\"airship\":")) ? REGION_TRAVEL_SHIP_PAYLOAD_MAX : REGION_TRAVEL_PAYLOAD_MAX))
 			stayed[H] = "You carry too much to travel."
 			continue
 		// The destination decodes with the same rules; never escrow what it would drop.
@@ -1009,7 +1034,7 @@ var/global/list/region_stopped_alerted = list()
 		total += size
 		payloads += payload
 		packed[H] = list(payload, items, H.client, leave_behind)
-	if(!payloads.len) return
+	if(!payloads.len || (departure_whole_party() && payloads.len != members.len)) return
 	// Hold the bodies and their items while the agent records the escrow, so
 	// nothing can change. An involuntary departure must not move or let go of
 	// anything on a refusal, so it is held right where the traveller stands.
@@ -1025,7 +1050,7 @@ var/global/list/region_stopped_alerted = list()
 	else
 		for(var/mob/living/human/H in packed)
 			H.forceMove(src)
-	var/list/result = transfer_bridge.begin_escrow(destination, payloads, TRUE)
+	var/list/result = transfer_bridge.begin_escrow(destination, payloads, departure_fast_escrow())
 	busy = FALSE
 	if(!result)
 		for(var/mob/living/human/H in packed)
@@ -1040,6 +1065,7 @@ var/global/list/region_stopped_alerted = list()
 		departure_before_finish(H, P[4], start)
 		depart_finish(H, P[1], P[2], P[3])
 		departed += H
+	departure_party_finished()
 	if(hold) travel_hold_end(hold)
 	shard_group.request_save_soon()
 
@@ -1056,18 +1082,25 @@ var/global/list/region_stopped_alerted = list()
 		if(!istype(I, /obj/item/organ) && !QDELETED(I)) qdel(I)
 	for(var/obj/item/I in contents)
 		qdel(I)
+	var/fast = departure_fast_escrow()
 	if(C)
 		var/mob/new_player/lobby = new
 		lobby.key = C.key
-		to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
+		if(fast)
+			to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
+		else
+			to_chat(C, SPAN_NOTICE("You set out for [destination_name()]. You can wait in its lobby until this region finishes its next save. If the voyage is turned back, you will find your character here."))
 		shard_group.send_player_soon(C, destination)
 	var/account = H.persistence_owner_ckey
 	// Tells the agent where its character went, so it can follow (agent_travel.dm).
-	if(!C)
+	if(!C && fast)
 		agent_note_departure(H, destination, destination_name())
 	qdel(H)
-	spawn(0)
-		region_home_note(account, "depart", destination)
+	// Tentative trips must not change home outside the durable transaction.
+	// The active escrow bars duplicate login; arrival sets the new home.
+	if(fast)
+		spawn(0)
+			region_home_note(account, "depart", destination)
 
 // An admin ghost can follow a trail: their client goes to that land's server,
 // nothing travels with them. Others' ghosts do nothing here.

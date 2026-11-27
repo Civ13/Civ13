@@ -141,6 +141,7 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 	// the birth record: an older receiver would silently keep just the sign.
 	var/needs_birth_chart = FALSE
 	var/needs_immunization = FALSE
+	var/needs_airship = FALSE
 	for(var/payload in payloads)
 		// Only authoritative world-created payloads reach this point.
 		if(!istext(payload))
@@ -149,9 +150,15 @@ var/global/datum/transfer_bridge/transfer_bridge = new
 			needs_birth_chart = TRUE
 		if(findtextEx(payload, "\"immunization_record\":"))
 			needs_immunization = TRUE
-		if(needs_birth_chart && needs_immunization)
-			break
-	if(needs_immunization)
+		if(findtextEx(payload, "\"airship\":"))
+			needs_airship = TRUE
+	if(needs_airship)
+		if(!shard_group.poll_peer(peer) || shard_group.peer_transfers_held(peer))
+			return null
+		var/list/receiver = shard_group.peers[peer]
+		if(receiver["airship_voyages"] != TRUE || (needs_birth_chart && receiver["birth_chart_records"] != TRUE) || (needs_immunization && receiver["immunization_records"] != TRUE))
+			return null
+	else if(needs_immunization)
 		if(!shard_group.peer_accepts_immunization_records(peer, needs_birth_chart) || shard_group.peer_transfers_held(peer))
 			return null
 	else if(needs_birth_chart)

@@ -81,7 +81,7 @@ var/global/list/region_travel_generic_defaults = list()
 	for(var/denied in list(/obj/structure/vehicleparts, /obj/structure/hull_tiller, /obj/structure/region_gate,
 		/obj/structure/animalspawner, /obj/structure/money_printer, /obj/structure/event_stash,
 		/obj/structure/npc_vendor, /obj/structure/specialist_trader, /obj/structure/supplier, /obj/structure/multiz,
-		/obj/structure/docking_port, /obj/structure/chart_helm, /obj/structure/vessel_helm, /obj/structure/cargo_hold))
+		/obj/structure/docking_port, /obj/structure/chart_helm, /obj/structure/vessel_helm, /obj/structure/cargo_hold, /obj/structure/airship_recovery))
 		if(ispath(path, denied)) return FALSE
 	return TRUE
 

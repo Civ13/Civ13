@@ -67,3 +67,31 @@ it, by the world links table (`aircraft_edge.dm`, `air_edge_route()`).
 - She is packed and flown as in "Setting off", and built in from the arrival
   edge at the place along it her line reaches (the payload's `along`).
 
+## Crewed airship voyages
+
+A built airship has **Set out on a voyage** on its helm. Fly within eight
+tiles of the map edge and **Hold position** before using it. Where regions
+use linked map edges, face the edge you intend to cross; your position on
+that edge determines the route and the arrival coast. Elsewhere, choose a
+land from the flight chart. The helm asks for confirmation and can wake a
+sleeping destination. Crossing itself is abstracted; it does not burn
+plane-style cruise fuel or create a separate travel map.
+
+The same ledger entry carries the whole crew and the airship. Arrival waits
+for the source region's next successful save, so there cannot be a second
+copy of the equipment aboard after a crash. Crew can wait in the destination
+lobby for the save to finish. Busy regions may defer that save under their
+normal save policy. Every passenger
+must be able to travel; a refusal leaves the entire party and ship where they
+are. Supported cargo includes loose items, chests with their contents, and
+deck engines with nearby attached fuel barrels. The deck materials, damage,
+gas type and amount, and gas-cell holes carry over. Unload any unsupported
+fixture (including a bomb hatch) or animal first. Pedal airships are not
+crewed hulls and do not have this helm option.
+
+The airship arrives holding position. Crew return to their original deck
+positions and engines arrive switched off. A turned-back voyage first tries
+to return where it started. If no clear sky fits the *entire* deck, the crew
+instead arrive at the region entry point with an intact **packed airship**.
+The pilot can use it to redeploy the ship once there is room. Older worlds
+must update before they can receive a crewed airship.

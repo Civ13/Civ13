@@ -1106,9 +1106,12 @@ var/global/list/air_hull_crafts = list()
 	var/tmp/datum/craft/air/craft
 	// Saved: the airship (json of body_state() with speed and holding).
 	var/hull_state = ""
+	var/voyage_hull_id = null
+	var/tmp/voyage_pending = FALSE
+	var/tmp/voyage_arrived = null
 
 /obj/structure/airship_helm/persistence_runtime_var(key)
-	return key == "craft" || ..()
+	return key == "craft" || key == "voyage_pending" || key == "voyage_arrived" || ..()
 
 /obj/structure/airship_helm/Destroy()
 	decommission()
@@ -1128,6 +1131,7 @@ var/global/list/air_hull_crafts = list()
 	if (!B)
 		B = new /datum/craft_body/built/air
 		craft = new /datum/craft/air(B)
+	airship_voyage_hull_id()
 	if (B.placed())
 		B.set_afloat(FALSE)
 	B.adopt(survey, T, heading || B.dir)
@@ -1156,6 +1160,7 @@ var/global/list/air_hull_crafts = list()
 	if (!B || !B.placed())
 		hull_state = ""
 		return
+	airship_voyage_hull_id()
 	var/list/state = B.body_state()
 	state["speed"] = craft.speed
 	state["anchored"] = craft.anchored
@@ -1174,6 +1179,10 @@ var/global/list/air_hull_crafts = list()
 	if (!B.restore_state(state, get_turf(src)))
 		qdel(B)
 		return
+	// A legacy save has no persisted identity yet. Derive it from the saved
+	// position, so journal replay identifies this hull after it has moved.
+	if (!voyage_hull_id)
+		voyage_hull_id = md5("[shard_group.region]|legacy-airship|[x],[y],[z]|[hull_state]")
 	craft = new /datum/craft/air(B)
 	craft.name = B.hull_name
 	// A save restored in mid flight holds her where she is.
@@ -1211,11 +1220,14 @@ var/global/list/air_hull_crafts = list()
 	options += list("Slow ahead", "All stop", "Head north", "Head east", "Head south", "Head west", craft.anchored ? "Cast off" : "Hold position")
 	var/datum/craft_body/built/air/AB = craft.body
 	options += AB.landed() ? "Lift off" : "Land"
+	if (!AB.landed() && shard_group.enabled)
+		options += "Set out on a voyage"
 	options += list("Refit the deck", "Draw her lines", "Strike the airship", "Cancel")
 	var/choice = WWinput(H, status_text(), name, "Cancel", options)
-	if (!choice || choice == "Cancel" || !craft || get_dist(H, src) > 1)
+	if (!choice || choice == "Cancel" || !craft || !Adjacent(H) || H.z != z || travel_hold_input(H) || travel_hold_refuses(H, src))
 		return
 	switch (choice)
+		if ("Set out on a voyage") airship_voyage_menu(H)
 		if ("Full ahead") craft.set_speed(VESSEL_SPEED_FULL)
 		if ("Half ahead") craft.set_speed(VESSEL_SPEED_HALF)
 		if ("Slow ahead") craft.set_speed(VESSEL_SPEED_SLOW)

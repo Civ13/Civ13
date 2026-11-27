@@ -199,7 +199,9 @@ class ShipEdgeCrossingTests(unittest.TestCase):
         party = dm_body(travel, '/obj/structure/region_gate/proc/depart_party(list/members)')
         # One escrow for everyone, never one per traveller.
         self.assertEqual(party.count('transfer_bridge.begin_escrow('), 1)
-        self.assertIn('transfer_bridge.begin_escrow(destination, payloads, TRUE)', party)
+        self.assertIn('transfer_bridge.begin_escrow(destination, payloads, departure_fast_escrow())', party)
+        self.assertIn('/obj/structure/region_gate/proc/departure_fast_escrow()\n\treturn TRUE', travel)
+        self.assertNotIn('/obj/structure/region_gate/sea_crossing/departure_fast_escrow()', ship)
         self.assertIn('REGION_TRAVEL_PARTY_MAX', party)
         self.assertIn('length(json_encode(payload))', party)
         # A lone traveller goes the same way.
