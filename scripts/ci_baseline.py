@@ -47,6 +47,8 @@ SUITES = {
     'hull_storm': {'files': ('tests/hull_storm/test_storm.py',), 'paths': ('tests/hull_storm/', 'code/modules/naval/hull_storm.dm')},
     'hull_waterlogging': {'files': ('tests/hull_waterlogging/test_sources.py',), 'paths': ('tests/hull_waterlogging/', 'code/modules/naval/hull_drives.dm')},
     'flight_save_risk': {'files': ('tests/flight_save_risk/test_sources.py',), 'paths': ('tests/flight_save_risk/', 'code/modules/naval/flight_save_risk.dm')},
+    'voyage_navigation': {'files': ('tests/voyage_navigation/test_source.py',),
+        'paths': ('tests/voyage_navigation/', 'code/game/objects/map_metadata/voyage.dm')},
     'voyage_storm': {'files': ('tests/voyage_storm/test_source.py',), 'paths': ('tests/voyage_storm/', 'code/modules/naval/voyage_provisions.dm')},
     'science_investigations': {'files': ('tests/science_investigations/test_source.py',),
         'paths': ('tests/science_investigations/', 'code/modules/research_tree/science_investigations.dm'),
