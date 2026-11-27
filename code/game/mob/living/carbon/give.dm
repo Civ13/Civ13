@@ -2,43 +2,71 @@
 	set category = "IC"
 	set name = "Give"
 
-	if (incapacitated())
+	if (!client || incapacitated())
 		return
-	if (!istype(target) || target.incapacitated() || target.client == null)
+	if (!istype(target) || target.incapacitated() || !target.client)
 		return
 
-	var/obj/item/I = usr.get_active_hand()
+	var/obj/item/I = get_active_hand()
 	if (!I)
-		I = usr.get_inactive_hand()
+		I = get_inactive_hand()
 	if (!I)
-		to_chat(usr, SPAN_WARNING("You don't have anything in your hands to give to \the [target]."))
+		to_chat(src, SPAN_WARNING("You don't have anything in your hands to give to \the [target]."))
 		return
 
-	if (WWinput(target, "[usr] wants to give you \a [I]. Will you accept it?", null, "Yes", list("Yes","No")) == "No")
-		target.visible_message("<span class='notice'>\The [usr] tried to hand \the [I] to \the [target], \
-		but \the [target] didn't want it.</span>")
+	var/client/giver_connection = client
+	var/client/receiver_connection = target.client
+	var/answer = WWinput(target, "[src] wants to give you \a [I]. Will you accept it?", null, "Yes", list("Yes","No"))
+	if (QDELETED(src) || QDELETED(target) || QDELETED(I) || client != giver_connection || target.client != receiver_connection)
+		return
+	if (answer == "No")
+		target.visible_message(SPAN_NOTICE("\The [src] tried to hand \the [I] to \the [target], but \the [target] didn't want it."))
+		return
+	if (answer != "Yes")
 		return
 
-	if (!I) return
+	give_held_item(I, target)
 
+/mob/living/human/proc/give_held_item(obj/item/I, mob/living/target)
+	if (QDELETED(src) || QDELETED(target) || QDELETED(I) || incapacitated() || target.incapacitated())
+		return FALSE
 	if (!Adjacent(target))
-		to_chat(usr, SPAN_WARNING("You need to stay in reaching distance whilst giving an object."))
-		to_chat(target, SPAN_WARNING("\The [usr] moved too far away."))
-		return
-
-	if (I.loc != usr || (usr.l_hand != I && usr.r_hand != I))
-		to_chat(usr, SPAN_WARNING("You need to keep the item in your hands."))
-		to_chat(target, SPAN_WARNING("\The [usr] seems to have given up on passing \the [I] to you."))
-		return
-
-	if (target.r_hand != null && target.l_hand != null)
+		to_chat(src, SPAN_WARNING("You need to stay in reaching distance whilst giving an object."))
+		to_chat(target, SPAN_WARNING("\The [src] moved too far away."))
+		return FALSE
+	if (I.loc != src || !item_is_in_hands(I))
+		to_chat(src, SPAN_WARNING("You need to keep the item in your hands."))
+		to_chat(target, SPAN_WARNING("\The [src] seems to have given up on passing \the [I] to you."))
+		return FALSE
+	if (target.hands_are_full())
 		to_chat(target, SPAN_WARNING("Your hands are full."))
-		to_chat(usr, SPAN_WARNING("Their hands are full."))
-		return
+		to_chat(src, SPAN_WARNING("Their hands are full."))
+		return FALSE
+	if (!canUnEquip(I) || I.nodrop || I.nodrop_special_check())
+		return FALSE
 
-	if (usr.unEquip(I))
-		target.put_in_hands(I) // If this fails it will just end up on the floor, but that's fitting for things like dionaea.
-		target.visible_message("<span class='notice'>\The [usr] handed \the [I] to \the [target].</span>")
+	if (istype(I, /obj/item/stack))
+		if (!give_held_stack(I, target))
+			return FALSE
+	else if (!unEquip(I) || QDELETED(I) || I.loc == src || !target.put_in_hands(I))
+		return FALSE
+	target.visible_message(SPAN_NOTICE("\The [src] handed \the [I] to \the [target]."))
+	return TRUE
+
+// Never stage stacks on a turf: Crossed() can merge a nearby stack into the gift.
+/mob/living/human/proc/give_held_stack(obj/item/stack/I, mob/living/target)
+	if (!ishuman(target) || target.lying || I.extraction_surface_source)
+		return FALSE
+	var/in_left_hand = l_hand == I
+	if (!transfer_held_item_to(I, target))
+		return FALSE
+	if (target.put_in_active_hand(I) || target.put_in_inactive_hand(I))
+		return TRUE
+	// If admission unexpectedly changes, return the stack without touching the ground.
+	if (!QDELETED(I) && I.loc == target && I.forceMove(src))
+		if (!(in_left_hand ? put_in_l_hand(I) : put_in_r_hand(I)))
+			put_in_active_hand(I) || put_in_inactive_hand(I)
+	return FALSE
 
 /mob/living/human/verb/recruit()
 	set category = null
