@@ -133,6 +133,35 @@ class Snapshot(unittest.TestCase):
     def test_committed_update_is_read_fresh(self):
         self.overlay.color=Values([.3]*20);self.overlay.color_committed=True
         self.assertEqual(self.f(self.root),[.3]*20)
+    def test_snapshot_range_preserves_all_coefficient_positions(self):
+        coefficients = [0, -0.5, 0.25, 1, 0.25] * 4
+        coefficients[-1] = 0.75
+        self.overlay.color = Values(coefficients)
+        self.assertEqual(self.f(self.root), coefficients)
+
+        range_loop = 'for(var/i in 1 to 20)'
+        self.assertIn(range_loop, SNAP)
+        previous = compile_proc(
+            SNAP.replace(range_loop, 'for(var/i = 1, i <= 20, i++)', 1),
+            '/proc/root_light_mask_snapshot(', 'root, allow_pending=False', self.env,
+        )
+        self.assertEqual(previous(self.root), coefficients)
+
+        truncated = compile_proc(
+            SNAP.replace(range_loop, 'for(var/i in 1 to 19)', 1),
+            '/proc/root_light_mask_snapshot(', 'root, allow_pending=False', self.env,
+        )
+        self.assertEqual(truncated(self.root), coefficients[:-1])
+
+        for position, bad_coefficient in [(1, None), (11, "0.25"), (20, [])]:
+            with self.subTest(position=position):
+                invalid = coefficients.copy()
+                invalid[position - 1] = bad_coefficient
+                self.overlay.color = Values(invalid)
+                self.assertIsNone(self.f(self.root))
+                self.assertIsNone(previous(self.root))
+        self.assertEqual(truncated(self.root), coefficients[:-1])
+
     def test_missing_owner_check_control(self):
         f=compile_proc(SNAP.replace(' || owner.loc != root',''),'/proc/root_light_mask_snapshot(','root, allow_pending=False',self.env)
         self.overlay.loc=object();self.assertIsNotNone(f(self.root))
