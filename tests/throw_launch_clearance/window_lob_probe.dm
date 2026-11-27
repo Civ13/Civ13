@@ -130,6 +130,46 @@ var/window_lob_runtime = FALSE
 		G.window_lob_hop(flight)
 		sleep(3)
 		window_lob_check(G.primed_at == exterior && G.active, "the original fuse fires during flight on the grenade's current tile")
+		// A second garden wall has exposed upper floor, not a window.
+		var/turf/yard = locate(2, 7, 1)
+		var/turf/yard_edge = locate(3, 7, 1)
+		var/turf/ledge = locate(4, 7, 2)
+		new /turf/sky/building(locate(2, 7, 2))
+		new /turf/sky/building(locate(3, 7, 2))
+		new /turf/sky/building(locate(4, 7, 3))
+		var/list/ledge_path = window_lob_approach(H, yard, ledge, EAST, 2)
+		window_lob_check(ledge_path.len == 1 && window_lob_landing(H, yard_edge, ledge, EAST, FALSE) == ledge, "exposed upper floor is a valid distinct landing")
+		window_lob_check(!window_lob_landing(H, yard_edge, ledge, EAST, TRUE), "an exposed floor does not masquerade as a window")
+		window_lob_check(!window_lob_landing(H, exterior, opening, EAST, FALSE), "a window does not masquerade as an exposed floor")
+		var/obj/item/tool = new(yard)
+		tool.start_window_lob(H, ledge, EAST, ledge_path.Copy(), TRUE, FALSE)
+		var/list/item_flight = tool.throw_flight_token
+		item_flight["window_lob_next_tick"] = world.time
+		tool.window_lob_hop(item_flight)
+		item_flight["window_lob_next_tick"] = world.time
+		tool.window_lob_hop(item_flight)
+		window_lob_check(tool.loc == ledge && !tool.throwing, "an ordinary item reaches an exposed upper floor")
+		tool.forceMove(ground)
+		tool.start_window_lob(H, opening, EAST, path.Copy(), TRUE)
+		item_flight = tool.throw_flight_token
+		item_flight["window_lob_next_tick"] = world.time
+		tool.window_lob_hop(item_flight)
+		item_flight["window_lob_next_tick"] = world.time
+		tool.window_lob_hop(item_flight)
+		window_lob_check(tool.loc == inside && !tool.throwing, "an ordinary item also reaches the first tile through a window")
+		var/obj/roof/ledge_roof = new(ledge)
+		window_lob_check(!window_lob_landing(H, yard_edge, ledge, EAST, FALSE), "a roof rules out a direct landing")
+		qdel(ledge_roof)
+		var/obj/ledge_wall = new(ledge)
+		ledge_wall.density = TRUE
+		tool.forceMove(yard)
+		tool.start_window_lob(H, ledge, EAST, ledge_path.Copy(), TRUE, FALSE)
+		item_flight = tool.throw_flight_token
+		item_flight["window_lob_next_tick"] = world.time
+		tool.window_lob_hop(item_flight)
+		item_flight["window_lob_next_tick"] = world.time
+		tool.window_lob_hop(item_flight)
+		window_lob_check(tool.loc == yard_edge && !tool.throwing, "a new obstacle on the exposed ledge stops flight outside")
 	catch (var/exception/e)
 		window_lob_check(FALSE, "[e] [e.file]:[e.line]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = window_lob_failures, "runtime_error" = window_lob_runtime, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
