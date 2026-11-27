@@ -1,11 +1,12 @@
 # Finite hydraulic fracturing
 
-Run `tests/resource_extraction/run.ps1 -ByondBin <516.1681-bin> -Probe tests/hydraulic_fracturing/probe.dm`.
+Run `tests/resource_extraction/run.ps1 -ByondBin <pinned-BYOND-bin> -Probe tests/hydraulic_fracturing/probe.dm`.
 
 The fixture compiles production sources with ordinary world startup disabled,
 uses temporary storage, and closes the runtime port. It checks bounded callback
 restarts, 300 cable demand, exact batch costs, permanent terrain conversion,
-same-kind turf replacement cancellation, rejected short/contaminated inputs,
+same-kind turf replacement cancellation, province takeover at payment time,
+local groundwater expiry and refresh, rejected short/contaminated inputs,
 native sprite states and disk-backed stopped reload with contained inputs.
 It does not establish graphical interaction, full-world persistence or long-term
 production memory. BYOND can contact its authentication service before startup

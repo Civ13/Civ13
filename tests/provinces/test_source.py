@@ -294,11 +294,35 @@ class Fracking(unittest.TestCase):
 
     def test_wiring(self):
         rig = (ROOT / 'code/modules/1713/hydraulic_fracturing.dm').read_text(encoding='utf-8')
-        self.assertLess(rig.index('var/refusal = fracking_refusal(H, get_turf(src))'), rig.index('if (!fracture_batch() || !check_power())\n\t\tstop_drilling()\n\t\tto_chat'))
+        self.assertLess(rig.index('var/refusal = fracking_refusal(faction, get_turf(src))'), rig.index('if (!fracture_batch() || !check_power())\n\t\tstop_drilling()\n\t\tto_chat'))
         self.assertIn('output.reagents.add_reagent("petroleum", 50)\n\t\tfracking_batch_cost(src)', rig)
         sink = (ROOT / 'code/game/objects/structures/watercloset.dm').read_text(encoding='utf-8')
         self.assertIn('latrine_fouls_near(src) || fracking_fouls_near(src)', sink)
         self.assertIn('#include "code\\modules\\provinces\\province_fracking.dm"', DME.read_text(encoding='utf-8'))
+
+
+    def test_running_batch_revalidates_the_initiating_faction_before_payment(self):
+        rig = (ROOT / 'code/modules/1713/hydraulic_fracturing.dm').read_text(encoding='utf-8')
+        batch = rig.split('/proc/fracture_batch(commit_batch = FALSE)', 1)[1].split('/obj/structure', 1)[0]
+        start = rig.split('/attack_hand(', 1)[1].split('/verb/', 1)[0]
+        stop = rig.split('/stop_drilling()', 1)[1].split('/get_saved_vars()', 1)[0]
+        self.assertIn('var/faction = H?.civilization', start)
+        self.assertIn('fracture_faction = faction', start)
+        gate = 'if ((active || commit_batch) && fracking_refusal(fracture_faction, get_turf(src)))'
+        self.assertLess(batch.index(gate), batch.index('water.reagents.remove_reagent'))
+        self.assertIn('fracture_faction = null', stop)
+        self.assertIn('list("fracture_target", "fracture_identity", "fracture_faction")', rig)
+
+    def test_fouling_refreshes_coordinates_and_checks_age_not_row_count(self):
+        text = (ROOT / 'code/modules/provinces/province_fracking.dm').read_text(encoding='utf-8')
+        record = text.split('/proc/fracking_record_foul_site(', 1)[1].split('/proc/', 1)[0]
+        query = text.split('/proc/fracking_fouls_near(', 1)[1].split('/proc/', 1)[0]
+        self.assertNotIn('FRACK_FOUL_SITES', text)
+        self.assertIn('now - fracking_foul_sites[oldest_key] <= FRACK_FOUL_TIME', record)
+        self.assertIn('fracking_foul_sites -= site\n\tfracking_foul_sites[site] = now', record)
+        self.assertIn('fracking_foul_sites["[x],[y]"]', query)
+        self.assertIn('now - last_batch <= FRACK_FOUL_TIME', query)
+        self.assertNotIn('.z', query)
 
 
 class RubberTrees(unittest.TestCase):

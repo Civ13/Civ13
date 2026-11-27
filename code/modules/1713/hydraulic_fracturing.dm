@@ -5,6 +5,7 @@
 	powerneeded = 300
 	var/tmp/turf/fracture_target
 	var/tmp/datum/fracture_identity
+	var/tmp/fracture_faction
 
 /obj/structure/drill/fracking/proc/valid_fracture_target(turf/T)
 	return anchored && isturf(loc) && T && get_dist(src, T) == 1 && T.z == z && istype(T, /turf/floor/dirt/underground) && !istype(T, /turf/floor/dirt/underground/empty) && T.is_mineable
@@ -32,10 +33,12 @@
 	if (!fracture_target)
 		to_chat(H, SPAN_WARNING("Anchor beside undepleted underground rock."))
 		return
-	var/refusal = fracking_refusal(H, get_turf(src)) // province_fracking.dm
+	var/faction = H?.civilization
+	var/refusal = fracking_refusal(faction, get_turf(src)) // province_fracking.dm
 	if (refusal)
 		to_chat(H, SPAN_WARNING(refusal))
 		return
+	fracture_faction = faction
 	if (!fracture_target.sifting_identity)
 		fracture_target.sifting_identity = new /datum
 	fracture_identity = fracture_target.sifting_identity
@@ -53,6 +56,8 @@
 		I.loc = loc
 
 /obj/structure/drill/fracking/proc/fracture_batch(commit_batch = FALSE)
+	if ((active || commit_batch) && fracking_refusal(fracture_faction, get_turf(src)))
+		return FALSE
 	if (!valid_fracture_target(fracture_target) || fracture_target.sifting_identity != fracture_identity)
 		return FALSE
 	var/obj/item/weapon/reagent_containers/glass/barrel/water
@@ -100,10 +105,11 @@
 	. = ..()
 	fracture_target = null
 	fracture_identity = null
+	fracture_faction = null
 
 /obj/structure/drill/fracking/get_saved_vars()
 	var/list/saved = ..()
-	saved -= list("fracture_target", "fracture_identity")
+	saved -= list("fracture_target", "fracture_identity", "fracture_faction")
 	return saved
 
 /obj/structure/drill/fracking/Destroy()
