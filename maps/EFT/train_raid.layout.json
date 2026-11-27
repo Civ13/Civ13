@@ -349,6 +349,13 @@
       ]
     }
   ],
+  "track_motion": {
+    "columns": [
+      102,
+      147
+    ],
+    "tiles": 388
+  },
   "crews": {
     "west": {
       "berth": "raid_west",

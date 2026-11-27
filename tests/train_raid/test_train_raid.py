@@ -110,6 +110,31 @@ class TrainRaidMapTests(unittest.TestCase):
         self.assertEqual((world["width"], world["height"], world["levels"]), (256, 256, 4))
         self.assertEqual(len(self.grid), 256 * 256 * 4)
 
+    def test_motion_is_cosmetic_and_stays_outside_the_playable_trains(self):
+        moving = {p for p, atoms in self.grid.items()
+                  if "/obj/effect/train_raid_track_motion" in atoms}
+        self.assertGreaterEqual(self.layout["hauler"]["length"], 200)
+        self.assertEqual(len(moving), self.layout["track_motion"]["tiles"])
+        self.assertEqual({p[0] for p in moving}, set(self.layout["track_motion"]["columns"]))
+        self.assertGreater(len(moving), 300)
+        for p in moving:
+            self.assertEqual(p[2], self.layout["hauler"]["z"])
+            self.assertIn("/area/train_raid/station", self.grid[p])
+            self.assertFalse(any("train_raid_bridge" in a for a in self.grid[p]))
+            self.assertTrue(walkable(self.grid[p]))
+
+    def test_matching_gates_docking_but_never_blocks_an_abort(self):
+        mode = self.mode
+        dock = mode.split("/datum/train_raid_crew/proc/dock(", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(dock.index("!boarding_ready()"), dock.index("set_bridges(TRUE)"))
+        departure = mode.split("/datum/train_raid_crew/proc/depart()", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(departure.index("set_bridges(FALSE)"), departure.index("shuttle_speed = 0"))
+        backdrop = mode.split("/obj/effect/train_raid_track_motion\n", 1)[1].split("// A bridge tile", 1)[0]
+        self.assertIn("mouse_opacity = 0", backdrop)
+        self.assertIn("should_save = FALSE", backdrop)
+        self.assertIn("loop = -1", backdrop)
+        self.assertNotIn("process(", backdrop)
+
     def test_single_metadata_object(self):
         count = sum(1 for atoms in self.grid.values() if "/obj/map_metadata/train_raid" in atoms)
         self.assertEqual(count, 1)

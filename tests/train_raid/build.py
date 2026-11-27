@@ -169,6 +169,17 @@ def build():
             "airlock_doors": [[ox + 14, oy + 39, oz], [ox + 15, oy + 45, oz]],
             "boarding_ports": slot["boarding_ports"],
             "bridge_cells": slot["bridge_cells"]}
+    # Two narrow, non-interactive lines of scrolling sleepers sell the
+    # motion. Use only yard tiles and keep bridges/doors/decks unobscured.
+    track_motion = {"columns": [tx0 - 11, tx1 + 11], "tiles": 0}
+    for x in track_motion["columns"]:
+        for y in range(ty0, ty1 + 1):
+            pos = x, y, raid.TRAIN_ORIGIN[2]
+            atoms, area = grid[pos]
+            if area != AREAS["yard"] or not atoms.startswith("/turf"):
+                continue
+            grid[pos] = ("/obj/effect/train_raid_track_motion," + atoms, area)
+            track_motion["tiles"] += 1
     grid[1, 1, 1] = ("/obj/map_metadata/train_raid,/turf/wall/iron", AREAS["void"])
     layout = {
         "schema_version": 1,
@@ -179,6 +190,7 @@ def build():
                       "loot_pads": len(s["loot_anchors"]), "platform_openings": s["platform_openings"]}
                      for s in raid_layout["sections"]],
         "platforms": raid_layout["platforms"],
+        "track_motion": track_motion,
         "crews": crews,
     }
     return grid, layout

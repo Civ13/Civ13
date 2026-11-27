@@ -20,11 +20,30 @@ is the **line collapse**.
 
 | Phase | What happens |
 | --- | --- |
-| Start | Both shuttles are docked at the west and east berths with their boarding bridges extended. Loot pads roll by section tier. Crews spawn in their shuttle bunks with a basic kit, two lift balloons and a shuttle beacon. |
+| Start | Both shuttles start at the west and east berths, already running alongside the Hauler with their boarding bridges extended. Loot pads roll by section tier. Crews spawn in their shuttle bunks with a basic kit, two lift balloons and a shuttle beacon. |
 | Boarding | Five minutes after the round starts (or earlier from the helm), each shuttle departs: its bridges retract into an impassable gap and the shuttle is away. Anyone still aboard rides with it until the next docking. |
 | Raiding | Crews breach compartment doors rear to front. Sections nearer the locomotive hold better loot. Lift balloons send one item or crate at a time to the shuttle stores; the coaches, vault car and locomotive need a boarding pass loaded at the helm first. |
-| Recall | A crew member on the train uses their shuttle beacon, burning 2 fuel. The shuttle takes three minutes to arrive, docks for a two-minute window, then departs again. Whoever is aboard, and everything in the shuttle, is secured. A departed shuttle can be recalled again after a five-minute cooldown. |
+| Recall | A crew member on the train uses their shuttle beacon, burning 2 fuel. The shuttle takes at least three minutes to draw alongside and must hold the Hauler’s speed before its two-minute boarding window begins. It retracts the bridges before departing again. Whoever is aboard, and everything in the shuttle, is secured. A departed shuttle can be recalled again after a five-minute cooldown. |
 | Line collapse | Sixty minutes after the start, warnings at thirty, fifteen, five and one minutes. At zero every item still on the Hauler and the platforms is destroyed, every raider still there is lost, the two crews' secured value is announced, each shuttle's hold is saved for its party and the round ends. |
+
+## Running alongside the Hauler
+
+The Hauler is a stationary 24 × 200 tile map train; it does not move walls,
+cargo, riders, or lighting. Existing rail-sleeper art scrolls south beside the
+train, making it look like the whole map is travelling north. The strips are
+visual only and do not use the rail network.
+
+A recalled shuttle accelerates toward the Hauler's 5 tiles/s. The helm
+shows its speed and arrival countdown; an onboard crew member can trim the
+approach or choose **Match Hauler speed**. Bridges remain shut until the
+shuttle is alongside and has been within 0.25 tiles/s of the Hauler for
+three seconds. If it still has not matched 30 seconds after arrival, the helm
+automatically matches speed so a beacon recall works even with nobody aboard.
+
+During the boarding window the shuttle holds the matched speed. The helm
+retracts its bridges before normal departure, and losing the match aborts
+boarding and retracts them too. These are event shuttles, not persistence
+locomotives; their movement does not change overworld trains or freight custody.
 
 ## Lives and respawns
 
@@ -82,8 +101,8 @@ lost.
 The shuttle's rear rooms (bunks, stores, engine room, helm) are crew only.
 Their airlock doors open only for the owning crew and cannot be damaged,
 kicked, picked or deconstructed. The centre carriage and forward rooms are
-open to boarding whenever the shuttle is docked. The helm offers `Depart now`
-and shows the shuttle state; the engine mount is decorative.
+open to boarding whenever the shuttle is docked. The helm offers speed controls during approach and `Depart now` when
+matched alongside; the engine mount is decorative.
 
 ## Map
 
