@@ -54,7 +54,7 @@
 	var/obj/item/stack/S = stone_type
 	to_chat(user, SPAN_NOTICE("About [stone_left] units of [initial(S.name)] remain."))
 
-// Existing dynamite damage is processed from an explosion queue. Do not let
+// The existing blasting charge damage is processed from an explosion queue. Do not let
 // that same blast destroy resources it just uncovered.
 /obj/structure/quarry_cluster/ex_act(severity)
 	return

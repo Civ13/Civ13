@@ -234,14 +234,12 @@
 	blasting_charge_break_rock(O)
 	qdel(src)
 
-// Breaks the mineable rock on and around T as if it had been mined.
+// One geology pass and one finite stone cluster per solid tile opened.
 /proc/blasting_charge_break_rock(turf/T)
 	var/broken = 0
 	for (var/turf/floor/dirt/underground/U in range(1, T))
-		if (!U.density || !U.is_mineable)
-			continue
-		U.mining_proc()
-		broken++
+		if (U.mining_proc(null, TRUE))
+			broken++
 	return broken
 
 #undef SCRAPER_LOADS

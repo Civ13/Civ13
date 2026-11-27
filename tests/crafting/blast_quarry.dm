@@ -11,13 +11,15 @@
 	if (wall_site.quarry_blast_eligible())
 		recipe_ci_fail("blast quarry", "already-working rock accepted")
 	wall_site.mining_in_progress = FALSE
-	wall_site.mining_proc(null, TRUE)
+	if (blasting_charge_break_rock(wall_site) != 1)
+		recipe_ci_fail("blast quarry", "blasting charge should open one wall")
 	site = locate(2, 1, 1)
 	var/obj/structure/quarry_cluster/Q = locate() in site
 	if (!Q || site.quarry_blast_eligible() || site.density || Q.stone_left < 12)
 		recipe_ci_fail("blast quarry", "blast did not replace a wall with finite stock")
 		return
-	site.mining_proc(null, TRUE)
+	if (blasting_charge_break_rock(site))
+		recipe_ci_fail("blast quarry", "a second charge found no new wall but reported breaking rock")
 	var/cluster_count = 0
 	for (var/obj/structure/quarry_cluster/unused in site)
 		cluster_count++

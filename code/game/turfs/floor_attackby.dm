@@ -1053,8 +1053,7 @@
 	if (found_ore)
 		note_field_work(H, "mining") // Natural Science field work (natural_science_work.dm).
 		if (bulk_quarry)
-			quarry_open(/obj/item/stack/material/stone, rand(8,12))
-			return
+			return quarry_open(/obj/item/stack/material/stone, rand(8,12))
 		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
 		bonusstone.amount = rand(8,12)
 		if (H)
@@ -1075,14 +1074,12 @@
 				var/material/M = get_material_by_name("bone")
 				to_chat(H, SPAN_GREEN_BOLD("You found a <font color=[M.icon_colour]><b>fossil</font></b>!"))
 			if (bulk_quarry)
-				quarry_open(/obj/item/stack/material/stone, rand(8,12))
-				return
+				return quarry_open(/obj/item/stack/material/stone, rand(8,12))
 			change_the_turf()
 			return
 	if(geology_allowed && (istype(T, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert")))
 		if (bulk_quarry)
-			quarry_open(/obj/item/stack/material/sandstone, rand(16,24))
-			return
+			return quarry_open(/obj/item/stack/material/sandstone, rand(16,24))
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -1094,8 +1091,7 @@
 		return
 	if(geology_allowed && (prob(20) && (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13 && map.ID != MAP_RIVER_KWAI) && map.ordinal_age >=1))
 		if (bulk_quarry)
-			quarry_open(/obj/item/stack/material/marble, rand(16,24))
-			return
+			return quarry_open(/obj/item/stack/material/marble, rand(16,24))
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
 		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
 		bonusstone.amount = rand(8,12)
@@ -1109,8 +1105,7 @@
 		return
 	else if(geology_allowed && (prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1))
 		if (bulk_quarry)
-			quarry_open(/obj/item/stack/material/marble, rand(16,24))
-			return
+			return quarry_open(/obj/item/stack/material/marble, rand(16,24))
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -1122,8 +1117,7 @@
 		return
 	else
 		if (bulk_quarry)
-			quarry_open(/obj/item/stack/material/stone, rand(16,24))
-			return
+			return quarry_open(/obj/item/stack/material/stone, rand(16,24))
 		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))

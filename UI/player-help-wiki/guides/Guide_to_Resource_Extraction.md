@@ -116,8 +116,8 @@ Only the first level feels the water above it; the deeper levels lie under its r
 
 ## Blasting rock
 
-Once your faction knows **Gunpowder**, find the in-game dynamite entry in the
-**Crafting Atlas** (search “blasting charge” or “dynamite”). A detonated game charge near solid mineable rock leaves
+Once your faction knows **Gunpowder**, find the in-game blasting charge entry in the
+**Crafting Atlas**. A detonated blasting charge near solid mineable rock leaves
 finite **blasted rock clusters** where the rock opened. It does not refill
 exposed floors, spent clusters, or loose debris. Stay clear of the game's
 ordinary blast damage. Any ore found is rolled once by the same mining rules
