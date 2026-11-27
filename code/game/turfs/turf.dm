@@ -104,7 +104,7 @@
 	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))
 		var/turf/floor/dirt/underground/U = src
 		var/mob/living/human/H = user
-		if (H.ant)
+		if (H.ant && !quarry_hardness())
 			if(src.mining_in_progress)
 				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor."))
 				return

@@ -72,7 +72,7 @@
 
 // TRUE for a cell underground that a walker can be dug out into.
 /proc/region_edge_deep_diggable(turf/T)
-	if (!T || istype(T, /turf/floor/dirt/underground/hot) || istype(T, /turf/floor/lava) || istype(T, /turf/wall/rockwall/bedrock) || istype(T, /turf/floor/beach/water))
+	if (!T || T.quarry_hardness() || istype(T, /turf/floor/dirt/underground/hot) || istype(T, /turf/floor/lava) || istype(T, /turf/wall/rockwall/bedrock) || istype(T, /turf/floor/beach/water))
 		return FALSE
 	for (var/atom/movable/M in T)
 		if (M.density && !istype(M, /atom/movable/lighting_overlay))

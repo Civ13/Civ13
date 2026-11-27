@@ -117,7 +117,7 @@ Only the first level feels the water above it; the deeper levels lie under its r
 ## Blasting rock
 
 Once your faction knows **Gunpowder**, find the in-game blasting charge entry in the
-**Crafting Atlas**. A detonated blasting charge near solid mineable rock leaves
+**Crafting Atlas**. A detonated blasting charge near ordinary mineable rock leaves
 finite **blasted rock clusters** where the rock opened. It does not refill
 exposed floors, spent clusters, or loose debris. Stay clear of the game's
 ordinary blast damage. Any ore found is rolled once by the same mining rules
@@ -129,6 +129,18 @@ it backs up. The cluster shrinks as you work; it disappears when exhausted
 and does not refill on restart. Ordinary stone can go into the normal
 **stone bricks** craft or the **stone crusher** for a chance at sand and
 trace minerals. Sandstone and marble use their own normal crafting routes.
+
+Some dry underground pockets have **hard quarry rock**. Pickaxes and shovels
+cannot open these walls. Ordinary blasting charges open shallow hard bands
+on the first two cave levels. On the third and fourth cave levels, **deep
+quarry rock** needs a **reinforced quarry charge**, unlocked by **Deep
+Quarrying** after Gunpowder and Ore Dressing. The stronger charge reaches
+harder rock, not farther. Examine the wall before using a charge.
+
+For the same stone roll, shallow hard bands leave one-third more stone
+than blasting ordinary rock; deep bands leave about two-thirds more.
+The bands are pockets: use ordinary rock or an open pocket to dig around
+one if you are only trying to reach the next cave level.
 
 In the dedicated **Tutorial** region, read **Quarry stone and process it** on
 the camp lesson board. A sample cluster, pickaxe, and crusher are in the yard

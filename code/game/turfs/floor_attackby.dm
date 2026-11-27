@@ -883,10 +883,13 @@
 		ChangeTurf(/turf/floor/dirt)
 	is_mineable = FALSE
 
-/turf/proc/mining_proc(var/mob/living/human/H = null, bulk_quarry = FALSE)
-	if (!src || (!is_mineable && !istype(src, /turf/floor/mining)))
+/turf/proc/mining_proc(var/mob/living/human/H = null, bulk_quarry = 0)
+		if (!src)
 		return
-	if (bulk_quarry && (!quarry_blast_eligible() || persistence_admission_blocked()))
+	if (bulk_quarry)
+		if (!quarry_blast_eligible(bulk_quarry) || persistence_admission_blocked())
+			return
+	else if (quarry_hardness() || (!is_mineable && !istype(src, /turf/floor/mining)))
 		return
 	var/turf/T = get_turf(src)
 	var/area/area_above = null
@@ -1133,7 +1136,7 @@
 	if (istype(src, /turf/floor/dirt/underground) && ishuman(user))
 		var/turf/floor/dirt/underground/U = src
 		var/mob/living/human/H = user
-		if (H.ant && H.a_intent == I_GRAB)
+		if (H.ant && H.a_intent == I_GRAB && !quarry_hardness())
 			if(src.mining_in_progress)
 				to_chat(user, SPAN_WARNING("You are already trying to break the rocky floor."))
 				return

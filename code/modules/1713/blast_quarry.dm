@@ -2,21 +2,62 @@
 #define QUARRY_LOAD 5
 #define QUARRY_OUTPUT_STACKS 12
 
-/turf/proc/quarry_blast_eligible()
-	return istype(src, /turf/floor/dirt/underground) && !istype(src, /turf/floor/dirt/underground/empty) && !!is_mineable && !!density && !mining_in_progress && !pickaxe_mining_owner
+/turf/proc/quarry_hardness()
+	return 0
+
+/turf/floor/dirt/underground/quarry_hard
+	name = "hard quarry rock"
+	desc = "A band of dense rock. A pickaxe or shovel will not open it. Requires a blasting charge and leaves a larger stone cluster."
+	color = "#a39686"
+	is_mineable = FALSE
+
+/turf/floor/dirt/underground/quarry_hard/quarry_hardness()
+	return 1
+
+/turf/floor/dirt/underground/quarry_hard/deep
+	name = "deep quarry rock"
+	desc = "A band of especially dense rock. Only a reinforced quarry charge will open it. It leaves the largest stone clusters."
+	color = "#837286"
+
+/turf/floor/dirt/underground/quarry_hard/deep/quarry_hardness()
+	return 2
+
+// Accidental damage must not sidestep the excavation gate.
+/turf/floor/dirt/underground/quarry_hard/ex_act(severity)
+	return
+
+/turf/floor/dirt/underground/quarry_hard/attackby(obj/item/W, mob/user)
+	if (istype(W, /obj/item/weapon/material/pickaxe) || is_tool(W, TOOL_SHOVEL))
+		to_chat(user, SPAN_NOTICE(desc))
+		return TRUE
+	return ..()
+
+/turf/proc/quarry_blast_eligible(charge_grade = 1)
+	var/hardness = quarry_hardness()
+	return charge_grade >= 1 && charge_grade >= hardness && istype(src, /turf/floor/dirt/underground) && !istype(src, /turf/floor/dirt/underground/empty) && (is_mineable || hardness) && !!density && !mining_in_progress && !pickaxe_mining_owner
+
+// Sparse, deterministic pockets on naturally formed dry rock. Remain clear of
+// the rim so region edge arrivals and ordinary access tunnels stay available.
+/proc/quarry_band_type(x, y, depth, vein)
+	if (depth < 1 || tutorial_region_here() || x <= 6 || y <= 6 || x > world.maxx - 6 || y > world.maxy - 6)
+		return null
+	if (dug_underground_noise("quarry-band:[depth]", x, y) < (vein > 0.65 ? 0.64 : 0.82))
+		return null
+	return depth >= 3 ? /turf/floor/dirt/underground/quarry_hard/deep : /turf/floor/dirt/underground/quarry_hard
 
 // Change the terrain first, so a second blast cannot open the same stock.
 /turf/proc/quarry_open(rock_type, stock)
 	var/tx = x
 	var/ty = y
 	var/tz = z
+	var/hardness = quarry_hardness()
 	change_the_turf()
 	var/turf/opened = locate(tx, ty, tz)
 	if (!opened || opened.density || opened.is_mineable || stock < 1)
 		return
 	var/obj/structure/quarry_cluster/Q = new(opened)
 	Q.stone_type = rock_type
-	Q.stone_left = round(stock * 1.5)
+	Q.stone_left = round(stock * (1.5 + hardness * 0.5))
 	Q.update_icon()
 	return Q
 
