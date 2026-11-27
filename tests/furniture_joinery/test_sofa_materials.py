@@ -276,5 +276,41 @@ class SofaMaterials(unittest.TestCase):
             self.assertTrue(disassembly_setting(subtype), subtype)
 
 
+class ChairPaddingAppearance(unittest.TestCase):
+    def test_occupied_armrest_uses_the_current_dye_and_separate_cache_entries(self):
+        chairs = (ROOT / 'code/game/objects/structures/stool_bed_chair_nest/chairs.dm').read_text()
+        fabric = (ROOT / 'code/modules/1713/furniture_fabric_dye.dm').read_text()
+        shade, _ = compile_body(fabric, '/obj/structure/bed/proc/padding_shade()', 'self', {},
+                                ('padding_color', 'padding_material'))
+        update = block(chairs, '/obj/structure/bed/chair/update_icon()')
+        # Project the occupied branch, adapting DM image construction, list
+        # union, and interpolated strings to their fixture equivalents.
+        armrest = update[update.index('\n\tif (buckled_mob && padding_material)'):]
+        armrest = armrest.replace('isnull(stool_cache[cache_key])', 'stool_cache.get(cache_key) is None')
+        armrest = armrest.replace('overlays |= stool_cache[cache_key]', 'overlays.append(stool_cache[cache_key])')
+        armrest = re.sub(r'"([^"\n]*)"', lambda match: 'f"' +
+                         re.sub(r'\[([^\]]+)\]', r'{\1}', match[1]) + '"', armrest)
+        armrest = armrest.replace('{base_icon}', '{self.base_icon}').replace(
+            '{padding_material.name}', '{self.padding_material.name}')
+        chair = NS(base_icon='chair', icon='bed_chair.dmi', buckled_mob=True,
+                   padding_material=NS(name='cloth', icon_colour='#ffffff'))
+        apply, _ = compile_body('/armrest' + armrest, '/armrest', 'self',
+                                dict(stool_cache={}, MOB_LAYER=4,
+                                     image=lambda icon, state: NS(icon=icon, state=state),
+                                     padding_shade=lambda: shade(chair)),
+                                ('buckled_mob', 'padding_material', 'icon', 'overlays'))
+        for dye in (None, '#a8342c', '#3e5a86', '#a8342c', None):
+            chair.overlays = []
+            chair.padding_color = dye
+            apply(chair)
+            self.assertEqual([(arm.state, arm.color, arm.layer) for arm in chair.overlays],
+                             [('chair_armrest', dye or '#ffffff', 4.1)])
+
+        chair.overlays = []
+        chair.buckled_mob = None
+        apply(chair)
+        self.assertEqual(chair.overlays, [])
+
+
 if __name__ == '__main__':
     unittest.main()
