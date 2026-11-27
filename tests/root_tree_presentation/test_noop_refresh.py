@@ -401,6 +401,36 @@ class ResourceStrikes(unittest.TestCase):
             self.assertIsNone(self.gate()(P, A))
             self.assertIsNotNone(self.gate(STRIKE_SOURCE.replace(deleted, '', 1))(P, A))
 
+    def test_empty_cleanup_skips_copy_and_preserves_other_images(self):
+        class CountingMap(self.Map):
+            copies = 0
+
+            def copy(self):
+                self.copies += 1
+                return super().copy()
+
+        root, _, _, presenter, env = self.subject()
+        presenter.work_images = CountingMap()
+        unrelated = self.Ref()
+        presenter.owner.images += unrelated
+        removals = []
+        env['remove_work_image'] = removals.append
+        signature = '/datum/root_tree_presenter/proc/clear_work_images('
+        clear = compile_proc(TREE, signature, 'self, T=None', env, True)
+        self.assertIsNone(clear(presenter, root))
+        self.assertIsNone(clear(presenter))
+        self.assertEqual(presenter.work_images.copies, 0)
+        self.assertEqual(removals, [])
+        self.assertEqual(presenter.owner.images, [unrelated])
+
+        original = TREE.replace('\tif(!work_images.len)\n\t\treturn\n', '', 1)
+        clear_original = compile_proc(original, signature, 'self, T=None', env, True)
+        self.assertIsNone(clear_original(presenter, root))
+        self.assertIsNone(clear_original(presenter))
+        self.assertEqual(presenter.work_images.copies, 2)
+        self.assertEqual(removals, [])
+        self.assertEqual(presenter.owner.images, [unrelated])
+
     def test_removal_is_scoped_idempotent_and_all_invalidation_paths_clear_fx(self):
         T, actor, A, P, env = self.subject()
         I = self.gate()(P, A)

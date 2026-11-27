@@ -323,6 +323,8 @@ var/global/list/root_tree_presenters
 	work_images -= I
 
 /datum/root_tree_presenter/proc/clear_work_images(atom/T)
+	if(!work_images.len)
+		return
 	for(var/image/I in work_images.Copy())
 		if(T && work_images[I] != T)
 			continue
