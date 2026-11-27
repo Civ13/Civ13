@@ -2688,10 +2688,12 @@ SUITES = {
         'tests/carriage_glide/',), 'shared_paths': ('code/game/objects/structures/carriage.dm',)},
     'throw_launch': {'files': ('tests/throw_launch_clearance/test_launch.py',
                               'tests/throw_launch_clearance/test_mode_guard.py',
-                              'tests/throw_launch_clearance/test_runtime_plan.py'), 'paths': (
+                              'tests/throw_launch_clearance/test_runtime_plan.py',
+                              'tests/throw_launch_clearance/test_window_lob.py'), 'paths': (
         'tests/throw_launch_clearance/', 'tests/save_movement/source_adapter.py',
         'code/game/atoms_movable.dm', 'code/game/objects/items.dm',
-        'code/processes/throwing.dm', 'code/modules/persistence/functions.dm'),
+        'code/processes/throwing.dm', 'code/modules/multiz/window_lob.dm',
+        'code/modules/persistence/functions.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/human_defense.dm',
                          'code/game/mob/living/living_defense.dm')},
     'terrain_tumble': {'files': ('tests/terrain_height/test_tumble.py',), 'paths': (

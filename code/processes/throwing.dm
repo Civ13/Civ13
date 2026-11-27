@@ -23,6 +23,14 @@
 					catchException(terrain_error, AM)
 					if (!QDELETED(AM) && AM.throw_flight_token == flight_token)
 						AM.finished_throwing()
+			else if (flight_token && islist(flight_token["window_lob_path"]))
+				var/obj/item/weapon/grenade/G = AM
+				try
+					G.window_lob_hop(flight_token)
+				catch (var/exception/lob_error)
+					catchException(lob_error, AM)
+					if (!QDELETED(AM) && AM.throw_flight_token == flight_token)
+						AM.finished_throwing()
 			else if (AM.loc)
 				try
 					switch (AM.throwmode)
