@@ -173,17 +173,50 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		west.fuel = 1
 		require(!west.recall(H) && west.fuel == 1 && west.state == "away", "recall accepted without fuel")
 		require(west.load_at_helm(H, new /obj/item/train_raid_fuel(H)) && west.fuel == 3, "fuel cell not loaded: [west.fuel]")
+		var/real_deadline = M.round_deadline
+		M.round_deadline = world.time + M.recall_travel + 10 SECONDS
+		require(!west.recall(H) && west.fuel == 3 && west.state == "away", "late recall took fuel or launched")
+		M.round_deadline = real_deadline
 		require(west.recall(H), "recall refused after cooldown")
 		require(west.state == "inbound" && west.fuel == 1, "west not inbound or fuel not burned: [west.fuel]")
 		require(!west.recall(H) && west.fuel == 1, "second recall charged fuel")
+		// The automatic approach may match speed long before coming alongside.
+		west.speed_updated_at = world.time - 100
+		west.tick()
+		require(west.shuttle_speed == 5 && isnull(west.speed_matched_since), "pre-arrival match started the boarding clock")
+		sleep(31) // Longer than the dwell, but still en route.
 		west.state_until = world.time
+		west.tick()
+		require(west.state == "inbound" && west.speed_matched_since == world.time && bridges_of("west", TRUE) == 36, "pre-matched shuttle opened bridges on arrival")
+		require(west.set_approach_speed(4), "approach trim refused")
+		west.speed_updated_at = world.time - 100
+		west.tick()
+		require(west.state == "inbound" && west.shuttle_speed == 4 && bridges_of("west", TRUE) == 36, "slow shuttle opened bridge")
+		require(!west.depart_now(H), "inbound shuttle could depart through a closed bridge")
+		require(west.set_approach_speed(5), "speed match refused")
+		west.speed_updated_at = world.time - 100
+		west.tick()
+		require(west.state == "inbound" && west.shuttle_speed == 5 && bridges_of("west", TRUE) == 36, "instant speed match opened bridge")
+		west.speed_matched_since = world.time - 30
 		west.tick()
 		require(west.state == "docked" && bridges_of("west", FALSE) == 36, "west did not dock on arrival")
 		require(west.state_until > world.time, "docking window not scheduled")
+		west.state_until = world.time + 25 SECONDS
+		west.tick()
+		require(west.bridge_warning == 1 && bridges_of("west", FALSE) == 36, "first warning not issued with bridges open")
+		west.state_until = world.time + 8 SECONDS
+		west.tick()
+		require(west.bridge_warning == 2 && bridges_of("west", FALSE) == 36, "final warning not issued with bridges open")
 		west.state_until = world.time
 		west.tick()
 		require(west.state == "away" && bridges_of("west", TRUE) == 36, "west did not depart after its window")
 		pass("recall_cycle")
+		// A speed loss revokes the bridge before the shuttle leaves.
+		east.shuttle_speed = 4
+		east.tick()
+		require(east.state == "away" && bridges_of("east", TRUE) == 36, "speed loss left east bridges open")
+		pass("speed_loss_closes_bridges")
+		east.dock(world.time + M.boarding_window, TRUE)
 		mark("balloon")
 		var/obj/structure/closet/crate/crate = new(hauler_turf)
 		var/obj/item/weapon/storage/eft/medical/kit = new(crate)
@@ -233,6 +266,7 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		M.round_deadline = world.time - 1
 		M.tick()
 		require(M.game_over && ticker.finished, "collapse did not end the round")
+		require(bridges_of("east", TRUE) == 36 && bridges_of("west", TRUE) == 36, "collapse left a gangway open")
 		require(left.stat == DEAD, "raider left on the Hauler survived the collapse")
 		require(QDELETED(stray), "stray Hauler item survived the collapse")
 		pass("line_collapse")

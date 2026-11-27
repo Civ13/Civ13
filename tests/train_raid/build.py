@@ -156,6 +156,16 @@ def build():
         ox, oy, oz = slot["origin"]
         for (lx, ly, lz), kind in home.train_levels().items():
             grid[ox + lx, oy + ly, oz + lz] = (shuttle_atoms(kind, crew, (lx, ly, lz)), shuttle_area(crew, (lx, ly, lz)))
+        # Leave no solid walkable path from an outward breach or a roof
+        # to the station. Only the inward boarding bridges cross this gap.
+        bridge_cells = {tuple(pos) for pos in slot["bridge_cells"]}
+        x1, y1 = ox + home.WIDTH, oy + home.LENGTH
+        perimeter = {(x, y) for x in range(ox - 1, x1 + 1) for y in (oy - 1, y1)}
+        perimeter |= {(x, y) for x in (ox - 1, x1) for y in range(oy, y1)}
+        for x, y in perimeter:
+            for z in range(oz, oz + home.TRAIN_LEVELS):
+                if (x, y, z) not in bridge_cells:
+                    grid[x, y, z] = ("/turf/wall/indestructable/train_raid_gap", AREAS["void"])
         for bx, by, bz in slot["bridge_cells"]:
             atoms, _ = grid[bx, by, bz]
             grid[bx, by, bz] = (f'/obj/structure/train_raid_bridge{{crew = "{crew}"}},{atoms}', AREAS["bridge"])
@@ -169,6 +179,18 @@ def build():
             "airlock_doors": [[ox + 14, oy + 39, oz], [ox + 15, oy + 45, oz]],
             "boarding_ports": slot["boarding_ports"],
             "bridge_cells": slot["bridge_cells"]}
+    # Two narrow, non-interactive lines of scrolling sleepers sell the
+    # motion. Keep it close enough to see from inside the Hauler's open
+    # sections, and off the actual train and the shuttle bridges.
+    track_motion = {"columns": [tx0 - 1, tx1 + 1], "tiles": 0}
+    for x in track_motion["columns"]:
+        for y in range(ty0, ty1 + 1):
+            pos = x, y, raid.TRAIN_ORIGIN[2]
+            atoms, area = grid[pos]
+            if area != AREAS["platform"] or not atoms.startswith("/turf"):
+                continue
+            grid[pos] = ("/obj/effect/train_raid_track_motion," + atoms, area)
+            track_motion["tiles"] += 1
     grid[1, 1, 1] = ("/obj/map_metadata/train_raid,/turf/wall/iron", AREAS["void"])
     layout = {
         "schema_version": 1,
@@ -179,6 +201,7 @@ def build():
                       "loot_pads": len(s["loot_anchors"]), "platform_openings": s["platform_openings"]}
                      for s in raid_layout["sections"]],
         "platforms": raid_layout["platforms"],
+        "track_motion": track_motion,
         "crews": crews,
     }
     return grid, layout

@@ -110,6 +110,47 @@ class TrainRaidMapTests(unittest.TestCase):
         self.assertEqual((world["width"], world["height"], world["levels"]), (256, 256, 4))
         self.assertEqual(len(self.grid), 256 * 256 * 4)
 
+    def test_motion_is_cosmetic_and_stays_outside_the_playable_trains(self):
+        moving = {p for p, atoms in self.grid.items()
+                  if "/obj/effect/train_raid_track_motion" in atoms}
+        self.assertGreaterEqual(self.layout["hauler"]["length"], 200)
+        self.assertEqual(len(moving), self.layout["track_motion"]["tiles"])
+        columns = set(self.layout["track_motion"]["columns"])
+        self.assertEqual({p[0] for p in moving}, columns)
+        hx0, _, hx1, _ = self.layout["hauler"]["bounds"]
+        self.assertEqual(columns, {hx0 - 1, hx1 + 1})
+        self.assertGreater(len(moving), 300)
+        for p in moving:
+            self.assertEqual(p[2], self.layout["hauler"]["z"])
+            self.assertIn("/area/train_raid/station/platform", self.grid[p])
+            self.assertFalse(any("train_raid_bridge" in a for a in self.grid[p]))
+            self.assertTrue(walkable(self.grid[p]))
+
+    def test_matching_gates_docking_but_never_blocks_an_abort(self):
+        mode = self.mode
+        approach = mode.split("/datum/train_raid_crew/proc/update_approach()", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(approach.index("now >= state_until && shuttle_target"), approach.index("speed_matched_since = now"))
+        dock = mode.split("/datum/train_raid_crew/proc/dock(", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(dock.index("!boarding_ready()"), dock.index("set_bridges(TRUE)"))
+        departure = mode.split("/datum/train_raid_crew/proc/depart()", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(departure.index("set_bridges(FALSE)"), departure.index("shuttle_speed = 0"))
+        backdrop = mode.split("/obj/effect/train_raid_track_motion\n", 1)[1].split("// A bridge tile", 1)[0]
+        self.assertIn("mouse_opacity = 0", backdrop)
+        self.assertIn("should_save = FALSE", backdrop)
+        self.assertIn("loop = -1", backdrop)
+        self.assertNotIn("process(", backdrop)
+
+    def test_round_deadline_gates_recall_boarding_and_collapse(self):
+        mode = self.mode
+        recall = mode.split("/datum/train_raid_crew/proc/recall(", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(recall.index("!boarding_time_available(arrival"), recall.index("fuel -= mode.recall_fuel"))
+        dock = mode.split("/datum/train_raid_crew/proc/dock(", 1)[1].split("\n/datum/", 1)[0]
+        self.assertIn("state_until = min(until, mode.round_deadline)", dock)
+        tick = mode.split("/obj/map_metadata/train_raid/tick()", 1)[1].split("\n/obj/", 1)[0]
+        self.assertLess(tick.index("collapse()"), tick.index("C.tick()"))
+        collapse = mode.split("/obj/map_metadata/train_raid/proc/collapse()", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(collapse.index("C.set_bridges(FALSE)"), collapse.index("C.save_shuttle()"))
+
     def test_single_metadata_object(self):
         count = sum(1 for atoms in self.grid.values() if "/obj/map_metadata/train_raid" in atoms)
         self.assertEqual(count, 1)
@@ -193,7 +234,7 @@ class TrainRaidMapTests(unittest.TestCase):
                     self.assertNotIn("locked", atom)
                     self.assertNotIn("key_door", atom)
 
-    def flood(self, start, z=1):
+    def flood(self, start, z=1, closed_crew=None):
         seen = {start}
         queue = deque([start])
         while queue:
@@ -202,10 +243,21 @@ class TrainRaidMapTests(unittest.TestCase):
                 nx, ny = x + dx, y + dy
                 if (nx, ny) in seen or (nx, ny, z) not in self.grid:
                     continue
-                if walkable(self.atoms_at(nx, ny, z)):
+                atoms = self.atoms_at(nx, ny, z)
+                if closed_crew and f'/obj/structure/train_raid_bridge{{crew = "{closed_crew}"}}' in atoms:
+                    continue
+                if walkable(atoms):
                     seen.add((nx, ny))
                     queue.append((nx, ny))
         return seen
+
+    def test_retracted_bridge_has_no_ground_level_bypass(self):
+        hx0, hy0, hx1, hy1 = self.layout["hauler"]["bounds"]
+        for crew, data in self.layout["crews"].items():
+            port_x, port_y = data["boarding_ports"][0]
+            inside_x = port_x - 1 if crew == "west" else port_x + 1
+            reach = self.flood((inside_x, port_y), closed_crew=crew)
+            self.assertFalse(any(hx0 <= x <= hx1 and hy0 <= y <= hy1 for x, y in reach), crew)
 
     def test_every_section_reachable_from_each_shuttle(self):
         for crew, data in self.layout["crews"].items():
