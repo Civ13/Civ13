@@ -3,6 +3,7 @@ from collections import defaultdict
 from types import SimpleNamespace as N
 import unittest
 import importlib.util
+import re
 from pathlib import Path
 _spec = importlib.util.spec_from_file_location('root_noop_contract', Path(__file__).with_name('test_contract.py'))
 _contract = importlib.util.module_from_spec(_spec)
@@ -82,7 +83,12 @@ class NoOpRefresh(unittest.TestCase):
     def commit_tail(self,old_invalidation=False, *, replace=None):
         source=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
         proc=P.fragment(source,'/atom/movable/lighting_overlay/proc/update_overlay(')
+        self.assertIn('var/list/L = color ? copylist(color) : list()', proc)
         tail=proc[proc.index('\t// Check against last values'):]
+        # Select the BYOND assignment before dropping the presentation guard.
+        tail, selections = re.subn(r'^\t#ifdef OPENDREAM\n[^\n]+\n\t#else\n([^\n]+)\n\t#endif$',
+                                   r'\1', tail, flags=re.MULTILINE)
+        self.assertEqual(selections, 1)
         tail='\n'.join(line for line in tail.splitlines() if not line.strip().startswith('#'))+'\n'
         if replace:
             self.assertIn(replace[0], tail)
@@ -100,8 +106,18 @@ class NoOpRefresh(unittest.TestCase):
         f,calls=self.commit_tail()
         old=Values([0.25]*20)
         self.assertIsNone(f(Values(old),True,True,old,True));self.assertEqual(calls,[])
-        result=f(Values([0.5]*20),True,True,old,True)
-        self.assertEqual(calls,['root']);self.assertEqual(result[3],[0.5]*20);self.assertTrue(result[1])
+        incoming = Values([0.5] * 20)
+        result = f(incoming, True, True, old, True)
+        self.assertEqual(calls, ['root'])
+        self.assertEqual(result[3], [0.5] * 20)
+        self.assertIs(result[3], incoming)
+        self.assertEqual(old, [0.25] * 20)
+        self.assertTrue(result[1])
+        copied, calls = self.commit_tail(replace=('color = L\n', 'color = L.Copy()\n'))
+        copied_result = copied(incoming, True, True, old, True)
+        self.assertEqual(copied_result, result)
+        self.assertIsNot(copied_result[3], incoming)
+        self.assertEqual(calls, ['root'])
         f,calls=self.commit_tail();f(Values(old),False,True,old,True)
         self.assertEqual(calls,['root'])
         # An overlay that has never committed (pool reset) always commits.

@@ -436,7 +436,8 @@ class OwnershipAndComposition(unittest.TestCase):
             ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.perspective = new_perspective'),
             ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.eye = new_eye'),
             ('code/game/objects/structures/wild.dm','/obj/structure/wild/tree/live_tree/update_icon(','..()'),
-            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','color = L.Copy()')]:
+            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','\tcolor = L.Copy()\n'),
+            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','\tcolor = L\n')]:
             source=(ROOT/path).read_text(encoding='utf-8');check(source,signature,write)
             mutant=source.replace('root_tree_invalidate(src)','removed_invalidation(src)').replace('root_tree_invalidate(loc)','removed_invalidation(loc)').replace('los_invalidate_movement(src)','removed_invalidation(src)').replace('root_tree_light_changed(loc)','removed_notification(loc)')
             with self.assertRaises(ValueError):check(mutant,signature,write)
