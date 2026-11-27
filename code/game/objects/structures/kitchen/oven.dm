@@ -167,14 +167,12 @@
 				var/obj/item/stack/material/diamond/NO = new/obj/item/stack/material/diamond(src)
 				NO.amount = I.amount
 				contents += NO
-				contents -= I
-				qdel(I)
+				consume_processed_item(I)
 			else if (istype(I, /obj/item/stack/ore/glass))
 				var/obj/item/stack/material/glass/NO = new/obj/item/stack/material/glass(src)
 				NO.amount = I.amount
 				contents += NO
-				contents -= I
-				qdel(I)
+				consume_processed_item(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/dough))
 			var/obj/item/weapon/reagent_containers/food/snacks/dough/D = I
 			// Only risen yeasted dough becomes a loaf; unleavened dough bakes flat.
@@ -182,24 +180,19 @@
 				contents += new /obj/item/weapon/reagent_containers/food/snacks/sliceable/bread(src)
 			else
 				contents += new /obj/item/weapon/reagent_containers/food/snacks/flatbread(src)
-			contents -= I
-			qdel(I)
+			consume_processed_item(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/coffee))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/roasted_coffee(src)
-			contents -= I
-			qdel(I)
+			consume_processed_item(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/grown/cocoa))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/chocolatebar(src)
-			contents -= I
-			qdel(I)
+			consume_processed_item(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/sliceable/flatdough))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/flatbread(src)
-			contents -= I
-			qdel(I)
+			consume_processed_item(I)
 		else if (istype(I, /obj/item/weapon/reagent_containers/food/snacks/rawsticks))
 			contents += new /obj/item/weapon/reagent_containers/food/snacks/fries(src)
-			contents -= I
-			qdel(I)
+			consume_processed_item(I)
 		else if (istype(I, /obj/item/weapon/paper/clay_tablet))
 			var/obj/item/weapon/paper/clay_tablet/CT = I
 			CT.fire_tablet() // The same tablet bakes hard, keeping its writing.
@@ -215,14 +208,12 @@
 				continue // nothing was made, so the unfired piece stays
 			if (isitem(fired))
 				contents += fired
-			contents -= I
-			qdel(I)
+			consume_processed_item(I)
 
 		else if (!istype(I, /obj/item/weapon/reagent_containers/food) || istype(I, /obj/item/weapon/reagent_containers/food/drinks) || istype(I, /obj/item/weapon/reagent_containers/food/snacks/badrecipe) || I.name == "Stew" || findtext(I.name, "soup") || (I.vars.Find("roasted") && I:roasted))
 			if (!istype(I, /obj/item/organ))
 				contents += new /obj/item/weapon/reagent_containers/food/snacks/badrecipe(src)
-				contents -= I
-				qdel(I)
+				consume_processed_item(I)
 			else
 				var/obj/item/weapon/reagent_containers/food/snacks/organ/organ = new /obj/item/weapon/reagent_containers/food/snacks/organ(src)
 				organ.name = "roasted [I.name]"
@@ -236,8 +227,7 @@
 				organ.reagents.kill_germs()
 				organ.reagents.del_reagent("food_poisoning")
 				organ.roasted = TRUE
-				contents -= I
-				qdel(I)
+				consume_processed_item(I)
 
 		else
 			I.name = replacetext(I.name, "raw ", "")
@@ -267,6 +257,11 @@
 
 	for (var/obj/item/I in contents)
 		I.loc = get_turf(src)
+
+/obj/structure/oven/proc/consume_processed_item(obj/item/I)
+	// Remove the input before the ejection pass, since qdel can defer deletion.
+	contents -= I
+	qdel(I)
 
 /obj/structure/oven/fireplace
 	name = "campfire"
