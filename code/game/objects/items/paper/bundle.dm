@@ -162,16 +162,21 @@
 	paper_authoring_notify(sheet, "physical")
 	to_chat(user, SPAN_NOTICE("You add [sheet] to [src]."))
 
+/obj/item/weapon/paper_bundle/proc/release_browser_page(mob/living/human/user, obj/item/weapon/sheet, turf/site)
+	user.put_in_hands(sheet) // A full hand falls back to the floor.
+	if (sheet.loc != user && sheet.loc != site)
+		return FALSE
+	pages -= sheet
+	return TRUE
+
 /obj/item/weapon/paper_bundle/proc/browser_remove_page(mob/living/human/user, obj/item/weapon/expected)
 	if (!can_change_held_bundle(user) || !expected || held_bundle_page() != expected)
 		return
 	var/turf/site = get_turf(user)
 	if (!site)
 		return
-	user.put_in_hands(expected) // A full hand falls back to the floor.
-	if (expected.loc != user && expected.loc != site)
+	if (!release_browser_page(user, expected, site))
 		return
-	pages -= expected
 	page = max(1, min(page, pages.len))
 	if (istype(expected, /obj/item/weapon/paper))
 		paper_authoring_notify(expected, "physical")
@@ -179,12 +184,9 @@
 	// Keep the historical one-page unclip, but never delete a refused move.
 	if (pages.len == 1 && contents.len == 1)
 		var/obj/item/weapon/remaining = held_bundle_page()
-		if (remaining)
-			user.put_in_hands(remaining)
-			if (remaining.loc == user || remaining.loc == site)
-				pages -= remaining
-				if (istype(remaining, /obj/item/weapon/paper))
-					paper_authoring_notify(remaining, "physical")
+		if (remaining && release_browser_page(user, remaining, site))
+			if (istype(remaining, /obj/item/weapon/paper))
+				paper_authoring_notify(remaining, "physical")
 	if (!contents.len && user.transfer_held_item_to(src, site))
 		qdel(src)
 	else if (pages.len)
