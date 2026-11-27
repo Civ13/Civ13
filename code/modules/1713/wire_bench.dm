@@ -31,11 +31,7 @@ var/global/list/wire_bench_coils = list(
 		return
 	if (!I || !(I.type in wire_bench_coils))
 		return ..()
-	if (busy)
-		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
-		return
-	if (!anchored)
-		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+	if (!can_start_material_work(H))
 		return
 	draw_wire(H, I)
 

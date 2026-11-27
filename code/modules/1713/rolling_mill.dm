@@ -74,11 +74,7 @@ var/global/list/rolling_mill_products = list(
 		return
 	if (!takes(I))
 		return ..()
-	if (busy)
-		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
-		return
-	if (!anchored)
-		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+	if (!can_start_material_work(H))
 		return
 	if (!rolling())
 		to_chat(H, SPAN_WARNING("Nothing is turning \the [src]'s rolls. It needs a turning prime mover next to it."))
