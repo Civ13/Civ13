@@ -474,8 +474,7 @@ public static class LocalHosting {
                     ? new ControlAnswer(true, "Mainland match requested. The Host tab shows the pinned build and progress; the mainland and Gateway stay on their current builds.", true)
                     : new ControlAnswer(false, "The host did not accept a mainland match.", false);
             if (action == "maintenance")
-                return new ControlAnswer(true, "Daily maintenance started: building one revision beside every region, then warning the players " +
-                    "and handing each running region over to it. The gateway stays on its port. Its progress shows on the status line.", true);
+                return new ControlAnswer(true, "Daily maintenance started: updating the mainland first, then building and handing the other regions over to its running revision. The gateway stays on its port. Its progress shows on the status line.", true);
             if (action is "unlock" or "force-unlock") {
                 var lines = new List<string>();
                 if (json.TryGetProperty("done", out var done) && done.ValueKind == JsonValueKind.Object)

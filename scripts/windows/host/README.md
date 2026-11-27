@@ -12,7 +12,7 @@ and [region groups](../../shard-group/README.md). They only call
 | `start.bat`, `stop.bat`, `restart.bat [REGION]` | Start; save and stop (with a verified backup); both. They run in the background, so follow them with `status.bat`. |
 | `update.bat [REGION]` | Fetch, check out the group's revision and compile. Stop the regions first. |
 | `deploy.bat [REGION ...]` | The whole update in one go: `git pull --ff-only --autostash` the source checkout, stage the build beside every running region (or only the ones named, such as `deploy.bat gaia`), and once every build is ready hand each running region over to it (the new build boots beside the old world, which saves while holding only the level being saved; the new one loads the save, then players reconnect to it), then restart the host service. Each step waits for the last and it stops at the first failure; no world is ever left stopped. See [deploying](#deploying-a-new-master). The launcher's **Save, update and restart** button runs it, for the ticked regions on the All regions row and the Updates tab, or from the One region row with only the chosen region ticked (the operator may tick more; the ticked regions are deployed). |
-| `update-offline.bat [REGION]` | Pull the source checkout, then update every region that is **not** running to the latest master so it is ready when it starts. Running regions are left alone (never stopped, woken or rebuilt). Stopped regions build it one at a time at low priority and install it; asleep regions build it and the host service installs it while they sleep. The launcher's **Update offline regions** button does the same. |
+| `update-offline.bat [REGION]` | Pull the source checkout, then update every region that is **not** running to its permitted build (Gaia's live revision for peer regions in persistence). Running regions are left alone (never stopped, woken or rebuilt). Stopped regions build it one at a time at low priority and install it; asleep regions build it and the host service installs it while they sleep. The launcher's **Update offline regions** button does the same. |
 | `stage.bat [REGION]` | Pull the source checkout, then build the update beside the running regions. Each region installs it by itself the next time it is empty and saved (or asleep), so nobody is kicked. `status.bat` shows its progress under `stage`. |
 | `force-stop.bat`, `force-restart.bat [REGION]` | For a world that hangs (a save that never finishes): end it at once **without saving**, or end it and start it again. The start loads the last completed save (an interrupted save is swapped for the copy in `map_backups`), and the BYOND lock files (`*.lk`) the dead world left in `map_saves` are removed so the start is not refused. The launcher's Force stop and Force restart buttons do the same. |
 | `restart-host.bat` | Restart the `Civ13 Host` task so it loads changed host scripts or new regions. The worlds keep running. `restart-host.bat start` only starts it (nothing happens while it runs). |
@@ -66,7 +66,7 @@ as the user who runs Gaia. Gaia is offline from step 4 until step 8.
 4. **Stop standalone Gaia.** Run `retire-standalone-gaia.bat`, then follow it
    with the status command it prints until `phase` is `stopped` (a Gaia save
    takes about ten minutes).
-5. **Build the region.** Run `setup.bat`, then `update.bat`. Run `status.bat`
+5. **Build the region.** Run `setup.bat`, then build and start the mainland (for Earth: `update.bat gaia`, then `start.bat gaia`) before updating persistent peers. Run `status.bat`
    until the gaia region's phase is `compiled`.
 6. **Move the save.** Run `adopt-gaia.bat`. It refuses unless standalone Gaia
    is stopped with a complete save, and it checks every copied save file.
@@ -104,10 +104,14 @@ The host service picks them up when restarted with `restart-host.bat`.
 Run `deploy.bat` from a normal command prompt, or press **Save, update and
 restart** on the launcher's Updates or Host server tab and tick the regions to
 update (all of them, or for example only Gaia). It pulls `D:\GitHub\Civ13`
-first (its local edits are kept). Then it stages the update for each chosen
-region, building it beside the running world one region at a time at low
-priority, like `stage.bat`. Nobody is kicked until every build is ready, and a
-pull or build that fails stops it before then. Then each running region is
+first (its local edits are kept). In a persistent group, a selected mainland
+is staged and handed over first. The other selected regions stage against
+its running build once it confirms the handover. Deploying only peer regions
+uses the already-running mainland build; it cannot advance the mainland.
+Within each phase it stages the chosen builds beside the running worlds,
+one region at a time at low priority, like `stage.bat`. A failed peer build
+prevents further handovers; the mainland may already have updated. Each
+running region with a ready build is then
 handed over to its new build, one region at a time
 ([how it works](../../shard-group/README.md#handover-updating-a-running-region-without-downtime)):
 the new build boots beside the old world on a loopback port, the old world
@@ -145,6 +149,9 @@ latest first or restarting the mainland or Gateway. The launcher refuses a
 match if a selected installed build is unknown, diverged, or newer. Region
 builds are staged before players are warned; asleep and stopped regions are
 updated without waking. The Host tab shows the pinned commit and progress.
-The pin is released after the run; future automatic updates follow the same
-settings as before. For the latest configured commit instead, use **Save,
-update and restart** or **Run daily maintenance now**.
+The pin is released after the run; future automatic updates continue to use
+the mainland's running build as their ceiling. To advance to the latest
+configured commit, include the mainland in **Save, update and restart**,
+or use **Run daily maintenance now**. If it is unavailable, other regions
+keep their installed builds. Gateway is still skipped by bulk actions;
+an explicitly requested Gateway update cannot go past the mainland either.

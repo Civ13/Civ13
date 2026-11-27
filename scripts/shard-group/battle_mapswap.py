@@ -240,6 +240,8 @@ def rotate_onto_update(region_path, map_id, host, sg=None, runner=None):
                 raise RuntimeError('compile failed: ' + out.strip()[-300:])
         # The running world keeps its loaded build; its reboot loads the new one beside the
         # source it was built from.
+        if group.get('persistent'):
+            host.require_mainland_update_ready(group, revision)
         sg.prepare_tree(group, region, region_path, revision, host.platform, git, live=True)
         slot = live_slot(region_path)
         install(build / 'region.rsc', region_path / slot.replace('.dmb', '.rsc'))

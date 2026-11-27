@@ -19,16 +19,13 @@ One run:
 1. resolves the group revision once (after a fetch) and pins it (<root>/.maintenance/pin.json):
    while the pin stands, load_group gives every reader that revision, so the stages, the
    handovers and any empty-region update all build the same commit even if master moves;
-2. builds it beside every region that is not on it yet (stage), while everyone keeps playing.
-   If any region's build fails, nothing is stopped or handed over and no region changes build:
-   the run ends as failed and every world plays on;
-3. gives the players of every occupied running region the same countdown at once (lifecycle
-   planned_notice, `warning_minutes`); an admin's Cancel Planned Restart in a region leaves that
-   region on its old build for the day;
-4. hands every running region over to the build in turn (save, the new build loads it beside
-   the old world, players move across); a region busy with another action is tried again later. Asleep, cold and stopped regions take the
-   build without waking (update_offline). Oceans wait for their configured coastal lands
-   to finish installing this revision; an unrelated busy region never holds them back;
+2. stages, warns, and hands the mainland over first. If it does not confirm the pinned
+   build is live, other regions stay on their current builds;
+3. builds the same revision beside the remaining regions while everyone keeps playing.
+   A peer build failure prevents any peer handover in this run; the mainland is already updated;
+4. warns occupied peers, then hands them over. Busy peers are retried; an admin's Cancel
+   Planned Restart leaves that peer on its build. Asleep, cold and stopped peers install
+   without waking. Oceans also wait for their configured coastal lands;
 5. removes the pin and records what each region did (<root>/.maintenance/state.json).
 
 The gateway (the always-up world on the front door's port) is never staged, stopped or moved
@@ -282,16 +279,6 @@ class Run:
                 except OSError:
                     pass
 
-    def checked_mainland_revision(self, host):
-        """Take a trusted live build stamp, not a checkout HEAD or staged build."""
-        locked = getattr(host, 'lock', None)
-        if (locked is not None and locked.exists()) or host.frozen() or not host.platform.listening(host.config['port']):
-            raise Refused('the mainland is not awake and idle; wait for its active build to settle')
-        revision = host.built_revision()
-        if (locked is not None and locked.exists()) or not self.this.HEX40.fullmatch(revision or ''):
-            raise Refused('the mainland has no verified active build to match')
-        return revision
-
     def forward_build(self, current, target):
         if not self.this.HEX40.fullmatch(current or ''):
             return False
@@ -322,21 +309,21 @@ class Run:
                 self.note(name, result='skipped: interrupted fresh-world archive')
                 continue
             regions.append((region, host))
+        mainland_pair = next((pair for pair in regions if pair[0]['id'] == group['mainland']), None)
+        if mainland_pair is None:
+            raise Refused('the mainland is not available to establish the update build')
+        mainland = mainland_pair[1]
+        self.save(phase='checking the mainland build')
+        current_mainland = this.live_mainland_revision(mainland)
         if self.match_mainland:
-            mainland = next((host for region, host in regions if region['id'] == group['mainland']), None)
-            if mainland is None:
-                raise Refused('the mainland is not available to establish a matching build')
-            self.save(phase='checking the mainland build')
-            revision = self.checked_mainland_revision(mainland)
+            revision = current_mainland
             blocked = [region['id'] for region, host in regions
                        if not self.forward_build(host.built_revision(), revision)]
             if blocked:
                 raise Refused('cannot safely match the mainland: these regions have newer, diverged, or unknown builds: '
                               + ', '.join(blocked) + '. Use the latest group update instead.')
-            if self.checked_mainland_revision(mainland) != revision:
+            if this.live_mainland_revision(mainland) != revision:
                 raise Refused('the mainland changed builds before the match started; try again')
-            # Never schedule a restart or build for the source of a match.
-            regions = [(r, h) for r, h in regions if h is not mainland]
             self.note(group['mainland'], result='already on the build (mainland left running)')
         else:
             unpinned = group.get('unpinned_revision') or group['revision']
@@ -352,12 +339,30 @@ class Run:
             pin['mode'] = 'match-mainland'
         write_json(self.dir / 'pin.json', pin)
         self.save(revision=revision)
-        failed = self.stage(regions, revision)
-        if failed:
-            # The same build everywhere or no change anywhere: nothing was stopped.
-            raise RuntimeError('the build of %s did not finish, so no region was updated (every world keeps '
-                               'playing on its build): %s' % (', '.join(sorted(failed)),
-                                                               '; '.join('%s: %s' % item for item in sorted(failed.items()))[:400]))
+        regions.remove(mainland_pair)
+        if not self.match_mainland:
+            if current_mainland == revision:
+                self.note(group['mainland'], result='already on the build')
+            else:
+                if not self.forward_build(current_mainland, revision):
+                    raise Refused('the group revision would downgrade or diverge from the running mainland')
+                self.stage_or_fail([mainland_pair], revision, 'no region was updated')
+                if group['mainland'] not in self.warn([mainland_pair]):
+                    self.hand_over([mainland_pair], revision)
+                try:
+                    confirmed = this.live_mainland_revision(mainland) == revision
+                except Refused:
+                    confirmed = False
+                if not confirmed:
+                    why = self.state['regions'][group['mainland']].get('result', 'not updated')
+                    if why == 'handed over':
+                        why = 'handover not confirmed by the running mainland'
+                        self.note(group['mainland'], result=why)
+                    for region, _host in regions:
+                        self.note(region['id'], result='not updated: waiting for the mainland build')
+                    return {'revision': revision, 'problems': {group['mainland']: why, **{
+                        region['id']: 'not updated: waiting for the mainland build' for region, _host in regions}}}
+        self.stage_or_fail(regions, revision, 'no other region was updated')
         behind = [(r, h) for r, h in regions if h.built_revision() != revision]
         live, offline = [], []
         for region, host in behind:
@@ -369,11 +374,18 @@ class Run:
         cancelled = self.warn(live)
         self.hand_over([(r, h) for r, h in live if r['id'] not in cancelled], revision,
                        offline_oceans=[(r, h) for r, h in offline if r['kind'] == 'OCEANIC'],
-                       installing=installing if self.match_mainland else None)
+                       installing=installing)
         problems = {name: entry.get('result') for name, entry in self.state['regions'].items()
                     if not str(entry.get('result', '')).startswith(('already on', 'handed over', 'left running: the gateway',
                                                                      'installing while', 'installed while', 'skipped: not set up'))}
         return {'revision': revision, 'problems': problems}
+
+    def stage_or_fail(self, regions, revision, outcome):
+        failed = self.stage(regions, revision)
+        if failed:
+            raise RuntimeError('the build of %s did not finish, so %s: %s'
+                               % (', '.join(sorted(failed)), outcome,
+                                  '; '.join('%s: %s' % item for item in sorted(failed.items()))[:400]))
 
     def stage(self, regions, revision):
         """Build the revision beside every region that does not run or hold it yet; the

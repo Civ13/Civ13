@@ -49,6 +49,8 @@ class FakeHost:
         self.config = {'port': 1720, 'region': name}
         self.platform = FakePlatform(self)
         self.stage_file = 'stage'
+        self.lock = Path('/nonexistent/mainland-action.lock')
+        self.install_marker = Path('/nonexistent/install-after-stage')
         self.stage_requests = 0
         self.handovers = 0
         self.state = {}
@@ -87,7 +89,8 @@ class FakeHost:
     def world(self):
         if self.cancel_countdown:
             self.counting = False
-        return {'clients': self.clients, 'planned_notice': True, 'shutdown_in': 60 if self.counting else None}
+        return {'clients': self.clients, 'planned_notice': True, 'shutdown_in': 60 if self.counting else None,
+                'revision': self.built, 'ready': self.up, 'session': 'a' * 32}
 
     def token(self):
         return 'f' * 32
@@ -142,6 +145,7 @@ class DailyMaintenanceTests(unittest.TestCase):
 
         def update_offline(group, only=None, platform=None):
             offline[only] = True
+            next(h for h in hosts if h.name == only).built = NEW
             return {'accepted': {only: {'state': 'asleep'}}, 'skipped': {}}
         return types.SimpleNamespace(
             hosts=lambda group, only=None, platform=None: [
@@ -150,7 +154,7 @@ class DailyMaintenanceTests(unittest.TestCase):
             fetch_remote=lambda group, platform=None: True, update_offline=update_offline,
             Platform=lambda: FakePlatform(hosts[0]), HEX40=shard_group.HEX40,
             fresh_world=types.SimpleNamespace(pending=lambda host: Path('/nonexistent/fresh-world')),
-            process_alive=lambda pid: False)
+            process_alive=lambda pid: False, live_mainland_revision=shard_group.live_mainland_revision)
 
     def maintain(self, group, hosts, **kwargs):
         return daily_maintenance.run(self.this(hosts, **kwargs), group, platform=hosts[0].platform,
@@ -258,27 +262,36 @@ class DailyMaintenanceTests(unittest.TestCase):
         self.assertEqual('greenland', events[0])
         self.assertEqual({'atlantic', 'arctic'}, set(events[1:]))
 
-    def test_cancelled_coast_defers_its_ocean_but_not_other_lands(self):
+    def test_cancelled_mainland_defers_every_peer_without_staging(self):
         group = self.load()
         mainland = FakeHost('gaia', clients=1)
         mainland.cancel_countdown = True
         ocean = FakeHost('atlantic', coasts=[mainland])
         unrelated = FakeHost('asia')
         result = self.maintain(group, [ocean, mainland, unrelated])
-        self.assertEqual((OLD, OLD, NEW), (mainland.built, ocean.built, unrelated.built))
-        self.assertIn('waiting for coastal land builds: gaia', result['problems']['atlantic'])
+        self.assertEqual((OLD, OLD, OLD), (mainland.built, ocean.built, unrelated.built))
+        self.assertEqual((0, 0), (ocean.stage_requests, unrelated.stage_requests))
+        self.assertIn('waiting for the mainland build', result['problems']['atlantic'])
+        self.assertIn('waiting for the mainland build', result['problems']['asia'])
 
-    def test_a_failed_build_anywhere_changes_no_region(self):
+    def test_a_failed_peer_build_keeps_every_peer_on_its_build(self):
         group = self.load()
-        gaia, broken = FakeHost('gaia', clients=2), FakeHost('moon', stage_fails=True)
-        with self.assertRaisesRegex(RuntimeError, 'moon did not finish, so no region was updated'):
-            self.maintain(group, [gaia, broken])
-        self.assertEqual((0, 0), (gaia.handovers, broken.handovers))
-        self.assertEqual(OLD, gaia.built)
-        self.assertEqual([], gaia.platform.queries, 'nobody is warned for an update that will not happen')
+        gaia, broken, peer = FakeHost('gaia', clients=2), FakeHost('moon', stage_fails=True), FakeHost('asia')
+        with self.assertRaisesRegex(RuntimeError, 'moon did not finish, so no other region was updated'):
+            self.maintain(group, [gaia, broken, peer])
+        self.assertEqual((NEW, OLD, OLD), (gaia.built, broken.built, peer.built))
+        self.assertEqual((1, 0, 0), (gaia.handovers, broken.handovers, peer.handovers))
+        self.assertEqual([], peer.platform.queries, 'no peer is warned for an update that will not happen')
         state = json.loads((daily_maintenance.folder(group) / 'state.json').read_text())
         self.assertEqual('failed', state['phase'])
         self.assertFalse((daily_maintenance.folder(group) / 'pin.json').exists())
+
+    def test_a_failed_mainland_build_never_stages_a_peer(self):
+        group = self.load()
+        gaia, peer = FakeHost('gaia', stage_fails=True), FakeHost('asia')
+        with self.assertRaisesRegex(RuntimeError, 'gaia did not finish, so no region was updated'):
+            self.maintain(group, [gaia, peer])
+        self.assertEqual((0, 0, OLD), (gaia.handovers, peer.stage_requests, peer.built))
 
     def test_an_admin_calling_off_the_countdown_keeps_that_land_on_its_build(self):
         group = self.load()

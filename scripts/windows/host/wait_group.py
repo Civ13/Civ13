@@ -8,6 +8,7 @@ or fails (for stopped: a region still running with no save under way, such as on
 world refused or failed the save), and 2 on timeout. It never changes anything itself.
 """
 import argparse
+import importlib.util
 import json
 import os
 import subprocess
@@ -38,6 +39,12 @@ def reached(entry, until):
         if (entry.get('stage') or {}).get('phase') == 'current':
             return not entry.get('busy')
         return operation.get('action') == 'handover' and phase == 'done' and not entry.get('busy')
+    if until == 'mainland-active':
+        stage = entry.get('stage') or {}
+        world = entry.get('world') or {}
+        return (reached(entry, 'handed-over') and entry.get('state') == 'awake'
+                and not entry.get('busy') and world.get('ready') == 1
+                and bool(stage.get('revision')) and stage['revision'] == world.get('revision'))
     return entry.get('state') == 'awake' and (entry.get('world') or {}).get('ready') == 1 and not entry.get('busy')
 
 
@@ -64,7 +71,9 @@ def failed(entry, until=None):
     # with no action under way; waiting would only run into the timeout.
     if until == 'stopped' and entry.get('listening') and not entry.get('busy'):
         return 'it is still running and not saving (its stop was refused; see the answer above)'
-    if until == 'handed-over' and entry.get('state') == 'awake' and not entry.get('busy') and operation.get('action') != 'handover':
+    if until == 'mainland-active' and entry.get('state') in ('stopped', 'cold', 'asleep') and not entry.get('busy'):
+        return 'the mainland must be awake before other regions can update'
+    if until in ('handed-over', 'mainland-active') and entry.get('state') == 'awake' and not entry.get('busy') and operation.get('action') != 'handover':
         return 'its handover was refused (see the answer above); it keeps running on the old build'
     return None
 
@@ -77,13 +86,44 @@ def status(config):
     return json.loads(out)['regions']
 
 
+def deploy_plan(group, chosen=None):
+    """The selected persistent mainland goes first, without adding unticked regions."""
+    regions = {region['id']: region for region in group['regions']}
+    missing = sorted(set(chosen or ()) - regions.keys())
+    if missing:
+        raise ValueError('no region %s in the group' % ', '.join(missing))
+    if not group['persistent']:
+        return '', chosen or ()  # no Gaia ceiling; preserve the legacy whole-group action
+    selected = list(dict.fromkeys(chosen or (name for name, region in regions.items() if region['kind'] != 'GATEWAY')))
+    mainland = group['mainland'] if group['mainland'] in selected else ''
+    return mainland, [name for name in selected if name != mainland]
+
+
+def read_deploy_config(config):
+    spec = importlib.util.spec_from_file_location('shard_group', SHARD)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.load_group(config, persist_ports=False)
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--config', required=True)
-    parser.add_argument('--until', required=True, choices=('staged', 'stopped', 'compiled', 'awake', 'handed-over'))
+    action = parser.add_mutually_exclusive_group(required=True)
+    action.add_argument('--until', choices=('staged', 'stopped', 'compiled', 'awake', 'handed-over', 'mainland-active'))
+    action.add_argument('--deploy-plan', action='store_true', help='print the mainland and peer selection for deploy.bat')
     parser.add_argument('--region', action='append', help='only this region; repeat for several (default: every region)')
     parser.add_argument('--timeout', type=int, default=5400)
     args = parser.parse_args(argv)
+    if args.deploy_plan:
+        try:
+            mainland, peers = deploy_plan(read_deploy_config(args.config), args.region)
+        except (OSError, ValueError, RuntimeError) as error:
+            print('Could not plan the deploy: %s' % error, file=sys.stderr)
+            return 1
+        print('MAINLAND:' + (mainland or '-'))
+        print('PEERS:' + (' '.join(peers) or '-'))
+        return 0
     deadline = time.monotonic() + args.timeout
     last = None
     while True:
