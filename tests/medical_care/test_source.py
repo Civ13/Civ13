@@ -2,11 +2,15 @@
 import importlib.util
 from pathlib import Path
 import re
+from textwrap import dedent, indent
+from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 MEDICAL = (ROOT / "code/game/objects/items/stacks/medical.dm").read_text(encoding="utf-8")
 ORGAN = (ROOT / "code/modules/organs/organ_external.dm").read_text(encoding="utf-8")
+WOUND = (ROOT / "code/modules/organs/wound.dm").read_text(encoding="utf-8")
+HUMAN_ICONS = (ROOT / "code/game/mob/living/carbon/human/update_icons.dm").read_text(encoding="utf-8")
 SURGERY = (ROOT / "code/modules/surgery/other.dm").read_text(encoding="utf-8")
 LIMB_SURGERY = (ROOT / "code/modules/surgery/limb_reattach.dm").read_text(encoding="utf-8")
 HANDBOOK = (ROOT / "code/modules/1713/doctor_handbook.dm").read_text(encoding="utf-8")
@@ -193,6 +197,57 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("break", after_wait[guard:first_effect])
         self.assertIn("\n\tif (used)\n\t\tuse(min(used, amount))", treat)
         self.assertIn("if (tourniquet_patient_in_reach(H, user))\n\t\ttry_expert_close", treat)
+
+    def test_bandage_overlay_window_starts_with_treatment(self):
+        spec = importlib.util.spec_from_file_location(
+            "source_adapter", ROOT / "tests/save_movement/source_adapter.py"
+        )
+        adapter = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(adapter)
+
+        world = SimpleNamespace(time=10000)
+        wound = SimpleNamespace(created=5199, bandaged=False, bandaged_at=None)
+        limb = SimpleNamespace(limb_name="l_arm", wounds=[wound], is_stump=lambda: False)
+        bandage_path = "/datum/wound/proc/bandage"
+        declaration, body = block(WOUND, bandage_path).split("\n", 1)
+        body = re.sub(r"\b(bandaged|bandaged_at|created)\b", r"src.\1", dedent(body))
+        bandage = adapter.project(declaration + "\n" + indent(body, "\t"),
+                                  bandage_path, "src", {"world": world})
+
+        layers = {}
+        redraw_path = "/mob/living/human/proc/update_bandaging"
+        redraw_source = block(HUMAN_ICONS, redraw_path)
+        redraw_source = redraw_source.replace("O.wounds.len", "len(O.wounds)")
+        redraw_source = redraw_source.replace('icon_state="[O.limb_name]b"', 'icon_state=f"{O.limb_name}b"')
+        redraw_source = redraw_source.replace(")   update_icons()", ")   repaint()")
+        redraw = adapter.project(redraw_source, redraw_path, "update_icons", {
+            "world": world, "organs": [limb], "overlays_standing": layers, "BANDAGES_LAYER": 0,
+            "typed_iter": lambda items, _path: items, "isnull": lambda value: value is None,
+            "queue_overlay_redraw": lambda: None, "repaint": lambda: None,
+            "image": lambda icon, icon_state: [icon_state] if icon_state else SimpleNamespace(overlays=[]),
+        })
+
+        redraw(True)
+        self.assertEqual(layers[0].overlays, [])
+        bandage(wound)
+        redraw(True)
+        self.assertEqual(layers[0].overlays, ["l_armb"])
+        self.assertEqual(wound.created, 5199)
+        world.time += 4800
+        redraw(True)
+        self.assertEqual(layers[0].overlays, ["l_armb"])
+        world.time += 1
+        bandage(wound)
+        redraw(True)
+        self.assertEqual(layers[0].overlays, [])
+
+        wound.bandaged_at = None  # A wound restored without transient presentation state.
+        wound.created = world.time - 4800
+        redraw(True)
+        self.assertEqual(layers[0].overlays, ["l_armb"])
+        world.time += 1
+        redraw(True)
+        self.assertEqual(layers[0].overlays, [])
 
     def test_every_treatment_item_uses_the_shared_proc(self):
         expected = {

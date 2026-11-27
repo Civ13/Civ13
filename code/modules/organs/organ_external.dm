@@ -994,7 +994,7 @@ Note that amputating the affected organ does in fact remove the infection from t
 	for (var/datum/wound/W in wounds)
 		if (W.internal) continue
 		rval |= !W.bandaged
-		W.bandaged = TRUE
+		W.bandage()
 	return rval
 
 /obj/item/organ/external/proc/salve()
