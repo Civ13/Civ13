@@ -1088,9 +1088,9 @@ var/global/list/region_stopped_alerted = list()
 		lobby.key = C.key
 		if(fast)
 			to_chat(C, SPAN_NOTICE("You set off for [destination_name()]. Join it to continue; if your character cannot be taken in there, you will find them back here."))
-			shard_group.send_player_soon(C, destination)
 		else
-			to_chat(C, SPAN_NOTICE("You set out for [destination_name()]. Your group will arrive after this region finishes its next save. If the voyage is turned back, you will find your character here."))
+			to_chat(C, SPAN_NOTICE("You set out for [destination_name()]. You can wait in its lobby until this region finishes its next save. If the voyage is turned back, you will find your character here."))
+		shard_group.send_player_soon(C, destination)
 	var/account = H.persistence_owner_ckey
 	// Tells the agent where its character went, so it can follow (agent_travel.dm).
 	if(!C && fast)

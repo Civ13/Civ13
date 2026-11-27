@@ -79,8 +79,9 @@ plane-style cruise fuel or create a separate travel map.
 
 The same ledger entry carries the whole crew and the airship. Arrival waits
 for the source region's next successful save, so there cannot be a second
-copy of the equipment aboard after a crash. Crew wait in the lobby rather
-than being redirected to the destination immediately. Every passenger
+copy of the equipment aboard after a crash. Crew can wait in the destination
+lobby for the save to finish. Busy regions may defer that save under their
+normal save policy. Every passenger
 must be able to travel; a refusal leaves the entire party and ship where they
 are. Supported cargo includes loose items, chests with their contents, and
 deck engines with nearby attached fuel barrels. The deck materials, damage,
