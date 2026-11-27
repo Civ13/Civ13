@@ -332,6 +332,31 @@
 	var/obj/structure/bed/wood/modular/bed = bed_project.assemble(H, site, save_epoch)
 	joinery_ci_expect(istype(bed) && bed.furniture_finish == "Honey" && !bed.padding_material && !H.l_hand, "bare bed comes from the same project without cloth")
 	qdel(bed)
+	var/obj/item/furniture_project/joinery_ci/bed_parts = new(H)
+	H.l_hand = bed_parts
+	bed_parts.design_shape = "Bed"
+	joinery_ci_expect(bed_parts.fit_project_upholstery(W, site, 1, B) && bed_parts.fit_project_upholstery(C, site, 2, A) && bed_parts.cut_parts(H, site, save_epoch), "both mattress and cover are paid before cutting")
+	var/obj/structure/bed/wood/modular/finished_bed = bed_parts.assemble(H, site, save_epoch)
+	joinery_ci_expect(istype(finished_bed) && finished_bed.furniture_upholstery_a == B && finished_bed.furniture_upholstery_b == A, "mattress and cover are preserved independently")
+	qdel(finished_bed)
+	var/obj/item/furniture_project/joinery_ci/stool_project = new(H)
+	H.l_hand = stool_project
+	stool_project.design_shape = "Stool"
+	stool_project.design_finish = "Honey"
+	var/obj/item/stack/material/leather/seat_stock = new(H, 2, FALSE)
+	var/seat_record = furniture_upholstery_record("leather")
+	joinery_ci_expect(!stool_project.fit_project_upholstery(seat_stock, site, 2, seat_record) && seat_stock.amount == 2, "stool rejects a second slot without charging")
+	joinery_ci_expect(stool_project.fit_project_upholstery(seat_stock, site, 1, seat_record) && seat_stock.amount == 1 && stool_project.cut_parts(H, site, save_epoch), "stool pays for its single seat")
+	var/obj/item/weapon/stool/wood/modular/stool = stool_project.assemble(H, site, save_epoch)
+	joinery_ci_expect(istype(stool) && stool.loc == site && stool.furniture_finish == "Honey" && stool.furniture_upholstery_a == seat_record, "assembled stool remains a portable item with its paid seat")
+	if (stool)
+		var/obj/item/weapon/wirecutters/seat_cutters = new(H)
+		joinery_ci_expect(stool.commit_modular_seat(seat_cutters, site, seat_record, null, null) && !stool.furniture_upholstery_a && !stool.commit_modular_seat(seat_cutters, site, seat_record, null, null), "stool seat is recoverable only once")
+		joinery_ci_expect(stool.commit_modular_seat(seat_stock, site, null, "leather", seat_record), "stool accepts a replacement seat from an exact sheet")
+		stool.dismantle()
+		joinery_ci_expect(QDELETED(stool), "modular stool retains ordinary dismantling")
+		qdel(seat_cutters)
+	qdel(seat_stock)
 	qdel(C)
 	qdel(W)
 	for (var/obj/item/stack/material/S in site)

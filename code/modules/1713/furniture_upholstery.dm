@@ -43,7 +43,10 @@
 	return !record || (furniture_upholstery_kind(record) && (!dye || crafting_node_allowed(H, tailoring_dye_node(dye))))
 
 /proc/furniture_upholstery_slots(shape)
-	return shape == "Bed" ? list("Mattress", "Cover") : list("Seat", "Back")
+	switch (shape)
+		if ("Bed") return list("Mattress", "Cover")
+		if ("Stool") return list("Seat")
+	return list("Seat", "Back")
 
 /proc/furniture_upholstery_color(record)
 	var/kind = furniture_upholstery_kind(record)
@@ -64,16 +67,22 @@
 /proc/furniture_design_layers(shape, finish, part_a, part_b)
 	var/list/layers = list()
 	var/is_bed = shape == "Bed"
-	var/image/frame = image('icons/obj/bed_chair.dmi', is_bed ? "bed" : "chair")
+	var/is_stool = shape == "Stool"
+	var/frame_state = is_stool ? "stool_base" : (is_bed ? "bed" : "chair")
+	var/image/frame = image('icons/obj/bed_chair.dmi', frame_state)
 	frame.color = furniture_finish_color(finish) || furniture_finish_color("Natural")
 	layers += frame
 	var/first = furniture_upholstery_color(part_a)
 	if (first)
-		var/image/A = image('icons/obj/furniture_upholstery.dmi', is_bed ? "bed_mattress" : "chair_seat")
+		var/image/A
+		if (is_stool)
+			A = image('icons/obj/bed_chair.dmi', "stool_padding")
+		else
+			A = image('icons/obj/furniture_upholstery.dmi', is_bed ? "bed_mattress" : "chair_seat")
 		A.color = first
 		layers += A
 	var/second = furniture_upholstery_color(part_b)
-	if (second)
+	if (second && !is_stool)
 		var/image/B = image('icons/obj/furniture_upholstery.dmi', is_bed ? "bed_cover" : "chair_back")
 		B.color = second
 		layers += B
@@ -111,7 +120,10 @@
 	furniture_upholstery_b = null
 
 /obj/structure/bed/proc/modular_refit_ready(mob/living/human/H, obj/item/W, turf/site, datum/save_epoch)
-	return !QDELETED(src) && !QDELETED(H) && !QDELETED(W) && loc == site && H.Adjacent(src) && W.loc == H && (W == H.l_hand || W == H.r_hand) && !H.incapacitated() && H.can_use_hands() && !buckled_mob && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && save_epoch == persistence_admission_identity && crafting_node_allowed(H, "basic_furniture")
+	return !buckled_mob && furniture_refit_ready(src, H, W, site, save_epoch)
+
+/proc/furniture_refit_ready(atom/movable/F, mob/living/human/H, obj/item/W, turf/site, datum/save_epoch)
+	return isturf(site) && !QDELETED(F) && !QDELETED(H) && !QDELETED(W) && F.loc == site && H.Adjacent(F) && W.loc == H && (W == H.l_hand || W == H.r_hand) && !H.incapacitated() && H.can_use_hands() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && save_epoch == persistence_admission_identity && crafting_node_allowed(H, "basic_furniture")
 
 /obj/structure/bed/proc/modular_upholstery_click(obj/item/W, mob/user)
 	if (!modular_furniture_shape) return FALSE
@@ -158,16 +170,88 @@
 		return FALSE
 	if (previous != (index == 1 ? furniture_upholstery_a : furniture_upholstery_b))
 		return FALSE
-	if (kind)
-		var/obj/item/stack/S = W
-		if (furniture_upholstery_material(S) != kind || furniture_upholstery_kind(record) != kind || !S.use(1))
-			return FALSE
-	else if (record || !previous || !istype(W, /obj/item/weapon/wirecutters))
+	if (!furniture_upholstery_pay(W, previous, kind, record))
 		return FALSE
 	if (index == 1)
 		furniture_upholstery_a = record
 	else
 		furniture_upholstery_b = record
+	furniture_refund_upholstery(previous, site)
+	update_icon()
+	return TRUE
+
+/proc/furniture_upholstery_pay(obj/item/W, previous, kind, record)
+	if (kind)
+		var/obj/item/stack/S = W
+		return furniture_upholstery_material(S) == kind && furniture_upholstery_kind(record) == kind && S.use(1)
+	return !record && previous && istype(W, /obj/item/weapon/wirecutters)
+
+/obj/item/weapon/stool/wood/modular
+	name = "crafted stool"
+	desc = "A portable stool assembled from a furniture project."
+	var/furniture_finish = "Natural"
+	var/furniture_upholstery_a = null
+	var/tmp/furniture_refit_busy = FALSE
+
+/obj/item/weapon/stool/wood/modular/persistence_runtime_var(key)
+	return key == "furniture_refit_busy" || ..()
+
+/obj/item/weapon/stool/wood/modular/update_icon()
+	desc = "[initial(desc)] Seat: [furniture_upholstery_description(furniture_upholstery_a)]."
+	icon_state = ""
+	overlays.Cut()
+	overlays += furniture_design_layers("Stool", furniture_finish, furniture_upholstery_a, null)
+
+/obj/item/weapon/stool/wood/modular/after_load()
+	..()
+	update_icon()
+
+/obj/item/weapon/stool/wood/modular/dismantle()
+	var/turf/site = get_turf(src)
+	furniture_refund_upholstery(furniture_upholstery_a, site)
+	furniture_upholstery_a = null
+	..()
+
+/obj/item/weapon/stool/wood/modular/attackby(obj/item/weapon/W, mob/user)
+	var/kind = furniture_upholstery_material(W)
+	if (!kind && !istype(W, /obj/item/weapon/wirecutters))
+		if (istype(W, /obj/item/stack))
+			to_chat(user, SPAN_WARNING("Use cloth, woolcloth or leather to cover the seat."))
+			return TRUE
+		return ..()
+	if (!ishuman(user))
+		return TRUE
+	var/mob/living/human/H = user
+	var/turf/site = loc
+	var/datum/save_epoch = persistence_admission_identity
+	if (furniture_refit_busy || !furniture_refit_ready(src, H, W, site, save_epoch))
+		to_chat(H, SPAN_WARNING("Set the stool down and hold your materials or cutters. You need Basic Furniture knowledge."))
+		return TRUE
+	furniture_refit_busy = TRUE
+	refit_modular_seat(H, W, site, save_epoch, kind)
+	furniture_refit_busy = FALSE
+	return TRUE
+
+/obj/item/weapon/stool/wood/modular/proc/refit_modular_seat(mob/living/human/H, obj/item/W, turf/site, datum/save_epoch, kind)
+	var/previous = furniture_upholstery_a
+	if (!kind && !previous)
+		to_chat(H, SPAN_NOTICE("The seat is already bare."))
+		return
+	var/dye = null
+	if (kind && kind != "leather")
+		dye = furniture_choose_dye(H, "seat", furniture_upholstery_dye(previous))
+		if (!tailoring_color_valid(dye)) return
+	var/record = furniture_upholstery_record(kind, dye)
+	if (!furniture_refit_ready(src, H, W, site, save_epoch) || !furniture_upholstery_allowed(H, record))
+		return
+	if (!do_after(H, FURNITURE_REFIT_TIME, src) || !furniture_refit_ready(src, H, W, site, save_epoch) || !furniture_upholstery_allowed(H, record))
+		return
+	commit_modular_seat(W, site, previous, kind, record)
+
+/obj/item/weapon/stool/wood/modular/proc/commit_modular_seat(obj/item/W, turf/site, previous, kind, record)
+	if (!isturf(site) || loc != site || furniture_upholstery_a != previous || !furniture_upholstery_pay(W, previous, kind, record))
+		return FALSE
+	furniture_upholstery_a = record
 	furniture_refund_upholstery(previous, site)
 	update_icon()
 	return TRUE

@@ -35,9 +35,19 @@ class ModularFurnitureTests(unittest.TestCase):
         self.assertLess(load.index('if (cut ||'), load.index('S.use(1)'))
         self.assertLess(load.index('S.use(1)'), load.index('design_part_a = record'))
         refit = PARTS.split('/obj/structure/bed/proc/commit_modular_upholstery(', 1)[1]
-        self.assertLess(refit.index('if (previous !='), refit.index('S.use(1)'))
-        self.assertLess(refit.index('S.use(1)'), refit.index('furniture_refund_upholstery(previous, site)'))
+        self.assertLess(refit.index('if (previous !='), refit.index('furniture_upholstery_pay(W'))
+        self.assertLess(refit.index('furniture_upholstery_pay(W'), refit.index('furniture_refund_upholstery(previous, site)'))
         self.assertIn('furniture_upholstery_b = record', refit)
+        self.assertIn('furniture_upholstery_kind(record) == kind && S.use(1)', PARTS)
+
+    def test_portable_stool_has_one_paid_slot_and_reuses_existing_art(self):
+        self.assertIn('if ("Stool") return /obj/item/weapon/stool/wood/modular', DM)
+        self.assertIn('if ("Stool") return list("Seat")', PARTS)
+        self.assertIn('shape == "Stool" && design_part_b && furniture_refund_upholstery', DM)
+        self.assertIn('furniture_design_layers("Stool", furniture_finish, furniture_upholstery_a, null)', PARTS)
+        commit = PARTS.split('/obj/item/weapon/stool/wood/modular/proc/commit_modular_seat(', 1)[1]
+        self.assertLess(commit.index('furniture_upholstery_a != previous'), commit.index('furniture_upholstery_pay(W'))
+        self.assertLess(commit.index('furniture_upholstery_pay(W'), commit.index('furniture_refund_upholstery(previous, site)'))
 
     def test_finish_is_paid_once_and_validated_after_wait(self):
         assembly = DM.split('/obj/item/furniture_project/proc/assemble(', 1)[1]
@@ -48,12 +58,12 @@ class ModularFurnitureTests(unittest.TestCase):
     def test_style_and_raw_materials_are_separate(self):
         bed = (STOOL / 'bed.dm').read_text()
         self.assertIn('if (render_modular_furniture()) return', bed)
-        self.assertIn('F.furniture_finish = design_finish', DM)
+        self.assertIn('B.furniture_finish = design_finish', DM)
         self.assertIn('new result_type(origin, "wood")', DM)
         saved = (ROOT / 'code/modules/1713/furniture_fabric_dye.dm').read_text()
         self.assertIn('if (padding_color || modular_furniture_shape)', saved)
-        self.assertIn('F.furniture_upholstery_a = design_part_a', DM)
-        self.assertIn('F.furniture_upholstery_b = design_part_b', DM)
+        self.assertIn('B.furniture_upholstery_a = design_part_a', DM)
+        self.assertIn('B.furniture_upholstery_b = design_part_b', DM)
 
     def test_reuses_existing_directional_art(self):
         self.assertIn('list(SOUTH, NORTH, EAST, WEST)', DM)

@@ -389,16 +389,20 @@ furniture_project_path = 'code/modules/1713/modular_furniture.dm'
 furniture_project_source = files.get(furniture_project_path, '')
 if furniture_project_source:
     for shape, output in (('Chair', '/obj/structure/bed/chair/modular'),
-                          ('Bed', '/obj/structure/bed/wood/modular')):
+                          ('Bed', '/obj/structure/bed/wood/modular'),
+                          ('Stool', '/obj/item/weapon/stool/wood/modular')):
         marker = f'if ("{shape}") return {output}'
         line = furniture_project_source[:furniture_project_source.index(marker)].count('\n') + 1
         project = [('/obj/item/furniture_project', 1)]
         steps = 'Requires Basic Furniture knowledge. Use the held project to select the frame and wood finish. Preview, cut, then assemble on clear solid ground.'
         add(f'Design a wooden {shape.lower()}', 'Furniture', project, [(output, 1)],
             furniture_project_path, line, steps)
-        add(f'Design an upholstered {shape.lower()}', 'Furniture',
-            project + [('/obj/item/stack/material/cloth', 1)], [(output, 1)],
-            furniture_project_path, line, steps + ' Each covered part costs one cloth, woolcloth, or leather sheet. Fit up to two parts before cutting. Woven fabrics accept dyes you know; leather retains its natural color; you can refit one part after assembly.', wool_substitute=False)
+        slot_note = 'The stool has one seat slot.' if shape == 'Stool' else 'This frame has two independent parts that can use different materials.'
+        for display_material, material in (('cloth', 'cloth'), ('woolcloth', 'woolcloth'), ('leather', 'leather')):
+            add(f'Design a {display_material}-upholstered {shape.lower()}', 'Furniture',
+                project + [(f'/obj/item/stack/material/{material}', 1)], [(output, 1)],
+                furniture_project_path, line, steps + ' Each fitted part costs one sheet. ' + slot_note + ' Woven fabrics accept dyes you know; leather retains its natural color. Refit a part after assembly without changing the frame.', wool_substitute=False)
+
 light_path='code/modules/1713/light_fuel.dm'
 light=uncomment(files.get(light_path,''))
 if light:

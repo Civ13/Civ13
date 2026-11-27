@@ -1105,6 +1105,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/furniture_project" = "basic_furniture",
 		"/obj/structure/bed/chair/modular" = "basic_furniture",
 		"/obj/structure/bed/wood/modular" = "basic_furniture",
+		"/obj/item/weapon/stool/wood/modular" = "basic_furniture",
 		"/obj/structure/brazier" = "basic_furniture",
 		"/obj/structure/brazier/obsidian" = "basic_furniture",
 		"/obj/item/mirror/obsidian" = "basic_furniture",

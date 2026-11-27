@@ -1,5 +1,5 @@
 // Furniture projects reuse the tailoring workflow and dyes, but their parts
-// are a wooden frame and an optional, separately paid cloth cover.
+// are a wooden frame and optional, individually paid upholstery.
 #define FURNITURE_PROJECT_CUT_TIME (3 SECONDS)
 #define FURNITURE_PROJECT_ASSEMBLE_TIME (6 SECONDS)
 
@@ -7,6 +7,7 @@
 	switch (shape)
 		if ("Chair") return /obj/structure/bed/chair/modular
 		if ("Bed") return /obj/structure/bed/wood/modular
+		if ("Stool") return /obj/item/weapon/stool/wood/modular
 	return null
 
 /proc/furniture_finish_color(finish)
@@ -32,7 +33,7 @@
 
 /obj/item/furniture_project
 	name = "furniture project"
-	desc = "A bundle of wooden furniture parts. Use it in hand to design a chair or bed. Use a held cloth, woolcloth, or leather sheet on it to fit optional upholstery."
+	desc = "A bundle of wooden furniture parts. Use it in hand to design a chair, bed, or stool. Use a held cloth, woolcloth, or leather sheet on it to fit optional upholstery."
 	icon = 'icons/obj/bed_chair.dmi'
 	icon_state = "stool_preview"
 	w_class = ITEM_SIZE_NORMAL
@@ -50,7 +51,7 @@
 	return istype(H) && !QDELETED(H) && !QDELETED(src) && H.loc == origin && isturf(origin) && loc == H && (H.l_hand == src || H.r_hand == src) && !H.incapacitated() && H.can_use_hands() && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && save_epoch == persistence_admission_identity && crafting_node_allowed(H, "basic_furniture")
 
 /obj/item/furniture_project/proc/design_allowed(mob/living/human/H)
-	return furniture_project_body(design_shape) && furniture_finish_color(design_finish) && furniture_upholstery_allowed(H, design_part_a) && furniture_upholstery_allowed(H, design_part_b)
+	return furniture_project_body(design_shape) && furniture_finish_color(design_finish) && furniture_upholstery_allowed(H, design_part_a) && (!design_part_b || (design_shape != "Stool" && furniture_upholstery_allowed(H, design_part_b)))
 
 /obj/item/furniture_project/proc/upholstery_ready(mob/living/human/H, obj/item/W, turf/site, datum/save_epoch)
 	return ready(H, site, save_epoch) && !cut && !QDELETED(W) && W.loc == H && (W == H.l_hand || W == H.r_hand)
@@ -85,7 +86,7 @@
 		fit_project_upholstery(W, site, index, record)
 
 /obj/item/furniture_project/proc/fit_project_upholstery(obj/item/stack/S, turf/site, index, record)
-	if (cut || QDELETED(src) || QDELETED(S) || !isturf(site) || (index != 1 && index != 2))
+	if (cut || QDELETED(src) || QDELETED(S) || !isturf(site) || (index != 1 && (index != 2 || design_shape == "Stool")))
 		return FALSE
 	if (!furniture_upholstery_kind(record) || furniture_upholstery_material(S) != furniture_upholstery_kind(record) || !S.use(1))
 		return FALSE
@@ -140,7 +141,9 @@
 		var/list/slots = furniture_upholstery_slots(design_shape)
 		if (!cut && (design_part_a || design_part_b))
 			options.Insert(3, "Remove upholstery")
-		var/cover = "[slots[1]]: [furniture_upholstery_description(design_part_a)]; [slots[2]]: [furniture_upholstery_description(design_part_b)]"
+		var/cover = "[slots[1]]: [furniture_upholstery_description(design_part_a)]"
+		if (slots.len > 1)
+			cover += "; [slots[2]]: [furniture_upholstery_description(design_part_b)]"
 		var/answer = WWinput(H, "[design_shape], [design_finish] finish. [cover]. [cut ? "Parts cut." : "Design not yet cut."]", "Furniture project", "Close", options)
 		if (viewer)
 			viewer.screen -= preview
@@ -150,8 +153,10 @@
 			return
 		switch (answer)
 			if ("Frame")
-				var/shape = WWinput(H, "Which frame do you want to make?", "Frame", design_shape, list("Chair", "Bed"))
+				var/shape = WWinput(H, "Which frame do you want to make?", "Frame", design_shape, list("Chair", "Bed", "Stool"))
 				if (ready(H, origin, save_epoch) && furniture_project_body(shape))
+					if (shape == "Stool" && design_part_b && furniture_refund_upholstery(design_part_b, origin))
+						design_part_b = null
 					design_shape = shape
 			if ("Wood finish")
 				var/finish = WWinput(H, "Choose a finish for the frame.", "Wood finish", design_finish, list("Natural", "Honey", "Dark"))
@@ -194,15 +199,22 @@
 	if (!wait_for_furniture(H, FURNITURE_PROJECT_ASSEMBLE_TIME) || !ready(H, origin, save_epoch) || !design_allowed(H) || !site_clear(H, origin))
 		return null
 	var/result_type = furniture_project_body(design_shape)
-	var/obj/structure/bed/F = new result_type(origin, "wood")
+	var/obj/F = new result_type(origin, "wood")
 	if (QDELETED(F) || F.loc != origin)
 		if (!QDELETED(F))
 			qdel(F)
 		return null
-	F.furniture_finish = design_finish
-	F.furniture_upholstery_a = design_part_a
-	F.furniture_upholstery_b = design_part_b
-	F.update_icon()
+	if (design_shape == "Stool")
+		var/obj/item/weapon/stool/wood/modular/S = F
+		S.furniture_finish = design_finish
+		S.furniture_upholstery_a = design_part_a
+		S.update_icon()
+	else
+		var/obj/structure/bed/B = F
+		B.furniture_finish = design_finish
+		B.furniture_upholstery_a = design_part_a
+		B.furniture_upholstery_b = design_part_b
+		B.update_icon()
 	H.remove_from_mob(src)
 	qdel(src)
 	return F
