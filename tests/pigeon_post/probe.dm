@@ -1,0 +1,143 @@
+/world
+	hub = ""
+	hub_password = ""
+	maxx = 800
+	maxy = 4
+	maxz = 2
+	turf = /turf
+	area = /area
+	visibility = 0
+
+/world/OpenPort(port)
+	if (port == "none")
+		return ..()
+	return FALSE
+
+/mob/living/simple_animal/pigeon/post_probe/New()
+	return
+
+/mob/living/human/post_probe/New()
+	return
+
+/mob/living/human/post_probe/update_icons()
+	return
+
+var/post_probe_failures = 0
+var/post_probe_runtime = FALSE
+
+/proc/post_probe_check(condition, label)
+	if (!condition)
+		post_probe_failures++
+	world.log << "[condition ? "PASS" : "FAIL"]: [label]"
+
+/world/Error(exception/e)
+	post_probe_runtime = TRUE
+	world.log << "runtime error [e] [e.file]:[e.line]"
+
+/world/New()
+	OpenPort("none")
+	try
+		GLOB.all_observable_events = list()
+		GLOB.moved_event = new
+		GLOB.dir_set_event = new
+		GLOB.destroyed_event = new
+		movementMachine = new
+		post_probe_run()
+	catch (var/exception/e)
+		post_probe_check(FALSE, "exception [e] [e.file]:[e.line]")
+	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = post_probe_failures, "runtime_error" = post_probe_runtime, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
+	del(world)
+
+/proc/post_probe_floor(x, z)
+	var/turf/T = locate(x, 2, z)
+	var/area/A = T.loc
+	A.location = AREA_OUTSIDE
+	return T.ChangeTurf(/turf/floor/grass, FALSE, FALSE)
+
+/proc/post_probe_run()
+	var/turf/home = post_probe_floor(1, 1)
+	var/turf/origin = post_probe_floor(world.maxx, 1)
+	var/turf/cross_level = post_probe_floor(world.maxx, 2)
+	var/mob/living/simple_animal/pigeon/P = new /mob/living/simple_animal/pigeon/post_probe(origin)
+	var/obj/structure/pigeon_loft/L = new(home)
+	post_probe_check(!P.pigeon_post_destination(), "untrained and older birds have no route")
+	P.pigeon_post_train(L)
+	P.forceMove(cross_level)
+	post_probe_check(!P.pigeon_post_destination(), "another z-level cannot dispatch")
+	P.forceMove(home)
+	post_probe_check(!P.pigeon_post_destination(), "no flight to the current tile")
+	P.forceMove(origin)
+	var/area/A = home.loc
+	A.location = AREA_INSIDE
+	post_probe_check(!P.pigeon_post_destination(), "indoor home cannot receive a bird")
+	A.location = AREA_OUTSIDE
+	var/obj/structure/barrier = new /obj/structure(home)
+	barrier.density = TRUE
+	post_probe_check(!P.pigeon_post_destination(), "blocked home cannot receive a bird")
+	barrier.density = FALSE
+	post_probe_check(P.pigeon_post_destination() == L, "clearing the loft restores the route")
+	qdel(L)
+	var/obj/structure/pigeon_loft/replacement = new(home)
+	post_probe_check(!P.pigeon_post_destination(), "replacement at the same coordinates does not inherit the old route")
+	P.pigeon_post_train(replacement)
+	post_probe_check(P.pigeon_post_destination() == replacement, "retraining lets the bird return to the replacement loft")
+
+	var/obj/item/weapon/paper/letter = new(origin)
+	var/obj/item/weapon/storage/envelope/env = new(origin)
+	post_probe_check(pigeon_post_letter(letter) && !pigeon_post_letter(env), "loose sheets work and empty envelopes do not")
+	letter.forceMove(env)
+	post_probe_check(!pigeon_post_letter(env), "open envelopes are refused")
+	env.opened = FALSE
+	post_probe_check(pigeon_post_letter(env), "closed envelope containing exactly one sheet works")
+	var/obj/item/weapon/paper/second = new(env)
+	post_probe_check(!pigeon_post_letter(env), "more than one sheet is refused")
+	qdel(second)
+	env.knifed = TRUE
+	post_probe_check(!pigeon_post_letter(env), "cut envelope is refused")
+
+	// Use the real hand custody and movement hooks without a Dream Seeker client.
+	var/mob/living/human/post_probe/H = new(origin)
+	H.pulling = P
+	P.pulledby = H
+	letter.forceMove(H)
+	H.r_hand = letter
+	P.forceMove(cross_level)
+	H.forceMove(cross_level)
+	H.pulling = P
+	P.pulledby = H
+	post_probe_check(!P.pigeon_post_deliver(H, letter, replacement) && P.loc == cross_level && letter.loc == H && H.item_is_in_hands(letter), "a cross-level dispatch leaves the sender holding the original letter")
+	P.forceMove(origin)
+	H.forceMove(origin)
+	H.pulling = P
+	P.pulledby = H
+	letter.nodrop = TRUE
+	post_probe_check(!P.pigeon_post_deliver(H, letter, replacement) && letter.loc == H && P.loc == origin, "unreleasable paper stays in hand without moving the bird")
+	letter.nodrop = FALSE
+	post_probe_check(get_dist(P, home) == 799 && P.pigeon_post_deliver(H, letter, replacement) && P.loc == home && letter.loc == home && !H.item_is_in_hands(letter) && !H.pulling && !P.pulledby, "delivery from 799 tiles away moves the original bird and sheet and clears the sender's hand and pull")
+
+	post_probe_save_roundtrip(home, origin, P, replacement)
+
+/proc/post_probe_save_roundtrip(turf/home, turf/origin, mob/living/simple_animal/pigeon/post_probe/P, obj/structure/pigeon_loft/L)
+	ecology_spawner = new
+	mark_visited_around(origin)
+	var/mob/living/simple_animal/pigeon/post_probe/wild = new(home)
+	post_probe_check(!visited_chunk(home.x, home.y, home.z) && wildlife_repopulated(wild.type), "the trained bird and wild control are in an unvisited chunk of a repopulated species")
+	var/savefile/F = new("pigeon-test.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = home.z
+	post_probe_check(!map_storage.BuildVarDirectory(F, wild, 1), "real exporter omits the untrained wild bird")
+	var/bird_ref = map_storage.BuildVarDirectory(F, P, 1)
+	var/loft_ref = map_storage.BuildVarDirectory(F, L, 1)
+	post_probe_check(bird_ref && loft_ref, "real exporter saves both the trained bird and its loft")
+	if (!bird_ref || !loft_ref)
+		return
+	F.Flush()
+	qdel(P)
+	qdel(L)
+	map_storage.clear_bookkeeping()
+	var/savefile/restored = new("pigeon-test.sav")
+	var/obj/structure/pigeon_loft/new_loft = map_storage.Load_Entry(restored, loft_ref, starting_loc = home)
+	var/mob/living/simple_animal/pigeon/post_probe/new_bird = map_storage.Load_Entry(restored, bird_ref, starting_loc = home)
+	new_bird?.forceMove(origin)
+	post_probe_check(new_loft && new_bird?.pigeon_post_destination() == new_loft, "the bird can find the restored loft after both are loaded from disk")

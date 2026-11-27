@@ -3629,3 +3629,6 @@ RECIPE: /material/bronze/,bronze hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,
 RECIPE: /material/iron/,iron hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,iron
 RECIPE: /material/steel/,steel hoe,/obj/item/weapon/plough/hoe,2,60,0,1,tools,0,0,0,8,steel
 //**| END GENERATED TOOL MATERIAL VARIANTS |**
+
+// Pigeon post.
+RECIPE: /material/wood/soft/,pigeon loft,/obj/structure/pigeon_loft,6,75,1,1,paper & printing,14,0,0,8,null

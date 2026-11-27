@@ -104,6 +104,9 @@ var/global/persistence_visited_running = FALSE
 	var/mob/living/simple_animal/animal = A
 	if(!ecology_wild_animal(animal) || visited_chunk(animal.x, animal.y, animal.z)) return FALSE
 	if(!wildlife_repopulated(animal.type)) return FALSE
+	// A replacement wild bird cannot restore a player's trained home.
+	var/mob/living/simple_animal/pigeon/P = animal
+	if(istype(P) && P.pigeon_home_id) return FALSE
 	saving_skipped_wildlife["\ref[animal]"] = TRUE
 	return TRUE
 
