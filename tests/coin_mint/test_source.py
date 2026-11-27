@@ -36,7 +36,8 @@ class CoinMintSource(unittest.TestCase):
         classification = self.text.split('/proc/coin_metal()\n', 1)[1].split('\n/', 1)[0]
         marking = self.text.split('/proc/apply_coin_mark(new_issuer, new_fineness)\n', 1)[1].split('\n/', 1)[0]
 
-        self.assertEqual(predicate.strip(), 'return !isnull(coin_metal())')
+        predicate_call = re.escape('!isnull(coin_metal())')
+        self.assertRegex(predicate.strip(), rf'^return[ \t]+(?:{predicate_call}|\([ \t]*{predicate_call}[ \t]*\))$')
         self.assertEqual(
             re.findall(r'istype\(src, /obj/item/stack/money/(\w+)coin\)\)\n\t\treturn "(\w+)"', classification),
             [('copper', 'copper'), ('silver', 'silver'), ('gold', 'gold')],
