@@ -130,6 +130,8 @@ GAIA_HOST_OFFLINE_TESTS = frozenset({'tests/gaia_host/test_gaia_host.py', 'tests
                                      'tests/gaia_host/test_relay.py', 'tests/gaia_host/test_mobile_host.py',
                                      'tests/gaia_host/test_expedition_slots.py'})
 MEDICAL_CARE_OFFLINE_TESTS = frozenset({'tests/medical_care/test_source.py'})
+# Reviewed source fixture for the existing manual probe runner; never auto-run it.
+MEDICAL_CARE_MANUAL_NATIVE = frozenset({'tests/medical_care/splint_probe.dm'})
 # Offline source contract plus the opt-in native fixture (run by hand, not CI).
 FIREMAN_CARRY_OFFLINE_TESTS = frozenset({'tests/fireman_carry/test_source.py', 'tests/fireman_carry/probe.dm',
                                          'tests/fireman_carry/run_native.py'})
@@ -524,7 +526,7 @@ def introduced_tests(base, head, event):
             continue
         if path.startswith('tests/fireman_carry/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered fireman-carry executable test requires explicit CI review')
-        if path in MEDICAL_CARE_OFFLINE_TESTS:
+        if path in MEDICAL_CARE_OFFLINE_TESTS or path in MEDICAL_CARE_MANUAL_NATIVE:
             continue
         if path.startswith('tests/medical_care/') and PurePosixPath(path).suffix.lower() in {'.py', '.ps1', '.dm', '.sh'}:
             raise RuntimeError('Unregistered medical-care executable test requires explicit CI review')
