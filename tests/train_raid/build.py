@@ -180,13 +180,14 @@ def build():
             "boarding_ports": slot["boarding_ports"],
             "bridge_cells": slot["bridge_cells"]}
     # Two narrow, non-interactive lines of scrolling sleepers sell the
-    # motion. Use only yard tiles and keep bridges/doors/decks unobscured.
-    track_motion = {"columns": [tx0 - 11, tx1 + 11], "tiles": 0}
+    # motion. Keep it close enough to see from inside the Hauler's open
+    # sections, and off the actual train and the shuttle bridges.
+    track_motion = {"columns": [tx0 - 1, tx1 + 1], "tiles": 0}
     for x in track_motion["columns"]:
         for y in range(ty0, ty1 + 1):
             pos = x, y, raid.TRAIN_ORIGIN[2]
             atoms, area = grid[pos]
-            if area != AREAS["yard"] or not atoms.startswith("/turf"):
+            if area != AREAS["platform"] or not atoms.startswith("/turf"):
                 continue
             grid[pos] = ("/obj/effect/train_raid_track_motion," + atoms, area)
             track_motion["tiles"] += 1

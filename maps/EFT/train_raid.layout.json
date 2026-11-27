@@ -351,10 +351,10 @@
   ],
   "track_motion": {
     "columns": [
-      102,
-      147
+      112,
+      137
     ],
-    "tiles": 388
+    "tiles": 400
   },
   "crews": {
     "west": {

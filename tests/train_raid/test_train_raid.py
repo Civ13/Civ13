@@ -115,11 +115,14 @@ class TrainRaidMapTests(unittest.TestCase):
                   if "/obj/effect/train_raid_track_motion" in atoms}
         self.assertGreaterEqual(self.layout["hauler"]["length"], 200)
         self.assertEqual(len(moving), self.layout["track_motion"]["tiles"])
-        self.assertEqual({p[0] for p in moving}, set(self.layout["track_motion"]["columns"]))
+        columns = set(self.layout["track_motion"]["columns"])
+        self.assertEqual({p[0] for p in moving}, columns)
+        hx0, _, hx1, _ = self.layout["hauler"]["bounds"]
+        self.assertEqual(columns, {hx0 - 1, hx1 + 1})
         self.assertGreater(len(moving), 300)
         for p in moving:
             self.assertEqual(p[2], self.layout["hauler"]["z"])
-            self.assertIn("/area/train_raid/station", self.grid[p])
+            self.assertIn("/area/train_raid/station/platform", self.grid[p])
             self.assertFalse(any("train_raid_bridge" in a for a in self.grid[p]))
             self.assertTrue(walkable(self.grid[p]))
 
