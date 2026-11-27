@@ -173,6 +173,10 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		west.fuel = 1
 		require(!west.recall(H) && west.fuel == 1 && west.state == "away", "recall accepted without fuel")
 		require(west.load_at_helm(H, new /obj/item/train_raid_fuel(H)) && west.fuel == 3, "fuel cell not loaded: [west.fuel]")
+		var/real_deadline = M.round_deadline
+		M.round_deadline = world.time + M.recall_travel + 10 SECONDS
+		require(!west.recall(H) && west.fuel == 3 && west.state == "away", "late recall took fuel or launched")
+		M.round_deadline = real_deadline
 		require(west.recall(H), "recall refused after cooldown")
 		require(west.state == "inbound" && west.fuel == 1, "west not inbound or fuel not burned: [west.fuel]")
 		require(!west.recall(H) && west.fuel == 1, "second recall charged fuel")
@@ -197,6 +201,12 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		west.tick()
 		require(west.state == "docked" && bridges_of("west", FALSE) == 36, "west did not dock on arrival")
 		require(west.state_until > world.time, "docking window not scheduled")
+		west.state_until = world.time + 25 SECONDS
+		west.tick()
+		require(west.bridge_warning == 1 && bridges_of("west", FALSE) == 36, "first warning not issued with bridges open")
+		west.state_until = world.time + 8 SECONDS
+		west.tick()
+		require(west.bridge_warning == 2 && bridges_of("west", FALSE) == 36, "final warning not issued with bridges open")
 		west.state_until = world.time
 		west.tick()
 		require(west.state == "away" && bridges_of("west", TRUE) == 36, "west did not depart after its window")
@@ -256,6 +266,7 @@ var/global/datum/train_raid_probe/train_raid_probe = new
 		M.round_deadline = world.time - 1
 		M.tick()
 		require(M.game_over && ticker.finished, "collapse did not end the round")
+		require(bridges_of("east", TRUE) == 36 && bridges_of("west", TRUE) == 36, "collapse left a gangway open")
 		require(left.stat == DEAD, "raider left on the Hauler survived the collapse")
 		require(QDELETED(stray), "stray Hauler item survived the collapse")
 		pass("line_collapse")

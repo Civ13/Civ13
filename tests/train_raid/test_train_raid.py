@@ -140,6 +140,17 @@ class TrainRaidMapTests(unittest.TestCase):
         self.assertIn("loop = -1", backdrop)
         self.assertNotIn("process(", backdrop)
 
+    def test_round_deadline_gates_recall_boarding_and_collapse(self):
+        mode = self.mode
+        recall = mode.split("/datum/train_raid_crew/proc/recall(", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(recall.index("!boarding_time_available(arrival"), recall.index("fuel -= mode.recall_fuel"))
+        dock = mode.split("/datum/train_raid_crew/proc/dock(", 1)[1].split("\n/datum/", 1)[0]
+        self.assertIn("state_until = min(until, mode.round_deadline)", dock)
+        tick = mode.split("/obj/map_metadata/train_raid/tick()", 1)[1].split("\n/obj/", 1)[0]
+        self.assertLess(tick.index("collapse()"), tick.index("C.tick()"))
+        collapse = mode.split("/obj/map_metadata/train_raid/proc/collapse()", 1)[1].split("\n/datum/", 1)[0]
+        self.assertLess(collapse.index("C.set_bridges(FALSE)"), collapse.index("C.save_shuttle()"))
+
     def test_single_metadata_object(self):
         count = sum(1 for atoms in self.grid.values() if "/obj/map_metadata/train_raid" in atoms)
         self.assertEqual(count, 1)

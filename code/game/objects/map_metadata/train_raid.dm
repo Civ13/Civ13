@@ -12,6 +12,7 @@
 #define TRAIN_RAID_MATCH_TIME (3 SECONDS)
 #define TRAIN_RAID_SHUTTLE_ACCEL 0.6 // tiles per second per second
 #define TRAIN_RAID_AUTO_MATCH_DELAY (30 SECONDS)
+#define TRAIN_RAID_MIN_BOARDING_TIME (15 SECONDS)
 
 var/global/list/train_raid_bridges = list()
 var/global/list/train_raid_helms = list()
@@ -159,6 +160,9 @@ var/global/list/train_raid_loot_pads = list()
 	if (game_over || !ticker || ticker.current_state != GAME_STATE_PLAYING) return
 	if (!round_started)
 		start_round()
+	if (world.time >= round_deadline)
+		collapse()
+		return
 	for (var/id in crews)
 		var/datum/train_raid_crew/C = crews[id]
 		C.tick()
@@ -168,8 +172,6 @@ var/global/list/train_raid_loot_pads = list()
 			warnings_sent["[mark]"] = TRUE
 			to_chat(world, SPAN_DANGER("<font size=3>The line collapses in [mark] minute[mark == 1 ? "" : "s"]. Anything still on the Hauler will be lost.</font>"))
 			break
-	if (remaining <= 0)
-		collapse()
 
 /obj/map_metadata/train_raid/proc/start_round()
 	round_started = world.time
@@ -231,6 +233,9 @@ var/global/list/train_raid_loot_pads = list()
 /obj/map_metadata/train_raid/proc/collapse()
 	if (game_over) return
 	game_over = TRUE
+	for (var/id in crews)
+		var/datum/train_raid_crew/C = crews[id]
+		C.set_bridges(FALSE)
 	to_chat(world, SPAN_DANGER("<font size=4>The line collapses. The Hauler and everything still aboard it are lost.</font>"))
 	var/list/lost = list()
 	for (var/area/A in world)
@@ -268,6 +273,7 @@ var/global/list/train_raid_loot_pads = list()
 	var/state = TRAIN_RAID_AWAY
 	var/state_until = 0
 	var/next_recall = 0
+	var/bridge_warning = 0
 	var/shuttle_speed = 0
 	var/shuttle_target = TRAIN_RAID_HAULER_SPEED
 	var/speed_updated_at = 0
@@ -319,7 +325,10 @@ var/global/list/train_raid_loot_pads = list()
 			return "The shuttle is running alongside the Hauler at [shuttle_speed] tiles/s; its bridges retract in [max(0, ceil((state_until - world.time) / (1 SECOND)))] second(s)."
 		if (TRAIN_RAID_INBOUND)
 			var/eta = max(0, ceil((state_until - world.time) / (1 SECOND)))
-			var/approach = eta ? "Alongside in [eta] second(s)." : "Alongside; waiting for a steady speed match."
+			var/hold = isnull(speed_matched_since) ? TRAIN_RAID_MATCH_TIME : max(0, TRAIN_RAID_MATCH_TIME - (world.time - speed_matched_since))
+			var/approach = eta ? "Alongside in [eta] second(s)." : "Alongside; hold the match for [ceil(hold / (1 SECOND))] more second(s)."
+			if (!eta && (!speed_matches() || shuttle_target != TRAIN_RAID_HAULER_SPEED))
+				approach = "Alongside; match the Hauler's speed to extend the bridges."
 			return "[approach] Shuttle: [round(shuttle_speed, 0.1)] tiles/s (set to [shuttle_target]). Hauler: [TRAIN_RAID_HAULER_SPEED] tiles/s."
 	if (world.time < next_recall) return "The shuttle is away and can be recalled in [max(0, round((next_recall - world.time) / (1 MINUTE)))] minute(s)."
 	return "The shuttle is away. Use a shuttle beacon on the Hauler to recall it."
@@ -331,12 +340,14 @@ var/global/list/train_raid_loot_pads = list()
 // Update by elapsed time, not by how often the map ticker is called.
 /datum/train_raid_crew/proc/update_approach()
 	var/now = world.time
-	// A recalled shuttle must still be recoverable if nobody is in its cab.
-	if (now >= state_until + TRAIN_RAID_AUTO_MATCH_DELAY)
-		set_approach_speed(TRAIN_RAID_HAULER_SPEED)
-	var/change = max(0, now - speed_updated_at) / (1 SECOND) * TRAIN_RAID_SHUTTLE_ACCEL
-	speed_updated_at = now
-	shuttle_speed += clamp(shuttle_target - shuttle_speed, -change, change)
+	// Split the elapsed time at the automatic takeover, so none of the
+	// prior manual throttle interval is credited toward automatic matching.
+	var/takeover_at = state_until + TRAIN_RAID_AUTO_MATCH_DELAY
+	if (now >= takeover_at && shuttle_target != TRAIN_RAID_HAULER_SPEED)
+		advance_approach_speed(takeover_at)
+		shuttle_target = TRAIN_RAID_HAULER_SPEED
+		speed_matched_since = null
+	advance_approach_speed(now)
 	// A match on approach does not count toward a safe crossing.
 	if (now >= state_until && shuttle_target == TRAIN_RAID_HAULER_SPEED && speed_matches())
 		if (isnull(speed_matched_since))
@@ -344,32 +355,59 @@ var/global/list/train_raid_loot_pads = list()
 	else
 		speed_matched_since = null
 
+/datum/train_raid_crew/proc/advance_approach_speed(until)
+	if (until <= speed_updated_at) return
+	var/change = (until - speed_updated_at) / (1 SECOND) * TRAIN_RAID_SHUTTLE_ACCEL
+	speed_updated_at = until
+	shuttle_speed += clamp(shuttle_target - shuttle_speed, -change, change)
+
 /datum/train_raid_crew/proc/speed_matches()
 	return abs(shuttle_speed - TRAIN_RAID_HAULER_SPEED) <= TRAIN_RAID_MATCH_TOLERANCE
 
 /datum/train_raid_crew/proc/set_approach_speed(speed)
 	if (mode.game_over || state != TRAIN_RAID_INBOUND || !isnum(speed))
 		return FALSE
-	if (world.time >= state_until + TRAIN_RAID_AUTO_MATCH_DELAY && speed != TRAIN_RAID_HAULER_SPEED)
+	// At takeover the automatic helm already owns the throttle.
+	if (world.time >= state_until + TRAIN_RAID_AUTO_MATCH_DELAY)
 		return FALSE
+	advance_approach_speed(world.time)
 	shuttle_target = clamp(speed, TRAIN_RAID_HAULER_SPEED - 1, TRAIN_RAID_HAULER_SPEED + 1)
 	// A deliberate speed change cancels an existing match immediately.
 	if (shuttle_target != TRAIN_RAID_HAULER_SPEED)
 		speed_matched_since = null
 	return TRUE
 
+// Match time does not count as time available to cross the gangway.
+/datum/train_raid_crew/proc/boarding_time_available(at)
+	return mode.round_deadline - at >= TRAIN_RAID_MIN_BOARDING_TIME
+
 /datum/train_raid_crew/proc/boarding_ready()
-	return state == TRAIN_RAID_INBOUND && world.time >= state_until && shuttle_target == TRAIN_RAID_HAULER_SPEED && speed_matches() && !isnull(speed_matched_since) && world.time - speed_matched_since >= TRAIN_RAID_MATCH_TIME
+	return state == TRAIN_RAID_INBOUND && boarding_time_available(world.time) && world.time >= state_until && shuttle_target == TRAIN_RAID_HAULER_SPEED && speed_matches() && !isnull(speed_matched_since) && world.time - speed_matched_since >= TRAIN_RAID_MATCH_TIME
 
 /datum/train_raid_crew/proc/tick()
 	switch (state)
 		if (TRAIN_RAID_INBOUND)
+			if (!boarding_time_available(world.time))
+				state = TRAIN_RAID_AWAY
+				state_until = 0
+				shuttle_speed = 0
+				speed_matched_since = null
+				announce("The line is about to collapse. The shuttle is breaking off its approach without extending the bridges.")
+				return
 			update_approach()
 			if (boarding_ready())
 				dock(world.time + mode.docking_window)
 		if (TRAIN_RAID_DOCKED)
 			if (!speed_matches() || (state_until && world.time >= state_until))
 				depart()
+				return
+			var/remaining = state_until - world.time
+			if (remaining <= 10 SECONDS && bridge_warning < 2)
+				bridge_warning = 2
+				announce("Bridges retract in [ceil(remaining / (1 SECOND))] seconds. Cross now.")
+			else if (remaining > 10 SECONDS && remaining <= 30 SECONDS && !bridge_warning)
+				bridge_warning = 1
+				announce("Bridges retract in [ceil(remaining / (1 SECOND))] seconds. Make for the gangways.")
 
 /datum/train_raid_crew/proc/set_bridges(extended)
 	for (var/obj/structure/train_raid_bridge/B in train_raid_bridges)
@@ -381,9 +419,10 @@ var/global/list/train_raid_loot_pads = list()
 	shuttle_speed = TRAIN_RAID_HAULER_SPEED
 	shuttle_target = TRAIN_RAID_HAULER_SPEED
 	state = TRAIN_RAID_DOCKED
-	state_until = until
+	state_until = min(until, mode.round_deadline)
+	bridge_warning = 0
 	set_bridges(TRUE)
-	if (!initial) announce("The shuttle has matched the Hauler's speed. Its bridges are out for [round((until - world.time) / (1 MINUTE))] minute(s); be aboard when they retract.")
+	if (!initial) announce("The shuttle has matched the Hauler's speed. Its bridges are out for [ceil((state_until - world.time) / (1 SECOND))] seconds; be aboard when they retract.")
 	return TRUE
 
 /datum/train_raid_crew/proc/depart()
@@ -417,6 +456,10 @@ var/global/list/train_raid_loot_pads = list()
 	if (!mode.on_hauler(H))
 		to_chat(H, "The beacon only reaches the shuttle from the Hauler or the station.")
 		return FALSE
+	var/arrival = world.time + mode.recall_travel
+	if (!boarding_time_available(arrival + TRAIN_RAID_MATCH_TIME))
+		to_chat(H, "The shuttle cannot get alongside with enough time to cross before the line collapses. No fuel was used.")
+		return FALSE
 	// Fuel is checked and burned in this same step, so a recall is never free
 	// and never paid twice.
 	if (fuel < mode.recall_fuel)
@@ -424,12 +467,12 @@ var/global/list/train_raid_loot_pads = list()
 		return FALSE
 	fuel -= mode.recall_fuel
 	state = TRAIN_RAID_INBOUND
-	state_until = world.time + mode.recall_travel
+	state_until = arrival
 	shuttle_speed = 0
 	shuttle_target = TRAIN_RAID_HAULER_SPEED
 	speed_updated_at = world.time
 	speed_matched_since = null
-	announce("[H.real_name] has recalled the shuttle. It arrives in [round(mode.recall_travel / (1 MINUTE))] minute(s) and stays for [round(mode.docking_window / (1 MINUTE))]. Fuel left: [fuel].")
+	announce("[H.real_name] has recalled the shuttle. It draws alongside in about [round(mode.recall_travel / (1 MINUTE))] minute(s). The bridges extend after it holds a speed match. Fuel left: [fuel].")
 	return TRUE
 
 /datum/train_raid_crew/proc/depart_now(mob/living/human/H)
@@ -592,6 +635,7 @@ var/global/list/train_raid_loot_pads = list()
 	return ..()
 
 /obj/structure/train_raid_bridge/proc/set_extended(out)
+	if (extended == out) return
 	extended = out
 	if (extended)
 		density = FALSE
@@ -883,3 +927,4 @@ var/global/list/train_raid_loot_pads = list()
 #undef TRAIN_RAID_MATCH_TIME
 #undef TRAIN_RAID_SHUTTLE_ACCEL
 #undef TRAIN_RAID_AUTO_MATCH_DELAY
+#undef TRAIN_RAID_MIN_BOARDING_TIME

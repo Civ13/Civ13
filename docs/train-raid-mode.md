@@ -23,7 +23,7 @@ is the **line collapse**.
 | Start | Both shuttles start at the west and east berths, already running alongside the Hauler with their boarding bridges extended. Loot pads roll by section tier. Crews spawn in their shuttle bunks with a basic kit, two lift balloons and a shuttle beacon. |
 | Boarding | Five minutes after the round starts (or earlier from the helm), each shuttle departs: its bridges retract into an impassable gap and the shuttle is away. Anyone still aboard rides with it until the next docking. |
 | Raiding | Crews breach compartment doors rear to front. Sections nearer the locomotive hold better loot. Lift balloons send one item or crate at a time to the shuttle stores; the coaches, vault car and locomotive need a boarding pass loaded at the helm first. |
-| Recall | A crew member on the train uses their shuttle beacon, burning 2 fuel. The shuttle takes at least three minutes to draw alongside and must hold the Hauler’s speed before its two-minute boarding window begins. It retracts the bridges before departing again. Whoever is aboard, and everything in the shuttle, is secured. A departed shuttle can be recalled again after a five-minute cooldown. |
+| Recall | A crew member on the train uses their shuttle beacon, burning 2 fuel. The shuttle takes at least three minutes to draw alongside and must hold the Hauler’s speed before its two-minute boarding window begins. It retracts the bridges before departing again. Whoever is aboard, and everything in the shuttle, is secured. A departed shuttle can be recalled again after a five-minute cooldown. A recall that cannot leave at least 15 seconds to cross before the collapse is refused without using fuel. |
 | Line collapse | Sixty minutes after the start, warnings at thirty, fifteen, five and one minutes. At zero every item still on the Hauler and the platforms is destroyed, every raider still there is lost, the two crews' secured value is announced, each shuttle's hold is saved for its party and the round ends. |
 
 ## Running alongside the Hauler
@@ -40,9 +40,11 @@ shuttle is alongside and has been within 0.25 tiles/s of the Hauler for
 three seconds. If it still has not matched 30 seconds after arrival, the helm
 automatically matches speed so a beacon recall works even with nobody aboard.
 
-During the boarding window the shuttle holds the matched speed. The helm
-retracts its bridges before normal departure, and losing the match aborts
-boarding and retracts them too. These are event shuttles, not persistence
+During the boarding window the shuttle holds the matched speed. The crew
+gets warnings before its bridges retract, at about 30 and 10 seconds. The
+helm retracts the bridges before departure, on loss of speed match, or when
+the line collapses. If a delayed approach no longer leaves 15 seconds
+to cross, the shuttle breaks off without opening the bridges. These are event shuttles, not persistence
 locomotives; their movement does not change overworld trains or freight custody.
 
 ## Lives and respawns
