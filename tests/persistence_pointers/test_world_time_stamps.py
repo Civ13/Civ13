@@ -59,6 +59,7 @@ REVIEWED = {
     'next_feels_like_message': 'declared var/tmp on humans (feels_like.dm), so never saved',
     'spirit_hud_ends': 'declared var/tmp on ghosts (spirit_hud.dm), so never saved',
     'heteromorph_started': 'declared var/tmp on heteromorph forms (heteromorph_form.dm); saves return every form to human first',
+    'bandaged_at': 'declared var/tmp on wounds (wound.dm), so never saved',
     'heteromorph_breath_ready': 'declared var/tmp on heteromorph forms (heteromorph_breath.dm); saves return every form to human first',
 }
 
@@ -195,6 +196,11 @@ class WorldTimeStampRegistry(unittest.TestCase):
             if any(saved_owner(candidate) for candidate in owners):
                 missing.add(f'{name} on {owners}')
         self.assertEqual(sorted(missing), [], 'add these world.time stamps to world_time_stamps.dm or review them')
+
+    def test_bandage_overlay_stamp_is_temporary(self):
+        wound = (CODE / 'modules/organs/wound.dm').read_text()
+        wound_declaration = wound[wound.index('/datum/wound\n'):].split('\n/', 1)[0]
+        self.assertRegex(wound_declaration, r'(?m)^\tvar/tmp/bandaged_at\b')
 
     def test_tmp_vars_are_skipped(self):
         # The saver walks D.vars, tmp vars included; the base runtime hook
