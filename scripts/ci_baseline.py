@@ -523,6 +523,9 @@ SUITES = {
         'tests/sign_icons/', 'code/game/objects/structures/signs.dm',
         'code/game/objects/structures/sign_flags.dm', 'icons/obj/decals.dmi',
         'icons/obj/decals_wide.dmi'), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'gib_icons': {'files': ('tests/gib_icons/test_gib_icons.py',), 'paths': (
+        'tests/gib_icons/', 'code/game/objects/effects/decals/Cleanable/humans.dm',
+        'icons/effects/blood.dmi'), 'shared_paths': ('tools/dmi/',)},
     'cremator_tray': {'files': ('tests/cremator_tray/test_retraction.py',), 'paths': (
         'tests/cremator_tray/', 'code/game/objects/structures/morgue.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
