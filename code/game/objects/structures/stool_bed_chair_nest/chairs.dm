@@ -16,6 +16,7 @@
 
 /obj/structure/bed/chair/update_icon()
 	..()
+	if (modular_furniture_shape) return
 
 /*
 	var/cache_key = "[base_icon]-[material.name]-over"
@@ -28,10 +29,10 @@
 */
 	// Padding overlay.
 	if (padding_material)
-		var/padding_cache_key = "[base_icon]-padding-[padding_material.name]-[padding_shade()]-over"
+		var/padding_cache_key = "[base_icon]-padding-[padding_material.name]-over"
 		if (isnull(stool_cache[padding_cache_key]))
 			var/image/I =  image(icon, "[base_icon]_padding_over")
-			I.color = padding_shade()
+			I.color = padding_material.icon_colour
 			I.layer = FLY_LAYER
 			stool_cache[padding_cache_key] = I
 		overlays |= stool_cache[padding_cache_key]

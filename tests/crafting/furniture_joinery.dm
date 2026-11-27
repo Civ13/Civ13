@@ -283,21 +283,22 @@
 	H.l_hand = P
 	H.r_hand = C
 	var/datum/save_epoch = persistence_admission_identity
-	P.attackby(C, H)
-	P.attackby(C, H)
-	joinery_ci_expect(P.has_cloth && C.amount == 1, "modular project pays at most one sheet")
+	var/obj/item/stack/material/woolcloth/W = new(H, 2, FALSE)
+	var/A = furniture_upholstery_record("cloth", "#7890a8")
+	var/B = furniture_upholstery_record("woolcloth", "#74805a")
+	joinery_ci_expect(P.fit_project_upholstery(C, site, 1, A) && P.fit_project_upholstery(W, site, 2, B) && C.amount == 1 && W.amount == 1, "modular project pays one matching sheet per slot")
+	joinery_ci_expect(!P.fit_project_upholstery(C, site, 2, B) && C.amount == 1 && P.design_part_b == B, "wrong material never consumes or changes the slot")
 	P.design_shape = "Chair"
 	P.design_finish = "Dark"
-	P.design_dye = "#7890a8"
 	P.cancel_wait = TRUE
 	joinery_ci_expect(!P.cut_parts(H, site, save_epoch) && !P.cut, "cancelled cut leaves project editable")
 	P.cancel_wait = FALSE
 	joinery_ci_expect(P.cut_parts(H, site, save_epoch) && P.cut, "cut locks the chair design")
 	P.cancel_wait = TRUE
-	joinery_ci_expect(!P.assemble(H, site, save_epoch) && H.l_hand == P && P.has_cloth, "cancelled assembly retains paid parts")
+	joinery_ci_expect(!P.assemble(H, site, save_epoch) && H.l_hand == P && P.design_part_a == A && P.design_part_b == B, "cancelled assembly retains paid parts")
 	P.cancel_wait = FALSE
 	var/obj/structure/bed/chair/modular/chair = P.assemble(H, site, save_epoch)
-	joinery_ci_expect(istype(chair) && chair.loc == site && chair.material.name == "wood" && chair.padding_material.name == "cloth" && chair.furniture_finish == "Dark" && chair.padding_color == "#7890a8" && !H.l_hand && QDELETED(P), "finished chair preserves materials, colours and hand cleanup")
+	joinery_ci_expect(istype(chair) && chair.loc == site && chair.material.name == "wood" && chair.furniture_finish == "Dark" && chair.furniture_upholstery_a == A && chair.furniture_upholstery_b == B && !H.l_hand && QDELETED(P), "finished chair preserves materials, colours and hand cleanup")
 	if (chair)
 		var/savefile/F = new("modular-furniture.sav")
 		F["/format_version"] << 2
@@ -308,8 +309,18 @@
 		var/obj/structure/bed/chair/modular/restored = map_storage.Load_Entry(F, ref, starting_loc = site)
 		if (restored)
 			restored.after_load()
-		joinery_ci_expect(istype(restored) && restored.furniture_finish == "Dark" && restored.padding_color == "#7890a8" && restored.padding_material.name == "cloth", "chair disk entry retains both finishes")
+		joinery_ci_expect(istype(restored) && restored.furniture_finish == "Dark" && restored.furniture_upholstery_a == A && restored.furniture_upholstery_b == B, "chair disk entry retains both finishes")
 		qdel(restored)
+		var/obj/item/stack/material/leather/L = new(H, 2, FALSE)
+		var/leather = furniture_upholstery_record("leather", "#7890a8")
+		joinery_ci_expect(isnull(furniture_upholstery_dye(leather)) && !chair.commit_modular_upholstery(L, site, 1, null, "leather", leather) && L.amount == 2, "stale refit cannot debit leather")
+		joinery_ci_expect(chair.commit_modular_upholstery(L, site, 1, A, "leather", leather) && L.amount == 1 && chair.furniture_upholstery_a == leather && chair.furniture_upholstery_b == B && (locate(/obj/item/stack/material/cloth) in site), "refit seat debits leather and returns only its old cloth")
+		var/obj/item/weapon/wirecutters/cutters = new(H)
+		joinery_ci_expect(chair.commit_modular_upholstery(cutters, site, 2, B, null, null) && !chair.furniture_upholstery_b && chair.furniture_upholstery_a == leather && (locate(/obj/item/stack/material/woolcloth) in site), "cutters recover only the back's wool")
+		chair.strip_modular_upholstery()
+		joinery_ci_expect(!chair.furniture_upholstery_a && !chair.furniture_upholstery_b && (locate(/obj/item/stack/material/leather) in site), "dismantling recovers the fitted leather once")
+		qdel(cutters)
+		qdel(L)
 		qdel(chair)
 	var/obj/item/furniture_project/joinery_ci/bed_project = new(H)
 	H.l_hand = bed_project
@@ -322,4 +333,7 @@
 	joinery_ci_expect(istype(bed) && bed.furniture_finish == "Honey" && !bed.padding_material && !H.l_hand, "bare bed comes from the same project without cloth")
 	qdel(bed)
 	qdel(C)
+	qdel(W)
+	for (var/obj/item/stack/material/S in site)
+		qdel(S)
 	qdel(H)

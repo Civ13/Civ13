@@ -10,6 +10,7 @@ DM = (ROOT / 'code/modules/1713/modular_furniture.dm').read_text()
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text()
 RESEARCH = (ROOT / 'code/modules/research_tree/research_node.dm').read_text()
 STOOL = ROOT / 'code/game/objects/structures/stool_bed_chair_nest'
+PARTS = (ROOT / 'code/modules/1713/furniture_upholstery.dm').read_text()
 
 
 def sprite_metadata(path):
@@ -29,12 +30,14 @@ class ModularFurnitureTests(unittest.TestCase):
         self.assertIn('"/obj/item/furniture_project" = "basic_furniture"', RESEARCH)
         self.assertIn('crafting_node_allowed(H, "basic_furniture")', DM)
 
-    def test_paid_optional_upholstery_cannot_be_double_installed_or_removed_after_cut(self):
-        load = DM.split('/obj/item/furniture_project/attackby', 1)[1].split('/obj/item/furniture_project/proc/site_clear', 1)[0]
-        self.assertLess(load.index('working || cut || has_cloth'), load.index('C.use(1)'))
-        self.assertLess(load.index('C.use(1)'), load.index('has_cloth = TRUE'))
-        self.assertIn('if (!cut && has_cloth)', DM)
-        self.assertIn('has_cloth ? "cloth" : null', DM)
+    def test_project_and_finished_refits_charge_only_the_selected_part(self):
+        load = DM.split('/obj/item/furniture_project/proc/fit_project_upholstery(', 1)[1].split('/obj/item/furniture_project/proc/site_clear', 1)[0]
+        self.assertLess(load.index('if (cut ||'), load.index('S.use(1)'))
+        self.assertLess(load.index('S.use(1)'), load.index('design_part_a = record'))
+        refit = PARTS.split('/obj/structure/bed/proc/commit_modular_upholstery(', 1)[1]
+        self.assertLess(refit.index('if (previous !='), refit.index('S.use(1)'))
+        self.assertLess(refit.index('S.use(1)'), refit.index('furniture_refund_upholstery(previous, site)'))
+        self.assertIn('furniture_upholstery_b = record', refit)
 
     def test_finish_is_paid_once_and_validated_after_wait(self):
         assembly = DM.split('/obj/item/furniture_project/proc/assemble(', 1)[1]
@@ -44,11 +47,13 @@ class ModularFurnitureTests(unittest.TestCase):
 
     def test_style_and_raw_materials_are_separate(self):
         bed = (STOOL / 'bed.dm').read_text()
-        self.assertIn('furniture_finish_color(furniture_finish)', bed)
+        self.assertIn('if (render_modular_furniture()) return', bed)
         self.assertIn('F.furniture_finish = design_finish', DM)
-        self.assertIn('new result_type(origin, "wood",', DM)
+        self.assertIn('new result_type(origin, "wood")', DM)
         saved = (ROOT / 'code/modules/1713/furniture_fabric_dye.dm').read_text()
-        self.assertIn('if (padding_color || furniture_finish)', saved)
+        self.assertIn('if (padding_color || modular_furniture_shape)', saved)
+        self.assertIn('F.furniture_upholstery_a = design_part_a', DM)
+        self.assertIn('F.furniture_upholstery_b = design_part_b', DM)
 
     def test_reuses_existing_directional_art(self):
         self.assertIn('list(SOUTH, NORTH, EAST, WEST)', DM)
@@ -56,3 +61,8 @@ class ModularFurnitureTests(unittest.TestCase):
         dirs = dict(re.findall(r'state = "([^"]+)"\s+dirs = (\d+)', meta))
         self.assertEqual({s: dirs.get(s) for s in ('chair', 'chair_padding', 'bed', 'bed_padding')},
                          {'chair': '4', 'chair_padding': '4', 'bed': '1', 'bed_padding': '1'})
+        masks = sprite_metadata(ROOT / 'icons/obj/furniture_upholstery.dmi')
+        self.assertEqual(dict(re.findall(r'state = "([^"]+)"\s+dirs = (\d+)', masks)),
+                         {'chair_seat': '4', 'chair_back': '4', 'bed_mattress': '1', 'bed_cover': '1'})
+        self.assertIn('furniture_design_layers(design_shape, design_finish, design_part_a, design_part_b)', DM)
+        self.assertIn('furniture_design_layers(modular_furniture_shape, furniture_finish, furniture_upholstery_a, furniture_upholstery_b)', PARTS)

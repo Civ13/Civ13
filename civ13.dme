@@ -1120,6 +1120,7 @@
 #include "code\modules\1713\home_finishes.dm"
 #include "code\modules\1713\furniture_fabric_dye.dm"
 #include "code\modules\1713\modular_furniture.dm"
+#include "code\modules\1713\furniture_upholstery.dm"
 #include "code\modules\1713\fine_placement.dm"
 #include "code\modules\1713\pottery_design.dm"
 #include "code\modules\1713\woven_art.dm"

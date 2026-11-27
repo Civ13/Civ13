@@ -398,7 +398,7 @@ if furniture_project_source:
             furniture_project_path, line, steps)
         add(f'Design an upholstered {shape.lower()}', 'Furniture',
             project + [('/obj/item/stack/material/cloth', 1)], [(output, 1)],
-            furniture_project_path, line, steps + ' Add one cloth sheet before cutting and choose an upholstery dye you know.', wool_substitute=False)
+            furniture_project_path, line, steps + ' Each covered part costs one cloth, woolcloth, or leather sheet. Fit up to two parts before cutting. Woven fabrics accept dyes you know; leather retains its natural color; you can refit one part after assembly.', wool_substitute=False)
 light_path='code/modules/1713/light_fuel.dm'
 light=uncomment(files.get(light_path,''))
 if light:
