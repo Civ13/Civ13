@@ -34,48 +34,58 @@
 /mob/proc/get_prone_delay()
 	return get_run_delay() * 7
 
-// weight slowdown
+// On-foot encumbrance. This is a reference for slowdown bands, not a
+// limit on what can be picked up. Keep the old weak/average thresholds;
+// training above average now raises the thresholds twice as quickly.
+/proc/movement_carry_reference(strength)
+	if (strength > 1)
+		return 59 * strength
+	return (((strength - 1) / 2) + 1) * 59
 
-/mob/living/human/var/last_run_delay = -1
-/mob/living/human/var/next_calculate_run_delay = -1
-/mob/living/human/get_run_delay()
+/proc/movement_carry_slowdown(weight, reference, heavy)
+	if (weight == 0 && !heavy)
+		return 0
+	if ((weight > reference * 0.25 || heavy) && weight <= reference * 0.50)
+		return 0.33
+	if (weight > reference * 0.50 && weight <= reference * 0.65)
+		return 0.44
+	if (weight > reference * 0.65 && weight <= reference * 0.75)
+		return 0.55
+	if (weight > reference * 0.75 && weight <= reference * 0.85)
+		return 0.66
+	if (weight > reference * 0.85 && weight <= reference * 0.90)
+		return 0.77
+	if (weight > reference * 0.90 && weight <= reference * 0.95)
+		return 0.88
+	if (weight > reference * 0.95)
+		return 0.99
+	return 0
 
-	. = ..()
-
-	if (last_run_delay != -1 && world.time < next_calculate_run_delay)
-		return last_run_delay
-
-	var/slowdown = 0
+/mob/living/human/proc/carried_movement_slowdown(list/report = null)
 	var/weight = 0
-	var/max_weight = (((getStatCoeff("strength")-1)/2)+1) * 59
+	var/reference = movement_carry_reference(getStatCoeff("strength"))
 	var/heavy = FALSE
 	for (var/obj/item/I in contents)
 		if (I.heavy)
 			heavy = TRUE
 		weight += I.get_weight()
-		if (istype(I,/obj/item/weapon/storage))
+		if (istype(I, /obj/item/weapon/storage))
 			for (var/obj/item/II in I.contents)
 				weight += II.get_weight()
+	if (report)
+		report["weight"] = weight
+		report["comfort"] = reference * 0.25
+		report["heavy"] = heavy
+	return movement_carry_slowdown(weight, reference, heavy)
 
-	if (weight == 0 && !heavy)
-		slowdown = 0
-	else if ((weight > max_weight * 0.25 || heavy) && weight <= max_weight * 0.50)
-		slowdown = 0.33
-	else if (weight > max_weight * 0.50 && weight <= max_weight * 0.65)
-		slowdown = 0.44
-	else if (weight > max_weight * 0.65 && weight <= max_weight * 0.75)
-		slowdown = 0.55
-	else if (weight > max_weight * 0.75 && weight <= max_weight * 0.85)
-		slowdown = 0.66
-	else if (weight > max_weight * 0.85 && weight <= max_weight * 0.90)
-		slowdown = 0.77
-	else if (weight > max_weight * 0.90 && weight <= max_weight * 0.95)
-		slowdown = 0.88
-	else if (weight > max_weight * 0.95 && weight <= INFINITY)
-		slowdown = 0.99
-	. *= slowdown+1
+/mob/living/human/var/last_run_delay = -1
+/mob/living/human/var/next_calculate_run_delay = -1
+/mob/living/human/get_run_delay()
+	. = ..()
+	if (last_run_delay != -1 && world.time < next_calculate_run_delay)
+		return last_run_delay
+	. *= 1 + carried_movement_slowdown()
 	. *= leader_order_move_mult()
-
 	last_run_delay = .
 	next_calculate_run_delay = world.time + 5
 

@@ -238,11 +238,18 @@
 			costs["pulling [pulling]"] = pulled_structure.drag_delay(src) * pull_drag_mult()
 	if (grab_list && grab_list.len)
 		costs["holding or carrying someone"] = grab_move_cost()
-	// Carried weight scales the walking and running pace.
+	// Use the same weight and Strength thresholds as actual walking and running.
+	var/list/load_info = list()
+	carried_movement_slowdown(load_info)
+	var/carried_kg = movement_check_number(load_info["weight"])
+	var/comfort_kg = movement_check_number(load_info["comfort"])
+	. += "Carried weight: [carried_kg] kg. Weight starts to slow you above [comfort_kg] kg. Training Strength raises that threshold."
+	if (load_info["heavy"])
+		. += "You are also carrying a heavy item that can slow you below that threshold."
 	if (intent_mult)
 		var/load = get_run_delay() / max(0.01, movement_check_unloaded_run_delay() * leader_order_move_mult())
 		if (load > 1.001)
-			costs["carried weight (drop or stow heavy things)"] = base_step * (load - 1)
+			costs["carried weight (reduce your load or train Strength)"] = base_step * (load - 1)
 	var/list/slower = list()
 	var/list/faster = list()
 	var/total = base_step
