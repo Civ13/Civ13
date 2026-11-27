@@ -225,7 +225,7 @@
 		if (L.len != last_color.len)
 			identical = FALSE
 		else
-			for (var/i = 1; i <= L.len; i++)
+			for (var/i in 1 to L.len)
 				if (L[i] != last_color[i])
 					identical = FALSE
 					break
