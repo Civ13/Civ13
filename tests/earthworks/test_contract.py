@@ -88,7 +88,7 @@ class Earthworks(unittest.TestCase):
         self.assertIn('stone -= 1', pave)
         self.assertIn('persistence_set_loc(last)', pave)
         self.assertEqual(pave.count('do_after('), 1)
-        self.assertIn('new /obj/item/stack/material/stone(get_turf(src), stone)', proc_body(ROLLER + '/dismantled()'))
+        self.assertIn('new /obj/item/stack/material/stone/quarried(get_turf(src), stone)', proc_body(ROLLER + '/dismantled()'))
 
     def test_shovel_takes_only_loose_ground_within_a_load(self):
         found = proc_body(SHOVEL + '/proc/diggings()')

@@ -97,7 +97,7 @@ class BuildingSite(unittest.TestCase):
     def test_loading_is_capped_and_dismantling_returns_the_charge(self):
         self.assertIn('min(S.amount, CEMENT_MIXER_LIMIT - vars[part[2]])', proc_body(MIXER + '/attackby('))
         body = proc_body(MIXER + '/dismantled()')
-        self.assertIn('new kind(get_turf(src))', body)
+        self.assertIn('new refund_type(get_turf(src))', body)
         self.assertIn('vars[part[2]] = 0', body)
 
     def test_pile_driver_and_pier_span_have_recipes_and_nodes(self):
