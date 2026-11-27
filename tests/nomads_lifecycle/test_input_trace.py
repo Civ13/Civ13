@@ -206,6 +206,12 @@ class InputTrace(unittest.TestCase):
         )
         self.assertEqual(prior.count(approved_item_pile_choice), 1, 'approved item pile choice block')
         prior = prior.replace(approved_item_pile_choice, '')
+        # #7543 dispatches only an upstairs Throw click before ordinary item
+        # actions. Undo precisely that intentional gameplay addition here.
+        approved_upstairs_throw = ('\t\tif (H.window_lob_click(A, modifiers["right"]))\n'
+                                   '\t\t\treturn\n')
+        self.assertEqual(prior.count(approved_upstairs_throw), 1, 'upstairs Throw click guard')
+        prior = prior.replace(approved_upstairs_throw, '', 1)
         self.assertEqual(hashlib.sha256(prior.rstrip('\n').encode()).hexdigest(),
                          'b90920f8c3ba661629fcb505c6f0476b585fb8ce1dc885f312e9f2a3dfcb8a90',
                          'entire prior click source')

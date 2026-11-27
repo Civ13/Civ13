@@ -99,6 +99,8 @@
 	blackout_click_trace("ordinary")
 	if (ishuman(src)) //src is user who is click and human
 		var/mob/living/human/H = src
+		if (H.window_lob_click(A, modifiers["right"]))
+			return
 		if (istype(H.shoes, /obj/item/clothing/shoes/football)) //TODO TO DO: move it to football.dm
 			if (H.football)
 				var/obj/item/football/FB = H.football
