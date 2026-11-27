@@ -28,8 +28,11 @@
 	var/turf/T = loc
 	if (!T.can_sift_resources() || (active && T.sifting_identity != trace_soil_identity))
 		return FALSE
-	var/turf/water = requires_river ? T.panning_water() : null
-	return !requires_river || (water && (!active || (water == trace_water && water.sifting_identity == trace_water_identity)))
+	if (!requires_river)
+		return TRUE
+	if (!active)
+		return !!T.panning_water()
+	return T.valid_panning_water(trace_water) && trace_water.sifting_identity == trace_water_identity
 
 /obj/structure/drill/sifter/attack_hand(mob/living/human/H)
 	if (!active)

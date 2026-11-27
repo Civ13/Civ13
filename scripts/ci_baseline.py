@@ -2823,7 +2823,8 @@ SUITES = {
     'placer': {'files': ('tests/placer/test_contract.py',), 'paths': (
         'tests/placer/', 'code/modules/1713/placer.dm', 'docs/placer.md',
         'icons/obj/placer.dmi', 'tests/sprites/create_placer.py'),
-        'shared_paths': ('code/modules/1713/lode.dm', 'code/modules/1713/tatara.dm', 'code/modules/1713/resource_sifting.dm')},
+        'shared_paths': ('code/modules/1713/lode.dm', 'code/modules/1713/tatara.dm',
+                         'code/modules/1713/resource_sifting.dm', 'code/modules/1713/automated_sifting.dm')},
     'lode': {'files': ('tests/lode/test_contract.py',), 'paths': (
         'tests/lode/', 'code/modules/1713/lode.dm', 'docs/lode.md',
         'icons/obj/lode.dmi', 'tests/sprites/create_lode.py')},

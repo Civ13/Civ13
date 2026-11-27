@@ -23,6 +23,10 @@ RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encod
 DMI = ROOT / 'icons/obj/placer.dmi'
 
 
+def body(file, signature):
+    path = ROOT / 'code/modules/1713' / (file + '.dm')
+    return path.read_text(encoding="utf-8").split(signature, 1)[1].split('\n/', 1)[0]
+
 def define(name):
     match = re.search(rf'#define {name} ([0-9.]+)', SOURCE)
     assert match, name
@@ -122,10 +126,6 @@ class CommitTimeConditions(unittest.TestCase):
         self.assertIn('river_mercury_pan_message(H, water)', after_wait)
 
     def test_each_bowl_feed_checks_identity_custody_and_reach_after_wait(self):
-        def body(file, signature):
-            path = ROOT / 'code/modules/1713' / (file + '.dm')
-            return path.read_text().split(signature, 1)[1].split('\\n/', 1)[0]
-
         for file, method, debit in (('placer', 'pan_pay_dirt', 'P.use(1)'), ('lode', 'pan_crushed_ore', 'C.use(1)')):
             pan = body(file, '/obj/item/kitchen/wood_bowl/proc/' + method + '(')
             before, after = pan.split('do_after(', 1)
@@ -148,12 +148,22 @@ class CommitTimeConditions(unittest.TestCase):
             self.assertIn(condition, guard)
 
     def test_panning_water_is_shallow_fresh_and_liquid(self):
-        sift = (ROOT / 'code/modules/1713/resource_sifting.dm').read_text(encoding='utf-8')
-        water = sift.split('/turf/proc/panning_water()', 1)[1].split('/mob/living/human/proc/', 1)[0]
-        self.assertIn('if (!W.salty && W.water_level <= 30 && W.watertile && is_liquid_water(W))', water)
+        water = body('resource_sifting', '/turf/proc/valid_panning_water(')
+        for condition in ('istype(W)', 'W.z == z', 'get_dist(src, W) <= 1', '!W.salty',
+                          'W.water_level <= 30', 'W.watertile', 'is_liquid_water(W)'):
+            self.assertIn(condition, water)
+        finder = body('resource_sifting', '/turf/proc/panning_water()')
+        self.assertIn('range(1, src)', finder)
+        self.assertIn('if (valid_panning_water(W))', finder)
         helper = (ROOT / 'code/_helpers/water_turfs.dm').read_text(encoding='utf-8')
         liquid = helper.split('/proc/is_liquid_water(turf/T)', 1)[1].split('/proc/', 1)[0]
         self.assertIn('!istype(T, /turf/floor/beach/water/ice)', liquid)
+
+    def test_concentrator_validates_its_pinned_water_without_reselecting(self):
+        site = body('automated_sifting', '/obj/structure/drill/sifter/proc/valid_trace_site()')
+        self.assertIn('if (!active)\n\t\treturn !!T.panning_water()', site)
+        self.assertIn('T.valid_panning_water(trace_water) && trace_water.sifting_identity == trace_water_identity', site)
+        self.assertNotIn('water == trace_water', site)
 
 
 if __name__ == '__main__':
