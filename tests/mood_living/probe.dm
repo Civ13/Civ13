@@ -17,8 +17,11 @@
 	return
 /mob/living/human/ml_probe
 	var/rested_test_time
-/mob/living/human/ml_probe/rested_learning_now()
-	return isnull(rested_test_time) ? ..() : rested_test_time
+// A November 2026 midnight, with BYOND's native float rounding for realtime.
+/mob/living/human/ml_probe/rested_learning_realtime()
+	return isnull(rested_test_time) ? ..() : 8490528000 + rested_test_time
+/mob/living/human/ml_probe/rested_learning_timeofday()
+	return isnull(rested_test_time) ? ..() : rested_test_time - round(rested_test_time / 864000) * 864000
 /mob/living/human/ml_probe/New()
 	return
 /mob/living/human/ml_probe/update_icons()
@@ -385,42 +388,52 @@ var/ml_runtime_error = FALSE
 	H.adaptStat(statname, amount)
 	return H.getMaxStat(statname)
 
-/proc/ml_sleep_poll(mob/living/human/ml_probe/H, sleeping, now)
-	H.inducedSSD = sleeping
-	H.sleeping = sleeping ? 66 : 0
+// Use real entry and exit procs without a connected client. The character picker
+// delegates to finish_wake_up() after its own confirmation and wait.
+/proc/ml_bed_transition(mob/living/human/ml_probe/H, sleep, now)
 	H.rested_test_time = now
-	H.refresh_mood_rest()
+	var/succeeded = sleep ? H.enter_bed_sleep() : H.finish_wake_up()
+	if (!succeeded)
+		CRASH("Rested learning probe could not [sleep ? "enter bed sleep" : "wake up"]")
 
 /proc/ml_rested_learning_checks()
 	var/mob/living/human/ml_probe/H = ml_human(12, 12)
 	var/turf/T = get_turf(H)
-	var/now = 100000
 	var/obj/structure/bed/bedroll/ml_roll/R = new(T)
 	var/obj/item/weapon/bedsheet/ml_sheet/sheet = new(T)
 	var/normal = ml_skill_progress(H, "medical", 20)
 	var/normal_strength = ml_skill_progress(H, "strength", 20)
 	var/normal_loss = ml_skill_progress(H, "medical", -20)
-	ml_sleep_poll(H, TRUE, now - 12 MINUTES)
-	ml_sleep_poll(H, FALSE, now)
+	ml_bed_transition(H, TRUE, -12 MINUTES)
+	ml_bed_transition(H, FALSE, 0)
 	ml_check(ml_skill_progress(H, "medical", 20) == normal, "sleeping on a bedroll with a sheet does not boost skill gain")
 	R.loc = null
 	sheet.loc = null
 
 	var/obj/structure/bed/ml_bed/B = new(T)
-	ml_sleep_poll(H, TRUE, now + 1 MINUTES)
-	ml_sleep_poll(H, FALSE, now + 6 MINUTES)
-	ml_check(ml_skill_progress(H, "medical", 20) == normal, "a quick nap does not boost skill gain")
-	ml_sleep_poll(H, TRUE, now + 7 MINUTES)
-	ml_sleep_poll(H, FALSE, now + 17 MINUTES)
+	ml_bed_transition(H, TRUE, -5 MINUTES)
+	ml_bed_transition(H, FALSE, 5 MINUTES - 1)
+	ml_check(ml_skill_progress(H, "medical", 20) == normal, "one decisecond short of ten minutes across midnight does not qualify")
+
+	ml_bed_transition(H, TRUE, -5 MINUTES)
+	H.rested_test_time = 0
+	H.sleep_update() // Also called on reconnect; it must not reset the sleep start.
+	ml_bed_transition(H, FALSE, 5 MINUTES)
 	var/rested = ml_skill_progress(H, "medical", 20)
-	ml_check(abs((rested - 100) - (normal - 100) * 1.15) <= 0.15, "a full bed rest increases real skill gains by 15 percent (from [normal - 100] to [rested - 100])")
+	ml_check(abs((rested - 100) - (normal - 100) * 1.15) <= 0.15, "exactly ten minutes across midnight boosts real skill gains immediately (from [normal - 100] to [rested - 100])")
 	ml_check(ml_skill_progress(H, "strength", 20) == normal_strength && ml_skill_progress(H, "medical", -20) == normal_loss, "rest does not boost Strength or amplify skill loss")
 
-	ml_sleep_poll(H, TRUE, now + 18 MINUTES)
-	ml_sleep_poll(H, FALSE, now + 30 MINUTES)
+	ml_bed_transition(H, TRUE, 6 MINUTES)
+	ml_bed_transition(H, FALSE, 18 MINUTES)
 	ml_check(ml_skill_progress(H, "medical", 20) == rested, "another full rest refreshes, rather than stacking, the bonus")
-	ml_sleep_poll(H, FALSE, now + 74 MINUTES)
-	ml_check(ml_skill_progress(H, "medical", 20) == rested, "the full refreshed window grants skill progress")
-	ml_sleep_poll(H, FALSE, now + 75 MINUTES)
-	ml_check(ml_skill_progress(H, "medical", 20) == normal, "a past rested window no longer boosts gains")
+	H.rested_test_time = 63 MINUTES - 1
+	ml_check(ml_skill_progress(H, "medical", 20) == rested, "the bonus still applies one decisecond before expiry")
+	H.rested_test_time = 63 MINUTES
+	ml_check(ml_skill_progress(H, "medical", 20) == normal, "skill gains return to normal at exactly 45 minutes")
+
+	ml_bed_transition(H, TRUE, 64 MINUTES)
+	ml_bed_transition(H, FALSE, 74 MINUTES)
+	ml_check(ml_skill_progress(H, "medical", 20) == rested, "later sleep can earn the bonus again after expiry")
+	H.rested_test_time = 74 MINUTES + 864000
+	ml_check(ml_skill_progress(H, "medical", 20) == normal, "a full day offline expires the bonus even at the same time of day")
 	B.loc = null

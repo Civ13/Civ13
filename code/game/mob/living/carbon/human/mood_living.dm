@@ -40,10 +40,12 @@
 #define RESTED_LEARNING_WINDOW (45 MINUTES)
 #define RESTED_LEARNING_MULTIPLIER 1.15
 
-// Save real timestamps with the body. Restarting or reconnecting while awake
-// does not restart the window, and logged-off sleep still counts.
-/mob/living/human/var/rested_learning_sleep_started = 0
-/mob/living/human/var/rested_learning_until = 0
+// Save wall-clock pairs with the body so offline time and restarts count.
+// Realtime is too coarse for either deadline; use it only to resolve day wraps.
+/mob/living/human/var/rested_learning_sleep_timeofday
+/mob/living/human/var/rested_learning_sleep_realtime
+/mob/living/human/var/rested_learning_wake_timeofday
+/mob/living/human/var/rested_learning_wake_realtime
 
 /mob/living/human/proc/rested_learning_bed_here()
 	if (!isturf(loc))
@@ -53,26 +55,42 @@
 			return TRUE
 	return FALSE
 
-/mob/living/human/proc/rested_learning_now()
+/mob/living/human/proc/rested_learning_timeofday()
+	return world.timeofday
+
+/mob/living/human/proc/rested_learning_realtime()
 	return world.realtime
 
+/mob/living/human/proc/clear_rested_learning_sleep()
+	rested_learning_sleep_timeofday = null
+	rested_learning_sleep_realtime = null
+
 /mob/living/human/proc/begin_rested_learning_sleep()
-	rested_learning_sleep_started = 0
-	if (inducedSSD && !droid && mood_needs_mode() && rested_learning_bed_here())
-		rested_learning_sleep_started = rested_learning_now()
+	if (isnull(rested_learning_sleep_timeofday) && !droid && mood_needs_mode() && rested_learning_bed_here())
+		rested_learning_sleep_timeofday = rested_learning_timeofday()
+		rested_learning_sleep_realtime = rested_learning_realtime()
 
 /mob/living/human/proc/finish_rested_learning_sleep()
-	var/now = rested_learning_now()
-	var/started = rested_learning_sleep_started
-	rested_learning_sleep_started = 0
-	if (!started || now - started < RESTED_LEARNING_MIN_SLEEP || stat == DEAD || droid || !mood_needs_mode() || !rested_learning_bed_here())
+	if (isnull(rested_learning_sleep_timeofday))
 		return FALSE
-	rested_learning_until = now + RESTED_LEARNING_WINDOW
+	var/now_timeofday = rested_learning_timeofday()
+	var/now_realtime = rested_learning_realtime()
+	var/duration = wall_clock_elapsed(rested_learning_sleep_timeofday, rested_learning_sleep_realtime, now_timeofday, now_realtime)
+	clear_rested_learning_sleep()
+	if (duration < RESTED_LEARNING_MIN_SLEEP || stat == DEAD || droid || !mood_needs_mode() || !rested_learning_bed_here())
+		return FALSE
+	rested_learning_wake_timeofday = now_timeofday
+	rested_learning_wake_realtime = now_realtime
 	to_chat(src, SPAN_NOTICE("You wake up refreshed. You'll learn skills faster for 45 minutes."))
 	return TRUE
 
 /mob/living/human/proc/rested_learning_multiplier(statname)
-	if (!rested_learning_until || rested_learning_now() >= rested_learning_until || inducedSSD || sleeping || stat != CONSCIOUS || droid || !mood_needs_mode())
+	if (isnull(rested_learning_wake_timeofday) || inducedSSD || sleeping || stat != CONSCIOUS || droid || !mood_needs_mode())
+		return 1
+	var/elapsed = wall_clock_elapsed(rested_learning_wake_timeofday, rested_learning_wake_realtime, rested_learning_timeofday(), rested_learning_realtime())
+	if (elapsed < 0 || elapsed >= RESTED_LEARNING_WINDOW)
+		rested_learning_wake_timeofday = null
+		rested_learning_wake_realtime = null
 		return 1
 	switch (statname)
 		if ("strength", "stamina", "dexterity", "magic")
@@ -213,13 +231,10 @@
 	if (inducedSSD && sleeping)
 		sleep_comfort = sleeping_place_comfort()
 		home_comfort_sleep_tick()
-		if (!rested_learning_bed_here())
-			rested_learning_sleep_started = 0
-		else if (!rested_learning_sleep_started)
-			begin_rested_learning_sleep()
+		if (!isnull(rested_learning_sleep_timeofday) && !rested_learning_bed_here())
+			clear_rested_learning_sleep()
 		return
-	if (rested_learning_sleep_started)
-		finish_rested_learning_sleep()
+	clear_rested_learning_sleep()
 	home_comfort_wake()
 	..()
 
