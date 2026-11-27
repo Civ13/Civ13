@@ -349,11 +349,17 @@
 	return key == "next_ring" || ..()
 
 /obj/structure/bell/attack_hand(mob/user)
+	try_ring_alarm(user)
+
+/obj/structure/bell/proc/try_ring_alarm(mob/user = null)
 	if (world.time < next_ring)
-		to_chat(user, SPAN_WARNING("The bell is still swinging."))
-		return
-	user.visible_message(SPAN_WARNING("[user] rings \the [src]!"), SPAN_NOTICE("You haul on the rope and ring \the [src]."))
+		if (user)
+			to_chat(user, SPAN_WARNING("The bell is still swinging."))
+		return FALSE
+	if (user)
+		user.visible_message(SPAN_WARNING("[user] rings \the [src]!"), SPAN_NOTICE("You haul on the rope and ring \the [src]."))
 	ring(0)
+	return TRUE
 
 /obj/structure/bell/proc/toll(hour)
 	ring(hour)
