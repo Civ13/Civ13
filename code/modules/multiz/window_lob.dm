@@ -174,7 +174,7 @@
 	if (!eye || !target || eye.z != target.z)
 		return null
 	var/distance = get_dist(eye, target)
-	if (distance < 2 || distance > WINDOW_LOB_MAX_RANGE)
+	if (distance < 2 || distance > WINDOW_LOB_MAX_RANGE + 1)
 		return null
 	var/list/line = getline2(eye, target, FALSE)
 	var/turf/frame = line[length(line) - 1]
@@ -202,20 +202,23 @@
 		if (N.hanging == src)
 			return TRUE
 	var/reach = window_lob_range(getStatCoeff("strength"), I.w_class)
-	var/distance = get_dist(upper_eye, target)
-	if (!distance || distance > reach || !(target in view(reach, upper_eye)))
-		to_chat(src, SPAN_WARNING("That upstairs tile is not visible and within reach."))
-		return TRUE
+	var/turf/clicked = target
 	var/via_window = window_lob_has_opening(target, src)
 	if (!via_window)
 		var/turf/frame = window_lob_clicked_window(src, upper_eye, target)
 		if (frame)
 			target = frame
 			via_window = TRUE
-			distance = get_dist(upper_eye, target)
-		else if (!window_lob_exposed_floor(target, src))
-			to_chat(src, SPAN_WARNING("Aim at an exposed upper floor, a window, or the first tile just inside it."))
-			return TRUE
+	var/distance = get_dist(upper_eye, target)
+	if (!distance || distance > reach)
+		to_chat(src, SPAN_WARNING("That upstairs target is out of reach."))
+		return TRUE
+	if (!(target in view(reach, upper_eye)) || (clicked != target && !(clicked in view(reach + 1, upper_eye))))
+		to_chat(src, SPAN_WARNING("You can't see that upstairs target."))
+		return TRUE
+	if (!via_window && !window_lob_exposed_floor(target, src))
+		to_chat(src, SPAN_WARNING("Aim at an exposed upper floor, a window, or the first tile just inside it."))
+		return TRUE
 	var/list/path = window_lob_approach(src, ground, target, reach)
 	var/turf/outside = length(path) ? path[length(path)] : ground
 	var/direction = get_dir(locate(outside.x, outside.y, target.z), target)
@@ -336,6 +339,8 @@
 		// Cross-level forceMove clears the old token. Never finish a new
 		// flight that an Entered/Crossed callback has just started.
 		var/advanced = forceMove_nondenseturf(inside)
+		if (advanced && !QDELETED(src) && loc == inside && isnull(throw_flight_token))
+			hit_check(speed, TRUE)
 		if (!QDELETED(src) && (isnull(throw_flight_token) || (!advanced && throw_flight_token == flight)))
 			finished_throwing()
 	else

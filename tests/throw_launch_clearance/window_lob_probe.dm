@@ -13,8 +13,12 @@
 		return ..()
 	return FALSE
 
+/mob/living/human/window_lob_probe
+	var/atom/movable/last_lob_hit
 /mob/living/human/window_lob_probe/New()
 	icon_update = FALSE
+/mob/living/human/window_lob_probe/hitby(atom/movable/AM, speed)
+	last_lob_hit = AM
 
 /obj/item/weapon/grenade/window_lob_probe
 	var/turf/primed_at
@@ -61,6 +65,9 @@ var/window_lob_runtime = FALSE
 		var/turf/eye = locate(2, 5, 2)
 		window_lob_check(window_lob_clicked_window(H, eye, inside) == opening, "clicking the first room tile chooses the blocking window")
 		window_lob_check(!window_lob_clicked_window(H, eye, locate(6, 5, 2)), "clicking deeper in a room does not skip the first tile")
+		var/turf/far_opening = locate(8, 4, 2)
+		var/obj/structure/window_frame/far_frame = new(far_opening)
+		window_lob_check(far_frame.loc == far_opening && window_lob_clicked_window(H, locate(1, 4, 2), locate(9, 4, 2)) == far_opening, "first inside tile resolves to a window at maximum range")
 		window_lob_check(!window_lob_inside(H, ground, opening, EAST), "cannot skip across a distant opening")
 		window_lob_check(!window_lob_inside(H, exterior, locate(4, 5, 3), EAST), "cannot skip to a higher storey")
 		window_lob_check(!window_lob_inside(H, exterior, opening, NORTH), "cannot bypass the aperture from the side")
@@ -152,6 +159,7 @@ var/window_lob_runtime = FALSE
 		item_flight["window_lob_next_tick"] = world.time
 		tool.window_lob_hop(item_flight)
 		window_lob_check(tool.loc == ledge && !tool.throwing, "an ordinary item reaches an exposed upper floor")
+		var/mob/living/human/window_lob_probe/occupant = new(inside)
 		tool.forceMove(ground)
 		tool.start_window_lob(H, opening, EAST, path.Copy(), TRUE)
 		item_flight = tool.throw_flight_token
@@ -160,6 +168,7 @@ var/window_lob_runtime = FALSE
 		item_flight["window_lob_next_tick"] = world.time
 		tool.window_lob_hop(item_flight)
 		window_lob_check(tool.loc == inside && !tool.throwing, "an ordinary item also reaches the first tile through a window")
+		window_lob_check(occupant.last_lob_hit == tool, "landing on a standing occupant uses ordinary throw impact")
 		var/turf/deeper_ledge = locate(5, 7, 2)
 		new /turf/sky/building(locate(5, 7, 3))
 		var/list/deeper_path = window_lob_approach(H, yard, deeper_ledge, 3)

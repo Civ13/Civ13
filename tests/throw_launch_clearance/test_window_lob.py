@@ -62,3 +62,14 @@ class WindowLobContracts(unittest.TestCase):
                           'client.eye != upper_eye', 'target in view(reach, upper_eye)',
                           'window_lob_release(I, ground, target, direction, path'):
             self.assertIn(condition, handler)
+
+
+    def test_resolved_window_controls_reach_and_landing_checks_occupants(self):
+        clicked_window = body('/proc/window_lob_clicked_window')
+        handler = body('/mob/living/human/proc/window_lob_click')
+        self.assertIn('distance > WINDOW_LOB_MAX_RANGE + 1', clicked_window)
+        self.assertLess(handler.index('target = frame'), handler.index('distance > reach'))
+        self.assertIn('clicked in view(reach + 1, upper_eye)', handler)
+        hop = body('/obj/item/proc/window_lob_hop')
+        self.assertLess(hop.index('forceMove_nondenseturf(inside)'), hop.index('hit_check(speed, TRUE)'))
+        self.assertIn('loc == inside && isnull(throw_flight_token)', hop)
