@@ -884,7 +884,7 @@
 	is_mineable = FALSE
 
 /turf/proc/mining_proc(var/mob/living/human/H = null, bulk_quarry = 0)
-		if (!src)
+	if (!src)
 		return
 	if (bulk_quarry)
 		if (!quarry_blast_eligible(bulk_quarry) || persistence_admission_blocked())
