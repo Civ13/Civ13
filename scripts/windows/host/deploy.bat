@@ -1,6 +1,6 @@
 @echo off
 rem deploy.bat [REGION ...] - update the source checkout, build the update beside the running regions
-rem (staging), and only once every build is ready hand each running region over to it: the new build
+rem (staging), and after the mainland goes live, hand each remaining running region over: the new build
 rem boots beside the old world, the old world saves (holding play only on the level being saved),
 rem the new one loads that save
 rem while the old one still runs, then players move across with a reconnect of a few seconds. A
@@ -50,6 +50,31 @@ rem The regions run from their own worktrees, so the running worlds do not notic
 echo [1/5] Updating the source checkout %CIV13_REPO% (local edits are kept)...
 git -C "%CIV13_REPO%" pull --ff-only --autostash || goto :failed
 
+rem Persistence: deploy the selected mainland first, then stage the other selected regions.
+rem Without a mainland in the selection, each region's host uses the live mainland build.
+set "MAINLAND="
+set "PEERS="
+for /f "tokens=1,* delims=:" %%A in ('call %CIV13_PYTHON% -I -B "%CIV13_HOST_DIR%wait_group.py" --config "%CIV13_GROUP%"%WAIT_REGIONS% --deploy-plan') do (
+    if "%%A"=="MAINLAND" set "MAINLAND=%%B"
+    if "%%A"=="PEERS" set "PEERS=%%B"
+)
+if not defined MAINLAND goto :failed
+if not defined PEERS goto :failed
+if "%MAINLAND%"=="-" goto :build_peers
+echo [2/5] Building the update beside %MAINLAND% while the worlds keep running...
+call "%CIV13_HOST_DIR%_group.bat" stage %MAINLAND%
+%CIV13_PYTHON% -I -B "%CIV13_HOST_DIR%wait_group.py" --config "%CIV13_GROUP%" --region %MAINLAND% --until staged || goto :failed
+echo [3/5] Handing %MAINLAND% over before the other regions can update...
+call "%CIV13_HOST_DIR%_group.bat" handover %MAINLAND%
+%CIV13_PYTHON% -I -B "%CIV13_HOST_DIR%wait_group.py" --config "%CIV13_GROUP%" --region %MAINLAND% --until mainland-active --timeout 3600 || goto :failed
+if "%PEERS%"=="-" goto :restart_host
+set "REGIONS=%PEERS%"
+set "WAIT_REGIONS="
+for %%R in (%REGIONS%) do call :add_wait_region %%R
+set "WAIT=%CIV13_PYTHON% -I -B "%CIV13_HOST_DIR%wait_group.py" --config "%CIV13_GROUP%"%WAIT_REGIONS%"
+set "WHICH=region %REGIONS%"
+
+:build_peers
 echo [2/5] Building the update beside %WHICH% while the worlds keep running...
 rem One region compiles at a time, at low priority. A region whose build is already current says so.
 call :each stage
@@ -62,11 +87,16 @@ call :each handover
 if defined RESUME echo [3/5] Waiting for %WHICH% to finish their handover...
 %WAIT% --until handed-over --timeout 3600 || goto :failed
 
+:restart_host
 echo [4/5] Restarting the host service...
 call "%CIV13_HOST_DIR%restart-host.bat" || goto :failed
 
 echo [5/5] Done.
 call "%CIV13_HOST_DIR%status.bat"
+exit /b 0
+
+:add_wait_region
+set "WAIT_REGIONS=%WAIT_REGIONS% --region %1"
 exit /b 0
 
 :each

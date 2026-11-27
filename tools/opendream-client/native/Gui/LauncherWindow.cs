@@ -1571,13 +1571,11 @@ internal sealed partial class LauncherWindow : Form {
         }
     }
 
-    private const string DeployQuestion = "Update the regions ticked below without stopping them. The checkout is pulled and the update " +
-        "is built beside each running world first; nobody is kicked until every build is ready, and a failed build stops here. Then each " +
-        "running region is handed over, one at a time: the new build starts beside it, the old world saves (players are held only while " +
-        "their own level is saved, a minute or two, then play on), the new one loads that save, and players reconnect to it within seconds. " +
-        "Anything done after a level was saved is end-of-round play and is not carried over. If the save or the " +
-        "load fails, the old world carries on and nothing is lost. A region still on a build from before handovers is saved, stopped and " +
-        "started instead, once. Regions that are asleep get the new build when they wake; regions left unticked keep running.";
+    private const string DeployQuestion = "Update the ticked regions without stopping them. In a persistent group the mainland " +
+        "updates first if selected; other regions never update past its running build. Each new build starts beside the running world, " +
+        "loads its save and takes over so players can reconnect. Anything done after a level was saved is not carried over. " +
+        "If the save or load fails, the old world carries on. A region from before handovers is saved, stopped and started instead, once. " +
+        "Regions that are asleep get the staged build when they wake; regions left unticked keep running.";
 
     // Asks which regions to update (all ticked, or only `only` from the One region row; the mainland is
     // marked), then deploys them.

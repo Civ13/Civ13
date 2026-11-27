@@ -122,5 +122,29 @@ class WaitGroupTests(unittest.TestCase):
             self.assertEqual(wait_group.main(['--config', 'g.json', '--until', 'staged', '--region', 'gateway']), 1)
 
 
+    def test_deploy_plan_splits_only_selected_mainland_in_persistent_groups(self):
+        group = {'persistent': True, 'mainland': 'gaia', 'regions': [
+            {'id': 'europe', 'kind': 'SURFACE'}, {'id': 'gateway', 'kind': 'GATEWAY'}, {'id': 'gaia', 'kind': 'SURFACE'}]}
+        self.assertEqual(('gaia', ['europe']), wait_group.deploy_plan(group))
+        self.assertEqual(('', ['europe']), wait_group.deploy_plan(group, ['europe']))
+        self.assertEqual(('gaia', []), wait_group.deploy_plan(group, ['gaia']))
+        self.assertEqual(('', ()), wait_group.deploy_plan(dict(group, persistent=False)))
+        with self.assertRaisesRegex(ValueError, 'no region asia'):
+            wait_group.deploy_plan(group, ['asia'])
+
+    def test_mainland_active_wait_refuses_old_or_unavailable_world(self):
+        revision = 'f' * 40
+        entry = region('awake', 'done', action='handover', listening=True, ready=1)
+        entry['stage'] = {'phase': 'ready', 'revision': revision}
+        entry['world']['revision'] = 'e' * 40
+        self.assertFalse(wait_group.reached(entry, 'mainland-active'))
+        entry['world']['revision'] = revision
+        self.assertTrue(wait_group.reached(entry, 'mainland-active'))
+        entry['world']['ready'] = 0
+        self.assertFalse(wait_group.reached(entry, 'mainland-active'))
+        stopped = region('stopped', 'done')
+        self.assertIn('must be awake', wait_group.failed(stopped, 'mainland-active'))
+
+
 if __name__ == '__main__':
     unittest.main()

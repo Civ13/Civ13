@@ -64,9 +64,10 @@ class GatewayTests(unittest.TestCase):
         self.assertFalse(host.may_sleep())
         self.assertEqual('start-current', host.automatic_start_action())
         host.log = lambda values: None
-        host.work('update', host.request('update')['operation'])
+        base.stamp_build(host, base.REVISION)
         self.machine.revision = NEWER
         self.machine.up = {1721}
+        base.live_mainland(group, self.machine, NEWER)
         host.work('stage', host.request_stage()['operation'])
         self.assertTrue(group['persistent'])
         self.assertEqual(30, host.update_unsaved_while_empty())
@@ -77,14 +78,15 @@ class GatewayTests(unittest.TestCase):
         shard_group.setup(group, self.machine)
         host = self.host(group, 'door')
         host.log = lambda values: None
-        host.work('update', host.request('update')['operation'])
+        base.stamp_build(host, base.REVISION)
         self.machine.revision = NEWER
         self.machine.up = {1721}
+        base.live_mainland(group, self.machine, NEWER)
         self.machine.pids_by_port = {1721: 100}
         host.work('stage', host.request_stage()['operation'])
         clients = [2]
         self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: {
-            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': clients[0], 'persistence_mode': 0}
+            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': clients[0], 'persistence_mode': 0, 'revision': self.machine.live_revisions.get(port)}
         with self.assertRaisesRegex(RuntimeError, 'players are in the tutorial'):
             host.do_handover('x', automatic=True)
         clients[0] = 0
@@ -120,9 +122,10 @@ class GatewayTests(unittest.TestCase):
         shard_group.setup(group, self.machine)
         host = self.host(group, 'door')
         host.log = lambda values: None
-        host.work('update', host.request('update')['operation'])
+        base.stamp_build(host, base.REVISION)
         self.machine.revision = NEWER
         self.machine.up = {1721}
+        base.live_mainland(group, self.machine, NEWER)
         self.machine.pids_by_port = {1721: 100}
         start = self.machine.start_task
 
@@ -132,7 +135,7 @@ class GatewayTests(unittest.TestCase):
         self.machine.start_task = start_task
         # Its round never saves (persistence_mode 0), so stopping it ends it.
         self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: {
-            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': 0, 'persistence_mode': 0}
+            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': 0, 'persistence_mode': 0, 'revision': self.machine.live_revisions.get(port)}
         host.work('stage', host.request_stage()['operation'])
         self.assertTrue(host.update_pending(), host.read_json(host.stage_file))
         host.precheck_handover()  # no standby port or second world's memory needed
@@ -150,9 +153,10 @@ class GatewayTests(unittest.TestCase):
         shard_group.setup(group, self.machine)
         host = self.host(group, 'door')
         host.log = lambda values: None
-        host.work('update', host.request('update')['operation'])
+        base.stamp_build(host, base.REVISION)
         self.machine.revision = NEWER
         self.machine.up = {1721}
+        base.live_mainland(group, self.machine, NEWER)
         self.assertFalse(host.stage_if_behind(), 'no background build for the gateway')
         self.assertFalse(host.stage_lock.exists())
         for urgent in (False, True):
@@ -171,9 +175,10 @@ class GatewayTests(unittest.TestCase):
         shard_group.setup(group, self.machine)
         host = self.host(group, 'door')
         host.log = lambda values: None
-        host.work('update', host.request('update')['operation'])
+        base.stamp_build(host, base.REVISION)
         self.machine.revision = NEWER
         self.machine.up = {1721}
+        base.live_mainland(group, self.machine, NEWER)
         self.machine.pids_by_port = {1721: 100}
         start = self.machine.start_task
 
@@ -182,7 +187,7 @@ class GatewayTests(unittest.TestCase):
             return start(name, dmb)
         self.machine.start_task = start_task
         self.machine.query = lambda port, token, action='status', operation=None, session=None, extra=None: {
-            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': 0, 'persistence_mode': 0}
+            'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'clients': 0, 'persistence_mode': 0, 'revision': self.machine.live_revisions.get(port)}
         host.work('stage', host.request_stage()['operation'])
         self.assertTrue(host.update_pending())
         self.machine.revision = 'f' * 40  # master moved on after the stage

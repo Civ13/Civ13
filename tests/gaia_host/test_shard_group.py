@@ -147,6 +147,7 @@ class FakeMachine:
         self.clock = 0.0
         self.pids = set()
         self.revision = REVISION  # what the group revision resolves to
+        self.live_revisions = {}
         self.low_priority = []  # cwd of every compile run at low priority
         self.restore = {}  # worktree -> config.txt a checkout of config/config.txt restores
 
@@ -181,7 +182,7 @@ class FakeMachine:
         return port in self.up
 
     def query(self, port, token, action='status', operation=None, session=None):
-        return {'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32}
+        return {'ok': True, 'ready': True, 'busy': False, 'session': 'b' * 32, 'revision': self.live_revisions.get(port)}
 
     def start_task(self, name, dmb='region.dmb'):
         self.calls.append((['start', name, dmb], None))
@@ -222,6 +223,29 @@ class FakeMachine:
         for port, owner in list(self.pids_by_port.items()):
             if owner == pid:
                 self.up.discard(port)
+
+
+def stamp_build(host, revision, slot='region.dmb'):
+    host.state_dir.mkdir(parents=True, exist_ok=True)
+    (host.repo / slot).write_bytes(b'installed build fixture ' + revision.encode())
+    host.record_build(revision, slot)
+
+
+def live_mainland(group, machine, revision):
+    region = next(r for r in group['regions'] if r['id'] == group['mainland'])
+    host = shard_group.RegionHost(shard_group.region_config(group, region), machine)
+    stamp_build(host, revision)
+    token = host.repo / 'config' / 'lifecycle-token.txt'
+    token.parent.mkdir(exist_ok=True)
+    if not token.exists():
+        token.write_text('3' * 32)
+    machine.up.add(region['port'])
+    machine.live_revisions[region['port']] = revision
+    return host
+
+
+def stage_now(host, allow_gateway=False):
+    host.work('stage', host.request_stage(allow_gateway=allow_gateway)['operation'])
 
 
 class GroupLandsTests(unittest.TestCase):
@@ -1017,6 +1041,9 @@ class ShardGroupTests(unittest.TestCase):
         shard_group.setup(group, self.machine)
         for region_id, include in [('gaia', 'maps\\small\\tiny.dmm'), ('deep', 'maps\\regions\\deep.dmm')]:
             host = self.host(group, region_id)
+            if region_id != group['mainland']:
+                live_mainland(group, self.machine, REVISION)
+                stage_now(host)
             operation = host.request('update')['operation']
             self.assertEqual(['--worker', 'update', operation], self.machine.detached[-1][-3:])
             host.work('update', operation)
@@ -1548,6 +1575,7 @@ class ShardGroupTests(unittest.TestCase):
         (path / 'region.dmb').write_bytes(b'dmb')
         (path / 'data' / 'shard-host' / 'cold.json').write_text(json.dumps({'frozen_at': 0}))
         host = self.host(group, 'deep')
+        host.record_build(REVISION, 'region.dmb')
         self.assertEqual('cold', host.status()['state'])
         accepted = host.start_cold('doorman wake request')
         self.assertTrue(accepted['cold_start'])
@@ -1695,9 +1723,12 @@ class ShardGroupTests(unittest.TestCase):
         self.assertEqual(['ALLOWED_GAMEMODES PERSISTENCE', 'WEBHOOK_CAN_FIRE', '#SKIP_PERSISTENCE_SAVING'],
                          (path / 'config' / 'config.txt').read_text().splitlines())
         deep = self.host(group, 'deep')
+        live_mainland(group, self.machine, REVISION)
+        stage_now(deep)
         deep.work('update', deep.request('update')['operation'])
         self.assertEqual('Everyone', (self.base / 'regions' / 'deep' / 'config' / 'host.txt').read_text())
         (own / 'config' / 'lifecycle-token.txt').write_text('a' * 32)
+        self.machine.up.discard(1720)
         host.work('update', host.request('update')['operation'])
         self.assertIn('must not contain config/lifecycle-token.txt', host.read_state()['error'])
         self.refuse_config('overlay must be', overlay=5)
@@ -1894,11 +1925,13 @@ class ShardGroupTests(unittest.TestCase):
         self.assertTrue(str(host.script).endswith('shard_group.py'))
 
 
-    def test_check_update_reports_each_region_against_the_group_revision(self):
+    def test_check_update_reports_installed_builds_against_the_live_mainland(self):
         self.group['fetch'] = 'origin'
         group = self.write_group()
         shard_group.setup(group, self.machine)
         old = 'e' * 40
+        live_mainland(group, self.machine, REVISION)
+        stamp_build(self.host(group, 'deep'), old)
         real = self.machine.run
         def run(argv, cwd=None, timeout=1800):
             if argv[1:] == ['rev-parse', 'HEAD'] and str(cwd).endswith('deep'):
@@ -1915,10 +1948,20 @@ class ShardGroupTests(unittest.TestCase):
         self.assertNotEqual(answer['current'], answer['available'])
         self.assertEqual(('up to date', 2), (answer['regions']['gaia']['reason'], answer['regions']['deep']['behind']))
         self.assertEqual(1, sum(1 for call, _ in self.machine.calls if call[1:2] == ['fetch']), 'one fetch for the group')
-        self.machine.up = {1721}
+        self.machine.up.add(1721)
         answer = shard_group.group_check_update(group, platform=self.machine)
         self.assertEqual((False, 'stop the server before updating'), (answer['can_update'], answer['reason']))
 
+
+    def test_check_update_does_not_call_an_unverified_mainland_up_to_date(self):
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        stamp_build(self.host(group, 'deep'), REVISION)
+        self.machine.live_revisions[1720] = REVISION  # an old cached reply is not a listener
+        answer = shard_group.group_check_update(group, 'deep', platform=self.machine)
+        self.assertFalse(answer['can_update'])
+        self.assertIn('no verified active build', answer['reason'])
+        self.assertEqual((REVISION, None), (answer['current'], answer['available']))
 
     def test_linux_regions_can_run_in_their_own_systemd_scope(self):
         self.refuse_config('systemd_scope', systemd_scope='yes')
@@ -2296,8 +2339,9 @@ class StagedBuildTests(unittest.TestCase):
             with self.subTest(id=id):
                 host = self.host(group, id)
                 host.log = lambda values: None
-                host.work('update', host.request('update')['operation'])
+                stamp_build(host, REVISION)
                 compile_lock = host.repo.parent / '.staging' / 'compile.lock'
+                compile_lock.parent.mkdir(exist_ok=True)
                 compile_lock.write_text('4141')
                 host.stage_record(phase="waiting for another region's compile")
                 self.assertFalse(host.status()['busy'], 'the stage is not a live operation')
@@ -2350,6 +2394,7 @@ class StagedBuildTests(unittest.TestCase):
         self.group['regions'].append({'id': 'shore', 'name': 'Shore', 'kind': 'SURFACE',
                                       'port': 1723, 'map': 'maps/small/tiny.dmm'})
         group, _mainland = self.built()
+        live_mainland(group, self.machine, REVISION)
         host = self.host(group, 'shore')
         host.log = lambda values: None
         deep = self.host(group, 'deep')
@@ -2374,6 +2419,7 @@ class StagedBuildTests(unittest.TestCase):
         self.group['regions'].append({'id': 'shore', 'name': 'Shore', 'kind': 'SURFACE',
                                       'port': 1723, 'map': 'maps/small/tiny.dmm'})
         group, _mainland = self.built()
+        live_mainland(group, self.machine, REVISION)
         host = self.host(group, 'shore')
         queued = host.request_stage()
         self.assertFalse(host.urgent_marker().exists())
@@ -2861,15 +2907,15 @@ class StagedBuildTests(unittest.TestCase):
 
 
     def offline_group(self):
-        """gaia runs, deep is stopped; both have a build of REVISION and NEWER is out."""
+        """Gaia is actually running NEWER, and deep has REVISION installed and is stopped."""
         group = self.write_group()
         shard_group.setup(group, self.machine)
         hosts = {name: self.host(group, name) for name in ('gaia', 'deep')}
         for host in hosts.values():
             host.log = lambda values: None
-            host.work('update', host.request('update')['operation'])
-        self.machine.revision = NEWER
-        self.machine.up = {1720}
+        live_mainland(group, self.machine, NEWER)
+        stamp_build(hosts['deep'], REVISION)
+        self.machine.revision = 'f' * 40  # remote HEAD is newer still
         return group, hosts
 
     def run_offline(self, *extra):
@@ -2886,7 +2932,7 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual('stopped', result['accepted']['deep']['state'])
         gaia, deep = hosts['gaia'], hosts['deep']
         self.assertFalse(gaia.stage_lock.exists(), 'nothing is staged for the running region')
-        self.assertEqual(1, len(self.machine.detached) - 2, 'one worker: the stopped region\'s stage')
+        self.assertEqual(1, len(self.machine.detached), 'one worker: the stopped region\'s stage')
         stage = self.machine.detached[-1]
         self.assertEqual(['--worker', 'stage'], stage[-3:-1])
         deep.work('stage', stage[-1])
@@ -2895,13 +2941,14 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual('installing', deep.read_json(deep.stage_file)['install'])
         deep.work('update', self.machine.detached[-1][-1])
         self.assertEqual((NEWER, True), (deep.built_revision(), deep.read_state().get('staged')), deep.read_state())
-        self.assertEqual(1, self.compiles(self.base / 'regions' / 'deep'), 'installed by copying, not compiled again')
-        self.assertEqual(REVISION, gaia.built_revision(), 'the running region keeps its build')
+        self.assertEqual(0, self.compiles(self.base / 'regions' / 'deep'), 'installed by copying, not compiled again')
+        self.assertEqual(NEWER, gaia.built_revision(), 'the running region keeps its build')
         self.assertEqual({1720}, self.machine.up)
 
     def test_update_offline_never_wakes_an_asleep_region_and_lets_the_host_install_it(self):
         group, hosts = self.offline_group()
         gaia = hosts['gaia']
+        self.machine.revision = 'f' * 40
         self.machine.pids = {77}
         gaia.write_json(gaia.freeze_file, {'pid': 77, 'frozen_at': 0})
         self.machine.up = {1720, 1721}  # deep runs this time
@@ -2918,7 +2965,7 @@ class StagedBuildTests(unittest.TestCase):
         self.assertFalse(gaia.frozen(), 'stopped from its save, never woken')
         self.assertEqual('cold', gaia.status()['state'], 'it starts on the new build at its next wake')
         gaia.work('update', self.machine.detached[-1][-1])
-        self.assertEqual(NEWER, gaia.built_revision())
+        self.assertEqual('f' * 40, gaia.built_revision())
 
     def test_update_on_an_asleep_region_builds_and_installs_it_without_waking_it(self):
         # Val (2026-11-13): asleep regions must be able to take the new update.
@@ -2969,7 +3016,10 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual({'gaia': 'busy: stop'}, result['skipped'], result)
         self.assertTrue(result['accepted']['deep']['already_staging'])
         deep.work('stage', operation)
-        self.assertEqual(['--worker', 'update'], self.machine.detached[-1][-3:-1], 'the running stage installs it')
+        self.assertEqual('failed', deep.read_json(deep.stage_file)['phase'])
+        self.assertIn('not awake and idle', deep.read_json(deep.stage_file)['error'])
+        self.assertFalse(deep.install_marker.exists(), 'a stage blocked by Gaia does not enqueue installation')
+        self.assertEqual(REVISION, deep.built_revision())
 
     def test_update_offline_with_everything_running_changes_nothing(self):
         group, hosts = self.offline_group()
@@ -3033,6 +3083,7 @@ class OceanBuildOrderingTests(unittest.TestCase):
     def test_no_change_or_missing_topology_keeps_the_known_build_available(self):
         group, hosts = self.configured_coasts()
         ocean = hosts['atlantic']
+        live_mainland(group, self.machine, NEWER)
         with mock.patch.object(shard_group, 'world_neighbours', return_value={}):
             self.assertEqual([], ocean.ocean_update_blockers(group, REVISION))
             self.assertEqual(['world links unavailable'], ocean.ocean_update_blockers(group, NEWER))
@@ -3046,8 +3097,9 @@ class OceanBuildOrderingTests(unittest.TestCase):
             self.assertEqual('start-current', ocean.automatic_start_action())
 
     def test_replaced_stage_does_not_take_over_the_installed_ocean_slot(self):
-        _group, hosts = self.configured_coasts()
+        group, hosts = self.configured_coasts()
         ocean = hosts['atlantic']
+        live_mainland(group, self.machine, NEWER)
         installed = ocean.repo / 'region.dmb'
         staged = ocean.stage_dir()
         staged.mkdir(parents=True)
@@ -3062,16 +3114,18 @@ class OceanBuildOrderingTests(unittest.TestCase):
     def test_blocked_candidate_does_not_stop_or_compile(self):
         group, hosts = self.configured_coasts()
         ocean = hosts['atlantic']
+        live_mainland(group, self.machine, NEWER)
         self.machine.revision = NEWER
         with mock.patch.object(self.machine, 'run', side_effect=lambda args, **kw:
-                               (1, '') if args[1] == 'merge-base' else (0, NEWER + '\n')):
+                               (int(args[4] != NEWER), '') if args[1] == 'merge-base' else (0, NEWER + '\n')):
             with mock.patch.object(ocean, 'record'), mock.patch.object(shard_group, 'prepare_tree') as prepare:
-                with self.assertRaisesRegex(shard_group.OceanUpdateDeferred, 'europe, gaia, greenland'):
+                with self.assertRaisesRegex(shard_group.OceanUpdateDeferred, 'europe, greenland'):
                     ocean.do_update('op')
                 prepare.assert_not_called()
             with mock.patch.object(ocean, 'evict') as evict:
                 with self.assertRaises(shard_group.OceanUpdateDeferred):
-                    ocean.install_into_sleeper()
+                    with mock.patch.object(ocean, 'staged_revision', return_value=NEWER):
+                        ocean.install_into_sleeper()
                 evict.assert_not_called()
             with mock.patch.object(ocean, 'staged_revision', return_value=NEWER), \
                     mock.patch.object(ocean, 'update_pending', return_value=True), \
@@ -3082,6 +3136,135 @@ class OceanBuildOrderingTests(unittest.TestCase):
                 running.assert_not_called()
                 record.assert_called_with(retryable=True)
                 self.assertFalse(ocean.install_staged_while_down())
+
+
+
+class MainlandBuildCeilingTests(unittest.TestCase):
+    setUp = ShardGroupTests.setUp
+    tearDown = ShardGroupTests.tearDown
+    write_group = ShardGroupTests.write_group
+    host = ShardGroupTests.host
+
+    def builds(self, kind='UNDERGROUND', **settings):
+        self.group['regions'][1]['kind'] = kind
+        self.group.update(settings)
+        group = self.write_group()
+        shard_group.setup(group, self.machine)
+        built = self.base / 'repo'
+        def git(*args):
+            return subprocess.check_output(['git', *args], cwd=built, text=True).strip()
+        git('init', '-q')
+        git('config', 'user.email', 'ci@example.invalid')
+        git('config', 'user.name', 'CI')
+        git('commit', '--allow-empty', '-qm', 'older')
+        self.older = git('rev-parse', 'HEAD')
+        git('commit', '--allow-empty', '-qm', 'Gaia')
+        self.running = git('rev-parse', 'HEAD')
+        git('commit', '--allow-empty', '-qm', 'master ahead')
+        self.ahead = git('rev-parse', 'HEAD')
+        git('checkout', '--detach', '-q', self.running)
+        git('commit', '--allow-empty', '-qm', 'independent branch')
+        self.diverged = git('rev-parse', 'HEAD')
+
+        default = self.machine.run
+        def run(args, cwd=None, timeout=1800, low_priority=False):
+            if args[1] == 'merge-base':
+                output = subprocess.run(args, cwd=built, timeout=timeout, capture_output=True, text=True)
+                return output.returncode, output.stdout
+            return default(args, cwd, timeout, low_priority)
+        self.machine.run = run
+        self.machine.revision = self.ahead
+        self.gaia = live_mainland(group, self.machine, self.running)
+        self.peer = self.host(group, 'deep')
+        stamp_build(self.peer, self.older)
+        return group
+
+    def test_stage_uses_live_build_not_remote_or_an_inactive_slot(self):
+        group = self.builds()
+        live_mainland(group, self.machine, self.running)
+        stamp_build(self.gaia, self.running, 'region.b.dmb')
+        (self.gaia.repo / 'region.dmb').write_bytes(b'new inactive slot that does not get a vote')
+        self.assertEqual(self.ahead, self.gaia.latest_revision())
+        self.assertEqual(self.running, self.peer.latest_revision())
+        stage_now(self.peer)
+        self.assertEqual(self.running, self.peer.staged_revision())
+        for too_far in (self.ahead, self.diverged):
+            with self.assertRaisesRegex(shard_group.MainlandUpdateDeferred, 'not on its running build history'):
+                self.peer.do_update('manual update', revision=too_far)
+        action = self.peer.request('update')['operation']
+        self.peer.work('update', action)
+        self.assertEqual(self.running, self.peer.built_revision())
+        self.assertEqual(self.running, self.peer.startup_revision(), 'do not mislabel the played artifact as checkout HEAD')
+
+    def test_no_fallback_to_remote_while_mainland_status_is_unverified(self):
+        group = self.builds()
+        stage_now(self.peer)
+        self.assertEqual(self.running, self.peer.staged_revision())
+        for fault in ('closed port', 'mismatched lifecycle reply', 'handover', 'modified active file'):
+            with self.subTest(fault=fault):
+                live_mainland(group, self.machine, self.running)
+                if fault == 'closed port':
+                    self.machine.up.remove(self.gaia.config['port'])
+                elif fault == 'mismatched lifecycle reply':
+                    self.machine.live_revisions[self.gaia.config['port']] = self.ahead
+                elif fault == 'handover':
+                    self.gaia.lock.touch()
+                else:
+                    self.gaia.dmb().write_bytes(b'changed')
+                with self.assertRaises(shard_group.MainlandUpdateDeferred):
+                    self.peer.latest_revision()
+                self.assertFalse(self.peer.update_pending())
+                installed = self.peer.dmb().read_bytes()
+                self.peer.do_refresh('start keeps its verified artifact')
+                self.assertEqual(installed, self.peer.dmb().read_bytes())
+                self.assertEqual(self.older, self.peer.built_revision())
+                self.gaia.lock.unlink(missing_ok=True)
+
+    def test_cap_is_checked_again_after_waiting_and_before_replacing_files(self):
+        group = self.builds()
+        stage_now(self.peer)
+        self.assertEqual(self.running, self.peer.staged_revision())
+        with mock.patch.object(self.peer, 'current_mainland_revision', return_value=self.older):
+            self.assertFalse(self.peer.update_pending())
+            with self.assertRaisesRegex(shard_group.MainlandUpdateDeferred, 'candidate'):
+                self.peer.install_staged(self.running)
+        self.assertEqual(self.older, self.peer.built_revision())
+        self.assertFalse((self.peer.repo / 'region.dmb.staged').exists())
+        self.assertFalse((self.peer.repo / 'region.rsc.staged').exists())
+
+        queue = self.peer.request_stage()
+        # Gaia moved while this job was queued. Neither old stage nor remote HEAD wins.
+        live_mainland(group, self.machine, self.diverged)
+        self.peer.work('stage', queue['operation'])
+        self.assertEqual(self.diverged, self.peer.staged_revision())
+
+    def test_match_pin_never_authorizes_a_not_yet_live_build_or_a_downgrade(self):
+        group = self.builds()
+        planned = dict(group, revision=self.ahead, unpinned_revision=group['revision'])
+        with self.assertRaisesRegex(shard_group.MainlandUpdateDeferred, 'maintenance build'):
+            self.peer.configured_revision(planned)
+        self.assertEqual(self.running, self.peer.configured_revision(dict(planned, revision=self.running)))
+        stamp_build(self.peer, self.ahead)
+        with self.assertRaisesRegex(shard_group.MainlandUpdateDeferred, 'will not be downgraded'):
+            self.peer.latest_revision()
+        self.peer.do_refresh('regular start')
+        self.assertEqual(self.ahead, self.peer.built_revision())
+
+    def test_named_gateway_updates_are_capped_but_tdm_is_not(self):
+        group = self.builds(kind='GATEWAY', relay_port=1740)
+        self.assertTrue(self.peer.holds_its_port())
+        with self.assertRaisesRegex(shard_group.Refused, 'never stages'):
+            self.peer.request_stage()
+        stage_now(self.peer, allow_gateway=True)
+        self.assertEqual(self.running, self.peer.staged_revision())
+        self.assertFalse(self.peer.install_staged_while_down(), 'the watchdog does not install a manually queued Gateway build')
+        self.peer.do_update('named Gateway update')
+        self.assertEqual(self.running, self.peer.built_revision())
+        self.group['persistent'] = False
+        group = self.write_group()
+        self.assertFalse(self.peer.bounded_by_mainland(group))
+        self.assertEqual(self.ahead, self.peer.latest_revision())
+        self.assertEqual(self.ahead, self.peer.startup_revision(), 'TDM retains its checkout-based startup stamp')
 
 
 class HandoverTests(unittest.TestCase):

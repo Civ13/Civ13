@@ -28,16 +28,16 @@ python scripts/shard-group/shard_group.py --config group.json stop|restart [--re
   `region.dme` (civ13.dme with only the region's map selected) and compiles it.
   A map path inside the repository is used as is; an absolute path is copied to
   `maps/regions/<id>.dmm` in that region's worktree.
-- `start` and `restart` fetch the group's remote first and run the region's
-  `update` unless its last build (`data/shard-host/build.json`) is already of
-  the group revision, so a region never runs a stale build. A region that was
-  set up but never built is built by its first `start`.
+- `start` and `restart` refresh the region against its permitted update target.
+  In a persistent group the mainland follows the configured ref, and its live
+  build is the ceiling for every other region. A first start needs a verified
+  target; start the mainland first when bringing up a new persistent group.
 - `start`, `stop` and `restart` reuse the host logic of
   [gaia-host](../gaia-host/README.md): one detached worker per action, progress
   in `data/shard-host/operation.json`, save-and-stop through the lifecycle
   topic and a verified backup of every save. Like Gaia, `stop` only saves a
   world that is playing and idle; a world still in the lobby is refused.
-- `stage` builds the group revision beside each running region; see
+- `stage` builds each region's permitted target beside its running world; see
   [staged builds](#staged-builds).
 - `status` reports each region's host state, and for a listening region what
   it answers to the `shard_region` topic, including how it sees its peers
@@ -580,17 +580,29 @@ and off for TDM groups, which update between rounds. The host service starts one
 detached run per day at the time (`maintenance --scheduled`), or up to
 `late_minutes` later if the host was off or busy. The run resolves the group
 revision once and pins it in `<root>/.maintenance/pin.json`, so every stage and
-handover (and any empty-region update meanwhile) builds that commit. It stages
-every region that is not on it; if any build fails, no region is touched. It then
-sends every occupied running region the same countdown (lifecycle
-`planned_notice`, `warning_minutes`), hands each running region over in turn
-(a busy one is asked again later, so it never holds the others), and installs
-the build into asleep, cold and stopped regions without waking them
-(`update_offline`). An admin's **Cancel Planned Restart** keeps that region on
-its build for the day. The gateway is never staged or moved. The result per
+handover (and any empty-region update meanwhile) uses that commit once the
+mainland is running it. Maintenance stages and hands over the mainland first.
+Its players get the configured warning (`planned_notice`, `warning_minutes`);
+if its build or handover fails, or an admin cancels it, no other region is
+updated. Once the mainland confirms its live build, maintenance stages the
+remaining regions, warns their players and hands them over. An asleep, cold
+or stopped region installs without waking. An admin's **Cancel Planned
+Restart** keeps that region on its current build. The Gateway is never
+staged or moved by the bulk action. The result per
 region is in `<root>/.maintenance/state.json`, `maintenance-status` and the
 group status; the launcher's **Daily maintenance...** sets it and **Run daily
 maintenance now** starts a run at once.
+
+**Mainland build ceiling:** The mainland (Gaia in the Earth group) can advance
+to the configured revision. A persistent group's other regions check the
+mainland's live lifecycle reply against the verified active DreamDaemon
+artifact and build that revision, not the source checkout, a staged artifact
+or the newest remote commit. An exact maintenance pin must be on that live
+build's Git history. Missing or inconsistent evidence defers updating; an
+ordinary start can still use its verified installed build. A newer or
+diverged installed build is never downgraded automatically. Gateway keeps
+its existing bulk/automatic exclusions; a named Gateway update obeys the
+same ceiling. TDM groups have no Gaia ceiling.
 
 **Compile priority:** The configured mainland (Gaia in the Earth group) and
 the Gateway share first priority for the next free compile slot, then surface
@@ -611,8 +623,8 @@ other deploy steps still apply.
 **Update when empty** (`update_when_empty`, group key, default `true`): the host
 service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
 As soon as an awake region that saves is empty and has saved since its last
-player, it fetches (at most every `update_check_minutes`, default 5) and, when
-the group revision has moved past the region's build, stages it; the region does
+player, it checks for a permitted update (at most every
+`update_check_minutes`, default 5) and stages it if it can advance; the region does
 not fall asleep while that build runs, and is handed over to it (`handover`)
 as soon as it is ready, if it is still empty and saved. An unattended update is
 never a plain restart: the handover backs up the save, the new build loads it
@@ -623,14 +635,15 @@ world plays on; that build is not tried again unattended, and a refused handover
 for players again after the standby boots and defers if anyone has joined; this
 status check is not atomic with the subsequent save request. A failed build leaves the world
 running (and is not retried until the revision changes or a Build update runs).
-An ocean can stage a build at any time. It only installs a different revision
+An ocean can stage a build once the mainland has reached it. It only installs a different revision
 after every configured surface land bordering that ocean in the world-links table
 has a verified active build containing that revision (including islands inside
 the ocean). Other oceans, the gateway and unconfigured lands do not count. A
 source checkout or staged artifact is not an installed build. A blocked ocean
 keeps its current build, including when it wakes or recovers after a stop;
-ordinary land updates do not wait on oceans. Daily maintenance stages every
-region first, then admits each ocean once its coastal land updates finish. If
+ordinary land updates do not wait on oceans. After updating the mainland, daily
+maintenance stages the remaining regions and admits each ocean once its coastal
+land updates finish. If
 a coastal update is cancelled or fails, maintenance reports why that ocean
 stayed on its current build.
 
@@ -670,7 +683,7 @@ reports no round yet, which otherwise reads as saving.
 ### Updating the regions that are not running
 
 `update-offline [--region ID]` brings every region that is not running up to the
-latest group revision, so it is ready when it next starts, and never touches a
+permitted update target, so it is ready when it next starts, and never touches a
 running region (it is not stopped, woken, staged or restarted). Each stopped or
 cold region is staged as above (taking its turn at the compile slot, at low
 priority) with an `install-after-stage` marker in `data/shard-host`; when its
