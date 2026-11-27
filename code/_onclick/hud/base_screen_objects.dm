@@ -605,9 +605,14 @@
 
 	// show our worst status, hunger or thirst
 
-	var/nstatus = Clamp(smart_round(1/(H.nutrition/H.max_nutrition)), 1, 4)
-	var/wstatus = Clamp(smart_round(1/(H.water/H.max_water)), 1, 4)
+	var/nstatus = need_severity(H.nutrition, H.max_nutrition)
+	var/wstatus = need_severity(H.water, H.max_water)
 	icon_state = "nutrition[max(nstatus, wstatus)]"
+
+/obj/screen/nutrition/proc/need_severity(amount, maximum)
+	if (amount <= 0)
+		return 4
+	return Clamp(smart_round(1/(amount/maximum)), 1, 4)
 
 /obj/screen/nutrition/Click()
 	if (!parentmob)

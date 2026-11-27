@@ -32,6 +32,20 @@ class HudLayoutWiring(unittest.TestCase):
         self.assertIn('"hud_layout"', line)
         self.assertIn('"hover_text_scale"', line)
 
+    def test_nutrition_icon_checks_both_reserves_before_taking_the_inverse(self):
+        source = read('code/_onclick/hud/base_screen_objects.dm')
+        update = proc_body(source, '/obj/screen/nutrition/update_icon()')
+        self.assertIn('var/nstatus = need_severity(H.nutrition, H.max_nutrition)', update)
+        self.assertIn('var/wstatus = need_severity(H.water, H.max_water)', update)
+        self.assertIn('icon_state = "nutrition[max(nstatus, wstatus)]"', update)
+
+        severity = proc_body(source, '/obj/screen/nutrition/proc/need_severity(amount, maximum)')
+        self.assertRegex(
+            severity,
+            r'\A\s*if \(amount <= 0\)\n\t\treturn 4\n'
+            r'\treturn Clamp\(smart_round\(1/\(amount/maximum\)\), 1, 4\)\s*\Z',
+        )
+
     def test_included_after_base_hud(self):
         dme = read('civ13.dme').splitlines()
         base = dme.index('#include "code\\_onclick\\hud\\hud.dm"')
