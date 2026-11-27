@@ -233,7 +233,7 @@ public static class LocalHosting {
     public static TimeSpan ActionLimit(string action) => action switch {
         "status" or "help-status" or "translator-status" or "ports" or "maintenance-status" => StatusLimit,
         // Run maintenance now only starts the detached run (daily_maintenance.py); it answers at once.
-        "maintenance" => RequestLimit,
+        "maintenance" or "match-mainland" => RequestLimit,
         "start" or "restart" or "force-restart" => StartLimit,
         "stop" or "kill" or "unlock" or "force-unlock" or "freeze" or "thaw" or "help-start" or "help-stop" or "translator-stop" => RequestLimit,
         _ => LongLimit,
@@ -292,7 +292,7 @@ public static class LocalHosting {
     // config and enrol it for travel (refused while it runs). stage and handover: staged builds (#3936).
     public static readonly string[] GroupActions = ["status", "start", "stop", "restart", "update", "kill", "force-restart", "check-update", "help-status", "help-start", "help-stop", "unlock", "force-unlock", "config-apply", "stage", "handover",
         "freeze", "thaw", "setup", "epoch", "fresh-world", "group-fresh-world", "update-offline", "update-unsaved",
-        "translator-status", "translator-start", "translator-stop", "maintenance", "maintenance-status"];
+        "translator-status", "translator-start", "translator-stop", "maintenance", "maintenance-status", "match-mainland"];
 
     // code/modules/persistence/functions.dm epoch_names, as shard_group.py EPOCH_NAMES; index = ordinal_age.
     public static readonly string[] EpochNames = ["5000 B.C.", "313 B.C.", "1013", "1713", "1873", "1903", "1943", "1969", "2013", "2026"];
@@ -307,6 +307,8 @@ public static class LocalHosting {
         var group = control.Group ?? throw new InvalidOperationException("No region group configured.");
         if (!GroupActions.Contains(action)) throw new ArgumentException("Unsupported group action.", nameof(action));
         if (region != null && !RegionId.IsMatch(region)) throw new ArgumentException("Not a region id.", nameof(region));
+        if (action == "match-mainland" && region != null)
+            throw new ArgumentException("Matching the mainland acts on the whole group.", nameof(region));
         if ((action == "epoch") != (epoch != null) || (action == "epoch" && region != null) || epoch is < 0 || epoch >= EpochNames.Length)
             throw new ArgumentException("epoch takes one epoch for the whole group.", nameof(epoch));
         if (action == "fresh-world" ? region == null || confirmRegion != region : confirmRegion != null)
@@ -467,6 +469,10 @@ public static class LocalHosting {
             }
             if (action == "maintenance-status")
                 return new ControlAnswer(true, DescribeMaintenance(json) is { Length: > 0 } daily ? daily : "Daily maintenance: no status yet.", false);
+            if (action == "match-mainland")
+                return Bool(json, "accepted") && Str(json, "action") == action
+                    ? new ControlAnswer(true, "Mainland match requested. The Host tab shows the pinned build and progress; the mainland and Gateway stay on their current builds.", true)
+                    : new ControlAnswer(false, "The host did not accept a mainland match.", false);
             if (action == "maintenance")
                 return new ControlAnswer(true, "Daily maintenance started: building one revision beside every region, then warning the players " +
                     "and handing each running region over to it. The gateway stays on its port. Its progress shows on the status line.", true);
@@ -604,9 +610,10 @@ public static class LocalHosting {
         var phase = Str(last, "phase") is { } known ? Words(known) : "";
         var revision = Str(last, "revision") is { Length: 40 } full && full.All(Uri.IsHexDigit) ? " onto " + full[..8] : "";
         var day = Str(last, "day") is { } stamp && DailyStamp(stamp + " 00:00") is { } valid ? valid[..10] : "";
-        if (Bool(maintenance, "running")) return text + " Running now" + revision + (phase.Length > 0 ? " (" + phase + ")" : "") + ".";
+        var match = Str(last, "mode") == "match-mainland";
+        if (Bool(maintenance, "running")) return text + (match ? " Matching the mainland" : " Running now") + revision + (phase.Length > 0 ? " (" + phase + ")" : "") + ".";
         if (phase.Length == 0) return text;
-        text += " Last run" + (day.Length > 0 ? " " + day : "") + revision + ": " + phase;
+        text += (match ? " Last mainland match" : " Last run") + (day.Length > 0 ? " " + day : "") + revision + ": " + phase;
         if (Str(last, "error") is { Length: > 0 } error) text += ": " + Short(error);
         else if (last.TryGetProperty("result", out var result) && result.ValueKind == JsonValueKind.Object
                 && result.TryGetProperty("problems", out var problems) && problems.ValueKind == JsonValueKind.Object) {

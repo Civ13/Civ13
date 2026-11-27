@@ -135,3 +135,16 @@ and nothing needs restoring; fix the cause and run `deploy.bat` again (the
 staged builds are kept). The machine must hold both worlds during a handover
 (the new Gaia peaks near 2 GB while it loads), so a region is refused while less
 than `cold_start_min_free_mb` is free.
+
+
+### Bring regions up to the mainland build
+
+Use **Host → All regions → More → Match mainland build…** to update a persistent
+group to the exact verified build its mainland is running, without pulling
+latest first or restarting the mainland or Gateway. The launcher refuses a
+match if a selected installed build is unknown, diverged, or newer. Region
+builds are staged before players are warned; asleep and stopped regions are
+updated without waking. The Host tab shows the pinned commit and progress.
+The pin is released after the run; future automatic updates follow the same
+settings as before. For the latest configured commit instead, use **Save,
+update and restart** or **Run daily maintenance now**.

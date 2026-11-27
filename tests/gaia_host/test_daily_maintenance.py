@@ -307,6 +307,64 @@ class DailyMaintenanceTests(unittest.TestCase):
         with self.assertRaisesRegex(shard_group.Refused, 'between rounds'):
             daily_maintenance.request(types.SimpleNamespace(process_alive=lambda pid: False), group, lambda *a: 1)
 
+    def test_match_pins_only_the_running_mainland_and_installs_exact_target(self):
+        group = self.load(maintenance={'warning_minutes': 0})
+        gaia = FakeHost('gaia', built=NEW)
+        europe = FakeHost('europe', built=OLD)
+        gateway = FakeHost('gateway', built=OLD, gateway=True)
+        offline = FakeHost('asia', built=OLD, up=False)
+        fake = self.this([gaia, europe, gateway, offline])
+        fake.fetch_remote = lambda *_: self.fail('matching must not fetch or target a newer ref')
+
+        def offline_update(group, name, platform):
+            self.assertEqual('asia', name)
+            self.assertEqual(NEW, daily_maintenance.active_pin(group, self.clock()))
+            offline.built = NEW
+            return {'accepted': {'asia': {'state': 'stopped'}}}
+
+        fake.update_offline = offline_update
+        result = daily_maintenance.run(fake, group, platform=gaia.platform, sleep=self.clock.sleep,
+                                       clock=self.clock, match_mainland=True)
+        self.assertEqual({'revision': NEW, 'problems': {}}, result)
+        self.assertEqual((1, 1, NEW), (europe.stage_requests, europe.handovers, europe.built))
+        self.assertEqual((0, 0, NEW), (gaia.stage_requests, gaia.handovers, gaia.built))
+        self.assertEqual((0, 0, OLD), (gateway.stage_requests, gateway.handovers, gateway.built))
+        self.assertEqual((1, 0, NEW), (offline.stage_requests, offline.handovers, offline.built))
+        saved = daily_maintenance.read_json(daily_maintenance.folder(group) / 'state.json')
+        self.assertEqual('match-mainland', saved['mode'])
+        self.assertEqual('installed while stopped', saved['regions']['asia']['result'])
+        self.assertFalse((daily_maintenance.folder(group) / 'pin.json').exists())
+
+    def test_match_refuses_without_an_awake_verified_mainland_or_forward_only_targets(self):
+        for condition in ('mainland stopped', 'mainland unknown', 'newer region'):
+            with self.subTest(condition=condition):
+                group = self.load()
+                gaia = FakeHost('gaia', built=None if condition == 'mainland unknown' else OLD,
+                                up=condition != 'mainland stopped')
+                other = FakeHost('europe', built=NEW)
+                regular_run = gaia.platform.run
+
+                def git(argv, **kwargs):
+                    if argv[1:3] == ['merge-base', '--is-ancestor'] and argv[-2:] == [NEW, OLD]:
+                        return 1, ''
+                    return regular_run(argv, **kwargs)
+
+                gaia.platform.run = git
+                with self.assertRaises(shard_group.Refused):
+                    daily_maintenance.run(self.this([gaia, other]), group, platform=gaia.platform,
+                                          sleep=self.clock.sleep, clock=self.clock, match_mainland=True)
+                self.assertEqual((0, 0, NEW), (other.stage_requests, other.handovers, other.built))
+                self.assertFalse((daily_maintenance.folder(group) / 'pin.json').exists())
+
+    def test_match_worker_uses_manual_group_action(self):
+        group = self.load()
+        started = []
+        answer = daily_maintenance.request(self.this([FakeHost('gaia')]), group,
+                                           lambda *args: started.append(args) or 123, match_mainland=True)
+        self.assertEqual('match-mainland', answer['action'])
+        self.assertEqual('match-mainland', started[0][0][-1])
+        self.assertNotIn('--scheduled', started[0][0])
+
     def test_lifecycle_takes_the_planned_notice(self):
         lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text(encoding='utf-8')
         self.assertIn('if(action == "planned_notice") allowed = list("nomads_lifecycle", "token", "action", "seconds")', lifecycle)

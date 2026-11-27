@@ -86,7 +86,7 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'expedition-grow', 'add-gateway',
                  'players', 'send-players', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
-                 'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status',
+                 'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status', 'match-mainland',
                  'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
@@ -1123,11 +1123,15 @@ class RegionHost(Host):
         staged = self.staged_revision()
         if not staged:
             return False
+        pin = daily_maintenance.active_pin_record({'root': self.repo.parent})
+        matching_mainland = bool(pin and pin.get('mode') == 'match-mainland')
+        if matching_mainland and staged != pin['revision']:
+            return False  # an unrelated staged request must not move a region away from this exact match
         built = self.built_revision()
         if staged == built:
             return False
         if built is None:
-            return True
+            return not matching_mainland  # the match cannot prove that an unverified build is older
         # Never go back: a build updated by hand past the staged one leaves it unused.
         code, _ = self.platform.run([self.config['git'], 'merge-base', '--is-ancestor', built, staged],
                                     cwd=self.repo, timeout=60)
@@ -2454,6 +2458,9 @@ class RegionHost(Host):
     def latest_revision(self):
         """Fetch the group's remote, then the group revision this region should run."""
         group = load_group(self.config['group_config'])
+        pinned = group.get('mainland_match_revision')
+        if pinned:
+            return pinned  # locally verified once; a remote fetch cannot change or block this match
         # Regions starting together share the repository; a fetch that meets
         # another region's ref lock is retried.
         for attempt in range(3):
@@ -2475,12 +2482,30 @@ class RegionHost(Host):
         answer = self.update_answer(self.git_text(['rev-parse', 'HEAD'], self.repo), available, group['repository'])
         return dict(answer, region=self.config['region'])
 
+    def mainland_match_can_install(self, group, revision):
+        if group.get('mainland_match_revision') != revision:
+            return True
+        current = self.built_revision()
+        if not current:
+            return False
+        code, _ = self.platform.run([self.config['git'], 'merge-base', '--is-ancestor', current, revision],
+                                    cwd=group['repository'], timeout=60)
+        return code == 0
+
     def do_refresh(self, operation):
         """A restart of an always-up region (the gateway, the tutorial) installs the build
         staged beside it, even when the group has moved on since: compiling the newer
         revision with the world stopped kept the TDM front door shut for 35 seconds
         (2026-11-21). The newer revision is staged beside it next and installed by the
         next empty restart. Other regions, or one with nothing staged, refresh as before."""
+        group = load_group(self.config['group_config'])
+        pinned = group.get('mainland_match_revision')
+        if pinned and not self.mainland_match_can_install(group, pinned):
+            current = self.built_revision()
+            if not current:
+                raise Refused('the installed build is unknown; a safe mainland match is not possible')
+            self.record(phase='keeping a newer or diverged build during mainland match', revision=current)
+            return
         if self.region_kind() == 'OCEANIC':
             current = self.built_revision()
             try:
@@ -2527,6 +2552,8 @@ class RegionHost(Host):
         git, path = self.config['git'], self.repo
         self.record(phase='checking out')
         revision = self.configured_revision(group) if revision is None else revision
+        if not self.mainland_match_can_install(group, revision):
+            raise Refused('the mainland match cannot replace a newer, diverged, or unknown build')
         self.require_ocean_update_ready(group, revision)
         prepare_tree(group, region, path, revision, self.platform, git)
         if self.platform.listening(self.config['port']):
@@ -4916,17 +4943,17 @@ def main(argv=None):
             result = group_epoch(group, args.epoch)
         elif args.action == 'update-offline':
             result = update_offline(group, args.region)
-        elif args.action in ('maintenance', 'maintenance-status'):
-            # Daily maintenance (daily_maintenance.py): the whole group or nothing.
-            if args.region:
-                raise Refused('daily maintenance moves the whole group onto one build; leave out --region')
+        elif args.action in ('maintenance', 'maintenance-status', 'match-mainland'):
+            if args.region or (args.action == 'match-mainland' and args.scheduled):
+                raise Refused('build synchronization is one manual group action; leave out --region and --scheduled')
+            match_mainland = args.action == 'match-mainland'
             if args.action == 'maintenance-status':
                 result = daily_maintenance.status(this, group)
             elif args.scheduled or args.run:
-                # The detached run itself (the host service's daily start, or Run maintenance now).
-                result = daily_maintenance.run(this, group, scheduled=args.scheduled)
+                result = daily_maintenance.run(this, group, scheduled=args.scheduled, match_mainland=match_mainland)
             else:
-                result = daily_maintenance.request(this, group, lambda argv, cwd, log: detach(argv + ['--run'], cwd, log))
+                result = daily_maintenance.request(this, group, lambda argv, cwd, log: detach(argv + ['--run'], cwd, log),
+                                                   match_mainland=match_mainland)
         elif args.action == 'players':
             result = region_players(group, args.region)
         elif args.action == 'send-players':

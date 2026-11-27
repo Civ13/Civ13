@@ -310,6 +310,7 @@ internal sealed partial class LauncherWindow : Form {
                 ("Update (stopped and asleep regions)", () => GroupAction("update", "Update"), HostGate.All),
                 ("Build update", () => GroupAction("stage", "Build update"), HostGate.All),
                 ("Run daily maintenance now", () => GroupAction("maintenance", "Run daily maintenance now"), HostGate.All),
+                ("Match mainland build…", () => GroupAction("match-mainland", "Match mainland build"), HostGate.All),
                 ("Restart host service", () => GroupAction("restart-host", "Restart host service"), HostGate.AllIdle),
                 ("Advance epoch…", AdvanceEpoch, HostGate.AllIdle),
                 ("-", null, null),
@@ -1028,6 +1029,10 @@ internal sealed partial class LauncherWindow : Form {
             "stage" => $"Build the latest update beside {target} while the worlds keep running? Nobody is kicked. " +
                 "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",
+            "match-mainland" => "Bring the other regions up to the exact build the mainland is running now? " +
+                "The mainland and Gateway stay running. If a region is already newer, diverged, or cannot be verified, the match stops " +
+                "before making changes. Eligible builds are prepared first. Occupied regions get a warning before switching; stopped " +
+                "regions take the update without being started. This is a one-time sync, not a change to automatic updates.",
             "maintenance" => "Run the daily maintenance now? The latest master is prepared in the background while everyone keeps playing; " +
                 "if it cannot be prepared for any region, nothing changes anywhere. Players in every occupied region then see the same " +
                 "countdown, and each running region saves and switches to the update, one after another (its players are moved across " +

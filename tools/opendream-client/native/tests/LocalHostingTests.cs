@@ -419,6 +419,14 @@ static class LocalHostingTests {
                 + "done with problems: moon (handover failed (the old world plays on): low memory).", "maintenance status line");
         using (var tdm = JsonDocument.Parse("{\"enabled\": false, \"persistent\": false}"))
             Require(LocalHosting.DescribeMaintenance(tdm.RootElement).Contains("between rounds"), "TDM groups do not use daily maintenance");
+        Require(LocalHosting.GroupStep(host.Control!, "match-mainland").ArgumentList.Last() == "match-mainland"
+            && LocalHosting.LimitOf(LocalHosting.GroupStep(host.Control!, "match-mainland")) == LocalHosting.RequestLimit,
+            "match mainland requests detached group action");
+        try { LocalHosting.GroupStep(host.Control!, "match-mainland", "gaia"); throw new Exception("match mainland accepted a single region"); } catch (ArgumentException) { assertions++; }
+        Require(LocalHosting.ParseGroup("match-mainland", 0, "{\"accepted\": true, \"action\": \"match-mainland\", \"pid\": 5, \"ok\": true}").Message.StartsWith("Mainland match requested"),
+            "match mainland request answer");
+        Require(!LocalHosting.ParseGroup("match-mainland", 0, "{\"ok\": true}").Ok,
+            "an incomplete host reply cannot claim the match started");
         Require(LocalHosting.ParseGroup("maintenance", 0, "{\"accepted\": true, \"action\": \"maintenance\", \"pid\": 5, \"ok\": true}").Message.StartsWith("Daily maintenance started"),
             "run maintenance now answer");
         // Start region: the mainland unless start_region names another; never a kind nobody can start in.
