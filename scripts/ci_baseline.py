@@ -1872,7 +1872,7 @@ SUITES = {
     'timekeeping': {'files': ('tests/timekeeping/test_source.py',),
         'paths': ('tests/timekeeping/',), 'shared_paths': (
             'code/modules/1713/timekeeping.dm', 'icons/obj/timekeeping.dmi', 'icons/obj/lighthouse.dmi',
-            'tests/sprites/create_timekeeping.py')},
+            'tests/sprites/create_timekeeping.py', 'tests/save_movement/source_adapter.py')},
     # Canals and pound locks: source contracts (native probe tests/canals/probe.dm).
     'canals': {'files': ('tests/canals/test_source.py',),
         'paths': ('tests/canals/',), 'shared_paths': (
