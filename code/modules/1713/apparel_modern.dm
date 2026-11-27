@@ -702,8 +702,8 @@
 /obj/item/clothing/head/helmet/modern/sovietfacehelmet/welding/nomads //also known as the
 	name = "K6-3 helmet"
 	desc = "A russian heavy armoured helmet with a welding visor facemask."
-	icon_state = "sovietface_weldhelmet"
-	item_state = "sovietface_weldhelmet"
+	icon_state = "sovietface_weldhelmet_o"
+	item_state = "sovietface_weldhelmet_o"
 	body_parts_covered = HEAD
 	flags_inv = BLOCKHEADHAIR
 	armor = list(melee = 85, arrow = 110, gun = 95, energy = 25, bomb = 75, bio = 30, rad = FALSE)

@@ -3335,6 +3335,9 @@ SUITES = {
         'paths': ('tests/specialist_traders/test_purchase_quote.py',),
         'shared_paths': ('code/game/objects/structures/vending/specialist_traders.dm',
                          'tests/save_movement/source_adapter.py')},
+    'k6_3_visor': {'files': ('tests/k6_3_visor/test_initial_sprite.py',),
+        'paths': ('tests/k6_3_visor/',),
+        'shared_paths': ('code/modules/1713/apparel_modern.dm',)},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
