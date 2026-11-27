@@ -1861,6 +1861,7 @@
 #include "code\modules\naval\air_designer.dm"
 #include "code\modules\naval\air_draught_checks.dm"
 #include "code\modules\naval\air_hull.dm"
+#include "code\modules\naval\airship_voyage.dm"
 #include "code\modules\naval\gas_works.dm"
 #include "code\modules\naval\airship_yard.dm"
 #include "code\modules\naval\carrier.dm"

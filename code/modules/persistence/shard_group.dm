@@ -235,6 +235,7 @@ var/global/datum/shard_group/shard_group = new
 			peer["checked"] = null
 			peer["birth_chart_records"] = FALSE
 			peer["immunization_records"] = FALSE
+			peer["airship_voyages"] = FALSE
 	if(istext(settings["mainland"]) && (settings["mainland"] in found))
 		mainland = settings["mainland"]
 	if(istext(settings["start_region"]) && (settings["start_region"] in found))
@@ -278,6 +279,7 @@ var/global/datum/shard_group/shard_group = new
 	// Decoder capability, independent of whether this world records new births.
 	.["birth_chart_records"] = TRUE
 	.["immunization_records"] = TRUE
+	.["airship_voyages"] = TRUE
 	// Nothing can arrive while the agent here is on hold (transfer_bridge.dm).
 	if(transfer_bridge && transfer_bridge.held())
 		.["transfers_held"] = 1
@@ -334,6 +336,7 @@ var/global/datum/shard_group/shard_group = new
 	peer["state"] = "UP"
 	peer["birth_chart_records"] = (reply["birth_chart_records"] == TRUE)
 	peer["immunization_records"] = (reply["immunization_records"] == TRUE)
+	peer["airship_voyages"] = (reply["airship_voyages"] == TRUE)
 	peer["players"] = isnum(reply["players"]) ? reply["players"] : null
 	peer["free_berths"] = isnum(reply["free_berths"]) ? reply["free_berths"] : null
 	peer["free_planes"] = isnum(reply["free_planes"]) ? reply["free_planes"] : null
