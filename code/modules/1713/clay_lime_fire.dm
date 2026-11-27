@@ -405,7 +405,7 @@ var/global/list/brick_bench_batches = list(
 		return
 	var/is_marble = S.type == /obj/item/stack/material/marble
 	var/is_shell = istype(S, /obj/item/stack/crushed_shell)
-	if (S.type != /obj/item/stack/material/stone && !is_marble && !is_shell)
+	if (!istype(S, /obj/item/stack/material/stone) && !is_marble && !is_shell)
 		to_chat(H, SPAN_WARNING("\The [src] burns only stone, marble or crushed shell."))
 		return
 	if (on)

@@ -139,3 +139,10 @@ no-ore product, and the geology admission divides by that product, so the
 unconditional fossil/sandstone/marble budget is unchanged. The old jungle
 obsidian geology branch is gone; obsidian is an independent roll near lava
 (see docs/obsidian.md). The native fixture in tests/mining_yields checks both.
+
+## Addendum 2026-11-27: quarry processing
+
+Blasting assigns some of the wall's already-rolled ore to named quarry rubble.
+Both mills recover one unit per consumed chunk, without another ore roll.
+Known mined stone gives sand only. Unmarked and legacy stone retain trace
+crushing based on Gaia's rates, replacing the generic rates above.

@@ -81,13 +81,13 @@ var/global/list/road_roller_types = list(
 
 /obj/structure/workshop_machine/steam_site/road_roller/dismantled()
 	if (stone > 0)
-		new /obj/item/stack/material/stone(get_turf(src), stone)
+		new /obj/item/stack/material/stone/quarried(get_turf(src), stone)
 	..()
 
 /obj/structure/workshop_machine/steam_site/road_roller/attackby(obj/item/I, mob/living/human/H)
 	if (!istype(H))
 		return
-	if (I && I.type == /obj/item/stack/material/stone)
+	if (istype(I, /obj/item/stack/material/stone))
 		var/obj/item/stack/material/stone/S = I
 		var/moved = min(S.amount, ROLLER_STONE_LIMIT - stone)
 		if (moved <= 0)

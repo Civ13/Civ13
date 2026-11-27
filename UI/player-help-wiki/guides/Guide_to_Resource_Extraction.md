@@ -120,15 +120,19 @@ Once your faction knows **Gunpowder**, find the in-game blasting charge entry in
 **Crafting Atlas**. A detonated blasting charge near ordinary mineable rock leaves
 finite **blasted rock clusters** where the rock opened. It does not refill
 exposed floors, spent clusters, or loose debris. Stay clear of the game's
-ordinary blast damage. Any ore found is rolled once by the same mining rules
-as a pickaxe; the cluster holds stone, not a second chance at ore.
+ordinary blast damage. The wall rolls its source geology once. Part of a
+multi-unit ore find comes loose, and the rest stays in the cluster as
+**ore-bearing rubble**. Deeper rock gives more building stone, not more ore
+rolls.
 
 Use a **pickaxe** on a cluster to break off up to **five units** at a time.
 Inspect the cluster to see what's left. Clear the output from the floor if
 it backs up. The cluster shrinks as you work; it disappears when exhausted
-and does not refill on restart. Ordinary stone can go into the normal
-**stone bricks** craft or the **stone crusher** for a chance at sand and
-trace minerals. Sandstone and marble use their own normal crafting routes.
+and does not refill on restart. Use the stone for **stone bricks** or crush it
+for sand. When you harvest named rubble, such as **iron-bearing rubble**, use a
+stone crusher or stamp mill to recover one unit of that ore per chunk. The
+rubble keeps the same ore when you carry it to another region. Sandstone and
+marble use their own ordinary crafting routes.
 
 Some dry underground pockets have **hard quarry rock**. Pickaxes and shovels
 cannot open these walls. Ordinary blasting charges open shallow hard bands
@@ -166,7 +170,7 @@ Groundwater cannot seep into packed earth, so packing a tunnel that runs under a
 
 ## Stone crushing
 
-Surplus stone blocks can be crushed for a chance of sand, ore and rare minerals: by hand with a **stone crusher** (Resource Processing), or with a **powered stamp mill** (Electricity) that arms and belts can feed. See [Factory Automation](Guide_to_Factory_Automation.md#stone-crushing).
+Use a **stone crusher** (Resource Processing) or **powered stamp mill** (Electricity) for named ore-bearing rubble or excess stone. Plain stone from a mined deposit can yield sand but no more ore. Older or otherwise unmarked stone blocks still work and have a small chance of trace ore from the Gaia table, regardless of where you crush them. See [Factory Automation](Guide_to_Factory_Automation.md#stone-crushing).
 
 ## Petroleum wells
 

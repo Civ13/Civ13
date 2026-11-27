@@ -13,7 +13,7 @@
 		return made
 	var/obj/item/stack/kept = made
 	for (var/obj/item/stack/S in target)
-		if (S == made || !istype(S, made.type) || S.amount <= 0)
+		if (S == made || !istype(S, made.type) || !made.stack_compatible(S) || !S.stack_compatible(made) || S.amount <= 0)
 			continue
 		var/room = S.max_amount - S.amount
 		if (room <= 0)

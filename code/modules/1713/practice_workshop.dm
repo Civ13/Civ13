@@ -363,7 +363,7 @@
 	var/choice = WWinput(H, "Choose a topic to read. Camp has a tree, grass and flint for hands-on practice. Book research is explained here; book progression is not enabled in the tutorial region.", name, "Cancel", lessons + list("Cancel"))
 	if (lessons[choice] && connection && H.client == connection && connection.mob == H && readable_by(H))
 		if (lessons[choice] == "quarry")
-			to_chat(H, SPAN_NOTICE("Go through the camp's north door. Pick up the steel pickaxe and use it on the practice rock cluster. Examine the cluster to see how much is left. Pick up the stone, open its crafting menu to make stone bricks, or feed the blocks into the nearby stone crusher to try mineral recovery. The sample is already fractured; no charge is needed here. In the live world, examine hard quarry rock before blasting: deeper bands need a reinforced quarry charge."))
+			to_chat(H, SPAN_NOTICE("Go through the camp's north door. Pick up the steel pickaxe and use it on the practice rock cluster. Examine the cluster to see how much is left. Use the iron-bearing rubble on the nearby stone crusher to recover iron ore. Mine again for stone and use its crafting menu to make stone bricks. The sample is already fractured; no charge is needed here. In the live world, examine hard quarry rock before blasting: deeper bands need a reinforced quarry charge."))
 		else
 			to_chat(H, SPAN_NOTICE(tutorial_step_text(lessons[choice], connection)))
 

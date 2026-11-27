@@ -933,6 +933,7 @@
 	for (var/chance in list(copper_chance, tin_chance, iron_chance, zinc_chance, coal_chance, saltpeter_chance, sulphur_chance, lead_chance, uranium_chance, silver_chance, gold_chance, diamond_chance, bauxite_chance))
 		no_ore_chance *= 1 - chance / 100
 	var/found_ore = FALSE
+	var/list/rubble = bulk_quarry ? list() : null
 	if (H)
 		H.adaptStat("strength", 1) // One completed action, even with several ores.
 	mining_flint_nodules(H, area_above) // Independent of the ore rolls; see flint_mining.dm.
@@ -940,76 +941,75 @@
 	mining_obsidian(H) // Independent of the ore rolls; see obsidian.dm.
 	mining_cinnabar(H) // Independent of the ore rolls; see mercury.dm.
 	mining_lode(H) // Independent of the ore rolls; see lode.dm.
-	if (mining_alloy_ores(H)) // Nickel and cobalt, independent of the ore rolls; see alloy_steels.dm.
+	if (mining_alloy_ores(H, rubble)) // Nickel and cobalt, independent of the ore rolls; see alloy_steels.dm.
 		found_ore = TRUE
-	mining_expedition_lode(H) // A land across the sea: its own ores and rare find; see land_resources.dm.
+	mining_expedition_lode(H, rubble) // A land across the sea: its own ores and rare find; see land_resources.dm.
 	if (prob(copper_chance))
-		var/obj/item/stack/ore/copper/mineral = new/obj/item/stack/ore/copper(src)
-		mineral.amount = rand(12,24)
+		var/rolled_copper = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_copper *= 2
+		quarry_drop_ore(/obj/item/stack/ore/copper, rolled_copper, rubble)
 		if (H)
 			var/material/M = get_material_by_name("copper")
 			var/ore_colour = M ? M.icon_colour : "#b87333"
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[ore_colour]><b>copper</font></b> ore!"))
 		found_ore = TRUE
 	if (prob(tin_chance))
-		var/obj/item/stack/ore/tin/mineral = new/obj/item/stack/ore/tin(src)
-		mineral.amount = rand(12,24)
+		var/rolled_tin = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_tin *= 2
+		quarry_drop_ore(/obj/item/stack/ore/tin, rolled_tin, rubble)
 		if (H)
 			var/material/M = get_material_by_name("tin")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>tin</font></b> ore!"))
 		found_ore = TRUE
 	if (prob(iron_chance) && iron_chance)
-		var/obj/item/stack/ore/iron/mineral = new/obj/item/stack/ore/iron(src)
-		mineral.amount = rand(12,24)
+		var/rolled_iron = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_iron *= 2
+		quarry_drop_ore(/obj/item/stack/ore/iron, rolled_iron, rubble)
 		if (H)
 			var/material/M = get_material_by_name("iron")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>iron</font></b> ore!"))
 		found_ore = TRUE
 	if (prob(zinc_chance) && zinc_chance)
-		var/obj/item/stack/ore/zinc/mineral = new/obj/item/stack/ore/zinc(src)
-		mineral.amount = rand(12,24)
+		var/rolled_zinc = rand(12,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_zinc *= 2
+		quarry_drop_ore(/obj/item/stack/ore/zinc, rolled_zinc, rubble)
 		if (H)
 			var/material/M = get_material_by_name("zinc")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>calamine</font></b> (zinc ore)!"))
 		found_ore = TRUE
 	if (prob(coal_chance) && coal_chance)
-		var/obj/item/stack/ore/coal/mineral = new/obj/item/stack/ore/coal(src)
-		mineral.amount = rand(24,32)
+		var/rolled_coal = rand(24,32)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_coal *= 2
+		quarry_drop_ore(/obj/item/stack/ore/coal, rolled_coal, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#A9A9A9><b>coal</font></b>!")) // no material
 		found_ore = TRUE
 	if (prob(saltpeter_chance) && saltpeter_chance)
-		var/obj/item/stack/ore/saltpeter/mineral = new/obj/item/stack/ore/saltpeter(src)
-		mineral.amount = 8
+		var/rolled_saltpeter = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_saltpeter *= 2
+		quarry_drop_ore(/obj/item/stack/ore/saltpeter, rolled_saltpeter, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#f3e781><b>saltpeter</font></b>!")) // no material
 		found_ore = TRUE
 	if (prob(sulphur_chance) && sulphur_chance)
-		var/obj/item/stack/ore/sulphur/mineral = new/obj/item/stack/ore/sulphur(src)
-		mineral.amount = 8
+		var/rolled_sulphur = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
-		if (mineral && mineral.get_material())
-			if (H)
-				to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
+			rolled_sulphur *= 2
+		quarry_drop_ore(/obj/item/stack/ore/sulphur, rolled_sulphur, rubble)
+		if (H)
+			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#fffa78><b>sulphur</font></b>!")) // no material
 		found_ore = TRUE
 	if (prob(lead_chance) && lead_chance)
-		var/obj/item/stack/ore/lead/mineral = new/obj/item/stack/ore/lead(src)
-		mineral.amount = 8
+		var/rolled_lead = 8
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_lead *= 2
+		quarry_drop_ore(/obj/item/stack/ore/lead, rolled_lead, rubble)
 		if (H)
 			var/material/M = get_material_by_name("lead")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>lead</font> ore</b>!"))
@@ -1018,37 +1018,37 @@
 		new /obj/item/stack/ore/uranium(src) // Retain one unit; no special-cave multiplier.
 		found_ore = TRUE
 	if (prob(silver_chance))
-		var/obj/item/stack/ore/silver/mineral = new/obj/item/stack/ore/silver(src)
-		mineral.amount = 4
+		var/rolled_silver = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_silver *= 2
+		quarry_drop_ore(/obj/item/stack/ore/silver, rolled_silver, rubble)
 		if (H)
 			var/material/M = get_material_by_name("silver")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>silver</font> ore</b>!"))
 		found_ore = TRUE
 	if (prob(gold_chance))
-		var/obj/item/stack/ore/gold/mineral = new/obj/item/stack/ore/gold(src)
-		mineral.amount = 4
+		var/rolled_gold = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_gold *= 2
+		quarry_drop_ore(/obj/item/stack/ore/gold, rolled_gold, rubble)
 		if (H)
 			var/material/M = get_material_by_name("gold")
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=[M.icon_colour]><b>gold</font> ore</b>!"))
 		found_ore = TRUE
 	if (prob(diamond_chance))
-		var/obj/item/stack/ore/diamond/mineral = new/obj/item/stack/ore/diamond(src)
-		mineral.amount = 4
+		var/rolled_diamond = 4
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_diamond *= 2
+		quarry_drop_ore(/obj/item/stack/ore/diamond, rolled_diamond, rubble)
 		if (H)
 			var/material/M = get_material_by_name("diamond")
 			to_chat(H, SPAN_GREEN_BOLD("You found some raw <font color=[M.icon_colour]><b>diamonds</b></font>!"))
 		found_ore = TRUE
 	if (prob(bauxite_chance) && bauxite_chance)
-		var/obj/item/stack/ore/bauxite/mineral = new/obj/item/stack/ore/bauxite(src)
-		mineral.amount = rand(24,36)
+		var/rolled_bauxite = rand(24,36)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
-			mineral.amount *= 2
+			rolled_bauxite *= 2
+		quarry_drop_ore(/obj/item/stack/ore/bauxite, rolled_bauxite, rubble)
 		if (H)
 			to_chat(H, SPAN_GREEN_BOLD("You found some <font color=#b5603a><b>bauxite</b></font> (aluminium ore)!"))
 		found_ore = TRUE
@@ -1056,8 +1056,8 @@
 	if (found_ore)
 		note_field_work(H, "mining") // Natural Science field work (natural_science_work.dm).
 		if (bulk_quarry)
-			return quarry_open(/obj/item/stack/material/stone, rand(8,12))
-		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+			return quarry_open(/obj/item/stack/material/stone, rand(8,12), rubble)
+		var/obj/item/stack/material/stone/quarried/bonusstone = new/obj/item/stack/material/stone/quarried(src, 1, FALSE)
 		bonusstone.amount = rand(8,12)
 		if (H)
 			to_chat(H, SPAN_NOTICE("Some loose stone breaks away with it."))
@@ -1077,12 +1077,12 @@
 				var/material/M = get_material_by_name("bone")
 				to_chat(H, SPAN_GREEN_BOLD("You found a <font color=[M.icon_colour]><b>fossil</font></b>!"))
 			if (bulk_quarry)
-				return quarry_open(/obj/item/stack/material/stone, rand(8,12))
+				return quarry_open(/obj/item/stack/material/stone, rand(8,12), rubble)
 			change_the_turf()
 			return
 	if(geology_allowed && (istype(T, /turf/floor/dirt/underground/sandy) || (area_above && area_above.climate == "desert")))
 		if (bulk_quarry)
-			return quarry_open(/obj/item/stack/material/sandstone, rand(16,24))
+			return quarry_open(/obj/item/stack/material/sandstone, rand(16,24), rubble)
 		var/obj/item/stack/material/sandstone/mineral = new/obj/item/stack/material/sandstone(src)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -1094,9 +1094,9 @@
 		return
 	if(geology_allowed && (prob(20) && (map.ID != MAP_NOMADS_PANGEA && map.ID != MAP_NOMADS_CONTINENTAL && map.ID != MAP_NOMADS_NEW_WORLD && map.ID != MAP_NOMADS_MEDITERRANEAN && map.ID != MAP_GULAG13 && map.ID != MAP_BAGNE13 && map.ID != MAP_RIVER_KWAI) && map.ordinal_age >=1))
 		if (bulk_quarry)
-			return quarry_open(/obj/item/stack/material/marble, rand(16,24))
+			return quarry_open(/obj/item/stack/material/marble, rand(16,24), rubble)
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
-		var/obj/item/stack/material/stone/bonusstone = new/obj/item/stack/material/stone(src)
+		var/obj/item/stack/material/stone/quarried/bonusstone = new/obj/item/stack/material/stone/quarried(src, 1, FALSE)
 		bonusstone.amount = rand(8,12)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -1108,7 +1108,7 @@
 		return
 	else if(geology_allowed && (prob(20) && (map.ID == MAP_NOMADS_PANGEA || map.ID == MAP_NOMADS_CONTINENTAL || map.ID == MAP_NOMADS_NEW_WORLD && map.ID == MAP_NOMADS_MEDITERRANEAN) && area_above && area_above.climate == "temperate" || area_above && area_above.climate == "semiarid" && map.ordinal_age >=1))
 		if (bulk_quarry)
-			return quarry_open(/obj/item/stack/material/marble, rand(16,24))
+			return quarry_open(/obj/item/stack/material/marble, rand(16,24), rubble)
 		var/obj/item/stack/material/marble/mineral = new/obj/item/stack/material/marble(src)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
@@ -1120,8 +1120,8 @@
 		return
 	else
 		if (bulk_quarry)
-			return quarry_open(/obj/item/stack/material/stone, rand(16,24))
-		var/obj/item/stack/material/stone/mineral = new/obj/item/stack/material/stone(src)
+			return quarry_open(/obj/item/stack/material/stone, rand(16,24), rubble)
+		var/obj/item/stack/material/stone/quarried/mineral = new/obj/item/stack/material/stone/quarried(src, 1, FALSE)
 		mineral.amount = rand(16,24)
 		if (istype(get_area(src), /area/caribbean/void/caves/special))
 			mineral.amount *= 2

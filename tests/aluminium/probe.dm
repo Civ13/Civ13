@@ -63,7 +63,9 @@ var/alu_runtime_error = FALSE
 	alu_check(mining_bauxite_chance(A) == 12, "twice that under jungle")
 	A.climate = "savanna"
 	alu_check(mining_bauxite_chance(A) == 12, "and savanna")
-	alu_check(!(/obj/item/stack/ore/bauxite in stone_crushing_table(3)) && stone_crushing_table(4)[/obj/item/stack/ore/bauxite] == 150, "stone crushers find bauxite from the Industrial age")
+	var/obj/item/stack/quarry_rubble/bauxite/quarry_bauxite = new(null, 2, FALSE)
+	alu_check(!(/obj/item/stack/ore/bauxite in legacy_gaia_stone_crushing_table(4)) && stone_crush_result(quarry_bauxite, FALSE, 10000) == /obj/item/stack/ore/bauxite, "bauxite recovery requires source-bearing rubble, not Gaia fallback")
+	qdel(quarry_bauxite)
 
 /proc/alu_material_checks()
 	var/material/M = get_material_by_name("aluminium")

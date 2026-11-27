@@ -1,12 +1,6 @@
-// Stone crushing: surplus stone blocks become a small, chance-based yield of
-// sand, ores and minerals. One stone is consumed per roll; most rolls leave
-// only rubble, so mined deposits stay the main source of ore.
-
-// Weights are per 10,000 rolls (100 = 1%). The era gates match trace
-// sifting: iron and calamine (zinc) from the Bronze Age, coal/lead/saltpeter/sulphur from the
-// Medieval age, bauxite from the Industrial age. Anything not unlocked in the
-// current age stays rubble.
-/proc/stone_crushing_table(age = 0, powered = FALSE)
+// Old stone has no recorded deposit. Use Gaia's trace-recovery profile, not
+// the crusher's current continent or province. Age gates remain in effect.
+/proc/legacy_gaia_stone_crushing_table(age = 0, powered = FALSE)
 	var/list/table = list(
 		/obj/item/stack/ore/glass = 2000,
 		/obj/item/stack/ore/copper = 300,
@@ -23,39 +17,50 @@
 		table[/obj/item/stack/ore/lead] = 150
 		table[/obj/item/stack/ore/saltpeter] = 100
 		table[/obj/item/stack/ore/sulphur] = 100
-	if (age >= 4)
-		table[/obj/item/stack/ore/bauxite] = 150
-	// Mechanised stamping and washing recovers half again as much of every
-	// ore and mineral; sand recovery rises from 20% to 25%.
-	if (powered)
-		for (var/ore_type in table)
-			table[ore_type] = ore_type == /obj/item/stack/ore/glass ? 2500 : round(table[ore_type] * 1.5)
+	for (var/path in table)
+		var/mineral = continent_ore_resource(path)
+		if (mineral)
+			table[path] = round(table[path] * continent_gaia_base_rate(mineral) * (powered ? 1.5 : 1))
+		else if (powered)
+			table[path] = 2500
 	return table
 
-// Returns an output type, or null when the stone only crumbles to rubble.
-/proc/roll_stone_crushing(list/table, roll = null)
+// Accounted quarry stone can recover sand, never ore. Rubble has a fixed mineral
+// payload from the source tile. Lode ore keeps its own downstream washing route.
+/proc/stone_crush_result(obj/item/stack/S, powered = FALSE, roll = null)
+	if (istype(S, /obj/item/stack/quarry_rubble))
+		var/obj/item/stack/quarry_rubble/R = S
+		return initial(R.ore_type)
+	var/crushed = lode_crushed_type(S)
+	if (crushed)
+		return crushed
+	if (!is_crushable_stone(S))
+		return null
 	if (isnull(roll))
 		roll = rand(1, 10000)
-	for (var/ore_type in table)
-		roll -= table[ore_type]
+	if (istype(S, /obj/item/stack/material/stone/quarried))
+		return roll <= (powered ? 2500 : 2000) ? /obj/item/stack/ore/glass : null
+	var/list/table = legacy_gaia_stone_crushing_table(map ? map.ordinal_age : 0, powered)
+	for (var/path in table)
+		roll -= table[path]
 		if (roll <= 0)
-			return ore_type
+			return path
 	return null
 
-/proc/stone_crushing_age()
-	return map ? map.ordinal_age : 0
-
 /proc/is_crushable_stone(obj/item/I)
-	return I && I.type == /obj/item/stack/material/stone
+	return istype(I, /obj/item/stack/material/stone)
 
-// Stone blocks, or lode ore that crushes to crushed ore (lode.dm).
+// Stone blocks, quarry rubble and lode ore (lode.dm).
 /proc/is_mill_feed(obj/item/I)
+	if (istype(I, /obj/item/stack/quarry_rubble))
+		var/obj/item/stack/quarry_rubble/R = I
+		return !!initial(R.ore_type)
 	return is_crushable_stone(I) || lode_crushed_type(I)
 
 // Hand-worked edge-runner mill. Several people may work it at once.
 /obj/structure/stone_crusher
 	name = "stone crusher"
-	desc = "A heavy stone wheel rolled around a trough. Use stone blocks on it to crush them one at a time; most crumble to rubble, but some yield sand, ore or a rare mineral. Output collects under the crusher."
+	desc = "A heavy stone wheel rolled around a trough. Use stone blocks on it to recover sand, or ore-bearing rubble to recover its named ore. Output collects under the crusher."
 	icon = 'icons/obj/hopper_machines.dmi'
 	icon_state = "millstones"
 	anchored = TRUE
@@ -73,12 +78,12 @@
 
 /obj/structure/stone_crusher/examine(mob/user, distance)
 	..(user, distance)
-	to_chat(user, SPAN_NOTICE("Roughly one stone in five gives sand and, from the Medieval age, about one in seven gives ore; the rest is rubble. Clear the output before twelve stacks pile up."))
+	to_chat(user, SPAN_NOTICE("Quarried stone can give sand. Stone of unknown origin can also give traces of ore as if from Gaia. Each chunk of named rubble gives one unit of its ore. Clear the output before twelve stacks pile up."))
 
 /obj/structure/stone_crusher/proc/crushing_wait(mob/living/human/H)
 	return do_after(H, max(20, round(50 / H.getStatCoeff("strength"))), src)
 
-/obj/structure/stone_crusher/proc/crushing_interrupted(mob/living/human/H, obj/item/stack/material/stone/S)
+/obj/structure/stone_crusher/proc/crushing_interrupted(mob/living/human/H, obj/item/stack/S)
 	return H.stat || !anchored || QDELETED(S) || S.loc != H || S.amount < 1 || get_dist(H, src) > 1
 
 /obj/structure/stone_crusher/proc/crushing_output_turf()
@@ -89,7 +94,7 @@
 		return ..()
 	crush_stones(H, W)
 
-/obj/structure/stone_crusher/proc/crush_stones(mob/living/human/H, obj/item/stack/material/stone/S)
+/obj/structure/stone_crusher/proc/crush_stones(mob/living/human/H, obj/item/stack/S)
 	if (!anchored)
 		to_chat(H, SPAN_WARNING("Anchor \the [src] before working it."))
 		return 0
@@ -116,19 +121,17 @@
 	return crushed
 
 // Output space is checked before the stone is spent; a full tile refunds nothing because nothing was taken.
-/obj/structure/stone_crusher/proc/crush_one_stone(mob/living/human/H, obj/item/stack/material/stone/S, roll = null)
+/obj/structure/stone_crusher/proc/crush_one_stone(mob/living/human/H, obj/item/stack/S, roll = null)
 	var/turf/T = crushing_output_turf()
-	if (!T)
+	if (!T || QDELETED(S) || !is_mill_feed(S) || !S.can_use(1) || persistence_admission_blocked())
 		return FALSE
-	var/crushed = lode_crushed_type(S)
-	var/result = crushed || roll_stone_crushing(stone_crushing_table(stone_crushing_age(), FALSE), roll)
+	var/result = stone_crush_result(S, FALSE, roll)
 	if (result && !T.deposit_small_resource(result, 1, output_stack_limit))
 		to_chat(H, SPAN_WARNING("Clear the output under \the [src] before crushing more stone."))
 		return FALSE
+	var/lode = lode_crushed_type(S)
 	S.use(1)
-	if (crushed)
-		return TRUE
-	if (result)
+	if (result && !lode)
 		var/obj/item/stack/sample = result
 		to_chat(H, SPAN_NOTICE("The stone breaks open: you find some [initial(sample.name)]."))
 	return TRUE
@@ -137,19 +140,19 @@
 // seconds with better recovery, until the hopper is empty or output is full.
 /obj/structure/drill/stamp_mill
 	name = "powered stamp mill"
-	desc = "Electric stamps pound loaded stone blocks and wash out sand, ore and minerals. Anchor it, connect 150 cable power and load up to fifty stone blocks or lumps of gold-bearing quartz or silver-bearing ore. It crushes one every four seconds with better recovery than a hand crusher; clear its output before twelve stacks accumulate."
+	desc = "Electric stamps process up to fifty stone blocks, chunks of ore-bearing rubble, or lumps of lode ore. Anchor it and connect 150 cable power. It processes one unit every four seconds, recovering more sand than a hand crusher but the same amount of ore from each chunk of rubble."
 	ore_types = list()
 	var/hopper_limit = 50
 	var/crush_interval = 2 // process ticks of two seconds each
 	// Why the last step failed, when it was not a full output tile (milling.dm).
 	var/tmp/mill_stop_reason = null
 
-// What the hopper takes: stone blocks and lode ore here; milling machines
+// What the hopper takes: stone blocks, quarry rubble and lode ore; milling machines
 // (milling.dm) take crushed ore or pay dirt.
 /obj/structure/drill/stamp_mill/proc/hopper_accepts(obj/item/I)
 	return is_mill_feed(I)
 
-// Stone blocks or lode ore in the hopper; each stack is stamped in turn.
+// Each feed stack is stamped in turn.
 /obj/structure/drill/stamp_mill/proc/loaded_stone()
 	for (var/obj/item/stack/S in contents)
 		if (hopper_accepts(S) && S.amount > 0)
@@ -165,7 +168,7 @@
 
 /obj/structure/drill/stamp_mill/examine(mob/user, distance)
 	..(user, distance)
-	to_chat(user, SPAN_NOTICE("Its hopper holds [loaded_stone_amount()] of [hopper_limit] stone blocks or lumps of ore."))
+	to_chat(user, SPAN_NOTICE("Its hopper holds [loaded_stone_amount()] of [hopper_limit] units of feed."))
 
 /obj/structure/drill/stamp_mill/attackby(obj/item/W, mob/living/human/H)
 	if (hopper_accepts(W))
@@ -212,7 +215,7 @@
 		new feed_type(src, moved, FALSE)
 	return moved
 
-// Factory port: plain stone blocks fill the hopper. Nothing is offered;
+// Factory port: supported feed fills the hopper. Nothing is offered;
 // crushed output still lands on the mill's tile.
 /obj/structure/drill/stamp_mill/factory_accepts(obj/item/I, from_dir = 0)
 	if (!hopper_accepts(I) || !factory_movable_item(I))
@@ -241,7 +244,7 @@
 		to_chat(H, SPAN_NOTICE("Fix \the [src] in place with a wrench first."))
 		return
 	if (!loaded_stone())
-		to_chat(H, SPAN_WARNING("Load stone blocks or ore into \the [src] first."))
+		to_chat(H, SPAN_WARNING("Load stones, ore-bearing rubble or lode ore into \the [src] first."))
 		return
 	active = TRUE
 	next_spawn = crush_interval
@@ -254,9 +257,9 @@
 /obj/structure/drill/stamp_mill/proc/stamp_one_stone(roll = null)
 	var/obj/item/stack/S = loaded_stone()
 	var/turf/T = get_turf(src)
-	if (!S || !T)
+	if (!S || !T || persistence_admission_blocked())
 		return FALSE
-	var/result = lode_crushed_type(S) || roll_stone_crushing(stone_crushing_table(stone_crushing_age(), TRUE), roll)
+	var/result = stone_crush_result(S, TRUE, roll)
 	if (result && !T.deposit_small_resource(result, 1, output_stack_limit))
 		return FALSE
 	S.amount--

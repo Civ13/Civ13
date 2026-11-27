@@ -146,7 +146,7 @@ var/global/list/masons_saw_cuts = list(
 		return
 	if (handle_machine_tool(I, H))
 		return
-	if (!(I.type in masons_saw_cuts))
+	if (!(stone_workshop_feed_type(I) in masons_saw_cuts))
 		return ..()
 	if (busy)
 		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
@@ -159,7 +159,7 @@ var/global/list/masons_saw_cuts = list(
 /obj/structure/workshop_machine/masons_saw/proc/saw_blocks(mob/living/human/H, obj/item/stack/material/S)
 	if (busy || !worker_ready(H, S))
 		return 0
-	var/list/cut = masons_saw_cuts[S.type]
+	var/list/cut = masons_saw_cuts[stone_workshop_feed_type(S)]
 	if (!crafting_recipe_allowed(H, "[cut[2]]"))
 		to_chat(H, SPAN_WARNING("You do not know how to cut bricks yet."))
 		return 0

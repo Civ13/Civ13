@@ -22,7 +22,7 @@ ore`) in:
 - the powered stamp mill (Electricity), one lump every 4 s.
 
 Stamp mill hoppers hold up to 50 of stone blocks and lode ore mixed; each stack
-is stamped in turn. Stone still rolls the stone crushing table.
+is stamped in turn. Lode ore retains this washing route. By contrast, quarry rubble gives one unit of its named ore per chunk, accounted plain rock only yields sand, and unknown-origin blocks use Gaia trace recovery.
 
 ## Washing
 
