@@ -297,6 +297,21 @@ class BaselinePolicyTests(unittest.TestCase):
             self.assertIn(name, self.selected([path]))
         self.assertNotIn(name, self.selected(['README.md']))
 
+    def test_human_icon_renderer_preserves_full_offline_fallback(self):
+        path = 'code/game/mob/living/carbon/human/update_icons.dm'
+        decision = ci.impact([path])
+        self.assertIn('Affected input: ' + path, decision['suites']['medical_care']['reason'])
+        self.assertIn('Unmapped impact: ' + path, decision['fallback_reasons'])
+        self.assertTrue(all(row['selected'] for row in decision['suites'].values()))
+
+    def test_wound_changes_select_persistence_timestamp_checks(self):
+        path = 'code/modules/organs/wound.dm'
+        decision = ci.impact([path])
+        self.assertIn('Affected input: ' + path, decision['suites']['persistence_pointers']['reason'])
+        self.assertIn('medical_care', self.selected([path]))
+        self.assertIn('surgery_amputation_log', self.selected([path]))
+        self.assertEqual(decision['fallback_reasons'], [])
+
     def test_held_movement_suite_is_bounded_and_not_silently_omitted(self):
         name = 'held_movement'
         suite = ci.SUITES[name]

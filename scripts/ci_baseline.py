@@ -2554,6 +2554,7 @@ SUITES = {
             'code/game/mob/living/carbon/human/pull_pair_ownership.dm',
             'code/game/mob/living/carbon/human/human_hud.dm',
             'code/game/mob/living/carbon/human/update_icons.dm',
+            'code/modules/organs/wound.dm',
             'code/game/mob/grab.dm', 'code/game/mob/observer/ghost/ghost.dm',
             'code/game/objects/structures/optable.dm',
             'code/game/objects/items/weapons/explosives.dm',
@@ -2994,10 +2995,11 @@ SUITES = {
         'tests/medical_care/test_splints.py'), 'paths': (
         'tests/medical_care/', 'code/game/objects/items/stacks/medical.dm',
         'code/game/mob/living/carbon/human/stripping.dm',
-        'code/game/mob/living/carbon/human/update_icons.dm', 'code/modules/organs/wound.dm',
+        'code/modules/organs/wound.dm',
         'code/modules/surgery/other.dm', 'code/modules/surgery/limb_reattach.dm',
         'code/modules/1713/doctor_handbook.dm'),
-        'shared_paths': ('code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
+        'shared_paths': ('code/game/mob/living/carbon/human/update_icons.dm',
+            'code/modules/organs/organ_external.dm', 'code/modules/organs/internal/heart.dm',
             'code/modules/organs/organ.dm', 'code/modules/agent_control/agent_characters.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Elements.dm')},
     # In-game bug reports wiring and safety; tests/bug_reports/native_format.py is the manual native check.
