@@ -132,6 +132,12 @@ var/global/list/instrument_note_accidentals = list("b" = -1, "n" = 0, "#" = 1)
 	if (istype(I, /obj/structure))
 		I.updateUsrDialog()
 
+/proc/instrument_open_held_panel(obj/item/instrument, mob/user, title, window, max_lines)
+	if (!isliving(user) || user.stat || user.restrained() || user.lying)
+		return
+	user.set_using_object(instrument)
+	instrument_panel(instrument, user, title, window, max_lines)
+
 /proc/instrument_panel(obj/I, mob/user, title, window, max_lines)
 	var/datum/song/song = I:song
 	var/dat = "<HEAD><TITLE>[title]</TITLE></HEAD><BODY>"
