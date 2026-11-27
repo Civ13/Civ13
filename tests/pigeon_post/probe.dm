@@ -113,3 +113,33 @@ var/post_probe_runtime = FALSE
 	post_probe_check(!P.pigeon_post_deliver(H, letter, replacement) && letter.loc == H && P.loc == origin, "unreleasable paper stays in hand without moving the bird")
 	letter.nodrop = FALSE
 	post_probe_check(P.pigeon_post_deliver(H, letter, replacement) && P.loc == home && letter.loc == home && !H.item_is_in_hands(letter) && !H.pulling && !P.pulledby, "delivery from 799 tiles away moves the original bird and sheet and clears the sender's hand and pull")
+
+	post_probe_save_roundtrip(home, origin, P, replacement)
+
+/proc/post_probe_save_roundtrip(turf/home, turf/origin, mob/living/simple_animal/pigeon/post_probe/P, obj/structure/pigeon_loft/L)
+	ecology_spawner = new
+	mark_visited_around(origin)
+	var/mob/living/simple_animal/pigeon/post_probe/wild = new(home)
+	var/home_id = P.pigeon_home_id
+	post_probe_check(!visited_chunk(home.x, home.y, home.z) && wildlife_repopulated(wild.type), "the trained bird and wild control are in an unvisited chunk of a repopulated species")
+	var/savefile/F = new("pigeon-test.sav")
+	F["/format_version"] << 2
+	map_storage.clear_bookkeeping()
+	map_storage.saving_z = home.z
+	post_probe_check(!map_storage.BuildVarDirectory(F, wild, 1), "real exporter omits the untrained wild bird")
+	var/bird_ref = map_storage.BuildVarDirectory(F, P, 1)
+	var/loft_ref = map_storage.BuildVarDirectory(F, L, 1)
+	post_probe_check(bird_ref && loft_ref, "real exporter saves both the trained bird and its loft")
+	if (!bird_ref || !loft_ref)
+		return
+	F.Flush()
+	qdel(P)
+	qdel(L)
+	map_storage.clear_bookkeeping()
+	var/savefile/restored = new("pigeon-test.sav")
+	var/obj/structure/pigeon_loft/new_loft = map_storage.Load_Entry(restored, loft_ref, starting_loc = home)
+	var/mob/living/simple_animal/pigeon/post_probe/new_bird = map_storage.Load_Entry(restored, bird_ref, starting_loc = home)
+	post_probe_check(new_bird?.pigeon_home_id == home_id && new_loft?.pigeon_loft_id == home_id, "both home identities restore from disk")
+	if (new_bird && new_loft)
+		new_bird.forceMove(origin)
+		post_probe_check(new_bird.pigeon_post_destination() == new_loft, "the restored bird still routes to its restored loft")

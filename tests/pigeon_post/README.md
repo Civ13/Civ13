@@ -7,8 +7,9 @@ python3 tests/ecology_spawning/run_linux.py . tests/pigeon_post/probe.dm 240
 ```
 
 The native fixture verifies exact-home routing from the far edge of the region, the level limit,
-blocked and missing lofts, retraining, scalar persistence fields and payload
-admission. For client acceptance, craft an outdoor pigeon loft from soft wood,
+blocked and missing lofts, retraining, and payload admission. It also round-trips
+a trained pigeon and its loft through the production object exporter and loader
+in an unvisited chunk, with an untrained wild pigeon as a control. For client acceptance, craft an outdoor pigeon loft from soft wood,
 pull a live pigeon beside it, and select **Train Homing Pigeon**. Lead the bird
 outside to a different tile, then use a held sheet on it with Help intent.
 Verify that the same pigeon and sheet reach the loft, and repeat with one
