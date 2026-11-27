@@ -124,7 +124,7 @@
 			return
 	return FALSE
 
-/obj/structure/bookcase/proc/credit_named_faction_research(mob/living/user, research)
+/obj/structure/bookcase/proc/credit_research(mob/living/user, research)
 	if (anti_abuse(user, research[1], research[2], research[3], sum_i, sum_m, sum_h))
 		sum_i = null
 		sum_m = null
@@ -245,36 +245,29 @@
 		studying = FALSE
 		if (studied)
 			if (user.civilization != null && user.civilization != "none")
-				if(anti_abuse(user, map.custom_civs[user.civilization][1], map.custom_civs[user.civilization][2], map.custom_civs[user.civilization][3], sum_i, sum_m, sum_h))
-					sum_i = null  //Throwing the unused sum away
-					sum_m = null
-					sum_h = null
+				if (!credit_research(user, map.custom_civs[user.civilization]))
 					return
-				else
-					map.custom_civs[user.civilization][1] += sum_i
-					map.custom_civs[user.civilization][2] += sum_m
-					map.custom_civs[user.civilization][3] += sum_h
 			else
 				to_chat(user, "You don't belong to any faction.")
 				return
 
 			if (user.civilization == civname_a)
-				if (!credit_named_faction_research(user, map.civa_research))
+				if (!credit_research(user, map.civa_research))
 					return
 			else if (user.civilization == civname_b)
-				if (!credit_named_faction_research(user, map.civb_research))
+				if (!credit_research(user, map.civb_research))
 					return
 			else if (user.civilization == civname_c)
-				if (!credit_named_faction_research(user, map.civc_research))
+				if (!credit_research(user, map.civc_research))
 					return
 			else if (user.civilization == civname_d)
-				if (!credit_named_faction_research(user, map.civd_research))
+				if (!credit_research(user, map.civd_research))
 					return
 			else if (user.civilization == civname_e)
-				if (!credit_named_faction_research(user, map.cive_research))
+				if (!credit_research(user, map.cive_research))
 					return
 			else if (user.civilization == civname_f)
-				if (!credit_named_faction_research(user, map.civf_research))
+				if (!credit_research(user, map.civf_research))
 					return
 
 			user.adaptStat("philosophy", 1*current_research)

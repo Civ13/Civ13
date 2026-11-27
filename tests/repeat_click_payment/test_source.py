@@ -229,12 +229,15 @@ class RepeatClickPayment(unittest.TestCase):
 
         old_fields = adapter.FIELDS
         try:
-            adapter.FIELDS += ('sum_i', 'sum_m', 'sum_h', 'anti_abuse', 'credit_named_faction_research')
-            for faction in 'abcdef':
-                for reject in (None, 1, 2):
+            adapter.FIELDS += ('sum_i', 'sum_m', 'sum_h', 'anti_abuse', 'credit_research')
+            named_factions = 'abcdef'
+            for faction in (*named_factions, 'custom'):
+                has_named_pool = faction in named_factions
+                rejections = (None, 1, 2) if has_named_pool else (None, 1)
+                for reject in rejections:
                     with self.subTest(faction=faction, rejected_call=reject):
                         custom = DMList([10, 20, 30])
-                        named = {letter: DMList([100, 200, 300]) for letter in 'abcdef'}
+                        named = {letter: DMList([100, 200, 300]) for letter in named_factions}
                         world_map = SimpleNamespace(custom_civs={faction: custom},
                                                     **{f'civ{key}_research': value for key, value in named.items()})
                         calls = []
@@ -245,19 +248,21 @@ class RepeatClickPayment(unittest.TestCase):
                             return len(calls) == reject
                         shelf.anti_abuse = anti_abuse
                         env = {'map': world_map, 'to_chat': lambda *args: messages.append(args),
-                               **{f'civname_{letter}': letter for letter in 'abcdef'}}
-                        helper = adapter.project(source, '/obj/structure/bookcase/proc/credit_named_faction_research',
+                               **{f'civname_{letter}': letter for letter in named_factions}}
+                        helper = adapter.project(source, '/obj/structure/bookcase/proc/credit_research',
                                                  'src, user, research', env.copy(), method=True)
-                        shelf.credit_named_faction_research = lambda user, research: helper(shelf, user, research)
+                        shelf.credit_research = lambda user, research: helper(shelf, user, research)
                         credit = adapter.project(fixture, '/fixture/credit', 'src, user', env.copy(), method=True)
                         result = credit(shelf, SimpleNamespace(civilization=faction))
                         self.assertEqual(result, None if reject else True)
                         self.assertEqual(custom.values, [10, 20, 30] if reject == 1 else [11, 22, 33])
-                        self.assertEqual(named[faction].values, [101, 202, 303] if reject is None else [100, 200, 300])
-                        self.assertTrue(all(named[key].values == [100, 200, 300] for key in named if key != faction))
-                        self.assertEqual(calls[0], (10, 20, 30, 1, 2, 3))
-                        if reject != 1:
-                            self.assertEqual(calls[1], (100, 200, 300, 1, 2, 3))
+                        for letter, pool in named.items():
+                            credited = letter == faction and reject is None
+                            self.assertEqual(pool.values, [101, 202, 303] if credited else [100, 200, 300])
+                        expected_calls = [(10, 20, 30, 1, 2, 3)]
+                        if has_named_pool and reject != 1:
+                            expected_calls.append((100, 200, 300, 1, 2, 3))
+                        self.assertEqual(calls, expected_calls)
                         self.assertEqual((shelf.sum_i, shelf.sum_m, shelf.sum_h),
                                          (None, None, None) if reject else (1, 2, 3))
                         self.assertFalse(messages)
