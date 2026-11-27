@@ -128,6 +128,7 @@ var/global/ecology_admin_disabled = FALSE
 		eco_species("turkey", list(/mob/living/simple_animal/turkey_m, /mob/living/simple_animal/turkey_f), list("temperate", "jungle"), G, 0.5, 35, 2, 2),
 		eco_species("junglefowl", list(/mob/living/simple_animal/rooster, /mob/living/simple_animal/chicken), list("jungle", "temperate"), G|D, 0.2, 25, 2, 2),
 		eco_species("monkey", list(/mob/living/simple_animal/monkey), list("jungle", "savanna"), G|D, 1.0, 30, 2, 3),
+		eco_species("pigeon", list(/mob/living/simple_animal/pigeon), list("temperate", "semiarid", "savanna"), G|D, 0.45, 20, 2, 3),
 		eco_species("parrot", list(/mob/living/simple_animal/parrot), list("jungle"), G|D, 0.6, 20, 1, 2),
 		eco_species("gorilla", list(/mob/living/simple_animal/hostile/gorilla), list("jungle"), G, 0.15, 6, 1, 2, null, list(/mob/living/simple_animal/hostile/gorilla/gigantopithecus)),
 		eco_species("lizard", list(/mob/living/simple_animal/lizard), list("desert", "semiarid", "savanna"), G|D|A, 0.8, 30),

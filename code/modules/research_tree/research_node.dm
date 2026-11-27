@@ -3249,6 +3249,7 @@ var/global/list/node_grid_col_cache = null
 		"/obj/item/weapon/pen/fancy" = "papermaking",
 		"/obj/item/weapon/writing_slate" = "basic_tools",
 		"/obj/structure/writing_desk" = "basic_furniture",
+		"/obj/structure/pigeon_loft" = "basic_furniture",
 		"/obj/structure/storage_container/log_chest" = "basic_furniture",
 		"/obj/structure/storage_container/rack/tool_rack" = "basic_furniture",
 		"/obj/structure/storage_container/rack/weapon_rack" = "basic_furniture",
