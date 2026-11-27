@@ -13,7 +13,7 @@ an empty cart drags more easily than a crate, the load makes it harder up to
 a cap, and the handles turn toward the puller and stay put on a blocked pull.
 It also checks hitched carts in `code/game/objects/structures/cart_hitch.dm`:
 a cart trails a horse into the tile it leaves, slows it by its drag over the
-horse's pull, refuses hand pulls while hitched and comes loose when left far
+horse's pull (including the mounted movement budget taken from empty and loaded carts), refuses hand pulls while hitched and comes loose when left far
 behind or when the horse dies; behind a carriage it rolls centred behind the
 rear, adds its weight to the team's load, follows steps and swings round on
 turns, and a turn with no room for it is refused. A seated passenger takes the
@@ -28,3 +28,6 @@ timer would, so timing and the client's glide are not exercised here;
 and checks that the driver, both horses and the carriage share each step's
 glide. No client connects, so do_after waits, menus and Dream Seeker's
 drawing are not checked.
+
+`tests/horse_breeding/test_source.py` checks that the client applies that budget before both its
+smooth-step deadline and ordinary movement, and preserves unmounted timing.

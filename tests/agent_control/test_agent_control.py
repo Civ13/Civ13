@@ -2731,7 +2731,7 @@ class MovementParityTests(unittest.TestCase):
         't_movement_speed_multiplier *= 0.85',
         't_movement_speed_multiplier *= 1.15',
         't_movement_speed_multiplier *= 0.9',
-        'move_delay = HH.riding_mob.ride_delay() + HH.riding_mob.hitch_drag()',
+        'move_delay += H.ridden_handcart_drag()',
         'standing_on_snow = 1.75',
         'standing_on_snow = rand(2,3)',
     )
@@ -2748,7 +2748,7 @@ class MovementParityTests(unittest.TestCase):
         for anchor in ("check_caribbean_block(M, ref)", "agent_queue_only(", "terrain_slope_delay(old, n, delay)",
                        "terrain_completed_step(H, old, n, start_x, start_y, d, 1, delay)", "M.get_run_delay()", "M.get_walk_delay()", "M.get_stealth_delay()",
                        "H.nutrition -= 0.005", "H.nutrition -= 0.002", "H.nutrition -= 0.004", "H.nutrition -= 0.0015",
-                       "delay += pulled_structure.drag_delay(M)"):
+                       "delay += pulled_structure.drag_delay(M)", "delay = H.riding_mob.ride_delay() + H.riding_mob.hitch_drag()"):
             self.assertIn(anchor, movement)
 
 

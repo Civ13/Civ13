@@ -1850,7 +1850,8 @@ SUITES = {
     'horse_breeding': {'files': ('tests/horse_breeding/test_source.py',),
         'paths': ('tests/horse_breeding/',), 'shared_paths': (
             'code/modules/1713/horse_breeding.dm', 'icons/mob/animal_64.dmi', 'icons/obj/horseshoes.dmi',
-            'code/game/mob/mob_movement.dm', 'code/modules/agent_control/agent_movement.dm')},
+            'code/game/mob/mob_movement.dm', 'code/modules/agent_control/agent_movement.dm',
+            'code/game/objects/structures/cart_hitch.dm')},
     # Mounted charges, braced spears and shield walls: source contracts (native probe tests/mounted_combat/probe.dm).
     'mounted_combat': {'files': ('tests/mounted_combat/test_source.py',),
         'paths': ('tests/mounted_combat/',), 'shared_paths': (

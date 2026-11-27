@@ -325,12 +325,22 @@ var/carriage_owners_about = FALSE
 	mare.forceMove(locate(9, 12, 1))
 	carriage_check(cart.loc == locate(9, 11, 1) && cart.dir == NORTH, "a step away pulls it after the horse")
 	carriage_check(!cart.Move(locate(10, 11, 1), EAST) && cart.loc == locate(9, 11, 1), "nobody can push or pull a hitched cart away")
+	var/mob/living/human/carriage_probe/rider = carriage_person(mare.x, mare.y, "Rider")
+	cart.unhitch()
+	carriage_check(mare.take_rider(rider) && !rider.ridden_handcart_drag(), "an unhitched mount keeps the rider's normal pace")
+	carriage_check(cart.hitch_to(mare), "cart can be hitched while the rider is mounted")
 	var/empty_drag = mare.hitch_drag()
 	carriage_check(empty_drag > 0 && empty_drag == cart.drag_delay(mare) / 2, "the cart slows the horse by its drag over the horse's pull ([empty_drag])")
+	carriage_check(rider.ridden_handcart_drag() == empty_drag, "the mounted movement budget includes the empty cart's drag")
 	for (var/i in 1 to 4)
 		var/obj/item/stack/material/wood/W = new(cart)
 		W.amount = 50
 	carriage_check(mare.hitch_drag() > empty_drag, "a loaded cart slows the horse more")
+	carriage_check(rider.ridden_handcart_drag() == mare.hitch_drag() && rider.ridden_handcart_drag() > empty_drag, "the mounted movement budget grows when the cart is loaded")
+	rider.riding = FALSE
+	carriage_check(!rider.ridden_handcart_drag(), "a stale mount reference cannot slow a dismounted rider")
+	// The remaining checks exercise unharnessed animals, not mounted riders.
+	qdel(rider)
 	var/obj/structure/closet/crate/cart/wooden/other = new(locate(8, 12, 1))
 	carriage_check(findtext(other.hitch_refusal(mare), "already pulls a cart"), "a horse pulls one cart at a time")
 	var/obj/structure/vehicle/carriage/far = new(locate(40, 10, 1))
