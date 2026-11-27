@@ -28,13 +28,18 @@ class BundleBrowserActions(unittest.TestCase):
         for check in ("user.client?.mob == user", "!user.stat", "!user.restrained()",
                       "user.can_use_hands()", "loc == user", "user.item_is_in_hands(src)"):
             self.assertIn(check, gate)
-        insert = body("/proc/browser_insert_page", "/proc/browser_remove_page")
+        insert = body("/proc/browser_insert_page", "/proc/release_browser_page")
         remove = body("/proc/browser_remove_page", "/Topic(href")
         for branch in (insert, remove):
             self.assertIn("!can_change_held_bundle(user)", branch)
             self.assertIn("held_bundle_page() != expected", branch)
         self.assertLess(insert.index("transfer_held_item_to(sheet, src)"), insert.index("pages.Insert"))
-        self.assertLess(remove.index("expected.loc != user && expected.loc != site"), remove.index("pages -= expected"))
+        release = body("/proc/release_browser_page", "/proc/browser_remove_page")
+        refused_move = "if (sheet.loc != user && sheet.loc != site)\n\t\treturn FALSE"
+        self.assertLess(release.index("user.put_in_hands(sheet)"), release.index(refused_move))
+        self.assertLess(release.index(refused_move), release.index("pages -= sheet"))
+        self.assertLess(remove.index("if (!release_browser_page(user, expected, site))"), remove.index("page = max"))
+        self.assertIn("if (remaining && release_browser_page(user, remaining, site))", remove)
         self.assertIn("if (!contents.len && user.transfer_held_item_to(src, site))", remove)
 
     def test_loosen_leaves_refused_pages_in_a_retained_bundle(self):
