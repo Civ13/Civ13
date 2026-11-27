@@ -64,6 +64,10 @@ def label(s):
         return 'tablet press'
     if s.rstrip('/') in ('/material/wood/soft', '/material/woodplank', '/obj/item/stack/material/woodplank'):
         return 'finished planks'
+    if s.rstrip('/') == '/obj/structure/bed/chair/modular':
+        return 'crafted chair'
+    if s.rstrip('/') == '/obj/structure/bed/wood/modular':
+        return 'crafted bed'
     if s.rstrip('/') == '/obj/structure/filingcabinet/chestdrawer/wood':
         return 'wooden document drawers'
     if s.rstrip('/') in ('/obj/item/weapon/bedroll/cloth', '/obj/structure/bed/bedroll/cloth'):
@@ -121,7 +125,7 @@ def needs_handle(title):
     if any(w in title for w in handle_exclusions):return False
     return title in handle_titles or any(w in title for w in handle_words)
 records=[]; issues=[]; occurrence=[]
-def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
+def add(name,kind,inputs,outputs,path,line,conditions='',raw='',wool_substitute=True):
     for typepath,_ in outputs:
         if typepath.startswith(('/obj/item/weapon/lifting_weight', '/obj/structure/treadwheel', '/obj/item/weapon/skipping_rope')):
             modern=typepath in ('/obj/item/weapon/lifting_weight/barbell', '/obj/structure/treadwheel/treadmill')
@@ -133,7 +137,7 @@ def add(name,kind,inputs,outputs,path,line,conditions='',raw=''):
             era='1903 (ordinal 5)' if typepath in ('/obj/structure/telecom','/obj/structure/telecom/station','/obj/structure/telecom/antenna') else '1969 (ordinal 7)' if typepath.startswith('/obj/item/tv_camera') or typepath in ('/obj/structure/telecom/tv','/obj/structure/telecom/station/tv') else 'Modern (ordinal 8)'
             conditions+=f' Minimum era {era}; native crafting skill {skill}; completed research node required at construction.'
     inputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in inputs]
-    if any(i['id'] == '/material/cloth' for i in inputs):
+    if wool_substitute and any(i['id'] == '/material/cloth' for i in inputs):
         conditions += ' Woolcloth sheets also accepted.'
     outputs=[{'id':canon(a),'name':label(a),'quantity':str(b)} for a,b in outputs]
     records.append(dict(id='r'+str(len(records)),name=name,kind=kind,inputs=inputs,outputs=outputs,file=path,line=line,conditions=conditions,raw=raw))
@@ -381,6 +385,20 @@ for match in re.finditer(r'^\s*"([^"]+)" = list\("node" = "([^"]+)", "era" = (\d
 tanning_routes=add_tanning(files, add, records, sprite_variants)
 rope_routes=add_rope_making(files, add, records)
 dressmaking_routes=add_dressmaking(files, add, records)
+furniture_project_path = 'code/modules/1713/modular_furniture.dm'
+furniture_project_source = files.get(furniture_project_path, '')
+if furniture_project_source:
+    for shape, output in (('Chair', '/obj/structure/bed/chair/modular'),
+                          ('Bed', '/obj/structure/bed/wood/modular')):
+        marker = f'if ("{shape}") return {output}'
+        line = furniture_project_source[:furniture_project_source.index(marker)].count('\n') + 1
+        project = [('/obj/item/furniture_project', 1)]
+        steps = 'Requires Basic Furniture knowledge. Use the held project to select the frame and wood finish. Preview, cut, then assemble on clear solid ground.'
+        add(f'Design a wooden {shape.lower()}', 'Furniture', project, [(output, 1)],
+            furniture_project_path, line, steps)
+        add(f'Design an upholstered {shape.lower()}', 'Furniture',
+            project + [('/obj/item/stack/material/cloth', 1)], [(output, 1)],
+            furniture_project_path, line, steps + ' Add one cloth sheet before cutting and choose an upholstery dye you know.', wool_substitute=False)
 light_path='code/modules/1713/light_fuel.dm'
 light=uncomment(files.get(light_path,''))
 if light:

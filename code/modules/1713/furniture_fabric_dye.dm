@@ -110,7 +110,7 @@
 
 /obj/structure/bed/after_load()
 	..()
-	if (padding_color)
+	if (padding_color || furniture_finish)
 		update_icon()
 
 /obj/item/weapon/stool/after_load()

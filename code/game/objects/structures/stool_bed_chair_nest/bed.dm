@@ -106,11 +106,12 @@
 		icon_state = ""
 		overlays.Cut()
 		// Base icon.
-		var/cache_key = "[base_icon]-[material.name]"
+		var/finish_color = furniture_finish_color(furniture_finish)
+		var/cache_key = finish_color ? "[base_icon]-[material.name]-finish-[furniture_finish]" : "[base_icon]-[material.name]"
 		if (isnull(stool_cache[cache_key]))
 			var/image/I = image('icons/obj/bed_chair.dmi', base_icon)
 			if (applies_material_colour)
-				I.color = material.icon_colour
+				I.color = finish_color || material.icon_colour
 			stool_cache[cache_key] = I
 		overlays |= stool_cache[cache_key]
 		// Padding overlay.

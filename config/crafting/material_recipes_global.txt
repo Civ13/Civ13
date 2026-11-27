@@ -2770,6 +2770,7 @@ RECIPE: /material/wood/soft/,ballot box,/obj/structure/voting,8,50,1,1,furniture
 RECIPE: /material/wood/,table,/obj/structure/table/wood,4,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood pole,/obj/structure/barricade/wood_pole,2,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,bed,/obj/structure/bed/wood,4,60,1,1,furniture,0,0,0,8,null
+RECIPE: /material/wood/soft/,furniture project,/obj/item/furniture_project,4,60,0,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,wood crate,/obj/structure/closet/crate/empty,5,50,1,1,furniture,0,0,0,8,null
 RECIPE: /material/wood/soft/,bookcase,/obj/structure/bookcase,6,80,1,1,furniture,14,0,0,8,null
 RECIPE: /material/wood/soft/,writing desk,/obj/structure/writing_desk,6,120,1,1,furniture,0,0,0,8,null

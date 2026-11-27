@@ -28,10 +28,10 @@
 */
 	// Padding overlay.
 	if (padding_material)
-		var/padding_cache_key = "[base_icon]-padding-[padding_material.name]-over"
+		var/padding_cache_key = "[base_icon]-padding-[padding_material.name]-[padding_shade()]-over"
 		if (isnull(stool_cache[padding_cache_key]))
 			var/image/I =  image(icon, "[base_icon]_padding_over")
-			I.color = padding_material.icon_colour
+			I.color = padding_shade()
 			I.layer = FLY_LAYER
 			stool_cache[padding_cache_key] = I
 		overlays |= stool_cache[padding_cache_key]

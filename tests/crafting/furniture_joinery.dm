@@ -179,6 +179,7 @@
 	recipe_ci_document_drawers()
 	recipe_ci_sofa_materials()
 	recipe_ci_canopy()
+	recipe_ci_modular_furniture()
 
 /proc/shelf_ci_clear()
 	for (var/obj/O in locate(2,1,1))
@@ -263,4 +264,62 @@
 			joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/wood) == 2 && !shelf_ci_count(/obj/item/stack/rods), "wood furniture frame loses stock on recovery: [path]")
 			qdel(W)
 		shelf_ci_clear()
+	qdel(H)
+
+// Real modular placement/payment and persistence, with interruption injected
+// at the work-wait boundary. The client preview is not part of this fixture.
+/obj/item/furniture_project/joinery_ci
+	var/cancel_wait = FALSE
+
+/obj/item/furniture_project/joinery_ci/wait_for_furniture(mob/living/human/H, delay)
+	return !cancel_wait
+
+/proc/recipe_ci_modular_furniture()
+	var/turf/site = locate(2,1,1)
+	var/mob/living/human/handle_ci/joinery_ci/H = new(site)
+	H.civilization = "recipe_ci"
+	var/obj/item/furniture_project/joinery_ci/P = new(H)
+	var/obj/item/stack/material/cloth/C = new(H, 2, FALSE)
+	H.l_hand = P
+	H.r_hand = C
+	var/datum/save_epoch = persistence_admission_identity
+	P.attackby(C, H)
+	P.attackby(C, H)
+	joinery_ci_expect(P.has_cloth && C.amount == 1, "modular project pays at most one sheet")
+	P.design_shape = "Chair"
+	P.design_finish = "Dark"
+	P.design_dye = "#7890a8"
+	P.cancel_wait = TRUE
+	joinery_ci_expect(!P.cut_parts(H, site, save_epoch) && !P.cut, "cancelled cut leaves project editable")
+	P.cancel_wait = FALSE
+	joinery_ci_expect(P.cut_parts(H, site, save_epoch) && P.cut, "cut locks the chair design")
+	P.cancel_wait = TRUE
+	joinery_ci_expect(!P.assemble(H, site, save_epoch) && H.l_hand == P && P.has_cloth, "cancelled assembly retains paid parts")
+	P.cancel_wait = FALSE
+	var/obj/structure/bed/chair/modular/chair = P.assemble(H, site, save_epoch)
+	joinery_ci_expect(istype(chair) && chair.loc == site && chair.material.name == "wood" && chair.padding_material.name == "cloth" && chair.furniture_finish == "Dark" && chair.padding_color == "#7890a8" && !H.l_hand && QDELETED(P), "finished chair preserves materials, colours and hand cleanup")
+	if (chair)
+		var/savefile/F = new("modular-furniture.sav")
+		F["/format_version"] << 2
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 1
+		var/ref = map_storage.BuildVarDirectory(F, chair, 1)
+		map_storage.clear_bookkeeping()
+		var/obj/structure/bed/chair/modular/restored = map_storage.Load_Entry(F, ref, starting_loc = site)
+		if (restored)
+			restored.after_load()
+		joinery_ci_expect(istype(restored) && restored.furniture_finish == "Dark" && restored.padding_color == "#7890a8" && restored.padding_material.name == "cloth", "chair disk entry retains both finishes")
+		qdel(restored)
+		qdel(chair)
+	var/obj/item/furniture_project/joinery_ci/bed_project = new(H)
+	H.l_hand = bed_project
+	bed_project.design_shape = "Bed"
+	bed_project.design_finish = "Honey"
+	var/obj/structure/bed/wood/occupied = new(site)
+	joinery_ci_expect(bed_project.cut_parts(H, site, save_epoch) && !bed_project.assemble(H, site, save_epoch) && H.l_hand == bed_project, "occupied tile retains cut project")
+	qdel(occupied)
+	var/obj/structure/bed/wood/modular/bed = bed_project.assemble(H, site, save_epoch)
+	joinery_ci_expect(istype(bed) && bed.furniture_finish == "Honey" && !bed.padding_material && !H.l_hand, "bare bed comes from the same project without cloth")
+	qdel(bed)
+	qdel(C)
 	qdel(H)
