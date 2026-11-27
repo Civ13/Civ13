@@ -414,15 +414,15 @@ var/ml_runtime_error = FALSE
 	R.loc = null
 	var/obj/structure/bed/ml_bed/bed = new(T)
 
-	ml_bed_transition(H, TRUE, -5 MINUTES)
-	ml_bed_transition(H, FALSE, 5 MINUTES - 1)
+	ml_bed_transition(H, TRUE, -30 SECONDS)
+	ml_bed_transition(H, FALSE, 30 SECONDS - 1)
 	B.add_research_work("basic_tools", 2, FALSE, H)
-	ml_check(B.research_ticks("basic_tools") == 4, "one decisecond short of ten minutes across midnight does not qualify")
+	ml_check(B.research_ticks("basic_tools") == 4, "one decisecond short of a minute across midnight earns no points")
 
-	ml_bed_transition(H, TRUE, -5 MINUTES)
+	ml_bed_transition(H, TRUE, -30 SECONDS)
 	H.rested_test_time = 0
 	H.sleep_update() // Also called on reconnect; it must preserve the start.
-	ml_bed_transition(H, FALSE, 5 MINUTES)
+	ml_bed_transition(H, FALSE, 150 SECONDS)
 	ml_check(ml_skill_progress(H, "medical", 20) == normal, "bed rest no longer changes ordinary skill gains")
 	// A full prototype study waiting for its installation, anonymous work, and
 	// a second researcher's points must not spend H's rested bonus.
@@ -432,20 +432,20 @@ var/ml_runtime_error = FALSE
 	B.add_research_work("basic_tools", 1)
 	B.add_research_work("basic_tools", 2, FALSE, other)
 	ml_check(B.research_ticks("basic_tools") == 7, "unattributed and other researchers' work gets no bonus")
-	H.rested_test_time = 5 MINUTES + 864000
+	H.rested_test_time = 150 SECONDS + 864000
 	B.add_research_work("basic_tools", 2, FALSE, H)
-	ml_check(B.research_ticks("basic_tools") == 19, "a full rest adds ten points after an offline day, even after zero-point and capped work")
+	ml_check(B.research_ticks("basic_tools") == 12, "three minutes banks three points indefinitely, even after zero-point and capped work")
 	B.add_research_work("basic_tools", 2, FALSE, H)
-	ml_check(B.research_ticks("basic_tools") == 21, "the bonus does not apply to a second contribution")
+	ml_check(B.research_ticks("basic_tools") == 14, "spent points do not apply to a second contribution")
 
 	ml_bed_transition(H, TRUE, 6 MINUTES + 864000)
-	ml_bed_transition(H, FALSE, 16 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 12 MINUTES + 864000)
 	ml_bed_transition(H, TRUE, 17 MINUTES + 864000)
-	ml_bed_transition(H, FALSE, 27 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 23 MINUTES + 864000)
 	var/points = B.record_field_work("soil_science_harvests", H)
-	ml_check(points > 0 && B.research_ticks("soil_science") == points + 10, "field work uses one banked bonus and sleeping twice does not stack it")
+	ml_check(points > 0 && B.research_ticks("soil_science") == points + 10, "field work uses the rested pool, capped at ten across multiple sleeps")
 	B.add_research_work("basic_tools", 2, FALSE, H)
-	ml_check(B.research_ticks("basic_tools") == 23, "crediting field work spends the same one-use bonus")
+	ml_check(B.research_ticks("basic_tools") == 16, "crediting field work spends points from the same pool")
 
 	ml_bed_transition(H, TRUE, 28 MINUTES + 864000)
 	ml_bed_transition(H, FALSE, 38 MINUTES + 864000)
@@ -454,6 +454,8 @@ var/ml_runtime_error = FALSE
 	near_cap.add_research_work("bronze_working", 1, FALSE, H)
 	ml_check(near_cap.research_ticks("bronze_working") == prototype.cost_ticks && !near_cap.has_research_chapter("bronze_working"), "the bonus respects the chapter cap and does not replace a required prototype")
 	B.add_research_work("basic_tools", 2, FALSE, H)
-	ml_check(B.research_ticks("basic_tools") == 25, "using part of the bonus near a cap does not carry leftovers to another chapter")
+	ml_check(B.research_ticks("basic_tools") == 25, "the seven points that do not fit are kept and go to the next contribution")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 27, "the remainder is spent only once")
 	bed.loc = null
 	map.persistence = FALSE

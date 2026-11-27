@@ -129,7 +129,7 @@ class FieldWork(unittest.TestCase):
             self.assertIn(guard, note)
     def test_a_book_takes_each_experiment_once(self):
         record = proc(self.field, "/obj/item/weapon/book/proc/record_field_work")
-        for guard in ("has_field_work(experiment_id)", "has_research_chapter(", "add_research_work(N.id, points)"):
+        for guard in ("has_field_work(experiment_id)", "has_research_chapter(", "add_research_work(N.id, points,"):
             self.assertIn(guard, record)
         self.assertLess(record.index("has_field_work(experiment_id)"), record.index("add_research_work"))
     def test_the_bench_credits_field_work_and_studies_late_nodes_faster(self):
