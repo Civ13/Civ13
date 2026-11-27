@@ -602,9 +602,7 @@ var/global/list/fishing_grounds_published = null
 // Open fishing water within two tiles of the fisher that is not under the ship.
 /proc/fish_water_beside(mob/living/human/H, datum/craft/ship)
 	for (var/turf/T in orange(2, H))
-		if (!fish_water_kind(T) || T.iscovered())
-			continue
-		if ((locate(/obj/structure/vehicleparts/frame) in T) || (locate(/obj/structure/vehicleparts/axis) in T))
+		if (!fish_water_kind(T) || !fish_cast_water_open(T))
 			continue
 		if (ship && ship.body && ship.body.contains(T))
 			continue
