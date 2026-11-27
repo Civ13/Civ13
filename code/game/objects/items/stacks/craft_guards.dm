@@ -323,16 +323,16 @@ var/global/list/religious_work_rules = religious_work_rules_table()
 	return list("kind" = "[type]", "label" = label ? label : "Not available to you here.", "met" = FALSE)
 
 // Every requirement the guards report for this recipe. Nothing is spent or built.
-/proc/craft_recipe_requirements(mob/living/human/H, datum/stack_recipe/R)
+/proc/craft_recipe_requirements(mob/living/human/H, datum/stack_recipe/R, obj/item/stack/paying = null)
 	var/list/found = list()
 	if (!R)
 		return found
 	for (var/datum/craft_guard/G in craft_guard_list())
-		for (var/list/line in G.describe_lines(H, R))
+		for (var/list/line in G.describe_lines(H, R, paying))
 			found[++found.len] = line
 	return found
 
 // Every line a guard reports. A guard with several requirements overrides this.
-/datum/craft_guard/proc/describe_lines(mob/living/human/H, datum/stack_recipe/R)
+/datum/craft_guard/proc/describe_lines(mob/living/human/H, datum/stack_recipe/R, obj/item/stack/paying)
 	var/list/line = describe(H, R)
 	return line ? list(line) : null

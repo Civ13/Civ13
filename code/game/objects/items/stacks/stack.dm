@@ -240,7 +240,7 @@
 		user << browse(null, "window=stack")
 		return
 	// The Crafting window (crafting_window.dm) takes over where the client can run it.
-	if (crafting_window_shown(user))
+	if (crafting_window_shown(user, reach = TRUE))
 		return
 	user.set_using_object(src) //for correct work of onclose
 	// Flatten only the display, never the source recipe lists. Every action keeps
@@ -372,7 +372,7 @@
 
 /mob/var/can_build_recipe = TRUE
 // options: answers to the recipe's craft_product prompts (craft_products.dm); missing ones are asked.
-/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)
+/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)
 	var/required = quantity*recipe.req_amount
 	var/produced = min(quantity*recipe.res_amount, recipe.max_res_amount)
 	var/atom/movable/build_override_object = null
@@ -381,6 +381,8 @@
 	var/customvar2 = ""
 	var/customdesc = ""
 	var/mob/living/human/H = user
+	if (recheck_source && !crafting_stack_accessible(H))
+		return
 	secondary_forget(H)
 	if (!crafting_recipe_allowed(H, "[recipe.result_type]"))
 		to_chat(user, crafting_recipe_refusal(H, "[recipe.result_type]"))
@@ -1723,6 +1725,10 @@
 		if (!do_after(user, buildtime, ship_craft = ship_craft) || !crafting_recipe_allowed(H, "[recipe.result_type]"))
 			secondary_refund(H)
 			return
+		if (recheck_source && !crafting_stack_accessible(H))
+			to_chat(user, SPAN_WARNING("The material you started with is no longer within reach."))
+			secondary_refund(H)
+			return
 
 		// Hammocks pay only after this wait. Do not reject legacy recipes here:
 		// some already consumed secondary inputs before do_after.
@@ -1821,6 +1827,12 @@
 			if (ship_craft)
 				secondary_refund(H)
 			return
+
+	// Some product choices above can yield after the construction wait.
+	if (recheck_source && !crafting_stack_accessible(H))
+		to_chat(user, SPAN_WARNING("The material you started with is no longer within reach."))
+		secondary_refund(H)
+		return
 
 	// Recheck after do_after, before consuming either drill construction input.
 	if (needs_drill_steel(recipe))
@@ -2397,7 +2409,7 @@
 /obj/item/stack/proc/crafting_stack_accessible(mob/living/human/H)
 	if (QDELETED(src) || QDELETED(H))
 		return FALSE
-	return (loc == H && H.item_is_in_hands(src)) || (isturf(loc) && H.Adjacent(src))
+	return (loc == H && H.item_is_in_hands(src)) || craft_nearby_loose_item(H, src)
 
 // Consume only removable equipment owned directly by the actor. Do not recurse
 // into storage: return_inv/get_contents do not enforce container accessibility.

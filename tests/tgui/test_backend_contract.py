@@ -349,8 +349,8 @@ class BackendContract(unittest.TestCase):
         # the batch limit and the busy lock before the unchanged craft proc.
         self.assertLess(topic.index('!still_valid(H) || H.stat || H.restrained()'), topic.index('href_list["makeable_only"]'))
         for earlier, later in (('working || !H.can_build_recipe', 'find_recipe('), ('find_recipe(', 'batch_limit(R)'),
-                               ('quantity > limit', 'H.can_build_recipe = FALSE'), ('H.can_build_recipe = FALSE', 'S.produce_recipe(R, quantity, H, options)'),
-                               ('S.produce_recipe(R, quantity, H, options)', 'H.can_build_recipe = TRUE')):
+                               ('quantity > limit', 'H.can_build_recipe = FALSE'), ('H.can_build_recipe = FALSE', 'S.produce_recipe(R, quantity, H, options, recheck_source = reach)'),
+                               ('S.produce_recipe(R, quantity, H, options, recheck_source = reach)', 'H.can_build_recipe = TRUE')):
             self.assertLess(make.index(earlier), make.index(later), (earlier, later))
         valid = source.split('/datum/crafting_window/proc/still_valid', 1)[1].split('/datum/topic_state', 1)[0]
         self.assertIn('source.loc == H && H.get_active_hand() == source', valid)
@@ -429,7 +429,7 @@ class BackendContract(unittest.TestCase):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
         detail = source.split('/datum/crafting_window/proc/detail_for(id)', 1)[1].split('/datum/crafting_window/proc/given_options', 1)[0]
         # Looking closely uses the shared read-only hooks and names a row the same way a craft does.
-        self.assertLess(detail.index('find_recipe(id)'), detail.index('craft_recipe_requirements(viewer, R)'))
+        self.assertLess(detail.index('find_recipe(id)'), detail.index('craft_recipe_requirements(viewer, R, source)'))
         self.assertIn('craft_product_for(R)', detail)
         for action in ('player_input', 'WWinput', 'craft_product_options', 'craft_product_answer'):
             self.assertNotIn(action, source)
@@ -491,7 +491,7 @@ class BackendContract(unittest.TestCase):
         self.assertIn('!H.client || H.client.crafting_window_classic || H.client.modern_ui_failed', shown)
         stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
         menu = stack.split('/obj/item/stack/proc/list_recipes(', 1)[1].split('// Custom qdel', 1)[0]
-        self.assertLess(menu.index('if (crafting_window_shown(user))'), menu.index('user.set_using_object(src)'))
+        self.assertLess(menu.index('if (crafting_window_shown(user, reach = TRUE))'), menu.index('user.set_using_object(src)'))
         self.assertIn("<title>Crafting</title>", menu)
 
     def test_windows_declare_their_own_actions(self):

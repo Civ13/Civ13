@@ -297,7 +297,7 @@ var/global/list/crafting_purpose_cache = list()
 	if (!R)
 		return null
 	var/list/needs = list()
-	for (var/list/line in craft_recipe_requirements(viewer, R))
+	for (var/list/line in craft_recipe_requirements(viewer, R, source))
 		needs += list(list("label" = html_encode(trim("[line["label"]]")), "met" = line["met"] ? 1 : 0))
 	var/list/fields = list()
 	var/datum/craft_product/P = craft_product_for(R)
@@ -498,6 +498,10 @@ var/global/list/crafting_purpose_cache = list()
 		if (!why)
 			why = recipe_skill_refusal(viewer, R) || ""
 		if (!why)
+			var/need = craft_needs_refusal(viewer, R, 1, S)
+			if (istext(need))
+				why = trim(strip_html_properly(need))
+		if (!why)
 			why = "Missing a tool, skill or second material"
 	var/cost = "[R.req_amount] [S.singular_name]\s"
 	if (recipe_needs_crafting_handle(R.title))
@@ -678,7 +682,7 @@ var/global/list/crafting_purpose_cache = list()
 		var/held_before = S.amount
 		var/recent_key = crafting_window_pin_key(S, R)
 		H.can_build_recipe = FALSE
-		S.produce_recipe(R, quantity, H, options)
+		S.produce_recipe(R, quantity, H, options, recheck_source = reach)
 		H.can_build_recipe = TRUE
 		working = null
 		// Material went, so something was made: remember it for the Recent strip.

@@ -121,7 +121,7 @@ class CraftProductTest(unittest.TestCase):
 
     def test_produce_recipe_reads_the_products(self):
         stack = STACK.read_text(encoding='utf-8')
-        self.assertIn('/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)', stack)
+        self.assertIn('/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)', stack)
         body = stack[stack.index('/obj/item/stack/proc/produce_recipe('):stack.index('/obj/item/stack/proc/crafting_stack_accessible(')]
         self.assertEqual(body.count('craft_product_options(user, recipe, options)'), 12)
         for _, rows in FROZEN.items():
@@ -132,7 +132,7 @@ class CraftProductTest(unittest.TestCase):
 
     def test_guards_describe_without_building(self):
         source = (ROOT / 'code/game/objects/items/stacks/craft_guards.dm').read_text(encoding='utf-8')
-        self.assertIn('/proc/craft_recipe_requirements(mob/living/human/H, datum/stack_recipe/R)', source)
+        self.assertIn('/proc/craft_recipe_requirements(mob/living/human/H, datum/stack_recipe/R, obj/item/stack/paying = null)', source)
         describe = source[source.index('/datum/craft_guard/proc/describe('):source.index('/proc/craft_recipe_requirements(')]
         self.assertIn('refusal(H, R, CRAFT_GUARD_START)', describe)
         self.assertIn('"met" = FALSE', describe)
