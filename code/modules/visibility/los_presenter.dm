@@ -188,7 +188,7 @@
 					continue
 				if(!owns_atom(A))
 					continue
-				var/visual_operation = root_tree_family(A) && A.opacity ? "visual_tree" : "visual"
+				var/visual_operation = A.opacity && root_tree_family(A) ? "visual_tree" : "visual"
 				if(context.decision_snapshot(A, S, visual_operation) == LOS_DENY)
 					var/image/atom_mask = hidden_image(A)
 					next[A] = atom_mask
