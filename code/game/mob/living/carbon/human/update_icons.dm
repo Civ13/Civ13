@@ -1709,9 +1709,13 @@ var/global/list/human_face_icon_cache = list()
 		if (O.wounds.len == 0)
 			continue
 		for (var/datum/wound/W in O.wounds)
-			if (W.bandaged && W.created+4800 >= world.time)
-				DD.overlays += image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="[O.limb_name]b")
+			if (!W.bandaged)
 				continue
+			var/applied_at = W.bandaged_at
+			if (isnull(applied_at))
+				applied_at = W.created
+			if (applied_at + 4800 >= world.time)
+				DD.overlays += image(icon='icons/mob/human_races/masks/bandages_human.dmi', icon_state="[O.limb_name]b")
 	overlays_standing[BANDAGES_LAYER] = DD
 	if (update_icons)   update_icons()
 //Human Overlays Indexes/////////

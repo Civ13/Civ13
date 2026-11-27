@@ -13,6 +13,7 @@
 	var/min_damage = 0				// amount of damage the current wound type requires(less means we need to apply the next healing stage)
 	var/bleed_threshold = 30		// Above this amount wounds you will need to treat the wound to stop bleeding, regardless of bleed_timer
 	var/bandaged = FALSE			// is the wound bandaged?
+	var/tmp/bandaged_at = null		// world.time when the bandage was applied, for the overlay
 	var/clamped = FALSE				// Similar to bandaged, but works differently
 	var/salved = FALSE				// is the wound salved?
 	var/disinfected = FALSE			// is the wound disinfected?
@@ -153,7 +154,9 @@
 	return 0
 
 /datum/wound/proc/bandage()
-		bandaged = TRUE
+	if (!bandaged)
+		bandaged_at = world.time
+	bandaged = TRUE
 
 /datum/wound/proc/salve()
 		salved = TRUE
