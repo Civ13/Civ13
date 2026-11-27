@@ -26,6 +26,7 @@
 	desc = "An old expensive table."
 	icon = 'icons/obj/objects.dmi'
 	icon_state = "fancytable"
+	flipped_icon = "wood_table-flipped"
 	flipped = FALSE
 	low = TRUE
 	fixedsprite = TRUE
@@ -33,6 +34,18 @@
 	framestack = /obj/item/stack/material/woodplank
 	buildstack = /obj/item/stack/material/woodplank
 	flammable = TRUE
+
+/obj/structure/table/fancy/update_icon()
+	if (flipped)
+		icon = 'icons/obj/structures.dmi'
+	else if (icon_state == flipped_icon)
+		icon = initial(icon)
+	return ..()
+
+/obj/structure/table/fancy/after_load()
+	..()
+	if (flipped)
+		update_icon()
 
 /obj/structure/table/nightstand
 	name = "night stand"
