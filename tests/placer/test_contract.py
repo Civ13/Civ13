@@ -25,7 +25,7 @@ DMI = ROOT / 'icons/obj/placer.dmi'
 
 def body(file, signature):
     path = ROOT / 'code/modules/1713' / (file + '.dm')
-    return path.read_text(encoding="utf-8").split(signature, 1)[1].split('\\n/', 1)[0]
+    return path.read_text(encoding="utf-8").split(signature, 1)[1].split('\n/', 1)[0]
 
 def define(name):
     match = re.search(rf'#define {name} ([0-9.]+)', SOURCE)
