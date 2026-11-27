@@ -663,10 +663,11 @@ var/global/train_solo_move = FALSE
 
 // impact, driven: set by an engine further back that pushes this car at the
 // head of its train; the engine burns its own fuel and lends its weight.
-/obj/structure/trains/proc/process_rail_movement(impact = null, driven = FALSE)
+/obj/structure/trains/proc/process_rail_movement(impact = null, driven = FALSE, list/route = null)
 	if (!automovement)
 		return FALSE
-	var/list/route = rail_target(train_heading())
+	if (!route)
+		route = rail_target(train_heading())
 	if (!route)
 		automovement = FALSE
 		set_light(0)
@@ -1257,6 +1258,45 @@ var/global/train_solo_move = FALSE
 		return speed
 	return (speed + sqrt(speed * speed + 4 * accel)) / 2
 
+// Natural track follows the graded ground. Floors, bridge decks and built
+// platforms are level, including their connections to adjacent track.
+#define TRAIN_GRADE_ACCEL 0.1 // tiles/s^2 per terrain height level
+/proc/train_rail_grade(turf/origin, turf/destination)
+	var/rise = terrain_step_levels(origin, destination)
+	// Wide curves can step diagonally: the same rise then spans more track.
+	if (rise && origin.x != destination.x && origin.y != destination.y)
+		rise /= 1.4142
+	return rise * TRAIN_GRADE_ACCEL
+#undef TRAIN_GRADE_ACCEL
+
+// A climb spends part of the available pull and lowers the speed it can hold.
+/proc/train_grade_cruise(target, pull, grade)
+	if (grade <= 0 || target <= 0)
+		return target
+	if (grade >= pull)
+		return 0
+	return target * (1 - grade / pull)
+
+// Keep the flat-track drive curve. Downhill gravity can carry a moving
+// train above its notch or keep it coasting after the throttle is shut, but
+// cannot defeat an applied brake or push past the line's current speed limit.
+/proc/train_grade_speed(speed, target, pull, decel, grade, top, brakes_applied)
+	if (speed < target)
+		var/net_pull = pull - grade
+		if (net_pull > 0)
+			return min(target, train_speed_gain(speed, net_pull))
+		return max(0, speed + net_pull * train_step_seconds(speed))
+	if (speed <= 0)
+		return 0
+	var/loss = decel + grade
+	if (brakes_applied)
+		loss = max(decel * 0.25, loss)
+	if (loss < 0)
+		if (speed > top)
+			return max(top, speed - decel * train_step_seconds(speed))
+		return min(top, train_speed_gain(speed, -loss))
+	return max(target, speed - loss * train_step_seconds(speed))
+
 /obj/structure/trains/locomotive/proc/drive()
 	if (driving)
 		return
@@ -1281,40 +1321,60 @@ var/global/train_solo_move = FALSE
 				lineside_watch()
 			boiler_tick()
 			var/target = cruise_speed()
-			var/heft = max(1, consist_weight / 6)
+			var/pull = TRAIN_ACCEL * min(2, pull_ratio())
+			var/way = train_way()
+			var/obj/structure/trains/lead = (way > 0) ? drive_head : drive_tail
+			if (!lead || QDELETED(lead) || !isturf(lead.loc))
+				lead = src
+			var/list/route
+			var/list/reverse_cars
+			var/grade = 0
+			if (map && map.terrain_height_file)
+				// Reverse movement already walks the links. Use that same live
+				// consist here rather than a tail cached before a coupling broke.
+				if (way < 0)
+					reverse_cars = reverse_consist()
+					lead = reverse_cars[reverse_cars.len]
+				route = lead.rail_target(way > 0 ? lead.train_heading() : OPPOSITE_DIR(lead.train_heading()))
+				if (route)
+					grade = train_rail_grade(lead.loc, route[1])
+			var/level_target = target
+			target = train_grade_cruise(target, pull, grade)
 			if (rail_speed < target)
-				// Too much throttle for the grip (train_adhesion.dm): the wheels
-				// spin and the train gains nothing.
+				// Wheel slip denies traction, not the effect of the grade.
 				if (wheels_slip())
 					wheel_slip()
 					if (rail_speed <= 0)
 						sleep(10)
 						continue
+					pull = 0
 				else
 					slipping = 0
 					if (rail_speed <= 0 && pull_ratio() < 0.25)
 						visible_message("<span class = 'warning'>\The [src]'s wheels spin; [consist_braked > 0 ? "the handbrakes are holding the train" : "the train is too heavy to start"].</span>")
 						throttle = 0
 						break
-					// Gathers way gradually, faster with pull to spare.
-					rail_speed = min(target, train_speed_gain(rail_speed, TRAIN_ACCEL * min(2, pull_ratio())))
-					braking = FALSE
-			else if (rail_speed > target)
-				// Rolling resistance by the train's heft, and the brakes by the
-				// share of its weight they hold (train_brakes.dm).
-				// Both are per second, so a train loses way gradually however fast it runs.
-				rail_speed = max(target, rail_speed - stopping_decel(target, heft) * train_step_seconds(rail_speed))
-			if (rail_speed <= 0.25 && target <= 0)
+			if (rail_speed <= 0 && !target)
+				if (level_target && grade > 0)
+					visible_message(SPAN_WARNING("\The [src] cannot pull the train up the grade."))
+					throttle = 0
+				break
+			var/heft = max(1, consist_weight / 6)
+			var/decel = stopping_decel(target, heft)
+			var/top = 10 / max(0.5, max_train_speed) * lead_factor * snow_factor
+			rail_speed = train_grade_speed(rail_speed, target, pull, decel, grade, top, braking || consist_braked > 0)
+			if (rail_speed <= 0.25 && !target)
+				if (level_target && grade > 0)
+					throttle = 0
+				break
+			if (rail_speed <= 0)
 				break
 			automovement = TRUE
-			var/obj/structure/trains/lead = (train_way() > 0) ? drive_head : drive_tail
-			if (!lead || QDELETED(lead))
-				lead = src
 			var/lead_dir = lead.dir
 			var/turf/lead_from = lead.loc
 			// The whole train slides over the step instead of jumping (train_glide.dm).
 			train_glide_begin(src, clamp(10 / max(0.5, rail_speed), max_train_speed, 20))
-			var/moved = (train_way() > 0) ? process_rail_forward() : process_rail_reverse()
+			var/moved = (way > 0) ? process_rail_forward(route) : process_rail_reverse(route, reverse_cars)
 			train_glide_end(src)
 			if (QDELETED(src))
 				return
@@ -1358,10 +1418,10 @@ var/global/train_solo_move = FALSE
 
 // Forward: the front car of the train leads. When that is not this engine,
 // the engine pushes it, burning its own fuel.
-/obj/structure/trains/locomotive/proc/process_rail_forward()
+/obj/structure/trains/locomotive/proc/process_rail_forward(list/route = null)
 	var/obj/structure/trains/head = drive_head
 	if (!head || head == src || QDELETED(head) || !isturf(head.loc))
-		return process_rail_movement()
+		return process_rail_movement(route = route)
 	if (!automovement)
 		return FALSE
 	if (fuel <= 0 && on)
@@ -1369,19 +1429,24 @@ var/global/train_solo_move = FALSE
 	else if (on)
 		burn_fuel()
 	head.automovement = TRUE
-	. = head.process_rail_movement(collision_impact(), TRUE)
+	. = head.process_rail_movement(collision_impact(), TRUE, route)
 	head.automovement = FALSE
 	if (!.)
 		automovement = FALSE
 
+/obj/structure/trains/locomotive/proc/reverse_consist()
+	return train_consist_list((drive_head && !QDELETED(drive_head)) ? drive_head : src)
+
 // Backing up: the rearmost car leads and each car takes the place of the one
 // behind it, the same way a forward step works from the front.
-/obj/structure/trains/locomotive/proc/process_rail_reverse()
+/obj/structure/trains/locomotive/proc/process_rail_reverse(list/route = null, list/cars = null)
 	if (!automovement)
 		return FALSE
-	var/list/cars = train_consist_list((drive_head && !QDELETED(drive_head)) ? drive_head : src)
+	if (!cars)
+		cars = reverse_consist()
 	var/obj/structure/trains/tail = cars[cars.len]
-	var/list/route = tail.rail_target(OPPOSITE_DIR(tail.train_heading()))
+	if (!route)
+		route = tail.rail_target(OPPOSITE_DIR(tail.train_heading()))
 	if (!route)
 		automovement = FALSE
 		return FALSE

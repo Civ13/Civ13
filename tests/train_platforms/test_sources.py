@@ -227,7 +227,9 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('var/tmp/braking = FALSE', TRAINS)
         # The drive loop slows by the braked share, and handbrakes drag the pull.
         drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
-        self.assertIn('rail_speed - stopping_decel(target, heft)', drive)
+        self.assertIn('var/decel = stopping_decel(target, heft)', drive)
+        self.assertIn('train_grade_speed(rail_speed, target, pull, decel, grade, top, braking || consist_braked > 0)', drive)
+        self.assertIn('loss = max(decel * 0.25, loss)', TRAINS)
         self.assertIn('/ max(1, heft) + brake_decel()', brakes)
         self.assertIn('return consist_power / max(1, drag_weight())', TRAINS)
         self.assertIn('if (car.handbrake || car.axle_seized)\n\t\t\tconsist_braked += car_weight', TRAINS)
@@ -276,8 +278,22 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('\tvar/sand = TRAIN_SAND_MAX', adhesion)
         self.assertIn('\tvar/tmp/sanding = 0', adhesion)
         drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
-        self.assertLess(drive.index('if (wheels_slip())'), drive.index('rail_speed = min(target, train_speed_gain(rail_speed'))
+        slip = drive[drive.index('if (wheels_slip())'):drive.index('rail_speed = train_grade_speed(')]
+        self.assertIn('sleep(10)\n\t\t\t\t\t\tcontinue', slip)
+        self.assertIn('pull = 0', slip)
+        self.assertIn('var/net_pull = pull - grade', TRAINS)
         self.assertIn('choices += list("Throttle up", "Throttle down", "Brake", "Sand the rails")', TRAINS)
+
+    def test_rail_grade_follows_the_route_in_both_directions(self):
+        drive = TRAINS.split('/obj/structure/trains/locomotive/proc/drive()', 1)[1]
+        drive = drive.split('/obj/structure/trains/locomotive/proc/process_rail_forward(', 1)[0]
+        self.assertIn('(way > 0) ? drive_head : drive_tail', drive)
+        self.assertIn('lead.rail_target(way > 0 ? lead.train_heading() : OPPOSITE_DIR(lead.train_heading()))', drive)
+        self.assertIn('train_rail_grade(lead.loc, route[1])', drive)
+        self.assertIn('reverse_cars = reverse_consist()', drive)
+        self.assertIn('lead = reverse_cars[reverse_cars.len]', drive)
+        self.assertIn('process_rail_forward(route) : process_rail_reverse(route, reverse_cars)', drive)
+        self.assertIn('var/rise = terrain_step_levels(origin, destination)', TRAINS)
 
     def test_railway_gun_sheet(self):
         gun = dmi_description(ROOT / 'icons/obj/vehicles/railway_gun.dmi')
@@ -645,7 +661,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         self.assertIn('#include "code\\modules\\1713\\train_signals.dm"', (ROOT / 'civ13.dme').read_text(encoding='utf-8'))
         # the cab reads the line when it starts and each time the train is counted
         drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
-        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward()')]
+        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward(')]
         self.assertEqual(drive.count('lineside_watch()'), 2)
         self.assertLess(drive.index('lineside_seen = null'), drive.index('spawn(0)'))
         self.assertLess(drive.index('deadman_watch()'), drive.rindex('lineside_watch()'))
@@ -681,7 +697,7 @@ class TrainPlatformSourceTests(unittest.TestCase):
         fastest = min(float(v) for v in re.findall(r'max_train_speed = ([0-9.]+)', LOCOS + TRAINS))
         self.assertLess(10 / fastest / 3, 3)
         drive = TRAINS[TRAINS.index('/obj/structure/trains/locomotive/proc/drive()'):]
-        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward()')]
+        drive = drive[:drive.index('/obj/structure/trains/locomotive/proc/process_rail_forward(')]
         self.assertLess(drive.index('overrun_check()'), drive.index('if (curve_check(lead, lead_dir, lead_from))'))
         self.assertIn('\treturn broken_down || derailed\n', TRAINS)
         self.assertIn('if (P.wrecked || P.braced || P.derailed)', PLATFORMS)
