@@ -56,7 +56,6 @@ class Balance(unittest.TestCase):
     def test_separator_cuts_loss(self):
         self.assertEqual(define('DRUM_LOSS'), 0.2)
         self.assertEqual(define('DRUM_SEPARATED_LOSS'), 0.03)
-        self.assertIn('river_mercury_spill(T, spend)', SOURCE)
 
     def test_table_uses_no_mercury(self):
         block = SOURCE[SOURCE.index('/obj/structure/drill/stamp_mill/water/mill/table/stamp_one_stone'):]
@@ -65,6 +64,34 @@ class Balance(unittest.TestCase):
 
 
 class Accounting(unittest.TestCase):
+    def test_amalgam_loads_apply_mercury_and_recovery_after_feed_debit(self):
+        drum = SOURCE.split('/drum/stamp_one_stone(', 1)[1].split('\n/', 1)[0]
+        plates = SOURCE.split('/stamp_mill/stamp_one_stone(', 1)[1].split('\n/', 1)[0]
+        self.assertIn(
+            '\ttake_feed()\n\tfinish_amalgam_load(T, metal, spend, DRUM_RECOVERY, roll)\n\treturn TRUE',
+            drum,
+        )
+        self.assertIn(
+            '\tS.amount--\n'
+            '\tif (S.amount <= 0)\n'
+            '\t\tqdel(S)\n'
+            '\tfinish_amalgam_load(T, metal, PLATES_LOSS, PLATES_RECOVERY, roll)\n'
+            '\treturn TRUE',
+            plates,
+        )
+
+        finish_load = SOURCE.split('/proc/finish_amalgam_load(', 1)[1].split('\n\n', 1)[0]
+        self.assertIn(
+            '\treagents.remove_reagent("mercury", spend)\n'
+            '\triver_mercury_spill(T, spend)\n'
+            '\tif (isnull(roll))\n'
+            '\t\troll = rand(1, 1000) / 10\n'
+            '\tif (roll <= LODE_METAL * recovery * 100)\n'
+            '\t\treagents.remove_reagent("mercury", AMALGAM_WET_MERCURY)\n'
+            '\t\tspawn_stack(amalgam_type_for(metal), T, 1)',
+            finish_load,
+        )
+
     def test_mills_admit_water_then_tailings_then_spend(self):
         for variant in ("drum", "table"):
             with self.subTest(variant=variant):
