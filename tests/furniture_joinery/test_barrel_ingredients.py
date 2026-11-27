@@ -1,6 +1,7 @@
 """Actual barrel admission/consumption bodies with inert inventory/holders."""
 import json
 from pathlib import Path
+import re
 import sys
 from types import SimpleNamespace as NS
 import unittest
@@ -193,6 +194,35 @@ class BarrelIngredients(unittest.TestCase):
         self.assertTrue(barrel_rows)
         for row in barrel_rows:
             self.assertIn(row['row'], (ROOT / row['file']).read_text().splitlines())
+
+
+
+class SteelBarrelOverlayTests(unittest.TestCase):
+    def test_both_steel_barrel_colors_use_existing_lid_and_fill_states(self):
+        from PIL import Image
+
+        modern = BARREL + '/modern'
+        renderer = block(SOURCE, modern + '/update_icon()')
+        overlays = re.findall(
+            r'image\(icon, src, "([^"]+)"\)|filling\.icon_state = "([^"]+)"',
+            renderer,
+        )
+
+        for barrel_type in (modern, modern + '/yellow'):
+            definition = block(SOURCE, barrel_type + '\n')
+            body_state = re.search(r'(?m)^\ticon_state = "([^"]+)"$', definition)[1]
+            icon = re.search(r"(?m)^\ticon = '([^']+)'$", definition)[1]
+            with Image.open(ROOT / icon) as sheet:
+                states = set(re.findall(r'(?m)^state = "([^"]+)"$', sheet.info['Description']))
+            expected = {f'lid_{body_state}', 'barrel-85', 'barrel85'}
+            referenced = {
+                (constructor or assigned).replace('[initial(icon_state)]', body_state)
+                .replace('[icon_state]', body_state)
+                for constructor, assigned in overlays
+            }
+            with self.subTest(barrel=barrel_type):
+                self.assertFalse(referenced - states, 'Missing DMI states')
+                self.assertEqual(referenced, expected)
 
 
 if __name__ == '__main__':
