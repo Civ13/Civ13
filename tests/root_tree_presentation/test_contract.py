@@ -461,6 +461,32 @@ class SceneFallback(unittest.TestCase):
         inherited=self.appearance(plane=-32767,layer=-1)
         self.assertTrue(self.foreground(inherited,1,10.1))
         self.assertTrue(self.foreground(self.appearance(icon=None),1,3,depth=8))
+    def test_foreground_audit_reads_each_appearance_field_once(self):
+        class TrackedAppearance(N):
+            def __getattribute__(self, name):
+                if name in ('plane', 'layer'):
+                    self.reads[name] += 1
+                return super().__getattribute__(name)
+
+        ordinary = TrackedAppearance(**vars(self.appearance()), reads={'plane': 0, 'layer': 0})
+        inherited = TrackedAppearance(**vars(self.appearance(plane=-32767, layer=-1)),
+                                      reads={'plane': 0, 'layer': 0})
+        self.assertFalse(self.foreground(ordinary, 1, 10.1))
+        self.assertTrue(self.foreground(inherited, 1, 10.1))
+        for appearance in (ordinary, inherited):
+            self.assertEqual(appearance.reads, {'plane': 1, 'layer': 1})
+
+        updated = ('\tvar/p = A:plane\n\tif(p == FLOAT_PLANE)\n\t\tp = inherited_plane\n'
+                   '\tvar/l = A:layer\n\tif(l < 0)\n\t\tl = inherited_layer\n')
+        repeated = ('\tvar/p = A:plane == FLOAT_PLANE ? inherited_plane : A:plane\n'
+                    '\tvar/l = A:layer < 0 ? inherited_layer : A:layer\n')
+        self.assertIn(updated, TREE)
+        original = compile_proc(TREE.replace(updated, repeated, 1), '/proc/root_tree_foreground_appearance(',
+                                'A, inherited_plane, inherited_layer, depth=0, budget=None', self.env)
+        ordinary.reads = {'plane': 0, 'layer': 0}
+        self.assertFalse(original(ordinary, 1, 10.1))
+        self.assertEqual(ordinary.reads, {'plane': 2, 'layer': 2})
+
     def test_omitted_nested_inspection_control(self):
         mutant=TREE.replace('root_tree_foreground_appearance(O, p, l, depth + 1, budget)','FALSE')
         env=environment();env.update(FLOAT_PLANE=-32767)
