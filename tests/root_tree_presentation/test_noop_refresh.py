@@ -226,7 +226,7 @@ class PendingLightPublication(unittest.TestCase):
         self.assertIn('root_tree_light_changed(loc)',light)
         cached=P.fragment(TREE,'/datum/root_tree_presenter/proc/cached_light(')
         self.assertIn('root_light_mask_snapshot(root, TRUE)',cached)
-        self.assertIn('root_light_rgb(root, context.body, TRUE)',cached)
+        self.assertIn('root_light_rgb(root, context.body, TRUE, sample)',cached)
 
     def test_legacy_queue_rejects_same_committed_pending_mask_control(self):
         env,f,root=self.snapshot()

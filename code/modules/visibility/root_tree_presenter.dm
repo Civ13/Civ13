@@ -347,7 +347,7 @@ var/global/list/root_tree_presenters
 		key += "|[time_of_day]"
 	if(light_keys[T] == key)
 		return light_values[T]
-	var/rgb = root_light_rgb(root, context.body, TRUE)
+	var/rgb = root_light_rgb(root, context.body, TRUE, sample)
 	if(rgb && client_daylight && rgb != "#ffffff")
 		var/list/channels = rgb2num(rgb)
 		var/add = round(255 * daylight_lum(root.get_window_coeff()))

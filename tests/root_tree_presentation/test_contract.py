@@ -1,5 +1,7 @@
 """Source-derived root admission/snapshot/ownership contracts; not client pixels."""
+from collections import defaultdict
 import importlib.util
+import json
 from pathlib import Path
 import re
 from types import SimpleNamespace as N
@@ -57,6 +59,10 @@ def compile_proc(text,signature,args,env,method=False):
         assignment=re.fullmatch(r'(\w+) = (.+) \? (.+) : (.+)',line)
         if assignment:line=assignment[1]+' = '+assignment[3]+' if '+assignment[2]+' else '+assignment[4]
         line=line.replace('arglist(sample)','*sample')
+        if name=='cached_light':
+            line=line.replace(r'"\ref[root]|[L.icon]|[L.icon_state]|[L.dir]|[json_encode(sample)]"',
+                              'f"{id(root)}|{L.icon}|{L.icon_state}|{L.dir}|{json_encode(sample)}"')
+            line=line.replace('"|[time_of_day]"', 'f"|{time_of_day}"').replace('rgb = rgb(', 'rgb = dm_rgb(')
         line=line.replace('"phase-[phase].ready.json"','f"phase-{phase}.ready.json"')
         line=re.sub(r'([\w.]+)\.len',r'len(\1)',line)
         line=line.replace('/turf/floor/plating',repr('/turf/floor/plating'))
@@ -163,7 +169,7 @@ class LightPolicy(unittest.TestCase):
     def setUp(self):
         self.env=environment();self.env.update(INVISIBILITY_LEVEL_TWO=45,istext=lambda x:isinstance(x,str))
         compile_proc(SNAP,'/proc/root_light_mask_snapshot(','root, allow_pending=False',self.env)
-        self.f=compile_proc(SNAP,'/proc/root_light_rgb(','root, viewer, allow_pending=False',self.env)
+        self.f=compile_proc(SNAP,'/proc/root_light_rgb(','root, viewer, allow_pending=False, sample=None',self.env)
         self.root=N(lighting_overlay=None,needs_fullbright_coverage=lambda:False)
         self.viewer=N(see_invisible=25)
         self.env['icon']=lambda *a:(_ for _ in ()).throw(AssertionError('Unexpected icon read'))
@@ -187,6 +193,57 @@ class LightPolicy(unittest.TestCase):
         self.env['CIV13_ROOT_TREE_PRESENTATION']=True
         self.root.lighting_overlay=N(loc=self.root,needs_update=True)
         self.assertIsNone(self.f(self.root,self.viewer))
+
+    def test_cached_light_samples_once_per_request_and_maps_only_on_a_miss(self):
+        self.root.lighting_overlay=N(loc=self.root,needs_update=True,color=Values(range(20)),
+                                     color_committed=True,icon='mask',icon_state='',dir=2)
+        self.root.get_window_coeff=lambda:1
+        presenter=N(context=N(body=self.viewer),light_keys=defaultdict(lambda:None),
+                    light_values={})
+        # The cache keys are DM atom references. A fixture identity works here.
+        class Tree(N):
+            __hash__=object.__hash__
+        tree=Tree(loc=self.root)
+
+        snapshot=self.env['root_light_mask_snapshot']
+        snapshots=[]
+        def count_snapshot(root, allow_pending=False):
+            sample=snapshot(root,allow_pending)
+            snapshots.append(sample)
+            return sample
+
+        mapped=[]
+        mask=N(Width=lambda:32,Height=lambda:32,MapColors=lambda *args:mapped.append(args),
+               GetPixel=lambda x,y:'#194766ff')
+        self.env.update(root_light_mask_snapshot=count_snapshot,icon=lambda *args:mask,
+                        id=id,json_encode=json.dumps,daylight_on_client=lambda:False,
+                        time_of_day=70,round=round,min=min,
+                        daylight_lum=lambda coefficient:.2*coefficient,
+                        rgb2num=lambda rgb:Values(int(rgb[i:i+2],16) for i in (1,3,5)),
+                        dm_rgb=lambda r,g,b:f'#{r:02x}{g:02x}{b:02x}')
+        cached=compile_proc(TREE,'/datum/root_tree_presenter/proc/cached_light(',
+                            'self, T',self.env,True)
+
+        self.assertEqual(cached(presenter,tree),'#194766')
+        self.assertEqual(len(snapshots),1)
+        self.assertEqual(mapped,[tuple(range(20))])
+        self.assertEqual(cached(presenter,tree),'#194766')
+        self.assertEqual(len(snapshots),2)
+        self.assertEqual(len(mapped),1)
+
+        # Changing the daylight key or the committed matrix still remaps.
+        self.env['daylight_on_client']=lambda:True
+        self.assertEqual(cached(presenter,tree),'#4c7a99')
+        self.root.lighting_overlay.color=Values([.25]*20)
+        self.assertEqual(cached(presenter,tree),'#4c7a99')
+        self.assertEqual(mapped,[tuple(range(20)),tuple(range(20)),(.25,)*20])
+        self.assertEqual(len(snapshots),4)
+
+        # Reject an exact-sized matrix with a malformed final coefficient.
+        self.root.lighting_overlay.color[20]='bad'
+        self.assertIsNone(cached(presenter,tree))
+        self.assertIsNone(snapshots[-1])
+        self.assertEqual(len(mapped),3)
 
 class OwnershipAndComposition(unittest.TestCase):
     def model(self):
