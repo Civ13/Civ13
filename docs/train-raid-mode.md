@@ -110,7 +110,9 @@ matched alongside; the engine mount is decorative.
 composes the Hauler raid station study with two copies of the four-level
 shuttle study, one in each berth, and adds the mode objects: crew spawn
 landmarks, store landmarks, helm consoles, bridge gates, crew doors, loot pads
-on the section anchors and the map metadata object. Validators and the two
+on the section anchors and the map metadata object. A gap rings each shuttle,
+so opening an outward hull door cannot bypass its closed boarding bridges.
+Validators and the two
 WIP studies are unchanged.
 
 ## Not in this version

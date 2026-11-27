@@ -156,6 +156,16 @@ def build():
         ox, oy, oz = slot["origin"]
         for (lx, ly, lz), kind in home.train_levels().items():
             grid[ox + lx, oy + ly, oz + lz] = (shuttle_atoms(kind, crew, (lx, ly, lz)), shuttle_area(crew, (lx, ly, lz)))
+        # Leave no solid walkable path from an outward breach or a roof
+        # to the station. Only the inward boarding bridges cross this gap.
+        bridge_cells = {tuple(pos) for pos in slot["bridge_cells"]}
+        x1, y1 = ox + home.WIDTH, oy + home.LENGTH
+        perimeter = {(x, y) for x in range(ox - 1, x1 + 1) for y in (oy - 1, y1)}
+        perimeter |= {(x, y) for x in (ox - 1, x1) for y in range(oy, y1)}
+        for x, y in perimeter:
+            for z in range(oz, oz + home.TRAIN_LEVELS):
+                if (x, y, z) not in bridge_cells:
+                    grid[x, y, z] = ("/turf/wall/indestructable/train_raid_gap", AREAS["void"])
         for bx, by, bz in slot["bridge_cells"]:
             atoms, _ = grid[bx, by, bz]
             grid[bx, by, bz] = (f'/obj/structure/train_raid_bridge{{crew = "{crew}"}},{atoms}', AREAS["bridge"])

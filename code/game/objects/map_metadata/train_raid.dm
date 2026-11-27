@@ -315,6 +315,7 @@ var/global/list/train_raid_loot_pads = list()
 /datum/train_raid_crew/proc/status_text()
 	switch (state)
 		if (TRAIN_RAID_DOCKED)
+			if (!speed_matches()) return "The shuttle has lost its speed match. The bridges are retracting."
 			return "The shuttle is running alongside the Hauler at [shuttle_speed] tiles/s; its bridges retract in [max(0, ceil((state_until - world.time) / (1 SECOND)))] second(s)."
 		if (TRAIN_RAID_INBOUND)
 			var/eta = max(0, ceil((state_until - world.time) / (1 SECOND)))
@@ -558,6 +559,13 @@ var/global/list/train_raid_loot_pads = list()
 	animate(src, pixel_y = -world.icon_size, time = 10 / TRAIN_RAID_HAULER_SPEED, loop = -1)
 	animate(pixel_y = 0, time = 0)
 
+
+// The off-bridge perimeter is open visually but cannot be walked through
+// or dismantled into a route around the speed interlock.
+/turf/wall/indestructable/train_raid_gap
+	name = "gap between trains"
+	desc = "The track rushes past below. Cross at a boarding bridge."
+	opacity = FALSE
 
 // A bridge tile between a shuttle boarding port and the platform. Retracted,
 // it is an impassable gap; extended, it is an ordinary walkway.

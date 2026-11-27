@@ -218,7 +218,7 @@ class TrainRaidMapTests(unittest.TestCase):
                     self.assertNotIn("locked", atom)
                     self.assertNotIn("key_door", atom)
 
-    def flood(self, start, z=1):
+    def flood(self, start, z=1, closed_crew=None):
         seen = {start}
         queue = deque([start])
         while queue:
@@ -227,10 +227,21 @@ class TrainRaidMapTests(unittest.TestCase):
                 nx, ny = x + dx, y + dy
                 if (nx, ny) in seen or (nx, ny, z) not in self.grid:
                     continue
-                if walkable(self.atoms_at(nx, ny, z)):
+                atoms = self.atoms_at(nx, ny, z)
+                if closed_crew and f'/obj/structure/train_raid_bridge{{crew = "{closed_crew}"}}' in atoms:
+                    continue
+                if walkable(atoms):
                     seen.add((nx, ny))
                     queue.append((nx, ny))
         return seen
+
+    def test_retracted_bridge_has_no_ground_level_bypass(self):
+        hx0, hy0, hx1, hy1 = self.layout["hauler"]["bounds"]
+        for crew, data in self.layout["crews"].items():
+            port_x, port_y = data["boarding_ports"][0]
+            inside_x = port_x - 1 if crew == "west" else port_x + 1
+            reach = self.flood((inside_x, port_y), closed_crew=crew)
+            self.assertFalse(any(hx0 <= x <= hx1 and hy0 <= y <= hy1 for x, y in reach), crew)
 
     def test_every_section_reachable_from_each_shuttle(self):
         for crew, data in self.layout["crews"].items():
