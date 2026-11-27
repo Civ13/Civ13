@@ -1089,6 +1089,7 @@
 #include "code\modules\1713\steel_grades.dm"
 #include "code\modules\1713\steel_works.dm"
 #include "code\modules\1713\stone_crushing.dm"
+#include "code\modules\1713\blast_quarry.dm"
 #include "code\modules\1713\pepelsibirsk_traders.dm"
 #include "code\modules\1713\plating.dm"
 #include "code\modules\1713\primitive_carrying.dm"

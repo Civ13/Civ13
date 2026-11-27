@@ -381,6 +381,12 @@ var/global/datum/practice_rooms/practice_rooms = new
 	props["workshop_desk"] = new /obj/structure/practice_workshop_desk(locate(x + 24, y + 9, z))
 	props["paved_door"] = new /obj/structure/simple_door/key_door/anyone/wood(locate(x + 31, y + 7, z))
 	// A store in the office and one in each yard.
+	// A pre-fractured sample teaches harvesting, not live blasting.
+	props["quarry_sample"] = new /obj/structure/quarry_cluster/practice(locate(x + 17, y + 19, z))
+	var/obj/item/pick = new /obj/item/weapon/material/pickaxe/steel(locate(x + 16, y + 18, z))
+	pick.should_save = FALSE
+	var/obj/structure/stone_crusher/crusher = new(locate(x + 19, y + 19, z))
+	crusher.should_save = FALSE
 	props["stores"] = list(new /obj/structure/practice_stores(locate(x + 28, y + 10, z)), new /obj/structure/practice_stores(locate(x + 32, y + 9, z)), new /obj/structure/practice_stores(locate(x + 14, y + 16, z)))
 	// Interior corners: the whole plot, the drawing office, the paved yard and
 	// the full-width field north of the rooms (the soil yard and the paved
