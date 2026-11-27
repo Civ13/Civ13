@@ -3,12 +3,18 @@
     python3 tests/timekeeping/test_source.py
     python3 tests/ecology_spawning/run_linux.py . tests/timekeeping/probe.dm
 """
+import importlib.util
 import re
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = (ROOT / 'code/modules/1713/timekeeping.dm').read_text(encoding='utf-8')
+spec = importlib.util.spec_from_file_location(
+    'source_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+adapter = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(adapter)
 
 
 def dmi_states(path):
@@ -18,6 +24,16 @@ def dmi_states(path):
 
 
 class TimekeepingSource(unittest.TestCase):
+    def test_elapsed_seconds_respects_both_limits(self):
+        elapsed = adapter.project(SRC, '/proc/timekeeping_elapsed_seconds',
+                                  'configured_seconds, last_tick', {'world': SimpleNamespace(time=100)})
+        for configured_seconds, last_tick, expected in (
+            (0, 80, 0), (-3, 80, 0), (2, 105, 0), (2, 100, 0),
+            (2, 93, 0.7), (0.5, 60, 0.5), (2, 80, 2), (10, 60, 2),
+        ):
+            with self.subTest(configured_seconds=configured_seconds, last_tick=last_tick):
+                self.assertEqual(elapsed(configured_seconds, last_tick), expected)
+
     def test_every_state_used_is_drawn(self):
         clock = dmi_states('icons/obj/timekeeping.dmi')
         light = dmi_states('icons/obj/lighthouse.dmi')
