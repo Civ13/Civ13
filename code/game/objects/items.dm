@@ -178,15 +178,26 @@
 		var/mob/living/human/HM = user
 		if (HM.werewolf && HM.body_build.name != "Default") return
 	// Out of a bag through the storage strip: the storage window's move time.
-	if (istype(loc, /obj/item/weapon/storage) && !storage_strip_take_wait(user, src))
-		return
-	if (do_after(user,equiptimer, src, can_move = equiptimer))
+	var/hand_slot = 0
+	var/mob/living/human/holder = user
+	var/obj/item/weapon/storage/source = loc
+	var/obj/item/weapon/storage/drawn_from
+	if (istype(source))
+		if (istype(holder) && holder.client && (source in storage_window_carried_holders(holder)))
+			hand_slot = holder.hand ? slot_l_hand : slot_r_hand
+			if (holder.get_equipped_item(hand_slot) || !inventory_drag_hand_usable(hand_slot, holder))
+				return
+		if (!storage_strip_take_wait(user, src))
+			return
+	if (do_after(user,equiptimer, src, needhand = !hand_slot, can_move = equiptimer))
+		if (hand_slot && (QDELETED(source) || loc != source || !(source in storage_window_carried_holders(holder)) || !source.storage_contents_accessible() || holder.get_equipped_item(hand_slot) || holder.restrained() || !inventory_drag_hand_usable(hand_slot, holder)))
+			return
 		if (src in range(1,user))
 			var/turf/stoop_from = isturf(loc) ? loc : null
 			if (hasorgans(user))
 				var/mob/living/human/H = user
 				var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
-				if (user.hand)
+				if (hand_slot ? hand_slot == slot_l_hand : user.hand)
 					temp = H.organs_by_name["l_hand"]
 				if (temp && !temp.is_usable())
 					to_chat(user, SPAN_NOTICE("You try to move your [temp.name], but cannot!"))
@@ -197,7 +208,8 @@
 			pickup(user)
 			if (istype(loc, /obj/item/weapon/storage))
 				var/obj/item/weapon/storage/S = loc
-				S.remove_from_storage(src)
+				if (S.remove_from_storage(src))
+					drawn_from = S
 
 			throwing = FALSE
 			if (loc == user)
@@ -206,7 +218,12 @@
 			else
 				if (isliving(loc))
 					return
-			user.put_in_active_hand(src)
+			if (hand_slot)
+				inventory_drag_put_in_hand(hand_slot, holder)
+			else
+				user.put_in_active_hand(src)
+			if (drawn_from)
+				restore_lanyard_draw(drawn_from, holder)
 			pickup(user)
 			if (stoop_from && loc == user && ishuman(user))
 				var/mob/living/human/stooper = user
@@ -216,7 +233,7 @@
 				if (hasorgans(user))
 					var/mob/living/human/H = user
 					var/obj/item/organ/external/temp = H.organs_by_name["r_hand"]
-					if (user.hand)
+					if (hand_slot ? hand_slot == slot_l_hand : user.hand)
 						temp = H.organs_by_name["l_hand"]
 					if (temp && !temp.is_usable())
 						to_chat(user, SPAN_NOTICE("You try to move your [temp.name], but cannot!"))
@@ -227,7 +244,8 @@
 				pickup(user)
 				if (istype(loc, /obj/item/weapon/storage))
 					var/obj/item/weapon/storage/S = loc
-					S.remove_from_storage(src)
+					if (S.remove_from_storage(src))
+						drawn_from = S
 
 				throwing = FALSE
 				if (loc == user)
@@ -236,7 +254,12 @@
 				else
 					if (isliving(loc))
 						return
-				user.put_in_active_hand(src)
+				if (hand_slot)
+					inventory_drag_put_in_hand(hand_slot, holder)
+				else
+					user.put_in_active_hand(src)
+				if (drawn_from)
+					restore_lanyard_draw(drawn_from, holder)
 				pickup(user)
 	return
 
@@ -310,6 +333,7 @@
 // called when this item is removed from a storage item, which is passed on as S. The loc variable is already set to the new destination before this is called.
 /obj/item/proc/on_exit_storage(obj/item/weapon/storage/S as obj)
 	reset_abandonment()
+	lanyard_tied = FALSE
 
 // called when this item is added into a storage item, which is passed on as S. The loc variable is already set to the storage item.
 /obj/item/proc/on_enter_storage(obj/item/weapon/storage/S as obj)

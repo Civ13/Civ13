@@ -134,10 +134,10 @@
 	else if (href_list["paint"])
 		var/x = text2num(href_list["x"])
 		var/y = text2num(href_list["y"])
-		faction_symbol_push_undo(undo_stack, draft_grid)
 		if (tool == "bucket")
-			faction_symbol_bucket_fill_grid(draft_grid, x, y, paint_color)
+			faction_symbol_bucket_fill_grid(draft_grid, x, y, paint_color, undo_stack)
 		else if (x >= 1 && x <= FACTION_SYMBOL_SIZE && y >= 1 && y <= FACTION_SYMBOL_SIZE)
+			faction_symbol_push_undo(undo_stack, draft_grid)
 			draft_grid[faction_symbol_grid_index(x, y)] = paint_color
 	else if (href_list["stroke"])
 		// A whole client-side brush drag, batched into one action -- and, via

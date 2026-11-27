@@ -1,10 +1,16 @@
+/world/OpenPort(port)
+	return ..("none")
+
 /world/New()
+	OpenPort("none")
 	var/mob/living/human/patient = new
 	var/mob/living/human/surgeon = new
 	var/obj/item/organ/external/left = new
 	var/obj/item/organ/external/right = new
 	var/obj/item/organ/external/donor_right = new
 	var/obj/item/organ/external/other_left = new
+	left.loc = surgeon
+	donor_right.loc = surgeon
 	left.limb_name = "l_arm"
 	right.limb_name = "r_arm"
 	donor_right.limb_name = "r_arm"
@@ -14,8 +20,11 @@
 	var/failures = 0
 	if (S.can_use(surgeon, patient, "l_arm", left) != TRUE)
 		failures++
+	// Mismatch must fail on identity even when the donor's true slot is empty.
+	patient.limbs["r_arm"] = null
 	if (S.can_use(surgeon, patient, "l_arm", donor_right) != SURGERY_FAILURE)
 		failures++
+	patient.limbs["r_arm"] = right
 	if (S.can_use(surgeon, patient, "r_arm", right) != FALSE)
 		failures++
 	S.end_step(surgeon, patient, "l_arm", donor_right)
@@ -30,4 +39,4 @@
 	if (patient.limbs["l_arm"] != left)
 		failures++
 	text2file("[failures]", "result.txt")
-	shutdown()
+	del(world)

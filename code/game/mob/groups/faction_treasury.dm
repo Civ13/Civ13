@@ -17,7 +17,7 @@
 // lives in map.faction_recruitment["treasury"] (durable, renamed with the
 // faction):
 //   faction -> list("dues" = silver a week,
-//                   "wages" = list(account = list(silver a day, owed, last time, name)),
+//                   "wages" = list(account = list(silver a day, owed, last time, name, sub-tenth carry)),
 //                   "paid" = list(account = list(silver this week, week start, name)),
 //                   "ledger" = list(text, newest last))
 // Worth is in silver, the scale of the trading balance (weighed_money.dm).
@@ -69,8 +69,13 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 		var/list/wages = R["wages"]
 		for (var/account in wages.Copy())
 			var/list/row = wages[account]
-			if (!istext(account) || !islist(row) || row.len != 4 || !isnum(row[1]) || !isnum(row[2]) || !isnum(row[3]) || !istext(row[4]) || row[1] < 0 || row[2] < 0)
+			if (!istext(account) || !islist(row) || (row.len != 4 && row.len != 5) || !isnum(row[1]) || !isnum(row[2]) || !isnum(row[3]) || !istext(row[4]) || row[1] < 0 || row[2] < 0)
 				wages -= account
+				continue
+			if (row.len == 4)
+				row += 0 // legacy balance was already stored in tenths of silver
+			else if (!isnum(row[5]) || row[5] < 0 || row[5] >= TREASURY_DAY || row[5] != round(row[5]))
+				row[5] = 0 // bad carry cannot invalidate already-earned coin
 		var/list/paid = R["paid"]
 		for (var/account in paid.Copy())
 			var/list/row = paid[account]
@@ -87,6 +92,18 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 		if (B.faction == old_name)
 			B.faction = new_name
 			B.update_box_name()
+
+// A character's legal rename updates existing wage labels without changing ownership or earnings.
+/obj/map_metadata/proc/treasury_refresh_wage_name(account, old_name, new_name)
+	var/list/T = treasury_state()
+	for (var/faction in T)
+		var/list/R = T[faction]
+		if (!islist(R))
+			continue
+		var/list/wages = R["wages"]
+		var/list/row = islist(wages) ? wages[account] : null
+		if (islist(row) && row.len >= 4 && row[4] == old_name)
+			row[4] = new_name
 
 /obj/map_metadata/proc/treasury_log(faction, text)
 	var/list/R = treasury_record(faction)
@@ -106,15 +123,41 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 
 // --- Wages and dues ------------------------------------------------------------
 
-// Brings a wage row up to now and returns what is owed.
+// Brings a wage row up to now and returns the payable balance in silver.
+// Row 5 tracks the numerator of the unpayable fraction of one tenth of silver
+// (denominator TREASURY_DAY). Legacy rows simply start with no such fraction.
 /proc/treasury_wage_accrue(list/row, now)
-	if (!islist(row) || row.len != 4)
+	if (!islist(row) || (row.len != 4 && row.len != 5))
 		return 0
+	if (row.len == 4)
+		row += 0
 	var/elapsed = now - row[3]
-	if (elapsed > 0 && row[1] > 0)
-		row[2] = min(row[2] + row[1] * elapsed / TREASURY_DAY, row[1] * TREASURY_WAGE_CAP_DAYS)
 	row[3] = max(row[3], now)
-	row[2] = round(row[2], 0.1)
+	var/rate_tenths = round(row[1] * 10 + 0.5)
+	var/owed_tenths = round(row[2] * 10 + 0.5)
+	var/room = rate_tenths * TREASURY_WAGE_CAP_DAYS - owed_tenths
+	// A rate cut only limits NEW earnings. Even an over-cap balance is still owed.
+	if (elapsed <= 0 || room <= 0)
+		return row[2]
+
+	// Split the sub-day product into 128-decisecond blocks. Both intermediate
+	// products stay exactly representable in DM at any valid wage rate.
+	elapsed = min(elapsed, TREASURY_WAGE_CAP_DAYS * TREASURY_DAY)
+	var/days = round(elapsed / TREASURY_DAY)
+	var/within_day = elapsed - days * TREASURY_DAY
+	var/blocks = round(within_day / 128)
+	var/packed = blocks * rate_tenths
+	var/block_divisor = TREASURY_DAY / 128
+	var/block_tenths = round(packed / block_divisor)
+	var/carry = (packed - block_tenths * block_divisor) * 128 + (within_day - blocks * 128) * rate_tenths + row[5]
+	var/extra_tenths = round(carry / TREASURY_DAY)
+	var/earned = days * rate_tenths + block_tenths + extra_tenths
+	if (earned >= room)
+		row[2] = (owed_tenths + room) / 10
+		row[5] = 0
+	else
+		row[2] = (owed_tenths + earned) / 10
+		row[5] = carry - extra_tenths * TREASURY_DAY
 	return row[2]
 
 /obj/map_metadata/proc/treasury_set_wage(faction, account, name, rate)
@@ -125,13 +168,13 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (islist(row))
 		treasury_wage_accrue(row, recruitment_now())
 	if (rate <= 0)
-		if (islist(row) && row[2] > 0)
+		if (islist(row) && (row[2] > 0 || row[5] > 0))
 			row[1] = 0 // keep what is already owed
 		else
 			wages -= account
 		return 0
 	if (!islist(row))
-		row = list(rate, 0, recruitment_now(), name)
+		row = list(rate, 0, recruitment_now(), name, 0)
 		wages[account] = row
 	row[1] = rate
 	row[4] = name
@@ -377,33 +420,61 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	map.treasury_log(faction, "[user.real_name] set [lowertext(label)] at [civ[index]]%.")
 	to_chat(user, SPAN_NOTICE("[label] is now [civ[index]]%."))
 
+// Prompt labels are unique even for legacy wage records with the same name.
+// Do not expose account keys or store the prompt label as the character's name.
+/proc/treasury_wage_choices(list/online_names, list/wages)
+	var/list/options = list()
+	for (var/account in online_names)
+		var/name = online_names[account]
+		options["[options.len + 1]. [name] (online)"] = list(account, name)
+	for (var/account in wages)
+		if (account in online_names)
+			continue
+		var/list/row = wages[account]
+		if (!islist(row) || row.len < 4 || !istext(row[4]))
+			continue
+		var/name = row[4]
+		options["[options.len + 1]. [name] (saved wage)"] = list(account, name)
+	return options
+
 /obj/structure/closet/crate/faction_strongbox/proc/set_wages(mob/living/human/user)
-	var/list/members = list()
+	var/selected_faction = faction
+	var/list/online_names = list()
+	var/list/online_members = list()
 	for (var/mob/living/human/M in human_mob_list)
-		if (M.civilization == faction && M.stat != DEAD && M.client)
+		if (M.civilization == selected_faction && M.stat != DEAD && M.client)
 			var/account = faction_roster_account(M)
 			if (account)
-				members["[M.real_name]"] = account
-	var/list/R = map.treasury_record(faction)
+				online_names[account] = M.real_name
+				online_members[account] = M
+	var/list/R = map.treasury_record(selected_faction)
 	var/list/wages = R["wages"]
-	for (var/account in wages)
-		var/list/row = wages[account]
-		if (!(row[4] in members))
-			members[row[4]] = account
-	if (!members.len)
-		to_chat(user, SPAN_NOTICE("No members are about to pay."))
+	var/list/choices = treasury_wage_choices(online_names, wages)
+	if (!choices.len)
+		to_chat(user, SPAN_NOTICE("No members are available to pay."))
 		return
-	var/pick = WWinput(user, "Whose wage? Members collect wages from the coin in the box; unpaid wages stop growing after [TREASURY_WAGE_CAP_DAYS] days.", "Wages", "Cancel", members + "Cancel")
-	if (!pick || pick == "Cancel" || !(pick in members))
+	var/pick = WWinput(user, "Whose wage? Members collect wages from the coin in the box; unpaid wages stop growing after [TREASURY_WAGE_CAP_DAYS] days.", "Wages", "Cancel", choices + "Cancel")
+	if (!pick || pick == "Cancel" || !(pick in choices) || faction != selected_faction || !map.is_faction_leader(user, faction))
 		return
-	var/account = members[pick]
+	var/list/selection = choices[pick]
+	var/account = selection[1]
+	var/name = selection[2]
 	var/list/row = wages[account]
-	var/value = player_input(user, "[pick]'s wage in silver a day (0 to [TREASURY_WAGE_MAX]; 0 stops it):", "Wages", islist(row) ? row[1] : 0, "num", null, TRUE)
-	if (!isnum(value) || !map.is_faction_leader(user, faction))
+	var/value = player_input(user, "[name]'s wage in silver a day (0 to [TREASURY_WAGE_MAX]; 0 stops it):", "Wages", islist(row) ? row[1] : 0, "num", null, TRUE)
+	if (!isnum(value) || faction != selected_faction || !map.is_faction_leader(user, faction))
 		return
-	var/rate = map.treasury_set_wage(faction, account, pick, value)
-	map.treasury_log(faction, "[user.real_name] set [pick]'s wage at [rate] silver a day.")
-	to_chat(user, SPAN_NOTICE("[pick]'s wage is now [rate] silver a day."))
+	// The prompts can sleep. Prefer the current name if the character was renamed while either was open.
+	R = map.treasury_record(selected_faction)
+	wages = R["wages"]
+	row = wages[account]
+	var/mob/living/human/online = online_members[account]
+	if (!QDELETED(online) && faction_roster_account(online) == account)
+		name = online.real_name
+	else if (islist(row) && row.len >= 4 && istext(row[4]))
+		name = row[4]
+	var/rate = map.treasury_set_wage(faction, account, name, value)
+	map.treasury_log(faction, "[user.real_name] set [name]'s wage at [rate] silver a day.")
+	to_chat(user, SPAN_NOTICE("[name]'s wage is now [rate] silver a day."))
 
 /obj/structure/closet/crate/faction_strongbox/proc/collect_wages(mob/living/human/user)
 	var/account = faction_roster_account(user)
@@ -421,8 +492,8 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	if (paid <= 0)
 		to_chat(user, SPAN_WARNING("You are owed [weighed_silver_text(owed)], but the box has no coin small enough to pay you."))
 		return
-	row[2] = round(max(0, row[2] - paid), 0.1)
-	if (row[1] <= 0 && row[2] <= 0)
+	row[2] = max(0, round(row[2] * 10 + 0.5) - round(paid * 10 + 0.5)) / 10
+	if (row[1] <= 0 && row[2] <= 0 && row[5] <= 0)
 		wages -= account
 	map.treasury_log(faction, "[user.real_name] collected wages worth [weighed_silver_text(paid)].")
 	to_chat(user, SPAN_NOTICE("You collect wages worth [weighed_silver_text(paid)][row[2] > 0 ? "; the box still owes you [weighed_silver_text(row[2])]" : ""]."))
@@ -455,7 +526,7 @@ var/global/list/faction_strongboxes = list() // every treasury strongbox
 	var/now = recruitment_now()
 	for (var/account in wages)
 		var/list/row = wages[account]
-		lines += "Wage: [row[4]], [row[1]] silver a day, owed [weighed_silver_text(treasury_wage_accrue(row, now))]."
+		lines += "Wage: [row[4]], [row[1]] silver a day, owed [weighed_silver_text(treasury_wage_accrue(row.Copy(), now))]."
 	var/list/paid = R["paid"]
 	for (var/account in paid)
 		var/list/row = paid[account]

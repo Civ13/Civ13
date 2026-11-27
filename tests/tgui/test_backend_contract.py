@@ -2,7 +2,9 @@
 from pathlib import Path
 import json
 import re
+import struct
 import unittest
+import zlib
 
 ROOT = Path(__file__).resolve().parents[2]
 DM = (ROOT / 'code/modules/nano/tgui.dm').read_text()
@@ -27,6 +29,22 @@ def declared_fields(path, owner):
     for action, fields in re.findall(r'(?:if \(action == |if \()"(\w+)"\)+\n\t+return list\(([^\n]+)\)', body):
         found[action] = re.findall(r'"([^"\n]+)"', fields)
     return found
+
+
+def dmi_description(path):
+    """Read the PNG Description chunk without runner-installed imaging packages."""
+    data = path.read_bytes()
+    assert data.startswith(b"\x89PNG\r\n\x1a\n"), path
+    offset = 8
+    while offset + 12 <= len(data):
+        size, kind = struct.unpack_from(">I4s", data, offset)
+        value = data[offset + 8:offset + 8 + size]
+        if kind == b'zTXt' and value.startswith(b'Description\0\0'):
+            return zlib.decompress(value[len(b'Description\0\0'):]).decode()
+        if kind == b'tEXt' and value.startswith(b'Description\0'):
+            return value[len(b'Description\0'):].decode()
+        offset += size + 12
+    raise AssertionError(f"No DMI Description chunk in {path}")
 
 
 class BackendContract(unittest.TestCase):
@@ -78,17 +96,40 @@ class BackendContract(unittest.TestCase):
             self.assertTrue(act.startswith('\t. = TRUE\n'))
             self.assertLess(act.index('user.stat || user.restrained()'), act.index('action == "vend"'))
             self.assertLess(act.index('in_range(src, user)'), act.index('action == "vend"'))
-            self.assertLess(act.index(row), act.index('product_records[key]'))
+            if source == sales:
+                self.assertLess(act.index(row), act.index('product_records[key]'))
+            else:
+                self.assertIn('find_vending_row(value)', act)
+                self.assertNotIn('product_records[key]', act)
             self.assertNotRegex(act, r'\busr\b|href_list')
         # The owner's management page is a panel window with its own checked handler.
         self.assertNotIn('/obj/structure/vending/sales/Topic(', sales)
         self.assertNotIn('window=vendor_management', sales)
         manage = sales.split('/obj/structure/vending/sales/proc/manage_act(action, list/params, mob/user)\n', 1)[1].split('\n/', 1)[0]
-        for check in ('user.stat || user.restrained()', 'in_range(src, user)', 'find_company_member(user, owner)', 'index > product_records.len'):
+        for check in ('user.stat || user.restrained()', 'in_range(src, user)', 'company_may_operate(user, owner)', 'index > product_records.len'):
             self.assertLess(manage.index(check), manage.index('switch (action)'))
         self.assertIn('fiat.currency_list[new_currency][5]', manage)
         self.assertIn('sanitize("[value]", 50)', manage)
         self.assertNotRegex(manage, r'\busr\b|href_list|locate\(')
+
+    def test_base_vendor_rows_and_rack_storage_use_exact_identity(self):
+        base = (ROOT / 'code/game/objects/structures/vending/vending.dm').read_text()
+        craftable = (ROOT / 'code/modules/1713/vending.dm').read_text()
+        product = (ROOT / 'code/game/objects/structures/vending/vending_product.dm').read_text()
+        select = base.split('/proc/find_vending_row(key)', 1)[1].split('/obj/', 1)[0]
+        self.assertIn('R.base_vending_row_key == key && R.amount > 0', select)
+        self.assertNotIn('product_records[key]', select)
+        self.assertIn('"key" = vending_row_key(I)', base)
+        restore = base.split('/proc/restock_record(obj/item/W)', 1)[1].split('/obj/', 1)[0]
+        self.assertLess(restore.index('W.type == R.product_path'), restore.index('istype(W, R.product_path)'))
+        stock = craftable.split('/craftable/stock(', 1)[1].split('/craftable/rifles', 1)[0]
+        self.assertLess(stock.index('canUnEquip(W)'), stock.index('transfer_held_item_to(W, src)'))
+        self.assertLess(stock.index('transfer_held_item_to(W, src)'), stock.index('stock_auto(W)'))
+        self.assertLess(stock.index('R.product_item += W'), stock.index('product_records.Add(R)'))
+        branch = product.split('/proc/get_product(', 1)[1].split('/obj/structure/vending/sales)', 1)[0]
+        self.assertNotIn('new product_path', branch)
+        self.assertIn('stored_item.loc != vending_machine', branch)
+        self.assertIn('stored_item.forceMove(product_location)', branch)
 
     def test_status_only_updates_and_ready_snapshot(self):
         self.assertIn('if (!isnull(data))\n\t\tlatest_data = data', DM)
@@ -308,8 +349,8 @@ class BackendContract(unittest.TestCase):
         # the batch limit and the busy lock before the unchanged craft proc.
         self.assertLess(topic.index('!still_valid(H) || H.stat || H.restrained()'), topic.index('href_list["makeable_only"]'))
         for earlier, later in (('working || !H.can_build_recipe', 'find_recipe('), ('find_recipe(', 'batch_limit(R)'),
-                               ('quantity > limit', 'H.can_build_recipe = FALSE'), ('H.can_build_recipe = FALSE', 'S.produce_recipe(R, quantity, H, options)'),
-                               ('S.produce_recipe(R, quantity, H, options)', 'H.can_build_recipe = TRUE')):
+                               ('quantity > limit', 'H.can_build_recipe = FALSE'), ('H.can_build_recipe = FALSE', 'S.produce_recipe(R, quantity, H, options, recheck_source = reach)'),
+                               ('S.produce_recipe(R, quantity, H, options, recheck_source = reach)', 'H.can_build_recipe = TRUE')):
             self.assertLess(make.index(earlier), make.index(later), (earlier, later))
         valid = source.split('/datum/crafting_window/proc/still_valid', 1)[1].split('/datum/topic_state', 1)[0]
         self.assertIn('source.loc == H && H.get_active_hand() == source', valid)
@@ -388,7 +429,7 @@ class BackendContract(unittest.TestCase):
         source = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
         detail = source.split('/datum/crafting_window/proc/detail_for(id)', 1)[1].split('/datum/crafting_window/proc/given_options', 1)[0]
         # Looking closely uses the shared read-only hooks and names a row the same way a craft does.
-        self.assertLess(detail.index('find_recipe(id)'), detail.index('craft_recipe_requirements(viewer, R)'))
+        self.assertLess(detail.index('find_recipe(id)'), detail.index('craft_recipe_requirements(viewer, R, source)'))
         self.assertIn('craft_product_for(R)', detail)
         for action in ('player_input', 'WWinput', 'craft_product_options', 'craft_product_answer'):
             self.assertNotIn(action, source)
@@ -450,7 +491,7 @@ class BackendContract(unittest.TestCase):
         self.assertIn('!H.client || H.client.crafting_window_classic || H.client.modern_ui_failed', shown)
         stack = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
         menu = stack.split('/obj/item/stack/proc/list_recipes(', 1)[1].split('// Custom qdel', 1)[0]
-        self.assertLess(menu.index('if (crafting_window_shown(user))'), menu.index('user.set_using_object(src)'))
+        self.assertLess(menu.index('if (crafting_window_shown(user, reach = TRUE))'), menu.index('user.set_using_object(src)'))
         self.assertIn("<title>Crafting</title>", menu)
 
     def test_windows_declare_their_own_actions(self):
@@ -481,6 +522,46 @@ class BackendContract(unittest.TestCase):
         book = (ROOT / 'code/modules/research_tree/book_interface.dm').read_text()
         self.assertIn('/obj/item/weapon/book/ui_actions(ui_key)\n\tif (ui_key == "research_book")', book)
 
+    def test_faction_emblem_stamps_resolve_shipped_icon_states(self):
+        source = (ROOT / 'code/game/mob/groups/faction_symbol.dm').read_text()
+        labels = re.search(r'/list/faction_symbol_shapes = list\(([^\n]+)\)', source)[1]
+        shapes = re.findall(r'"([^"]+)"', labels)
+        stamp = source.split('/proc/faction_symbol_stamp_grid(', 1)[1].split('\n/', 1)[0]
+        description = dmi_description(ROOT / 'icons/obj/banners.dmi')
+        states = set(re.findall(r'^state = "([^"]*)"', description, re.M))
+        self.assertIn('big cross', shapes)
+        self.assertIn('var/shape_state = replacetext(shape, " ", "_")', stamp)
+        self.assertIn('"b_[shape_state]"', stamp)
+        self.assertLessEqual({'b_' + shape.replace(' ', '_') for shape in shapes}, states)
+
+    def test_faction_emblem_bucket_only_records_real_edits(self):
+        source = (ROOT / 'code/game/mob/groups/faction_symbol.dm').read_text()
+        fill = source.split('/proc/faction_symbol_bucket_fill_grid(', 1)[1].split('\n/', 1)[0]
+        save = fill.index('faction_symbol_push_undo(undo_stack, grid)')
+        self.assertLess(fill.index('if (!target || cmptext(target, new_color))'), save)
+        self.assertLess(save, fill.index('grid[faction_symbol_grid_index(px, py)] = new_color'))
+        creation = (ROOT / 'code/game/mob/groups/faction_creation.dm').read_text()
+        for editor, call in ((source, 'map.bucket_fill_faction_symbol(faction, x, y, color)'),
+                             (creation, 'faction_symbol_bucket_fill_grid(draft_grid, x, y, paint_color, undo_stack)')):
+            paint = editor.split('else if (href_list["paint"])', 1)[1].split('else if (href_list["stroke"])', 1)[0]
+            self.assertLess(paint.index(call), paint.index('faction_symbol_push_undo'))
+
+    def test_faction_emblem_window_identity_and_revocation(self):
+        source = (ROOT / 'code/game/mob/groups/faction_symbol.dm').read_text()
+        open_editor = source.split('/mob/living/human/proc/design_faction_symbol()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('editor = faction_symbol_editor_for_current_faction()', open_editor)
+        self.assertNotIn('new(src, src)', open_editor)
+        acquire = source.split('/mob/living/human/proc/faction_symbol_editor_for_current_faction()', 1)[1].split('\n/', 1)[0]
+        self.assertLess(acquire.index('return active_faction_symbol_editor'), acquire.index('new(src, src)'))
+        self.assertIn('active_faction_symbol_editor.owner == src', acquire)
+        self.assertIn('active_faction_symbol_editor.matches_current_faction()', acquire)
+        self.assertIn('editor_map != map', source)
+        self.assertIn('owner.active_faction_symbol_editor == src && map.is_faction_leader(owner, faction)', source)
+        revoke = source.split('/mob/living/human/proc/remove_faction_symbol_editor()', 1)[1].split('\n/', 1)[0]
+        self.assertIn('close_faction_symbol_editor()', revoke)
+        human = (ROOT / 'code/game/mob/living/carbon/human/human.dm').read_text()
+        self.assertIn('/mob/living/human/Destroy()\n\tclose_faction_symbol_editor()', human)
+
     def test_assets_registered(self):
         assets = (ROOT / 'code/modules/client/asset_cache.dm').read_text()
         for name in ('civ13-tgui-bootstrap.js', 'civ13-tgui.js', 'civ13-tgui.css'):
@@ -489,6 +570,19 @@ class BackendContract(unittest.TestCase):
         # world cannot reuse the browser's remembered copy of the old bundle.
         self.assertIn('assets[civ13_tgui_versioned_name(name, civ13_tgui_assets_version)] = sources[name]', assets)
         self.assertIn('digests += "[md5(sources[name])]"', assets)
+
+    def test_pill_batch_revalidates_dose_and_mixture_before_creating_outputs(self):
+        root = Path(__file__).resolve().parents[2]
+        source = (root / 'code/modules/reagents/Chemistry-Machinery.dm').read_text(encoding='utf-8')
+        batch = source.split('else if (href_list["createpill"] || href_list["createpill_multiple"])', 1)[1]
+        batch = batch.split('else if (href_list["createbottle"])', 1)[0]
+        naming = batch.index('var/name = sanitizeSafe(player_input(')
+        creation = batch.index('while (count--)')
+        self.assertIn('ingredient_volumes[ingredient] = ingredient.volume', batch[:naming])
+        for guard in ('reagents != batch', 'batch.total_volume / count < amount_per_pill',
+                      'ingredient_volumes[ingredient] != ingredient.volume'):
+            self.assertIn(guard, batch[naming:creation])
+        self.assertIn('batch.trans_to_obj(P, amount_per_pill)', batch[creation:])
 
 
 if __name__ == '__main__':

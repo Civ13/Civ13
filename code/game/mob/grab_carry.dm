@@ -6,7 +6,7 @@
 // dead) human and click yourself with the grab. After a short wait you carry
 // them on your own tile, like a neck grab, and walk much faster than when
 // dragging. Click yourself with the grab again to put them down. The carry
-// ends on its own if they stand up or you fall.
+// ends on its own if they stand up or you fall or go prone.
 
 #define FIREMAN_CARRY_TIME 30
 #define FIREMAN_CARRY_GRAB_DELAY 0.25
@@ -21,6 +21,9 @@
 		return FALSE
 	return affecting.lying || affecting.stat != CONSCIOUS
 
+/obj/item/weapon/grab/proc/fireman_carrier_ready()
+	return !QDELETED(assailant) && assailant.stat == CONSCIOUS && assailant.canmove && !assailant.lying && !assailant.prone
+
 // Returns TRUE when the click was handled as a carry action.
 /obj/item/weapon/grab/proc/fireman_carry_click()
 	if (carrying)
@@ -31,12 +34,12 @@
 	if (affecting.buckled)
 		to_chat(assailant, SPAN_WARNING("[affecting] is buckled to something."))
 		return TRUE
-	if (assailant.lying || !assailant.canmove)
+	if (!fireman_carrier_ready())
 		return TRUE
 	assailant.visible_message(SPAN_NOTICE("[assailant] starts lifting [affecting] onto \his shoulders..."), SPAN_NOTICE("You start lifting [affecting] onto your shoulders..."))
 	if (!do_mob(assailant, affecting, FIREMAN_CARRY_TIME))
 		return TRUE
-	if (gcDestroyed || !affecting || !assailant || state != GRAB_AGGRESSIVE || carrying || !carry_target_downed() || affecting.buckled)
+	if (QDELETED(src) || QDELETED(affecting) || !fireman_carrier_ready() || state != GRAB_AGGRESSIVE || carrying || !carry_target_downed() || affecting.buckled)
 		return TRUE
 	if (!isturf(assailant.loc) || !affecting.persistence_set_loc(assailant.loc))
 		return TRUE
@@ -57,18 +60,17 @@
 		if (announce && assailant)
 			assailant.visible_message(SPAN_NOTICE("[assailant] puts [affecting] down."), SPAN_NOTICE("You put [affecting] down."))
 
-// Called from process(): a carry needs a downed passenger and a carrier on their feet.
+// Keep this check shared by the process and immediate positioning paths.
 /obj/item/weapon/grab/proc/check_fireman_carry()
 	if (!carrying)
 		return
-	if (!affecting || !assailant)
-		return
-	if (!carry_target_downed() || affecting.buckled || assailant.lying || assailant.stat != CONSCIOUS)
+	if (QDELETED(affecting) || !carry_target_downed() || affecting.buckled || !fireman_carrier_ready())
 		stop_fireman_carry(TRUE)
 
 // Keeps the passenger on the carrier's tile, drawn over the shoulders.
 /obj/item/weapon/grab/proc/fireman_carry_position()
-	if (!assailant || !isturf(assailant.loc))
+	check_fireman_carry()
+	if (!carrying || !isturf(assailant.loc))
 		return FALSE
 	if (affecting.loc != assailant.loc && !affecting.persistence_set_loc(assailant.loc))
 		stop_fireman_carry()
@@ -81,7 +83,7 @@
 // Extra step delay while holding grabs; carrying is cheaper than dragging.
 /mob/proc/grab_move_delay()
 	for (var/obj/item/weapon/grab/G in grab_list)
-		if (G.carrying)
+		if (G.carrying && G.fireman_carrier_ready())
 			if (m_intent == "run" && ishuman(src))
 				var/mob/living/human/H = src
 				if (H.stats["stamina"][1] > 0)
@@ -92,7 +94,7 @@
 // The same delay without spending stamina (Check Movement reads it).
 /mob/proc/grab_move_cost()
 	for (var/obj/item/weapon/grab/G in grab_list)
-		if (G.carrying)
+		if (G.carrying && G.fireman_carrier_ready())
 			return FIREMAN_CARRY_GRAB_DELAY
 	return DEFAULT_GRAB_MOVE_DELAY
 

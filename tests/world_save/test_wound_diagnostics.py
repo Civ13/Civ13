@@ -46,11 +46,11 @@ class WoundDiagnostics(unittest.TestCase):
         guard = min(matches, key=lambda node: sum(1 for _ in ast.walk(node)))
         module = ast.fix_missing_locations(ast.Module(body=[guard], type_ignores=[]))
         compiled = compile(module, str(RUNNER), 'exec')
-        exec(compiled, {'result': {'done': 1, 'checks': 187, 'roundtrips': 18}})
-        for result in ({'done': 1, 'checks': 186, 'roundtrips': 18},
-                       {'done': 1, 'checks': 188, 'roundtrips': 18},
-                       {'done': 1, 'checks': 187, 'roundtrips': 17},
-                       {'done': 0, 'checks': 187, 'roundtrips': 18}):
+        exec(compiled, {'result': {'done': 1, 'checks': 230, 'roundtrips': 18}})
+        for result in ({'done': 1, 'checks': 229, 'roundtrips': 18},
+                       {'done': 1, 'checks': 231, 'roundtrips': 18},
+                       {'done': 1, 'checks': 230, 'roundtrips': 17},
+                       {'done': 0, 'checks': 230, 'roundtrips': 18}):
             with self.subTest(result=result), self.assertRaises(RuntimeError):
                 exec(compiled, {'result': result})
 

@@ -158,7 +158,7 @@
 
 // Bring the water up to date: what has seeped in since it was last used.
 /obj/structure/sink/proc/dug_settle()
-	if (!dug_depth)
+	if (!dug_depth || well_pauses_recharge())
 		return
 	var/column = dug_column()
 	max_volume = round(min(WELL_VOLUME_MAX, column * WELL_VOLUME_PER_LEVEL))
@@ -166,6 +166,9 @@
 	dug_settled_at = world.time
 	volume += minutes * min(column, WELL_RECHARGE_LEVELS) * WELL_RECHARGE_PER_LEVEL * dug_recharge_factor()
 	volume = clamp(volume, 0, max_volume)
+
+/obj/structure/sink/proc/well_pauses_recharge()
+	return FALSE
 
 /obj/structure/sink/well/refill()
 	if (dug_depth)
@@ -371,22 +374,36 @@
 		dry = S.dry
 		if (istype(S, /obj/structure/sink/well))
 			dirty = dirty || S.dirty
+			var/obj/structure/sink/well/old_well = S
+			raised_well_rim = old_well.raised_well_rim
+			well_cover = old_well.well_cover
+			well_cover_closed = old_well.well_cover_closed
+			well_drain_dir = old_well.well_drain_dir
 		S.dug_settle()
 		volume = S.volume
-		qdel(S)
+		well_retire_previous_lining(S)
 	if (dug_depth)
 		dug_settle()
 		update_icon()
+
+// Removing a well normally removes its fitting. Relining alone hands off the
+// installed fitting in place to the new lined well on the same tile.
+/obj/structure/sink/well/proc/well_retire_previous_lining(obj/structure/sink/S)
+	var/obj/structure/sink/well/old = S
+	if (istype(old) && old != src && old.dug_depth && dug_depth && isturf(loc) && old.loc == loc)
+		old.well_reline_receiver = src
+	qdel(S)
 
 /obj/structure/sink/well/examine(mob/user, distance = -1)
 	. = ..()
 	if (.)
 		dug_examine(user)
 		if (get_dist(src, user) <= 1)
+			examine_well_protection(user)
 			to_chat(user, SPAN_NOTICE("A hammer would take [well_fitting() ? "its fitting down" : "its lining apart"]."))
 
 /obj/structure/sink/well/attack_hand(mob/user)
-	if (!dug_reach(user))
+	if (!well_open_mouth(user) || !dug_reach(user))
 		return
 	var/mob/living/human/H = user
 	var/before = istype(H) ? H.water : 0
@@ -394,6 +411,9 @@
 	dug_drink(H, before)
 
 /obj/structure/sink/well/attackby(obj/item/O, mob/user)
+	if (!well_can_use_item(O))
+		well_open_mouth(user)
+		return TRUE
 	if (is_tool(O, TOOL_HAMMER))
 		well_break(user)
 		return
@@ -404,11 +424,242 @@
 			to_chat(user, SPAN_WARNING("A shovel will not shift the lining. Break it up with a hammer."))
 		return
 	var/obj/structure/well_fitting/F = well_fitting()
+	var/obj/item/stack/material/hairlesshide/H = O
+	if (istype(H))
+		if (F)
+			H.wash_in_water(user, src, F)
+		else
+			to_chat(user, SPAN_WARNING("Draw water into an open vessel to wash the hides, or fit the well with a windlass or pump."))
+		return TRUE
 	if (F && F.draw(src, O, user))
 		return
 	if (!dug_reach(user, O))
 		return
 	..()
+
+// ---- cleaning out a fouled well -----------------------------------------------
+
+/obj/structure/sink/well
+	var/tmp/well_bailed_for_cleanup = FALSE
+
+/obj/structure/sink/well/persistence_runtime_var(key)
+	return key == "well_bailed_for_cleanup" || ..()
+
+/obj/structure/sink/well/well_pauses_recharge()
+	return well_bailed_for_cleanup
+
+/obj/structure/sink/well/proc/well_cleanup_source()
+	if (well_flood_ingress())
+		return "Wait for the floodwater to go down first."
+	if (has_nearby_fecal_waste())
+		return "Remove the nearby waste or stop the pollution reaching the well first."
+	return null
+
+/obj/structure/sink/well/proc/well_cleanup_context(mob/living/human/H, obj/item/weapon/reagent_containers/glass/bucket/B, obj/item/S, turf/site, datum/admission)
+	return !persistence_admission_changed(admission) && !QDELETED(src) && !QDELETED(H) && !QDELETED(B) && !QDELETED(S) && istype(B) && isturf(site) && loc == site && !well_cover_closed && isturf(H.loc) && H.z == z && H.Adjacent(src) && !H.incapacitated() && !H.restrained() && B.loc == H && S.loc == H && ((H.get_active_hand() == B && H.get_inactive_hand() == S) || (H.get_active_hand() == S && H.get_inactive_hand() == B)) && is_tool(S, TOOL_SHOVEL) && B.is_open_container() && B.reagents && B.reagents.total_volume <= 0
+
+/obj/structure/sink/well/proc/well_bail_delay()
+	var/obj/structure/well_fitting/F = well_fitting()
+	if (istype(F, /obj/structure/well_fitting/pump))
+		return 60
+	if (istype(F, /obj/structure/well_fitting/windlass))
+		return 100
+	return 180
+
+/obj/structure/sink/well/proc/well_begin_scraping()
+	volume = 0
+	well_bailed_for_cleanup = TRUE
+	update_icon()
+
+// End the drain even on interruption. Only a complete scrape with no ongoing
+// source clears fecal fouling; mercury and radiation are not touched.
+/obj/structure/sink/well/proc/well_finish_scraping(completed)
+	var/problem = completed ? well_cleanup_source() : null
+	well_bailed_for_cleanup = FALSE
+	dug_settled_at = world.time
+	if (completed && !problem)
+		dirty = FALSE
+	if (!persistence_admission_blocked())
+		update_icon()
+	return problem
+
+/obj/structure/sink/well/verb/clean_out_well()
+	set name = "Clean Out Well"
+	set category = null
+	set src in range(1)
+	var/mob/living/human/H = usr
+	if (!istype(H) || persistence_admission_blocked())
+		return
+	var/datum/admission = persistence_admission_identity
+	var/turf/site = loc
+	var/obj/item/weapon/reagent_containers/glass/bucket/B = H.get_active_hand()
+	var/obj/item/S = H.get_inactive_hand()
+	if (!istype(B))
+		B = H.get_inactive_hand()
+		S = H.get_active_hand()
+	if (!well_open_mouth(H))
+		return
+	if (!well_cleanup_context(H, B, S, site, admission))
+		to_chat(H, SPAN_WARNING("Stand beside the well and hold an empty, open bucket and a shovel."))
+		return
+	if (well_bailed_for_cleanup)
+		to_chat(H, SPAN_WARNING("Someone is already cleaning out this well."))
+		return
+	var/problem = well_cleanup_source()
+	if (problem)
+		dirty = TRUE
+		to_chat(H, SPAN_WARNING(problem))
+		return
+	if (!dirty)
+		to_chat(H, SPAN_NOTICE("There is no foul residue to clear. Cleaning out a well does not remove chemical or radioactive contamination."))
+		return
+	var/obj/structure/well_fitting/F = well_fitting()
+	dug_settle()
+	H.visible_message(SPAN_NOTICE("[H] starts bailing out \the [src]."), SPAN_NOTICE("You start bailing out \the [src]. The fouled water is discarded, not collected in your bucket."))
+	if (F?.use_state)
+		flick(F.use_state, F)
+	playsound(site, 'sound/effects/watersplash.ogg', 50, TRUE)
+	if (!do_after(H, well_bail_delay(), src) || !well_cleanup_context(H, B, S, site, admission) || well_bailed_for_cleanup || well_fitting() != F || !dirty)
+		return
+	problem = well_cleanup_source()
+	if (problem)
+		to_chat(H, SPAN_WARNING(problem))
+		return
+	well_begin_scraping()
+	H.visible_message(SPAN_NOTICE("[H] starts clearing mud from \the [src]."), SPAN_NOTICE("The well is bailed out. You start clearing the foul mud and debris."))
+	playsound(site, 'sound/effects/shovelling.ogg', 50, TRUE)
+	var/completed = do_after(H, work_delay_per_speed(H, 120, WORK_DIG, S), src) && well_cleanup_context(H, B, S, site, admission) && well_fitting() == F
+	if (QDELETED(src))
+		return
+	problem = well_finish_scraping(completed)
+	if (!completed)
+		to_chat(H, SPAN_WARNING("The well refills, but the foul residue is still there."))
+	else if (problem)
+		to_chat(H, SPAN_WARNING(problem))
+	else
+		to_chat(H, SPAN_NOTICE("You clear the foul residue. Let the well refill naturally. This does not make chemical or radioactive contamination safe."))
+		log_game("[key_name(H)] cleaned out [src] at [x],[y],[z].")
+
+// ---- protecting a well from surface runoff -------------------------------------
+
+/obj/structure/sink/well
+	var/raised_well_rim = FALSE
+	var/well_cover = FALSE
+	var/well_cover_closed = FALSE
+	// A shallow apron drain leads downhill from the rim; never into the shaft.
+	var/well_drain_dir = 0
+
+/obj/structure/sink/well/proc/well_runoff_outlet(direction)
+	var/turf/T = get_turf(src)
+	if (!T || !(direction in cardinal))
+		return FALSE
+	var/turf/floor/outlet = get_step(T, direction)
+	return istype(outlet) && !outlet.density && outlet.is_diggable && !outlet.terrain_floor_covered() && !istype(outlet, /turf/floor/beach/water) && !istype(outlet, /turf/floor/lava) && !sewer_piece_at(outlet) && !flood_depth_at(outlet) && terrain_height_at(outlet) < terrain_height_at(T)
+
+/obj/structure/sink/well/proc/well_flood_ingress()
+	return well_flood_can_enter(flood_band_at(get_turf(src)))
+
+/obj/structure/sink/well/proc/well_flood_can_enter(band)
+	if (!band)
+		return FALSE
+	if (band <= FLOOD_BAND_ANKLE && (well_cover_closed || well_runoff_outlet(well_drain_dir)))
+		return FALSE
+	if (band <= FLOOD_BAND_KNEE && raised_well_rim)
+		return FALSE
+	return TRUE
+
+// Tools used on the lining remain usable; a hand pump can draw through the cover.
+/obj/structure/sink/well/proc/well_can_use_item(obj/item/O)
+	if (!well_cover_closed || is_tool(O, TOOL_HAMMER) || is_tool(O, TOOL_SHOVEL))
+		return TRUE
+	var/obj/item/weapon/reagent_containers/RG = O
+	return istype(well_fitting(), /obj/structure/well_fitting/pump) && istype(RG) && RG.is_open_container() && RG.reagents
+
+/obj/structure/sink/proc/well_open_mouth(mob/user)
+	return TRUE
+
+/obj/structure/sink/well/well_open_mouth(mob/user)
+	if (!well_cover_closed)
+		return TRUE
+	to_chat(user, SPAN_WARNING("Open the well cover first."))
+	return FALSE
+
+/obj/structure/sink/well/proc/examine_well_protection(mob/user)
+	if (raised_well_rim)
+		to_chat(user, SPAN_NOTICE("A raised stone rim keeps out shallow and knee-deep floodwater."))
+	if (well_cover)
+		to_chat(user, SPAN_NOTICE("The cover is [well_cover_closed ? "closed" : "open"]. A shut cover keeps out shallow runoff; a fitted hand pump can still draw water."))
+	if (well_drain_dir)
+		to_chat(user, SPAN_NOTICE("Its runoff drain runs [dir2text(well_drain_dir)][well_runoff_outlet(well_drain_dir) ? "." : ", but its outlet is not clear and downhill."]"))
+	to_chat(user, SPAN_NOTICE("Use Improve Well to fit or remove runoff protection."))
+
+/obj/structure/sink/well/proc/well_protection_context(mob/living/human/H, turf/site, datum/admission)
+	return !persistence_admission_changed(admission) && !QDELETED(src) && istype(H) && !QDELETED(H) && !H.incapacitated() && !H.restrained() && isturf(site) && loc == site && isturf(H.loc) && H.z == z && H.Adjacent(src)
+
+/obj/structure/sink/well/verb/toggle_well_cover()
+	set name = "Open or Close Well Cover"
+	set category = null
+	set src in range(1)
+	var/mob/living/human/H = usr
+	if (!well_cover || !well_protection_context(H, loc, persistence_admission_identity) || well_bailed_for_cleanup)
+		return
+	well_cover_closed = !well_cover_closed
+	to_chat(H, SPAN_NOTICE("You [well_cover_closed ? "close" : "open"] the well cover."))
+
+/obj/structure/sink/well/verb/improve_well()
+	set name = "Improve Well"
+	set category = null
+	set src in range(1)
+	var/mob/living/human/H = usr
+	var/turf/site = loc
+	var/datum/admission = persistence_admission_identity
+	if (!well_protection_context(H, site, admission))
+		return
+	var/rim_option = raised_well_rim ? "Remove Raised Rim" : "Build Raised Rim"
+	var/cover_option = well_cover ? "Remove Cover" : "Build Cover"
+	var/drain_option = well_drain_dir ? "Fill Runoff Drain" : "Dig Runoff Drain"
+	var/choice = WWinput(H, "Raised rim: hammer + 3 stone. Cover: hammer + 2 planks. Runoff drain: shovel + 2 stone, while standing on a lower adjoining tile. Removal uses the same tool, but no materials.", "Improve Well", "Cancel", list(rim_option, cover_option, drain_option, "Cancel"))
+	if (!well_protection_context(H, site, admission) || !(choice in list(rim_option, cover_option, drain_option)) || well_bailed_for_cleanup)
+		return
+	var/is_rim = choice == rim_option
+	var/is_cover = choice == cover_option
+	var/installed = is_rim ? raised_well_rim : (is_cover ? well_cover : well_drain_dir)
+	var/removing = findtext(choice, "Remove ") == 1 || choice == "Fill Runoff Drain"
+	if (removing != !!installed)
+		return
+	var/tool_needed = (is_rim || is_cover) ? TOOL_HAMMER : TOOL_SHOVEL
+	var/obj/item/tool = H.get_active_hand()
+	var/obj/item/stack/material/M = H.get_inactive_hand()
+	if (!is_tool(tool, tool_needed))
+		tool = H.get_inactive_hand()
+		M = H.get_active_hand()
+	var/mat_type = is_cover ? /obj/item/stack/material/woodplank : /obj/item/stack/material/stone
+	var/cost = is_rim ? 3 : 2
+	if (!is_tool(tool, tool_needed) || (!installed && (!istype(M, mat_type) || !M.can_use(cost))))
+		to_chat(H, SPAN_WARNING("Hold the required tool and, for building, enough of the specified materials."))
+		return
+	var/outlet_dir = get_dir(src, H)
+	if (!installed && !is_rim && !is_cover && !well_runoff_outlet(outlet_dir))
+		to_chat(H, SPAN_WARNING("Stand on a clear, dry and lower tile directly north, south, east or west of the well."))
+		return
+	to_chat(H, SPAN_NOTICE("You start work on the well."))
+	var/delay = (is_rim || is_cover) ? 100 : work_delay_per_speed(H, 100, WORK_DIG, tool)
+	if (!do_after(H, delay, src) || !well_protection_context(H, site, admission) || well_bailed_for_cleanup || !is_tool(tool, tool_needed) || (tool != H.get_active_hand() && tool != H.get_inactive_hand()))
+		return
+	if (installed != (is_rim ? raised_well_rim : (is_cover ? well_cover : well_drain_dir)))
+		return
+	if (!installed && !is_rim && !is_cover && (!well_runoff_outlet(outlet_dir) || outlet_dir != get_dir(src, H)))
+		return
+	if (!installed && (QDELETED(M) || (M != H.get_active_hand() && M != H.get_inactive_hand()) || !M.use(cost, H)))
+		return
+	if (is_rim)
+		raised_well_rim = !installed
+	else if (is_cover)
+		well_cover = !installed
+		well_cover_closed = FALSE
+	else
+		well_drain_dir = installed ? 0 : outlet_dir
+	to_chat(H, SPAN_NOTICE("You finish work on the well."))
 
 // ---- taking a well apart -----------------------------------------------------------
 // A fitting comes off first, then the lining is broken up. A dug shaft is left as
@@ -510,9 +761,17 @@
 /obj/structure/sink/well/well_fitting()
 	return locate(/obj/structure/well_fitting) in loc
 
+/obj/structure/sink/well
+	var/tmp/obj/structure/sink/well/well_reline_receiver
+
 /obj/structure/sink/well/Destroy()
+	var/obj/structure/well_fitting/retained
+	if (!QDELETED(well_reline_receiver) && well_reline_receiver != src && well_reline_receiver.dug_depth && well_reline_receiver.loc == loc && isturf(loc))
+		retained = well_fitting()
+	well_reline_receiver = null
 	for (var/obj/structure/well_fitting/F in loc)
-		qdel(F)
+		if (F != retained)
+			qdel(F)
 	return ..()
 
 /obj/structure/well_fitting
@@ -556,6 +815,8 @@
 
 // Fill RG from the well in one go, foul water and all. Returns the units drawn.
 /obj/structure/well_fitting/proc/draw_into(obj/structure/sink/well/W, obj/item/weapon/reagent_containers/RG)
+	if (W.well_cover_closed && !istype(src, /obj/structure/well_fitting/pump))
+		return 0
 	W.dug_settle()
 	if (W.heat_dried())
 		return 0
@@ -592,6 +853,9 @@
 	if (use_state)
 		flick(use_state, src)
 	if (!do_after(user, draw_time, W, check_for_repeats = FALSE) || QDELETED(W) || QDELETED(RG))
+		return TRUE
+	if (W.well_cover_closed && !istype(src, /obj/structure/well_fitting/pump))
+		W.well_open_mouth(user)
 		return TRUE
 	if (draw_into(W, RG))
 		user.visible_message(SPAN_NOTICE("[user] fills \the [RG] at \the [W]."), SPAN_NOTICE("You [draw_text] and fill \the [RG]."))

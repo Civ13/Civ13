@@ -231,6 +231,9 @@
 	if (check_shield_arc(user, bad_arc, damage_source, attacker))
 		if (prob(get_block_chance(user, damage, damage_source, attacker)))
 			user.visible_message("<font color='#E55300'><big>\The [user] blocks [attack_text] with \the [src]!</big></font>")
+			if (istype(damage_source, /obj/item/projectile/arrow))
+				var/obj/item/projectile/arrow/projectile = damage_source
+				projectile.recover_from_shield(user)
 			apply_wear(block_wear(damage_source), WEAR_BLOW)
 			return TRUE
 	return FALSE

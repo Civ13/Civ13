@@ -292,7 +292,7 @@
 			if(do_after(L2, plough_time, src))				//ape double code to not let it build infinite roads over the other
 				if(L.stat == CONSCIOUS)		//no memes for dead cattle  working
 					if(!plough_road)							//dirt/flooded needs to be away from other dirts because it's ploughted field
-						T.ChangeTurf(/turf/floor/dirt/ploughed/flooded)	//returns a different ploughted field than the regular dirt
+						T.till_into_field(/turf/floor/dirt/ploughed/flooded)	//returns a different ploughted field than the regular dirt
 					else
 						new/obj/covers/roads/dirt(O.loc)
 					simplehunger -= 65		//The hunger rates regenerates after doing brute damage, that's why it can take more than 1000 simplehunger
@@ -303,7 +303,7 @@
 			if(do_after(L2, plough_time, src))
 				if(L.stat == CONSCIOUS)
 					if(!plough_road)
-						T.ChangeTurf(/turf/floor/dirt/ploughed)
+						T.till_into_field(/turf/floor/dirt/ploughed)
 					else
 						new/obj/covers/roads/dirt(O.loc)
 					simplehunger -= 65
@@ -901,6 +901,7 @@
 	var/lamb = FALSE
 	herbivore = 1
 	var/sheared = FALSE
+	var/tmp/wool_regrowth_pending = FALSE
 	wandersounds = list('sound/animals/sheep/sheep_1.ogg','sound/animals/sheep/sheep_2.ogg')
 
 /mob/living/simple_animal/sheep/uses_defensive_retaliation()
@@ -981,13 +982,23 @@
 				icon_dead = "sheep_ewe_dead"
 				mob_size = MOB_MEDIUM
 
+/mob/living/simple_animal/sheep/after_load()
+	. = ..()
+	// Saved sheep keep their fleece state; timers are rebuilt after restoration.
+	regrowth()
+
 /mob/living/simple_animal/sheep/proc/regrowth()
-	spawn(4800)
-		if (stat == DEAD) // a corpse keeps its sprite
-			return
-		sheared = FALSE
-		update_icons()
+	if (stat == DEAD || !sheared || wool_regrowth_pending)
 		return
+	wool_regrowth_pending = TRUE
+	addtimer(CALLBACK(src, PROC_REF(finish_wool_regrowth)), 4800)
+
+/mob/living/simple_animal/sheep/proc/finish_wool_regrowth()
+	wool_regrowth_pending = FALSE
+	if (stat == DEAD || !sheared) // a corpse keeps its sprite
+		return
+	sheared = FALSE
+	update_icons()
 
 /mob/living/simple_animal/sheep/female/attackby(var/obj/item/O as obj, var/mob/user as mob)
 	if (istype(O, /obj/item/weapon/reagent_containers/glass))

@@ -318,6 +318,15 @@ var/global/platform_probe_runtime_error = FALSE
 	W.dir = EAST
 	var/list/bay = W.bay()
 	platform_check("warehouse/bay", bay.len == 13 && bay[1] == platform_turf(44, 7) && bay[bay.len] == platform_turf(44, 19))
+	var/obj/structure/trains/transport/flatbed/first = new(platform_turf(44, 12))
+	var/obj/structure/trains/transport/flatbed/second = new(platform_turf(44, 13))
+	first.dir = NORTH
+	second.dir = NORTH
+	var/list/options = W.put_away_options(W.rear_units())
+	platform_check("warehouse/same_name_choices", first.name == second.name && options.len == 2 && options[options[1]][1] == first && options[options[2]][1] == second)
+	platform_check("warehouse/choice_names_track_tile", findtext(options[1], "track 44, 12") && findtext(options[2], "track 44, 13"))
+	qdel(first)
+	qdel(second)
 	var/obj/structure/trains/locomotive/coal/L = new(platform_turf(44, 18))
 	L.dir = NORTH
 	var/obj/structure/trains/platform/car = platform_car("storage", 44, 17, NORTH)
@@ -332,6 +341,13 @@ var/global/platform_probe_runtime_error = FALSE
 	var/obj/structure/closet/crate/wagon_crate = new(platform_turf(44, 13))
 	var/list/rear = W.rear_units()
 	platform_check("warehouse/rear_unit", rear.len == 1 && rear[1][1] == F)
+	var/obj/structure/trains/transport/flatbed/newly_hitched = new(platform_turf(44, 12))
+	newly_hitched.dir = NORTH
+	F.connected = newly_hitched // Another player couples it after the menu was shown.
+	platform_check("warehouse/stale_choice_preserves_consist", W.put_away(null, rear[1], FALSE) == 0 && car_rear.connected == F && F.connected == newly_hitched && !W.stored_units().len)
+	F.connected = null
+	qdel(newly_hitched)
+	platform_check("warehouse/missing_rear_refused", W.put_away(null, list(F, null), FALSE) == 0 && car_rear.connected == F)
 	var/mob/living/human/platform_rider/rider = new(platform_turf(44, 13))
 	platform_check("warehouse/refuses_riders", W.store_problem(rear[1]))
 	qdel(rider)
@@ -1671,6 +1687,12 @@ var/global/platform_probe_runtime_error = FALSE
 	var/shp = S.health
 	var/ran = platform_step(E, 10)
 	platform_check("shunting/slow_approach_buffers_up", ran == 3 && E.y == 9 && E.health == hp && S.health == shp && S.y == 10 && S.train_head() == S && !S.roll_speed)
+	// A manual click on the approaching engine's free coupler must not hitch.
+	var/obj/structure/trains/prior_link = E.connected
+	E.throttle = 1
+	var/refused_free = E.train_under_power() && E.coupler_use(shunter, TRUE) && !S.connected && E.connected == prior_link
+	E.throttle = 0
+	platform_check("shunting/free_coupler_not_under_power", refused_free)
 	// Brisker, it is a bump again; one automatic coupler alone does not lock.
 	E.rail_speed = 1.3
 	ran = platform_step(E, 2)
@@ -2311,6 +2333,61 @@ var/global/platform_probe_runtime_error = FALSE
 				crew++
 	var/list/signals = train_hand_signals()
 	platform_check("conductor/hand_signals", crew == 2 && signals.len == 5 && flags.show_signal(guard, "Right away") == 2 && flags.show_signal(guard, "Danger") == 2 && !flags.show_signal(guard, "Wave") && !flags.show_signal(walker, "Stop") && ("signal_flags" in states))
+
+// Single-line isolation and footprint regressions.
+/proc/platform_token_isolation()
+	var/obj/structure/train_lineside/board/orphan_board = new(platform_turf(258, 9))
+	orphan_board.section = "101"
+	orphan_board.update_board()
+	var/obj/item/train_token/orphan_token = new(platform_turf(258, 10))
+	orphan_token.section = "102"
+	var/obj/structure/train_token_instrument/survivor = new(platform_turf(258, 11))
+	survivor.section = "103"
+	var/obj/structure/train_token_instrument/A = new(platform_turf(258, 4))
+	var/obj/structure/train_token_instrument/B = new(platform_turf(258, 6))
+	var/obj/structure/train_token_instrument/C = new(platform_turf(260, 4))
+	var/obj/structure/train_token_instrument/D = new(platform_turf(260, 6))
+	var/obj/item/train_signal_wire/W = new(platform_turf(257, 6))
+	W.run_to(A)
+	W.run_to(B)
+	platform_check("tokens/skip_all_reserved_sources", A.section == "104" && A.partner() == B)
+	W.run_from = null
+	W.run_to(C)
+	W.run_to(D)
+	var/obj/item/train_token/first = A.draw_token(null)
+	var/obj/item/train_token/second = C.draw_token(null)
+	platform_check("tokens/independent_sections_issue_independently", C.section && C.section != A.section && C.partner() == D && first && second)
+	var/original_board_name = orphan_board.name
+	W.run_from = null
+	W.run_to(survivor)
+	W.run_to(orphan_board)
+	platform_check("tokens/unpaired_instrument_preserves_board", orphan_board.section == "101" && orphan_board.name == original_board_name)
+	var/obj/structure/train_token_instrument/replacement = new(platform_turf(258, 13))
+	W.run_to(replacement)
+	W.run_to(orphan_board)
+	platform_check("tokens/replacement_keeps_section_and_can_mark_board", survivor.section == "103" && survivor.partner() == replacement && orphan_board.section == "103" && orphan_board.name != original_board_name)
+
+	platform_track(257, 21, NORTH)
+	var/obj/structure/trains/locomotive/coal/small = new(platform_turf(257, 21))
+	small.set_dir(NORTH)
+	small.refresh_consist()
+	var/obj/structure/train_lineside/board/check_board = new(platform_turf(258, 21))
+	check_board.section = A.section
+	var/mob/living/human/platform_rider/holder = new(platform_turf(258, 21))
+	first.loc = holder
+	platform_check("tokens/small_ignores_trackside_holder", !small.body_kind && !small.carries_token(A.section) && findtext(check_board.sighting(small), "not on the engine"))
+	check_board.passed_by(small)
+	platform_check("tokens/trackside_token_counts_passage", check_board.passed == 1)
+	first.loc = small.loc
+	check_board.passed_by(small)
+	platform_check("tokens/small_accepts_centre_token", small.carries_token(A.section) && check_board.passed == 1)
+	for (var/ty in 20 to 25)
+		platform_track(251, ty, NORTH)
+	var/obj/structure/trains/locomotive/wide = platform_car("loco_diesel", 251, 23, NORTH)
+	if (wide)
+		wide.refresh_consist()
+		first.loc = platform_turf(252, 23)
+	platform_check("tokens/wide_accepts_side_deck_token", wide && wide.body_kind && wide.carries_token(A.section))
 
 // Signals and single-line working (train_signals.dm), on column 266.
 /proc/platform_signals_run()
@@ -3142,6 +3219,33 @@ var/global/platform_probe_runtime_error = FALSE
 /obj/structure/engine/train_probe_engine/New()
 	return
 
+/proc/platform_electric_isolation(obj/structure/train_catenary/M1, obj/structure/train_catenary/M2)
+	// A separate parallel row sits nine tiles away, within the old network
+	// radius but outside the feeder point's reach and off the wire centerline.
+	for (var/ty in 2 to 12)
+		platform_track(359, ty, NORTH)
+	var/obj/structure/train_catenary/parallel = new(platform_turf(361, 6))
+	var/parallel_up = parallel.put_up()
+	var/obj/structure/trains/locomotive/electric/unfed = platform_car("loco_electric", 359, 6, NORTH)
+	platform_check("electric/parallel_line_has_no_traction_power", parallel_up && !parallel.powersource && M1.line_live() && parallel.network() != M1.network() && unfed && train_catenary_over(unfed.loc) == parallel && findtext(unfed.start_problem(), "overhead line is dead"))
+	if (unfed)
+		qdel(unfed)
+	qdel(parallel)
+
+	// A five-tile offset stops the crossing wire one tile short; four joins.
+	platform_track(355, 6, EAST)
+	var/obj/structure/train_catenary/short_crossing = new(platform_turf(355, 4))
+	platform_check("electric/short_crossing_does_not_join", short_crossing.put_up() && short_crossing.dir == NORTH && short_crossing.network() != M1.network())
+	qdel(short_crossing)
+	platform_track(354, 6, EAST)
+	var/obj/structure/train_catenary/crossing = new(platform_turf(354, 4))
+	platform_check("electric/reaching_crossing_joins", crossing.put_up() && crossing.dir == NORTH && crossing.network() == M1.network())
+	qdel(crossing)
+
+	var/obj/structure/train_catenary/across_gap = new(platform_turf(352, 25))
+	platform_check("electric/one_tile_gap_breaks_wire", across_gap.put_up() && across_gap.dir == WEST && across_gap.network() != M2.network())
+	qdel(across_gap)
+
 /proc/platform_electric_run()
 	for (var/ty in 2 to 25)
 		platform_track(350, ty, NORTH)
@@ -3178,6 +3282,7 @@ var/global/platform_probe_runtime_error = FALSE
 	M1.net = null
 	M1.after_load()
 	platform_check("electric/line_is_fed_from_the_grid", one_line && M1.power_point == T && !M2.power_point && fed.len == 1 && fed[1] == M1 && live && idle_draw == 1 && (M1 in train_catenary) && M1.network() == M2.network() && findtext(M1.line_text(M1.network()), "The wire is live"))
+	platform_electric_isolation(M1, M2)
 	N = M1.network()
 
 	// The electric locomotive: a cab at each end, a hood between, no fuel.
@@ -3838,6 +3943,7 @@ var/global/platform_probe_runtime_error = FALSE
 		platform_diesel_run()
 		platform_conductor_run()
 		platform_signals_run()
+		platform_token_isolation()
 		platform_derail_run()
 		platform_stations_run()
 		platform_big_warehouse_run()

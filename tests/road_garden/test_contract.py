@@ -69,6 +69,23 @@ class ReclaimedRoad(unittest.TestCase):
         self.assertIn('W.pollution_take_over(old_pollution, old_pollution_index)', CHANGING)
         self.assertIn('istype(src, /turf/floor/dirt/ploughed) && istype(H) && is_plowed == TRUE', FLOORS)
 
+    def test_hand_and_cattle_field_conversions_share_soil_transfer(self):
+        cattle = (ROOT / 'code/game/mob/living/simple_animal/friendly/farm_animals.dm').read_text()
+        dirt = (ROOT / 'code/game/turfs/flooring/flooring_premade.dm').read_text()
+        for source in (FLOORS, cattle):
+            for suffix in ('', '/flooded'):
+                self.assertIn(f'T.till_into_field(/turf/floor/dirt/ploughed{suffix})', source)
+        transfer = body(dirt, '/turf/proc/till_into_field(')
+        before, after = transfer.split('var/turf/floor/dirt/ploughed/field = ChangeTurf')
+        for field in ('available_dirt', 'soil_nutrition', 'soil_recovery_deadline'):
+            self.assertIn(f'soil.{field}', before)
+        self.assertIn('soil.soil_recovery_unregister()', before)
+        self.assertIn('max(0, soil.soil_recovery_deadline - world.time)', before)
+        self.assertIn('field.available_dirt = dirt_stock', after)
+        self.assertIn('field.soil_nutrition = nutrition', after)
+        self.assertIn('field.soil_recovery_schedule(recovery_delay)', after)
+        self.assertNotIn('soil_recovery_index', transfer)
+
 
 if __name__ == '__main__':
     unittest.main()

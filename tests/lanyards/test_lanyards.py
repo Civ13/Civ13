@@ -59,6 +59,30 @@ class LanyardTest(unittest.TestCase):
         # No object pointers are kept, so saves stay pointer-free.
         self.assertNotRegex(self.text, r'var/obj/item/[a-z_/]*tethered')
 
+    def test_wrist_catch_admission_and_postconditions(self):
+        catch = self.text.split('/obj/item/proc/tether_catch(', 1)[1].split('/obj/item/on_enter_storage(', 1)[0]
+        attempt = catch.index('H.put_in_active_hand(src)')
+        self.assertLess(catch.index('!H.restrained()'), attempt)
+        self.assertLess(catch.index('wrist_looped = FALSE', catch.index('!H.restrained()')), attempt)
+        self.assertLess(catch.index('lanyard_tied = FALSE', catch.index('!H.restrained()')), attempt)
+        self.assertLess(attempt, catch.index('loc == H && H.item_is_in_hands(src)'))
+        self.assertLess(catch.index('loc == H && H.item_is_in_hands(src)'), catch.index('wrist_looped = TRUE'))
+
+    def test_storage_exit_releases_and_only_draw_routes_restore(self):
+        items = (ROOT / 'code/game/objects/items.dm').read_text(encoding='utf-8')
+        exit_hook = items.split('/obj/item/proc/on_exit_storage(', 1)[1].split('/obj/item/proc/', 1)[0]
+        self.assertIn('lanyard_tied = FALSE', exit_hook)
+        draw = self.text.split('/obj/item/proc/restore_lanyard_draw(', 1)[1].split('/mob/living/human/proc/lanyard_for', 1)[0]
+        for guard in ('loc != H', '!H.item_is_in_hands(src)', 'L.hold != S', 'C.loc == H',
+                      'C == H.w_uniform || C == H.wear_suit || C == H.belt', 'L.loc == C', 'L in C.accessories'):
+            self.assertLess(draw.index(guard), draw.index('lanyard_tied = TRUE'))
+        click = items.split('/obj/item/attack_hand(', 1)[1].split('/obj/item/attackby(', 1)[0]
+        self.assertEqual(click.count('restore_lanyard_draw(drawn_from, holder)'), 2)
+        drag = (ROOT / 'code/_onclick/inventory_drag.dm').read_text(encoding='utf-8')
+        self.assertRegex(drag, r'if \(inventory_drag_put_in_hand\(slot, user\)\)\n\s+restore_lanyard_draw\(origin, user\)')
+        modern = (ROOT / 'code/modules/storage_window/storage_window.dm').read_text(encoding='utf-8')
+        self.assertEqual(modern.count('I.restore_lanyard_draw(source, H)'), 2)
+
     def test_belt_takes_belt_lanyards(self):
         belt = (ROOT / 'code/modules/1713/belt_pouches.dm').read_text(encoding='utf-8')
         self.assertIn('/obj/item/clothing/accessory/storage/lanyard/fob_chain', belt)

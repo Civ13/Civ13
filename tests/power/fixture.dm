@@ -1,3 +1,5 @@
+#define QDELETED(X) (!(X)) // The minimal fixture has no deferred-deletion queue.
+
 world
 	maxx = 8
 	maxy = 8
@@ -18,8 +20,14 @@ world
 /proc/mechanism_relay_open_on(atom/T)
 	return FALSE
 /obj/structure
+	var/anchored = FALSE
 	var/smart_off = FALSE
 	var/smart_hub_id = null
+/obj/proc/process()
+	return
+/obj/structure/closet/fridge
+	anchored = TRUE
+	powerneeded = 5
 /obj/structure/engine
 	var/list/connections = list()
 	var/currentspeed = 0
@@ -90,6 +98,38 @@ var/failures = 0
 	check("new load admitted after release", N.draw_cable_power(), TRUE)
 	check("normal load accounted", A.currentflow, 1)
 	C.update_power(-1,1,N)
+	var/obj/structure/closet/fridge/chiller = new(locate(2,1,1))
+	chiller.powersource = B
+	B.connections += chiller
+	check("refrigerator connected without allocation does not cool", chiller.refrigeration_powered(), FALSE)
+	L.draw_cable_power()
+	M.draw_cable_power()
+	chiller.process()
+	check("fully allocated cable remains energized", B.powered, TRUE)
+	check("refrigerator denied at full capacity", chiller.refrigeration_powered(), FALSE)
+	check("denied refrigerator adds no load", C.currentflow, 10)
+	B.update_power(-6, 1, M)
+	chiller.process()
+	check("refrigerator is admitted after releasing competing demand", chiller.refrigeration_powered(), TRUE)
+	chiller.process()
+	check("refrigerator reserves five exactly once", C.currentflow, 9)
+	chiller.anchored = FALSE
+	chiller.process()
+	check("unsecured refrigerator does not cool", chiller.refrigeration_powered(), FALSE)
+	check("unsecured refrigerator releases its load", C.currentflow, 4)
+	chiller.anchored = TRUE
+	chiller.process()
+	chiller.smart_hub_id = "fixture-hub"
+	chiller.smart_off = TRUE
+	check("remote cutoff immediately stops cooling", chiller.refrigeration_powered(), FALSE)
+	chiller.process()
+	check("remote cutoff releases five-unit demand", C.currentflow, 4)
+	chiller.smart_off = FALSE
+	chiller.process()
+	check("remote restore draws power again", chiller.refrigeration_powered(), TRUE)
+	chiller.Destroy()
+	A.update_power(-4, 1, L)
+	check("refrigerator destruction releases demand", C.currentflow, 0)
 	var/obj/structure/radio/R = new(locate(1,1,1))
 	var/obj/structure/lamp/P = new(locate(2,1,1))
 	R.powersource = A

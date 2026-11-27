@@ -172,10 +172,19 @@
 		wrist_looped = FALSE
 		lanyard_tied = FALSE
 		return
-	if (wrist_looped && !H.lying && (H.put_in_active_hand(src) || H.put_in_inactive_hand(src)))
-		H.setClickCooldown(LANYARD_REGRIP_DELAY)
-		H.visible_message(SPAN_WARNING("\The [src] slips from [H]'s grip and swings from the wrist loop."), SPAN_WARNING("\The [src] slips from your grip and swings from your wrist. You grip it again."))
-		return
+	if (wrist_looped && !H.lying && !H.restrained())
+		// Hand updates can drop the item before returning. Suppress any new
+		// catch during this attempt and only restore the loop on a real grip.
+		var/restore_lanyard = lanyard_tied
+		wrist_looped = FALSE
+		lanyard_tied = FALSE
+		var/caught = H.put_in_active_hand(src) || H.put_in_inactive_hand(src)
+		lanyard_tied = restore_lanyard
+		if (caught && loc == H && H.item_is_in_hands(src))
+			wrist_looped = TRUE
+			H.setClickCooldown(LANYARD_REGRIP_DELAY)
+			H.visible_message(SPAN_WARNING("\The [src] slips from [H]'s grip and swings from the wrist loop."), SPAN_WARNING("\The [src] slips from your grip and swings from your wrist. You grip it again."))
+			return
 	wrist_looped = FALSE
 	if (lanyard_tied)
 		var/obj/item/clothing/accessory/storage/lanyard/L = H.lanyard_for(src)
@@ -192,6 +201,20 @@
 	wrist_looped = FALSE
 	var/obj/item/weapon/storage/internal/I = S
 	lanyard_tied = istype(I) && istype(I.master_item, /obj/item/clothing/accessory/storage/lanyard)
+
+// A draw preserves a tie only when it ends in the owner's actual hand.
+/obj/item/proc/restore_lanyard_draw(atom/origin, mob/living/human/H)
+	if (!istype(H) || loc != H || !H.item_is_in_hands(src))
+		return
+	var/obj/item/weapon/storage/internal/S = origin
+	if (!istype(S))
+		return
+	var/obj/item/clothing/accessory/storage/lanyard/L = S.master_item
+	if (!istype(L) || L.hold != S)
+		return
+	var/obj/item/clothing/C = L.has_suit
+	if (C && C.loc == H && (C == H.w_uniform || C == H.wear_suit || C == H.belt) && L.loc == C && (L in C.accessories))
+		lanyard_tied = TRUE
 
 // A worn lanyard with room for this item, if any.
 /mob/living/human/proc/lanyard_for(obj/item/I)

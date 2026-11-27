@@ -92,14 +92,40 @@
 /obj/item/stack/sinew/attack_self(mob/user)
 	if (QDELETED(src) || QDELETED(user) || loc != user || amount < 1)
 		return
-	// Existing rope recipes consume this cord for tools and other bindings.
-	if (use(1))
-		// Keep the new item live until the hand placement; automatic merging can
-		// queue the constructor's returned item for deletion.
-		var/obj/item/stack/material/rope/cord = new(get_turf(user), 1, FALSE)
+	var/turf/site = get_turf(user)
+	if (!site || !use(1))
+		return
+	// Keep the sole output live until we choose a recipient. Constructor
+	// auto-merge may delete its returned object and ignores held stacks.
+	var/obj/item/stack/material/rope/cord = new(site, 1, FALSE)
+	var/merged = FALSE
+	var/obj/item/held = user.get_inactive_hand()
+	if (held?.loc == user)
+		merged = sinew_merge_rope(cord, held)
+	if (!merged && user.loc == site)
+		for (var/obj/item/stack/material/rope/bundle in site)
+			if (!sinew_can_merge_rope(cord, bundle) || !bundle.alpha || bundle.invisibility > user.see_invisible || is_type_in_list(bundle, user.shouldnt_see) || !los_read_allowed(user, bundle, "click"))
+				continue
+			if (sinew_merge_rope(cord, bundle))
+				merged = TRUE
+				break
+	if (!merged)
 		cord.name = "sinew binding cord"
 		user.put_in_any_hand_if_possible(cord)
-		to_chat(user, SPAN_NOTICE("You twist the sinew into binding cord."))
+	to_chat(user, SPAN_NOTICE("You twist the sinew into binding cord."))
+
+/proc/sinew_can_merge_rope(obj/item/stack/material/rope/cord, obj/item/target)
+	if (!istype(target, /obj/item/stack/material/rope) || QDELETED(target) || target == cord || target.anchored || target.throwing)
+		return FALSE
+	var/obj/item/stack/material/rope/bundle = target
+	return cord.type == bundle.type && cord.material && cord.material == bundle.material && cord.stacktype == bundle.stacktype && cord.color == bundle.color && bundle.amount > 0 && bundle.amount + cord.amount <= bundle.max_amount
+
+/proc/sinew_merge_rope(obj/item/stack/material/rope/cord, obj/item/target)
+	if (!sinew_can_merge_rope(cord, target))
+		return FALSE
+	// merge() also enforces stack compatibility for enchanted bundles,
+	// refreshes the receiving stack and retires the one-unit output.
+	return cord.merge(target) == 1
 
 /obj/item/stack/grass_cuttings
 	name = "grass cuttings"
@@ -380,7 +406,8 @@
 			new /obj/item/weapon/pigleg(site)
 	else if (chicken)
 		for (var/i = 1, i <= portions, i++)
-			new /obj/item/weapon/chicken_carcass(site)
+			var/obj/item/weapon/chicken_carcass/carcass = new(site)
+			carcass.radiation = radiation/2
 	else
 		for (var/i = 1, i <= portions, i++)
 			var/obj/item/weapon/reagent_containers/food/snacks/F = harvest_food(meat_type, site)

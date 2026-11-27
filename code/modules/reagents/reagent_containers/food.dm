@@ -74,7 +74,7 @@
 		var/decay_before = decaytimer
 		if (istype(loc, /obj/structure/closet/fridge))
 			var/obj/structure/closet/fridge/F = loc
-			if (F.powersource && F.powersource.powered)
+			if (F.refrigeration_powered())
 				decaytimer += 75 //much slower
 			else
 				decaytimer += 200 //unpowered fridge still better, than storage container

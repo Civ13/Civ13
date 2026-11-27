@@ -378,8 +378,49 @@
 	var/tmp/complete_percent = 0 //for manual mills
 	var/tmp/list/workers_list = list() //mostly for team work possibility in manual mills
 	var/tmp/list/workers_work = list() // worker -> deciseconds of work on the current batch
-	var/tmp/batch_id = 0 // advanced when a batch finishes, so workers still waiting stop
+	var/tmp/batch_id = 0 // advanced when a batch ends, so workers still waiting stop
+	var/tmp/work_epoch = 0 // movement or unfastening interrupts the current interval only
 	var/tmp/obj/item/weapon/reagent_containers/current_material = null
+
+/obj/structure/mill/Move()
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous)
+		work_epoch++
+
+/obj/structure/mill/forceMove(atom/destination, special_event, list/throw_hop_token = null)
+	var/atom/previous = loc
+	. = ..()
+	if (loc != previous)
+		work_epoch++
+
+/obj/structure/mill/wrench_action(mob/living/human/H)
+	var/was_anchored = anchored
+	. = ..()
+	if (was_anchored && !anchored)
+		work_epoch++
+
+/obj/structure/mill/proc/has_hand_mill_input()
+	return !QDELETED(current_material) && current_material.loc == src
+
+/obj/structure/mill/proc/cancel_hand_mill_batch()
+	// Only completed intervals earn XP. A hammer has already released contents.
+	for (var/mob/living/human/worker in workers_list)
+		if (!QDELETED(worker) && workers_work[worker])
+			worker.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), workers_work[worker], TRUE, TRUE, 1, 0, 0, 0, 0)
+	qdel(current_work)
+	current_work = null
+	current_material = null
+	complete_percent = 0
+	batch_id++
+	workers_list.Cut()
+	workers_work.Cut()
+	icon_state = "flour_mill"
+
+/obj/structure/mill/Destroy()
+	if (!istype(src, /obj/structure/mill/large))
+		cancel_hand_mill_batch()
+	return ..()
 
 /obj/structure/mill/examine(mob/user, distance)
 	..(user, distance)
@@ -408,6 +449,9 @@
 
 /obj/structure/mill/proc/finish_work()
 	if (current_work)
+		if (!istype(src, /obj/structure/mill/large) && !has_hand_mill_input())
+			cancel_hand_mill_batch()
+			return
 		if (istype(src, /obj/structure/mill/large))
 			icon_state = "mill_large"
 			visible_message("<span class='notice'>You can see how [src.name] finish grind [current_material.name] to [current_work.name]</span>",
@@ -429,11 +473,16 @@
 	workers_work.Cut()
 
 /obj/structure/mill/proc/produce(var/obj/item/weapon/reagent_containers/W, var/mob/living/human/H, var/obj/item/weapon/reagent_containers/P)
-	if (!crafting_recipe_allowed(H, "[type]")) return
+	if (!istype(H) || !crafting_recipe_allowed(H, "[type]")) return
 	if(!anchored)
 		to_chat(H, "<span class='warning'>\The [src] needs to be locked in place before anything can be ground.</span>")
 		return
 	if (!istype(src, /obj/structure/mill/large))
+		if (!isturf(loc) || !in_range(H, src))
+			return
+		if (current_work && !has_hand_mill_input())
+			cancel_hand_mill_batch()
+			return
 		if (H.stats["stamina"][1] < H.stats["stamina"][2]*0.1)
 			to_chat(H, "<span class='warning'>You must restore your stamina before mill on [src].</span>")
 			return
@@ -457,10 +506,13 @@
 				"<span class='notice'>You started helping produce \a [current_work.name].</span>",
 				"<span class='notice'>The grinding sounds became more frequent.</span>")
 	else
-		current_work = new P(null)
+		if (istype(src, /obj/structure/mill/large))
+			H.drop_item()
+			W.loc = null
+		else if (!H.transfer_held_item_to(W, src) || QDELETED(W) || W.loc != src)
+			return
 		current_material = W
-		H.drop_item()
-		W.loc = null
+		current_work = new P(null)
 		H.visible_message(
 			"<span class='notice'>You can see how [H.name] began to grind [current_work.name] [istype(src, /obj/structure/mill/large) ? "on" : "in"] \the [src.name].</span>",
 			"<span class='notice'>You [istype(src, /obj/structure/mill/large) ? "put [current_work.name] to [src] for" : "start to"] produce \a [current_work.name].</span>",
@@ -488,10 +540,16 @@
 				some_work_done = TRUE
 				is_mentally_tired = TRUE
 				break
-			var/finished_work = do_after(H, 10, H.loc, TRUE, FALSE)
+			var/interval_epoch = work_epoch
+			var/finished_work = do_after(H, 10, src, TRUE, FALSE)
+			if (QDELETED(src))
+				return // Destroy already settled completed work.
 			if (batch_id != my_batch)
-				return // the batch finished during the wait and finish_work() already paid this worker
-			if (finished_work && crafting_recipe_allowed(H, "[type]"))
+				return // This batch ended during the wait and already settled completed work.
+			if (!has_hand_mill_input())
+				cancel_hand_mill_batch()
+				return
+			if (finished_work && interval_epoch == work_epoch && anchored && isturf(loc) && in_range(H, src) && crafting_recipe_allowed(H, "[type]"))
 				complete_percent += (6*H.getStatCoeff("strength") + 6*H.getStatCoeff("stamina") + 3*H.getStatCoeff("dexterity")) * machine_performance(src)
 				total_work += 10
 				workers_work[H] = total_work
@@ -501,9 +559,14 @@
 				some_work_done = TRUE
 				break
 		if (some_work_done)
-			H.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), total_work, TRUE, TRUE, 1, 0, 0, 0, 0)
+			if (total_work && !QDELETED(H))
+				H.give_exp(list("strength", "stamina", "dexterity"), list(40, 40, 20), total_work, TRUE, TRUE, 1, 0, 0, 0, 0)
 			workers_list -= H
 			workers_work -= H
+			if (QDELETED(H))
+				if (!workers_list.len)
+					icon_state = "flour_mill"
+				return
 			var/reason = "stopped"
 			if (is_mentally_tired) reason = "not in mood to"
 			if (is_tired) reason = "tired to"
@@ -1219,6 +1282,7 @@
 	// One pending callback per loop; runtime only, so a loaded jar starts clean.
 	var/tmp/ferment_loop = FALSE
 	var/tmp/growth_loop = FALSE
+	var/tmp/growth_generation = 0
 	flags = FALSE
 
 /obj/item/weapon/starterjar/attackby(obj/O as obj, mob/living/human/user as mob)
@@ -1277,18 +1341,29 @@
 			ferment_loop = FALSE
 			fermenting_process()
 
+/obj/item/weapon/starterjar/proc/cancel_yeast_growth()
+	growth_generation++
+	growth_loop = FALSE
+
 /obj/item/weapon/starterjar/proc/yeast_growth()
-	//Yeah there is a bug, form abuse load/unload yeast that may produce +4 fermenting_contents at time, BUT enzymes not essentials at this moment
-	//	and it will fixed, when working on TO DO part (look at the beginning of starterjar TODO)
 	if (growth_loop || fermenting_contents <= 0)
 		return
 	growth_loop = TRUE
+	var/generation = growth_generation
 	spawn(1500+rand(0,400))
-		growth_loop = FALSE
-		if (fermenting_contents > 0 && fermenting_contents < 5)
-			fermenting_contents++
-			icon_state = "jar[fermenting_contents]"
-		yeast_growth()
+		finish_yeast_growth_tick(generation)
+
+/obj/item/weapon/starterjar/proc/finish_yeast_growth_tick(generation)
+	// A stale callback must not clear the replacement culture's guard.
+	if (gcDestroyed || generation != growth_generation)
+		return
+	growth_loop = FALSE
+	if (fermenting != 2 || fermenting_contents <= 0)
+		return
+	if (fermenting_contents < 5)
+		fermenting_contents++
+		icon_state = "jar[fermenting_contents]"
+	yeast_growth()
 
 /obj/item/weapon/starterjar/attack_self(var/mob/living/human/user as mob)
 	if (fermenting==2 && fermenting_contents>0)
@@ -1300,6 +1375,7 @@
 		icon_state = "jar[fermenting_contents]"
 		if (fermenting_contents==0)
 			fermenting = 0
+			cancel_yeast_growth()
 	else
 		..()
 
@@ -1335,13 +1411,13 @@
 /obj/item/weapon/starterjar/after_load()
 	. = ..()
 	ferment_loop = FALSE
-	growth_loop = FALSE
+	cancel_yeast_growth()
 	restore_from_icon_state()
 	resume_fermentation()
 
 /obj/item/weapon/starterjar/get_saved_vars()
 	var/list/saved = ..()
-	saved -= list("ferment_loop", "growth_loop")
+	saved -= list("ferment_loop", "growth_loop", "growth_generation")
 	return saved
 
 ////////////////////////////////////////////////////////////////////////
@@ -1716,16 +1792,27 @@
 
 /obj/structure/oilwell/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers/glass/barrel))
+		var/mob/living/loader = user
+		if (!istype(loader))
+			return
 		load_barrel(FALSE)
 		if (!work_barrel)
 			if (do_after(user, 35, src))
-				load_barrel(FALSE)
-				if (work_barrel || W.loc != user || get_dist(user, src) > 1)
+				if (QDELETED(src) || QDELETED(loader) || QDELETED(W))
 					return
-				user.drop_item(src.loc)
+				load_barrel(FALSE)
+				if (work_barrel || W.loc != user || user.z != z || get_dist(user, src) > 1)
+					return
+				if (!W.reagents || W.reagents.get_free_space() <= 0)
+					to_chat(user, SPAN_WARNING("The barrel has no room for oil."))
+					return
+				if (!loader.transfer_held_item_to(W, src))
+					return
+				load_barrel(FALSE)
+				if (work_barrel != W || W.loc != src)
+					return
 				user.visible_message("<span class='notice'>[user] puts \the [W] in \the [src].</span>",
 					"<span class='notice'>You put \the [W] in \the [src].</span>")
-				load_barrel()
 		else
 			to_chat(user, "<span class='warning'>There is already a connected [work_barrel].</span>")
 		return
@@ -2306,11 +2393,11 @@
 	if (!restoring)
 		initialize()
 
-/obj/structure/compost/proc/add(var/obj/item/W, var/mob/living/human/H, amount_to_add)
-	current += amount_to_add
-	if (H)
-		H.visible_message("<span class='warning'>[H] place \the [W] in \the [src], composting it.</span>",
-			"<span class='notice'>You place \the [W] in \the [src], composting it.</span>")
+// Only the save marker may restore a legacy balance above the input cap.
+/obj/structure/compost/proc/add(obj/item/W, mob/living/human/H, amount_to_add, legacy_marker = FALSE)
+	if (!legacy_marker && amount_to_add > 10 - current)
+		return
+	credit_compost(H, W.name, amount_to_add)
 	qdel(W)
 
 /obj/structure/compost/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
@@ -2356,22 +2443,22 @@
 		if (istype(W, /obj/item/stack/dung))
 			continue
 		if (W.type == /obj/item/stack/ore)
-			add(W, H, W.amount*10) //It's not obtainable item now, we used it for save/load current values
+			add(W, H, W.amount * 10, legacy_marker = TRUE) // Old save marker, not an input material
 			continue
 		if (istype(W, /obj/item/weapon/reagent_containers/food))
 			add(W, H, 0.5)
 			continue
 		if (istype(W, /obj/item/stack/material/leaf))
-			add(W, H, W.amount/18) //divides (using /) by eighteenth's from each plant input of 1, 0.05(5555555555556) gain per leaf
+			add_compost_stack(W, H, 18)
 			continue
 		if (istype(W, /obj/item/stack/farming/seeds))
-			add(W, H, W.amount/10) //divides (using /) by tenths from each plant input of 1, 0.10 gain per seed, 10 seeds = 1 unit. 100 seeds = 10
+			add_compost_stack(W, H, 10)
 			continue
 		if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco_green) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca) || istype(W, /obj/item/stack/material/cannabis_fresh) || istype(W, /obj/item/stack/material/cannabis))
-			add(W, H, W.amount/4) //by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
+			add_compost_stack(W, H, 4)
 			continue
 		if (istype(W, /obj/item/stack/material/flax) || istype(W, /obj/item/stack/material/hemp) || istype(W, /obj/item/stack/material/rettedfabric))
-			add(W, H, W.amount/4) //by fourths from each stack plant input of 1, 0.25 gain per plant, 4 stackplants = 1 unit. 40 stackplants = 10
+			add_compost_stack(W, H, 4)
 
 /obj/structure/compost/proc/compost()
 	if (nitrary_mode)
@@ -2550,7 +2637,7 @@
 	P.customname = wood_customname
 	// Looped cuts pile onto one matching plank stack instead of one stack per log.
 	for (var/obj/item/stack/material/woodplank/existing in site)
-		if (existing != P && existing.type == P.type && existing.amount < existing.max_amount && existing.color == P.color && existing.customcolor == P.customcolor && existing.customcolor1 == P.customcolor1 && existing.customcolor2 == P.customcolor2 && existing.customname == P.customname)
+		if (existing != P && !existing.onfire && existing.type == P.type && existing.amount < existing.max_amount && existing.color == P.color && existing.customcolor == P.customcolor && existing.customcolor1 == P.customcolor1 && existing.customcolor2 == P.customcolor2 && existing.customname == P.customname)
 			P.merge(existing)
 			break
 	new /obj/item/stack/bark(site, 1)
@@ -2797,3 +2884,19 @@
 		cancel_primitive_work()
 	else
 		finish_work()
+
+// Compost loading helpers (both input paths share credit and messaging).
+/obj/structure/compost/proc/credit_compost(mob/living/human/H, item_name, credit)
+	current += credit
+	if (H)
+		H.visible_message("<span class='warning'>[H] places \the [item_name] in \the [src], composting it.</span>",
+			"<span class='notice'>You place \the [item_name] in \the [src], composting it.</span>")
+
+/obj/structure/compost/proc/add_compost_stack(obj/item/stack/S, mob/living/human/H, units_per_compost)
+	// DM round() floors. Only take whole stack units, without the crafting discount.
+	var/units = min(S.amount, round(max(0, 10 - current) * units_per_compost + 0.00001))
+	if (units <= 0)
+		return
+	var/item_name = S.name
+	if (S.use(units))
+		credit_compost(H, item_name, min(10 - current, units / units_per_compost))

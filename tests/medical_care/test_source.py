@@ -1,4 +1,5 @@
 """Offline source contracts for field treatment and artery repair; not native DM execution."""
+import importlib.util
 from pathlib import Path
 import re
 import unittest
@@ -23,6 +24,74 @@ def block(source, path):
     if not match:
         raise AssertionError(f"missing {path}")
     return match.group()
+
+
+class TourniquetLimb:
+    """Fake organ state; lifecycle and clotting decisions come from the DM procs."""
+
+    def __init__(self, owner, artery_cut=0, bandaged=True, severity=1, parent=None):
+        self.owner = owner
+        self.status = artery_cut
+        self.bandaged = bandaged
+        self.arterial_bleed_severity = severity
+        self.parent = parent
+        self.children = []
+        self.tourniquet = False
+        self.tourniquet_ticks = 0
+        self.tourniquet_makeshift = 0
+        if parent:
+            parent.children.append(self)
+
+    def has_bandaged_wound(self):
+        return self.bandaged
+
+
+def project_tourniquet(source, messages):
+    spec = importlib.util.spec_from_file_location(
+        "source_adapter", ROOT / "tests/save_movement/source_adapter.py"
+    )
+    adapter = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(adapter)
+    names = ("ORGAN_ARTERY_CUT", "ORGAN_DESTROYED", "ORGAN_DEAD",
+             "TOURNIQUET_CLOT_TICKS", "TOURNIQUET_NUMB_TICKS")
+    env = {name: int(re.search(rf"(?m)^#define\s+{name}\s+(\d+)", DEFINES)[1])
+           for name in names}
+    env.update(typed_iter=lambda items, _type: items or (), to_chat=lambda *args: messages.append(args),
+               SPAN_NOTICE=lambda msg: msg, SPAN_DANGER=lambda msg: msg)
+
+    # The adapter projects a free proc; qualify the implicit DM fields
+    # outside message literals, just as for its existing method mode.
+    fields = re.compile(
+        r"(?<![\w.])(?:owner|status|tourniquet|tourniquet_ticks|tourniquet_makeshift|"
+        r"arterial_bleed_severity|has_bandaged_wound|remove_tourniquet|clot_covered_arteries)\b"
+    )
+
+    def project(name, args):
+        path = f"/obj/item/organ/external/proc/{name}"
+        body = []
+        for line in adapter.extract(source, path).splitlines():
+            pieces = re.split(r'(".*?")', line)
+            for i in range(0, len(pieces), 2):
+                pieces[i] = fields.sub(lambda m: "src." + m[0], pieces[i])
+            body.append("".join(pieces))
+        return adapter.project(path + "()\n" + "\n".join(body), path, args, dict(env))
+
+    handle = project("handle_tourniquet", "src")
+    remove = project("remove_tourniquet", "src")
+    try:
+        clot = project("clot_covered_arteries", "src, covered")
+    except AssertionError:
+        if "/proc/clot_covered_arteries" in source:
+            raise
+        clot = None  # Old source has no descendant path; run its actual handler in negative controls.
+
+    def tick(limb):
+        limb.remove_tourniquet = lambda: remove(limb)
+        if clot:
+            limb.clot_covered_arteries = lambda covered: clot(limb, covered)
+        handle(limb)
+
+    return tick, env
 
 
 def dmi_states(path):
@@ -76,8 +145,8 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("return SURGERY_FAILURE", admission)
         self.assertIn("return FALSE", admission)
         self.assertIn("return TRUE", admission)
-        self.assertIn("if (can_use(user, target, target_zone, tool) != TRUE)", completion)
-        self.assertLess(completion.index("if (can_use("), completion.index("E.replaced(target)"))
+        self.assertIn("if (QDELETED(tool) || tool.loc != user || can_use(user, target, target_zone, tool) != TRUE)", completion)
+        self.assertLess(completion.index("can_use("), completion.index("E.replaced(target)"))
 
     def test_severed_artery_is_repairable(self):
         step = block(SURGERY, "/datum/surgery_step/fix_vein")
@@ -101,7 +170,7 @@ class MedicalCare(unittest.TestCase):
     def test_shared_treatment_guards(self):
         treat = block(MEDICAL, "/obj/item/stack/medical/proc/treat(")
         lookup = treat.index("H.get_organ(user.targeted_organ)")
-        guard = treat.index("if (!affecting)", lookup)
+        guard = treat.index("if (!affecting || !tourniquet_patient_in_reach(H, user))", lookup)
         self.assertLess(guard, treat.index("affecting.", guard + 20))
         open_check = treat.index("if (affecting.open)")
         self.assertIn("\n\t\treturn\n", treat[open_check:treat.index("limb_needs(affecting)", open_check)])
@@ -114,6 +183,16 @@ class MedicalCare(unittest.TestCase):
         splint = block(MEDICAL, "/obj/item/stack/medical/splint/attack")
         lookup = splint.index("H.get_organ(user.targeted_organ)")
         self.assertLess(splint.index("if (!affecting)", lookup), splint.index("affecting.", lookup + 40))
+
+    def test_treatment_rechecks_reach_after_wait_and_settles_prior_work(self):
+        treat = block(MEDICAL, "/obj/item/stack/medical/proc/treat(")
+        after_wait = treat.split("if (!do_mob(user, H, W.damage/5))", 1)[1]
+        guard = after_wait.index("if (!tourniquet_patient_in_reach(H, user))")
+        first_effect = after_wait.index("W.bandage()")
+        self.assertLess(guard, first_effect)
+        self.assertIn("break", after_wait[guard:first_effect])
+        self.assertIn("\n\tif (used)\n\t\tuse(min(used, amount))", treat)
+        self.assertIn("if (tourniquet_patient_in_reach(H, user))\n\t\ttry_expert_close", treat)
 
     def test_every_treatment_item_uses_the_shared_proc(self):
         expected = {
@@ -167,8 +246,7 @@ class MedicalCare(unittest.TestCase):
         self.assertLess(skip, bleed.index("temp.status & ORGAN_ARTERY_CUT", loop))
         self.assertIn("temp.has_bandaged_wound()", bleed)
         tq = block(ORGAN, "/obj/item/organ/external/proc/handle_tourniquet")
-        for term in ("tourniquet_ticks++", "TOURNIQUET_CLOT_TICKS", "arterial_bleed_severity <= 1",
-                     "has_bandaged_wound()", "status &= ~ORGAN_ARTERY_CUT", "TOURNIQUET_NUMB_TICKS * 2",
+        for term in ("tourniquet_ticks++", "TOURNIQUET_CLOT_TICKS", "TOURNIQUET_NUMB_TICKS * 2",
                      "status |= ORGAN_DEAD"):
             self.assertIn(term, tq)
         self.assertNotIn("world.time", tq)
@@ -178,6 +256,46 @@ class MedicalCare(unittest.TestCase):
         self.assertIn("if (tourniquet)", need)
         apply = block(ORGAN, "/obj/item/organ/external/proc/apply_tourniquet")
         self.assertIn("owner.bad_external_organs |= src", apply)
+
+    def test_tied_limb_timer_clots_its_covered_small_bandaged_arteries(self):
+        messages = []
+        tick, defines = project_tourniquet(ORGAN, messages)
+        artery, threshold = defines["ORGAN_ARTERY_CUT"], defines["TOURNIQUET_CLOT_TICKS"]
+        owner = object()
+        limb = TourniquetLimb(owner, artery)
+        child = TourniquetLimb(owner, artery, parent=limb)
+        unbandaged = TourniquetLimb(owner, artery, bandaged=False, parent=limb)
+        severe = TourniquetLimb(owner, artery, severity=2, parent=limb)
+        detached = TourniquetLimb(owner, artery)
+        limb.children.append(detached)
+        unrelated = TourniquetLimb(object(), artery, parent=limb)
+        limb.tourniquet = True
+        limb.tourniquet_ticks = threshold - 2
+        tick(limb)
+        self.assertEqual((limb.status, child.status), (artery, artery))
+        tick(limb)
+        self.assertEqual((limb.status, child.status), (0, 0))
+        self.assertEqual([l.status for l in (unbandaged, severe, detached, unrelated)], [artery]*4)
+        self.assertEqual(len(messages), 2)
+        tick(limb)
+        self.assertEqual(len(messages), 2)
+
+    def test_makeshift_tourniquet_that_slips_does_not_clot_covered_arteries(self):
+        messages = []
+        tick, defines = project_tourniquet(ORGAN, messages)
+        artery, threshold = defines["ORGAN_ARTERY_CUT"], defines["TOURNIQUET_CLOT_TICKS"]
+        owner = object()
+        limb = TourniquetLimb(owner, artery)
+        child = TourniquetLimb(owner, artery, parent=limb)
+        limb.tourniquet = True
+        limb.tourniquet_ticks = threshold - 1
+        limb.tourniquet_makeshift = threshold
+        tick(limb)
+        self.assertEqual((limb.status, child.status), (artery, artery))
+        self.assertFalse(limb.tourniquet)
+        self.assertEqual(limb.tourniquet_ticks, 0)
+        self.assertEqual(len(messages), 1)
+        self.assertIn("slips loose", messages[0][1])
 
     def test_bandage_roll_applies_and_loosens_tourniquet(self):
         self.assertIn("return try_tourniquet(H, affecting, user)",
@@ -202,7 +320,7 @@ class MedicalCare(unittest.TestCase):
     def test_splinted_fracture_heals_over_time(self):
         heal = block(ORGAN, "/obj/item/organ/external/proc/handle_fracture_healing")
         for term in ("ORGAN_BROKEN", "ORGAN_SPLINTED", "owner.lying ? 2 : 1", "FRACTURE_HEAL_TICKS",
-                     "mend_fracture()", "status &= ~ORGAN_SPLINTED", "/obj/item/stack/medical/splint/small"):
+                     "mend_fracture()", "recover_splint(get_turf(owner), /obj/item/stack/medical/splint/small)"):
             self.assertIn(term, heal)
         self.assertIn("fracture_heal_ticks = 0", block(ORGAN, "/obj/item/organ/external/proc/fracture"))
         self.assertIn("handle_fracture_healing()", block(ORGAN, "/obj/item/organ/external/process"))

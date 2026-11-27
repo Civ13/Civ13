@@ -159,10 +159,17 @@ Newlines, control characters, @ and angle brackets in entries/headings are rejec
 allowed_mentions disables all parsing; content never enters a shell.
 Webhook URLs allow only HTTPS discord.com incoming webhook paths, no redirect,
 query, credentials or fragment. wait=true requests a saved-message confirmation.
-429 respects Retry-After/retry_after up to 60 seconds with five attempts. Longer
-waits/exhaustion stop for later reconciliation. GET 5xx retries exponentially.
-POST 5xx/network failures are ambiguous and never automatically replayed.
-HTTP errors log status only, not remote bodies that might echo credentials.
+Discord 429 responses honor `Retry-After` / `retry_after`, including fractional
+seconds. GitHub 429 and identified rate-limit 403 responses honor the advertised
+wait or reset time; secondary limits with no wait hint use exponential backoff
+starting at one minute. A run has a three-minute shared rate-wait budget and at
+most five attempts per request; it never retries sooner than the advertised
+wait. If Discord definitively rejected every POST attempt with 429, the publisher
+clears only the unsent reservation in GitHub so a rerun can safely resume.
+If that receipt update fails, follow the pending-receipt procedure above.
+GET 5xx retries exponentially. POST 5xx, transport errors or failed receipt
+writes are ambiguous and never automatically replayed. HTTP errors do not log
+remote bodies that might echo credentials.
 
 Official contracts:
 - https://docs.discord.com/developers/resources/webhook

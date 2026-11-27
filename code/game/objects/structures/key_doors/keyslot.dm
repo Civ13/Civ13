@@ -35,19 +35,13 @@
 		var/list/keys = list()
 
 		if (belt && istype(belt) && belt.keychain && istype(belt.keychain))
-			keys |= belt.keychain.keys
-		if (istype(H.l_hand, /obj/item/weapon/storage/belt/keychain))
-			keys |= H.l_hand:keys
-		if (istype(H.r_hand, /obj/item/weapon/storage/belt/keychain))
-			keys |= H.r_hand:keys
+			keys |= belt.keychain.key_items()
+		for (var/obj/item/weapon/storage/belt/keychain/ring in list(H.l_hand, H.r_hand, H.wear_id))
+			keys |= ring.key_items()
 		if (istype(H.l_hand, /obj/item/weapon/key))
 			keys |= H.l_hand
 		if (istype(H.r_hand, /obj/item/weapon/key))
 			keys |= H.r_hand
-
-		if (istype(H.wear_id, /obj/item/weapon/storage/belt/keychain))
-			var/obj/item/weapon/storage/belt/keychain/keychain = H.wear_id
-			keys |= keychain.keys
 
 		for (var/obj/item/weapon/key/key in keys)
 			if (check_individual_key(key))
@@ -67,7 +61,7 @@
 	return FALSE
 
 /datum/keyslot/proc/check_individual_keychain(var/obj/item/weapon/storage/belt/keychain/keychain)
-	for (var/obj/item/weapon/key/K in keychain)
+	for (var/obj/item/weapon/key/K in keychain.key_items())
 		if (check_individual_key(K))
 			return TRUE
 	return FALSE

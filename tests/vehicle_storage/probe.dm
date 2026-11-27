@@ -71,6 +71,7 @@ var/storage_runtime_error = FALSE
 	storage_check(istype(car) && car.keyed_vehicle_id, "the workshop builds a keyed car in its bay")
 	if (!istype(car))
 		return
+	car.set_hull("aluminium")
 	var/obj/item/vehicle_key/car_key = storage_key(car, get_turf(workshop))
 	qdel(workshop)
 	var/obj/structure/vehicle_garage/garage = new(locate(2, 2, 1))
@@ -79,8 +80,27 @@ var/storage_runtime_error = FALSE
 	var/id = car.keyed_vehicle_id
 	var/obj/structure/engine/internal/E = car.engine
 	E.fueltank.reagents.add_reagent(E.fuels[1], 30, safety = TRUE)
-	var/obj/structure/vehicleparts/frame/damaged = car.components[1]
-	damaged.walls.front.current_health = 7
+	var/obj/structure/vehicleparts/frame/damaged
+	var/wall_side
+	var/list/wall
+	for (var/obj/structure/vehicleparts/frame/F in car.components)
+		for (var/side in list("left", "right", "front", "back"))
+			var/list/candidate = F.vars["w_[side]"]
+			if (F.wall_weight(candidate) > 0)
+				damaged = F
+				wall_side = side
+				wall = candidate
+				break
+		if (damaged)
+			break
+	storage_check(damaged, "the aluminium car has a representative wall")
+	if (!damaged)
+		return
+	var/datum/wall_config/wall_condition = damaged.walls.vars[wall_side]
+	wall_condition.current_health = 7
+	var/car_weight = damaged.wall_weight(wall)
+	var/car_wall_health = wall[5]
+	var/car_wall_armor = wall[4]
 	var/damaged_x = damaged.x
 	var/damaged_y = damaged.y
 	// Roads under a parked car are ground, not cargo.
@@ -126,7 +146,11 @@ var/storage_runtime_error = FALSE
 	for (var/obj/structure/vehicleparts/frame/F in back.components)
 		if (F.x == damaged_x && F.y == damaged_y)
 			same = F
-	storage_check(same && same.walls.front.current_health == 7, "damage is kept")
+	var/list/restored_wall = same ? same.vars["w_[wall_side]"] : null
+	var/datum/wall_config/restored_condition = same ? same.walls.vars[wall_side] : null
+	storage_check(restored_condition && restored_condition.current_health == 7, "damage is kept")
+	storage_check(same && same.hull_material == "aluminium" && car_weight > 0 && same.wall_weight(restored_wall) == car_weight, "a garage round trip keeps the aluminium material and its calculated wall weight")
+	storage_check(restored_wall && restored_wall[4] == car_wall_armor && restored_wall[5] == car_wall_health, "already scaled hull armour and maximum health are not scaled again")
 	storage_check(!storage_unsaved_parts(back), "every rebuilt part is saved with the map again")
 	storage_check(back.key_access(H) && back.wheel && back.wheel.drivingchair == back.wheel.loc && back.wheel.control && back.wheel.control.axis == back, "the key starts it and the wheel belongs to its seat")
 
@@ -155,7 +179,10 @@ var/storage_runtime_error = FALSE
 	storage_check(!vehicle_storage_store(hangar, hangar.stored_vehicles, hangar.storage_capacity, TRUE, H), "an airborne plane is not hangared")
 	plane.flight_state = AIRCRAFT_GROUND
 	var/plane_reg = plane.reg_number
+	var/obj/structure/vehicleparts/frame/plane_frame = plane.frames()[1]
+	var/plane_weight = plane_frame.airframe_weight()
 	storage_check(vehicle_storage_store(hangar, hangar.stored_vehicles, hangar.storage_capacity, TRUE, H) && storage_frames(hangar) == 0 && QDELETED(plane), "the hangar puts the plane away")
+	storage_hull_record_checks(hangar.stored_vehicles[1])
 	options = hangar.extra_options()
 	storage_check(options.len == 2 && ("stored_vehicles" in hangar.get_saved_vars()), "a hangared plane can be rolled out and is saved with the hangar")
 	var/obj/structure/vehicleparts/axis/aircraft/flown = vehicle_storage_retrieve(hangar, hangar.stored_vehicles, 1, H)
@@ -163,7 +190,43 @@ var/storage_runtime_error = FALSE
 	if (istype(flown))
 		storage_check(istype(flown.wheel, /obj/item/vehicleparts/wheel/modular/aircraft) && flown.wheel.control && flown.wheel.control.axis == flown && !flown.airborne(), "the control column flies this plane again")
 		storage_check(flown.engine.fueltank in flown.transporting, "the plane knows its tank is aboard")
+		var/obj/structure/vehicleparts/frame/same_frame = flown.frames()[1]
+		storage_check(same_frame.hull_material == "wood" && plane_weight < 10 && same_frame.airframe_weight() == plane_weight, "a hangar round trip keeps the wooden airframe weight")
 		storage_check(!storage_unsaved_parts(flown), "every rebuilt plane part is saved with the map again")
+
+/proc/storage_hull_record_checks(stored)
+	var/list/entry = json_decode(stored)
+	var/list/record = entry["record"]
+	var/datum/extraction_vehicle_codec/codec = new
+	var/list/air_manifest = list("v" = 1, "record" = record, "name" = "Light plane", "dir" = NORTH, "gear" = 1, "state" = AIRCRAFT_LOW, "from" = list(10, 10, 1))
+	storage_check(air_crossing_plane_ok(air_manifest), "the intercontinental flight manifest accepts the wooden hull record")
+	storage_floor(21, 10, 29, 17)
+	var/obj/structure/vehicleparts/axis/aircraft/arrived = air_crossing_build(air_manifest, locate(25, 13, 1), null)
+	var/obj/structure/vehicleparts/frame/arrived_frame
+	if (istype(arrived))
+		arrived_frame = arrived.frames()[1]
+	storage_check(arrived_frame && arrived_frame.hull_material == "wood" && arrived_frame.airframe_weight() == 6, "the destination plane rebuild retains wooden weight")
+	var/list/root = record["nodes"][1]
+	var/list/frame = record["nodes"][root["parent"]]
+	storage_check(frame["hull_material"] == "wood" && !("hull_material" in frame["scalars"]), "material is an optional node field outside the strict scalar map")
+	frame["hull_material"] = "unsupported"
+	storage_check(!codec.validate(record), "an invalid hull material is refused")
+	frame["hull_material"] = "wood"
+	root["hull_material"] = "wood"
+	storage_check(!codec.validate(record), "material on a non-frame node is refused")
+	root -= "hull_material"
+	for (var/list/N in record["nodes"])
+		N -= "hull_material"
+	storage_check(codec.validate(record), "a legacy record omitting material still validates")
+	storage_floor(21, 1, 29, 9)
+	var/obj/structure/vehicleparts/axis/aircraft/legacy = codec.decode(record, locate(25, 5, 1))
+	var/obj/structure/vehicleparts/frame/F
+	if (istype(legacy))
+		F = legacy.frames()[1]
+	storage_check(F && isnull(F.hull_material) && F.airframe_weight() == 10, "older records still rebuild with the original default hull")
+	var/list/scalars = frame["scalars"]
+	scalars -= "resistance"
+	storage_check(!codec.validate(record), "the new optional field does not loosen required scalar validation")
 
 /proc/storage_run()
 	try

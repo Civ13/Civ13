@@ -1,9 +1,7 @@
 /////////////////////////////// Item piles ///////////////////////////////
-// BYOND's right-click menu lists every clickable object under the mouse, so a
-// tile holding 70 identical items showed 70 identical entries. Items on a tile
-// that look the same (type, name, icon state) form a pile: only the top one
-// stays clickable, the rest are mouse-transparent until the top one leaves.
-// They still draw as before. Leaving the tile always makes an item clickable.
+// BYOND's native menu shares its hit-testing with left click. Collapse only
+// identical, superimposed appearances: putting a duplicate out of the menu
+// must not remove a visible click target beside the representative.
 
 // The item is hidden under an identical one on its tile; pile_opacity holds
 // the mouse_opacity it had. Both save with the item so a loaded pile stays
@@ -39,24 +37,45 @@ var/global/item_pile_flush_pending = FALSE
 		addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(item_pile_flush)), 1)
 
 /proc/item_pile_key(obj/item/I)
-	return "[I.type]|[I.name]|[I.icon_state]"
+	return "[I.type]|[I.name]|[I.invisibility]|[I.step_x]|[I.step_y]|[I.pixel_x]|[I.pixel_y]"
 
-// Recomputes which item of each identical group on T stays clickable: the
-// last one in the tile's contents, which is drawn on top of the others.
+// Only merge candidates with precisely the same BYOND appearance, including
+// direction, transforms, overlays, layer, plane and original mouse mask.
+// Split obvious spatial differences by key first. If any remaining aspect
+// differs, conservatively leave every item in that bucket clickable.
 /proc/item_pile_refresh(turf/T)
 	if (!isturf(T))
 		return
 	var/list/top = list()
+	var/list/appearances = list()
+	var/list/mixed = list()
+	var/mutable_appearance/scratch
 	for (var/obj/item/I in T)
 		if (QDELETED(I))
 			continue
-		if (!I.pile_hidden && !I.mouse_opacity)
-			continue // made unclickable on purpose by its own code; not ours to manage
-		top[item_pile_key(I)] = I
-	for (var/obj/item/I in T)
-		if (QDELETED(I) || (!I.pile_hidden && !I.mouse_opacity))
+		if ((!I.pile_hidden && !I.mouse_opacity) || !I.alpha || I.screen_loc)
+			I.pile_reveal()
 			continue
-		if (top[item_pile_key(I)] == I)
+		var/key = item_pile_key(I)
+		if (mixed[key])
+			continue
+		var/appearance = I.appearance
+		if (I.pile_hidden)
+			if (!scratch)
+				scratch = new
+			scratch.appearance = appearance
+			scratch.mouse_opacity = I.pile_opacity
+			appearance = scratch.appearance
+		if (!top[key])
+			appearances[key] = appearance
+		else if (appearances[key] != appearance)
+			mixed[key] = TRUE
+		top[key] = I
+	for (var/obj/item/I in T)
+		if (QDELETED(I) || (!I.pile_hidden && !I.mouse_opacity) || !I.alpha || I.screen_loc)
+			continue
+		var/key = item_pile_key(I)
+		if (mixed[key] || top[key] == I)
 			I.pile_reveal()
 		else
 			I.pile_hide()
@@ -96,8 +115,7 @@ var/global/item_pile_flush_pending = FALSE
 	if (!istype(AM, /obj/item) || !(isturf(origin) || isturf(destination)))
 		return
 	var/obj/item/I = AM
-	if (!isturf(destination))
-		I.pile_reveal()
+	I.pile_reveal() // raw turf-to-turf moves also need an immediate hitbox
 	item_pile_mark(origin)
 	item_pile_mark(destination)
 
@@ -120,6 +138,85 @@ var/global/item_pile_flush_pending = FALSE
 	item_pile_mark(src)
 	return ..()
 
+/////////////////////////////// Item selection /////////////////////////////
+// This is an ordinary BYOND choice prompt, not a second interaction path.
+// Show no contents of containers and no objects hidden except by pile grouping.
+#define ITEM_PILE_PICK_LIMIT 100
+
+/client/var/tmp/item_pile_prompt_open = FALSE
+
+/mob/living/human/proc/item_pile_can_choose(turf/site)
+	return client && !client.item_pile_prompt_open && client.mob == src && client.eye == src && isturf(loc) && site && z == site.z && site.Adjacent(src) && !stat && !paralysis && !stunned && !weakened && !restrained() && !in_throw_mode && !using_object && canClick()
+
+/proc/item_pile_selectable(mob/living/human/H, turf/site, obj/item/I, datum/los_context/context = null, datum/los_snapshot/snapshot = null)
+	if (!(I && !QDELETED(I) && I.loc == site && I.name && I.alpha && I.invisibility <= H.see_invisible && (I.mouse_opacity || (I.pile_hidden && I.pile_opacity)) && !is_type_in_list(I, H.shouldnt_see) && I.Adjacent(H)))
+		return FALSE
+	return context ? context.decision_snapshot(I, snapshot, "click") != LOS_DENY : los_read_allowed(H, I, "click")
+
+/proc/item_pile_options(mob/living/human/H, turf/site)
+	var/list/options = list()
+	var/datum/los_context/context = null
+	var/datum/los_snapshot/snapshot = null
+	var/datum/los_context/current = H.client?.los_context
+	if (CIV13_GEOMETRIC_LOS_CORE && current?.eligible())
+		if (current.body != H || current.owner != H.client)
+			return options
+		// Every candidate is a direct item on this one tile. Reuse one raw
+		// capture only while building the list; the answer takes fresh sight.
+		context = current
+		snapshot = current.capture(FALSE, site)
+		if (!snapshot)
+			return options
+	var/scanned = 0
+	for (var/obj/item/I in site)
+		if (++scanned > ITEM_PILE_PICK_LIMIT)
+			break
+		if (!item_pile_selectable(H, site, I, context, snapshot))
+			continue
+		// Native input is plain text. Prefix a number so identical names are
+		// still separate choices, without inspecting writing or contents.
+		var/display_name = I.name
+		if (istype(I, /obj/item/stack) && I.amount > 1)
+			display_name = "[display_name] ([I.amount] units)"
+		options["[options.len + 1]. [display_name]"] = I
+	return options
+
+/proc/item_pile_has_choice(list/options)
+	if (options.len > 1)
+		return TRUE
+	if (!options.len)
+		return FALSE
+	// Its normal representative may be out of sight. Selection is still
+	// useful when the sole eligible item cannot be clicked directly.
+	var/obj/item/only_item = options[options[1]]
+	return only_item?.pile_hidden
+
+/mob/living/human/proc/item_pile_choose(turf/site, list/options)
+	var/client/chooser = client
+	if (chooser.item_pile_prompt_open)
+		return null
+	var/atom/origin = loc
+	var/obj/item/held = get_active_hand()
+	var/original_hand = hand
+	var/original_intent = a_intent
+	var/original_click = next_click
+	chooser.item_pile_prompt_open = TRUE
+	var/label = player_input(src, "Pick up an item, or use your held item on it.", "Items on this tile", null, "anything", options, TRUE)
+	if (chooser)
+		chooser.item_pile_prompt_open = FALSE
+	if (!label || QDELETED(src) || client != chooser || loc != origin || hand != original_hand || held != get_active_hand() || a_intent != original_intent || !item_pile_can_choose(site))
+		return null
+	// A separate click made while the chooser was open still owns its clock.
+	if (next_click != original_click && world.time <= next_click)
+		return null
+	var/obj/item/selected = options[label]
+	if (!item_pile_selectable(src, site, selected) || (travel_holds && travel_hold_refuses(src, selected)))
+		return null
+	next_click = world.time + 1
+	return selected
+
+#undef ITEM_PILE_PICK_LIMIT
+
 /////////////////////////////// Loose piles ///////////////////////////////
 // Plain items that are not /obj/item/stack (roofing, bricks, clay blocks) can
 // still gather into one counted pile: one inventory item and one menu entry.
@@ -134,7 +231,11 @@ var/global/item_pile_flush_pending = FALSE
 	if (!loose_pile_max)
 		return
 	amount = clamp(round(amount), 1, loose_pile_max)
-	name = amount > 1 ? "[initial(name)] ([amount])" : initial(name)
+	var/new_name = amount > 1 ? "[initial(name)] ([amount])" : initial(name)
+	if (new_name != name)
+		name = new_name
+		if (isturf(loc))
+			item_pile_mark(loc)
 
 /obj/item/proc/loose_pile_can_join(obj/item/other)
 	return loose_pile_max && istype(other) && other != src && other.type == type && !QDELETED(src) && !QDELETED(other) && amount < loose_pile_max

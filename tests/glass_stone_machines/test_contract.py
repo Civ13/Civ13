@@ -75,11 +75,28 @@ class GlassStoneMachines(unittest.TestCase):
         self.assertIn('#define GLASS_BENCH_YIELD 2', SOURCE)
 
     def test_bench_needs_and_burns_a_fuelled_fire(self):
-        self.assertIn('if (F.fuel >= GLASS_BENCH_FUEL)', proc_body('/obj/structure/workshop_machine/glass_bench/proc/glory_hole()'))
+        fire = proc_body('/obj/structure/workshop_machine/glass_bench/proc/glory_hole()')
+        self.assertIn('F.fuel >= GLASS_BENCH_FUEL && Adjacent(F)', fire)
         body = proc_body('/obj/structure/workshop_machine/glass_bench/proc/blow_wares(')
         self.assertLess(body.index('do_after('), body.index('F.burn_structure_fuel(GLASS_BENCH_FUEL)'))
         self.assertLess(body.index('F.burn_structure_fuel(GLASS_BENCH_FUEL)'), body.index('new ware('))
         self.assertIn('I.type != /obj/item/stack/material/glass', SOURCE)
+
+    def test_touch_and_persistence_identity_survive_both_wait_boundaries(self):
+        picker = proc_body('/obj/structure/workshop_machine/glass_bench/attackby(')
+        guard = proc_body('/obj/structure/workshop_machine/glass_bench/proc/glass_worker_ready(')
+        batch = proc_body('/obj/structure/workshop_machine/glass_bench/proc/blow_wares(')
+        self.assertIn('worker_ready(H, S)', guard)
+        self.assertIn('isturf(H.loc) && Adjacent(H)', guard)
+        self.assertIn('!persistence_admission_changed(admission)', guard)
+        self.assertLess(picker.index('admission = persistence_admission_identity'), picker.index('WWinput('))
+        self.assertIn('blow_wares(H, I, choices[picked], picked, admission)', picker)
+        self.assertLess(batch.index('!glass_worker_ready(H, S, admission)'), batch.index('busy = TRUE'))
+        wait = batch.index('do_after(')
+        debit = batch.index('F.burn_structure_fuel(')
+        self.assertIn('!glass_worker_ready(H, S, admission)', batch[wait:debit])
+        self.assertIn('F = glory_hole()', batch[wait:debit])
+        self.assertNotIn('persistence_admission_identity', batch)
 
     def test_saw_cuts_beat_the_hand_recipes(self):
         rows = recipe_rows()
@@ -99,7 +116,8 @@ class GlassStoneMachines(unittest.TestCase):
             wait = body.index('do_after(')
             self.assertIn('crafting_recipe_allowed(', body[wait:])
             self.assertLess(wait, body.index('S.use('))
-            self.assertIn('worker_ready(H, S)', body[wait:])
+            guard = 'glass_worker_ready(H, S, admission)' if '/glass_bench/' in header else 'worker_ready(H, S)'
+            self.assertIn(guard, body[wait:])
             self.assertIn('busy = FALSE', body)
 
     def test_sprites_exist_and_match_the_script(self):

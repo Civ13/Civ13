@@ -306,6 +306,26 @@ class TrainPlatformSourceTests(unittest.TestCase):
         layout = SOURCE[SOURCE.index('/obj/structure/trains/platform/proc/apply_layout()'):]
         self.assertLess(layout.index('if (!isturf(loc))'), layout.index('deck_parts = list()'))
 
+    def test_warehouse_keeps_same_named_choices_mapped_to_their_exact_units(self):
+        menu = WAREHOUSE.split('/proc/put_away_options(list/units)', 1)[1].split('\n\n', 1)[0]
+        self.assertIn('options["Put away [i].', menu)
+        self.assertIn('(track [front.x], [front.y])"] = unit', menu)
+        attack = WAREHOUSE.split('/obj/structure/rail_warehouse/attack_hand(', 1)[1]
+        self.assertIn('var/list/options = put_away_options(rear)', attack)
+        self.assertIn('options["Put away the whole train"] = "all"', attack)
+        self.assertIn('options["Couple on [i]. [U.unit_name]"] = U', attack)
+        self.assertIn('var/action = options[choice]', attack)
+        self.assertIn('put_away(H, islist(action) ? action : null, action == "all")', attack)
+
+    def test_warehouse_rechecks_the_current_rear_before_storing(self):
+        validation = WAREHOUSE.split('/proc/store_problem(list/unit)', 1)[1].split('\n\n', 1)[0]
+        self.assertIn('rail_warehouse_end(unit, FALSE)', validation)
+        self.assertIn('if (QDELETED(rear))', validation)
+        self.assertIn('if (rear.connected)', validation)
+        action = WAREHOUSE.split('/proc/put_away(', 1)[1].split('\n\n', 1)[0]
+        self.assertLess(action.index('store_problem(unit)'), action.index('store_unit(unit)'))
+        self.assertIn('if (!all)\n\t\t\tbreak\n\t\tunit = null', action)
+
     def test_shunting_buffers_up_and_automatic_couplers_lock(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
         self.assertEqual(dme.count('#include "code\\modules\\1713\\train_shunting.dm"'), 1)
@@ -324,6 +344,10 @@ class TrainPlatformSourceTests(unittest.TestCase):
         # The lever skips the wait, never the rule about a tight coupling.
         use = couplings[couplings.index('/obj/structure/trains/proc/coupler_use('):]
         self.assertLess(use.index('if (train_under_power())'), use.index('if (lever_uncouples(front))'))
+        hand = use.split('damage_coupling(front, W.force)', 1)[1]
+        self.assertLess(hand.index('if (train_under_power())'), hand.index('if (other)'))
+        self.assertLess(hand.index('if (train_under_power())'), hand.index('if (!couple_end('))
+        self.assertIn('end_neighbour(front) != other || train_under_power()', hand)
         self.assertIn('RECIPE: /material/steel/,automatic coupler,/obj/item/train_coupling/automatic,6,120,0,0,trains,140,', RECIPES)
         self.assertIn('"/obj/item/train_coupling/automatic" = "assembly_line"', NODES)
         states = dmi_description(ROOT / 'icons/obj/vehicles/train_platforms.dmi')

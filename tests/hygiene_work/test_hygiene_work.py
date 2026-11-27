@@ -4,9 +4,12 @@ tests/hygiene_work/hygiene_probe.dm covers soil() and hand washing natively.
 """
 from pathlib import Path
 import re
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+from source_adapter import extract, project
 
 
 def read(rel):
@@ -112,6 +115,20 @@ class BodyWashingTest(unittest.TestCase):
         self.assertIn('{"do": "click", "target": me, "zone": "mouth"}', read("tools/agent-control/autopilot.py"))
         self.assertIn("select the mouth on the body doll", read("code/modules/1713/practice_rooms.dm"))
 
+    def test_soap_revalidates_the_original_patient_after_the_wait(self):
+        soap = (ROOT / 'code/game/objects/items/soap.dm').read_text(encoding='utf-8')
+        admission, washing = soap.split('/mob/living/human/attackby(', 1)
+        self.assertIn('src != user && !user.Adjacent(src)', admission)
+        self.assertIn('!is_nude()', admission)
+        self.assertIn('bath_water_at(T)', admission)
+        self.assertIn('/obj/structure/sink', admission)
+        before, after = washing.split('var/finished = do_after(user, 40, src)', 1)
+        self.assertIn('!soap_wash_available(user)', before)
+        guard = after.index('!soap_wash_available(user) || user.get_active_hand() != S')
+        self.assertLess(after.index('S.washing = FALSE'), guard)
+        for effect in ('hygiene = HYGIENE_LEVEL_CLEAN', 'adjust_mood(10,', 'S.used += 1'):
+            self.assertLess(guard, after.index(effect))
+
     def test_wounds_and_soap(self):
         self.assertIn("W.germ_level *= 0.5", self.WASH)
         self.assertIn("E.disinfect()", self.WASH)
@@ -133,10 +150,43 @@ class BodyWashingTest(unittest.TestCase):
     def test_washing_carries_on_to_the_next_part(self):
         wash = read("code/modules/1713/body_washing.dm")
         self.assertIn("zone = target.next_dirty_zone(done)", wash)
-        self.assertIn("if (source && !source.wash_spend(src))", wash)
+        self.assertIn("if (uses_source && (QDELETED(source) || !source.wash_ready()))", wash)
         self.assertIn("H.wash_on_after_hands(src)", SOURCE)
         self.assertIn("WH.wash_on_after_hands(src)", read("code/game/objects/structures/watercloset.dm"))
         self.assertIn("H.wash_on_after_hands(src)", read("code/modules/1713/wash_places.dm"))
+
+    def test_completed_part_pays_water_before_hygiene_wounds_soap_or_success(self):
+        procedure = extract(self.WASH, '/mob/living/human/proc/wash_one_part_of')
+        wait = procedure.index('do_after(')
+        guard = procedure.index('if (uses_source && (QDELETED(source) || !source.wash_spend(src)))')
+        self.assertLess(wait, guard)
+        for effect in ('held_soap()', 'target.wash_body_part', 'S.used++', 'playsound(', 'You wash your'):
+            self.assertLess(guard, procedure.index(effect))
+        self.assertRegex(procedure[guard:], r'!source.wash_spend\(src\)\)\)\n\t\treturn FALSE')
+
+    def test_tap_payment_distinguishes_final_paid_wash_and_empty_source(self):
+        class Supply:
+            def __init__(self, amount):
+                self.amount = amount
+                self.debits = []
+            def get_reagent_amount(self, _kind):
+                return self.amount
+            def remove_reagent(self, _kind, amount):
+                self.debits.append(amount)
+                self.amount -= amount
+                return True
+
+        supply = Supply(5)
+        base = '/obj/structure/water_tap/'
+        env = dict(reagents=supply, WASH_PART_WATER=5)
+        env['wash_ready'] = project(self.WASH, base + 'wash_ready', '', env)
+        debit = project(self.WASH, base + 'wash_spend', 'user', env)
+        self.assertTrue(debit(None))   # The last 5 units pay for this part.
+        self.assertEqual(supply.amount, 0)
+        self.assertFalse(debit(None))
+        supply.amount = 4
+        self.assertFalse(debit(None))
+        self.assertEqual(supply.debits, [5])
 
     def test_loads_after_the_procs_it_extends(self):
         dme = read("civ13.dme").splitlines()

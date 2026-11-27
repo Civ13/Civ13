@@ -11,13 +11,7 @@
 	store_mobs = FALSE
 	storagecap = 5
 	var/mailbox_color = null
-	var/contents_stored = 0
 	layer = 3.01
-
-/obj/structure/closet/crate/wall_mailbox/open()
-	..()
-	contents_stored = 0
-	return TRUE
 
 /obj/structure/closet/crate/wall_mailbox/close(mob/user as mob)
 	if (!opened)
@@ -25,7 +19,7 @@
 	if (!can_close())
 		return FALSE
 	playsound(loc, 'sound/machines/click.ogg', 15, TRUE, -3)
-	var/itemcount = FALSE
+	var/itemcount = closet_item_count(src)
 	for (var/obj/O in get_turf(src))
 		if (itemcount >= storagecap)
 			break
@@ -41,7 +35,6 @@
 				continue
 		O.forceMove(src)
 		itemcount++
-		contents_stored = itemcount
 	icon_state = icon_closed
 	opened = FALSE
 	return TRUE
@@ -65,7 +58,7 @@
 		return TRUE
 	if (istype(W, /obj/item/weapon/paper) || istype(W, /obj/item/weapon/photo) || istype(W, /obj/item/weapon/storage/envelope))
 		if(!opened)
-			if (contents_stored >= storagecap)
+			if (closet_item_count(src) >= storagecap)
 				to_chat(user, "<span class='notice'>The mailbox is full!</span>")
 				return TRUE
 			else
@@ -77,7 +70,6 @@
 				user.remove_from_mob(W)
 				to_chat(user, "<span class='notice'>You slip the [W.name] into the mailbox slot.</span>")
 				W.forceMove(src)
-				contents_stored++
 				return TRUE
 	if (istype(W, /obj/item/weapon/key))
 		return ..()

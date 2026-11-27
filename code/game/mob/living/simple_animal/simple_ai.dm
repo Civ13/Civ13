@@ -140,6 +140,9 @@
 	adjustBruteLoss(-4)
 
 /mob/living/simple_animal/proc/check_food()
+	if (herbivore && ((prob(40) && eat_nearby_hay()) || seek_hay_bale()))
+		return
+
 	// Phase 1: Try to eat food already in close range
 	if (herbivore)
 		// Grazed grass grows back (wild_feeding.dm) instead of turning to dirt.
@@ -225,7 +228,7 @@
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
 								meat.name = "rotten zombie meat"
-								meat.radiation = radiation/2
+								meat.radiation = ML.radiation/2
 								meat.icon_state = "rottenmeat"
 								if (meat.reagents)
 									meat.reagents.remove_reagent("protein", 2)
@@ -236,16 +239,17 @@
 						else
 							for (var/i=0, i<=namt, i++)
 								var/obj/item/weapon/reagent_containers/food/snacks/meat/meat = new/obj/item/weapon/reagent_containers/food/snacks/meat(get_turf(src))
-								meat.name = "[name] meat"
-								meat.radiation = radiation/2
+								meat.name = "[ML.name] meat"
+								meat.radiation = ML.radiation/2
 					else
 						for (var/i=0, i<=namt, i++)
 							var/obj/item/weapon/reagent_containers/food/snacks/rawcrab/meat = new/obj/item/weapon/reagent_containers/food/snacks/rawcrab(get_turf(src))
-							meat.radiation = radiation/2
+							meat.radiation = ML.radiation/2
 					if ((amt-2) >= 1)
-						var/obj/item/stack/material/bone/bone = new/obj/item/stack/material/bone(get_turf(src))
-						bone.name = "[name] bone"
-						bone.amount = (amt-2)
+						// Do not merge before the new pile has its carcass identity.
+						var/obj/item/stack/material/bone/bone = new(get_turf(src), amt-2, FALSE)
+						bone.name = "[ML.name] bone"
+						bone.radiation = ML.radiation/2
 					ML.crush()
 					qdel(ML)
 				return

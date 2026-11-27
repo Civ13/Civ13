@@ -884,7 +884,8 @@ class AcquisitionProjection(Projection):
         recipe = Record(req_amount=int(row[3]), time=int(row[4]), one_per_turf=int(row[5]),
                         on_floor=int(row[6]), title=row[1], use_material=None, result_type=row[2])
         self.run('/datum/acquisition/proc/build', stock, user=actor, H=actor, recipe=recipe,
-                 required=recipe.req_amount, produced=1, joinery=None, press_construction=None, carving=None, cloth_payment=None, ship_craft=None)
+                 required=recipe.req_amount, produced=1, joinery=None, press_construction=None, carving=None,
+                 cloth_payment=None, ship_craft=None, recheck_source=False)
         return stock
 
 

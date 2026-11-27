@@ -1,10 +1,7 @@
 // Canals and pound locks (docs/canals.md).
 //
-// A dug trench next to water floods and boats can use it (trench.dm). Water
-// keeps to gravity: a trench floods only from water standing at least as high
-// as its own ground, so a canal can't climb a hill by itself. Where the ground
-// steps up or down, the canal water sits at different levels and no boat can
-// cross the step.
+// An open canal inherits the surface of the water that reached its bed.
+// Deepening the bed does not change that surface or the lock chamber level.
 //
 // A pound lock built on a flooded canal tile at a step lets boats pass. Its
 // chamber stands at the level of one side or the other; boats move between it
@@ -22,26 +19,46 @@
 		return 0
 	for (var/obj/structure/canal_lock/L in T)
 		return L.chamber_level
+	var/turf/floor/trench/flooded/F = T
+	if (istype(F) && !isnull(F.trench_water_level))
+		return F.trench_water_level
 	return terrain_height_at(T)
+
+// Locks have a navigable level but are not sources for new excavations.
+// In particular, opening paddles must not fill a dry cut beside the lock.
+/proc/canal_flood_source_level(turf/T)
+	if (!is_open_water(T) || istype(T, /turf/floor/beach/water/deep/saltwater/underwater))
+		return null
+	if (locate(/obj/structure/canal_lock) in T)
+		return null
+	return canal_level(T)
 
 /proc/canal_tile(turf/T)
 	return istype(T, /turf/floor/trench/flooded) || (locate(/obj/structure/canal_lock) in T)
 
-// TRUE when a boat may not go from one water tile to the next: a step in a
-// canal, where the levels differ. Natural rivers and seas run down their own
-// slopes and are not affected.
+// TRUE when a boat tries to cross closed lock gates or unequal water levels
+// in a canal. Natural rivers and seas run down their own slopes and are not
+// affected.
 /proc/canal_step_blocked(turf/from, turf/to_turf)
 	if (!from || !to_turf || from == to_turf)
 		return FALSE
 	if (!canal_tile(from) && !canal_tile(to_turf))
 		return FALSE
+	for (var/obj/structure/canal_lock/L in from)
+		if (L.busy)
+			return TRUE
+	for (var/obj/structure/canal_lock/L in to_turf)
+		if (L.busy)
+			return TRUE
 	return canal_level(from) != canal_level(to_turf)
 
 // Gravity for trench flooding: water standing at W can flood dry ground at T.
 /proc/canal_can_flood(turf/water, turf/T)
-	if (!water || !T)
+	var/level = canal_flood_source_level(water)
+	if (isnull(level) || !T)
 		return FALSE
-	return canal_level(water) >= terrain_height_at(T)
+	var/turf/floor/trench/cut = T
+	return level >= (istype(cut) ? cut.trench_bed_level() : terrain_height_at(T))
 
 /obj/structure/canal_lock
 	name = "pound lock"
@@ -83,7 +100,7 @@
 		var/turf/W = get_step(T, d)
 		if (!is_open_water(W) || (locate(/obj/structure/canal_lock) in W))
 			continue
-		var/level = terrain_height_at(W)
+		var/level = canal_level(W)
 		if (isnull(low) || level < low)
 			low = level
 		if (isnull(hi) || level > hi)
@@ -116,14 +133,22 @@
 	user.visible_message(SPAN_NOTICE("[user] shuts the gates and opens the paddles of \the [src]."), SPAN_NOTICE("You shut the gates and wind open the paddles."))
 	flick(high ? "lock_emptying" : "lock_filling", src)
 	var/done = do_after(user, CANAL_LOCK_TIME, src)
+	if (QDELETED(src))
+		return
 	busy = FALSE
 	if (!done)
+		to_chat(user, SPAN_WARNING("The lock cycle is interrupted. The chamber stays at its previous level."))
 		return
-	set_high(!high)
+	levels = side_levels()
+	if (!levels || levels[1] == levels[2])
+		to_chat(user, SPAN_WARNING("The lock cycle is cancelled: the two pounds are no longer connected at different levels. The chamber stays at its previous level."))
+		return
+	set_high(!high, levels)
 	user.visible_message(SPAN_NOTICE("\The [src] [high ? "fills" : "empties"] and its [high ? "upper" : "lower"] gates swing open."))
 
-/obj/structure/canal_lock/proc/set_high(state)
-	var/list/levels = side_levels()
+/obj/structure/canal_lock/proc/set_high(state, list/levels)
+	if (!levels)
+		levels = side_levels()
 	high = state
 	if (levels)
 		chamber_level = high ? levels[2] : levels[1]

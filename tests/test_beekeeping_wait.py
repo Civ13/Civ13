@@ -1,5 +1,7 @@
-"""Offline projection of the filled-frame completion guards; no BYOND world."""
+"""Offline projections of frame completion and hive forage; no BYOND world."""
 import importlib.util
+import re
+from types import SimpleNamespace
 from pathlib import Path
 import unittest
 
@@ -18,10 +20,16 @@ def project(source):
     lines = [line[1:] for line in lines if 'visible_message(' not in line and 'to_chat(' not in line]
     body = '\n'.join(lines)
     body = body.replace('!Adjacent(user)', '!src.Adjacent(user)')
-    body = body.replace('new /obj/item/weapon/reagent_containers/food/snacks/honeycomb(loc)', 'emit("honeycomb", src.loc)')
-    body = body.replace('new /obj/item/honey_frame(loc)', 'emit("frame", src.loc)')
+    for path, kind in (
+        ('/obj/item/weapon/reagent_containers/food/snacks/honeycomb', 'honeycomb'),
+        ('/obj/item/honey_frame', 'frame'),
+    ):
+        pattern = rf'new {re.escape(path)}\((\w+)\)'
+        body, replacements = re.subn(pattern, lambda match: f'emit("{kind}", ' +
+                                     ('src.loc' if match[1] == 'loc' else match[1]) + ')', body)
+        assert replacements == 1
     return adapter.project('/test/proc/run()\n' + body + '\n', '/test/proc/run',
-                           'src, user, do_after, QDELETED, emit, qdel', {})
+                           'src, user, do_after, QDELETED, get_turf, emit, qdel', {})
 
 
 class Frame:
@@ -36,6 +44,16 @@ class Frame:
 
 def run_case(source, event):
     frame, user, output = Frame(), Frame(), []
+    if event == 'held':
+        frame.loc, user.loc = user, 'actor turf'
+    if event == 'no_turf':
+        frame.loc, user.loc = user, None
+
+    def get_turf(obj):
+        loc = obj.loc
+        while isinstance(loc, Frame):
+            loc = loc.loc
+        return loc
 
     def wait(actor, delay, target=None):
         before = frame.loc
@@ -52,7 +70,7 @@ def run_case(source, event):
     def delete(obj):
         obj.deleted = True
 
-    project(source)(frame, user, wait, lambda obj: obj.deleted,
+    project(source)(frame, user, wait, lambda obj: obj.deleted, get_turf,
                     lambda kind, loc: output.append((kind, loc)), delete)
     return output, frame.deleted
 
@@ -71,6 +89,60 @@ class BeekeepingWaitTests(unittest.TestCase):
         unguarded = source.replace('if (QDELETED(src) || QDELETED(user) || !Adjacent(user))\n',
                                    'if (FALSE)\n', 1)
         self.assertNotEqual(run_case(unguarded, 'deleted')[0], [])
+
+
+    def test_cutting_a_held_frame_places_both_results_on_the_turf(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        output, consumed = run_case(source, 'held')
+        self.assertEqual(output, [('honeycomb', 'actor turf'), ('frame', 'actor turf')])
+        self.assertTrue(consumed)
+
+    def test_no_turf_preserves_the_full_frame(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertEqual(run_case(source, 'no_turf'), ([], False))
+
+
+
+HIVES = ROOT / 'code/modules/1713/kept_hives.dm'
+
+
+def forage_points(objects):
+    source = HIVES.read_text(encoding='utf-8')
+    body = adapter.extract(source, '/proc/bee_forage_points')
+    body = re.sub(r'(istype\(O, )(/obj/structure/[\w/]+)(\))', r'\1"\2"\3', body)
+    run = adapter.project('/test/proc/forage(A)\n' + body + '\n', '/test/proc/forage', 'A', {
+        'range': lambda radius, center: objects,
+        'typed_iter': lambda values, kind: values,
+        'istype': lambda obj, kind: obj.kind == kind,
+        'KEPT_HIVE_FORAGE_RANGE': 5, 'KEPT_HIVE_FORAGE_FULL': 16,
+    })
+    return run(None)
+
+
+class HiveForageTests(unittest.TestCase):
+    @staticmethod
+    def crop(stage, limit=10):
+        return SimpleNamespace(kind='/obj/structure/farming/plant', stage=stage, readyStageMax=limit)
+
+    def test_dead_field_crops_cannot_supply_full_forage(self):
+        self.assertEqual(forage_points([self.crop(11) for _ in range(16)]), 0)
+
+    def test_living_crops_and_wild_trees_keep_existing_weights(self):
+        tree = SimpleNamespace(kind='/obj/structure/wild/tree')
+        self.assertEqual(forage_points([self.crop(11), self.crop(10), tree]), 1.5)
+        self.assertEqual(forage_points([self.crop(9, 8), self.crop(8, 8)]), 1)
+        self.assertEqual(forage_points([self.crop(10) for _ in range(17)]), 16)
+
+
+    def test_swarming_debits_only_if_a_recoverable_cluster_is_placed(self):
+        root = Path(__file__).resolve().parents[1]
+        kept = (root / 'code/modules/1713/kept_hives.dm').read_text(encoding='utf-8')
+        framed = (root / 'code/modules/1713/beekeeping.dm').read_text(encoding='utf-8')
+        self.assertIn('&& cast_swarm(src, 40))\n\t\t\tstrength -= 40', kept)
+        self.assertIn('&& cast_swarm(src, 40))\n\t\t\tbee_count -= 40', framed)
+        cast = kept.split('/proc/cast_swarm(', 1)[1].split('/proc/', 1)[0]
+        self.assertIn('if (!sites.len)\n\t\treturn null', cast)
+        self.assertIn('return new /obj/structure/bee_swarm_cluster', cast)
 
 
 if __name__ == '__main__':

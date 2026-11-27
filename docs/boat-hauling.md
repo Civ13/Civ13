@@ -14,11 +14,13 @@ heavy she is (0 for vehicles that are not boats, which drag as before).
 
 - A helper is any standing, conscious, unrestrained person within a tile of the boat who is not
   the puller and not aboard (`haul_helpers()`). A fitted engine counts as one helper fewer.
-- On land a boat with anyone or anything aboard will not move: `Move()` refuses and drops the
-  pull (`haul_refusal()`). Paddling uses `forceMove` and is not affected.
+- A loaded boat can be towed only when both ends of the step are afloat. The pull stops before
+  moving onto land or solid ice. A successful afloat tow carries riders and cargo still aboard
+  and sharing the old hull tile. Paddling uses `forceMove` and is not affected.
 - **Log rollers** (`/obj/item/boat_rollers`, 3 wood, Basic Toolmaking) used on an empty beached boat
   set `on_rollers` (saved) and show under her. They drop out on the last land tile when she moves
-  onto water, or come out with the Take Out Rollers verb.
+  onto liquid water or a flooded trench, or come out with the Take Out Rollers verb. Ice is a
+  solid surface for hauling. Fitted rollers stay on a dugout when she becomes an outrigger.
 - A look at a beached boat says how she drags (`haul_text()`, appended to `small_craft_text()`).
 
 Wear from use is in [small-boat-upkeep.md](small-boat-upkeep.md). Not built: anything for hulls built tile by tile.

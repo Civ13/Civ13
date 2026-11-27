@@ -86,8 +86,9 @@ GROUP_ACTIONS = ('setup', 'status', 'start', 'stop', 'restart', 'update', 'freez
                  'kill', 'force-restart', 'stage', 'enrol', 'help-status', 'help-start', 'help-stop', 'unlock', 'force-unlock',
                  'config-apply', 'config-migrate', 'handover', 'epoch', 'fresh-world', 'group-fresh-world', 'update-offline',
                  'update-unsaved', 'expedition-land', 'expedition-archive', 'expedition-status', 'expedition-open', 'expedition-grow', 'add-gateway',
-                 'players', 'send-players', 'publish-verified-access', 'consume-verified-access', 'magic-whitelist', 'activity', 'agents', 'ports', 'set-gate', 'set-port',
-                 'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status',
+                 'players', 'send-players', 'publish-verified-access', 'consume-verified-access', 'magic-whitelist',
+                 'activity', 'agents', 'ports', 'set-gate', 'set-port',
+                 'translator-status', 'translator-start', 'translator-stop', 'maintenance', 'maintenance-status', 'match-mainland',
                  'migrate-underground', 'records', 'accounts', 'add-regions')
 # send-players landings (region_admin_send.dm): the nearest dry shore facing the source,
 # exact coordinates, or the destination's normal arrival point.
@@ -239,6 +240,10 @@ def unused_backup_path(path):
     return candidate
 
 
+class OceanUpdateDeferred(Refused):
+    """The candidate is staged but the adjacent lands have not reached it."""
+
+
 WORLD_LINKS_TABLE = HERE.parents[1] / 'tools' / 'world_links' / 'world_links.json'
 _NEIGHBOURS = {}
 
@@ -277,9 +282,11 @@ def world_neighbours(table=None):
     return out
 
 
-def load_group(path):
+def load_group(path, persist_ports=True):
     group = json.loads(Path(path).read_text(encoding='utf-8-sig'))
-    if isinstance(group, dict) and fill_ports(group):
+    if not isinstance(group, dict):
+        raise ValueError('group config must be an object')
+    if fill_ports(group) and persist_ports:
         # Ports the file left out were chosen: keep them, so every later reader (the launcher,
         # the bot, the host service) sees the same ones and a new region never moves an old one.
         path = Path(path)
@@ -900,6 +907,7 @@ class RegionPlatform(Platform):
                 '--token-file', str(path / 'config' / 'transfer-token.txt')]
         if self.config.get('lobby_gateway'):
             argv.append('--lobby-gateway')
+        argv += ['--shard-config', self.config['group_config']]
         for peer in self.config['peers']:
             argv += ['--enroll', peer + ':out', '--enroll', peer + ':in']
         Path(self.config['state_dir']).mkdir(parents=True, exist_ok=True)
@@ -909,6 +917,44 @@ class RegionPlatform(Platform):
 
     def agent_record_now(self):
         return read_record(self.agent_record())
+
+
+def travel_build_refusal(config_path, source, destination, platform=None):
+    """An authoritative source-agent check before creating any travel escrow."""
+    pending = "The regions' builds cannot be verified right now. Try again later."
+    try:
+        group = load_group(config_path, persist_ports=False)
+        by_id = {region['id']: region for region in group['regions']}
+        origin, target = by_id[source], by_id[destination]
+        if origin['kind'] == 'GATEWAY' or target['kind'] == 'GATEWAY':
+            return None  # the gateway is intentionally pinned
+        hosts = [RegionHost(region_config(group, region), platform) for region in (origin, target)]
+
+        def snapshot(host):
+            # A handover rewrites the active build record after port takeover. Never
+            # trust either slot while a host operation could be changing custody.
+            if host.lock.exists():
+                return None
+            revision = host.built_revision()
+            return revision if revision and not host.lock.exists() else None
+
+        before = [snapshot(host) for host in hosts]
+        if not all(before):
+            return pending
+        old, new = before
+        run = hosts[0].platform.run
+        args = [group['git'], 'merge-base', '--is-ancestor']
+        # Even equal stamps must name a real commit; --is-ancestor validates both.
+        allowed, _ = run(args + [old, new], cwd=group['repository'], timeout=2)
+        if allowed == 0 and before == [snapshot(host) for host in hosts]:
+            return None
+        if allowed == 1:
+            reverse, _ = run(args + [new, old], cwd=group['repository'], timeout=2)
+            if reverse == 0 and before == [snapshot(host) for host in hosts]:
+                return 'The destination is on an older build. Wait for it to update before travelling.'
+    except (OSError, ValueError, KeyError, RuntimeError, Refused, subprocess.SubprocessError):
+        pass
+    return pending
 
 
 class RegionHost(Host):
@@ -1090,11 +1136,15 @@ class RegionHost(Host):
         staged = self.staged_revision()
         if not staged:
             return False
+        pin = daily_maintenance.active_pin_record({'root': self.repo.parent})
+        matching_mainland = bool(pin and pin.get('mode') == 'match-mainland')
+        if matching_mainland and staged != pin['revision']:
+            return False  # an unrelated staged request must not move a region away from this exact match
         built = self.built_revision()
         if staged == built:
             return False
         if built is None:
-            return True
+            return not matching_mainland  # the match cannot prove that an unverified build is older
         # Never go back: a build updated by hand past the staged one leaves it unused.
         code, _ = self.platform.run([self.config['git'], 'merge-base', '--is-ancestor', built, staged],
                                     cwd=self.repo, timeout=60)
@@ -1104,8 +1154,10 @@ class RegionHost(Host):
     def compile_slot(self, wait_seconds=7200):
         """One staged compile per group at a time, so a deploy never compiles every region at once.
         A background stage lets a person's stage of another region go first."""
+        group = load_group(self.config['group_config'])
         def yield_to_urgent():
-            return not self.urgent_marker().exists() and self.urgent_stage_waiting()
+            if not self.urgent_marker().exists() and self.urgent_stage_waiting(group):
+                return 'waiting for a requested build of another region'
         with self.group_slot('compile.lock', 'compile', self.stage_record, wait_seconds, yield_to=yield_to_urgent):
             yield
 
@@ -1128,7 +1180,7 @@ class RegionHost(Host):
         except OSError:
             pass  # only the order of the queue depends on it
 
-    def urgent_stage_waiting(self):
+    def urgent_stage_waiting(self, group):
         """Whether another region has a stage a person is waiting on. A marker whose stage has
         ended (its stage.lock is gone) is stale and removed."""
         try:
@@ -1136,6 +1188,7 @@ class RegionHost(Host):
         except OSError:
             return False
         waiting = False
+        tier = self.compile_tier(group, self.config['region'])
         for entry in entries:
             if entry.name == self.config['region']:
                 continue
@@ -1144,7 +1197,7 @@ class RegionHost(Host):
             except OSError:
                 continue  # being written or removed right now
             if lock.name == 'stage.lock' and lock.exists():
-                waiting = True
+                waiting |= self.compile_tier(group, entry.name) == tier
                 continue
             try:
                 entry.unlink()
@@ -1158,24 +1211,84 @@ class RegionHost(Host):
         with self.group_slot('handover.lock', 'handover', self.record, wait_seconds):
             yield
 
+    @staticmethod
+    def compile_tier(group, region_id):
+        kind = next((r['kind'] for r in group['regions'] if r['id'] == region_id), None)
+        if region_id == group['mainland'] or kind == 'GATEWAY':
+            return 0
+        if kind in ('SURFACE', 'UNDERGROUND'):
+            return 1
+        if kind == 'OCEANIC':
+            return 2
+        return 3  # expedition, tutorial, orbital, rail yard, battle and other specialty worlds
+
+    def has_compile_priority(self, group=None):
+        group = group if group is not None else load_group(self.config['group_config'])
+        return self.compile_tier(group, self.config['region']) == 0
+
+    def higher_compile_waiting(self, directory, tier):
+        for marker in directory.glob('*.json'):
+            waiter = self.read_json(marker)
+            if not waiter:
+                continue  # a Windows sharing violation is retried on the next poll
+            pid, started, other_tier = waiter.get('pid'), waiter.get('started'), waiter.get('tier')
+            if type(pid) is not int or pid <= 0 or type(started) is not int or type(other_tier) is not int:
+                continue
+            worker_alive = getattr(self.platform, 'worker_alive', None)
+            alive = worker_alive(pid, started) if worker_alive else (pid == os.getpid() or self.platform.alive(pid))
+            if not alive or self.booted_since(started):
+                gaia_host.remove_file(marker, quiet=True)
+            elif 0 <= other_tier < tier:
+                return True
+        return False
+
     @contextlib.contextmanager
     def group_slot(self, name, what, record, wait_seconds, yield_to=None):
+        # Every compiler goes through this gate, including stopped-world updates and
+        # battle map rotations. Handover uses its own lock and is unchanged.
+        marker = None
+        if name == 'compile.lock':
+            group = load_group(self.config['group_config'])
+            tier = self.compile_tier(group, self.config['region'])
+            directory = self.repo.parent / '.staging' / 'compile-queue'
+            directory.mkdir(parents=True, exist_ok=True)
+            marker = directory / (secrets.token_hex(16) + '.json')
+            write_json_atomic(marker, {'pid': os.getpid(), 'started': int(time.time()), 'tier': tier})
+            if tier == 0:
+                yield_to = None  # neither first-priority world yields to the other
+            else:
+                ordinary_yield = yield_to
+                def priority_first():
+                    if self.higher_compile_waiting(directory, tier):
+                        return 'waiting for a higher-priority region compile'
+                    return ordinary_yield() if ordinary_yield else None
+                yield_to = priority_first
+        try:
+            with self.take_group_slot(name, what, record, wait_seconds, yield_to):
+                if marker is not None:
+                    gaia_host.remove_file(marker, quiet=True)
+                yield
+        finally:
+            if marker is not None:
+                gaia_host.remove_file(marker, quiet=True)
+
+    @contextlib.contextmanager
+    def take_group_slot(self, name, what, record, wait_seconds, yield_to=None):
         """Hold one of the group's slots (a lock file in .staging). yield_to: while it returns
-        True this waiter lets others take the slot first; that wait does not count against
-        wait_seconds, since the stages it waits for end on their own."""
+        a phase string this waiter lets others take the slot first; yielding to eligible
+        stages does not count against wait_seconds."""
         lock = self.repo.parent / '.staging' / name
         lock.parent.mkdir(parents=True, exist_ok=True)
         deadline = self.platform.now() + wait_seconds
         empty_since = None
         while True:
-            if yield_to is not None and yield_to():
-                record(phase='waiting for a requested build of another region')
+            if yield_to is not None and (waiting := yield_to()):
+                record(phase=waiting)
                 self.platform.sleep(10)
                 deadline = max(deadline, self.platform.now() + wait_seconds)
                 continue
             try:
                 descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
-                break
             except PermissionError:
                 # Windows: the lock is being deleted by its holder right now.
                 if self.platform.now() > deadline:
@@ -1208,17 +1321,24 @@ class RegionHost(Host):
                     raise RuntimeError('another region kept the %s slot busy too long' % what)
                 record(phase='waiting for another region\'s %s' % what)
                 self.platform.sleep(10)
-        with os.fdopen(descriptor, 'w') as handle:
-            handle.write(str(os.getpid()))
-        try:
-            yield
-        finally:
-            for _ in range(10):
-                try:
-                    lock.unlink(missing_ok=True)
-                    break
-                except PermissionError:  # Windows: another region is reading it
-                    self.platform.sleep(1)
+                continue
+            with os.fdopen(descriptor, 'w') as handle:
+                handle.write(str(os.getpid()))
+            try:
+                # A priority waiter may have arrived since the pre-claim check.
+                if yield_to is None or not (waiting := yield_to()):
+                    yield
+                    return
+            finally:
+                for _ in range(10):
+                    try:
+                        lock.unlink(missing_ok=True)
+                        break
+                    except PermissionError:  # Windows: another region is reading it
+                        self.platform.sleep(1)
+            record(phase=waiting)
+            self.platform.sleep(10)
+            deadline = self.platform.now() + wait_seconds
 
     SLOT_CLAIM_SECONDS = 60
 
@@ -1358,10 +1478,80 @@ class RegionHost(Host):
         except (OSError, ValueError, KeyError):
             return True  # a missing policy must not turn an automatic update into a restart
 
+    def ocean_update_blockers(self, group, revision):
+        """Required coastal land builds not confirmed to include this ocean revision."""
+        region_id = self.config['region']
+        region = next((r for r in group['regions'] if r['id'] == region_id), None)
+        if not region or region['kind'] != 'OCEANIC':
+            return []
+        if not isinstance(revision, str) or not HEX40.fullmatch(revision):
+            return ['unknown candidate build']
+        if self.built_revision() == revision:
+            return []
+        try:
+            links = world_neighbours()
+        except (OSError, TypeError, ValueError, AttributeError):
+            links = {}
+        if not links:
+            return ['world links unavailable']
+        borders = links.get(region_id, ())
+        # world_neighbours includes both edge crossings and islands inside oceans.
+        # Only configured playable surface lands participate; not ocean-to-ocean
+        # links, the gateway, tutorial, TDM worlds or unconfigured map entries.
+        coastal_lands = sorted(r['id'] for r in group['regions']
+                               if r['kind'] == 'SURFACE' and r['id'] in borders)
+        blockers = []
+        for name in coastal_lands:
+            _region, peer = hosts(group, name, self.platform)[0]
+            if peer.lock.exists():
+                blockers.append(name)
+                continue
+            try:
+                active = peer.built_revision()
+                reached = active == revision
+                if active and not reached:
+                    code, _ = self.platform.run([group['git'], 'merge-base', '--is-ancestor', revision, active],
+                                                cwd=group['repository'], timeout=10)
+                    reached = code == 0
+                # The active slot may have changed while ancestry was checked.
+                reached = reached and not peer.lock.exists() and peer.built_revision() == active
+            except (OSError, RuntimeError, subprocess.SubprocessError):
+                reached = False
+            # A staged artifact or HEAD alone must never release this dependency.
+            if not reached:
+                blockers.append(name)
+        return blockers
+
+    def require_ocean_update_ready(self, group, revision):
+        blockers = self.ocean_update_blockers(group, revision)
+        if blockers:
+            raise OceanUpdateDeferred('ocean update waiting for coastal land builds: ' + ', '.join(blockers))
+
+    def configured_revision(self, group):
+        code, out = self.platform.run([self.config['git'], 'rev-parse', group['revision']],
+                                      cwd=group['repository'], timeout=60)
+        revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
+        if not HEX40.fullmatch(revision or ''):
+            raise RuntimeError('could not resolve the group revision')
+        return revision
+
+    def require_ocean_install_ready(self):
+        """An offline install runs Update for the configured ref, not merely the stage."""
+        if self.region_kind() == 'OCEANIC':
+            try:
+                group = load_group(self.config['group_config'])
+                revision = self.configured_revision(group)
+            except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+                raise OceanUpdateDeferred('ocean update waiting for a readable candidate build') from error
+            self.require_ocean_update_ready(group, revision)
+
     def automatic_start_action(self):
         # The gateway is every player's way in: a watchdog start brings it back on the build it
         # has instead of compiling first; updates reach it by its empty-world restart.
-        if self.protects_mainland_uptime() or self.always_up():
+        # An ocean's cold, travel and crash starts also keep its verified build;
+        # installing a new ocean revision is separate from waking it.
+        if (self.protects_mainland_uptime() or self.always_up()
+                or (self.region_kind() == 'OCEANIC' and self.built_revision())):
             return 'start-current'
         return super().automatic_start_action()
 
@@ -1409,6 +1599,10 @@ class RegionHost(Host):
     def idle_update_action(self):
         if self.holds_its_port():
             return None
+        try:
+            self.require_ocean_install_ready()
+        except OceanUpdateDeferred:
+            return None
         if not self.protects_mainland_uptime():
             return super().idle_update_action()
         try:
@@ -1420,6 +1614,11 @@ class RegionHost(Host):
     def install_staged_while_down(self):
         if self.protects_mainland_uptime():
             return False
+        if self.region_kind() == 'OCEANIC' and self.update_pending():
+            try:
+                self.require_ocean_install_ready()
+            except OceanUpdateDeferred:
+                return False
         return super().install_staged_while_down()
 
     def failed_staged_handover(self):
@@ -1468,7 +1667,8 @@ class RegionHost(Host):
         if self.holds_its_port():
             return None
         try:
-            if not load_group(self.config['group_config'])['persistent']:
+            group = load_group(self.config['group_config'])
+            if not group['persistent']:
                 # A TDM world in pregame reports no round yet, which reads as saving; it has
                 # no save to hand over (update_unsaved_while_empty covers these groups).
                 return None
@@ -1481,6 +1681,7 @@ class RegionHost(Host):
             if self.failed_staged_handover():
                 return None  # this build already failed to take over (its load or save failed); a person looks
             try:
+                self.require_ocean_update_ready(group, self.staged_revision())
                 self.log(dict(self.request('auto-handover'), reason='installing the update while the world is empty'))
             except Refused as refusal:
                 # Low memory, a busy world, ...: try again after the next check interval, never
@@ -1530,6 +1731,8 @@ class RegionHost(Host):
                     and last.get('phase') == 'failed'):
                 return None  # this build already failed to start; a person looks
             try:
+                if region['kind'] == 'OCEANIC':
+                    self.require_ocean_update_ready(group, self.configured_revision(group))
                 self.log(dict(self.request('restart'), reason='installing the update while the world is empty'))
             except Refused as refusal:
                 self.next_install_attempt = now + self.update_settings()[1] * 60
@@ -1605,6 +1808,7 @@ class RegionHost(Host):
     def install_into_sleeper(self, close_seconds=60):
         """Stop an asleep region (it saved before it froze), wait for its port to close, then
         run update, which copies the ready build in; it starts on it at its next wake."""
+        self.require_ocean_install_ready()
         self.evict('installing the update')
         deadline = self.platform.now() + close_seconds
         while self.platform.listening(self.config['port']):
@@ -1627,6 +1831,7 @@ class RegionHost(Host):
             if self.platform.listening(self.config['port']):
                 raise Refused('the region started while its update was building')
             if self.update_pending():
+                self.require_ocean_install_ready()
                 self.request('update')
                 self.stage_record(install='installing')
         except Refused as refusal:
@@ -1637,11 +1842,26 @@ class RegionHost(Host):
         if self.staged_revision() != revision:
             return False
         source = self.stage_dir()
-        for name in STAGED_OUTPUTS:
-            if (source / name).is_file():
-                temporary = self.repo / (name + '.staged')
-                shutil.copy2(source / name, temporary)
+        ocean = self.region_kind() == 'OCEANIC'
+        copies = []
+        try:
+            for name in STAGED_OUTPUTS:
+                if (source / name).is_file():
+                    temporary = self.repo / (name + '.staged')
+                    if ocean:
+                        copies.append((name, temporary))
+                    shutil.copy2(source / name, temporary)
+                    if not ocean:
+                        os.replace(temporary, self.repo / name)
+            # A concurrent stage cannot silently install other bytes under the
+            # revision whose coastal prerequisites were checked.
+            if ocean and self.staged_revision() != revision:
+                return False  # discard the copy; Update can still compile the checked-out candidate
+            for name, temporary in copies:
                 os.replace(temporary, self.repo / name)
+        finally:
+            for _name, temporary in copies:
+                temporary.unlink(missing_ok=True)
         return True
 
     def request(self, action):
@@ -1656,6 +1876,15 @@ class RegionHost(Host):
         if action == 'update' and self.platform.listening(self.config['port']):
             raise Refused('stop the region before updating')
         return super().request(action)
+
+    def request_operator_start(self):
+        # A plain Start must not queue the front door or mainland behind a compile
+        # when it has an intact installed build. Travel and explicit updating keep
+        # their own revision policies.
+        if (self.has_compile_priority() and self.built_revision() and not self.update_pending()
+                and (self.stage_running() or (self.repo.parent / '.staging' / 'compile.lock').exists())):
+            return self.request('start-current')
+        return self.request('start')
 
     def remember_failed_handover(self):
         # Called under the action lock, before replacing or after writing operation state.
@@ -1877,6 +2106,12 @@ class RegionHost(Host):
         revision = self.staged_revision()
         if not revision or not self.update_pending():
             raise RuntimeError('no staged build newer than the running one')
+        if region['kind'] == 'OCEANIC':
+            try:
+                self.require_ocean_update_ready(group, revision)
+            except OceanUpdateDeferred:
+                self.record(retryable=True)
+                raise
         if region['kind'] in ALWAYS_UP_KINDS:
             # The hub lists a world by the port its DreamDaemon was started on; a standby
             # that takes the port over with world.OpenPort is not listed again. The gateway
@@ -1909,8 +2144,22 @@ class RegionHost(Host):
             # the old save, stop, install and start, under this same action.
             self.record(phase='the running build predates handovers; saving, stopping and starting instead')
             with self.handover_slot():
-                self.do_stop(operation)
-                self.do_update(operation)
+                if region['kind'] == 'OCEANIC':
+                    try:
+                        self.require_ocean_update_ready(group, revision)
+                    except OceanUpdateDeferred:
+                        self.record(retryable=True)
+                        raise
+                    self.do_stop(operation)
+                    try:
+                        self.do_update(operation, revision=revision)
+                    except OceanUpdateDeferred:
+                        self.record(retryable=True)
+                        self.do_start(operation)  # a coast began its own operation after we stopped
+                        raise
+                else:
+                    self.do_stop(operation)
+                    self.do_update(operation)
                 self.do_start(operation)
             self.record(phase='restarted onto the staged build', revision=revision, staged=True, legacy=True)
             return
@@ -1927,6 +2176,12 @@ class RegionHost(Host):
             self.handover_work(operation, group, region, revision, port, spare_port, token, before, session, automatic)
 
     def handover_work(self, operation, group, region, revision, port, spare_port, token, before, session, automatic=False):
+        if region.get('kind') == 'OCEANIC':
+            try:
+                self.require_ocean_update_ready(group, revision)
+            except OceanUpdateDeferred:
+                self.record(retryable=True)
+                raise
         if self.platform.listening(spare_port):
             raise RuntimeError('port %d (the standby port) is in use' % spare_port)
         spare = self.spare_dmb_name()
@@ -1937,6 +2192,9 @@ class RegionHost(Host):
             temporary = self.repo / (target.name + '.staged')
             shutil.copy2(source / name, temporary)
             gaia_host.replace_file(temporary, target)
+        if region.get('kind') == 'OCEANIC' and self.staged_revision() != revision:
+            self.record(retryable=True)
+            raise OceanUpdateDeferred('the staged ocean build changed before the standby boot')
         self.record(phase='booting the standby')
         standby_pid = self.platform.start_standby(spare, spare_port)
         # A standby prepares the whole map before it waits, so a large land
@@ -1999,7 +2257,11 @@ class RegionHost(Host):
                             self.config['load_timeout_seconds'], 'the standby world did not load the save in time',
                             standby=True)
             self.finish_backup(backup)
+            if region.get('kind') == 'OCEANIC':
+                self.require_ocean_update_ready(group, revision)
         except Exception as error:
+            if isinstance(error, OceanUpdateDeferred):
+                self.record(retryable=True)
             if automatic and isinstance(error, gaia_host.LifecycleRefused) and error.code == 'handover_players_arrived':
                 self.record(retryable=True)
             if backup is not None:
@@ -2209,6 +2471,9 @@ class RegionHost(Host):
     def latest_revision(self):
         """Fetch the group's remote, then the group revision this region should run."""
         group = load_group(self.config['group_config'])
+        pinned = group.get('mainland_match_revision')
+        if pinned:
+            return pinned  # locally verified once; a remote fetch cannot change or block this match
         # Regions starting together share the repository; a fetch that meets
         # another region's ref lock is retried.
         for attempt in range(3):
@@ -2230,13 +2495,56 @@ class RegionHost(Host):
         answer = self.update_answer(self.git_text(['rev-parse', 'HEAD'], self.repo), available, group['repository'])
         return dict(answer, region=self.config['region'])
 
+    def mainland_match_can_install(self, group, revision):
+        if group.get('mainland_match_revision') != revision:
+            return True
+        current = self.built_revision()
+        if not current:
+            return False
+        code, _ = self.platform.run([self.config['git'], 'merge-base', '--is-ancestor', current, revision],
+                                    cwd=group['repository'], timeout=60)
+        return code == 0
+
     def do_refresh(self, operation):
         """A restart of an always-up region (the gateway, the tutorial) installs the build
         staged beside it, even when the group has moved on since: compiling the newer
         revision with the world stopped kept the TDM front door shut for 35 seconds
         (2026-11-21). The newer revision is staged beside it next and installed by the
         next empty restart. Other regions, or one with nothing staged, refresh as before."""
-        staged = self.staged_revision() if self.always_up() else None
+        group = load_group(self.config['group_config'])
+        pinned = group.get('mainland_match_revision')
+        if pinned and not self.mainland_match_can_install(group, pinned):
+            current = self.built_revision()
+            if not current:
+                raise Refused('the installed build is unknown; a safe mainland match is not possible')
+            self.record(phase='keeping a newer or diverged build during mainland match', revision=current)
+            return
+        if self.region_kind() == 'OCEANIC':
+            current = self.built_revision()
+            try:
+                revision = self.latest_revision()
+                if not HEX40.fullmatch(revision or ''):
+                    raise RuntimeError('could not read the latest ocean revision')
+            except (Refused, OSError, RuntimeError, subprocess.SubprocessError) as error:
+                if not current:
+                    raise
+                self.record(phase='ocean refresh unavailable; keeping the current build', revision=current,
+                            update_deferred=str(error)[:240])
+                return
+            if revision == current:
+                self.record(phase='build is current', revision=current)
+                return
+            try:
+                self.do_update(operation, revision=revision)
+            except OceanUpdateDeferred as delay:
+                if not current:
+                    raise
+                # 'start' (including forced recovery after a stop) still starts
+                # the verified build, rather than staying down behind the policy.
+                self.record(phase='keeping the current ocean build', revision=current, update_deferred=str(delay))
+            return
+        prefer_staged = self.always_up() or (self.read_state().get('action') == 'start' and self.has_compile_priority())
+        staged = self.staged_revision() if prefer_staged else None
         if staged and self.update_pending():
             group = load_group(self.config['group_config'])
             region = next(r for r in group['regions'] if r['id'] == self.config['region'])
@@ -2250,16 +2558,16 @@ class RegionHost(Host):
                 return
         return super().do_refresh(operation)
 
-    def do_update(self, operation):
+    def do_update(self, operation, revision=None):
         """Check out the group's revision in this region's worktree and compile region.dme."""
         group = load_group(self.config['group_config'])
         region = next(r for r in group['regions'] if r['id'] == self.config['region'])
         git, path = self.config['git'], self.repo
         self.record(phase='checking out')
-        code, out = self.platform.run([git, 'rev-parse', group['revision']], cwd=group['repository'], timeout=60)
-        revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
-        if not HEX40.match(revision):
-            raise RuntimeError('could not resolve the group revision')
+        revision = self.configured_revision(group) if revision is None else revision
+        if not self.mainland_match_can_install(group, revision):
+            raise Refused('the mainland match cannot replace a newer, diverged, or unknown build')
+        self.require_ocean_update_ready(group, revision)
         prepare_tree(group, region, path, revision, self.platform, git)
         if self.platform.listening(self.config['port']):
             raise RuntimeError('the region started during the update; not compiling')
@@ -4660,17 +4968,17 @@ def main(argv=None):
             result = group_epoch(group, args.epoch)
         elif args.action == 'update-offline':
             result = update_offline(group, args.region)
-        elif args.action in ('maintenance', 'maintenance-status'):
-            # Daily maintenance (daily_maintenance.py): the whole group or nothing.
-            if args.region:
-                raise Refused('daily maintenance moves the whole group onto one build; leave out --region')
+        elif args.action in ('maintenance', 'maintenance-status', 'match-mainland'):
+            if args.region or (args.action == 'match-mainland' and args.scheduled):
+                raise Refused('build synchronization is one manual group action; leave out --region and --scheduled')
+            match_mainland = args.action == 'match-mainland'
             if args.action == 'maintenance-status':
                 result = daily_maintenance.status(this, group)
             elif args.scheduled or args.run:
-                # The detached run itself (the host service's daily start, or Run maintenance now).
-                result = daily_maintenance.run(this, group, scheduled=args.scheduled)
+                result = daily_maintenance.run(this, group, scheduled=args.scheduled, match_mainland=match_mainland)
             else:
-                result = daily_maintenance.request(this, group, lambda argv, cwd, log: detach(argv + ['--run'], cwd, log))
+                result = daily_maintenance.request(this, group, lambda argv, cwd, log: detach(argv + ['--run'], cwd, log),
+                                                   match_mainland=match_mainland)
         elif args.action == 'players':
             result = region_players(group, args.region)
         elif args.action == 'send-players':
@@ -4802,6 +5110,8 @@ def main(argv=None):
                         host.wait_for_byond()
                     if args.action == 'force-restart':
                         accepted[region['id']] = host.force_restart()
+                    elif args.action == 'start':
+                        accepted[region['id']] = host.request_operator_start()
                     elif args.action == 'stage':  # deploy.bat and the launcher's Build update: a person waits
                         accepted[region['id']] = host.request_stage(urgent=True)
                     else:

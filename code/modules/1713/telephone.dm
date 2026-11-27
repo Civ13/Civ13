@@ -192,7 +192,8 @@ var/list/global/phone_numbers = list()
 //			for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
 //				found_tower = TRUE
 			if (found_tower)
-				ring_phone(tgtnum,phonenumber, src, user)
+				if (!ring_phone(tgtnum,phonenumber, src, user))
+					return
 				spawn(200)
 					if (!connected)
 						to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
@@ -305,7 +306,8 @@ var/list/global/phone_numbers = list()
 //				for (var/obj/structure/cell_tower/CT in range(maxrange,loc))
 //					found_tower = TRUE
 				if (found_tower)
-					ring_phone(tgtnum,phonenumber, src, user)
+					if (!ring_phone(tgtnum,phonenumber, src, user))
+						return
 					spawn(200)
 						if (!connected)
 							to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(src)] [src]:</b> </font>Nobody picked up the phone at [tgtnum].")
@@ -367,13 +369,13 @@ var/list/global/phone_numbers = list()
 				targetc = L[1]
 				break
 	if (!origin || !target)
-		return
+		return FALSE
 	else
-		var/found = FALSE
+		var/started = FALSE
 		for (var/obj/item/weapon/telephone/TLG in world)
-			found = TRUE
 			if (TLG.phonenumber == target && TLG.phonenumber != origin)
 				if (!TLG.ringing && !TLG.connected)
+					started = TRUE
 					TLG.ringing = TRUE
 					originphone.ringing = TRUE
 					TLG.ringproc(origin, originphone)
@@ -383,10 +385,12 @@ var/list/global/phone_numbers = list()
 						else
 							to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Ringing [target]...")
 				else
-					to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number occupied.")
-					return
-		if (!found)
+					if (!started)
+						to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number occupied.")
+					return started
+		if (!started)
 			to_chat(user, "<b><font size=2 color=#FFAE19>\icon[getFlatIcon(originphone)] [originphone]:</b> </font>Number not found.")
+		return started
 /obj/item/weapon/telephone/wireless
 	name = "telephone"
 	desc = "Used to communicate with other telephones. No number."

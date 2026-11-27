@@ -1,9 +1,9 @@
 /world
 	hub = ""
 	hub_password = ""
-	maxx = 12
-	maxy = 12
-	maxz = 1
+	maxx = 24
+	maxy = 24
+	maxz = 2
 	turf = /turf
 	area = /area
 	visibility = 0
@@ -94,6 +94,41 @@ var/fracture_runtime_error = FALSE
 		sleep(25)
 		fracture_check(!D.active && C.currentflow == 0 && !O.reagents.total_volume && R.is_mineable, "removed sand cancels without payment")
 		S.loc = D
+		var/prior_map_id = map.ID
+		map.ID = MAP_NOMADS_AMERICAS_NORTH
+		map.province_map_loaded = TRUE
+		var/datum/province_map/PM = new
+		PM.maxx = world.maxx
+		PM.maxy = world.maxy
+		for (var/y in 1 to world.maxy)
+			PM.rows += "AAAAAAAAAAAAAAAAAAAAAAAA"
+		PM.names["A"] = "Fixture province"
+		map.province_map_cache = PM
+		var/list/holding = province_holder_row("A")
+		H.civilization = "fixture owner"
+		holding[1] = province_group_of(H.civilization)
+		fracking_foul_sites.Cut()
+		var/original_pollution = T.pollution
+		D.attack_hand(H)
+		fracture_check(D.active && D.fracture_faction == "fixture owner" && C.currentflow == 300, "current province holder can start and its faction is pinned")
+		holding[1] = province_group_of("fixture rival")
+		D.next_spawn = 0
+		D.production_due = world.time
+		sleep(25)
+		fracture_check(!D.active && !D.process_pending && !D.fracture_faction && C.currentflow == 0, "loss of province stops the due batch and clears its reservation and faction")
+		fracture_check(W.reagents.get_reagent_amount("water") == 20 && S.amount == 5 && !O.reagents.total_volume && R.is_mineable && T.pollution == original_pollution && !fracking_foul_sites.len, "denied completion changes no inputs, output, rock or pollution")
+		D.attack_hand(H)
+		fracture_check(!D.active && C.currentflow == 0, "former holder cannot restart the rig")
+		holding[1] = province_group_of(H.civilization)
+		D.attack_hand(H)
+		fracture_check(D.active && C.currentflow == 300, "regaining the holding permits deliberate restart")
+		D.stop_drilling()
+		sleep(25)
+		H.civilization = null
+		map.ID = prior_map_id
+		map.province_map_cache = null
+		map.province_map_loaded = FALSE
+		fracture_water_checks()
 		fracture_catalog(H)
 		H.loc = T
 		D.attack_hand(H)
@@ -132,6 +167,31 @@ var/fracture_runtime_error = FALSE
 		fracture_check(FALSE, "exception [e]")
 	text2file(json_encode(list("commit" = world.params["tested_commit"], "failures" = fracture_failures, "runtime_error" = fracture_runtime_error, "byond_version" = world.byond_version, "byond_build" = world.byond_build)), "result.json")
 	del(world)
+
+/proc/fracture_water_checks()
+	fracking_foul_sites.Cut()
+	var/day = 864000
+	var/now = 1000
+	var/turf/well = locate(5, 5, 2)
+	fracking_record_foul_site(5, 5, now)
+	fracture_check(fracking_fouls_near(locate(11, 11, 2), now) && !fracking_fouls_near(locate(12, 5, 2), now) && !fracking_fouls_near(locate(5, 12, 2), now), "groundwater uses exactly the six-tile horizontal square, including diagonals")
+	for (var/x in 14 to 21)
+		for (var/y in 14 to 21)
+			fracking_record_foul_site(x, y, now + 20)
+	fracture_check(fracking_foul_sites.len == 65 && fracking_fouls_near(well, now + 20), "64 distant batches cannot evict nearby fouling across levels")
+	fracture_check(fracking_fouls_near(well, now + day) && !fracking_fouls_near(well, now + day + 1), "read expires the original source by age without new batches")
+	fracking_record_foul_site(5, 5, now + 50)
+	fracture_check(fracking_foul_sites.len == 65 && fracking_fouls_near(well, now + day + 1), "reusing a column refreshes only its timestamp without duplicates")
+	fracking_record_foul_site(24, 24, now + day + 21)
+	fracture_check(fracking_foul_sites.len == 2 && !fracking_fouls_near(locate(15, 15, 2), now + day + 21), "new batches prune aged sites without expiring the refreshed site")
+	var/no_row_growth = TRUE
+	for (var/wave in 2 to 6)
+		for (var/y in 14 to 21)
+			fracking_record_foul_site(14 + wave, y, now + (day + 1) * wave + 100)
+		if (fracking_foul_sites.len != 8)
+			no_row_growth = FALSE
+	fracture_check(no_row_growth, "repeated days of distinct distant batches retain only the current day's live sites")
+	fracking_foul_sites.Cut()
 
 /proc/fracture_recipe_rows(list/recipes)
 	var/list/rows = list()

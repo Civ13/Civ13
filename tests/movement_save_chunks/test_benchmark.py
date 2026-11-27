@@ -51,6 +51,18 @@ class BenchmarkSafetyTests(unittest.TestCase):
             self.assertEqual(len(receipt['cases']), 4)
             self.assertFalse(receipt['comparative'])
 
+    def test_serializer_packet_keeps_load_admission_without_starting_lag_monitor(self):
+        with tempfile.TemporaryDirectory() as folder:
+            bench.prepare(Path(folder))
+            stubs = (Path(folder) / 'tests/world_save/stubs.dm').read_text()
+            processes = stubs.split('/datum/fixture_processes\n', 1)[1].split('\n/datum/', 1)[0]
+            self.assertIn('\tvar/datum/fixture_time_track_process/time_track\n', processes + '\n')
+            self.assertNotIn('time_track = new', processes)
+            adapter = stubs.split('/datum/fixture_time_track_process/proc/ignore_load_dilation()\n', 1)[1].split('\n/datum/', 1)[0]
+            self.assertIn('throw EXCEPTION(', adapter)
+            functions = 'code/modules/persistence/functions.dm'
+            self.assertEqual((Path(folder) / functions).read_bytes(), (ROOT / functions).read_bytes())
+
     def test_prepare_refuses_nonempty_destination(self):
         with tempfile.TemporaryDirectory() as folder:
             (Path(folder) / 'sentinel').write_text('keep')

@@ -3,6 +3,7 @@
 	return ..("none")
 /obj/item/organ/external/wound_restore_probe
 	max_damage = 113
+	limb_name = "r_arm"
 /obj/item/organ/external/wound_restore_probe/New()
 	return
 
@@ -85,6 +86,8 @@
 		durable_world_check(caches_omitted, "wound helper caches were exported")
 	durable_world_check(R.persistence_runtime_var("desc_list") && R.persistence_runtime_var("damage_list"), "wound helper caches are not runtime fields")
 	durable_world_check(R.created != 717, "saved wound world.time stamp was restored")
+	durable_world_check(W.lost_limb_slot == "r_arm", "ordinary wound did not retain its limb slot")
+	durable_world_check(R.lost_limb_slot == (encoding == "roundtrip" ? "r_arm" : null), "saved or historical wound changed its limb slot")
 	durable_world_check(R.parent_organ && R.parent_organ != O && R.parent_organ.wounds.len == 1 && R.parent_organ.wounds[1] == R, "saved organ/wound identity cycle changed")
 	durable_world_check(!R.can_merge(W) && !R.bleeding(), "restored wound behavior changed")
 	F = null
@@ -141,6 +144,64 @@
 	var/obj/item/organ/external/groin/orphan = new
 	durable_world_check(QDELETED(orphan), "ordinary orphan limb no longer cleans itself up")
 
+// The isolated world deliberately skips global character setup. Install only
+// the anatomy needed by the production graft logic, without booting gameplay.
+/mob/living/human/limb_graft_probe/New()
+	species = all_species["Human"]
+	vessel = new /datum/reagents(species.blood_volume)
+	vessel.my_atom = src
+
+// Exercise actual graft admission and registration, including another zone
+// acquiring a child while the attachment step was waiting.
+/proc/limb_graft_case()
+	GLOB.all_observable_events = list()
+	GLOB.moved_event = new
+	GLOB.dir_set_event = new
+	GLOB.destroyed_event = new
+	GLOB.name_set_event = new
+	GLOB.stat_set_event = new
+	all_species["Human"] = new /datum/species/human
+	var/turf/T = locate(1, 1, 1)
+	var/mob/living/human/limb_graft_probe/patient = new(T)
+	var/mob/living/human/limb_graft_probe/surgeon = new(T)
+	var/datum/surgery_step/limb/attach/S = new
+	var/obj/item/organ/external/chest/chest = new(patient)
+	var/obj/item/organ/external/arm/left_arm = new(patient)
+	var/obj/item/organ/external/arm/right/right_arm = new(patient)
+	new /obj/item/organ/external/hand/right(patient)
+	new /obj/item/organ/external/chest(surgeon)
+	new /obj/item/organ/external/arm/right(surgeon)
+	var/obj/item/organ/external/hand/right/loose_hand = new(surgeon)
+	left_arm.removed()
+	right_arm.removed()
+	loose_hand.removed()
+	loose_hand.forceMove(surgeon)
+	right_arm.forceMove(surgeon)
+	durable_world_check(S.can_use(surgeon, patient, "r_hand", loose_hand) != TRUE, "graft admitted a hand with no arm")
+
+	var/datum/wound/lost_limb/legacy = new(left_arm, DROPLIMB_EDGE, TRUE)
+	legacy.lost_limb_slot = null
+	var/datum/wound/lost_limb/left_wound = new(left_arm, DROPLIMB_EDGE, TRUE)
+	var/datum/wound/lost_limb/right_wound = new(right_arm, DROPLIMB_EDGE, TRUE)
+	chest.wounds = list(legacy, left_wound, right_wound)
+	durable_world_check(S.can_use(surgeon, patient, "r_arm", right_arm) == TRUE, "valid arm graft refused")
+
+	// Historical orphan from the old bug: do not overwrite its slot or consume the graft.
+	loose_hand.replaced(patient)
+	durable_world_check(S.can_use(surgeon, patient, "r_arm", right_arm) != TRUE, "arm graft admitted over an occupied hand slot")
+	S.end_step(surgeon, patient, "r_arm", right_arm)
+	durable_world_check(patient.get_organ("r_hand") == loose_hand && !patient.get_organ("r_arm") && right_arm.loc == surgeon, "rejected graft changed custody")
+
+	patient.organs -= loose_hand
+	patient.organs_by_name["r_hand"] = null
+	loose_hand.owner = null
+	loose_hand.forceMove(T)
+	durable_world_check(S.can_use(surgeon, patient, "r_arm", right_arm) == TRUE, "arm graft remained blocked after slot cleared")
+	right_arm.replaced(patient)
+	var/obj/item/organ/external/reattached_hand = patient.get_organ("r_hand")
+	durable_world_check(reattached_hand && reattached_hand.parent == right_arm && reattached_hand.owner == patient, "graft did not register the carried hand correctly")
+	durable_world_check(chest.wounds.len == 2 && (legacy in chest.wounds) && (left_wound in chest.wounds) && !(right_wound in chest.wounds), "graft erased a different or unidentified wound")
+
 /world/New()
 	world.OpenPort(0)
 	try
@@ -162,6 +223,7 @@
 		wound_restore_reject("wrong-description", "desc", "wrong stump")
 		wound_restore_reject("wrong-minimum-damage", "min_damage", -1)
 		organ_restore_case()
+		limb_graft_case()
 		text2file(json_encode(list("done" = TRUE, "checks" = durable_probe_checks, "roundtrips" = 18)), "metadata-result.json")
 	catch(var/exception/E)
 		text2file(json_encode(list("done" = FALSE, "checks" = durable_probe_checks, "error" = "[E]", "source" = E.file, "line" = E.line)), "metadata-result.json")

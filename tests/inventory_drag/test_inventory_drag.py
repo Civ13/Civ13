@@ -1,8 +1,12 @@
 """Offline source contracts for inventory drag-and-drop transfers; no BYOND runtime."""
 from pathlib import Path
+import sys
+from types import SimpleNamespace as NS
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+from source_adapter import extract, project
 
 
 def read(path):
@@ -46,6 +50,44 @@ class InventoryDragTests(unittest.TestCase):
             self.assertIn(guard, body)
         self.assertLess(body.index('inventory_drag_in_reach(src, H)'), body.index('istype(over, /obj/screen/inventory)'))
 
+    def test_only_personal_timed_moves_ignore_walking(self):
+        window = (ROOT / 'code/modules/storage_window/storage_window.dm').read_text()
+        worn = proc_body(window, '/proc/storage_window_carried_holders')
+        self.assertIn('H.worn_storage_group("all")', worn)
+        self.assertIn('list(H.l_hand, H.r_hand)', worn)
+        self.assertIn('S.loc == H', worn)
+        move = proc_body(window, '/datum/storage_window/proc/is_carried_move')
+        self.assertIn('holder == H', move)
+        self.assertIn('kind == STORAGE_WINDOW_KIND_WORN && (holder in carried)', move)
+        finish = proc_body(window, '/datum/storage_window/proc/finish_move')
+        self.assertIn('!job["carried"] && get_turf(H) != start_turf', finish)
+        self.assertIn('I.loc != job["source"]', finish)
+        self.assertLess(finish.index('!is_carried_move'), finish.index('!perform_move'))
+        transfer = proc_body(DRAG, '/obj/item/proc/inventory_drag_transfer')
+        self.assertIn('storage_strip_take_wait(H, src, carried_destination)', transfer)
+        strip = (ROOT / 'code/modules/storage_window/storage_strip.dm').read_text()
+        take = proc_body(strip, '/proc/storage_strip_take_wait')
+        self.assertIn('carried_destination && (S in storage_window_carried_holders(H))', take)
+        self.assertIn('needhand = !carried, can_move = carried', take)
+        self.assertIn('carried && !(S in storage_window_carried_holders(H))', take)
+
+    def test_carried_hand_destination_is_fixed_before_the_timer(self):
+        window = read('code/modules/storage_window/storage_window.dm')
+        start = proc_body(window, '/datum/storage_window/proc/next_move')
+        self.assertLess(start.index('current["hand_slot"]'), start.index('addtimer('))
+        perform = proc_body(window, '/datum/storage_window/proc/perform_move')
+        chosen = perform.split('if (hand_slot)', 1)[1]
+        self.assertLess(chosen.index('H.get_equipped_item(hand_slot)'), chosen.index('detach(I)'))
+        self.assertIn('inventory_drag_put_in_hand(hand_slot, H)', perform)
+        pickup = proc_body(read('code/game/objects/items.dm'), '/obj/item/attack_hand')
+        self.assertLess(pickup.index('hand_slot = holder.hand'), pickup.index('storage_strip_take_wait('))
+        self.assertIn('needhand = !hand_slot', pickup)
+        self.assertIn('loc != source', pickup)
+        self.assertIn('inventory_drag_put_in_hand(hand_slot, holder)', pickup)
+        wait = proc_body(DRAG, '/obj/item/proc/inventory_drag_pickup_delay')
+        self.assertIn('needhand = !carried', wait)
+        self.assertIn('loc != source', wait)
+
     def test_destinations_cover_hands_slots_and_storage(self):
         body = proc_body(DRAG, '/obj/item/proc/inventory_drag_transfer')
         self.assertIn('inventory_drag_to_hand(slot.slot_id, H)', body)
@@ -67,7 +109,7 @@ class InventoryDragTests(unittest.TestCase):
     def test_hand_and_slot_moves_respect_equip_rules(self):
         hand = proc_body(DRAG, '/obj/item/proc/inventory_drag_to_hand')
         for guard in ('if (held)', 'user.lying', 'inventory_drag_hand_usable(slot, user)',
-                      'user.canUnEquip(src)', 'inventory_drag_pickup_delay(user)', 'inventory_drag_put_back(origin)'):
+                      'user.canUnEquip(src)', 'inventory_drag_pickup_delay(user, fixed_hand = TRUE)', 'inventory_drag_put_back(origin)'):
             self.assertIn(guard, hand)
         slot = proc_body(DRAG, '/obj/item/proc/inventory_drag_to_slot')
         self.assertLess(slot.index('mob_can_equip(user, slot)'), slot.index('inventory_drag_take_out(user)'))
@@ -75,6 +117,28 @@ class InventoryDragTests(unittest.TestCase):
         self.assertIn('inventory_drag_put_back(origin)', slot)
         delay = proc_body(DRAG, '/obj/item/proc/inventory_drag_pickup_delay')
         self.assertIn('do_after(user, equiptimer, src', delay)
+
+    def test_timed_hand_drag_revalidates_before_removing_from_any_source(self):
+        hand = proc_body(DRAG, '/obj/item/proc/inventory_drag_to_hand')
+        before, after = hand.split('inventory_drag_pickup_delay(user, fixed_hand = TRUE)')
+        self.assertIn('source_slot = user.get_inventory_slot(src)', before)
+        self.assertIn('user.canUnEquip(src)', before)
+        self.assertIn('loc != source', after)
+        usable = after.index('inventory_drag_hand_usable(slot, user)')
+        self.assertLess(usable, after.index('user.u_equip(src)'))
+        self.assertLess(usable, after.index('inventory_drag_take_out(user)'))
+        self.assertLess(after.index('user.get_equipped_item(source_slot) != src || !user.canUnEquip(src)'),
+                        after.index('user.u_equip(src)'))
+        self.assertLess(after.index('!S.storage_contents_accessible()'), after.index('inventory_drag_take_out(user)'))
+
+    def test_timed_hand_drag_keeps_the_clicked_slot_but_skips_wait_between_hands(self):
+        hand = proc_body(DRAG, '/obj/item/proc/inventory_drag_to_hand')
+        wait = proc_body(DRAG, '/obj/item/proc/inventory_drag_pickup_delay')
+        self.assertLess(wait.index('user.item_is_in_hands(src)'), wait.index('do_after('))
+        self.assertIn('needhand = !carried && !fixed_hand', wait)
+        self.assertIn('inventory_drag_pickup_delay(user, fixed_hand = TRUE)', hand)
+        self.assertIn('inventory_drag_put_in_hand(slot, user)', hand)
+        self.assertNotIn('user.hand', hand)
 
     def test_storage_drop_reaches_transfer_before_worn_only_return(self):
         body = proc_body(STORAGE, '/obj/item/weapon/storage/MouseDrop')
@@ -97,6 +161,52 @@ class InventoryDragTests(unittest.TestCase):
         self.assertEqual(proc_body(MAIL, '/obj/item/weapon/storage/envelope/accepts_inventory_drag').strip(), 'return storage_contents_accessible()')
         self.assertEqual(proc_body(MAIL, '/obj/item/weapon/storage/envelope/storage_contents_accessible').strip(), 'return opened')
         self.assertEqual(proc_body(DRAG, '/obj/item/weapon/storage/proc/accepts_inventory_drag').strip(), 'return TRUE')
+
+
+class KeychainStorageTests(unittest.TestCase):
+    def test_keychain_storage_admission_is_key_only(self):
+        self.assertIn('can_hold = list(/obj/item/weapon/key)', KEYCHAIN)
+        self.assertIn('merges_stacks = FALSE', KEYCHAIN)
+        window = read('code/modules/storage_window/storage_window.dm')
+        self.assertIn('S.can_be_inserted(I, TRUE)', window)
+        self.assertIn('S.handle_item_insertion(I, TRUE)', window)
+        self.assertIn('S.remove_from_storage(I, get_turf(H))', window)
+        insert = STORAGE.split('\n/obj/item/weapon/storage/proc/handle_item_insertion(', 1)[1].split('\n/obj/', 1)[0]
+        self.assertIn('update_icon()', insert)
+        self.assertIn('update_icon()', proc_body(STORAGE, '/obj/item/weapon/storage/proc/remove_from_storage'))
+
+    def test_keychain_uses_physical_contents_for_lock_picker_examine_and_icon(self):
+        base = '/obj/item/weapon/storage/belt/keychain'
+        body = proc_body(KEYCHAIN, base + '/attack_hand')
+        self.assertIn('var/list/choices = key_items()', body)
+        self.assertIn('!(which in choices) || which.loc != src', body)
+        self.assertIn('key_items()', proc_body(KEYCHAIN, base + '/proc/print_keys'))
+        self.assertIn('length(key_items())', proc_body(KEYCHAIN, base + '/update_icon'))
+        self.assertIn('update_icon()', proc_body(KEYCHAIN, base + '/after_load'))
+        reader = read('code/game/objects/structures/key_doors/keyslot.dm')
+        self.assertIn('belt.keychain.key_items()', reader)
+        self.assertIn('keys |= ring.key_items()', reader)
+        self.assertIn('in keychain.key_items()', reader)
+        self.assertNotIn('keychain.keys', reader)
+        self.assertNotIn('var/list/keys', KEYCHAIN)
+        self.assertNotIn('keys +=', KEYCHAIN)
+        self.assertIn('handle_item_insertion(key, TRUE)', proc_body(KEYCHAIN, base + '/attackby'))
+
+        proc = base + '/proc/key_items'
+        body = extract(KEYCHAIN, proc).replace('. += key', 'result.append(key)')
+        contents = []
+        resolve = project(proc + '()\n' + body + '\n\treturn result\n', proc, '',
+                          dict(contents=contents, list=list,
+                               typed_iter=lambda atoms, _: [a for a in atoms if a.kind == 'key'],
+                               QDELETED=lambda a: a.deleted))
+        key = NS(kind='key', deleted=False)
+        contents[:] = [NS(kind='pen', deleted=False), NS(kind='key', deleted=True)]
+        self.assertEqual(resolve(), [])
+        # Untracked physical entry/removal (the storage window) does not need a shadow list.
+        contents.append(key)
+        self.assertEqual(resolve(), [key])
+        contents.remove(key)
+        self.assertEqual(resolve(), [])
 
 
 if __name__ == '__main__':

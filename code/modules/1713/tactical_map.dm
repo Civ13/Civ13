@@ -100,12 +100,12 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 /datum/tactical_map_controller/proc/blips_for(side, z, mob/viewer)
 	var/list/blips = list()
 	for (var/mob/living/human/H in human_mob_list)
-		if (H.stat == DEAD || H.z != z)
+		if (H.stat == DEAD)
 			continue
 		if (tactical_map_side(H) != side)
 			continue
 		var/turf/T = get_turf(H)
-		if (!T)
+		if (!T || T.z != z)
 			continue
 		var/kind = "u"
 		var/label = ""
@@ -159,6 +159,9 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 		return
 	var/turf/T = get_turf(H)
 	var/list/base = terrain_for(T.z)
+	// A cold terrain sample may yield; do not send an outdated side or level.
+	if (H.stat != CONSCIOUS || view_key(H) != key)
+		return
 	var/scale = clamp(round(640 / max(base[2], base[3])), 2, 8)
 	var/width = base[2] * scale
 	var/height = base[3] * scale
@@ -199,7 +202,7 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 		CHECK_TICK
 
 /datum/tactical_map_controller/proc/update_json(mob/H, key)
-	var/sep = findtext(key, "|")
+	var/sep = findlasttext(key, "|")
 	var/side = copytext(key, 1, sep)
 	var/z = text2num(copytext(key, sep + 1))
 	return json_encode(list("b" = blips_for(side, z, H), "m" = marker_list(key)))
@@ -210,7 +213,7 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 // Every viewer of key gets the change at once instead of on the next tick.
 /datum/tactical_map_controller/proc/push(key)
 	for (var/mob/living/human/H in viewers)
-		if (viewers[H] == key && H.client)
+		if (viewers[H] == key && H.stat == CONSCIOUS && view_key(H) == key)
 			send_update(H, key)
 
 /datum/tactical_map_controller/proc/add_marker(mob/living/human/H, x, y, kind)
@@ -243,7 +246,7 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 		return FALSE
 	x = text2num(x)
 	y = text2num(y)
-	if (!isnum(x) || !isnum(y))
+	if (!isnum(x) || !isnum(y) || x < 1 || y < 1 || x > world.maxx || y > world.maxy)
 		return FALSE
 	var/list/L = marker_list(key)
 	var/best = 0
@@ -285,13 +288,21 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 	if (href_list["close"])
 		close(H)
 		return
-	switch (href_list["tm"])
+	dispatch_marker_action(H, href_list)
+
+/datum/tactical_map_controller/proc/dispatch_marker_action(mob/living/human/H, list/params)
+	// A still-visible browser page might describe a previous side or level.
+	var/page_key = params["v"]
+	if (!istext(page_key) || viewers[H] != page_key || view_key(H) != page_key)
+		return FALSE
+	switch (params["tm"])
 		if ("mark")
-			add_marker(H, href_list["x"], href_list["y"], href_list["k"])
+			return add_marker(H, params["x"], params["y"], params["k"])
 		if ("erase")
-			erase_marker(H, href_list["x"], href_list["y"])
+			return erase_marker(H, params["x"], params["y"])
 		if ("clear")
-			clear_markers(H)
+			return clear_markers(H)
+	return FALSE
 
 /datum/tactical_map_controller/proc/page_html(mob/living/human/H, key, list/base, scale)
 	var/turf/T = get_turf(H)
@@ -299,7 +310,7 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 	var/list/kinds = tactical_map_marker_kinds()
 	var/list/html = list("<html><head><meta charset='utf-8'><title>Tactical map</title><style>")
 	html += "body{background:#1d2420;color:#d8e2d0;font-family:Verdana,sans-serif;font-size:12px;margin:10px}"
-	html += "canvas{border:2px solid #4c5f4a;image-rendering:pixelated;display:block;cursor:crosshair}"
+	html += "canvas{outline:2px solid #4c5f4a;image-rendering:pixelated;display:block;cursor:crosshair}"
 	html += "button{background:#33402f;color:#d8e2d0;border:1px solid #5d7358;margin:2px;padding:3px 7px;cursor:pointer}"
 	html += "button.on{background:#6d8a5f;color:#fff}.k{display:inline-block;width:10px;height:10px;margin:0 3px 0 9px;border:1px solid #000}"
 	html += "</style></head><body>"
@@ -323,7 +334,7 @@ var/global/datum/tactical_map_controller/tactical_maps = new
 		var/list/info = kinds[kind]
 		js_kinds[kind] = list(info[2], info[3])
 	html += "var REF='\ref[src]',CELL=[base[1]],W=[base[2]],H=[base[3]],K=[scale],DRAW=[drawer ? 1 : 0],"
-	html += "T=[json_encode(base[4])],COL=[json_encode(cartography_colors())],KINDS=[json_encode(js_kinds)],D=[update_json(H, key)];"
+	html += "VIEW=[json_encode(url_encode(key))],MAXX=[world.maxx],MAXY=[world.maxy],T=[json_encode(base[4])],COL=[json_encode(cartography_colors())],KINDS=[json_encode(js_kinds)],D=[update_json(H, key)];"
 	html += tactical_map_script()
 	html += "</script></body></html>"
 	return jointext(html, "")
@@ -349,10 +360,15 @@ g.fillStyle='rgba(0,0,0,0.35)';g.beginPath();g.arc(x,y,s,0,7);g.fill();g.strokeS
 g.fillStyle=k[1];g.font='bold '+Math.round(s*1.2)+'px Verdana';g.textAlign='center';g.textBaseline='middle';g.fillText(k[0],x,y+1);}
 document.getElementById('s').innerHTML=D.b.length+' on this level, '+D.m.length+' markers.';}
 function upd(s){try{D=JSON.parse(s);}catch(e){return;}draw();}
-function go(q){window.location='byond://?src='+REF+'&'+q;}
+function go(q){window.location='byond://?src='+REF+'&'+q+'&v='+VIEW;}
 function tool(t){cur=t;var bs=document.getElementsByTagName('button');for(var i=0;i<bs.length;i++){bs[i].className=bs[i].id=='b_'+t?'on':'';}}
-cv.onclick=function(e){if(!DRAW)return;var rc=cv.getBoundingClientRect(),cx=(e.clientX-rc.left)/K,cy=(e.clientY-rc.top)/K;
-var tx=Math.max(1,Math.round(cx*CELL)),ty=Math.max(1,Math.round((H-cy)*CELL));
+cv.onclick=function(e){
+if(!DRAW)return;
+var rc=cv.getBoundingClientRect(),w=rc.right-rc.left,h=rc.bottom-rc.top;
+var cx=e.clientX-rc.left,cy=e.clientY-rc.top;
+if(cx<0||cy<0||cx>=w||cy>=h)return;
+var tx=Math.floor(cx*W*CELL/w)+1,ty=H*CELL-Math.floor(cy*H*CELL/h);
+if(tx<1||ty<1||tx>MAXX||ty>MAXY)return;
 if(cur=='erase')go('tm=erase&x='+tx+'&y='+ty);else go('tm=mark&k='+cur+'&x='+tx+'&y='+ty);};
 if(DRAW)tool('attack');draw();
 "}

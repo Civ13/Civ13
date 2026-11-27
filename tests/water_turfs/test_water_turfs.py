@@ -41,6 +41,15 @@ class WaterTurfsTest(unittest.TestCase):
                 found[path.relative_to(ROOT).as_posix()] = n
         self.assertEqual(found, ALLOWED)
 
+    def test_life_extinguishes_only_on_uncovered_liquid_turf(self):
+        text = (ROOT / 'code/game/mob/living/life.dm').read_text(encoding='utf-8')
+        life = text.split('/mob/living/Life()', 1)[1].split('/mob/living/proc/', 1)[0]
+        self.assertRegex(life, r'if \(is_liquid_water\(loc\)\)\n'
+                              r'\t\tvar/turf/floor/beach/water/W = loc\n'
+                              r'\t\tif \(!W.iscovered\(\)\)\n'
+                              r'\t\t\tW.Extinguish\(src\)')
+        self.assertLess(life.index('W.Extinguish(src)'), life.index('handle_fire()'))
+
     def test_boats_use_open_water(self):
         for rel in ('code/modules/craft/deck_berth.dm', 'code/modules/craft/vehicle_assembly.dm',
                     'code/modules/1713/machinery/modular_vehicles/axis.dm',

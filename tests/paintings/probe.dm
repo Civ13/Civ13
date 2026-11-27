@@ -18,6 +18,10 @@
 /mob/living/human/paint_probe/New()
 	icon_update = FALSE
 	return
+/mob/living/human/paint_probe/book_use
+	var/atom/examined
+/mob/living/human/paint_probe/book_use/examinate(atom/A)
+	examined = A
 var/paint_failures = 0
 var/paint_runtime_error = FALSE
 /proc/paint_check(condition, label)
@@ -44,6 +48,7 @@ var/paint_runtime_error = FALSE
 		paint_framed_plan_checks()
 		paint_locket_checks()
 		paint_drawing_checks()
+		paint_book_use_checks()
 		paint_gallery_checks()
 	catch(var/exception/e)
 		paint_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -223,6 +228,27 @@ var/paint_runtime_error = FALSE
 	S.art_h = size
 	S.accept_painting(user, painting_pack(painting_repeat("1", size * size)), "[S.base_colour],[colour]", TRUE, title)
 	return QDELETED(S)
+
+/proc/paint_book_use_checks()
+	var/mob/living/human/paint_probe/book_use/H = new(locate(15, 15, 1))
+	var/obj/item/weapon/book/B = new(H)
+	H.hand = 0
+	H.r_hand = B
+	B.attack_self(H)
+	paint_check(!H.examined, "using a completely blank book does not open the reader")
+	var/list/D = list("w" = 32, "h" = 32, "palette" = "#ffffff,#000000", "data" = painting_pack(painting_repeat("0", 1024)), "title" = "Ink Hills")
+	drawing_add(B, D)
+	paint_check(!B.dat && length(B.drawings) == 1, "a stored sketch leaves the book text blank")
+	B.attack_self(H)
+	paint_check(H.examined == B, "using a drawing-only book opens the same path as Examine")
+	H.examined = null
+	drawing_set_list(B, null)
+	B.dat = "Example text"
+	B.attack_self(H)
+	paint_check(H.examined == B, "using a text-only book still opens the same path as Examine")
+	H.r_hand = null
+	qdel(B)
+	qdel(H)
 
 /proc/paint_drawing_checks()
 	var/turf/T = locate(14, 14, 1)

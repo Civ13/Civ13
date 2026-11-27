@@ -106,7 +106,10 @@ var/global/list/hull_anchors = list()
 	max_x = min(world.maxx, max_x + HULL_ANCHOR_REACH)
 	max_y = min(world.maxy, max_y + HULL_ANCHOR_REACH)
 	for (var/obj/structure/berth/quay/Q in sea_harbours)
-		if (!QDELETED(Q) && Q.z == B.z && Q.x >= min_x && Q.x <= max_x && Q.y >= min_y && Q.y <= max_y)
+		// A freight board is not a berth, and her own deck goes with her.
+		if (QDELETED(Q) || !Q.takes_ships || Q.z != B.z || Q.x < min_x || Q.x > max_x || Q.y < min_y || Q.y > max_y)
+			continue
+		if (!B.contains(get_turf(Q)))
 			return Q
 	for (var/turf/T in block(locate(min_x, min_y, B.z), locate(max_x, max_y, B.z)))
 		if (B.contains(T))

@@ -555,6 +555,9 @@
 	return PATIO_TURN_TIME
 
 /obj/structure/patio_heap/proc/turn_heap(mob/living/human/H)
+	if (turning)
+		to_chat(H, SPAN_WARNING("Someone is turning the heap."))
+		return
 	if (!charged())
 		to_chat(H, SPAN_WARNING("The heap is not charged yet. Examine it to see what it still needs."))
 		return

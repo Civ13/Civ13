@@ -241,7 +241,7 @@ class StoneMoldTests(unittest.TestCase):
         self.assertLess(pour.index('ML.pouring = TRUE'),prompt)
         recheck=pour.index('if (!can_receive_pour(ML, user))',prompt)
         self.assertLess(prompt,pour.index('ML.pouring = FALSE'))
-        self.assertLess(recheck,pour.index('amt_to_transfer = min(input, max_capacity - capacity, ML.capacity)'))
+        self.assertLess(recheck,pour.index('amt_to_transfer = min(input, free_capacity(), ML.capacity)'))
         self.assertLess(pour.index('amt_to_transfer = min(input,'),pour.index('\tcapacity += amt_to_transfer'))
         self.assertIn('ML.capacity = max(ML.capacity - amt_to_transfer, 0)',pour)
         self.assertNotIn('ML.capacity <= 1',pour)
@@ -263,10 +263,33 @@ class StoneMoldTests(unittest.TestCase):
         self.assertNotRegex(molds, r'crafting_recipe_allowed\([^\n]*\)\) return', 'silent refusal')
         self.assertEqual(molds.count('crafting_recipe_refusal('), 4)
         self.assertIn('Arrowheads can only be cast from copper, bronze, iron or steel.', branch)
-        for word in ('arrowheads', 'spearheads', 'pickaxe heads', 'shovel head'):
+        for word in ('arrowheads', 'spearheads', 'pickaxe heads'):
             # The message names the metal, so it comes before the mold is emptied.
             after = molds.split(f'You finish crafting the [ML.current_material] {word}.")',1)[1]
             self.assertEqual(after.split('\n')[1].strip(), 'ML.current_material = null', word)
+
+    def test_raw_and_molten_count_against_the_same_capacity(self):
+        source = read(MOLDS)
+        free_capacity = adapter.extract(source, '/obj/item/weapon/clay/mold/proc/free_capacity')
+        self.assertIn('var/used_capacity = capacity', free_capacity)
+        self.assertIn('for (var/metal in contents_materials)\n\t\tused_capacity += contents_materials[metal]', free_capacity)
+        self.assertIn('return max(0, max_capacity - used_capacity)', free_capacity)
+        admit = adapter.extract(source, '/obj/item/weapon/clay/mold/proc/can_receive_pour')
+        self.assertIn('|| !free_capacity())', admit)
+        pour = adapter.extract(source, '/obj/item/weapon/clay/mold/attackby')
+        self.assertIn('var/amt_to_transfer = min(free_capacity(), ML.capacity)', pour)
+        self.assertIn('var/room = free_capacity()', pour)
+        self.assertIn('var/cap_to_add = min(room, O.amount)', pour)
+
+    def test_shovel_casting_debits_only_two_units_per_head(self):
+        anvil = read('code/game/objects/structures/blacksmithing/blacksmithing.dm')
+        shovels = anvil.split('if ("shovels")', 1)[1].split('if ("arrowheads")', 1)[0]
+        self.assertIn('var/tamt = Floor(ML.capacity/2)', shovels)
+        self.assertIn('ML.capacity -= tamt * 2', shovels)
+        self.assertIn('for (var/i=1, i<=tamt, i++)', shovels)
+        message = shovels.index('You finish crafting the [ML.current_material] shovel head.')
+        self.assertRegex(shovels[message:], r'\n\s*if \(!ML.capacity\)\n\s*ML.current_material = null\n\s*ML.update_icon\(\)')
+        self.assertNotIn('ML.capacity = 0', shovels)
 
 if __name__=='__main__':
     unittest.main()

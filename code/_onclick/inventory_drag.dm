@@ -67,20 +67,30 @@
 	// An item inside storage can only be dragged out of the storage window being shown.
 	if (istype(loc, /obj/item/weapon/storage) && H.s_active != loc)
 		return FALSE
-	// Taking it out of the bag takes the storage window's move time.
-	if (istype(loc, /obj/item/weapon/storage) && !storage_strip_take_wait(H, src))
+	// Resolve the destination before waiting so reaches into the world keep
+	// their stationary timer. A carried bag must still be carried afterward.
+	var/obj/screen/inventory/slot
+	var/obj/item/weapon/storage/S
+	if (istype(over, /obj/screen/inventory))
+		slot = over
+		if (slot.parentmob != H || !slot.slot_id)
+			return FALSE
+	else
+		S = inventory_drag_target_storage(over, H)
+		if (!S)
+			return FALSE
+	var/carried_destination = slot || (S in storage_window_carried_holders(H))
+	if (istype(loc, /obj/item/weapon/storage) && !storage_strip_take_wait(H, src, carried_destination))
 		return FALSE
 
-	if (istype(over, /obj/screen/inventory))
-		var/obj/screen/inventory/slot = over
+	if (slot)
 		if (slot.parentmob != H || !slot.slot_id)
 			return FALSE
 		if (slot.slot_id == slot_l_hand || slot.slot_id == slot_r_hand)
 			return inventory_drag_to_hand(slot.slot_id, H)
 		return inventory_drag_to_slot(slot.slot_id, H)
 
-	var/obj/item/weapon/storage/S = inventory_drag_target_storage(over, H)
-	if (S)
+	if (!QDELETED(S) && inventory_drag_target_storage(over, H) == S && (!carried_destination || (S in storage_window_carried_holders(H))))
 		return inventory_drag_to_storage(S, H)
 	return FALSE
 
@@ -99,10 +109,14 @@
 	return null
 
 // Applies the item's pickup delay when it is not already in the user's hands.
-/obj/item/proc/inventory_drag_pickup_delay(mob/living/human/user)
+/obj/item/proc/inventory_drag_pickup_delay(mob/living/human/user, fixed_hand = FALSE)
 	if (equiptimer <= 0 || user.item_is_in_hands(src))
 		return TRUE
-	if (!do_after(user, equiptimer, src, can_move = equiptimer))
+	var/atom/source = loc
+	var/carried = (source == user || (source in storage_window_carried_holders(user)))
+	if (!do_after(user, equiptimer, src, needhand = !carried && !fixed_hand, can_move = equiptimer))
+		return FALSE
+	if (carried && (loc != source || (source != user && !(source in storage_window_carried_holders(user)))))
 		return FALSE
 	return inventory_drag_in_reach(src, user)
 
@@ -183,25 +197,39 @@
 	if (!inventory_drag_hand_usable(slot, user))
 		return TRUE
 
-	if (loc == user)
-		// Already carried: from the other hand or an equipment slot.
-		if (!user.canUnEquip(src))
+	var/atom/source = loc
+	var/source_slot = null
+	if (source == user)
+		source_slot = user.get_inventory_slot(src)
+		if (!source_slot || !user.canUnEquip(src))
+			return TRUE
+
+	// Hand-to-hand moves skip the delay. Worn and loose items must still
+	// be in their original source when the draw/pickup finishes.
+	if (!inventory_drag_pickup_delay(user, fixed_hand = TRUE))
+		return TRUE
+	if (QDELETED(src) || QDELETED(user) || loc != source || user.lying || user.incapacitated() || user.restrained())
+		return TRUE
+	if (user.get_equipped_item(slot) || !inventory_drag_in_reach(src, user) || !inventory_drag_hand_usable(slot, user))
+		return TRUE
+	if (source == user)
+		if (user.get_equipped_item(source_slot) != src || !user.canUnEquip(src))
 			return TRUE
 		user.u_equip(src)
-	else
-		if (!inventory_drag_pickup_delay(user))
-			return TRUE
-		if (user.get_equipped_item(slot) || !inventory_drag_in_reach(src, user))
-			return TRUE
-		var/atom/origin = inventory_drag_take_out(user)
-		if (!origin)
-			return TRUE
 		if (!inventory_drag_put_in_hand(slot, user))
-			inventory_drag_put_back(origin)
+			user.remove_from_mob(src)
 		return TRUE
 
-	if (!inventory_drag_put_in_hand(slot, user))
-		user.remove_from_mob(src)
+	var/obj/item/weapon/storage/S = source
+	if (istype(S) && (user.s_active != S || !S.storage_contents_accessible()))
+		return TRUE
+	var/atom/origin = inventory_drag_take_out(user)
+	if (!origin)
+		return TRUE
+	if (inventory_drag_put_in_hand(slot, user))
+		restore_lanyard_draw(origin, user)
+	else
+		inventory_drag_put_back(origin)
 	return TRUE
 
 /obj/item/proc/inventory_drag_put_in_hand(slot, mob/living/human/user)

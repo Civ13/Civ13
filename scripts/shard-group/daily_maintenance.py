@@ -26,9 +26,9 @@ One run:
    planned_notice, `warning_minutes`); an admin's Cancel Planned Restart in a region leaves that
    region on its old build for the day;
 4. hands every running region over to the build in turn (save, the new build loads it beside
-   the old world, players move across); a region busy with another action is tried again later,
-   so one busy region never holds the others back. Asleep, cold and stopped regions take the
-   build without waking (update_offline);
+   the old world, players move across); a region busy with another action is tried again later. Asleep, cold and stopped regions take the
+   build without waking (update_offline). Oceans wait for their configured coastal lands
+   to finish installing this revision; an unrelated busy region never holds them back;
 5. removes the pin and records what each region did (<root>/.maintenance/state.json).
 
 The gateway (the always-up world on the front door's port) is never staged, stopped or moved
@@ -112,8 +112,8 @@ def write_json(path, value):
     os.replace(temporary, path)
 
 
-def active_pin(group, now=None):
-    """The revision a running maintenance pinned, or None."""
+def active_pin_record(group, now=None):
+    """The one atomic commit pin while a confirmed group build sync runs."""
     pin = read_json(folder(group) / 'pin.json')
     revision = pin.get('revision')
     started = pin.get('started')
@@ -121,15 +121,24 @@ def active_pin(group, now=None):
         return None
     if type(started) not in (int, float) or not 0 <= (now or time.time()) - started <= PIN_SECONDS:
         return None
-    return revision
+    return pin
+
+
+def active_pin(group, now=None):
+    pin = active_pin_record(group, now)
+    return pin['revision'] if pin else None
 
 
 def apply_pin(group):
     """check_group: while a maintenance run stands, the group revision is the pinned commit."""
-    pinned = active_pin(group)
-    if pinned:
-        group['unpinned_revision'] = group['revision']
-        group['revision'] = pinned
+    pin = active_pin_record(group)
+    if not pin:
+        return None
+    pinned = pin['revision']
+    group['unpinned_revision'] = group['revision']
+    group['revision'] = pinned
+    if pin.get('mode') == 'match-mainland':
+        group['mainland_match_revision'] = pinned
     return pinned
 
 
@@ -179,9 +188,9 @@ def running(this, group):
     return pid if type(pid) is int and this.process_alive(pid) else None
 
 
-def worker_argv(group, scheduled):
+def worker_argv(group, scheduled, match_mainland=False):
     argv = [group.get('python') or sys.executable, '-I', '-B', str(Path(__file__).with_name('shard_group.py')),
-            '--config', group['_path'], 'maintenance']
+            '--config', group['_path'], 'match-mainland' if match_mainland else 'maintenance']
     return argv + ['--scheduled'] if scheduled else argv
 
 
@@ -196,7 +205,7 @@ def ensure(this, group, start, now=None):
     return day
 
 
-def request(this, group, start):
+def request(this, group, start, match_mainland=False):
     """The launcher's Run maintenance now: start a run at once (refused while one runs)."""
     if not group.get('persistent', True):
         raise Refused('a group that does not save updates between rounds; daily maintenance is for saving groups')
@@ -204,8 +213,8 @@ def request(this, group, start):
     if pid:
         raise Refused('maintenance is already running (pid %d)' % pid)
     folder(group).mkdir(parents=True, exist_ok=True)
-    pid = start(worker_argv(group, False), group['root'], str(folder(group) / 'maintenance.log'))
-    return {'accepted': True, 'action': 'maintenance', 'pid': pid}
+    pid = start(worker_argv(group, False, match_mainland), group['root'], str(folder(group) / 'maintenance.log'))
+    return {'accepted': True, 'action': 'match-mainland' if match_mainland else 'maintenance', 'pid': pid}
 
 
 def status(this, group, now=None):
@@ -222,9 +231,10 @@ def status(this, group, now=None):
 # -- the run ------------------------------------------------------------------------------
 
 class Run:
-    def __init__(self, this, group, scheduled=False, platform=None, sleep=time.sleep, clock=time.time):
+    def __init__(self, this, group, scheduled=False, platform=None, sleep=time.sleep, clock=time.time, match_mainland=False):
         self.this, self.group, self.scheduled = this, group, scheduled
         self.platform, self.sleep, self.clock = platform, sleep, clock
+        self.match_mainland = match_mainland
         self.dir = folder(group)
         self.state = {}
 
@@ -254,6 +264,8 @@ class Run:
         previous = read_json(self.dir / 'state.json')
         self.state = {'day': day, 'scheduled': self.scheduled or (previous.get('day') == day and bool(previous.get('scheduled'))),
                       'started': started, 'phase': 'starting', 'regions': {}, 'error': None, 'finished': None}
+        if self.match_mainland:
+            self.state['mode'] = 'match-mainland'
         self.save()
         try:
             result = self.steps()
@@ -270,6 +282,24 @@ class Run:
                 except OSError:
                     pass
 
+    def checked_mainland_revision(self, host):
+        """Take a trusted live build stamp, not a checkout HEAD or staged build."""
+        locked = getattr(host, 'lock', None)
+        if (locked is not None and locked.exists()) or host.frozen() or not host.platform.listening(host.config['port']):
+            raise Refused('the mainland is not awake and idle; wait for its active build to settle')
+        revision = host.built_revision()
+        if (locked is not None and locked.exists()) or not self.this.HEX40.fullmatch(revision or ''):
+            raise Refused('the mainland has no verified active build to match')
+        return revision
+
+    def forward_build(self, current, target):
+        if not self.this.HEX40.fullmatch(current or ''):
+            return False
+        platform = self.platform or self.this.Platform()
+        code, _ = platform.run([self.group['git'], 'merge-base', '--is-ancestor', current, target],
+                               cwd=self.group['repository'], timeout=60)
+        return code == 0
+
     def steps(self):
         this, group = self.this, self.group
         if not group.get('persistent', True):
@@ -279,16 +309,6 @@ class Run:
             os.remove(self.dir / 'pin.json')
         except OSError:
             pass
-        unpinned = group.get('unpinned_revision') or group['revision']
-        self.save(phase='checking for updates')
-        this.fetch_remote(group, self.platform)
-        code, out = (self.platform or this.Platform()).run([group['git'], 'rev-parse', unpinned],
-                                                           cwd=group['repository'], timeout=60)
-        revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
-        if not this.HEX40.match(revision):
-            raise RuntimeError('could not resolve the group revision %s' % unpinned)
-        write_json(self.dir / 'pin.json', {'revision': revision, 'started': int(self.clock())})
-        self.save(revision=revision)
         regions = []
         for region, host in this.hosts(group, platform=self.platform):
             name = region['id']
@@ -302,6 +322,36 @@ class Run:
                 self.note(name, result='skipped: interrupted fresh-world archive')
                 continue
             regions.append((region, host))
+        if self.match_mainland:
+            mainland = next((host for region, host in regions if region['id'] == group['mainland']), None)
+            if mainland is None:
+                raise Refused('the mainland is not available to establish a matching build')
+            self.save(phase='checking the mainland build')
+            revision = self.checked_mainland_revision(mainland)
+            blocked = [region['id'] for region, host in regions
+                       if not self.forward_build(host.built_revision(), revision)]
+            if blocked:
+                raise Refused('cannot safely match the mainland: these regions have newer, diverged, or unknown builds: '
+                              + ', '.join(blocked) + '. Use the latest group update instead.')
+            if self.checked_mainland_revision(mainland) != revision:
+                raise Refused('the mainland changed builds before the match started; try again')
+            # Never schedule a restart or build for the source of a match.
+            regions = [(r, h) for r, h in regions if h is not mainland]
+            self.note(group['mainland'], result='already on the build (mainland left running)')
+        else:
+            unpinned = group.get('unpinned_revision') or group['revision']
+            self.save(phase='checking for updates')
+            this.fetch_remote(group, self.platform)
+            code, out = (self.platform or this.Platform()).run([group['git'], 'rev-parse', unpinned],
+                                                               cwd=group['repository'], timeout=60)
+            revision = out.strip().splitlines()[-1] if code == 0 and out.strip() else ''
+            if not this.HEX40.match(revision):
+                raise RuntimeError('could not resolve the group revision %s' % unpinned)
+        pin = {'revision': revision, 'started': int(self.clock())}
+        if self.match_mainland:
+            pin['mode'] = 'match-mainland'
+        write_json(self.dir / 'pin.json', pin)
+        self.save(revision=revision)
         failed = self.stage(regions, revision)
         if failed:
             # The same build everywhere or no change anywhere: nothing was stopped.
@@ -315,12 +365,14 @@ class Run:
         for region, host in regions:
             if (region, host) not in behind:
                 self.note(region['id'], result='already on the build')
-        self.install_offline(offline)
+        installing = self.install_offline([(r, h) for r, h in offline if r['kind'] != 'OCEANIC'])
         cancelled = self.warn(live)
-        self.hand_over([(r, h) for r, h in live if r['id'] not in cancelled], revision)
+        self.hand_over([(r, h) for r, h in live if r['id'] not in cancelled], revision,
+                       offline_oceans=[(r, h) for r, h in offline if r['kind'] == 'OCEANIC'],
+                       installing=installing if self.match_mainland else None)
         problems = {name: entry.get('result') for name, entry in self.state['regions'].items()
                     if not str(entry.get('result', '')).startswith(('already on', 'handed over', 'left running: the gateway',
-                                                                     'installing while', 'skipped: not set up'))}
+                                                                     'installing while', 'installed while', 'skipped: not set up'))}
         return {'revision': revision, 'problems': problems}
 
     def stage(self, regions, revision):
@@ -367,7 +419,8 @@ class Run:
         return failed
 
     def install_offline(self, offline):
-        """Asleep, cold and stopped regions take the build without waking (update_offline)."""
+        """Queue asleep, cold and stopped regions without waking them (update_offline)."""
+        accepted = {}
         for region, host in offline:
             name = region['id']
             try:
@@ -376,9 +429,12 @@ class Run:
                 self.note(name, result='not updated: %s' % str(error)[:300])
                 continue
             if name in answer.get('accepted', {}):
-                self.note(name, result='installing while %s' % answer['accepted'][name].get('state', 'down'))
+                state = answer['accepted'][name].get('state', 'down')
+                accepted[name] = (host, state)
+                self.note(name, result='installing while %s' % state)
             else:
                 self.note(name, result='not updated: %s' % answer.get('skipped', {}).get(name, 'refused'))
+        return accepted
 
     def world(self, host):
         try:
@@ -423,14 +479,43 @@ class Run:
                     self.note(region['id'], result='called off in game by an admin; left on its build today')
         return cancelled
 
-    def hand_over(self, live, revision):
-        """Hand each running region over in turn; a busy one is tried again later."""
+    def ocean_waiting(self, host, revision):
+        """Return (coastal reason, final) for an ocean not ready in this run."""
+        blockers = host.ocean_update_blockers(self.group, revision)
+        if not blockers:
+            return None, False
+        states = self.state['regions']
+        finished = ('called off', 'not updated', 'handover failed', 'handed over, but', 'skipped:')
+        final = any(name not in states or str(states[name].get('result', '')).startswith(finished)
+                    for name in blockers)
+        return 'waiting for coastal land builds: ' + ', '.join(blockers), final
+
+    def hand_over(self, live, revision, offline_oceans=(), installing=None):
+        """Hand live regions over, and install offline oceans once their lands are ready."""
         self.save(phase='handing over')
-        pending = list(live)
+        pending = sorted(live, key=lambda pair: pair[0]['kind'] == 'OCEANIC')
+        offline = list(offline_oceans)
         operations = {}
+        installing_offline = dict(installing or {})
         deadline = self.clock() + HANDOVER_SECONDS
-        while pending or operations:
+        while pending or offline or operations or installing_offline:
+            for region, host in list(offline):
+                reason, final = self.ocean_waiting(host, revision)
+                if reason:
+                    self.note(region['id'], result=('not updated: ' if final else '') + reason)
+                    if final:
+                        offline.remove((region, host))
+                    continue
+                offline.remove((region, host))
+                installing_offline.update(self.install_offline([(region, host)]))
             for region, host in list(pending):
+                if region['kind'] == 'OCEANIC':
+                    reason, final = self.ocean_waiting(host, revision)
+                    if reason:
+                        self.note(region['id'], result=('not updated: ' if final else '') + reason)
+                        if final:
+                            pending.remove((region, host))
+                        continue
                 try:
                     answer = host.request('handover')
                 except Refused as refusal:
@@ -458,19 +543,37 @@ class Run:
                 elif state.get('phase') in ('failed', 'killed'):
                     del operations[name]
                     self.note(name, result='handover failed (the old world plays on): %s' % str(state.get('error'))[:300])
-            if not (pending or operations):
+            # Keep the maintenance pin until these newly admitted oceans have
+            # taken the candidate build, not merely until the request is queued.
+            for name, (host, prior_state) in list(installing_offline.items()):
+                if host.built_revision() == revision:
+                    del installing_offline[name]
+                    self.note(name, result='installed while %s' % prior_state)
+                elif not host.stage_running() and not host.install_marker.exists() and not host.lock.exists():
+                    stage = host.read_json(host.stage_file) or {}
+                    status = host.read_state() or {}
+                    if stage.get('phase') == 'failed' or str(stage.get('install', '')).startswith('not installed'):
+                        del installing_offline[name]
+                        self.note(name, result='not updated: %s' % (stage.get('install') or stage.get('error') or 'stage failed'))
+                    elif status.get('action') == 'update' and status.get('phase') in ('failed', 'killed'):
+                        del installing_offline[name]
+                        self.note(name, result='not updated: %s' % (status.get('error') or 'offline install failed'))
+            if not (pending or offline or operations or installing_offline):
                 break
             if self.clock() > deadline:
-                for region, _host in pending:
-                    self.note(region['id'], result='not updated: still busy at the end of maintenance')
+                for region, host in pending + offline:
+                    reason = self.ocean_waiting(host, revision)[0] if region['kind'] == 'OCEANIC' else None
+                    self.note(region['id'], result='not updated: ' + (reason or 'still busy at the end of maintenance'))
                 for name in operations:
                     self.note(name, result='handover still running at the end of maintenance')
+                for name in installing_offline:
+                    self.note(name, result='not updated: offline install did not finish during the update')
                 break
             self.sleep(POLL_SECONDS)
 
 
-def run(this, group, scheduled=False, platform=None, sleep=time.sleep, clock=time.time):
-    return Run(this, group, scheduled, platform, sleep, clock).run()
+def run(this, group, scheduled=False, platform=None, sleep=time.sleep, clock=time.time, match_mainland=False):
+    return Run(this, group, scheduled, platform, sleep, clock, match_mainland).run()
 
 
 def handover_warning(group, region_id):

@@ -11,8 +11,9 @@ and the fire hooks in `door.dm`, `door_fittings.dm` and `1713/oil_fires.dm`:
   unrated one;
 - a rated door takes a small share of a fire's heat, a wooden door all of it;
 - the closer of a fire door can't be taken off;
-- fire exposure spends the rating, then the seals burn and it stops rating;
-  new fire seals restore it;
+- nearby fires share a five-second rating interval, then the seals burn
+  when the budget is exhausted; overlapping repairs consume only the first
+  successful set of replacements;
 - a fusible link holds the door open past its closer until fire comes within
   two tiles, then melts and the door shuts; a hand unhooks it;
 - a panic bar needs a screwdriver, goes on the fitter's side, and from that

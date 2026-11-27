@@ -41,6 +41,20 @@ class ShutdownNoticeSources(unittest.TestCase):
         self.assertIn('warn_seconds = warn_seconds)', read('code/modules/persistence/admin.dm'))
         self.assertIn('planned_shutdown_status_text()', read('code/game/mob/mob.dm'))
 
+    def test_reboot_links_rejoin_text_without_changing_tdm_handoff(self):
+        world = read('code/world.dm')
+        reboot = world.split('/world/Reboot(', 1)[1].split('#define COLOR_LIGHT_SEPIA', 1)[0]
+        notice = reboot.split('tdm_battle.before_reboot()\n\t\telse\n', 1)[1].split('\n\t\tsleep(sleeptime)', 1)[0]
+        self.assertIn(r'<a href=\"[rejoin_url]\">Click here to rejoin</a>', notice)
+        self.assertIn('shard_group.relay_on() ? shard_group.gate_address() : null', notice)
+        self.assertIn('if(!rejoin_address && world.internet_address && port)', notice)
+        self.assertIn('rejoin_address = "[world.internet_address]:[port]"', notice)
+        self.assertIn('if(rejoin_address)', notice)
+        self.assertIn('html_encode("byond://[rejoin_address]")', notice)
+        fallback = notice.split('\n\t\t\telse\n', 1)[1]
+        self.assertIn('Reconnect from the BYOND pager', fallback)
+        self.assertNotIn('href=', fallback)
+
     def test_vehicle_risk_gate_is_bounded_and_rechecks_live_piloting(self):
         notice = read('code/modules/persistence/shutdown_notice.dm')
         wait = notice.split('/proc/persistence_wait_for_safe_vehicle_state(', 1)[1].split('\n/proc/', 1)[0]

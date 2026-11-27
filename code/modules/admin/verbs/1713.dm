@@ -7,13 +7,6 @@
 	to_chat(world, "<big><b>You [(ticker.players_can_join) ? "can" : "can't"] join the game [(ticker.players_can_join) ? "now" : "anymore"].</b></big>")
 	message_admins("[key_name(src)] changed the playing setting.", key_name(src))
 
-/client/proc/toggle_tts()
-	set category = "Special"
-	set name = "Toggle TTS"
-
-	config.tts_on = !config.tts_on
-	message_admins("[key_name(src)] changed turned the TTS setting [config.tts_on ? "on" : "off"].", key_name(src))
-
 /client/proc/set_teams()
 	set category = "Special"
 	set name = "Set Teams"
@@ -585,6 +578,10 @@ var/tsfsr_forceEnabled = FALSE
 	set category = "Special"
 	set name = "Show Battle Report"
 
+	if (map && map.persistence)
+		to_chat(src, "<span class = 'warning'>Public battle reports are disabled on Persistence. Use See Battle Report for a private view.</span>")
+		return
+
 	if (!processes.battle_report || !processes.battle_report.fires_at_gamestates.Find(ticker.current_state))
 		to_chat(src, "<span class = 'warning'>You can't send a battle report right now.</span>")
 		return
@@ -605,6 +602,10 @@ var/tsfsr_forceEnabled = FALSE
 	show_global_battle_report(src, TRUE)
 
 /proc/show_global_battle_report(var/shower, var/private = FALSE)
+	// Scheduled, manual, and end-of-round callers all use this entry point.
+	if (!private && map && map.persistence)
+		return
+
 	// A yielding/failed load is not a complete world census.
 	if (map && map.persistence && (persistence_load_recovery_required || (persistence_active_operation && persistence_active_operation.kind == "load")))
 		if (shower)

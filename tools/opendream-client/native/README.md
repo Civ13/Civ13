@@ -17,6 +17,10 @@ deferred join becomes **Recheck and join** after the displayed wait. Community l
 sit along the bottom beside links to the launcher data folder and read-only server
 management, and the launcher log shows update and BYOND messages. A
 **Host server** tab appears only when `host.json` enables local hosting.
+Select **Dark mode** in the header to change the launcher skin immediately.
+The launcher remembers the choice in its data folder (`appearance.txt`).
+The standard skin is the default; Windows High Contrast takes precedence.
+The skin does not affect BYOND, the game, or any hosted server.
 `Civ13.exe --console`, or redirected input, keeps the numbered text menu described
 below. Build.ps1 publishes the window build with `-p:Civ13Gui=true`; other projects
 reference the plain `net8.0` build, so their offline restores need no desktop packs.

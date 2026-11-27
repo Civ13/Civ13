@@ -56,6 +56,65 @@ class SelectedMapTests(unittest.TestCase):
                     self.assertIn('usage:', result.stdout.lower())
 
 
+
+class TravelBuildPolicyTests(unittest.TestCase):
+    def test_real_ancestry_gateway_and_stale_records(self):
+        with tempfile.TemporaryDirectory() as folder:
+            cwd = Path(folder)
+            def git(*args):
+                return subprocess.check_output(['git', *args], cwd=cwd, text=True).strip()
+            git('init', '-q')
+            git('config', 'user.email', 'ci@example.invalid')
+            git('config', 'user.name', 'CI')
+            git('commit', '--allow-empty', '-qm', 'ancestor')
+            old = git('rev-parse', 'HEAD')
+            git('commit', '--allow-empty', '-qm', 'descendant')
+            new = git('rev-parse', 'HEAD')
+            git('checkout', '--detach', '-q', old)
+            git('commit', '--allow-empty', '-qm', 'divergent')
+            other = git('rev-parse', 'HEAD')
+
+            group = {'git': 'git', 'repository': str(cwd), 'regions': [
+                {'id': 'land', 'kind': 'SURFACE'}, {'id': 'water', 'kind': 'OCEANIC'},
+                {'id': 'lobby', 'kind': 'GATEWAY'}]}
+            class Platform:
+                def run(self, args, cwd, timeout):
+                    result = subprocess.run(args, cwd=cwd, timeout=timeout, capture_output=True)
+                    return result.returncode, result.stdout
+
+            states = {'land': old, 'water': new}
+            locks = {rid: cwd / (rid + '.lock') for rid in states}
+            def host(region, platform):
+                obj = mock.Mock(platform=Platform(), lock=locks[region['id']])
+                obj.built_revision.side_effect = lambda: states[region['id']]
+                return obj
+
+            check = shard_group.travel_build_refusal
+            with mock.patch.object(shard_group, 'load_group', return_value=group), \
+                 mock.patch.object(shard_group, 'region_config', side_effect=lambda g, r: r), \
+                 mock.patch.object(shard_group, 'RegionHost', side_effect=host):
+                self.assertIsNone(check('group.json', 'land', 'water'))
+                self.assertIn('older build', check('group.json', 'water', 'land'))
+                self.assertIsNone(check('group.json', 'water', 'lobby'))
+                self.assertIsNone(check('group.json', 'lobby', 'land'))
+                states['water'] = old
+                self.assertIsNone(check('group.json', 'land', 'water'))
+                states['land'] = new
+                for unproved in (other, 'f' * 40, None):
+                    states['water'] = unproved
+                    self.assertIn('cannot be verified', check('group.json', 'land', 'water'))
+                states.update(land=old, water=new)
+                locks['water'].touch()
+                self.assertIn('cannot be verified', check('group.json', 'land', 'water'))
+                locks['water'].unlink()
+                run = Platform().run
+                def changing(args, cwd, timeout):
+                    result = run(args, cwd, timeout)
+                    states['water'] = old
+                    return result
+                with mock.patch.object(Platform, 'run', side_effect=changing):
+                    self.assertIn('cannot be verified', check('group.json', 'land', 'water'))
+
 class RegionViewTopicTests(unittest.TestCase):
     def test_fragmented_reply_and_request(self):
         connection = mock.MagicMock()
@@ -938,6 +997,21 @@ class ShardGroupTests(unittest.TestCase):
         region = next(r for r in group['regions'] if r['id'] == region_id)
         return shard_group.RegionHost(shard_group.region_config(group, region), self.machine)
 
+    def test_travel_uses_active_dmb_stamp_not_inactive_slot(self):
+        group = self.write_group()
+        for region_id in ('gaia', 'deep'):
+            host = self.host(group, region_id)
+            host.state_dir.mkdir(parents=True, exist_ok=True)
+            artifact = host.repo / shard_group.DMB_SLOTS[1]
+            artifact.write_bytes(b'installed')
+            host.record_build(REVISION, artifact.name)
+            (host.repo / shard_group.DMB_SLOTS[0]).write_bytes(b'alt slot')
+        self.assertIsNone(shard_group.travel_build_refusal(group['_path'], 'gaia', 'deep', self.machine))
+        host = self.host(group, 'deep')
+        host.dmb().write_bytes(b'changed since it was recorded')
+        self.assertIn('cannot be verified',
+                      shard_group.travel_build_refusal(group['_path'], 'gaia', 'deep', self.machine))
+
     def test_update_checks_out_and_compiles_each_region_map(self):
         group = self.write_group()
         shard_group.setup(group, self.machine)
@@ -1232,8 +1306,8 @@ class ShardGroupTests(unittest.TestCase):
                 calls.append(('wait', self.name))
                 return True
 
-            def request(self, action):
-                calls.append((action, self.name))
+            def request_operator_start(self):
+                calls.append(('start', self.name))
                 return {'accepted': True}
 
         regions = [({'id': 'deep'}, Region('deep', False)), ({'id': 'gaia'}, Region('gaia', True)),
@@ -2120,6 +2194,126 @@ class StagedBuildTests(unittest.TestCase):
             self.assertEqual(slot.read_text(), str(os.getpid()))
         self.assertEqual(waits, [])
 
+    def priority_group(self):
+        self.group.update(relay_port=1730, gate='lobby')
+        self.group['regions'].append({'id': 'lobby', 'name': 'Front Door', 'kind': 'GATEWAY',
+                                      'port': 1722, 'map': 'maps/small/tiny.dmm'})
+        return self.write_group()
+
+    def test_both_priority_regions_ignore_ordinary_urgent_waiters(self):
+        group = self.priority_group()
+        self.assertFalse(self.host(group, 'deep').has_compile_priority())
+        for id in ('gaia', 'lobby'):
+            with self.subTest(id=id):
+                host = self.host(group, id)
+                self.assertTrue(host.has_compile_priority())
+                with host.group_slot('compile.lock', 'compile', lambda **_: self.fail('yielded'), 1,
+                                     yield_to=lambda: 'an ordinary urgent build is waiting'):
+                    self.assertTrue((host.repo.parent / '.staging' / 'compile.lock').exists())
+                self.assertFalse(list((host.repo.parent / '.staging' / 'compile-queue').glob('*.json')))
+
+    def test_compile_tiers_and_urgent_stages_do_not_invert_them(self):
+        self.group['regions'] += [
+            {'id': 'shore', 'name': 'Shore', 'kind': 'SURFACE', 'port': 1723, 'map': 'maps/small/tiny.dmm'},
+            {'id': 'sea', 'name': 'Sea', 'kind': 'OCEANIC', 'port': 1724, 'map': 'maps/small/tiny.dmm'},
+            {'id': 'yard', 'name': 'Yard', 'kind': 'RAILYARD', 'port': 1725, 'map': 'maps/small/tiny.dmm'},
+        ]
+        group = self.priority_group()
+        self.assertEqual([0, 0, 1, 1, 2, 3], [shard_group.RegionHost.compile_tier(group, id)
+                         for id in ('gaia', 'lobby', 'deep', 'shore', 'sea', 'yard')])
+        land, ocean, yard = [self.host(group, id) for id in ('shore', 'sea', 'yard')]
+        for host in (land, ocean, yard):
+            host.state_dir.mkdir(parents=True)
+            host.stage_lock.write_text('stage')
+        ocean.mark_stage_urgent()
+        yard.mark_stage_urgent()
+        self.assertFalse(land.urgent_stage_waiting(group))
+        self.assertFalse(ocean.urgent_stage_waiting(group))
+        directory = land.repo.parent / '.staging' / 'compile-queue'
+        directory.mkdir()
+        self.machine.pids.add(4141)
+        for tier in (1, 2):
+            shard_group.write_json_atomic(directory / 'active.json',
+                                          {'pid': 4141, 'started': int(time.time()), 'tier': tier})
+            self.assertFalse(land.higher_compile_waiting(directory, 1))
+            self.assertEqual(tier == 1, ocean.higher_compile_waiting(directory, 2))
+            self.assertTrue(yard.higher_compile_waiting(directory, 3))
+
+    def test_waiting_priority_stage_does_not_preempt_an_active_compile(self):
+        group = self.priority_group()
+        host = self.host(group, 'lobby')
+        slot = host.repo.parent / '.staging' / 'compile.lock'
+        slot.parent.mkdir(parents=True)
+        slot.write_text('4141')
+        self.machine.pids.add(4141)
+        phases = []
+        def sleep(seconds):
+            self.assertEqual('4141', slot.read_text())
+            self.assertTrue(list((slot.parent / 'compile-queue').glob('*.json')))
+            slot.unlink()  # the current compiler finishes on its own
+        self.machine.sleep = sleep
+        with host.group_slot('compile.lock', 'compile', lambda **v: phases.append(v['phase']), 30):
+            self.assertEqual(str(os.getpid()), slot.read_text())
+        self.assertEqual(["waiting for another region's compile"], phases)
+        self.assertFalse(slot.exists())
+
+    def test_normal_compile_yields_even_when_slot_is_free_and_reaps_stale_waiter(self):
+        group = self.priority_group()
+        normal = self.host(group, 'deep')
+        slot = normal.repo.parent / '.staging' / 'compile.lock'
+        directory = slot.parent / 'compile-queue'
+        directory.mkdir(parents=True)
+        waiting = directory / 'active.json'
+        stale = directory / 'stale.json'
+        shard_group.write_json_atomic(waiting, {'pid': 4141, 'started': int(time.time()), 'tier': 0})
+        shard_group.write_json_atomic(stale, {'pid': 4242, 'started': int(time.time()), 'tier': 0})
+        self.machine.pids.add(4141)
+        phases = []
+        def sleep(seconds):
+            self.assertFalse(slot.exists())
+            waiting.unlink()
+        self.machine.sleep = sleep
+        with normal.group_slot('compile.lock', 'compile', lambda **v: phases.append(v['phase']), 30):
+            self.assertFalse(stale.exists())
+            self.assertEqual(str(os.getpid()), slot.read_text())
+        self.assertEqual(['waiting for a higher-priority region compile'], phases)
+
+    def test_priority_arriving_at_claim_gets_next_slot(self):
+        group = self.priority_group()
+        normal = self.host(group, 'deep')
+        slot = normal.repo.parent / '.staging' / 'compile.lock'
+        phases = []
+        normal.higher_compile_waiting = lambda directory, tier: slot.exists() and not phases
+        self.machine.sleep = lambda seconds: self.assertFalse(slot.exists())
+        with normal.group_slot('compile.lock', 'compile', lambda **v: phases.append(v['phase']), 30):
+            self.assertEqual(str(os.getpid()), slot.read_text())
+        self.assertEqual(['waiting for a higher-priority region compile'], phases)
+
+    def test_priority_world_can_start_current_and_accept_save_stop_while_a_stage_waits(self):
+        group = self.priority_group()
+        shard_group.setup(group, self.machine)
+        for id in ('gaia', 'lobby'):
+            with self.subTest(id=id):
+                host = self.host(group, id)
+                host.log = lambda values: None
+                host.work('update', host.request('update')['operation'])
+                compile_lock = host.repo.parent / '.staging' / 'compile.lock'
+                compile_lock.write_text('4141')
+                host.stage_record(phase="waiting for another region's compile")
+                self.assertFalse(host.status()['busy'], 'the stage is not a live operation')
+                accepted = host.request_operator_start()
+                self.assertEqual('start-current', accepted['action'])
+                started = []
+                host.do_start = lambda operation: started.append(host.startup_revision())
+                host.work(accepted['action'], accepted['operation'])
+                self.assertEqual([REVISION], started)
+                self.assertEqual('4141', compile_lock.read_text(), 'start does not take the compile slot')
+                self.assertEqual('done', host.read_state()['phase'])
+                self.machine.up.add(host.config['port'])
+                self.assertEqual('stop', host.request('stop')['action'])
+                self.assertEqual("waiting for another region's compile", host.read_json(host.stage_file)['phase'])
+                compile_lock.unlink()
+
     def test_stage_compiles_beside_the_running_region_and_update_installs_it(self):
         group, host = self.built()
         live, staging = self.base / 'regions' / 'gaia', self.base / 'regions' / '.staging' / 'gaia'
@@ -2153,7 +2347,11 @@ class StagedBuildTests(unittest.TestCase):
     def test_a_background_stage_lets_a_requested_stage_compile_first(self):
         # Val (2026-11-18): Save, update and restart for one region queued behind the host
         # service's background stages of every other region, one compile at a time.
-        group, host = self.built()
+        self.group['regions'].append({'id': 'shore', 'name': 'Shore', 'kind': 'SURFACE',
+                                      'port': 1723, 'map': 'maps/small/tiny.dmm'})
+        group, _mainland = self.built()
+        host = self.host(group, 'shore')
+        host.log = lambda values: None
         deep = self.host(group, 'deep')
         deep.log = lambda values: None
         background = deep.request_stage()  # the host service's own stage of another region
@@ -2170,26 +2368,29 @@ class StagedBuildTests(unittest.TestCase):
         self.assertEqual('ready', host.read_json(host.stage_file)['phase'])
         self.assertEqual('ready', deep.read_json(deep.stage_file)['phase'])
         self.assertFalse(host.urgent_marker().exists(), 'the marker ends with its stage')
-        self.assertFalse(host.urgent_stage_waiting())
+        self.assertFalse(host.urgent_stage_waiting(group))
 
     def test_a_queued_background_stage_is_moved_up_when_a_person_asks(self):
-        group, host = self.built()
+        self.group['regions'].append({'id': 'shore', 'name': 'Shore', 'kind': 'SURFACE',
+                                      'port': 1723, 'map': 'maps/small/tiny.dmm'})
+        group, _mainland = self.built()
+        host = self.host(group, 'shore')
         queued = host.request_stage()
         self.assertFalse(host.urgent_marker().exists())
         with self.assertRaisesRegex(shard_group.Refused, 'already being staged'):
             host.request_stage(urgent=True)
         self.assertTrue(host.urgent_marker().exists())
         deep = self.host(group, 'deep')
-        self.assertTrue(deep.urgent_stage_waiting())
-        self.assertFalse(host.urgent_stage_waiting(), 'a region never waits for itself')
+        self.assertTrue(deep.urgent_stage_waiting(group))
+        self.assertFalse(host.urgent_stage_waiting(group), 'a region never waits for itself')
         host.work('stage', queued['operation'])
-        self.assertFalse(deep.urgent_stage_waiting())
+        self.assertFalse(deep.urgent_stage_waiting(group))
 
     def test_a_stale_urgent_marker_is_ignored_and_removed(self):
         group, host = self.built()
         host.mark_stage_urgent()  # its stage ended without clearing it (a killed worker)
         deep = self.host(group, 'deep')
-        self.assertFalse(deep.urgent_stage_waiting())
+        self.assertFalse(deep.urgent_stage_waiting(group))
         self.assertFalse(host.urgent_marker().exists())
 
     def test_a_stage_builds_the_revision_current_when_its_compile_slot_comes_round(self):
@@ -2259,6 +2460,60 @@ class StagedBuildTests(unittest.TestCase):
         (self.base / 'regions' / 'gaia' / 'region.dmb').write_bytes(b'hand compile')
         host.record_build('f' * 40)
         self.assertFalse(host.update_pending())
+
+    def test_matching_mainland_ignores_staged_builds_away_from_the_pin(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        self.assertTrue(host.update_pending())
+        revision = host.built_revision()
+        pin = shard_group.daily_maintenance.folder(group) / 'pin.json'
+        shard_group.daily_maintenance.write_json(pin, {'revision': revision, 'started': int(time.time()),
+                                                       'mode': 'match-mainland'})
+        self.assertFalse(host.update_pending(), 'an automatic update must not move Gaia off the active pin')
+        pin.unlink()
+        self.assertTrue(host.update_pending(), 'normal update policy resumes after the match')
+
+    def test_matching_mainland_stages_the_local_pin_without_fetching(self):
+        group, host = self.built()
+        revision = host.built_revision()
+        pin = shard_group.daily_maintenance.folder(group) / 'pin.json'
+        shard_group.daily_maintenance.write_json(pin, {'revision': revision, 'started': int(time.time()),
+                                                       'mode': 'match-mainland'})
+        before = len(self.machine.calls)
+        self.assertEqual(revision, host.latest_revision())
+        self.assertEqual(before, len(self.machine.calls), 'a local match does not consult mutable remote refs')
+
+    def test_matching_mainland_will_not_install_over_an_unknown_build(self):
+        group, host = self.built()
+        host.work('stage', host.request_stage()['operation'])
+        pin = shard_group.daily_maintenance.folder(group) / 'pin.json'
+        shard_group.daily_maintenance.write_json(pin, {'revision': host.staged_revision(), 'started': int(time.time()),
+                                                       'mode': 'match-mainland'})
+        host.build_file().unlink()
+        self.assertFalse(host.update_pending(), 'a missing build stamp cannot authorize a match')
+        pin.unlink()
+        self.assertTrue(host.update_pending(), 'ordinary recovery can still install a ready build')
+
+    def test_matching_mainland_rechecks_ancestry_before_replacing_an_installed_build(self):
+        group, host = self.built()
+        revision = host.built_revision()
+        running = 'f' * 40
+        host.record_build(running)
+        pin = shard_group.daily_maintenance.folder(group) / 'pin.json'
+        shard_group.daily_maintenance.write_json(pin, {'revision': revision, 'started': int(time.time()),
+                                                       'mode': 'match-mainland'})
+        real = self.machine.run
+
+        def run(argv, cwd=None, timeout=1800, low_priority=False):
+            if argv[1:3] == ['merge-base', '--is-ancestor']:
+                self.assertEqual([running, revision], argv[-2:])
+                return 1, ''
+            return real(argv, cwd, timeout, low_priority)
+
+        self.machine.run = run
+        with self.assertRaisesRegex(shard_group.Refused, 'cannot replace'):
+            host.do_update('operator-match', revision=revision)
+        self.assertEqual(running, host.built_revision())
 
     def test_regions_take_turns_at_the_staging_compiler(self):
         group, host = self.built()
@@ -2723,6 +2978,110 @@ class StagedBuildTests(unittest.TestCase):
         code, result = self.run_offline()
         self.assertEqual((0, {}, {'gaia': 'running', 'deep': 'running'}), (code, result['accepted'], result['skipped']))
         self.assertEqual(before, len(self.machine.detached))
+
+
+class OceanBuildOrderingTests(unittest.TestCase):
+    setUp = ShardGroupTests.setUp
+    tearDown = ShardGroupTests.tearDown
+    write_group = ShardGroupTests.write_group
+
+    def configured_coasts(self):
+        self.group['regions'].extend(
+            {'id': name, 'name': name, 'kind': kind, 'port': 1730 + i, 'map': 'maps/small/tiny.dmm'}
+            for i, (name, kind) in enumerate((
+                ('atlantic', 'OCEANIC'), ('arctic', 'OCEANIC'), ('greenland', 'SURFACE'),
+                ('europe', 'SURFACE'), ('asia', 'SURFACE'), ('africa', 'TUTORIAL'))))
+        group = self.write_group()
+        hosts = {r['id']: h for r, h in shard_group.hosts(group, platform=self.machine)}
+        for host in hosts.values():
+            host.repo.mkdir(parents=True, exist_ok=True)
+            host.state_dir.mkdir(parents=True, exist_ok=True)
+        for name in ('atlantic', 'gaia', 'greenland', 'europe'):
+            self.set_build(hosts[name], REVISION)
+        return group, hosts
+
+    def set_build(self, host, revision, filename='region.dmb'):
+        (host.repo / filename).write_bytes(b'compiled region DMB fixture')
+        host.record_build(revision, filename)
+
+    def test_real_atlantic_edges_insets_and_ancestor_validation(self):
+        group, hosts = self.configured_coasts()
+        ocean = hosts['atlantic']
+        later = 'f' * 40
+        previous = self.machine.run
+
+        def git(argv, **kwargs):
+            if argv[1:3] == ['merge-base', '--is-ancestor']:
+                return (0 if argv[3:] == [NEWER, later] else 1), ''
+            return previous(argv, **kwargs)
+
+        with mock.patch.object(self.machine, 'run', side_effect=git):
+            self.assertEqual(['europe', 'gaia', 'greenland'], ocean.ocean_update_blockers(group, NEWER),
+                             'requires its configured lands, including insets; not other oceans or unrelated worlds')
+            self.assertEqual([], hosts['gaia'].ocean_update_blockers(group, NEWER))
+            self.set_build(hosts['europe'], NEWER)
+            self.set_build(hosts['gaia'], NEWER)
+            self.set_build(hosts['greenland'], later, filename='region.b.dmb')
+            self.assertEqual([], ocean.ocean_update_blockers(group, NEWER))
+            hosts['gaia'].lock.write_text('changing the installed slot')
+            self.assertEqual(['gaia'], ocean.ocean_update_blockers(group, NEWER))
+            hosts['gaia'].lock.unlink()
+            (hosts['greenland'].repo / 'region.b.dmb').write_bytes(b'manually replaced')
+            self.assertEqual(['greenland'], ocean.ocean_update_blockers(group, NEWER),
+                             'a staging record or a source checkout cannot attest a replaced DMB')
+
+    def test_no_change_or_missing_topology_keeps_the_known_build_available(self):
+        group, hosts = self.configured_coasts()
+        ocean = hosts['atlantic']
+        with mock.patch.object(shard_group, 'world_neighbours', return_value={}):
+            self.assertEqual([], ocean.ocean_update_blockers(group, REVISION))
+            self.assertEqual(['world links unavailable'], ocean.ocean_update_blockers(group, NEWER))
+            with mock.patch.object(ocean, 'latest_revision', return_value=NEWER), \
+                    mock.patch.object(ocean, 'record') as record, \
+                    mock.patch.object(shard_group, 'prepare_tree') as prepare:
+                ocean.do_refresh('op')
+                prepare.assert_not_called()
+                self.assertEqual(REVISION, record.call_args.kwargs['revision'])
+                self.assertIn('world links unavailable', record.call_args.kwargs['update_deferred'])
+            self.assertEqual('start-current', ocean.automatic_start_action())
+
+    def test_replaced_stage_does_not_take_over_the_installed_ocean_slot(self):
+        _group, hosts = self.configured_coasts()
+        ocean = hosts['atlantic']
+        installed = ocean.repo / 'region.dmb'
+        staged = ocean.stage_dir()
+        staged.mkdir(parents=True)
+        (staged / 'region.dmb').write_bytes(b'future DMB produces different data')
+        before = installed.read_bytes()
+        with mock.patch.object(ocean, 'staged_revision', side_effect=[NEWER, 'f' * 40]):
+            self.assertFalse(ocean.install_staged(NEWER))
+        self.assertEqual(REVISION, ocean.built_revision())
+        self.assertEqual(before, installed.read_bytes())
+        self.assertFalse((ocean.repo / 'region.dmb.staged').exists())
+
+    def test_blocked_candidate_does_not_stop_or_compile(self):
+        group, hosts = self.configured_coasts()
+        ocean = hosts['atlantic']
+        self.machine.revision = NEWER
+        with mock.patch.object(self.machine, 'run', side_effect=lambda args, **kw:
+                               (1, '') if args[1] == 'merge-base' else (0, NEWER + '\n')):
+            with mock.patch.object(ocean, 'record'), mock.patch.object(shard_group, 'prepare_tree') as prepare:
+                with self.assertRaisesRegex(shard_group.OceanUpdateDeferred, 'europe, gaia, greenland'):
+                    ocean.do_update('op')
+                prepare.assert_not_called()
+            with mock.patch.object(ocean, 'evict') as evict:
+                with self.assertRaises(shard_group.OceanUpdateDeferred):
+                    ocean.install_into_sleeper()
+                evict.assert_not_called()
+            with mock.patch.object(ocean, 'staged_revision', return_value=NEWER), \
+                    mock.patch.object(ocean, 'update_pending', return_value=True), \
+                    mock.patch.object(ocean, 'record') as record, \
+                    mock.patch.object(ocean, 'world') as running:
+                with self.assertRaises(shard_group.OceanUpdateDeferred):
+                    ocean.do_handover('op', automatic=True)
+                running.assert_not_called()
+                record.assert_called_with(retryable=True)
+                self.assertFalse(ocean.install_staged_while_down())
 
 
 class HandoverTests(unittest.TestCase):

@@ -256,6 +256,17 @@ var/pipe_runtime_error = FALSE
 	for (var/obj/O in list(P, V, pump, T))
 		qdel(O)
 
+// Observe the actual inherited activation path without a full player body.
+/mob/living/pipe_shower_probe/New()
+	return
+
+/obj/structure/shower/piped/pipe_probe
+	var/washes = 0
+	var/water_at_wash
+	wash(atom/movable/O)
+		washes++
+		water_at_wash = water_stored
+
 // Holding tank (buffer) -> water tap and piped shower (sinks).
 /proc/pipe_plumbing_checks()
 	var/list/pipes = pipe_line(3, 6, 4)
@@ -263,7 +274,7 @@ var/pipe_runtime_error = FALSE
 	T.reagents.add_reagent("water", 45)
 	T.reagents.add_reagent("cholera", 5)
 	var/obj/structure/water_tap/tap = new(locate(4, 5, 1))
-	var/obj/structure/shower/piped/shower = new(locate(6, 5, 1))
+	var/obj/structure/shower/piped/pipe_probe/shower = new(locate(6, 5, 1))
 	pipe_check(!tap.reagents.total_volume && !shower.water_stored, "a new tap and piped shower start dry")
 	shower.attack_hand(null)
 	pipe_check(!shower.on, "a dry piped shower will not turn on")
@@ -284,6 +295,15 @@ var/pipe_runtime_error = FALSE
 	var/before = tap.reagents.total_volume
 	tap.reagents.trans_to_obj(B, 10)
 	pipe_check(B.reagents.total_volume == 10 && tap.reagents.total_volume == before - 10, "filling a container at a tap empties the tap by as much")
+	var/mob/living/pipe_shower_probe/occupant = new(shower.loc)
+	shower.water_stored = 5
+	shower.attack_hand(occupant)
+	pipe_check(shower.on && !shower.water_stored && shower.washes == 1 && !shower.water_at_wash, "the activation wash happens only after paying its five units")
+	shower.attack_hand(occupant)
+	pipe_check(!shower.on && !shower.water_stored && shower.washes == 1, "switching off uses none of the supply and does not wash")
+	shower.attack_hand(occupant)
+	pipe_check(!shower.on && !shower.water_stored && shower.washes == 1, "cycling a dry shower cannot trigger a wash")
+	occupant.loc = null
 	shower.water_stored = 7
 	shower.on = TRUE
 	shower.process()
@@ -371,21 +391,60 @@ var/pipe_runtime_error = FALSE
 	pipe_check(tap.reagents.get_reagent_amount("water") == 20 && B.reagents.total_volume == 80, "a fitted barrel feeds a tap at the pump's rate")
 	var/obj/structure/fluid_pipe/first = pipes[1]
 	pipe_check(WEST in first.joined_dirs(), "the pipe beside a fitted barrel draws a joint toward it")
-	pipe_check("pipe_connected" in B.get_saved_vars(), "the fitting is saved")
+	var/list/barrel_saved_vars = B.get_saved_vars()
+	pipe_check(("pipe_connected" in barrel_saved_vars) && ("pipe_fitting_direction" in barrel_saved_vars), "the fitting and its direction are saved")
 	B.forceMove(locate(10, 12, 1))
-	pipe_check(!B.pipe_connected && fluid_networks_dirty, "moving a fitted barrel detaches it")
+	pipe_check(!B.pipe_connected && isnull(B.pipe_fitting_direction) && fluid_networks_dirty, "moving a fitted barrel clears the fitting and its direction")
 	factory_fluids_step()
 	pipe_check(!(B in fluid_network_of(tap)?.members) && B.reagents.total_volume == 80, "a detached barrel leaves the network and keeps its water")
 	B.forceMove(locate(10, 10, 1))
 	B.attackby(W, null)
 	B.attackby(W, null)
-	pipe_check(!B.pipe_connected, "a wrench detaches a fitted barrel")
+	pipe_check(!B.pipe_connected && isnull(B.pipe_fitting_direction), "a wrench clears the fitting and its direction")
 	var/obj/item/weapon/reagent_containers/glass/barrel/wood = new(locate(15, 10, 1))
 	wood.reagents.add_reagent("water", 50)
 	fluid_mark_dirty()
 	factory_fluids_step()
 	pipe_check(wood.reagents.total_volume == 50 && !(wood in fluid_network_of(tap)?.members), "wood barrels do not join pipes")
-	for (var/obj/O in pipes + list(B, far, wood, tap, P, W) + power)
+	B.attackby(W, null)
+	var/obj/structure/fluid_pipe/other = new(locate(9, 10, 1))
+	fluid_rebuild_networks()
+	pipe_check(first.network && other.network && first.network != other.network, "the pipes on opposite sides form separate networks")
+	pipe_check((B in first.network?.members) && !(B in other.network?.members) && !(EAST in other.joined_dirs()), "a second pipe beside a fitted barrel gains neither a source nor a visible joint")
+	first.anchored = FALSE
+	fluid_rebuild_networks()
+	pipe_check(!B.fluid_supply_tier() && !(B in other.network?.members), "unfastening the original pipe does not switch the barrel to another network")
+	first.anchored = TRUE
+	fluid_rebuild_networks()
+	pipe_check(B in first.network?.members, "fastening the original pipe restores its barrel supply")
+	qdel(first)
+	fluid_rebuild_networks()
+	pipe_check(!B.fluid_supply_tier() && !(B in other.network?.members), "removing the original pipe leaves the other network disconnected")
+	B.attackby(W, null)
+	B.attackby(W, null)
+	fluid_rebuild_networks()
+	pipe_check((B in other.network?.members) && (EAST in other.joined_dirs()), "wrenching the barrel onto the remaining pipe connects the new network")
+
+	// Older saves have the Boolean only. A same-turf fitting stores zero.
+	B.attackby(W, null)
+	B.forceMove(other.loc)
+	B.pipe_connected = TRUE
+	B.after_load()
+	fluid_rebuild_networks()
+	pipe_check((B in other.network?.members) && B.pipe_fitting_direction == 0 && !isnull(B.pipe_fitting_direction), "a legacy barrel recovers and records a same-turf fitting")
+	var/list/same_turf_saved_vars = B.get_saved_vars()
+	pipe_check("pipe_fitting_direction" in same_turf_saved_vars, "numeric zero is saved, rather than treated as an unset legacy direction")
+
+	var/obj/item/weapon/reagent_containers/glass/barrel/modern/restored = new(locate(10, 10, 1))
+	restored.pipe_connected = TRUE
+	restored.pipe_fitting_direction = EAST
+	restored.after_load()
+	fluid_rebuild_networks()
+	pipe_check(restored.pipe_connected && restored.pipe_fitting_direction == EAST && !restored.fluid_supply_tier() && !(restored in other.network?.members), "a recorded east fitting stays dormant after load with only a west pipe present")
+	var/obj/structure/fluid_pipe/restored_pipe = new(locate(11, 10, 1))
+	fluid_rebuild_networks()
+	pipe_check((restored in restored_pipe.network?.members) && (WEST in restored_pipe.joined_dirs()) && !(restored in other.network?.members), "an open pipe restored at the recorded fitting recovers membership and its joint")
+	for (var/obj/O in pipes + list(B, far, wood, tap, P, W, other, restored, restored_pipe) + power)
 		if (!QDELETED(O))
 			qdel(O)
 	fluid_mark_dirty()

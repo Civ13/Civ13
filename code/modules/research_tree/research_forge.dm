@@ -34,6 +34,10 @@
 	if (!istype(W, /obj/item/stack/money/coppercoin) && !istype(W, /obj/item/stack/money/silvercoin) && !istype(W, /obj/item/stack/money/goldcoin))
 		to_chat(user, SPAN_WARNING("The resource forge only accepts copper, silver or gold coins."))
 		return
+	var/obj/map_metadata/research_map = map
+	if (research_map.book_research_enabled())
+		to_chat(user, SPAN_WARNING("This world uses Book Research. There is no faction research bench limit to raise."))
+		return
 	var/obj/item/stack/money/coins = W
 	// Let the player choose how much to melt: consuming the whole stack on a
 	// single click turns a misclick with a full purse into forge confetti.
@@ -42,7 +46,10 @@
 		return
 	// Re-validate after the input pause: the stack may have been spent,
 	// dropped or deleted while the dialog was open.
-	if (QDELETED(coins) || !in_range(src, user))
+	if (QDELETED(coins) || !in_range(src, user) || map != research_map)
+		return
+	if (research_map.book_research_enabled())
+		to_chat(user, SPAN_WARNING("This world uses Book Research. There is no faction research bench limit to raise."))
 		return
 	count = min(round(count), coins.amount)
 	if (count <= 0)

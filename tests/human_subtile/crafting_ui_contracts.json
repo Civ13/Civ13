@@ -15,53 +15,53 @@
   "required_flow": [
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)"
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)"
       ],
       "statement": "var/required = quantity*recipe.req_amount"
     },
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)"
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)"
       ],
       "statement": "if (!can_use(required))"
     },
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)",
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)",
         "if (recipe.result_type == /obj/structure/cannon/modern/tank)"
       ],
       "statement": "required = 40*(inpt/75)"
     },
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)",
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)",
         "else if (recipe.result_type == /obj/item/stack/ammopart/casing/tank)"
       ],
       "statement": "required = 2*(inpt/75)"
     },
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)",
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)",
         "if (needs_drill_steel(recipe))"
       ],
       "statement": "if (!can_use(required) || !drill_steel)"
     },
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)",
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)",
         "else if (recipe.result_type == /obj/item/stack/material/electronics)"
       ],
       "statement": "if (!can_use(required) || !circuit_iron)"
     },
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)"
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)"
       ],
       "statement": "if (use(required, (joinery || carving) ? null : H))"
     },
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)",
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)",
         "if (use(required, (joinery || carving) ? null : H))",
         "else if (istype(O, /obj/structure/research_bench))",
         "if (owner_faction)",
@@ -71,7 +71,7 @@
     },
     {
       "ancestors": [
-        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null)",
+        "/obj/item/stack/proc/produce_recipe(datum/stack_recipe/recipe, var/quantity, mob/user, list/options = null, recheck_source = FALSE)",
         "if (use(required, (joinery || carving) ? null : H))",
         "else if (istype(O, /obj/structure/research_bench))",
         "if (owner_faction)",

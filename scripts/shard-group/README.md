@@ -592,6 +592,22 @@ region is in `<root>/.maintenance/state.json`, `maintenance-status` and the
 group status; the launcher's **Daily maintenance...** sets it and **Run daily
 maintenance now** starts a run at once.
 
+**Compile priority:** The configured mainland (Gaia in the Earth group) and
+the Gateway share first priority for the next free compile slot, then surface
+and underground lands, then oceans, then expeditions and other specialty
+worlds. A compile already in progress finishes normally. Requested stages
+go before background stages within the same tier. The Gateway's existing exclusions
+from bulk updates and maintenance do not change.
+
+Background builds use a separate lock from live region actions. **Start** on
+the mainland or Gateway can use the verified installed build during a compile
+instead of waiting for an unstaged update; a ready newer build is still
+installed if available. **Save and stop** remains independent of background
+staging. In the Windows launcher's deploy flow, these two per-region controls
+stay available for Gaia and the Gateway during the build step unless the
+region has a live operation. The safeguards for saves, handovers, and the
+other deploy steps still apply.
+
 **Update when empty** (`update_when_empty`, group key, default `true`): the host
 service does not wait for `auto_stage_minutes` or the idle minutes before sleep.
 As soon as an awake region that saves is empty and has saved since its last
@@ -607,6 +623,17 @@ world plays on; that build is not tried again unattended, and a refused handover
 for players again after the standby boots and defers if anyone has joined; this
 status check is not atomic with the subsequent save request. A failed build leaves the world
 running (and is not retried until the revision changes or a Build update runs).
+An ocean can stage a build at any time. It only installs a different revision
+after every configured surface land bordering that ocean in the world-links table
+has a verified active build containing that revision (including islands inside
+the ocean). Other oceans, the gateway and unconfigured lands do not count. A
+source checkout or staged artifact is not an installed build. A blocked ocean
+keeps its current build, including when it wakes or recovers after a stop;
+ordinary land updates do not wait on oceans. Daily maintenance stages every
+region first, then admits each ocean once its coastal land updates finish. If
+a coastal update is cancelled or fails, maintenance reports why that ocean
+stayed on its current build.
+
 Asleep and cold regions are staged the same way. The mainland keeps its old
 build while asleep or cold and automatically starts that recorded build on a
 wake or watchdog recovery; it takes an update only after an awake, empty and

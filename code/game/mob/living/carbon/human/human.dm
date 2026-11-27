@@ -103,6 +103,7 @@
 	spawn(5)
 		nomads_spawn(birth_area)
 /mob/living/human/Destroy()
+	close_faction_symbol_editor()
 	var/mob/living/simple_animal/old_mount = riding_mob
 	riding = FALSE
 	riding_mob = null
@@ -250,9 +251,9 @@ var/list/coefflist = list()
 
 // RuCiv13 3c1ee1fa: forced relocation bypasses living.Move's cone refresh.
 // Preserve forceMove's result; vehicle transactions refresh after final geometry.
-/mob/living/human/forceMove(atom/destination, var/special_event)
+/mob/living/human/forceMove(atom/destination, var/special_event, list/throw_hop_token = null)
 	var/turf/origin = get_turf(src)
-	. = ..()
+	. = ..(destination, special_event, throw_hop_token)
 	var/turf/target = get_turf(src)
 	if (!. || !target || origin == target)
 		return .
@@ -755,7 +756,7 @@ var/list/coefflist = list()
 		return
 
 	to_chat(usr, "You must[self ? "" : " both"] remain still until counting is finished.")
-	if (do_after(usr, 60, usr.loc))
+	if (do_after(usr, 60, src) && !QDELETED(src) && (src in view(1, usr)))
 		to_chat(usr, "<span class='notice'>[self ? "Your" : "[src]'s"] pulse is [get_pulse(GETPULSE_HAND)].</span>")
 	else
 		to_chat(usr, "<span class='warning'>You failed to check the pulse. Try again.</span>")
@@ -997,15 +998,6 @@ var/list/coefflist = list()
 			// Do not show flavor if face is hidden
 			return
 
-	flavor_text = flavor_text
-
-	if (flavor_text && flavor_text != "" && !shrink)
-		var/msg = trim(replacetext(flavor_text, "\n", " "))
-		if (!msg) return ""
-		if (length(msg) <= 40)
-			return "<span class = 'notice'>[msg]</span>"
-		else
-			return "<span class = 'notice'>[copytext_preserve_html(msg, TRUE, 37)]... <a href='byond://?src=\ref[src];flavor_more=1'>More...</a></span>"
 	return ..()
 
 /mob/living/human/getDNA()

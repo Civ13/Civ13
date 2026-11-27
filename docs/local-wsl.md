@@ -67,7 +67,7 @@ the source; this launcher does not hard-reset the checkout.
 Each server has its own Linux-home `.local/share/civ13-local/<server>` directory,
 SQL files, data, logs and PID/start-time record. Nomads uses PERSISTENCE catalog
 selection, TDM uses TDM; ports are 1715/1714. Generated configuration disables
-hub advertisement, TTS and script hooks and supplies no webhooks or official
+hub advertisement and script hooks and supplies no webhooks or official
 bot credentials. Daemons retain the existing trusted mode; execution requires maintainer approval. Saves remain through rebuilds.
 The launcher does not configure firewall rules, router forwarding or DNS.
 Check port conflicts before launch; public access requires separate network

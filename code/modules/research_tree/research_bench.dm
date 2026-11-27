@@ -79,7 +79,14 @@ var/global/list/research_benches = list()
 		return
 	// If the current subject is finished (or empty), roll on to the next node
 	// in the queue before doing anything else this tick.
+	var/queue_before = research_queue
+	var/subject_before = assigned_node
 	try_advance_queue()
+	// Queue mutations need a push even if passive study cannot contribute.
+	if (faction_analysis_tick() || research_queue != queue_before || assigned_node != subject_before)
+		GLOB.nanomanager.update_uis(src)
+
+/obj/structure/research_bench/proc/faction_analysis_tick()
 	if (!assigned_node)
 		return
 	var/datum/research_node/N = get_research_node(assigned_node)
@@ -107,12 +114,7 @@ var/global/list/research_benches = list()
 	if (!map.faction_has_active_researcher(faction))
 		return
 	map.add_research_ticks(faction, assigned_node, round(base_tick_rate * analysis_scale, 0.1))
-	// Push a refresh to anyone currently viewing this bench. There's no
-	// blind polling (see ui_interact()) -- this is the only thing that
-	// changes this bench's own data outside of a player's own Topic() call
-	// (which already triggers its own update), so it's also the only thing
-	// that needs to trigger one here.
-	GLOB.nanomanager.update_uis(src)
+	return TRUE
 
 /obj/structure/research_bench/attack_hand(mob/user as mob)
 	if (!ishuman(user))
@@ -127,7 +129,7 @@ var/global/list/research_benches = list()
 /obj/structure/research_bench/proc/can_assign_node(node_id)
 	if (book_mode())
 		return book_can_assign_node(node_id)
-	if (!map || !faction || faction == "none")
+	if (!map || !faction || faction == "none" || node_id == assigned_node)
 		return FALSE
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || N.min_bench_tier > bench_tier() || research_node_dormant(N))

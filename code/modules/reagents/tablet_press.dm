@@ -156,7 +156,7 @@
 /obj/structure/chem_master/tablet_press
 	name = "tablet press"
 	desc = "Presses one unit of calcium carbonate and four units of aspirin from its internal buffer into a tablet."
-	flags = OPENCONTAINER | NOREACT
+	flags = NOREACT
 	var/tmp/datum/tablet_transfer/tablet_action
 
 /obj/structure/chem_master/tablet_press/constructed
@@ -166,8 +166,9 @@
 	return key == "tablet_action" || ..()
 
 /obj/structure/chem_master/tablet_press/after_load()
+	. = ..()
 	tablet_action = null
-	return ..()
+	flags &= ~OPENCONTAINER // Clear the legacy open-container flag on restore.
 
 /obj/structure/chem_master/tablet_press/proc/can_operate(mob/living/human/user)
 	if (gcDestroyed || gc_destroyed || !anchored || !user || user.stat || user.restrained() || !tablet_press_year_allowed())
@@ -182,12 +183,11 @@
 	if (is_tool(W, TOOL_WRENCH))
 		anchored = !anchored
 		return
-	if (!can_operate(user) || beaker || !istype(W, /obj/item/weapon/reagent_containers/glass))
-		return
-	if (!user.item_is_in_hands(W) || !user.drop_from_inventory(W, src) || W.loc != src)
+	if (!can_operate(user) || beaker || !istype(W, /obj/item/weapon/reagent_containers/glass) || !user.transfer_held_item_to(W, src))
 		return
 	beaker = W
 	updateUsrDialog()
+	return TRUE
 
 /obj/structure/chem_master/tablet_press/attack_hand(mob/living/human/user)
 	if (!can_operate(user))

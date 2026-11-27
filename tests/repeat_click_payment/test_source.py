@@ -270,8 +270,16 @@ class RepeatClickPayment(unittest.TestCase):
                           'if (!QDELETED(I) && I.loc == user)', 'current_bets += ')
         wall = proc('code/game/objects/covers_types/covers_buildable.dm', '/obj/covers/brick_wall/incomplete/attackby')
         self.assert_order(wall, 'What type of wall?', 'if (QDELETED(src) || QDELETED(W) || W.loc != user)', 'new /obj/covers/brick_wall(loc)')
-        trench = read('code/modules/1713/trench.dm')
-        self.assertEqual(trench.count('if (choice == "Yes" && !QDELETED(C) && C.loc == user)'), 2)
+        trench_path = 'code/modules/1713/trench.dm'
+        trench = proc(trench_path, '/turf/floor/trench/attackby')
+        wet = proc(trench_path, '/turf/floor/trench/flooded/attackby')
+        guard = proc(trench_path, '/turf/floor/trench/proc/trench_can_work')
+        self.assert_order(trench, 'var/choice = WWinput', 'type == start_type && trench_can_work(user, C, admission)',
+                          'qdel(C)', 'check_filling()')
+        self.assertIn('QDELETED(tool) || tool.loc != H || H.get_active_hand() != tool', guard)
+        self.assertIn('persistence_admission_changed(admission)', guard)
+        self.assertIn('..()', wet)
+        self.assertNotIn('qdel(C)', wet)
 
     def test_market_programs_and_vendor(self):
         programs = read('code/modules/1713/computers/programs.dm')
@@ -477,6 +485,18 @@ class RouletteSettlement(unittest.TestCase):
         old = lambda body: body.replace('newlist += list(L)', 'newlist.Add(L)')
         broken, _ = self.collect(remaining, first, mutation=old)
         self.assertNotEqual(broken, [[second, 'won', 15]])
+
+    def test_safe_charges_space_only_after_an_admitted_hand_transfer(self):
+        path = 'code/game/objects/structures/safe.dm'
+        safe = (ROOT / path).read_text(encoding='utf-8')
+        store = safe.split('/obj/structure/safe/attackby(', 1)[1].split('obj/structure/safe/ex_act', 1)[0]
+        guard = store.index('!actor.transfer_held_item_to(I, src)')
+        charge = store.index('space += I.w_class')
+        self.assertLess(store.index('I.w_class + space <= maxspace'), guard)
+        self.assertLess(guard, charge)
+        self.assertIn('return', store[guard:charge])
+        self.assertNotIn('user.drop_item()', store)
+        self.assertNotIn('I.loc = src', store)
 
 
 if __name__ == '__main__':

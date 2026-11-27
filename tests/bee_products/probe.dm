@@ -155,14 +155,30 @@ var/bp_runtime_error = FALSE
 	bp_check(cask.is_open_container() && cask.mead_work() == 0, "an open barrel does not ferment")
 	cask.flags &= ~OPENCONTAINER
 	bp_check(cask.mead_work() == 3 && cask.reagents.get_reagent_amount("mead") == 3, "a closed barrel ferments slowly on wild yeast")
-	bp_check(cask.mead_working, "fermenting schedules the next spell")
-	cask.mead_working = FALSE
+	bp_check(cask.mead_timer, "fermenting schedules the next spell")
+	cask.mead_cancel()
 	cask.reagents.add_reagent("enzyme", 1)
 	bp_check(cask.mead_work() == 10 && cask.reagents.get_reagent_amount("honey_must") == 27, "yeast speeds the fermenting")
-	cask.mead_working = FALSE
+	cask.mead_cancel()
 	for (var/i = 1, i <= 5, i++)
 		cask.mead_work()
-		cask.mead_working = FALSE
+		cask.mead_cancel()
 	bp_check(!cask.reagents.get_reagent_amount("honey_must") && cask.reagents.get_reagent_amount("mead") == 40, "all the must becomes mead")
 	cask.mead_schedule()
-	bp_check(!cask.mead_working, "with no must left nothing is scheduled")
+	bp_check(!cask.mead_timer, "with no must left nothing is scheduled")
+
+	// Reopening invalidates the pending closed spell, including a batch
+	// swapped while open. Reclosing must schedule a fresh full spell.
+	cask.attack_self(H) // Open the spent barrel.
+	cask.reagents.add_reagent("honey_must", 10)
+	cask.attack_self(H) // Close the lid.
+	var/stale_timer = cask.mead_timer
+	bp_check(stale_timer && timeleft(stale_timer) > 0, "closing a barrel starts a spell")
+	cask.attack_self(H) // Open it before that spell completes.
+	bp_check(!cask.mead_timer && isnull(timeleft(stale_timer)), "opening a barrel removes its pending spell")
+	cask.reagents.remove_reagent("honey_must", 10)
+	cask.reagents.add_reagent("honey_must", 5)
+	cask.attack_self(H) // Reclose with a new batch.
+	bp_check(cask.mead_timer && cask.mead_timer != stale_timer && timeleft(cask.mead_timer) > 1100, "reclosing starts a fresh two-minute spell")
+	bp_check(cask.reagents.get_reagent_amount("honey_must") == 5 && cask.reagents.get_reagent_amount("mead") == 40, "lid toggling neither processes fresh must early nor discards fermented mead")
+	cask.mead_cancel()

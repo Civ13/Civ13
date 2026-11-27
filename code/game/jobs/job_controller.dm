@@ -446,6 +446,8 @@ var/global/datum/controller/occupations/job_master
 	var/datum/job/job = GetJob(rank)
 
 	if (job)
+		var/admitted_name = H.character_slot_admitted_name
+		H.character_slot_admitted_name = null
 
 		//Equip job items.
 
@@ -494,14 +496,26 @@ var/global/datum/controller/occupations/job_master
 		if (names_used[H.real_name])
 			job.give_random_name(H)
 
-		names_used[H.real_name] = TRUE
-
+		var/unranked_name = H.real_name
 		if (job.rank_abbreviation)
 			H.real_name = "[job.rank_abbreviation] [H.real_name]"
 			H.name = H.real_name
 		if (map.battleroyale && H.ckey)
 			H.real_name = H.ckey
 			H.name = H.ckey
+
+		if (admitted_name && H.client)
+			// Role prefixes or the local duplicate-name fallback can change
+			// the name after Join admitted it. Keep the already checked name
+			// if that decoration would make it a sibling's name instead.
+			if (H.real_name != admitted_name && character_slot_name_conflict(accolade_client_ckey(H.client), H.client.character_slot, H.real_name))
+				H.real_name = admitted_name
+				H.name = admitted_name
+				if (H.dna)
+					H.dna.real_name = admitted_name
+				unranked_name = admitted_name
+			H.character_slot_note_name()
+		names_used[unranked_name] = TRUE
 
 		job.apply_fingerprints(H)
 		job.assign_faction(H)

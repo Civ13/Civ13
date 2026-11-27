@@ -13,6 +13,7 @@
 	force_divisor = 0.1 // 6 when wielded with hardness 60 (steel)
 	thrown_force_divisor = 0.25 // 5 when thrown with weight 20 (steel)
 	var/loaded	  //Descriptive string for currently loaded food object.
+	var/loaded_non_vegetarian = FALSE
 	var/scoop_food = TRUE
 	var/shiv = 0
 	var/usespeed = 0.2
@@ -24,6 +25,13 @@
 		pixel_y = rand(0, 4)
 	create_reagents(5)
 	return
+
+/obj/item/weapon/material/kitchen/utensil/on_reagent_change()
+	. = ..()
+	if (!reagents?.total_volume && !isnull(loaded))
+		loaded = null
+		loaded_non_vegetarian = FALSE
+		overlays.Cut()
 
 /obj/item/weapon/material/kitchen/utensil/attack(mob/living/human/M as mob, mob/living/human/user as mob)
 	if (!istype(M))
@@ -39,26 +47,27 @@
 
 	if (reagents.total_volume > 0)
 		if (M == user)
-			if (!M.can_eat(loaded))
+			if (!M.can_eat(loaded) || (!isnull(loaded) && !M.can_eat_solid_food_diet(loaded_non_vegetarian)))
 				return
 			else if (M.get_fullness() > M.food_fullness_limit())
 				to_chat(user, "<span class='danger'>You cannot force any more food to go down your throat.</span>")
 				return
+			var/food_name = loaded
 			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
-			M.visible_message("<span class='notice'>\The [user] eats some [loaded] from \the [src].</span>")
+			M.visible_message("<span class='notice'>\The [user] eats some [food_name] from \the [src].</span>")
 		else
 			user.visible_message("<span class='warning'>\The [user] begins to feed \the [M]!</span>")
 			if (!(M.can_force_feed(user, loaded) && do_mob(user, M, 5 SECONDS)))
 				return
 			if (!reagents.total_volume || !M.can_finish_force_feed(user, loaded))
 				return
+			var/food_name = loaded
 			reagents.trans_to_mob(M, reagents.total_volume, CHEM_INGEST)
-			M.visible_message("<span class='notice'>\The [user] feeds some [loaded] to \the [M] with \the [src].</span>")
+			M.visible_message("<span class='notice'>\The [user] feeds some [food_name] to \the [M] with \the [src].</span>")
 			// Past capacity it still goes down, but it comes back up.
 			if (M.is_overfed())
 				M.overfed_vomit(user)
 		playsound(M.loc,"eat", rand(20,45), TRUE)
-		overlays.Cut()
 		return
 	else
 		to_chat(user, "<span class='warning'>You don't have anything on \the [src].</span>")	//if we have help intent and no food scooped up DON'T STAB OURSELVES WITH THE FORK

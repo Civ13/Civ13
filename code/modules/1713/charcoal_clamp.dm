@@ -127,9 +127,18 @@
 	if (!do_after(H, 40, src) || QDELETED(src) || burning)
 		return
 	var/turf/T = get_turf(src)
+	if (!T)
+		return
 	if (wood_charge > 0)
-		var/obj/item/stack/material/wood/W = new(T, wood_charge)
+		var/obj/item/stack/material/wood/W = new(T, wood_charge, FALSE)
 		wood_charge = 0
+		// A burning pile's callback only accounts for its original logs.
+		for (var/obj/item/stack/material/wood/pile in T)
+			if (QDELETED(W))
+				break
+			if (pile == W || QDELETED(pile) || pile.onfire || pile.type != W.type)
+				continue
+			W.merge(pile)
 		if (!QDELETED(W))
 			W.update_icon()
 			W.update_strings()

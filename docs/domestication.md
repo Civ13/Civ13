@@ -25,7 +25,8 @@ butchering are unchanged.
 
 ## Taming
 
-Feed it by hand with food it already eats (`feed()`: grain for grazers, seeds for pigs). A
+Feed it by hand with food it already eats (grain or hay for grazers, seeds for pigs). Hay from
+the ground or a bale feeds the animal but does not build trust. A
 feeding counts toward taming when it is at least 10 real minutes after the last counted one;
 6 counted feedings tame it. For each full day without a counted feeding it loses one. Examine
 shows wild and wary, wild with progress, or tame. Times are real minutes since 2000 stored as

@@ -215,5 +215,47 @@ class DogProcessTests(unittest.TestCase):
             translate(self.new.replace('PROCESS_LIST_CHECK', 'unexpected_operation()'))
 
 
+class DogCeaseOrderTests(unittest.TestCase):
+    source = (ROOT / 'code/modules/1713/complex_animal/dog.dm').read_text()
+    base = '/mob/living/simple_animal/complex_animal/dog/proc/'
+
+    def test_passive_invalidates_attacks_before_mode_refresh_and_stop_keeps_recall(self):
+        passive = self.source.split(self.base + 'passive(', 1)[1].split('\n/mob/', 1)[0]
+        refresh = passive.index('onModeChange()')
+        for earlier in ('attack_mode = -1', 'bite_order_epoch++', 'enemies = list()', 'walking_to = following'):
+            self.assertLess(passive.index(earlier), refresh)
+        stop = self.source.split(self.base + 'stop(', 1)[1].split('\n/mob/', 1)[0]
+        self.assertLess(stop.index('passive()'), stop.index('stop_patrol()'))
+        self.assertIn('if (H && !following)\n\t\tfollow(H)', stop)
+
+    def test_stale_callbacks_do_not_shred_and_fresh_defence_still_can(self):
+        import sys
+        from types import SimpleNamespace as NS
+        sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+        from source_adapter import project
+        actor, target = NS(deleted=False), NS(deleted=False)
+        hits = []
+        env = dict(src=actor, QDELETED=lambda x: x.deleted, bite_order_epoch=4, client=False,
+                   shred=hits.append)
+        attempt = project(self.source, self.base + 'bite_if_current', 'H, order_epoch, autonomous_only', env)
+        attempt(target, 3, True)
+        attempt(target, 3, False)
+        self.assertEqual(hits, [])
+        attempt(target, 4, False)
+        self.assertEqual(hits, [target])
+        env['client'] = True
+        attempt(target, 4, True)
+        target.deleted = True
+        attempt(target, 4, False)
+        self.assertEqual(hits, [target])
+
+    def test_every_delayed_bite_captures_the_order_epoch(self):
+        queue = self.source.split(self.base + 'queue_bite(', 1)[1].split('\n/mob/', 1)[0]
+        self.assertIn('PROC_REF(bite_if_current), H, bite_order_epoch, autonomous_only', queue)
+        for call in ('queue_bite(H, 20, TRUE)', 'queue_bite(H, rand(2,3))', 'queue_bite(H, 2)'):
+            self.assertIn(call, self.source)
+        self.assertNotIn('proc/shred, list(H)', self.source)
+
+
 if __name__ == '__main__':
     unittest.main()

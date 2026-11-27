@@ -419,6 +419,14 @@ static class LocalHostingTests {
                 + "done with problems: moon (handover failed (the old world plays on): low memory).", "maintenance status line");
         using (var tdm = JsonDocument.Parse("{\"enabled\": false, \"persistent\": false}"))
             Require(LocalHosting.DescribeMaintenance(tdm.RootElement).Contains("between rounds"), "TDM groups do not use daily maintenance");
+        Require(LocalHosting.GroupStep(host.Control!, "match-mainland").ArgumentList.Last() == "match-mainland"
+            && LocalHosting.LimitOf(LocalHosting.GroupStep(host.Control!, "match-mainland")) == LocalHosting.RequestLimit,
+            "match mainland requests detached group action");
+        try { LocalHosting.GroupStep(host.Control!, "match-mainland", "gaia"); throw new Exception("match mainland accepted a single region"); } catch (ArgumentException) { assertions++; }
+        Require(LocalHosting.ParseGroup("match-mainland", 0, "{\"accepted\": true, \"action\": \"match-mainland\", \"pid\": 5, \"ok\": true}").Message.StartsWith("Mainland match requested"),
+            "match mainland request answer");
+        Require(!LocalHosting.ParseGroup("match-mainland", 0, "{\"ok\": true}").Ok,
+            "an incomplete host reply cannot claim the match started");
         Require(LocalHosting.ParseGroup("maintenance", 0, "{\"accepted\": true, \"action\": \"maintenance\", \"pid\": 5, \"ok\": true}").Message.StartsWith("Daily maintenance started"),
             "run maintenance now answer");
         // Start region: the mainland unless start_region names another; never a kind nobody can start in.
@@ -602,6 +610,19 @@ static class LocalHostingTests {
         var busyNow = HostBoard.BusyRegions(boardStatus);
         Require(busyNow.SetEquals(["barren", "sea"]), "busy regions: " + string.Join(",", busyNow));
         Require(HostBoard.BusyRegions("{\"ok\": false, \"refused\": \"x\"}").Count == 0 && HostBoard.BusyRegions("Traceback").Count == 0, "busy regions from a refusal");
+        const string priorityStatus = """
+            {"ok":true,"mainland":"gaia","regions":{"gaia":{"kind":"SURFACE"},"front":{"kind":"GATEWAY"},"ocean":{"kind":"OCEANIC"}}}
+            """;
+        Require(HostBoard.IsPriorityRegion(priorityStatus, "gaia") && HostBoard.IsPriorityRegion(priorityStatus, "front"),
+            "the configured mainland and Gateway get the staging control exception");
+        Require(!HostBoard.IsPriorityRegion(priorityStatus, "ocean") && !HostBoard.IsPriorityRegion(priorityStatus, "missing") &&
+            !HostBoard.IsPriorityRegion(priorityStatus.Replace("true", "false"), "gaia"),
+            "priority controls never activate for other regions or an unavailable status");
+        Require(HostBoard.DeployBuilding(false, "[2/5] Building the update beside region gaia while the worlds keep running...") &&
+            HostBoard.DeployBuilding(true, "compiler progress") &&
+            !HostBoard.DeployBuilding(true, "[3/5] Handing region gaia over to the new build") &&
+            !HostBoard.DeployBuilding(false, "[3/5] Waiting for region gaia to finish its handover..."),
+            "the staging-only gate ends before handover, including a resumed deploy");
         var board = HostBoard.Regions(boardStatus, behindNow, "gaia");
         RegionCard Row(string id) => board.Single(card => card.Id == id);
         Require(board.Count == 8 && board[0].Id == "gaia" && board[7].Id == "lost", "board rows: " + board.Count);

@@ -170,6 +170,7 @@ export function CraftingWindow(ui: ScreenProps) {
   const [readyOnly, setReadyOnly] = useState(!!data.makeable_only);
   const [selected, setSelected] = useState('');
   const [showLocked, setShowLocked] = useState(false);
+  const chosen = rows.find(row => row.id === selected) ?? null;
   // The Atlas can hand over a recipe: show it whatever tab or search was left open.
   useEffect(() => {
     const focus = str(data.focus);
@@ -177,10 +178,12 @@ export function CraftingWindow(ui: ScreenProps) {
     setSelected(focus); setQuery(''); setPurpose('');
     if (rows.find(row => row.id === focus)?.state === 'locked') setShowLocked(true);
   }, [data.focus_seq]);
-  // Ask the server what exactly the selected recipe needs. This spends nothing.
+  // A valid selection can change while the server declines requests during work.
+  // Watch the eligible recipe rather than the whole snapshot to avoid duplicate requests.
+  const detailRequest = ui.interactive && !working && chosen && data.detail?.id !== chosen.id ? chosen.id : '';
   useEffect(() => {
-    if (selected && ui.interactive && !data.working && rows.some(row => row.id === selected)) ui.act('detail', { value: selected });
-  }, [selected]);
+    if (detailRequest) ui.act('detail', { value: detailRequest });
+  }, [detailRequest]);
   // Pictures arrive a batch at a time; ask for the next batch once per snapshot.
   useEffect(() => {
     if (data.more_images && !data.working && ui.interactive) ui.act('images');
@@ -195,7 +198,6 @@ export function CraftingWindow(ui: ScreenProps) {
   const pinned = useMemo(() => rows.filter(row => !!row.pinned), [rows]);
   const chip = (row: Row) => <button key={row.id} type="button" className={'craft-chip' + (row.id === selected ? ' craft-chip-selected' : '')}
     title={str(row.name)} onClick={() => setSelected(row.id)}><Sprite image={row.image} /><span>{str(row.name)}</span></button>;
-  const chosen = rows.find(row => row.id === selected) ?? null;
   const processing = list(data.processing);
   const shownProcesses = useMemo(() => processing.filter(row => processMatches(row, words, readyOnly)), [data.processing, words, readyOnly]);
   const process = chosen ? null : processing.find(row => str(row.id) === selected) ?? null;

@@ -1,4 +1,5 @@
 """Company stock ledger guards: no stock from nothing, single estate rows, taxes once."""
+from decimal import Decimal
 from pathlib import Path
 import re
 import unittest
@@ -11,6 +12,8 @@ VENDING = (ROOT / 'code/game/objects/structures/vending/vending_sales.dm').read_
 
 
 def proc(source, header, end_marker):
+    if header not in source:
+        raise AssertionError(f"Missing source section: {header}")
     return source.split(header, 1)[1].split(end_marker, 1)[0]
 
 
@@ -45,6 +48,56 @@ class LedgerMove(unittest.TestCase):
         self.assertIn('newname == "Global" || (newname in map.custom_company_nr)', create)
 
 
+class HouseControl(unittest.TestCase):
+    def setUp(self):
+        self.houses = (ROOT / 'code/game/mob/groups/player_houses.dm').read_text()
+        self.craft = (ROOT / 'code/game/objects/items/stacks/stack.dm').read_text()
+
+    def test_house_or_legacy_operator_never_redefines_stock_ownership(self):
+        operator = proc(self.houses, '/proc/company_may_operate(', '\n/')
+        self.assertIn('return find_company_member(H, company)', operator)
+        self.assertIn('map.player_house_of(H) == id', operator)
+        for source in (MARKET, DEATH):
+            self.assertNotIn('company_may_operate(', source)
+
+    def test_existing_company_requires_authenticated_house_and_all_stock_after_consent(self):
+        charter = proc(self.houses, '/mob/living/human/proc/charter_existing_company()', '\n#')
+        commit = charter.index('land.company_attach_house(company, house_id, src)')
+        recheck = charter[charter.index('Give House'):commit]
+        self.assertIn('company_has_stake(company, src, 100)', recheck)
+        self.assertIn('land.player_house_of(src) != house_id', recheck)
+        self.assertIn('persistence_admission_changed(save_identity)', recheck)
+        attach = proc(self.houses, '/obj/map_metadata/proc/company_attach_house(', '\n/')
+        self.assertIn('company_controlling_house(company)', attach)
+        for economic_field in ('custom_company', 'sales_registry', 'company_move_stake'):
+            self.assertNotIn(economic_field, attach)
+
+    def test_legacy_or_duplicate_charter_never_falls_back_to_shareholder_control(self):
+        lookup = proc(self.houses, '/obj/map_metadata/proc/company_controlling_house(', '\n/')
+        self.assertIn('charters[company] == TRUE', lookup)
+        self.assertIn('return "conflicted"', lookup)
+        self.assertNotIn('owner_ckey', lookup)
+        operation = proc(self.houses, '/proc/company_may_operate(', '\n/')
+        self.assertIn('if (!id)\n\t\treturn find_company_member(H, company)', operation)
+        self.assertIn('id != "conflicted" && map.player_house_of(H) == id', operation)
+        self.assertNotIn('company_move_stake', operation)
+
+    def test_buyer_rechecked_after_yield_and_when_completing_payment(self):
+        vending = proc(VENDING, '/obj/structure/vending/sales/ui_act(', '\n/')
+        after_quantity = vending.index('company_sales_buyer_disqualified(user)', vending.index('player_input('))
+        self.assertLess(after_quantity, vending.index('vend(R, user, inp)'))
+        self.assertLess(after_quantity, vending.index('complete_purchase(R, user, inp)'))
+        pending = proc(VENDING, '/obj/structure/vending/sales/proc/finish_pending_purchase(', '\n/')
+        self.assertLess(pending.index('company_sales_buyer_disqualified(user)'), pending.index('complete_purchase('))
+        self.assertNotIn('moneyin =', pending)
+        guard = proc(VENDING, '/obj/structure/vending/sales/proc/company_sales_buyer_disqualified(', '\n/')
+        self.assertIn('company_may_operate(user, owner) || find_company_member(user, owner)', guard)
+
+    def test_company_craft_revalidates_at_commit(self):
+        final_gate = self.craft.index('if (customvar && !company_may_operate(H, customvar))')
+        self.assertLess(self.craft.index('do_after(user, buildtime'), final_gate)
+        self.assertLess(final_gate, self.craft.index('if (use(required, (joinery || carving) ? null : H))'))
+
 class StockMarket(unittest.TestCase):
     def setUp(self):
         self.buy = proc(MARKET, 'if (href_list["buy"])', '// Sell stock')
@@ -61,7 +114,8 @@ class StockMarket(unittest.TestCase):
         self.assertIsNone(re.search(r'sales_registry -= LL\b', DEATH))
 
     def test_estate_purchase_keeps_other_identical_estates(self):
-        estate = self.buy.split('else\n\t\t\t\t\t\t// Only this estate listing', 1)[1]
+        self.assertIn('// Only this estate listing', self.buy)
+        estate = self.buy.split('// Only this estate listing', 1)[1]
         self.assertNotIn('for (var/list/LL in map.sales_registry)', estate.split('to_chat(', 1)[0])
 
     def test_links_use_company_index(self):
@@ -102,6 +156,82 @@ class StockMarket(unittest.TestCase):
         self.assertLess(guard, fiat.index('+= businesstax'))
         self.assertLess(guard, fiat.index('new/obj/item/stack/money/fiat'))
         self.assertLess(guard, fiat.index('fiat_profits[fid] = 0'))
+
+
+    def test_former_proceeds_are_collected_before_the_sell_section(self):
+        lines = MARKET.splitlines()
+        branch = lines.index("\t\telse if (has_company_proceeds(H, cmp))")
+        self.assertIn("former_proceeds +=", lines[branch + 1])
+        self.assertTrue(lines[branch + 2].startswith('\tsections += list(panel_section("Sell Stocks"'))
+
+    def test_former_holder_can_withdraw_their_own_standard_and_fiat_proceeds(self):
+        panel = proc(MARKET, '// Own stocks.', '// Faction treasury')
+        self.assertIn('if (find_company_member(H, cmp))', panel)
+        self.assertIn('else if (has_company_proceeds(H, cmp))', panel)
+        former = panel.split('else if (has_company_proceeds(H, cmp))', 1)[1]
+        self.assertIn('panel_button("Withdraw", "withdraw", cmp_idx)', former)
+        self.assertNotIn('panel_button("Distribute"', former)
+        ledger = proc(MARKET, '/obj/structure/stockmarket/proc/has_company_proceeds(', '\n/')
+        self.assertIn('if (row[1] != H)', ledger)
+        self.assertIn('if (row[3] > 0)', ledger)
+        self.assertIn('if (balances[fid] > 0)', ledger)
+        withdraw = proc(MARKET, 'if (href_list["withdraw"])', '// Faction treasury - set sales tax')
+        self.assertNotIn('find_company_member', withdraw)
+        self.assertLess(withdraw.index('if (j[1] == H)'), withdraw.index('company_pay_coins'))
+        self.assertLess(withdraw.index('if (j[1] == H)'), withdraw.index('new/obj/item/stack/money/fiat'))
+        distribute = proc(MARKET, 'if (href_list["distribute"])', '// Manage company - withdraw profits')
+        self.assertIn('if (!find_company_member(H, cmp))', distribute)
+
+    def test_listing_identity_is_shared_across_market_windows_and_not_reused(self):
+        mint = proc(MARKET, '/obj/structure/stockmarket/proc/listing_token(', '\n/')
+        self.assertLess(mint.index('return listing[7]'), mint.index('++listing_sequence'))
+        self.assertIn('listing[7] = token', mint)
+        self.assertIn('listing[6] = "standard"', mint)  # pre-fiat estate rows
+        render = proc(MARKET, '// Stocks for sale.', '// Own stocks.')
+        self.assertIn('panel_button("Buy", "buy", listing_token(i))', render)
+        self.assertIn('var/list/L = live_listing(href_list["buy"])', self.buy)
+        self.assertNotIn('sale_idx', self.buy)
+        self.assertNotIn('text2num(href_list["buy"])', self.buy)
+        resolve = proc(MARKET, '/obj/structure/stockmarket/proc/live_listing(', '\n/')
+        self.assertIn('listing[5] && listing[7] == token', resolve)
+        active = {"pending-a": "Offer A", "pending-b": "Offer B", "pending-c": "Offer C"}
+        del active["pending-a"]
+        self.assertEqual(active.get("pending-b"), "Offer B")
+        del active["pending-b"]
+        self.assertIsNone(active.get("pending-b"))
+        self.assertEqual(active.get("pending-c"), "Offer C")
+
+    def test_standard_change_preserves_copper_and_whole_silver(self):
+        change = proc(MARKET, '/obj/structure/stockmarket/proc/pay_standard_change(', '\n/')
+        scale = int(re.search(r'^#define STOCK_MARKET_COPPERS_PER_SILVER (\d+)$', MARKET, re.M).group(1))
+        self.assertIn('round(change_units / STOCK_MARKET_COPPERS_PER_SILVER)', change)
+        self.assertIn('change_units - silver * STOCK_MARKET_COPPERS_PER_SILVER', change)
+        self.assertIn('company_pay_coins(loc, silver)', change)
+        self.assertIn('C.amount = copper', change)
+        self.assertIn('var/change_units = tender_units - price_units', self.buy)
+        self.assertIn('pay_standard_change(change_units)', self.buy)
+        self.assertLess(self.buy.index('if (tender_units < price_units)'), self.buy.index('qdel(M)'))
+        for tender, price, exact_change in (("1.5", "1", (0, 5)), ("8", "5", (3, 0)), ("5", "5", (0, 0))):
+            with self.subTest(tender=tender, price=price):
+                remainder = (Decimal(tender) - Decimal(price)) * scale
+                self.assertEqual(divmod(int(remainder), scale), exact_change)
+
+    def test_quotes_and_new_listings_use_representable_units(self):
+        convert = proc(MARKET, '/obj/structure/stockmarket/proc/exact_payment_units(', '\n/')
+        self.assertIn('if (abs(scaled - units) > tolerance)', convert)
+        self.assertIn('if (scaled > 16777215)', convert)
+        price_units = proc(MARKET, '/obj/structure/stockmarket/proc/listing_price_units(', '\n/')
+        self.assertIn('return listing[8]', price_units)
+        self.assertIn('currency == "standard" && isnull(listing[4])', price_units)
+        render = proc(MARKET, '// Stocks for sale.', '// Own stocks.')
+        self.assertIn('listing_price_units(i, currency)', render)
+        self.assertIn('payment_label(price_units, currency)', render)
+        self.assertIn('listing_price_units(L, req_currency)', self.buy)
+        self.assertIn('new/obj/item/stack/money/fiat(loc, change_units, req_currency)', self.buy)
+        sell = proc(MARKET, '// Sell stock', '// Manage company - view members')
+        self.assertLess(sell.index('exact_payment_units(price, payment_scale(requested_currency))'),
+                        sell.index('map.sales_registry += list(listing)'))
+        self.assertIn('listing += price_units', sell)
 
 
 class DeathAndVending(unittest.TestCase):

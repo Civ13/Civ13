@@ -68,7 +68,7 @@
 // Shared wound treatment for every bandage, kit, herb and powder.
 /obj/item/stack/medical/proc/treat(mob/living/human/H, mob/user)
 	var/obj/item/organ/external/affecting = H.get_organ(user.targeted_organ)
-	if (!affecting)
+	if (!affecting || !tourniquet_patient_in_reach(H, user))
 		return
 	if (pre_treat(H, affecting, user))
 		return
@@ -102,6 +102,9 @@
 		if (!do_mob(user, H, W.damage/5))
 			to_chat(user, SPAN_NOTICE("You must stand still to treat wounds."))
 			break
+		if (!tourniquet_patient_in_reach(H, user))
+			to_chat(user, SPAN_NOTICE("The patient is no longer within reach."))
+			break
 		if (used >= amount || !wound_needs(W))
 			continue // the stack shrank or someone else treated it meanwhile
 		user.visible_message(SPAN_NOTICE("\The [user] [treat_verb] \a [W.desc] on [H]'s [affecting.name]."), \
@@ -123,7 +126,8 @@
 	affecting.update_damages()
 	if (used >= amount && limb_needs(affecting))
 		to_chat(user, SPAN_WARNING("\The [src] is used up, but there are more wounds to treat on \the [affecting.name]."))
-	try_expert_close(affecting, user)
+	if (tourniquet_patient_in_reach(H, user))
+		try_expert_close(affecting, user)
 	if (treat_flags & MED_BANDAGE)
 		H.update_bandaging(1)
 	H.UpdateDamageIcon()
@@ -338,7 +342,7 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 				return
 			user.visible_message(SPAN_NOTICE("[user] starts to apply \the [src] to their [limb]."), SPAN_DANGER("You start to apply \the [src] to your [limb]."), SPAN_DANGER("You hear something being wrapped."))
 		if (kneel_wait(user, M, 50))
-			if (!splint_still_needed(H, affecting, user))
+			if (QDELETED(src) || !can_use(1) || !splint_still_needed(H, affecting, user))
 				return
 			if (M != user)
 				user.visible_message(SPAN_NOTICE("[user] finishes applying \the [src] to [M]'s [limb]."), SPAN_DANGER("You finish applying \the [src] to [M]'s [limb]."), SPAN_DANGER("You hear something being wrapped."))
@@ -348,8 +352,10 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 				else
 					user.visible_message(SPAN_WARNING("[user] fumbles \the [src]."), SPAN_DANGER("You fumble \the [src]."), SPAN_DANGER("You hear something being wrapped."))
 					return
-			affecting.status |= ORGAN_SPLINTED
-			use(1)
+			var/applied_type = type
+			if (use(1))
+				affecting.splint_type = applied_type
+				affecting.status |= ORGAN_SPLINTED
 		return
 
 // do_mob() with the healer kneeling beside the patient for the wait.
@@ -438,7 +444,9 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 	icon = 'icons/obj/surgery.dmi'
 	icon_state = "valvemask"
 /obj/item/bag_valve_mask/attack(var/mob/living/human/M as mob, var/mob/user as mob)
-	if (M.wear_mask)
+	if (!ishuman(M) || QDELETED(M))
+		return
+	if (M.check_mouth_coverage())
 		to_chat(user, SPAN_WARNING("Uncover their mouth first!"))
 		return
 	user.visible_message("[user] starts to attach \the [src] to [M].", "You start to attach \the [src] to [M].")
@@ -446,7 +454,7 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 	if (do_after(user, 80, M)) // TO-DO: Make it dependent on medical skill
 		if (QDELETED(M) || loc != user || (M != user && !user.Adjacent(M)))
 			return
-		if (M.wear_mask)
+		if (M.check_mouth_coverage())
 			to_chat(user, SPAN_WARNING("Uncover their mouth first!"))
 			return
 		M.adjustOxyLoss(-7)

@@ -15,6 +15,9 @@ GUARD = "\tif (islist(reagent_list) && !reagent_list.len)\n\t\ttotal_volume = 0\
 
 
 class ReagentList(list):
+    def Copy(self):
+        return self.copy()
+
     @property
     def len(self):
         return len(self)
@@ -27,13 +30,21 @@ class Human:
 
 class Reagent:
     def __init__(self, label, volume):
-        self.label = label
+        self.label = self.id = label
+        self.ingest_met = None
+        self.metabolism = 2 if label == 'water' else .2
         self.volume = volume
         self.trace = []
 
-    def on_mob_life(self, parent, tag, location):
+    def on_mob_life(self, parent, tag, location, amount=None):
         self.trace.append((tag, location))
-        self.volume -= .25
+        if location == "ingest":
+            amount = min(self.volume, self.metabolism if amount is None else amount)
+            self.holder.bite_trace.append((self.id, amount, self.holder.ingest_brine))
+            self.volume -= amount
+            self.holder.prune_trace()
+        else:
+            self.volume -= .25
 
 
 class Holder:
@@ -43,6 +54,16 @@ class Holder:
         self.parent = parent
         self.metabolism_class = "blood"
         self.updates = 0
+        self.ingest_brine = None
+        self.bite_trace = []
+        for reagent in reagents or []:
+            reagent.holder = self
+
+    def get_reagent_amount(self, label):
+        return next((r.volume for r in self.reagent_list if r.id == label), 0)
+
+    def prune_trace(self):
+        self.reagent_list[:] = [r for r in self.reagent_list if r.volume >= .01]
 
     def update_total(self):
         # Fake boundary for the current source: empty/null holder sets zero;
@@ -56,19 +77,28 @@ class Holder:
                 self.total_volume += reagent.volume
 
 
-def run(source, values, total, parent):
+def run(source, values, total, parent, *, location="blood", ticks=1, trace=False):
     reagents = None if values is None else ReagentList(Reagent(*item) for item in values)
     holder = Holder(reagents, total, parent)
+    holder.metabolism_class = location
     env = {"ishuman": lambda value: isinstance(value, Human),
            "islist": lambda value: isinstance(value, list),
-           "typed_iter": lambda value, path: list(value or [])}
+           "typed_iter": lambda value, path: list(value or []),
+           "CHEM_INGEST": "ingest",
+           "MINIMUM_CHEMICAL_VOLUME": .01,
+           "reagents_are_brine": lambda holder, water, tolerance:
+               water > 0 and holder.get_reagent_amount("sodiumchloride") + tolerance >= water * .03}
     fields = source_adapter.FIELDS
     try:
-        source_adapter.FIELDS = fields + ("parent", "reagent_list", "total_volume", "metabolism_class", "update_total")
+        source_adapter.FIELDS = fields + ("parent", "reagent_list", "total_volume", "metabolism_class", "update_total",
+                                          "ingest_brine", "get_reagent_amount")
         proc = source_adapter.project(source, DECL, "src", env, method=True)
     finally:
         source_adapter.FIELDS = fields
-    result = proc(holder)
+    for _ in range(ticks):
+        result = proc(holder)
+    if trace:
+        return holder
     remaining = None if holder.reagent_list is None else [(r.label, r.volume, r.trace) for r in holder.reagent_list]
     return result, holder.total_volume, remaining, holder.updates
 
@@ -109,6 +139,33 @@ class EmptyMetabolismTests(unittest.TestCase):
         with self.assertRaises(AttributeError):
             run(BEFORE, [], 9, Human(None))
         self.assertEqual(run(wrong, [], 9, Human(None))[1], 0)
+
+    def test_seawater_and_boundary_keep_composition_in_either_order(self):
+        parent = Human(SimpleNamespace(reagent_tag="human"))
+        for salt, water in ((1, 24), (.75, 25), (.065, 2.15)):
+            for order in ([("sodiumchloride", salt), ("water", water)],
+                          [("water", water), ("sodiumchloride", salt)]):
+                with self.subTest(order=order):
+                    holder = run(AFTER, order, salt + water, parent, location="ingest", ticks=20, trace=True)
+                    self.assertFalse(holder.total_volume)
+                    self.assertIsNone(holder.ingest_brine)
+                    for reagent, total in order:
+                        doses = [a for r, a, brine in holder.bite_trace if r == reagent and brine is True]
+                        self.assertAlmostEqual(sum(doses), total)
+
+    def test_fresh_lightly_salted_and_dry_salt_take_normal_paths(self):
+        parent = Human(SimpleNamespace(reagent_tag="human"))
+        for contents in ([("water", 24)], [("sodiumchloride", .5), ("water", 24)], [("sodiumchloride", .5)]):
+            holder = run(AFTER, contents, 99, parent, location="ingest", ticks=16, trace=True)
+            self.assertTrue(holder.bite_trace)
+            self.assertTrue(all(brine is False for _, _, brine in holder.bite_trace))
+
+    def test_water_effect_reuses_snapshot_and_standalone_fallback(self):
+        core = (ROOT / "code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Core.dm").read_text()
+        source = core.split("/datum/reagent/water/affect_ingest(", 1)[1].split("\n/", 1)[0]
+        self.assertIn('id == "water" && istype(stomach)', source)
+        self.assertIn("!isnull(stomach.ingest_brine) ? stomach.ingest_brine : reagents_are_brine(holder, volume)", source)
+        self.assertLess(source.index("brine_nausea(M)"), source.index("..()"))
 
 
 if __name__ == "__main__":

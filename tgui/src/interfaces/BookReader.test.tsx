@@ -36,3 +36,17 @@ it('does not claim visual acceptance in an unsupported DOM environment', () => {
   const { container } = render(<BookPage runs={[]} />);
   expect(bookRenderingSupported(container.querySelector('article')!,[])).toBe(false);
 });
+
+it('renders the typed divider between pages without changing their ink or exposing text', () => {
+  const values = [run('First'), { divider: 1 }, { ...run('Second'), ink: '#000000' }];
+  const { container } = render(<BookPage runs={bookRuns({ runs: values })} />);
+  const blocks = [...container.querySelectorAll<HTMLElement>('[data-book-run]')];
+  expect(blocks.map(block => block.tagName)).toEqual(['SPAN', 'HR', 'SPAN']);
+  expect(blocks.map(block => block.textContent)).toEqual(['First', '', 'Second']);
+  expect(blocks[0].style.color).toBe('rgb(255, 255, 255)');
+  expect(blocks[2].style.color).toBe('rgb(0, 0, 0)');
+  for (const bad of [{ divider: 1, text: 'unused' }, { divider: false },
+                     { divider: true, ink: '#000000' }, { divider: 'true' }]) {
+    expect(() => bookRuns({ runs: [run(), bad, run()] })).toThrow();
+  }
+});

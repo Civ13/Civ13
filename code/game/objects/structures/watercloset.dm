@@ -716,7 +716,7 @@
 	refill()
 
 /obj/structure/sink/proc/refill()
-	if (volume < max_volume)
+	if (!well_pauses_recharge() && volume < max_volume)
 		if (volume < max_volume)
 			volume += 10
 		if (volume > max_volume)
@@ -769,7 +769,7 @@
 			return
 		if (H.a_intent == I_GRAB)
 			H.visible_message("[H] starts drinking some water from \the [src]...", "You start drinking some water from \the [src]...", "You hear the sound of something being consumed nearby.")
-			if (do_after(H,50,src))
+			if (do_after(H,50,src) && well_open_mouth(user))
 				var/watertype = "water"
 				if (radiation>0)
 					watertype = "irradiated_water"
@@ -826,48 +826,45 @@
 	if (radiation>0)
 		watertype = "irradiated_water"
 	if (istype(RG) && RG.is_open_container() && do_after(user, 15, src, check_for_repeats = FALSE))
-		if  (volume > 0)
-			if (min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this) > volume)
-				if (istype(src, /obj/structure/sink/puddle))
-					if (prob(10))
-						RG.reagents.add_reagent("food_poisoning", 1)
-						RG.note_food_toxin("puddle water (1 in 10 fill roll)")
-						RG.reagents.add_reagent(watertype, volume-1)
-					else
-						RG.reagents.add_reagent(watertype, volume)
-				else
-					RG.reagents.add_reagent(watertype, volume)
-				volume = 0
-				spawn(3)
-					update_icon()
-				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-				user.setClickCooldown(5)
-				return TRUE
-			else
-				if (istype(src, /obj/structure/sink/well) || istype(src, /obj/structure/sink/puddle))
-					if (has_nearby_fecal_waste())
-						dirty = TRUE
-					if (istype(src, /obj/structure/sink/well))
-						var/obj/structure/sink/well/W = src
-						W.flood_foul()
-						river_mercury_fill(RG, get_turf(src), 3) // amalgam.dm
-					if (dirty || (istype(src, /obj/structure/sink/puddle) && prob(15)))
-						RG.reagents.add_reagent("cholera", min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.05)
-						RG.note_food_toxin(dirty ? "unboiled water from a dirty [name] (fecal waste nearby) at ([x],[y],[z])" : "unboiled puddle water (15% fill roll) at ([x],[y],[z])")
-						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)*0.95)
-					else
-						RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-				else
-					RG.reagents.add_reagent(watertype, min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this))
-				if (RG.reagents)
-					volume -= min(RG.volume - RG.reagents.total_volume, RG.amount_per_transfer_from_this)
-				spawn(3)
-					update_icon()
-				user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
-				playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
-				user.setClickCooldown(5)
-				return TRUE
+		if (QDELETED(RG) || !RG.is_open_container() || !RG.reagents || heat_dried() || volume <= 0 || !well_open_mouth(user))
+			return
+		var/requested = min(RG.reagents.get_free_space(), RG.amount_per_transfer_from_this)
+		if (requested <= 0)
+			return
+		var/puddle = istype(src, /obj/structure/sink/puddle)
+		var/dose = min(requested, volume)
+		var/contaminant = 0
+		var/list/accepted = list()
+		if (requested > volume)
+			if (puddle && prob(10))
+				RG.reagents.add_reagent("food_poisoning", min(1, dose), accepted_amount = accepted)
+				contaminant = accepted["amount"]
+				RG.note_food_toxin("puddle water (1 in 10 fill roll)")
+		else if (istype(src, /obj/structure/sink/well) || puddle)
+			if (has_nearby_fecal_waste())
+				dirty = TRUE
+			if (istype(src, /obj/structure/sink/well))
+				var/obj/structure/sink/well/W = src
+				W.flood_foul()
+				river_mercury_fill(RG, get_turf(src), 3) // amalgam.dm
+				dose = min(dose, RG.reagents.get_free_space())
+			if (dirty || (puddle && prob(15)))
+				RG.reagents.add_reagent("cholera", dose * 0.05, accepted_amount = accepted)
+				contaminant = accepted["amount"]
+				RG.note_food_toxin(dirty ? "unboiled water from a dirty [name] (fecal waste nearby) at ([x],[y],[z])" : "unboiled puddle water (15% fill roll) at ([x],[y],[z])")
+		accepted["amount"] = 0
+		if (!QDELETED(RG) && RG.reagents)
+			RG.reagents.add_reagent(watertype, dose - contaminant, accepted_amount = accepted)
+		var/transferred = contaminant + accepted["amount"]
+		if (transferred <= 0)
+			return
+		volume = max(0, volume - transferred)
+		spawn(3)
+			update_icon()
+		user.visible_message("<span class='notice'>[user] fills \the [RG] using \the [src].</span>","<span class='notice'>You fill \the [RG] using \the [src].</span>")
+		playsound(loc, 'sound/effects/watersplash.ogg', 100, TRUE)
+		user.setClickCooldown(5)
+		return TRUE
 
 
 	else if (istype(O, /obj/item/weapon/mop))
@@ -876,7 +873,7 @@
 		playsound(loc, 'sound/effects/slosh.ogg', 25, TRUE)
 		return
 	
-	else if (istype(O, /obj/item/weapon/soap) && dirty == TRUE && do_after(user, 100, src))
+	else if (istype(O, /obj/item/weapon/soap) && dirty == TRUE && do_after(user, 100, src) && well_open_mouth(user))
 		dirty = FALSE
 		to_chat(user, "You clean \the [src].")
 		qdel(O) // Whole soap bar is used, may need to change the reagents amount.
@@ -897,6 +894,11 @@
 	if (user.loc != location) return				//User has moved
 	if (!I) return 								//Item's been destroyed while washing
 	if (user.get_active_hand() != I) return		//Person has switched hands or the item in their hands
+
+	if (QDELETED(src) || !Adjacent(user)) return
+	if (heat_dried() || volume <= 0)
+		to_chat(user, "<span class='warning'>\The [src] is dry!</span>")
+		return
 
 	O.clean_blood()
 	if (istype(O, /obj/item/clothing))
@@ -963,11 +965,11 @@
 
 /obj/structure/sink/well/examine(mob/user, distance = -1)
 	. = ..()
-	if (. && flood_depth_at(get_turf(src)) > 0 && get_dist(src, user) <= 1)
+	if (. && get_dist(src, user) <= 1 && well_flood_ingress())
 		flood_foul()
-		to_chat(user, SPAN_WARNING("Floodwater has run into the well and fouled it. Scrub it with soap once the water goes down."))
+		to_chat(user, SPAN_WARNING("Floodwater has run into the well and fouled it. Wait for the water to go down before cleaning it out."))
 	if (. && has_observable_fecal_odor(user))
-		to_chat(user, SPAN_WARNING("A foul smell rises from the well."))
+		to_chat(user, SPAN_WARNING("A foul smell rises from the well. Use Clean Out Well with an empty bucket and a shovel."))
 
 /obj/structure/sink/well/sandstone
 	name = "sandstone well"

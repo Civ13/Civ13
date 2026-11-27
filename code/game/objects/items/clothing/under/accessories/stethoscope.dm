@@ -14,11 +14,10 @@
 					if (FEMALE)	their = "her"
 				var/sound = "heartbeat"
 				var/sound_strength = "cannot hear"
-				var/heartbeat = FALSE
 				var/heartrate = ""
 				var/obj/item/organ/heart/heart = M.internal_organs_by_name["heart"]
-				if (M.species && M.species.has_organ["heart"] && heart)
-					heartbeat = TRUE
+				var/heart_present = M.species && M.species.has_organ["heart"] && heart
+				var/heartbeat = heart_present && heart.pulse != PULSE_NONE
 				if (M.stat == DEAD || (M.status_flags&FAKEDEATH))
 					sound_strength = "cannot hear"
 					sound = "anything"
@@ -36,8 +35,6 @@
 									sound = "a thready heartbeat"
 								else
 									sound = "a regular heartbeat"
-								if (heart.pulse == PULSE_NONE)
-									heartrate = "is asystolic."
 								if (heart.pulse == PULSE_SLOW)
 									heartrate = "is in bradycardia with [M.get_pulse(GETPULSE_TOOL)] beats per minute."
 								if (heart.pulse == PULSE_NORM)
@@ -62,6 +59,9 @@
 							if (heartbeat)
 								sound_strength = "hear a weak"
 								sound = "pulse"
+							else if (heart_present)
+								sound_strength = "hear"
+								sound = "no pulse"
 				user.visible_message("[user] places [src] against [M]'s [body_part] and listens attentively.", "You place [src] against [their] [body_part]. You [sound_strength] [sound].[heartrate ? " [M] [heartrate]" : ""]")
 				return
 	return ..(M,user)

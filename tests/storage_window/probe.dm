@@ -47,6 +47,9 @@ var/storwin_runtime_error = FALSE
 			GLOB.nanomanager = new
 		storwin_time_checks()
 		storwin_window_checks()
+		storwin_carried_move_checks()
+		storwin_carried_hand_checks()
+		storwin_inventory_drag_checks()
 		storwin_search_checks()
 		storwin_closet_checks()
 		storwin_fire_checks()
@@ -140,6 +143,132 @@ var/storwin_runtime_error = FALSE
 	W.cancel_all(FALSE)
 	qdel(W)
 
+/proc/storwin_carried_move_checks()
+	var/turf/start = locate(4, 1, 1)
+	var/turf/next_tile = locate(5, 1, 1)
+	var/mob/living/human/storwin_probe/H = new(start)
+	var/obj/item/weapon/storage/backpack/source = new(H)
+	var/obj/item/weapon/storage/backpack/target = new(H)
+	H.l_hand = source
+	H.r_hand = target
+	var/datum/storage_window/W = new(H)
+	storwin_check(W.lists_holder(source) && W.lists_holder(target), "both held bags are available in the window")
+	var/obj/item/I = storwin_item(source, ITEM_SIZE_TINY, "held-bag item")
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_WORN, target, FALSE) && W.current && W.current["time"] > 0, "carried transfer still has a timer")
+	// Set the real position without invoking the fixture's unstarted turf processors.
+	H.loc = next_tile
+	W.finish_move()
+	storwin_check(I.loc == target && !W.current, "carried transfer completes after walking to the next tile")
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_WORN, source, FALSE), "the return transfer starts")
+	source.loc = next_tile
+	H.l_hand = null
+	H.loc = start
+	W.finish_move()
+	storwin_check(I.loc == target, "dropping the destination cancels the transfer even when it is still nearby")
+	source.loc = H
+	H.l_hand = source
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_WORN, source, FALSE), "another transfer starts")
+	target.loc = start
+	H.r_hand = null
+	H.loc = next_tile
+	W.finish_move()
+	storwin_check(I.loc == target, "dropping the source cancels the transfer even when it is still nearby")
+	target.loc = H
+	H.r_hand = target
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_WORN, source, FALSE), "the final transfer starts")
+	H.stat = UNCONSCIOUS
+	W.finish_move()
+	storwin_check(I.loc == target && !W.current && !W.queue.len, "incapacitation cancels even a carried transfer")
+	qdel(W)
+
+/obj/item/organ/external/storwin_hand/New()
+	return
+
+/obj/item/organ/external/storwin_hand/is_usable()
+	return drag_usable
+
+/proc/storwin_carried_hand_checks()
+	var/turf/start = locate(1, 1, 1)
+	var/mob/living/human/storwin_probe/H = new(start)
+	H.organs_by_name = list("l_hand" = new /obj/item/organ/external/storwin_hand, "r_hand" = new /obj/item/organ/external/storwin_hand)
+	var/obj/item/weapon/storage/backpack/source = new(H)
+	H.back = source
+	var/datum/storage_window/W = new(H)
+	var/obj/item/I = storwin_item(source, ITEM_SIZE_TINY, "item for right hand")
+	H.hand = 0
+	storwin_check(W.enqueue(I, STORAGE_WINDOW_KIND_HANDS, H, TRUE) && W.current["hand_slot"] == slot_r_hand, "carried move picks the initially free active hand")
+	H.hand = 1
+	W.finish_move()
+	storwin_check(H.r_hand == I && !H.l_hand && I.loc == H, "switching active hands does not redirect or cancel the move")
+	var/obj/item/J = storwin_item(source, ITEM_SIZE_TINY, "item for left hand")
+	storwin_check(W.enqueue(J, STORAGE_WINDOW_KIND_HANDS, H, TRUE) && W.current["hand_slot"] == slot_l_hand, "second move picks the left hand")
+	H.r_hand = null
+	I.loc = source
+	H.l_hand = storwin_item(H, ITEM_SIZE_TINY, "other held item")
+	H.hand = 0
+	W.finish_move()
+	storwin_check(J.loc == source && !H.r_hand, "a filled destination leaves the item in its bag instead of using the other hand")
+	qdel(W)
+
+/obj/item/organ/external/storwin_hand/var/drag_usable = TRUE
+
+/proc/storwin_change_during_drag(mob/living/human/storwin_probe/H, obj/item/I, action)
+	set waitfor = FALSE
+	sleep(1)
+	switch (action)
+		if ("injury")
+			var/obj/item/organ/external/storwin_hand/hand = H.organs_by_name["r_hand"]
+			hand.drag_usable = FALSE
+		if ("switch")
+			H.hand = 1
+		if ("locked")
+			I.canremove = FALSE
+		if ("slot")
+			H.shoulder = null
+			H.back = I
+
+/proc/storwin_inventory_drag_checks()
+	var/turf/start = locate(7, 1, 1)
+	var/mob/living/human/storwin_probe/H = new(start)
+	var/obj/item/organ/external/storwin_hand/right = new
+	H.organs_by_name = list("l_hand" = new /obj/item/organ/external/storwin_hand, "r_hand" = right)
+	var/obj/screen/inventory/R = new("right hand", "7,7", slot_r_hand, null, null, H)
+	var/obj/screen/inventory/L = new("left hand", "6,7", slot_l_hand, null, null, H)
+	var/obj/item/I = storwin_item(start, ITEM_SIZE_NORMAL, "timed weapon")
+	I.equiptimer = 5
+
+	storwin_change_during_drag(H, I, "injury")
+	I.inventory_drag_transfer(R, H)
+	storwin_check(!right.drag_usable && !H.r_hand && I.loc == start, "timed floor drag leaves an item in place if its receiving hand becomes unusable")
+	right.drag_usable = TRUE
+
+	I.loc = H
+	H.shoulder = I
+	storwin_change_during_drag(H, I, "locked")
+	var/started = world.time
+	I.inventory_drag_transfer(R, H)
+	storwin_check(world.time - started >= I.equiptimer && !I.canremove && H.shoulder == I && !H.r_hand, "worn drag waits and honors a removal restriction added during the draw")
+	I.canremove = TRUE
+
+	storwin_change_during_drag(H, I, "slot")
+	I.inventory_drag_transfer(R, H)
+	storwin_check(H.back == I && !H.shoulder && !H.r_hand && I.loc == H, "a worn drag cannot pull from a different slot after its wait")
+	H.back = null
+	H.shoulder = I
+
+	H.l_hand = storwin_item(H, ITEM_SIZE_TINY, "other held item")
+	H.hand = 0
+	storwin_change_during_drag(H, I, "switch")
+	started = world.time
+	I.inventory_drag_transfer(R, H)
+	storwin_check(world.time - started >= I.equiptimer && H.hand && H.r_hand == I && !H.shoulder, "worn drag completes after its draw delay into the clicked hand despite switching active hands")
+	H.l_hand = null
+	started = world.time
+	I.inventory_drag_transfer(L, H)
+	storwin_check(world.time == started && H.l_hand == I && !H.r_hand, "moving a timed item between hands remains immediate")
+	qdel(R)
+	qdel(L)
+
 /proc/storwin_search_checks()
 	var/turf/here = locate(8, 8, 1)
 	var/mob/living/human/storwin_probe/H = new(here)
@@ -160,6 +289,7 @@ var/storwin_runtime_error = FALSE
 		if (G["id"] == "near:[ref(IS)]")
 			basket = G
 	storwin_check(basket && !length(basket["items"]) && length(basket["unseen"]) == 2 && !basket["can_dump"], "someone else's basket shows two unseen things and can't be dumped")
+	storwin_check(basket && basket["total"] == 2, "item storage still includes a total count without naming unseen items")
 	storwin_check(!W.served_items.len || !(knife in W.served_items_values()), "unseen things are never named to the window")
 	storwin_check(storage_search_time(knife) == 7 && storage_search_time(axe) == 10, "looking takes 0.7 s for a small thing, 1.0 s for a normal one")
 	storwin_check(W.begin_search(IS) && W.search_item == knife, "searching starts with the top thing")
@@ -217,6 +347,27 @@ var/storwin_runtime_error = FALSE
 	var/datum/storage_window/W = new(H)
 	storwin_check(W.lists_holder(C) && storage_window_access(H, C), "the open crate next to you is listed and open to you")
 	storwin_check(!W.knows(packed, "near"), "what was packed before you came must be searched")
+	var/obj/structure/closet/cupboard = new(locate(2, 11, 1))
+	cupboard.opened = TRUE
+	var/obj/item/unseen = storwin_item(cupboard, ITEM_SIZE_SMALL, "unseen parcel")
+	var/obj/item/weapon/storage/backpack/bag = new(locate(2, 9, 1))
+	storwin_item(bag, ITEM_SIZE_TINY, "outside compartment")
+	var/obj/false_bottom/compartment = new(bag)
+	var/obj/item/private = storwin_item(compartment, ITEM_SIZE_TINY, "inside compartment")
+	var/list/data = W.build_data()
+	var/list/crate
+	var/list/closet
+	var/list/backpack
+	for (var/list/G in data["near"])
+		if (G["id"] == "near:[ref(C)]")
+			crate = G
+		else if (G["id"] == "near:[ref(cupboard)]")
+			closet = G
+		else if (G["id"] == "near:[ref(bag)]")
+			backpack = G
+	storwin_check(crate && !length(crate["items"]) && length(crate["unseen"]) == 1 && isnull(crate["total"]) && !(packed in W.served_items_values()), "an unsearched crate shows no item name or extra item-storage total")
+	storwin_check(closet && !length(closet["items"]) && length(closet["unseen"]) == 1 && isnull(closet["total"]) && !(unseen in W.served_items_values()), "an open closet shows only known items and no item-storage total")
+	storwin_check(backpack && backpack["total"] == 1 && !(private in W.served_items_values()), "item-storage totals still exclude false bottoms and their contents")
 	storwin_check(W.begin_search(C), "searching the crate starts")
 	W.finish_look()
 	storwin_check(W.knows(packed, "near") && W.reachable(packed), "once seen it is in reach")
@@ -225,12 +376,12 @@ var/storwin_runtime_error = FALSE
 	var/obj/item/third = storwin_item(here, ITEM_SIZE_TINY, "flint")
 	storwin_check(!W.perform_move(third, "near", C) && third.loc == here, "a crate refuses more things than it takes")
 	storwin_check(W.perform_move(packed, STORAGE_WINDOW_KIND_FLOOR, null) && packed.loc == here, "and gives them back to the floor")
-	var/list/data = W.build_data()
-	var/list/crate
+	data = W.build_data()
+	crate = null
 	for (var/list/G in data["near"])
 		if (G["id"] == "near:[ref(C)]")
 			crate = G
-	storwin_check(crate && crate["unit"] == "things" && crate["slots"] == 2 && crate["used"] == 1, "the window counts the crate in things")
+	storwin_check(crate && crate["unit"] == "things" && crate["slots"] == 2 && crate["used"] == 1 && length(crate["items"]) == 1, "the window counts the crate in things and lists the known item")
 	C.locked = TRUE
 	storwin_check(!storage_window_access(H, C) && !W.reachable(stone), "a locked crate keeps its things")
 	C.locked = FALSE

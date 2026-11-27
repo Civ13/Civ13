@@ -33,8 +33,8 @@ way. Rails on a deck are ordinary `/obj/structure/rails`, so the rail network
 under a bridge.
 
 A hammer takes a bare deck apart again (15 s) and gives the span back. Roads,
-track, vehicles and people have to come off first. A deck destroyed by
-shelling drops any track on it into the water.
+track, vehicles, offshore drilling rigs and people have to come off first.
+A deck destroyed by shelling drops any track on it into the water.
 
 ## Track laying
 

@@ -114,6 +114,30 @@ class HoleLadder(unittest.TestCase):
         crossed = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/Crossed(atom/movable/A)')
         self.assertLess(crossed.index('if (has_ladder || trapdoor_shut_at(loc))'), crossed.index('return ..()'))
         self.assertIn('. |= list("has_ladder")', LADDER)
+    def test_fitted_sprite_covers_every_transparent_pixel_with_the_hole_backdrop(self):
+        from PIL import Image
+        def icon(asset, state):
+            with Image.open(ROOT / asset) as dmi:
+                meta = dmi.text['Description']
+                width = int(re.search(r'width = (\d+)', meta)[1])
+                height = int(re.search(r'height = (\d+)', meta)[1])
+                start = 0
+                for name, dirs, frames in re.findall(r'^state = "(.*)"\s+dirs = (\d+)\s+frames = (\d+)', meta, re.M):
+                    if name == state:
+                        self.assertEqual((dirs, frames), ('1', '1'))
+                        col, row = start % (dmi.width // width), start // (dmi.width // width)
+                        return dmi.crop((col * width, row * height, (col + 1) * width, (row + 1) * height)).convert('RGBA')
+                    start += int(dirs) * int(frames)
+            self.fail(f'Missing DMI state {state}')
+        ladder = icon('icons/obj/stairs.dmi', 'ladderdown_wood')
+        mouth = icon('icons/turf/areas.dmi', 'black')
+        self.assertEqual(ladder.getchannel('A').getextrema(), (0, 255))
+        self.assertEqual(Image.alpha_composite(mouth, ladder).getchannel('A').getextrema(), (255, 255))
+        update = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/update_icon()')
+        self.assertIn('image(icon = \'icons/turf/areas.dmi\', icon_state = "black")', update)
+        self.assertLess(update.index('underlays -= mouth'), update.index('if (has_ladder && !leaf_covered)'))
+        self.assertIn('underlays += mouth', update)
+
     def test_fitting_rechecks_after_wait_and_pays_once(self):
         fit = ladder_proc('/obj/structure/multiz/ladder/ww2/tunneltop/pit/proc/fit_ladder(obj/item/weapon/hole_ladder/ladder, mob/user, turf/from_below = null)')
         wait = fit.index('do_after')

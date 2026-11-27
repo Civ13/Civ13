@@ -10,7 +10,16 @@
 		show_browse(user, null, text("window=mob[name]"))
 		return
 
-	var/obj/item/target_slot = get_equipped_item(text2num(slot_to_strip))
+	var/slot_id = text2num(slot_to_strip)
+	var/obj/item/target_slot = get_equipped_item(slot_id)
+	var/cuff_slot = slot_id == slot_handcuffed || slot_id == slot_legcuffed
+	if (cuff_slot)
+		// These links are for removing a restraint, never for putting on the active item.
+		if (!istype(target_slot))
+			return
+		if (user.get_active_hand())
+			to_chat(user, SPAN_WARNING("Switch to an empty hand to remove the restraints."))
+			return
 
 	switch(slot_to_strip)
 		// Handle things that are part of this interface but not removing/replacing a given item.
@@ -74,10 +83,15 @@
 		return
 
 	if (stripping)
+		if (cuff_slot)
+			if (QDELETED(user) || QDELETED(src) || user.incapacitated() || !user.Adjacent(src) || user.get_active_hand() || offline_sleep_refuses(user))
+				return
+			if (QDELETED(target_slot) || target_slot.loc != src || get_equipped_item(slot_id) != target_slot || !target_slot.canremove)
+				return
 		admin_attack_log(user, src, "Attempted to remove \a [target_slot]", "Target of an attempt to remove \a [target_slot].", "attempted to remove \a [target_slot] from")
 		unEquip(target_slot)
 	else if (user.unEquip(held))
-		equip_to_slot_if_possible(held, text2num(slot_to_strip), FALSE, TRUE, TRUE)
+		equip_to_slot_if_possible(held, slot_id, FALSE, TRUE, TRUE)
 		if (held && held.loc != src)
 			user.put_in_hands(held)
 
@@ -102,8 +116,7 @@
 		for (var/organ in splintable_organs)
 			var/obj/item/organ/external/o = get_organ(organ)
 			if (o && o.status & ORGAN_SPLINTED)
-				var/obj/item/W = new /obj/item/stack/medical/splint(get_turf(src), TRUE)
-				o.status &= ~ORGAN_SPLINTED
+				var/obj/item/W = o.recover_splint(get_turf(src), /obj/item/stack/medical/splint)
 				W.add_fingerprint(user)
 				removed_splint = TRUE
 		if (removed_splint)

@@ -251,6 +251,7 @@ var/global/list/region_edge_spans = list()
 		bike.forceMove(src)
 		bike_held = TRUE
 		.["bike"] = ridden
+		.["bike_id"] = bike.ensure_region_crossing_id()
 	// A carriage is packed whole as its driver leaves (region_edge_carriage.dm).
 	var/list/driven = pack_wagon(H)
 	if (driven)
@@ -511,12 +512,22 @@ var/global/list/region_edge_spans = list()
 		return FALSE
 	return R[3] >= 1 && R[3] <= initial(path.health) && R[3] == round(R[3])
 
-/proc/region_edge_bike_build(list/R, turf/T)
+/proc/region_edge_bike_id_valid(id)
+	if (!istext(id) || length(id) != 32)
+		return FALSE
+	for (var/i = 1, i <= 32, i++)
+		if (!findtextEx("0123456789abcdef", copytext(id, i, i + 1)))
+			return FALSE
+	return TRUE
+
+/proc/region_edge_bike_build(list/R, turf/T, id = null)
 	if (!region_edge_bike_valid(R) || !istype(T))
 		return null
 	var/path = text2path(R[1])
 	var/obj/structure/vehicle/bicycle/B = new path(T, R[2])
 	B.health = R[3]
+	if (region_edge_bike_id_valid(id))
+		B.region_crossing_id = id
 	return B
 
 // ---------------------------------------------------------------- arriving
@@ -524,7 +535,9 @@ var/global/list/region_edge_spans = list()
 /proc/region_edge_payload_ok(list/P)
 	var/list/E = P["edge"]
 	if (isnull(E))
-		return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"]) && isnull(P["bike"]) && isnull(P["wagon"])
+		return isnull(P["mount"]) && isnull(P["led"]) && isnull(P["cart"]) && isnull(P["bike"]) && isnull(P["wagon"]) && isnull(P["bike_id"])
+	if (!isnull(P["bike_id"]) && (isnull(P["bike"]) || !region_edge_bike_id_valid(P["bike_id"])))
+		return FALSE
 	if (!isnull(P["cart"]) && !region_edge_cart_valid(P["cart"]))
 		return FALSE
 	if (!isnull(P["bike"]) && !region_edge_bike_valid(P["bike"]))
@@ -615,7 +628,7 @@ var/global/list/region_edge_spans = list()
 			to_chat(H, SPAN_NOTICE("You hauled \the [C] across."))
 	// And the bicycle they wheeled over.
 	if (islist(P["bike"]))
-		var/obj/structure/vehicle/bicycle/B = region_edge_bike_build(P["bike"], get_turf(H))
+		var/obj/structure/vehicle/bicycle/B = region_edge_bike_build(P["bike"], get_turf(H), P["bike_id"])
 		if (B)
 			to_chat(H, SPAN_NOTICE("You wheeled \the [B] across."))
 	// And the carriage they drove, with its team and crates.
@@ -639,13 +652,7 @@ var/global/list/region_edge_spans = list()
 	for (var/mob/living/simple_animal/A in gone)
 		qdel(A)
 	region_edge_wagon_replayed(H, P)
-	if (region_edge_bike_valid(P["bike"]))
-		var/bike_path = text2path(P["bike"][1])
-		for (var/obj/structure/vehicle/bicycle/B in range(2, H))
-			if (B.type == bike_path && (!B.driver || B.driver == H))
-				log_game("Region travel: replayed the crossing of the bicycle [B.name]; it leaves again.")
-				qdel(B)
-				break
+	region_edge_bike_replayed(H, P["bike"], P["bike_id"])
 	// The cart that left stands near them in the older save, load and all.
 	if (region_edge_cart_valid(P["cart"]))
 		var/path = text2path(P["cart"][1])
@@ -656,6 +663,28 @@ var/global/list/region_edge_spans = list()
 					qdel(M)
 				qdel(C)
 				break
+
+// Never substitute a nearby bike for an unidentified departure. The checkpoint
+// may predate identity assignment, or already have lost the original object.
+/proc/region_edge_bike_replayed(mob/living/human/H, list/R, id)
+	if (!region_edge_bike_valid(R))
+		return
+	if (!region_edge_bike_id_valid(id))
+		log_game("Region travel: skipped bicycle departure cleanup; legacy record has no bicycle ID.")
+		return
+	var/obj/structure/vehicle/bicycle/match = null
+	for (var/obj/structure/vehicle/bicycle/B in region_edge_bikes)
+		if (QDELETED(B) || B.region_crossing_id != id)
+			continue
+		if (match)
+			log_game("Region travel: skipped bicycle departure cleanup for [id]; duplicate bicycle ID.")
+			return
+		match = B
+	if (!match || match.type != text2path(R[1]) || !isturf(match.loc) || (match.driver && match.driver != H))
+		log_game("Region travel: skipped bicycle departure cleanup for [id]; no eligible checkpoint match.")
+		return
+	log_game("Region travel: replayed the crossing of the bicycle [match.name] ([id]); it leaves again.")
+	qdel(match)
 
 #undef REGION_EDGE_CART_ITEMS_MAX
 #undef REGION_EDGE_ARRIVAL_INSET

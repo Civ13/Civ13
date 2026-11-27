@@ -40,8 +40,9 @@ class FakePlatform:
 class FakeHost:
     """A region host: up/asleep/down, its build and staged build, its action record."""
     def __init__(self, name, built=OLD, up=True, asleep=False, clients=0, stage_fails=False, gateway=False,
-                 busy_passes=0, refuse=None):
+                 busy_passes=0, refuse=None, coasts=None):
         self.name, self.built, self.staged = name, built, None
+        self.coasts = coasts
         self.up, self.asleep, self.clients = up, asleep, clients
         self.stage_fails, self.gateway, self.busy_passes, self.refuse = stage_fails, gateway, busy_passes, refuse
         self.repo = ROOT  # set up: it has a .git
@@ -79,6 +80,9 @@ class FakeHost:
 
     def frozen(self):
         return self.asleep
+
+    def ocean_update_blockers(self, group, revision):
+        return [h.name for h in self.coasts if h.built_revision() != revision]
 
     def world(self):
         if self.cancel_countdown:
@@ -140,7 +144,9 @@ class DailyMaintenanceTests(unittest.TestCase):
             offline[only] = True
             return {'accepted': {only: {'state': 'asleep'}}, 'skipped': {}}
         return types.SimpleNamespace(
-            hosts=lambda group, only=None, platform=None: [({'id': h.name, 'kind': 'GATEWAY' if h.gateway else 'SURFACE'}, h) for h in hosts],
+            hosts=lambda group, only=None, platform=None: [
+                ({'id': h.name, 'kind': 'GATEWAY' if h.gateway else 'OCEANIC' if h.coasts is not None else 'SURFACE'}, h)
+                for h in hosts],
             fetch_remote=lambda group, platform=None: True, update_offline=update_offline,
             Platform=lambda: FakePlatform(hosts[0]), HEX40=shard_group.HEX40,
             fresh_world=types.SimpleNamespace(pending=lambda host: Path('/nonexistent/fresh-world')),
@@ -210,6 +216,58 @@ class DailyMaintenanceTests(unittest.TestCase):
         self.assertFalse((daily_maintenance.folder(group) / 'pin.json').exists(), 'the pin is removed afterwards')
         self.assertFalse((daily_maintenance.folder(group) / 'run.json').exists())
 
+    def test_oceans_wait_for_live_and_offline_lands_regardless_of_group_order(self):
+        group = self.load()
+        mainland = FakeHost('gaia', busy_passes=1)
+        island = FakeHost('greenland', up=False, asleep=True)
+        live = FakeHost('atlantic', coasts=[mainland, island])
+        asleep = FakeHost('arctic', up=False, asleep=True, coasts=[mainland, island])
+        fake = self.this([asleep, live, mainland, island])
+        events = []
+
+        def install(group, name, platform):
+            if name == 'arctic':
+                self.assertEqual((NEW, NEW), (mainland.built_revision(), island.built_revision()))
+                self.assertTrue((daily_maintenance.folder(group) / 'pin.json').exists())
+            events.append(name)
+            return {'accepted': {name: {'state': 'asleep'}}}
+
+        def finish_workers(seconds):
+            self.clock.sleep(seconds)
+            if 'greenland' in events:
+                island.built = NEW
+            if 'arctic' in events:
+                self.assertTrue((daily_maintenance.folder(group) / 'pin.json').exists(),
+                                'the pin remains after an offline ocean merely queues')
+                asleep.built = NEW
+
+        live_request = live.request
+
+        def request(action):
+            self.assertEqual((NEW, NEW), (mainland.built_revision(), island.built_revision()))
+            events.append('atlantic')
+            return live_request(action)
+
+        fake.update_offline = install
+        live.request = request
+        asleep.stage_running = lambda: 'arctic' in events and asleep.built_revision() != NEW
+        result = daily_maintenance.run(fake, group, platform=mainland.platform,
+                                       sleep=finish_workers, clock=self.clock)
+        self.assertEqual({}, result['problems'])
+        self.assertEqual(NEW, asleep.built_revision())
+        self.assertEqual('greenland', events[0])
+        self.assertEqual({'atlantic', 'arctic'}, set(events[1:]))
+
+    def test_cancelled_coast_defers_its_ocean_but_not_other_lands(self):
+        group = self.load()
+        mainland = FakeHost('gaia', clients=1)
+        mainland.cancel_countdown = True
+        ocean = FakeHost('atlantic', coasts=[mainland])
+        unrelated = FakeHost('asia')
+        result = self.maintain(group, [ocean, mainland, unrelated])
+        self.assertEqual((OLD, OLD, NEW), (mainland.built, ocean.built, unrelated.built))
+        self.assertIn('waiting for coastal land builds: gaia', result['problems']['atlantic'])
+
     def test_a_failed_build_anywhere_changes_no_region(self):
         group = self.load()
         gaia, broken = FakeHost('gaia', clients=2), FakeHost('moon', stage_fails=True)
@@ -248,6 +306,64 @@ class DailyMaintenanceTests(unittest.TestCase):
         group = self.load(persistent=False)
         with self.assertRaisesRegex(shard_group.Refused, 'between rounds'):
             daily_maintenance.request(types.SimpleNamespace(process_alive=lambda pid: False), group, lambda *a: 1)
+
+    def test_match_pins_only_the_running_mainland_and_installs_exact_target(self):
+        group = self.load(maintenance={'warning_minutes': 0})
+        gaia = FakeHost('gaia', built=NEW)
+        europe = FakeHost('europe', built=OLD)
+        gateway = FakeHost('gateway', built=OLD, gateway=True)
+        offline = FakeHost('asia', built=OLD, up=False)
+        fake = self.this([gaia, europe, gateway, offline])
+        fake.fetch_remote = lambda *_: self.fail('matching must not fetch or target a newer ref')
+
+        def offline_update(group, name, platform):
+            self.assertEqual('asia', name)
+            self.assertEqual(NEW, daily_maintenance.active_pin(group, self.clock()))
+            offline.built = NEW
+            return {'accepted': {'asia': {'state': 'stopped'}}}
+
+        fake.update_offline = offline_update
+        result = daily_maintenance.run(fake, group, platform=gaia.platform, sleep=self.clock.sleep,
+                                       clock=self.clock, match_mainland=True)
+        self.assertEqual({'revision': NEW, 'problems': {}}, result)
+        self.assertEqual((1, 1, NEW), (europe.stage_requests, europe.handovers, europe.built))
+        self.assertEqual((0, 0, NEW), (gaia.stage_requests, gaia.handovers, gaia.built))
+        self.assertEqual((0, 0, OLD), (gateway.stage_requests, gateway.handovers, gateway.built))
+        self.assertEqual((1, 0, NEW), (offline.stage_requests, offline.handovers, offline.built))
+        saved = daily_maintenance.read_json(daily_maintenance.folder(group) / 'state.json')
+        self.assertEqual('match-mainland', saved['mode'])
+        self.assertEqual('installed while stopped', saved['regions']['asia']['result'])
+        self.assertFalse((daily_maintenance.folder(group) / 'pin.json').exists())
+
+    def test_match_refuses_without_an_awake_verified_mainland_or_forward_only_targets(self):
+        for condition in ('mainland stopped', 'mainland unknown', 'newer region'):
+            with self.subTest(condition=condition):
+                group = self.load()
+                gaia = FakeHost('gaia', built=None if condition == 'mainland unknown' else OLD,
+                                up=condition != 'mainland stopped')
+                other = FakeHost('europe', built=NEW)
+                regular_run = gaia.platform.run
+
+                def git(argv, **kwargs):
+                    if argv[1:3] == ['merge-base', '--is-ancestor'] and argv[-2:] == [NEW, OLD]:
+                        return 1, ''
+                    return regular_run(argv, **kwargs)
+
+                gaia.platform.run = git
+                with self.assertRaises(shard_group.Refused):
+                    daily_maintenance.run(self.this([gaia, other]), group, platform=gaia.platform,
+                                          sleep=self.clock.sleep, clock=self.clock, match_mainland=True)
+                self.assertEqual((0, 0, NEW), (other.stage_requests, other.handovers, other.built))
+                self.assertFalse((daily_maintenance.folder(group) / 'pin.json').exists())
+
+    def test_match_worker_uses_manual_group_action(self):
+        group = self.load()
+        started = []
+        answer = daily_maintenance.request(self.this([FakeHost('gaia')]), group,
+                                           lambda *args: started.append(args) or 123, match_mainland=True)
+        self.assertEqual('match-mainland', answer['action'])
+        self.assertEqual('match-mainland', started[0][0][-1])
+        self.assertNotIn('--scheduled', started[0][0])
 
     def test_lifecycle_takes_the_planned_notice(self):
         lifecycle = (ROOT / 'code/modules/persistence/nomads_lifecycle.dm').read_text(encoding='utf-8')

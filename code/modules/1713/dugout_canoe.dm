@@ -140,7 +140,11 @@
 // The two paddlers sit one behind the other along the hull, not on one spot.
 /obj/structure/vehicle/raft/dugout/update_icon()
 	..()
+	var/old_w = pixel_w
+	var/old_z = pixel_z
 	dress_hull()
+	if (on_rollers && (pixel_w != old_w || pixel_z != old_z))
+		dress_rollers()
 	seat_paddlers()
 
 // The hull's own look. An outrigger's sheet is three tiles square with the

@@ -84,7 +84,7 @@
 // movers, their total strength, the total draw on them, TRUE when a joined
 // line shaft is too long to turn). Movers within reach of A count, and so do
 // movers joined to A through transmission parts.
-/proc/mechanical_drive_load(atom/A)
+/proc/mechanical_drive_load(atom/A, update_source_icons = TRUE)
 	. = list(1, 0, 0, FALSE)
 	var/turf/T = get_turf(A)
 	if (!T)
@@ -119,7 +119,8 @@
 	var/capacity = 0
 	for (var/obj/structure/workshop_machine/mover/M in movers)
 		var/factor = M.current_factor()
-		M.update_icon()
+		if (update_source_icons)
+			M.update_icon()
 		if (factor < 1)
 			best = min(best, factor)
 			capacity += M.current_capacity()
@@ -151,8 +152,8 @@
 
 // The best drive reaching A: the share of hand time a step takes, or 1 when
 // nothing drives it.
-/proc/mechanical_drive_factor(atom/A)
-	return mechanical_load_factor(mechanical_drive_load(A))
+/proc/mechanical_drive_factor(atom/A, update_source_icons = TRUE)
+	return mechanical_load_factor(mechanical_drive_load(A, update_source_icons))
 
 // How long a step of base_time takes at this machine right now.
 /obj/structure/workshop_machine/proc/driven_time(base_time)
@@ -282,7 +283,7 @@ var/global/list/horse_gin_animals = list(
 
 // The share of a forging job of this recipe category left to do by hand with
 // this machine helping: 1 when it gives no help right now.
-/obj/structure/workshop_machine/proc/forge_factor(category)
+/obj/structure/workshop_machine/proc/forge_factor(category, preview = FALSE)
 	return 1
 
 // Called when a job this machine helps with starts.
@@ -299,11 +300,11 @@ var/global/list/horse_gin_animals = list(
 	var/idle_text = "Nothing is turning its cam shaft. It needs a turning prime mover next to it."
 
 // TRUE while a prime mover next to the fastened hammer is turning.
-/obj/structure/workshop_machine/trip_hammer/proc/striking()
-	return anchored && isturf(loc) && mechanical_drive_factor(src) < 1
+/obj/structure/workshop_machine/trip_hammer/proc/striking(preview = FALSE)
+	return anchored && isturf(loc) && mechanical_drive_factor(src, !preview) < 1
 
-/obj/structure/workshop_machine/trip_hammer/forge_factor(category)
-	return striking() ? TRIP_HAMMER_FACTOR : 1
+/obj/structure/workshop_machine/trip_hammer/forge_factor(category, preview = FALSE)
+	return striking(preview) ? TRIP_HAMMER_FACTOR : 1
 
 /obj/structure/workshop_machine/trip_hammer/examine(mob/user, distance)
 	..(user, distance)
@@ -327,22 +328,31 @@ var/global/list/horse_gin_animals = list(
 
 // How long a forging job of base_time takes at this anvil right now. category
 // is the recipe's anvil category, or null for work that has none.
-/obj/structure/anvil/proc/forge_time(base_time, category = null)
-	var/list/best = list()
-	var/list/share = list()
-	for (var/obj/structure/workshop_machine/W in range(1, src))
-		if (!W.forge_role)
-			continue
-		var/left = W.forge_factor(category)
-		if (left < 1 && (!best[W.forge_role] || left < share[W.forge_role]))
-			best[W.forge_role] = W
-			share[W.forge_role] = left
+/obj/structure/anvil/proc/forge_time(base_time, category = null, use_assists = TRUE, list/preview_cache = null)
+	var/list/assists = islist(preview_cache) ? preview_cache[category] : null
+	if (!islist(assists))
+		var/list/chosen = list()
+		var/list/factors = list()
+		for (var/obj/structure/workshop_machine/W in range(1, src))
+			if (!W.forge_role)
+				continue
+			var/left = W.forge_factor(category, !use_assists)
+			if (left < 1 && (!chosen[W.forge_role] || left < factors[W.forge_role]))
+				chosen[W.forge_role] = W
+				factors[W.forge_role] = left
+		assists = list(chosen, factors)
+		if (islist(preview_cache))
+			preview_cache[category] = assists
+	var/list/best = assists[1]
+	var/list/share = assists[2]
 	if (!length(best))
 		return base_time
 	var/time = base_time
 	for (var/role in best)
 		var/obj/structure/workshop_machine/W = best[role]
-		W.forge_used()
+		// forge_used() can spend steam-hammer fuel, not just play an animation.
+		if (use_assists)
+			W.forge_used()
 		time *= share[role]
 	return max(FORGE_MIN_TIME, round(time))
 

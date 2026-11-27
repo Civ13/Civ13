@@ -55,6 +55,24 @@ class DomesticationSource(unittest.TestCase):
         self.assertIn('/mob/living/simple_animal/on_runtime_spawn()', self.text)
         self.assertNotIn('/mob/living/simple_animal/New(', self.text)
 
+    def test_decay_does_not_replace_the_last_counted_feeding(self):
+        decay = proc_body(self.text, '/mob/living/simple_animal/proc/tame_current_trust(now = trap_now_minutes())')
+        self.assertIn('round((now - last) / TAME_FADE_AFTER)', decay)
+        self.assertNotRegex(decay, r'(?m)^\s*tame_(?:fed|trust)\s*=')
+        feeding = proc_body(self.text, '/mob/living/simple_animal/proc/tame_feeding(mob/user, now = trap_now_minutes())')
+        self.assertLess(feeding.index('now - last < TAME_FEED_GAP'), feeding.index('tame_current_trust(now) + 1'))
+        self.assertLess(feeding.index('tame_current_trust(now) + 1'), feeding.index('tame_fed = trap_minutes_text(now)'))
+        examine = proc_body(self.text, '/mob/living/simple_animal/proc/tame_state_text()')
+        self.assertIn('var/trust = tame_current_trust()', examine)
+        self.assertNotRegex(examine, r'(?m)^\s*tame_(?:fed|trust)\s*=')
+
+    def test_only_successful_hand_fed_hay_earns_trust(self):
+        hay = (ROOT / 'code/modules/1713/hay.dm').read_text(encoding='utf-8')
+        hand = proc_body(hay, '/mob/living/simple_animal/proc/feed_hay(obj/item/stack/hay/H, mob/user)')
+        self.assertLess(hand.index('if (!H.use(1))'), hand.index('tame_feeding(user)'))
+        self.assertNotIn('tame_feeding', proc_body(hay, '/mob/living/simple_animal/proc/eat_nearby_hay()'))
+        self.assertNotIn('tame_feeding', proc_body(hay, '/mob/living/simple_animal/proc/eat_hay_bale(obj/structure/hay_bale/B)'))
+
     def test_no_forbidden_patterns(self):
         self.assertIsNone(re.search(r'(?<![a-z_])(spawn|input)\(', self.text))
         self.assertNotIn(' in world', self.text)

@@ -123,7 +123,7 @@ internal sealed class HostSettingsDialog : Form {
         ask.Controls.Add(panel);
         ask.AcceptButton = ok;
         ask.CancelButton = cancel;
-        if (ask.ShowDialog(this) != DialogResult.OK) return;
+        if (LauncherSkin.Show(ask, this) != DialogResult.OK) return;
         var value = input.Text.Trim();
         if (!HostSettings.TokenValid(value)) {
             result.Text = "That does not look like a GitHub token (letters, digits and _ only, at least 20). Nothing changed.";

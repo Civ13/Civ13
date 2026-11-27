@@ -127,6 +127,41 @@ var/door_fittings_runtime = null
 	sleep(12)
 	door_fittings_assert(!D.state, "shuts_once_clear")
 
+	// A late arrival can enter after the closer checked the doorway.
+	door_fittings_open(D)
+	D.door_schedule_close(1)
+	sleep(4)
+	door_fittings_assert(D.isSwitchingStates && D.state && !D.density, "automatic_close_animating")
+	west.forceMove(D.loc)
+	sleep(12)
+	door_fittings_assert(D.state && !D.isSwitchingStates && !D.density && !D.opacity, "late_arrival_aborts_automatic_close")
+	door_fittings_assert(D.icon_state == "[D.basic_icon]open", "aborted_close_remains_visually_open")
+	west.forceMove(locate(4, 5, 1))
+	sleep(30)
+	door_fittings_assert(!D.state && D.density, "late_arrival_close_retries")
+
+	// Manually closing still works; it must not eat either hold-open item.
+	door_fittings_open(D)
+	D.SwitchState() // a headless mob cannot pass the hand verb's client gate
+	door_fittings_assert(D.isSwitchingStates && D.state, "manual_close_animating")
+	var/closing_token = D.close_token
+	var/obj/item/door_wedge/moving_wedge = new
+	door_fittings_hands(west, moving_wedge, null)
+	D.attackby(moving_wedge, west)
+	door_fittings_assert(west.r_hand == moving_wedge && !QDELETED(moving_wedge) && !D.door_wedge && D.close_token == closing_token, "moving_door_keeps_wedge_in_hand")
+	var/obj/item/fusible_link/moving_link = new
+	door_fittings_hands(west, moving_link, null)
+	D.attackby(moving_link, west)
+	door_fittings_assert(west.r_hand == moving_link && !QDELETED(moving_link) && !D.fire_link_holding && D.close_token == closing_token, "moving_door_keeps_link_in_hand")
+	sleep(12)
+	door_fittings_assert(!D.state && D.density, "manual_close_finishes")
+	door_fittings_open(D)
+	D.attackby(moving_link, west)
+	door_fittings_assert(D.fire_link_holding && QDELETED(moving_link), "settled_open_door_accepts_link")
+	D.attack_hand(west)
+	door_fittings_assert(!D.fire_link_holding, "settled_open_door_releases_link")
+	sleep(57)
+
 	// A wedge keeps it open; pulling it out by hand takes it back and the door shuts.
 	var/obj/item/door_wedge/wedge = new
 	door_fittings_hands(west, wedge, null)

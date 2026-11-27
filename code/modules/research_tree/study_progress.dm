@@ -7,7 +7,7 @@
 // of the same chapter or manual continues it.
 
 /mob/living/human
-	var/list/study_progress = null // node id => fraction of it read (0-1)
+	var/list/study_progress = null // node id => fraction of it read (0 to less than 1)
 
 /mob/living/human/proc/study_fraction(node_id)
 	if (!islist(study_progress))
@@ -16,7 +16,7 @@
 	return isnum(value) ? clamp(value, 0, 1) : 0
 
 /mob/living/human/proc/study_percent(node_id)
-	return round(study_fraction(node_id) * 100)
+	return min(99, round(study_fraction(node_id) * 100))
 
 /mob/living/human/proc/clear_study_progress(node_id)
 	if (islist(study_progress))
@@ -26,7 +26,10 @@
 /mob/living/human/proc/note_study_progress(node_id, fraction)
 	if (!valid_recipe_node_id(node_id))
 		return
-	fraction = round(clamp(fraction, 0, 0.99), 0.001)
+	// Keep sub-percent credits between sessions without rounding each award.
+	// Leave room below 1 even when a completed wait still needs its caller's
+	// final checks. The saved value must also stay below 1 after JSON encoding.
+	fraction = clamp(fraction, 0, 0.999999)
 	if (fraction <= 0)
 		clear_study_progress(node_id)
 		return
@@ -40,18 +43,22 @@
 		for (var/node_id in value)
 			var/fraction = value[node_id]
 			if (valid_recipe_node_id(node_id) && isnum(fraction) && fraction > 0 && fraction < 1)
-				result[node_id] = round(fraction, 0.001)
+				result[node_id] = min(fraction, 0.999999)
 	return result
 
 // Time still needed to finish node_id when a full read takes total_time.
 /mob/living/human/proc/study_time_left(node_id, total_time)
 	return max(1, round(total_time * (1 - study_fraction(node_id))))
 
+// Farsighted readers take longer (do_reading). Use the same rounding and
+// eyesight adjustment for the book's preview and the actual start message.
+/mob/living/human/proc/study_minutes_estimate(left)
+	return round(left * farsight_reading_mult() / 600, 0.5)
+
 // Says where the reader starts. Returns the time left to read.
 /mob/living/human/proc/begin_study_message(node_id, total_time, what, helper_text = "")
 	var/left = study_time_left(node_id, total_time)
-	// Farsighted readers take longer (do_reading); say so in the estimate.
-	var/minutes = round(left * farsight_reading_mult() / 600, 0.5)
+	var/minutes = study_minutes_estimate(left)
 	var/minutes_text = minutes > 0 ? "about [minutes] minute\s" : "less than a minute"
 	if (study_fraction(node_id) > 0)
 		to_chat(src, SPAN_NOTICE("You pick up [what][helper_text] where you left off, [study_percent(node_id)]% of the way through. Finishing takes [minutes_text]."))

@@ -259,8 +259,7 @@ var/global/list/frame_hives = list()
 			var/speed = 1 + drawn_frames / frames
 			honeycombs = min(honeycombs + bee_count * f * FRAME_HIVE_FILL_RATE * speed, frames * 100)
 		// Room on the frames keeps most colonies from swarming.
-		if (swarm_season && bee_count >= 80 && prob(frames >= maxFrames / 2 ? 2 : 8))
-			cast_swarm(src, 40)
+		if (swarm_season && bee_count >= 80 && prob(frames >= maxFrames / 2 ? 2 : 8) && cast_swarm(src, 40))
 			bee_count -= 40
 	else if (prob(bee_count * 0.1))
 		if (honeycombs >= 25)
@@ -376,9 +375,12 @@ var/global/list/frame_hives = list()
 			return
 		if (QDELETED(src) || QDELETED(user) || !Adjacent(user))
 			return
+		var/turf/site = get_turf(src)
+		if (!site)
+			return
 		to_chat(user, SPAN_NOTICE("You take all filled honeycombs out."))
-		new /obj/item/weapon/reagent_containers/food/snacks/honeycomb(loc)
-		new /obj/item/honey_frame(loc)
+		new /obj/item/weapon/reagent_containers/food/snacks/honeycomb(site)
+		new /obj/item/honey_frame(site)
 		qdel(src)
 		return
 

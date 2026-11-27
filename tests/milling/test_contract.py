@@ -64,6 +64,40 @@ class Balance(unittest.TestCase):
         self.assertNotIn('mercury', block)
 
 
+class Accounting(unittest.TestCase):
+    def test_mills_admit_water_then_tailings_then_spend(self):
+        for variant in ("drum", "table"):
+            with self.subTest(variant=variant):
+                body = SOURCE.split(f"/{variant}/stamp_one_stone(", 1)[1].split("\n/", 1)[0]
+                steps = (
+                    "if (!mill_water(TRUE))",
+                    "if (!T.deposit_small_resource(",
+                    "if (!mill_water())",
+                    "take_feed()",
+                )
+                for step in steps:
+                    self.assertIn(step, body)
+                self.assertEqual(sorted(map(body.index, steps)), list(map(body.index, steps)))
+        self.assertIn("check_only ? station_has_water() : station_take_water(null)", SOURCE)
+
+    def test_trommel_checks_sluice_discharge_before_consuming_inputs(self):
+        body = SOURCE.split("/trommel/stamp_one_stone(", 1)[1].split("\n/", 1)[0]
+        steps = (
+            "var/turf/T = get_turf(S)",
+            "for (var/obj/item/stack/stack in T)",
+            "if (++stack_count >= output_stack_limit)",
+            'mill_stop_reason = "clear the sluice output tile and restart it"',
+            "mill_water()",
+            "take_feed()",
+            "pay_dirt_wash(",
+            "S.spend_mercury()",
+            "pay_dirt_output(found, T)",
+        )
+        for step in steps:
+            self.assertIn(step, body)
+        self.assertEqual(sorted(map(body.index, steps)), list(map(body.index, steps)))
+
+
 class Wiring(unittest.TestCase):
     def test_node_registered_after_its_prerequisites(self):
         self.assertIn('"industrial_milling", "Industrial Milling", "Industrial", 235, 3, RESEARCH_MODE_ANALYSIS, list("amalgamation","steam_power"), 4)', NODES)

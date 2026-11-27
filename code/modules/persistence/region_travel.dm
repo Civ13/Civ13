@@ -284,7 +284,7 @@ var/global/list/region_travel_carry_types = list(
 			P["faction_leader"] = 1
 	// A crewed flight (space/lander.dm) says which lander and where it lands.
 	for(var/key in extra)
-		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "sea_edge", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon", "station_plan", "port"))
+		if(key in list("lander", "landing", "surveyed", "rough", "return", "orbit", "cargo", "sortie", "seats", "sea_edge", "voyage", "ship", "edge", "mount", "led", "cart", "bike", "wagon", "station_plan", "port", "bike_id"))
 			P[key] = extra[key]
 		// Where an admin chose to land them (region_admin_send.dm).
 		else if(key == "admin_send")
@@ -970,10 +970,19 @@ var/global/list/region_stopped_alerted = list()
 		for(var/mob/living/human/H in ready)
 			stayed[H] = "The trail changed. Try again."
 		return
+	var/build_problem = transfer_bridge.travel_build_problem(expected)
+	if(build_problem || QDELETED(src) || destination != expected || closed_reason())
+		for(var/mob/living/human/H in ready)
+			stayed[H] = build_problem || "The trail changed. Try again."
+		return
 	var/list/payloads = list()
 	var/list/packed = list()
 	var/total = 0
 	for(var/mob/living/human/H in ready)
+		// The status checks above can yield. Never pack a body that moved away.
+		if(QDELETED(H) || H.loc != loc && H.loc != src && !Adjacent(H))
+			stayed[H] = "You are too far from the trail."
+			continue
 		var/refused = departure_refused(H)
 		if(refused)
 			stayed[H] = refused

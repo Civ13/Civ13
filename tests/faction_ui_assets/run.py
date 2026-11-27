@@ -19,10 +19,13 @@ PINNED_BANNER = 'DM compiler version ' + PINNED_BYOND
 PREFIX = '.faction_ui_assets_ci'
 ASSETS = 'code/modules/client/asset_cache.dm'
 CREATION = 'code/game/mob/groups/faction_creation.dm'
+TGUI = 'code/modules/nano/tgui.dm'
+NATIVE_CHECK_COUNT = 21
 OMISSION_FAILURES = {
-    'cold lookup registers once', 'cold cache contains JavaScript',
-    'cold cache contains modern screen assets', 'cold common contains styles',
-    'repeat lookup and disconnected sends do not register again',
+    'cold TGUI lookup registers once', 'cold cache contains versioned modern assets',
+    'repeat TGUI lookup and disconnected send do not register again', 'production HTML names required resources',
+    'cold NanoUI lookup registers once', 'cold classic cache contains JavaScript', 'cold classic common contains styles',
+    'repeat NanoUI lookups and disconnected sends do not register again',
 }
 
 
@@ -42,18 +45,25 @@ def sources(omit_registration=False):
     # Read-only registration count; original flist/fcopy_rsc/cache code remains.
     assets = replace_once(assets, '/datum/asset/nanoui/register()\n',
                           '/datum/asset/nanoui/register()\n\tfaction_ui_registrations++\n')
-    creation = replace_once((ROOT / CREATION).read_text(encoding='utf-8'),
-                            'ui = new /datum/nanoui/tgui(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)',
-                            'ui = new /datum/nanoui/tgui/faction_assets_probe(user, src, ui_key, "faction_creation.tmpl", name, 620, 900)')
+    assets = replace_once(assets, '/datum/asset/simple/civ13_tgui/register()\n',
+                          '/datum/asset/simple/civ13_tgui/register()\n\tfaction_tgui_registrations++\n')
+    # The creation handler calls the shared opener. Keep the real manager,
+    # state and model path; change only the open() receiver for this template.
+    constructor = ('new /datum/nanoui/tgui(user, src, ui_key, template, title, width, height, '
+                   '_state = state ? state : default_state)')
+    tgui = replace_once((ROOT / TGUI).read_text(encoding='utf-8'), '\tui = ' + constructor + '\n',
+                        '\tif (template == "faction_creation.tmpl")\n\t\tui = '
+                        + constructor.replace('/datum/nanoui/tgui(', '/datum/nanoui/tgui/faction_assets_probe(')
+                        + '\n\telse\n\t\tui = ' + constructor + '\n')
     dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
     replacements = [('code/world.dm', '_world.dm'), ('code/controllers/mc/globals.dm', '_globals.dm'),
-                    (ASSETS, '_assets.dm'), (CREATION, '_creation.dm')]
+                    (ASSETS, '_assets.dm'), (TGUI, '_tgui.dm')]
     for path, suffix in replacements:
         dme = replace_once(dme, path.replace('/', '\\'), PREFIX + suffix)
     dme = re.sub(r'^#include ".*\.dmm".*$', '', dme, flags=re.M)
     dme += '\n#include "tests/faction_ui_assets/probe.dm"\n'
     return {PREFIX + '_world.dm': world, PREFIX + '_globals.dm': globals_source,
-            PREFIX + '_assets.dm': assets, PREFIX + '_creation.dm': creation, PREFIX + '.dme': dme}
+            PREFIX + '_assets.dm': assets, PREFIX + '_tgui.dm': tgui, PREFIX + '.dme': dme}
 
 
 def prepare(destination, omit_registration=False):
@@ -63,7 +73,7 @@ def prepare(destination, omit_registration=False):
     destination.mkdir(parents=True, exist_ok=True)
     for name, text in generated.items():
         (destination / name).write_text(text, encoding='utf-8', newline='\n')
-    source_paths = [ASSETS, CREATION, 'code/game/mob/groups/factions.dm',
+    source_paths = [ASSETS, CREATION, TGUI, 'code/game/mob/groups/factions.dm',
                     'code/game/gameticker.dm', 'code/modules/nano/_nanoui.dm',
                     'code/modules/nano/nanomanager.dm', 'code/modules/nano/modules/nano_module.dm',
                     'tests/faction_ui_assets/probe.dm', 'tests/faction_ui_assets/run.py']
@@ -75,7 +85,7 @@ def prepare(destination, omit_registration=False):
                     generated_sha256={p: hashlib.sha256(s.encode()).hexdigest() for p, s in generated.items()},
                     seams=['existing isolated_startup disables game/global startup and all maps',
                            'inert human/map subtype constructors; simulated restored phase',
-                           'read-only NanoUI register counter',
+                           'read-only NanoUI and TGUI register counters',
                            'UI subtype captures actual get_html instead of browse/winset',
                            'port always closed; Topic refused'],
                     limits='No client/resource-arrival acknowledgement, game Topic action, full save import, browser DOM or live acceptance')
@@ -85,7 +95,7 @@ def prepare(destination, omit_registration=False):
 
 def verify_result(result, omission):
     checks = result.get('checks', [])
-    if result.get('port') != 0 or result.get('check_count') != 18 or len(checks) != 18:
+    if result.get('port') != 0 or result.get('check_count') != NATIVE_CHECK_COUNT or len(checks) != NATIVE_CHECK_COUNT:
         raise ValueError('Incomplete or listening native fixture')
     if len({c['label'] for c in checks}) != len(checks):
         raise ValueError('Repeated native labels')

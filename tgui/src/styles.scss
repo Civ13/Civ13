@@ -202,6 +202,7 @@ button.rs-row-main { cursor: pointer; }
 
 .paper-editor form { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
 .paper-editor .paper-controls { display: flex; flex-wrap: wrap; gap: 12px; }
+.paper-editor .paper-controls label { min-width: 0; max-width: 100%; }
 .paper-editor label { display: flex; flex-direction: column; gap: 4px; }
 .paper-editor select, .paper-editor textarea { font: inherit; color: var(--civ-text); background: var(--civ-bg); border: 1px solid var(--civ-line); border-radius: 3px; padding: 4px 6px; }
 .paper-editor select:focus-visible, .paper-editor textarea:focus-visible { outline: 2px solid var(--civ-highlight); outline-offset: 2px; }

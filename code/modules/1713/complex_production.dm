@@ -252,7 +252,9 @@
 	var/gelatin_drying = FALSE
 	var/gelatin_batch_id = 0
 
-/obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)
+/obj/structure/drying_rack/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)
+	if (is_tool(W, TOOL_WRENCH))
+		return ..()
 	if(istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/container = W
 		if(!container.is_open_container())
@@ -422,9 +424,9 @@
 		to_chat(user, "You start separating the chicken parts...")
 		if (do_after(user, 75, src))
 			to_chat(user, "You finish cutting the chicken.")
-			new/obj/item/weapon/reagent_containers/food/snacks/chicken/breast(loc)
-			new/obj/item/weapon/reagent_containers/food/snacks/chicken/wing(loc)
-			new/obj/item/weapon/reagent_containers/food/snacks/chicken/drumstick(loc)
+			for (var/part_type in list(/obj/item/weapon/reagent_containers/food/snacks/chicken/breast, /obj/item/weapon/reagent_containers/food/snacks/chicken/wing, /obj/item/weapon/reagent_containers/food/snacks/chicken/drumstick))
+				var/obj/item/weapon/reagent_containers/food/snacks/chicken/part = new part_type(loc)
+				part.radiation = radiation
 			qdel(src)
 		return
 	..()
@@ -700,10 +702,11 @@
 		return ..() // A slice is already the smallest portion.
 	if (is_tool(W, TOOL_KNIFE))
 		to_chat(user, "You slice the salami up.")
-		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
-		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
-		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
-		new/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice(user.loc)
+		var/portion_count = 4
+		var/reagents_per_slice = reagents.total_volume / portion_count
+		for (var/i = 1 to portion_count)
+			var/obj/item/weapon/reagent_containers/food/snacks/sausage/salted/salami/slice/portion = new(user.loc)
+			fill_food_slice(portion, reagents_per_slice)
 		qdel(src)
 		return
 

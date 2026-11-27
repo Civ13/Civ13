@@ -238,6 +238,23 @@ public static class HostBoard {
         return busy;
     }
 
+    // Deploy's build step is deliberately separate from the later handover and service restart.
+    // Ignore unrelated output: the child process also writes compiler and status lines.
+    public static bool DeployBuilding(bool current, string line) =>
+        line.StartsWith("[2/5] Building the update beside ", StringComparison.Ordinal) ? true :
+        line.StartsWith("[3/5]", StringComparison.Ordinal) || line.StartsWith("[4/5]", StringComparison.Ordinal) ||
+        line.StartsWith("[5/5]", StringComparison.Ordinal) ? false : current;
+
+    public static bool IsPriorityRegion(string statusOutput, string region) {
+        if (LastObject(statusOutput) is not { } document) return false;
+        using (document) {
+            var json = document.RootElement;
+            return Bool(json, "ok") && json.TryGetProperty("regions", out var regions) && regions.ValueKind == JsonValueKind.Object
+                && regions.TryGetProperty(region, out var entry) && entry.ValueKind == JsonValueKind.Object
+                && (Str(json, "mainland") == region || Str(entry, "kind") == "GATEWAY");
+        }
+    }
+
     // One card per region of shard_group.py status, in the group's order. mainland: that region's id.
     // behind: RegionsBehind of the last check-update, or null before any check has answered.
     public static IReadOnlyList<RegionCard> Regions(string statusOutput, IReadOnlyDictionary<string, int>? behind, string? mainland = null) {

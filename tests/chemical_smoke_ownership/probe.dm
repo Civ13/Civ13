@@ -58,7 +58,6 @@ var/list/smoke_ownership_particles = list()
     initialize_chemical_reactions()
     processes.chemistry.setup()
     config = new
-    config.tts_on = FALSE
     config.webhook_can_fire = FALSE
     map = new /obj/map_metadata/smoke_ownership_probe
     var/turf/T = locate(5,5,1)

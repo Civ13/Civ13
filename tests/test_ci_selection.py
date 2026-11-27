@@ -354,6 +354,22 @@ class SelectionTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Unregistered medical-care'):
                 selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
 
+    def test_medical_care_splint_probe_remains_manual_only(self):
+        path = 'tests/medical_care/splint_probe.dm'
+        self.assertEqual(selection.MEDICAL_CARE_MANUAL_NATIVE, {path})
+        self.assertNotIn(path, selection.MEDICAL_CARE_OFFLINE_TESTS)
+        with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):
+            self.assertEqual(selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request'), [])
+            with patch.object(selection, 'MEDICAL_CARE_MANUAL_NATIVE', frozenset()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered medical-care'):
+                    selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+        for suffix in ('.dm', '.py', '.ps1', '.sh'):
+            unreviewed = 'tests/medical_care/new_probe' + suffix
+            with self.subTest(path=unreviewed), patch.object(selection.subprocess, 'check_output',
+                                                            return_value=(unreviewed + '\0').encode()):
+                with self.assertRaisesRegex(RuntimeError, 'Unregistered medical-care'):
+                    selection.introduced_tests('a' * 40, 'b' * 40, 'pull_request')
+
     def test_held_movement_offline_admission_is_exact(self):
         path = 'tests/held_movement/test_held_movement.py'
         with patch.object(selection.subprocess, 'check_output', return_value=(path + '\0').encode()):

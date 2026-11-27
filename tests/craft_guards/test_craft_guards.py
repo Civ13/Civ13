@@ -32,7 +32,7 @@ EXPECTED = {
     'particle_board_afloat': (85, True, False),
     'religious_work': (90, False, False),
     'handle': (94, False, True),
-    'needs': (95, False, True),
+    'needs': (95, False, False),
     'tribe_knowledge': (100, False, False),
 }
 DECL = re.compile(r'^/datum/craft_guard/([\w/]+)\r?\n((?:\t[^\n]*\r?\n)*)', re.M)

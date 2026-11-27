@@ -1,20 +1,37 @@
 # Player Houses
 
-In a persistent Nomads or Civilizations region, use **Faction → House → Player
-Houses**. A character without a house can register a local charter. A steward
-can invite nearby living characters as members or co-stewards. Invitations
-require the character's explicit acceptance. Appoint a co-steward before you
-need succession: a steward's death ends that life's authority, even after
-revival, and does not dissolve the charter. If no steward can act, an administrator can use **Recover Player House** on
-the existing charter after verifying the intended successor. The successor
-must accept, and staff must record a reason. This changes only stewardship.
+In a persistent Nomads or Civilizations region that supports houses, use
+**Faction → House → Player Houses** to register one house for your BYOND
+account. Every character owned by your account belongs to that house in the
+region. Switching characters, dying, or being revived does not change the
+house. An action still needs your current, authenticated character. A shared
+surname, adoption, faction or invitation cannot add another player's character.
 
-A surname, faction, or another character slot on the same BYOND account does
-not grant membership. Houses are regional, not synchronized or travelled as
-a group. Historical saves get an empty charter registry. The first draft
-does not attach companies, migrate stock, restore any prior estate, or alter
-profits or faction permissions.
+## Companies
 
-The durable world schema writes v8 and reads v1–v8. Keep the last v7
-generation when rolling back a v8 writer to an older server build. The house
-registry contains plain text names, IDs, and role mappings, not mob references.
+In a house-enabled region, confirm your account's house when founding a
+company. The founding character receives the initial stock. A character who
+holds all the stock of an existing unchartered company can use **Charter
+Existing Company**. Existing split-share companies remain shareholder-run
+until voluntarily chartered under the existing rules.
+
+All eligible characters of the owning account can operate the company's stalls
+and manage its fuel pumps. This remains true even after a founder dies or sells
+their shares. Trading shares, taking dividends, company fire teams and estates
+still run on the existing character-level stock records. Creating or changing
+a house charter does not transfer stock, pay dividends, or restore estates.
+
+## Legacy charters and recovery
+
+The durable v8 house registry keeps the original IDs, names, old roster
+evidence, and company links. Ownerless or conflicting links are not assigned
+by roster order, surname, or share ownership. Their company-management actions
+are unavailable while shares, balances, and ordinary trading remain unchanged.
+If affected, record the region, named house and linked companies and contact
+staff. Staff need independent records that establish one verified account as
+the rightful owner, plus a validated copy of the affected save before any
+separately authorized reconciliation. There is no in-game reassignment command.
+
+The writer still reads and writes the same durable map field schema (v8, with
+v1–v7 readers). Keep a tested pre-update backup; do not downgrade to an older
+invitation-based writer to recover access.

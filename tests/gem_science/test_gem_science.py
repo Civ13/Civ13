@@ -95,6 +95,39 @@ class GemScienceTest(unittest.TestCase):
         # A boule is not a gemstone, so it has no trade value as a stone.
         self.assertNotIn('/obj/item/stack/gemstone/ruby_boule', self.text)
 
+    def test_flame_fusion_skips_blocked_furnaces_and_rechecks_the_selected_one(self):
+        ruby = self.text.split('/obj/item/stack/emery_powder/attack_self(mob/user)', 1)[1].split('/obj/item/ruby_boule', 1)[0]
+        before, after = ruby.split('do_after(H, 100, F)', 1)
+        self.assertIn('if (candidate.is_open_flame() && candidate.Adjacent(H))', before)
+        self.assertIn('!F.is_open_flame() || !F.Adjacent(H) || loc != H || !use(BOULE_EMERY)', after)
+        self.assertNotIn(' in range(', after)
+
+    def test_ruby_bearings_recheck_both_tools_and_reach_before_output(self):
+        bearing = self.text.split('/obj/item/ruby_boule/attackby', 1)[1].split('/obj/structure/lapping_wheel/proc/make_ruby_rod', 1)[0]
+        before, after = bearing.split('do_after(H, 80, src)', 1)
+        self.assertIn('var/obj/item/hammer = H.get_inactive_hand()', before)
+        for condition in ('H.get_active_hand() != W', '!is_tool(W, TOOL_CHISEL)', 'H.get_inactive_hand() != hammer',
+                          '!is_tool(hammer, TOOL_HAMMER)', '!ruby_workpiece_reachable(src, H)'):
+            self.assertIn(condition, after)
+            self.assertLess(after.index(condition), after.index('new(get_turf(src))'))
+
+    def test_ruby_rod_checks_wheel_reach_before_charging(self):
+        rod = self.text.split('/obj/structure/lapping_wheel/proc/make_ruby_rod', 1)[1].split('/obj/item/ruby_rod\n', 1)[0]
+        before, after = rod.split('do_after(H, 100, src)', 1)
+        self.assertIn('!Adjacent(H)', before)
+        self.assertIn('QDELETED(src) || !Adjacent(H) || QDELETED(B) || B.loc != H', after)
+        self.assertLess(after.index('!Adjacent(H)'), after.index('charges -= ROD_CHARGES'))
+
+    def test_ruby_targets_keep_held_route_but_require_floor_reach(self):
+        helper = self.text.split('/proc/ruby_workpiece_reachable', 1)[1].split('/obj/item/stack/emery_powder/attack_self', 1)[0]
+        self.assertIn('target.loc == H || (isturf(target.loc) && target.Adjacent(H))', helper)
+        retrofit = self.text.split('binoculars/binoculars/attackby', 1)[1].split('// ---- Gem testing:', 1)[0]
+        before, after = retrofit.split('do_after(H, 60, src)', 1)
+        self.assertIn('W.loc != H || !ruby_workpiece_reachable(src, H)', before)
+        self.assertIn('QDELETED(W) || W.loc != H || !ruby_workpiece_reachable(src, H)', after)
+        self.assertLess(after.index('!ruby_workpiece_reachable(src, H)'), after.index('qdel(W)'))
+        self.assertIn('if (was_held)\n\t\t\tH.put_in_hands(R)', after)
+
     def test_gem_testing(self):
         recipes = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
         nodes = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')

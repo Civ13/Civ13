@@ -7,8 +7,8 @@ import { Bar, FilterChips, RecipeTags, matches, minutes, stateTone } from './res
 
 type ChapterFilter = 'all' | 'study' | 'locked' | 'known';
 const filters: [ChapterFilter, string][] = [['all', 'All'], ['study', 'Ready to study'], ['locked', 'Needs groundwork'], ['known', 'Known']];
-const order: Record<string, number> = { study: 0, locked: 1, known: 2 };
-const labels: Record<string, string> = { study: 'Ready to study', locked: 'Needs groundwork', known: 'Known' };
+const order: Record<string, number> = { study: 0, blocked: 1, locked: 2, known: 3 };
+const labels: Record<string, string> = { study: 'Ready to study', blocked: 'Cannot study yet', locked: 'Needs groundwork', known: 'Known' };
 
 // The window for a book that holds research: what is in it, what the reader
 // can study now, what is still missing, and what they could write into it.
@@ -26,7 +26,7 @@ export function ResearchBook(ui: ScreenProps) {
   for (const row of chapters) if (found(row)) { counts.all++; counts[row.state] = (counts[row.state] ?? 0) + 1; }
   const shown = chapters.filter(row => found(row) && (filter === 'all' || row.state === filter))
     .sort((a, b) => (order[a.state] ?? 9) - (order[b.state] ?? 9) || str(a.name).localeCompare(str(b.name)));
-  const canWrite = !!viewer.pen && Number(viewer.sheets) > 0 && !data.busy;
+  const canWrite = !!viewer.pen && Number(viewer.sheets) > 0 && !viewer.write_hands_problem && !data.busy;
   const offered = writable.filter(row => matches(query, row.name, row.era_name));
   return <div className="rs-bookwin">
     <Section title={str(data.name) || 'Book'}>
@@ -42,16 +42,17 @@ export function ResearchBook(ui: ScreenProps) {
       <div className="rs-list">{shown.map(row => {
         const isOpen = expanded === String(row.id);
         const missing = list(row.groundwork).filter(item => !item.known);
+        const studyTime = Number(row.study_minutes) > 0 ? `about ${minutes(row.study_minutes)}` : 'less than a minute';
         return <div key={row.id} className="rs-row rs-row-wrap">
           <button type="button" className="rs-row-main" aria-expanded={isOpen} onClick={() => setExpanded(isOpen ? null : String(row.id))}>
             <strong>{str(row.name)}</strong>
-            <small>{str(row.era_name)} - {str(row.discipline)}{row.state === 'locked' && missing.length ? ` - first learn ${missing.map(item => str(item.name)).join(', ')}` : ''}{row.state === 'study' ? `${Number(row.read_percent) > 0 ? ` - ${row.read_percent}% read` : ''} - about ${minutes(row.study_minutes)}${Number(row.read_percent) > 0 ? ' left' : ''}${row.tutor ? ` with ${str(row.tutor)} tutoring` : ''}` : ''}</small>
+            <small>{str(row.era_name)} - {str(row.discipline)}{row.state === 'locked' && missing.length ? ` - first learn ${missing.map(item => str(item.name)).join(', ')}` : ''}{row.read_problem ? ` - ${str(row.read_problem)}` : ''}{row.state === 'study' ? `${Number(row.read_percent) > 0 ? ` - ${row.read_percent}% read` : ''} - ${studyTime}${Number(row.read_percent) > 0 ? ' left' : ''}${row.tutor ? ` with ${str(row.tutor)} tutoring` : ''}` : ''}</small>
           </button>
           <Pill tone={stateTone(row.state)}>{labels[row.state] ?? str(row.state)}</Pill>
           <span className="rs-row-action">{row.state === 'study' && <Action ui={ui} action="study" value={row.id}>{Number(row.read_percent) > 0 ? 'Continue' : 'Study'}</Action>}{row.state === 'known' && !!data.held && <Action ui={ui} action="aloud" value={row.id} disabled={!!data.busy}>Read aloud</Action>}</span>
           {isOpen && <div className="rs-row-detail">
             <h3>Groundwork</h3>
-            {list(row.groundwork).length ? <ul className="rs-checks">{list(row.groundwork).map(item => <li key={item.id} className={item.known ? 'rs-ok' : 'rs-missing'}><span aria-hidden="true">{item.known ? '✓' : '✗'}</span> {str(item.name)} <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None. Anyone can study this.</p>}
+            {list(row.groundwork).length ? <ul className="rs-checks">{list(row.groundwork).map(item => <li key={item.id} className={item.known ? 'rs-ok' : 'rs-missing'}><span aria-hidden="true">{item.known ? '✓' : '✗'}</span> {str(item.name)} <span className="rs-dim">{item.known ? 'known' : 'not known yet'}</span></li>)}</ul> : <p className="rs-dim">None required.</p>}
             <h3>Teaches {list(row.recipe_names).length} recipes</h3><RecipeTags names={row.recipe_names} />
             {!!row.effect && <><h3>Knowing it</h3><p>{str(row.effect)}</p></>}
             {!!data.held && <p><Action ui={ui} action="rip" value={row.id} disabled={!!data.busy}>Tear this chapter out</Action></p>}
@@ -68,6 +69,7 @@ export function ResearchBook(ui: ScreenProps) {
         <span className={`tag ${viewer.sheets ? '' : 'rs-warn'}`}>{Number(viewer.sheets) || 0} blank sheet{Number(viewer.sheets) === 1 ? '' : 's'}</span>
         <span className="tag">stamina {viewer.stamina}</span>{!!viewer.desk && <span className="tag">writing desk beside you</span>}</p>
       {!!data.held && <p className="rs-dim">Writing takes both hands: put the book down beside you and Alt-click it to open this window, with a pencil or pen in one hand. A blank sheet is taken from your other hand or your bags.</p>}
+      {!data.held && !!viewer.pen && !!viewer.write_hands_problem && <p className="rs-dim">{str(viewer.write_hands_problem)} Alt-click the book again after changing what you hold.</p>}
       {!writable.length ? <p className="rs-dim">Everything you know is already in this book.</p> : <div className="rs-list">{offered.map(row => <div key={row.id} className="rs-row">
         <span className="rs-row-main"><strong>{str(row.name)}</strong><small>{str(row.era_name)} - about {minutes(row.write_minutes)}, {row.stamina} stamina and one blank sheet</small></span>
         <span className="rs-row-action"><Action ui={ui} action="write" value={row.id} disabled={!canWrite || Number(viewer.stamina) < Number(row.stamina)}>Write</Action></span>

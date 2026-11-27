@@ -70,6 +70,7 @@
 	var/tourniquet = FALSE				// A tourniquet is tightened on this limb.
 	var/tourniquet_ticks = 0			// Life ticks the tourniquet has been on (not world.time, so it survives saves).
 	var/tourniquet_makeshift = 0		// Rope or twine: Life ticks until it slips loose (0 = a proper tourniquet).
+	var/splint_type = null			// Item subtype consumed when this limb was splinted.
 	var/fracture_heal_ticks = 0			// Life ticks of splinted healing toward a mended fracture.
 	var/prosthesis = FALSE
 	var/prosthesis_type = "none"
@@ -233,11 +234,7 @@
 			if (!parent.children)
 				parent.children = list()
 			parent.children.Add(src)
-			//Remove all stump wounds since limb is not missing anymore
-			for (var/datum/wound/lost_limb/W in parent.wounds)
-				parent.wounds -= W
-				qdel(W)
-				break
+			parent.clear_grafted_limb_wound(limb_name)
 			parent.update_damages()
 	if (istype(owner))
 		owner.refresh_held_items()
@@ -435,6 +432,7 @@ This function completely restores a damaged organ to perfect condition.
 /obj/item/organ/external/rejuvenate()
 	damage_state = "00"
 	status = FALSE
+	clear_splint()
 	tourniquet = FALSE
 	tourniquet_ticks = 0
 	tourniquet_makeshift = 0
@@ -918,6 +916,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 			   HELPERS
 ****************************************************/
 
+/obj/item/organ/external/proc/clear_grafted_limb_wound(slot)
+	// The chest (arms) and groin (legs) each hold multiple amputation wounds.
+	// Older unlabelled wounds cannot be safely attributed to either side.
+	if (!istext(slot) || !length(slot))
+		return
+	for (var/datum/wound/lost_limb/W in wounds)
+		if (W.lost_limb_slot != slot)
+			continue
+		wounds -= W
+		qdel(W)
+		break
+
 /obj/item/organ/external/proc/update_damage_ratios()
 	var/limb_loss_threshold = max_damage
 	brute_ratio = brute_dam / (limb_loss_threshold * 2)
@@ -1052,9 +1062,20 @@ Note that amputating the affected organ does in fact remove the infection from t
 		return
 	mend_fracture()
 	perma_injury = 0
-	status &= ~ORGAN_SPLINTED
-	new /obj/item/stack/medical/splint/small(get_turf(owner))
+	recover_splint(get_turf(owner), /obj/item/stack/medical/splint/small)
 	to_chat(owner, SPAN_NOTICE("The bone in your [name] has knit back together. You take off the splint."))
+
+// One unit returns, even when the original item was taken from a full stack.
+/obj/item/organ/external/proc/recover_splint(turf/drop_site, fallback_type)
+	if (!(status & ORGAN_SPLINTED))
+		return null
+	var/refund_type = ispath(splint_type, /obj/item/stack/medical/splint) ? splint_type : fallback_type
+	clear_splint()
+	return new refund_type(drop_site, 1, FALSE)
+
+/obj/item/organ/external/proc/clear_splint()
+	status &= ~ORGAN_SPLINTED
+	splint_type = null
 
 /obj/item/organ/external/proc/can_take_tourniquet()
 	return limb_name in list("l_arm", "r_arm", "l_leg", "r_leg", "l_hand", "r_hand", "l_foot", "r_foot")
@@ -1123,9 +1144,8 @@ Note that amputating the affected organ does in fact remove the infection from t
 		remove_tourniquet()
 		to_chat(owner, SPAN_DANGER("The makeshift tourniquet on your [name] slips loose! Replace it with a proper one."))
 		return
-	if ((status & ORGAN_ARTERY_CUT) && arterial_bleed_severity <= 1 && tourniquet_ticks >= TOURNIQUET_CLOT_TICKS && has_bandaged_wound())
-		status &= ~ORGAN_ARTERY_CUT
-		to_chat(owner, SPAN_NOTICE("The bleeding from your [artery_name] has clotted under the tourniquet. Loosen it with a bandage before your [name] goes numb."))
+	if (tourniquet_ticks >= TOURNIQUET_CLOT_TICKS)
+		clot_covered_arteries(src)
 	if (tourniquet_ticks < TOURNIQUET_NUMB_TICKS)
 		return
 	if (tourniquet_ticks >= TOURNIQUET_NUMB_TICKS * 2)
@@ -1136,6 +1156,18 @@ Note that amputating the affected organ does in fact remove the infection from t
 		return
 	if (tourniquet_ticks % 60 == 0)
 		owner.custom_pain("Your [name] throbs and tingles under the tourniquet!", 30, affecting = src)
+
+
+// Run from the tied limb so the covered limbs use its timer and its removal site.
+/obj/item/organ/external/proc/clot_covered_arteries(obj/item/organ/external/covered)
+	if (covered.owner != owner || (covered.status & ORGAN_DESTROYED))
+		return
+	if ((covered.status & ORGAN_ARTERY_CUT) && covered.arterial_bleed_severity <= 1 && covered.has_bandaged_wound())
+		covered.status &= ~ORGAN_ARTERY_CUT
+		to_chat(owner, SPAN_NOTICE("The bleeding from your [covered.artery_name] has clotted under the tourniquet. Loosen it with a bandage before your [name] goes numb."))
+	for (var/obj/item/organ/external/child in covered.children)
+		if (child.parent == covered)
+			clot_covered_arteries(child)
 
 
 /obj/item/organ/external/proc/get_damage()	//returns total damage

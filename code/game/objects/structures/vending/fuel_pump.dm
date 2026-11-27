@@ -121,16 +121,8 @@
 /obj/structure/fuelpump/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
 	if (istype(W, /obj/item/stack/money))
-		if (unlocked)
-			to_chat(user, "The pump is being used! Finish it first.")
-			return
-		var/obj/item/stack/money/MN = W
-		var/valp = MN.amount*MN.value
-		if (price > 0 && (valp/price) <= vol)
-			ui_interact(user, "buy")
-			return
-		else
-			to_chat(user, "<span class = 'notice'>The fuelpump doesn't have that much fuel inside! Try with a smaller amount. This pump has [vol] units of [fueltype] inside.</span>")
+		show_purchase_quote(user, W)
+		return
 
 	else if (istype(W, /obj/item/weapon/reagent_containers/glass))
 		var/obj/item/weapon/reagent_containers/glass/GC = W
@@ -196,7 +188,7 @@
 	else
 		return
 
-	if (find_company_member(user, owner))
+	if (company_may_operate(user, owner))
 		if (unlocked)
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
@@ -212,14 +204,64 @@
 /obj/structure/fuelpump/proc/fuel_choices()
 	return list("gasoline", "diesel", "biodiesel", "pethanol", "petroleum")
 
-/obj/structure/fuelpump/proc/money_in_hand(mob/living/human/user)
-	if (!istype(user))
-		return null
-	if (istype(user.l_hand, /obj/item/stack/money))
-		return user.l_hand
-	if (istype(user.r_hand, /obj/item/stack/money))
-		return user.r_hand
-	return null
+// Quote state belongs to one UI. Closing it drops the only reference to the quote.
+/datum/topic_state/default/fuel_pump_purchase
+	var/mob/living/human/buyer
+	var/obj/item/stack/money/payment
+	var/payment_count
+	var/payment_value
+	var/unit_price
+	var/fuel
+	var/units
+
+/datum/topic_state/default/fuel_pump_purchase/New(mob/living/human/user, obj/item/stack/money/money, price, fuel_type)
+	..()
+	buyer = user
+	payment = money
+	payment_count = money.amount
+	payment_value = money.value
+	unit_price = price
+	fuel = fuel_type
+	units = payment_count * payment_value / unit_price
+
+/obj/structure/fuelpump/proc/show_purchase_quote(mob/living/human/user, obj/item/stack/money/money)
+	if (!istype(user) || user.stat || QDELETED(money) || money.loc != user || !user.item_is_in_hands(money))
+		return
+	// Reopening with another stack must not reinitialise the old quote state.
+	GLOB.nanomanager.close_user_uis(user, src, "buy")
+	if (unlocked)
+		to_chat(user, "The pump is being used! Finish it first.")
+		return
+	if (price <= 0 || fueltype == "none" || money.amount <= 0 || money.value <= 0)
+		to_chat(user, SPAN_NOTICE("This pump cannot accept that payment or is not set up to sell fuel."))
+		return
+	var/datum/topic_state/default/fuel_pump_purchase/quote = new(user, money, price, fueltype)
+	if (quote.units > vol)
+		to_chat(user, SPAN_NOTICE("The fuel pump cannot provide that much fuel. It has [vol] units of [fueltype]."))
+		return
+	ui_interact(user, "buy", quote = quote)
+
+/obj/structure/fuelpump/proc/complete_purchase(mob/living/human/user, datum/topic_state/default/fuel_pump_purchase/quote)
+	if (!istype(quote) || quote.buyer != user)
+		return
+	if (unlocked)
+		to_chat(user, "The pump is being used! Finish it first.")
+		return
+	var/obj/item/stack/money/money = quote.payment
+	if (QDELETED(money) || money.loc != user || !user.item_is_in_hands(money))
+		to_chat(user, SPAN_NOTICE("You no longer have the quoted payment in your hands. Start a new purchase."))
+		return
+	if (price != quote.unit_price || fueltype != quote.fuel || money.amount != quote.payment_count || money.value != quote.payment_value || vol < quote.units)
+		to_chat(user, SPAN_NOTICE("The fuel quote has changed. Start a new purchase before paying."))
+		return
+	if (!user.transfer_held_item_to(money, src))
+		to_chat(user, SPAN_NOTICE("The pump could not accept your payment."))
+		return
+	money.forceMove(null)
+	storedval += money
+	unlockedvol = quote.units
+	unlocked = TRUE
+	to_chat(user, SPAN_NOTICE("You can now withdraw [unlockedvol] units of [fueltype] from this pump."))
 
 // Every button sends "action" with the name of what it does.
 /obj/structure/fuelpump/ui_actions(ui_key)
@@ -227,17 +269,20 @@
 
 // Three small windows: "buy" and "confirm" ask before a sale starts or ends,
 // "manage" is the owner's settings.
-/obj/structure/fuelpump/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE)
+/obj/structure/fuelpump/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = TRUE, var/datum/topic_state/default/fuel_pump_purchase/quote = null)
 	var/list/sections
 	var/height = 240
 	switch (ui_key)
 		if ("buy")
-			var/obj/item/stack/money/MN = money_in_hand(user)
-			if (!MN || unlocked || price <= 0)
+			if (!quote)
+				if (!ui)
+					ui = GLOB.nanomanager.get_open_ui(user, src, ui_key)
+				quote = ui?.state
+			if (!istype(quote) || quote.buyer != user)
 				GLOB.nanomanager.close_user_uis(user, src, ui_key)
 				return
 			sections = list(panel_section("Buy fuel",
-				notes = list("You can buy [round(MN.amount * MN.value / price, 0.1)] units of [fueltype] with this amount. Confirm?"),
+				notes = list("You can buy [quote.units] units of [quote.fuel] with this amount. Confirm?"),
 				buttons = list(panel_button("Yes", "action", "buy_yes"), panel_button("No", "action", "buy_no"))))
 		if ("confirm")
 			if (!unlocked || unlockedvol <= 0)
@@ -247,7 +292,7 @@
 				notes = list("This pump still has [unlockedvol] units of [fueltype] inside! Are you sure you want to finish?"),
 				buttons = list(panel_button("Yes", "action", "finish_yes"), panel_button("No", "action", "finish_no"))))
 		if ("manage")
-			if (!find_company_member(user, owner))
+			if (!company_may_operate(user, owner))
 				GLOB.nanomanager.close_user_uis(user, src, ui_key)
 				return
 			var/list/fuels = list()
@@ -261,7 +306,7 @@
 			height = 340
 		else
 			return
-	open_panel(user, name, 400, height, sections, ui_key = ui_key, ui = ui, force_open = force_open)
+	open_panel(user, name, 400, height, sections, ui_key = ui_key, ui = ui, force_open = force_open, state = quote)
 
 /obj/structure/fuelpump/proc/update_management_price(mob/user, custp)
 	if (!isnum(custp))
@@ -274,6 +319,20 @@
 	updatedesc()
 	show_manage_ui(user)
 
+/obj/structure/fuelpump/ui_act(action, list/params, mob/user, datum/nanoui/ui)
+	if (action != "action" || !ui || ui.src_object != src || ui.ui_key != "buy")
+		return FALSE
+	var/mob/living/human/buyer = user
+	if (!istype(buyer) || buyer.stat || get_dist(src, buyer) > 2)
+		return TRUE
+	var/datum/topic_state/default/fuel_pump_purchase/quote = ui.state
+	if (params["value"] == "buy_yes")
+		ui.close()
+		complete_purchase(buyer, quote)
+	else if (params["value"] == "buy_no")
+		ui.close()
+	return TRUE
+
 /obj/structure/fuelpump/Topic(href, href_list)
 	if (!usr || !usr.client)
 		return
@@ -281,31 +340,8 @@
 	if (!istype(user) || user.stat || get_dist(src, user) > 2)
 		return
 
-	// Purchase confirmation
-	if (href_list["action"] == "buy_yes")
-		GLOB.nanomanager.close_user_uis(user, src, "buy")
-		var/obj/item/stack/money/MN = money_in_hand(user)
-		if (!MN)
-			to_chat(user, "You no longer have the money in your hand.")
-			return
-		if (unlocked)
-			to_chat(user, "The pump is being used! Finish it first.")
-			return
-		var/valp = MN.amount*MN.value
-		if (price > 0 && (valp/price) <= vol)
-			user.drop_from_inventory(MN)
-			storedval += MN
-			MN.forceMove(locate(0,0,0))
-			unlockedvol = (valp/price)
-			to_chat(user, "<span class = 'notice'>You can now withdraw [unlockedvol] units of [fueltype] from this pump.</span>")
-			unlocked = 1
-			return
-		else
-			to_chat(user, "<span class = 'notice'>The fuelpump doesn't have that much fuel inside! Try with a smaller amount.</span>")
-			return
-
-	if (href_list["action"] == "buy_no")
-		GLOB.nanomanager.close_user_uis(user, src, "buy")
+	// Purchase actions must carry their original window state through ui_act().
+	if (href_list["action"] in list("buy_yes", "buy_no"))
 		return
 
 	// Finish confirmation
@@ -320,7 +356,7 @@
 		return
 
 	// Management
-	if (!find_company_member(user, owner))
+	if (!company_may_operate(user, owner))
 		return
 
 	if (href_list["action"] == "change_name_direct")
@@ -328,7 +364,7 @@
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
 		var/custn = player_input(user, "Choose a name for this pump:", null, null, "text", null, TRUE)
-		if (custn == "" || custn == null)
+		if (custn == "" || custn == null || QDELETED(src) || !in_range(src, user) || !company_may_operate(user, owner))
 			return
 		name = custn
 		updatedesc()
@@ -355,6 +391,8 @@
 			to_chat(user, "The pump is being used! Finish it first.")
 			return
 		var/custp = player_input(user, "What should the price be, in silver coins? (Min: 0, Max: 50):", null, null, "num", null, TRUE)
+		if (QDELETED(src) || unlocked || !in_range(src, user) || !company_may_operate(user, owner))
+			return
 		update_management_price(user, custp)
 		return
 

@@ -10,6 +10,9 @@
 	var/client/client
 	var/is_ready = FALSE
 	var/list/message_queue = list()
+	var/tmp/list/examine_lines
+	var/tmp/examine_delivery = 0
+	var/tmp/examine_delivery_scope
 
 /datum/chat/New(client/C)
 	src.client = C
@@ -69,7 +72,15 @@
 
     return text_string
 
+/datum/chat/proc/flush_examine()
+	var/list/lines = examine_lines
+	examine_lines = null
+	for (var/line in lines)
+		send_message(line)
+
 /datum/chat/proc/send_message(message)
+	if (examine_lines)
+		flush_examine()
 	if (!client)
 		return
 	
@@ -83,9 +94,29 @@
 	var/escaped_message = extract_json_message(message)
 	client << output(url_encode(escaped_message), "browser_chat:receiveMessage")
 
+// The structured packet preserves the original line and sanitization boundaries.
+/datum/chat/proc/send_examine(list/lines)
+	if (!client || lines.len > 32)
+		return FALSE
+	var/list/normalized = list()
+	for (var/line in lines)
+		normalized += "[extract_json_message(line)]"
+	// Oversized examines keep their original per-line delivery.
+	// A browser page can survive a handover or restart; scope IDs to this chat.
+	if (!examine_delivery_scope)
+		examine_delivery_scope = md5("[world.realtime]-[rand(1, 1000000)]-\ref[src]")
+	var/payload = url_encode(json_encode(list("id" = "[examine_delivery_scope]:[examine_delivery + 1]", "lines" = normalized)))
+	if (length(payload) > 16000)
+		return FALSE
+	examine_delivery++
+	client << output(payload, "browser_chat:receiveExamine")
+	return TRUE
+
 //this skips sanitisation so make sure you use it on safe html ONLY
 //DO NOT use this for player inputs!
 /datum/chat/proc/send_message_html(message)
+	if (examine_lines)
+		flush_examine()
 	if (!client)
 		return
 	
@@ -102,7 +133,7 @@
 /**
  * Global chat wrapper to replace the to_chat macro functionality.
  */
-/proc/to_chat_wrapper(target, message)
+/proc/to_chat_wrapper(target, message, direct = TRUE)
 	if (!target || !message)
 		return
 
@@ -126,7 +157,11 @@
 			P.capture(message)
 			return
 		if (M.client)
-			to_chat_wrapper(M.client, message)
+			var/datum/chat/C = M.client.chat
+			if (direct && C?.examine_lines)
+				C.examine_lines += message
+			else
+				to_chat_wrapper(M.client, message)
 		else
 			// Fallback for mobs without clients (logs or similar)
 			M << message
@@ -134,7 +169,7 @@
 
 	if (istype(target, /list))
 		for (var/T in target)
-			to_chat_wrapper(T, message)
+			to_chat_wrapper(T, message, FALSE)
 		return
 
 	if (target == world)

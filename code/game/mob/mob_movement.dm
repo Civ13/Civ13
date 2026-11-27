@@ -34,48 +34,58 @@
 /mob/proc/get_prone_delay()
 	return get_run_delay() * 7
 
-// weight slowdown
+// On-foot encumbrance. This is a reference for slowdown bands, not a
+// limit on what can be picked up. Keep the old weak/average thresholds;
+// training above average now raises the thresholds twice as quickly.
+/proc/movement_carry_reference(strength)
+	if (strength > 1)
+		return 59 * strength
+	return (((strength - 1) / 2) + 1) * 59
 
-/mob/living/human/var/last_run_delay = -1
-/mob/living/human/var/next_calculate_run_delay = -1
-/mob/living/human/get_run_delay()
+/proc/movement_carry_slowdown(weight, reference, heavy)
+	if (weight == 0 && !heavy)
+		return 0
+	if ((weight > reference * 0.25 || heavy) && weight <= reference * 0.50)
+		return 0.33
+	if (weight > reference * 0.50 && weight <= reference * 0.65)
+		return 0.44
+	if (weight > reference * 0.65 && weight <= reference * 0.75)
+		return 0.55
+	if (weight > reference * 0.75 && weight <= reference * 0.85)
+		return 0.66
+	if (weight > reference * 0.85 && weight <= reference * 0.90)
+		return 0.77
+	if (weight > reference * 0.90 && weight <= reference * 0.95)
+		return 0.88
+	if (weight > reference * 0.95)
+		return 0.99
+	return 0
 
-	. = ..()
-
-	if (last_run_delay != -1 && world.time < next_calculate_run_delay)
-		return last_run_delay
-
-	var/slowdown = 0
+/mob/living/human/proc/carried_movement_slowdown(list/report = null)
 	var/weight = 0
-	var/max_weight = (((getStatCoeff("strength")-1)/2)+1) * 59
+	var/reference = movement_carry_reference(getStatCoeff("strength"))
 	var/heavy = FALSE
 	for (var/obj/item/I in contents)
 		if (I.heavy)
 			heavy = TRUE
 		weight += I.get_weight()
-		if (istype(I,/obj/item/weapon/storage))
+		if (istype(I, /obj/item/weapon/storage))
 			for (var/obj/item/II in I.contents)
 				weight += II.get_weight()
+	if (report)
+		report["weight"] = weight
+		report["comfort"] = reference * 0.25
+		report["heavy"] = heavy
+	return movement_carry_slowdown(weight, reference, heavy)
 
-	if (weight == 0 && !heavy)
-		slowdown = 0
-	else if ((weight > max_weight * 0.25 || heavy) && weight <= max_weight * 0.50)
-		slowdown = 0.33
-	else if (weight > max_weight * 0.50 && weight <= max_weight * 0.65)
-		slowdown = 0.44
-	else if (weight > max_weight * 0.65 && weight <= max_weight * 0.75)
-		slowdown = 0.55
-	else if (weight > max_weight * 0.75 && weight <= max_weight * 0.85)
-		slowdown = 0.66
-	else if (weight > max_weight * 0.85 && weight <= max_weight * 0.90)
-		slowdown = 0.77
-	else if (weight > max_weight * 0.90 && weight <= max_weight * 0.95)
-		slowdown = 0.88
-	else if (weight > max_weight * 0.95 && weight <= INFINITY)
-		slowdown = 0.99
-	. *= slowdown+1
+/mob/living/human/var/last_run_delay = -1
+/mob/living/human/var/next_calculate_run_delay = -1
+/mob/living/human/get_run_delay()
+	. = ..()
+	if (last_run_delay != -1 && world.time < next_calculate_run_delay)
+		return last_run_delay
+	. *= 1 + carried_movement_slowdown()
 	. *= leader_order_move_mult()
-
 	last_run_delay = .
 	next_calculate_run_delay = world.time + 5
 
@@ -849,9 +859,6 @@
 				move_delay += terrain_free_slope_delay(H, n, direct, move_delay - world.time, fine_step == FINE_STEP_HELD)
 			else
 				move_delay += terrain_slope_delay(mob_loc, n, move_delay - world.time)
-			if (mob_is_human)
-				terrain_climb_effects(H, mob_loc, n, distance_fraction)
-				terrain_trip_check(H, mob_loc, n, distance_fraction, move_delay - world.time)
 		if (mob.drowsyness > 0)
 			move_delay += 3
 
@@ -887,6 +894,7 @@
 				var/obj/structure/pulled_structure = mob.pulling
 				move_delay += pulled_structure.drag_delay(mob) * mob.pull_drag_mult()
 
+		var/terrain_started_running = mob.m_intent == "run"
 		if (mob_is_human)
 			if (H.getStat("stamina") == (H.getMaxStat("stamina")/2) && H.m_intent == "run" && world.time >= H.next_stamina_message)
 				to_chat(H, SPAN_WARNING("You're starting to tire from running so much."))
@@ -920,14 +928,23 @@
 				move_delay += 2
 				return mob.buckled.relaymove(mob,direct)
 
-		if (istype(src, /mob/living/human))
-			var/mob/living/human/HH = src
-			if (HH.riding == TRUE && !isnull(HH.riding_mob))
-				move_delay = world.time + 0.5
+		// Choose the mounted cart cost once before the smooth/legacy step split.
+		if (mob_is_human)
+			move_delay += H.ridden_handcart_drag()
 
 		// A preceding climb wait/callback may have changed the body or links.
 		if (fine_step && (mob != input_actor || !H.human_subtile_fine_ready(direct)))
 			return FALSE
+
+		// Snapshot the approach immediately before the move: held input may
+		// yield, and a partial slide can move without crossing a tile boundary.
+		var/turf/slope_origin
+		var/slope_start_x
+		var/slope_start_y
+		if (mob_is_human && mob == input_actor && !H.buckled && !H.riding && isturf(H.loc) && isturf(n) && terrain_steep_step(H.loc, n))
+			slope_origin = H.loc
+			slope_start_x = H.step_x
+			slope_start_y = H.step_y
 
 		//We are now going to move
 		moving = TRUE
@@ -1020,6 +1037,8 @@
 				return FALSE
 
 			skipgrab:
+			if (slope_origin && !QDELETED(H) && mob == H && H.client == src && !H.stat && !H.buckled && !H.riding && !H.throwing && isturf(H.loc))
+				terrain_completed_step(H, slope_origin, n, slope_start_x, slope_start_y, direct, distance_fraction, move_delay - world.time, terrain_started_running)
 
 			#define STOMP_TIME 1
 
@@ -1092,16 +1111,9 @@
 			t_movement_speed_multiplier *= 0.9
 		if (move_delay > world.time)
 			move_delay -= world.time
-		if (istype(src, /mob/living/human))
-			var/mob/living/human/HH = src
-			if (HH.riding == TRUE && !isnull(HH.riding_mob))
-				move_delay = HH.riding_mob.ride_delay() + HH.riding_mob.hitch_drag()
-			else
-				move_delay /= t_movement_speed_multiplier
-		else
-			move_delay /= t_movement_speed_multiplier
-			if (ordinal)
-				move_delay *= ROOT2_FAST
+		move_delay /= t_movement_speed_multiplier
+		if (ordinal)
+			move_delay *= ROOT2_FAST
 		move_delay += world.time
 
 		return .

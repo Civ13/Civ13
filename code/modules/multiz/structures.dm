@@ -159,6 +159,7 @@
 		return
 
 /mob/living/human/var/laddervision = null
+/mob/living/human/var/tmp/laddervision_origin_z = 0
 
 /obj/structure/multiz/ladder/MouseDrop_T(atom/dropping, mob/living/human/user)
 	if (!istype(user) || dropping != user || !user.client)
@@ -180,14 +181,26 @@
 /mob/living/human/proc/update_laddervision(var/obj/structure/multiz/ladder/ladder)
 	if (ladder && istype(ladder))
 		laddervision = ladder
+		laddervision_origin_z = z
 		if (client)
 			client.perspective = EYE_PERSPECTIVE
 			client.eye = laddervision
 	else if (!ladder && laddervision)
+		var/owned_eye = client && client.eye == laddervision
 		laddervision = null
-		if (client)
+		laddervision_origin_z = 0
+		if (owned_eye)
 			client.perspective = MOB_PERSPECTIVE
 			client.eye = src
+
+// Ladder preview belongs to this viewer on the floor where it began. Never
+// reclaim a camera that a vehicle, an admin action or a new client took over.
+/mob/living/human/proc/reconcile_laddervision()
+	if (!laddervision)
+		return
+	var/obj/structure/multiz/ladder/peer = laddervision
+	if (z != laddervision_origin_z || QDELETED(peer) || (client && client.eye != peer))
+		update_laddervision(null)
 
 /obj/structure/multiz/proc/laddervision_direction()
 	if (istop)

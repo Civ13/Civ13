@@ -9,8 +9,7 @@
 // - "water" (optional): units of water per product, from an open container
 //   held or at the builder's feet, or free beside running water
 //   (station_water.dm).
-// Tools and inputs count when held, worn in a real equipment slot or lying at
-// the builder's feet; containers are never searched. The same file feeds the
+// Tools and inputs count when held, worn in a real equipment slot or loose within reach; containers are never searched. The same file feeds the
 // Crafting Atlas, and the guard below reports each line to the Crafting window.
 // A new product that needs a hammer or a second material adds a JSON entry
 // instead of another block in produce_recipe().
@@ -52,16 +51,28 @@ var/global/list/craft_need_input_names = list(
 			craft_need_specs = list()
 	return craft_need_specs["[result_type]"]
 
-// Held, worn or at the builder's feet, and not worn out.
+// A loose object must be on a reachable tile, not inside a container, on the
+// other side of a blocked edge, or part of the scenery.
+/proc/craft_nearby_loose_item(mob/living/human/H, obj/item/I)
+	if (QDELETED(H) || QDELETED(I) || I.anchored || !isturf(I.loc))
+		return FALSE
+	// Claimed surface loot and bound repositories use their own pickup paths.
+	if (I.extraction_surface_source || I.magic_repo_id || I.invisibility > H.see_invisible)
+		return FALSE
+	var/turf/site = get_turf(H)
+	var/turf/target = I.loc
+	return site && (target == site || (isturf(H.loc) && !target.density && I.Adjacent(H)))
+
+// Owned equipment or a loose object that the character could touch.
 /proc/craft_need_reachable(mob/living/human/H, obj/item/I)
 	if (QDELETED(H) || QDELETED(I))
 		return FALSE
 	if (I.loc == H)
 		return H.get_inventory_slot(I) ? TRUE : FALSE
-	return isturf(I.loc) && I.loc == get_turf(H)
+	return craft_nearby_loose_item(H, I)
 
-// Every item the builder could use: hands first, then equipment, then at most
-// 32 things at their feet.
+// Prefer the hands, then owned equipment, then loose items underfoot and
+// nearby. Bound the scan even around cluttered work areas.
 /proc/craft_need_candidates(mob/living/human/H)
 	var/list/found = list()
 	if (QDELETED(H))
@@ -71,13 +82,20 @@ var/global/list/craft_need_input_names = list(
 		if (istype(I) && craft_need_reachable(H, I))
 			found |= I
 	var/turf/site = get_turf(H)
+	if (!site)
+		return found
+	var/list/sites = list(site)
+	if (isturf(H.loc))
+		for (var/turf/T in range(1, site))
+			if (T != site && !T.density && T.Adjacent(H))
+				sites += T
 	var/visited = 0
-	if (site)
-		for (var/atom/movable/A in site)
-			if (++visited > 32)
-				break
-			if (isitem(A))
-				found |= A
+	for (var/turf/T in sites)
+		for (var/obj/item/I in T)
+			if (++visited > 64)
+				return found
+			if (craft_nearby_loose_item(H, I))
+				found |= I
 	return found
 
 /proc/craft_need_tool(mob/living/human/H, quality_name, list/candidates)
@@ -124,7 +142,7 @@ var/global/list/craft_need_input_names = list(
 	var/list/candidates = craft_need_candidates(H)
 	for (var/quality_name in spec["tools"])
 		var/obj/item/tool = craft_need_tool(H, quality_name, candidates)
-		lines[++lines.len] = list("kind" = "tool", "label" = "a [quality_name] (held, worn or at your feet)", "met" = tool ? TRUE : FALSE, "item" = tool, "amount" = 0)
+		lines[++lines.len] = list("kind" = "tool", "label" = "a [quality_name] (held, worn or loose within reach)", "met" = tool ? TRUE : FALSE, "item" = tool, "amount" = 0)
 	var/list/inputs = spec["inputs"]
 	for (var/type_text in inputs)
 		var/input_type = text2path(type_text)
@@ -139,11 +157,11 @@ var/global/list/craft_need_input_names = list(
 			found = craft_need_stack(input_type, amount, candidates, paying)
 		else if (input_type)
 			found = craft_need_items(input_type, amount, candidates)
-		lines[++lines.len] = list("kind" = "input", "label" = "[amount] [shown_name] (held or at your feet)", "met" = found ? TRUE : FALSE, "item" = found, "amount" = amount)
+		lines[++lines.len] = list("kind" = "input", "label" = "[amount] [shown_name] (held, worn or loose within reach)", "met" = found ? TRUE : FALSE, "item" = found, "amount" = amount)
 	if (spec["water"])
 		var/water = spec["water"] * max(1, quantity)
 		var/source = craft_need_water(H, water, candidates)
-		lines[++lines.len] = list("kind" = "water", "label" = "[water] units of water (an open container held or at your feet, or running water beside you)", "met" = source ? TRUE : FALSE, "item" = source, "amount" = water)
+		lines[++lines.len] = list("kind" = "water", "label" = "[water] units of water (an open container within reach, or running water beside you)", "met" = source ? TRUE : FALSE, "item" = source, "amount" = water)
 	return lines
 
 // The message for the first thing missing, or null when everything is there.
@@ -233,17 +251,16 @@ var/global/list/crafting_handle_title_exclusions = list("wood spear", "mold", "s
 		label += ": your [handle.material.display_name] handle [tool_handle_effect_text(handle.material.name)]"
 	return list(list("kind" = "[type]", "label" = label, "met" = handle ? TRUE : FALSE))
 
-// Hides the recipe from "makeable only" lists and refuses at the start.
-// produce_recipe() rechecks with the real batch size before it pays.
+// Refuse at the start. The menu passes the selected stack to craft_needs_refusal
+// itself, so it does not need to scan for a second material twice.
 /datum/craft_guard/needs
 	order = 95
-	hides_recipe = TRUE
 
 /datum/craft_guard/needs/refusal(mob/living/human/H, datum/stack_recipe/R, phase)
 	return craft_needs_refusal(H, R)
 
-/datum/craft_guard/needs/describe_lines(mob/living/human/H, datum/stack_recipe/R)
+/datum/craft_guard/needs/describe_lines(mob/living/human/H, datum/stack_recipe/R, obj/item/stack/paying)
 	var/list/found = list()
-	for (var/list/line in craft_need_lines(H, R))
+	for (var/list/line in craft_need_lines(H, R, 1, paying))
 		found[++found.len] = list("kind" = "[type]", "label" = capitalize(line["label"]), "met" = line["met"])
 	return found

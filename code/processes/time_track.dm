@@ -32,6 +32,9 @@
 	processes.time_track = src
 
 /process/time_track/fire()
+	if (persistence_active_operation?.kind == "load")
+		ignore_load_dilation()
+		return
 
 	var/current_realtime = world.timeofday
 
@@ -106,6 +109,16 @@
 		. += n
 	. /= average_tick_usages.len
 
+
+// Discard an automatic capture that overlaps a load, but leave manual profiling alone.
+/process/time_track/proc/ignore_load_dilation()
+	first_run = TRUE
+	dilation = 0
+	lag_seconds = 0
+	if (lag_capture_due && lag_capture_started_profiler && !profile_dump_running)
+		world.Profile(PROFILE_STOP)
+	lag_capture_due = 0
+	lag_capture_started_profiler = FALSE
 
 // When the server stays well behind real time, profile what runs during the
 // spike and save it to data/profile/ (see code/modules/admin/profile_dump.dm),

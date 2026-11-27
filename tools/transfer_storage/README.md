@@ -104,6 +104,19 @@ identity, looks, skills, hunger and thirst, and up to 40 items.
   the arrival, then lists them in its next save. Goods cannot be journaled,
   because a stack cannot be found again by owner.
 
+### Build order on managed regions
+
+Character, vehicle and freight departures between managed regions are admitted
+only when the destination build is the source commit or a Git descendant. Travel
+to and from the Gateway is exempt because it is deliberately kept on its build.
+The source agent rechecks its and the destination's stamped active builds at
+escrow. A missing or divergent build record, or one changing during an update,
+makes the trip wait; a checkout's HEAD and an uninstalled staged build do not
+qualify. This neither starts an update nor overrides any payload compatibility
+or arrival checks. Goods-only trade and settlement of already-recorded trips
+are unchanged. Standalone agents without group configuration keep their
+existing behavior.
+
 ## Home worlds (one land per player)
 
 The coordinator also keeps the home ledger: the one region each account may

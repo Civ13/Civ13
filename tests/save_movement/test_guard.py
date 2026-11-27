@@ -11,6 +11,10 @@ HELPERS = 'code/game/mob/living/carbon/human/human_helpers.dm'
 DAMAGE = 'code/game/mob/mob_damage.dm'
 
 
+class LightSource(NS):
+    """Fixture for the engine-managed datum and its registered emitter."""
+
+
 class Area:
     def __init__(self, admin=False):
         self.admin = admin
@@ -24,6 +28,7 @@ class Atom:
     """Engine boundary: ancestry, contents, raw loc, Entered/Exited callbacks."""
     def __init__(self, loc=None, turf=False, xyz=(0, 0, 0), human=False):
         self.contents, self._loc = [], None
+        self.light_sources = None
         self.loc = loc
         self.turf, self.xyz, self.human = turf, xyz, human
         self.gcDestroyed = self.gc_destroyed = False
@@ -87,8 +92,11 @@ class Fixture:
         # Inert lifecycle boundary: save guards execute the real relocation
         # body; paper-session observer behavior belongs to paper_documents.
         self.paper_notifications = []
+        self.load_dilation_resets = []
         self.env = dict(persistence_active_operation=None, persistence_save_in_progress=False, persistence_admission_identity=None,
                         persistence_load_recovery_required=False, world_z_budget=NS(active=False),
+                        processes=NS(time_track=NS(ignore_load_dilation=lambda: self.load_dilation_resets.append(
+                            self.env["persistence_active_operation"].kind))),
                         # Practice rooms own no saved state; their close hook is covered by tests/practice_rooms.
                         practice_rooms_close_for_save=lambda: True,
                         # A tutorial region never saves; these worlds are not one.
@@ -105,7 +113,8 @@ class Fixture:
                         list=lambda *args: args, EXCEPTION=RuntimeError,
                         typed_iter=lambda values, kind: [a for a in values if kind == '/atom/movable' or
                                                         (kind == '/obj' and not a.human) or
-                                                        (kind == '/mob' and a.human)],
+                                                        (kind == '/mob' and a.human) or
+                                                        (kind == '/datum/light_source' and isinstance(a, LightSource))],
                         CONSCIOUS=0, UNCONSCIOUS=1, DEAD=2, world=NS(time=42, timeofday=42),
                         to_chat=lambda *args: None, SPAN_WARNING=lambda text: text,
                         paper_authoring_notify=lambda source, reason: self.paper_notifications.append((source, reason, source.loc)),
@@ -584,7 +593,11 @@ class GuardTests(unittest.TestCase):
         self.assertIs(f.env['persistence_active_operation'], second)
         self.assertFalse(f.allow(f.actor(), f.other))
         second.finish(True)
+        self.assertEqual(f.load_dilation_resets, [])
         load = f.begin(f.store, 'load')
+        self.assertEqual(f.load_dilation_resets, ['load'])
+        self.assertIsNone(f.begin(f.store, 'load'))
+        self.assertEqual(f.load_dilation_resets, ['load'])
         self.assertTrue(f.allow(f.actor(), f.other))
         load.enter_backend(f.store, 'load')
         load.finish(False)
@@ -648,6 +661,31 @@ class GuardTests(unittest.TestCase):
         self.assertTrue(human.persistence_set_loc(f.same))
         self.assertEqual(f.paper_notifications, [(human, 'relocated', f.same)])
         self.assertIs(human.loc, f.same)
+        operation.finish(True)
+
+    def test_raw_floor_move_refreshes_carried_and_self_lights_after_new_location(self):
+        f = Fixture()
+        human = f.actor()
+        portable = f.actor(human, human=False)
+        updates = []
+        human.update_light = lambda: updates.append((human, get_turf(human)))
+        portable.update_light = lambda: updates.append((portable, get_turf(portable)))
+        human.light_sources = [LightSource(source_atom=human), None,
+                               LightSource(source_atom=portable), LightSource(source_atom=None)]
+        # Raw movement must not call normal callbacks as a shortcut.
+        f.home.Exited = f.other.Entered = lambda *_: self.fail('raw move fired a turf callback')
+        self.assertTrue(human.persistence_set_z(3))
+        self.assertEqual(updates, [(human, f.other), (portable, f.other)])
+
+    def test_refused_and_same_location_raw_moves_do_not_refresh_emitters(self):
+        f = Fixture()
+        human = f.actor()
+        human.update_light = lambda: self.fail('unchanged movement queued a light')
+        human.light_sources = [LightSource(source_atom=human)]
+        operation = f.begin(f.store, 'save')
+        self.assertFalse(human.persistence_set_loc(f.other))
+        self.assertTrue(human.persistence_set_loc(f.home))
+        self.assertIs(human.loc, f.home)
         operation.finish(True)
 
     def test_legacy_z_setter_uses_physical_container_turf_and_rejects_invalid_target(self):
@@ -794,13 +832,19 @@ class SourcePathTests(unittest.TestCase):
         self.assertEqual(transport.count('if (!O.persistence_set_loc(get_turf(src))) return FALSE'), 2)
         self.assertEqual(transport.count('if (!O.persistence_set_loc(get_turf(user))) return FALSE'), 2)
         self.assertNotRegex(transport, re.compile(r'^\s+O.loc\s*=', re.M))
-        for path, list_name, loading in (('code/modules/1713/siege/piece.dm', 'loaded', 'is_loading'),
-                                         ('code/modules/1713/siege/turret.dm', 'A.loaded', 'A.is_loading')):
-            body = read(path).split('chosen = WWinput')[1]
-            self.assertLess(body.index('if (!chosen.persistence_set_loc(src))'), body.index(list_name + ' += chosen'))
-            refusal = body.split('if (!chosen.persistence_set_loc(src))')[1].split(list_name + ' += chosen')[0]
-            self.assertIn(loading + ' = FALSE', refusal)
-            self.assertIn('return FALSE', refusal)
+        cannon = read('code/modules/1713/siege/piece.dm').split('chosen = WWinput')[1]
+        self.assertLess(cannon.index('if (!chosen.persistence_set_loc(src))'), cannon.index('loaded += chosen'))
+        refusal = cannon.split('if (!chosen.persistence_set_loc(src))')[1].split('loaded += chosen')[0]
+        self.assertIn('is_loading = FALSE', refusal)
+        self.assertIn('return FALSE', refusal)
+        turret = read('code/modules/1713/siege/turret.dm')
+        choose = extract(turret, '/obj/structure/turret/proc/choose_autoload_shell')
+        self.assertIn('if (!chosen.persistence_set_loc(src))\n\t\treturn FALSE\n\tcannon.loaded += chosen', choose)
+        # The same cleanup runs when selection fails at the movement boundary.
+        finish = extract(turret, '/obj/structure/turret/proc/finish_autoload')
+        self.assertIn('var/did_load = choose_autoload_shell(cannon, actor, loadable)\n'
+                      '\tif (QDELETED(cannon))\n\t\treturn\n\tcannon.is_loading = FALSE', finish)
+        self.assertLess(finish.index('cannon.is_loading = FALSE'), finish.index('if (did_load && !QDELETED(src))'))
         shots = read('code/modules/projectiles/projectile.dm')
         self.assertNotRegex(shots, re.compile(r'^\s+loc = (curloc|get_turf\(user\))', re.M))
         self.assertEqual(shots.count('if (!persistence_set_loc(curloc)) return TRUE'), 2)

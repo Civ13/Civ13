@@ -90,7 +90,7 @@
 
 /proc/recipe_ci_furniture_joinery()
 	map.ordinal_age = 0
-	var/datum/stack_recipe/seed = new("joinery: whittled wooden dowel set")
+	var/datum/stack_recipe/seed = new("whittled wooden dowel set")
 	furniture_joinery_spec(seed)
 	// Existing fixture faction has every node done; locked controls use another.
 	var/datum/joinery_ci_case/C
@@ -133,7 +133,7 @@
 		joinery_ci_expect(C.actor.joinery_xp == 0, "no unpaid XP on rejection: [change]")
 		C.clean()
 	// Preset stack subtypes keep their ordinary material contract.
-	for (var/title in list("joinery: hewn chair (wooden pegs)", "joinery: whittled wooden dowel set"))
+	for (var/title in list("joinery: hewn chair (wooden pegs)", "whittled wooden dowel set"))
 		C = new(title)
 		qdel(C.stock)
 		var/stock_path = C.component_cost ? /obj/item/stack/material/wood/twentyfive : /obj/item/stack/material/woodplank/twentyfive

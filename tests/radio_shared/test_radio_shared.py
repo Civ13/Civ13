@@ -3,7 +3,7 @@
 The fixtures freeze the /obj/structure/radio Topic and broadcast bodies that
 /obj/item/weapon/radio had copied. The shared procs read the radio's vars by
 name (R:freq); after normalising that prefix and src -> R, each must equal its
-frozen original line for line. Source checks only; no BYOND runtime.
+frozen original apart from documented defensive guard changes. Source checks only.
 """
 from pathlib import Path
 import re
@@ -23,6 +23,9 @@ def body(source, header):
 def normalise(text):
     # Spirits skip the observers' radio (spirit_observe.dm), added after the freeze.
     text = text.replace('\t\tif (O.is_spirit_observer())\n\t\t\tcontinue\n', '')
+    # Tuning still accepts the same frequencies, but commits only with current access.
+    text = text.replace('if (QDELETED(R) || QDELETED(user) || user.lying)', 'if (!user || user.lying)')
+    text = text.replace(' || !radio_tuning_available(R, user)', '')
     lines = []
     for line in text.splitlines():
         line = re.sub(r'//.*', '', line).rstrip()
@@ -63,6 +66,19 @@ class RadioShared(unittest.TestCase):
     def test_detects_changed_frequency_bounds(self):
         altered = self.source.replace('min=150, max=300', 'min=100, max=300', 1)
         self.assertTrue(errors(altered))
+
+    def test_both_prompt_paths_require_current_access_before_writing(self):
+        helper = body(self.source, '/proc/radio_tuning_available(')
+        for token in ('!QDELETED(R)', '!QDELETED(user)', '!user.lying',
+                      '(locate(user) in range(1,R))', 'user.can_use_hands()'):
+            self.assertIn(token, helper)
+        topic = body(self.source, '/proc/radio_topic(')
+        for prompt, write in (('WWinput(', 'R:freq = input'),
+                              ('player_input(', 'R:freq = sanitize_integer(')):
+            after_prompt = topic[topic.index(prompt):topic.index(write)]
+            self.assertIn('!radio_tuning_available(R, user)', after_prompt)
+            self.assertIn('return', after_prompt)
+        self.assertIn('return list("set_frequency", "receiver", "transmitter")', self.source)
 
 
 if __name__ == '__main__':

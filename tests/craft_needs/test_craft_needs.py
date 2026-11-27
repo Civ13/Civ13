@@ -142,16 +142,17 @@ class CraftNeeds(unittest.TestCase):
         self.assertNotIn('stack of 2 ropes', STACK)
         self.assertNotIn('findtext(recipe.title, "raft")', STACK)
 
-    def test_nothing_is_searched_beyond_hands_equipment_and_feet(self):
+    def test_candidates_are_bounded_to_equipment_and_loose_touch_range(self):
         candidates = SOURCE[SOURCE.index('/proc/craft_need_candidates('):SOURCE.index('/proc/craft_need_tool(')]
         self.assertIn('slot_equipment_priority', candidates)
-        self.assertIn('++visited > 32', candidates)
+        self.assertIn('++visited > 64', candidates)
         self.assertNotIn('contents', candidates)
-        self.assertNotIn('range(', candidates)
+        self.assertIn('range(1, site)', candidates)
+        self.assertIn('T.Adjacent(H)', candidates)
 
     def test_window_and_atlas_read_the_same_data(self):
         self.assertIn('/datum/craft_guard/needs/describe_lines(', SOURCE)
-        self.assertIn('G.describe_lines(H, R)', GUARDS)
+        self.assertIn('G.describe_lines(H, R, paying)', GUARDS)
         self.assertIn('config/craft_needs.json', ATLAS)
         self.assertIn('craft_needs.dm', DME)
         self.assertIn("need.get('water')", ATLAS)
@@ -175,9 +176,22 @@ class CraftNeeds(unittest.TestCase):
         self.assertNotIn('istype(S, stack_type)', stack)
         lines = SOURCE[SOURCE.index('/proc/craft_need_lines('):SOURCE.index('/proc/craft_needs_refusal(')]
         self.assertIn('craft_need_input_names[input_type]', lines)
-        self.assertIn('[amount] [shown_name] (held or at your feet)', lines)
+        self.assertIn('[amount] [shown_name] (held, worn or loose within reach)', lines)
         for product, need in NEEDS.items():
             self.assertNotIn('/obj/item/stack/material/woodplank', need['inputs'], product)
+
+
+    def test_loose_adjacent_tools_and_materials_use_real_touch_reach(self):
+        loose = SOURCE.split('/proc/craft_nearby_loose_item(', 1)[1].split('\n/', 1)[0]
+        for condition in ('QDELETED(I)', 'I.anchored', '!isturf(I.loc)', 'target == site',
+                          'isturf(H.loc)', '!target.density', 'I.Adjacent(H)',
+                          'I.extraction_surface_source', 'I.magic_repo_id', 'I.invisibility > H.see_invisible'):
+            self.assertIn(condition, loose)
+        candidates = SOURCE.split('/proc/craft_need_candidates(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('range(1, site)', candidates)
+        self.assertIn('for (var/obj/item/I in T)', candidates)
+        self.assertIn('if (craft_nearby_loose_item(H, I))', candidates)
+        self.assertNotIn('get_contents', candidates)
 
 
 if __name__ == '__main__':

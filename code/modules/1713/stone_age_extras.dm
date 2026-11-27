@@ -114,7 +114,7 @@ var/global/sickle_reaping = FALSE
 	for (var/obj/structure/farming/plant/P in orange(1, src))
 		if (length(.) >= SICKLE_EXTRA_REAP)
 			break
-		if (P.type == type && P.plant == plant && P.readyHarvest())
+		if (P.type == type && P.plant == plant && P.readyHarvest() && P.Adjacent(src))
 			. += P
 
 /obj/structure/farming/plant/attackby(obj/item/weapon/W as obj, mob/user as mob)

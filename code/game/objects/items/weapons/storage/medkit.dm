@@ -48,7 +48,10 @@
 
 /obj/item/weapon/storage/firstaid/combat/New()
 	..()
-	if (empty) return
+	if (!empty)
+		stock_combat_kit()
+
+/obj/item/weapon/storage/firstaid/combat/proc/stock_combat_kit()
 	new /obj/item/weapon/reagent_containers/syringe/adrenaline(src)
 	new /obj/item/weapon/reagent_containers/syringe/adrenaline(src)
 	new /obj/item/weapon/storage/pill_bottle/tramadol(src)
@@ -97,9 +100,7 @@
 	icon_state = "medical_satchel"
 	item_state = "firstaid_2"
 
-/obj/item/weapon/storage/firstaid/combat/modern/New()
-	..()
-	if (empty) return
+/obj/item/weapon/storage/firstaid/combat/modern/stock_combat_kit()
 	new /obj/item/weapon/reagent_containers/syringe/adrenaline(src)
 	new /obj/item/weapon/reagent_containers/syringe/autoinjector/adrenaline(src)
 	new /obj/item/weapon/storage/pill_bottle/antitox(src)

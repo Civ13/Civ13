@@ -49,6 +49,27 @@ var/obj/item/digging_tool
 		if (istype(I, path))
 			count += istype(I, /obj/item/stack) ? I:amount : 1
 	return count
+/proc/digging_tilling_checks()
+	var/turf/floor/dirt/A = new /turf/floor/dirt(locate(8,8,1))
+	var/turf/floor/dirt/B = new /turf/floor/dirt/flooded(locate(8,9,1))
+	A.available_dirt = 0
+	A.soil_nutrition = 35
+	A.soil_recovery_schedule(200)
+	var/a_deadline = A.soil_recovery_deadline
+	B.available_dirt = 1
+	B.soil_nutrition = 25
+	B.soil_recovery_schedule(0)
+	var/count = soil_recovery_pending.len
+	var/turf/floor/dirt/ploughed/field = A.till_into_field(/turf/floor/dirt/ploughed)
+	digging_check(istype(field) && field.available_dirt == 0 && field.soil_nutrition == 35 && field.soil_recovery_deadline == a_deadline, "normal tilling preserves depleted dirt, fertility, and its deadline")
+	digging_check(soil_recovery_pending.len == count && soil_recovery_pending[field.soil_recovery_index] == field && soil_recovery_pending[B.soil_recovery_index] == B, "normal tilling preserves both registry memberships across swap-remove")
+	var/turf/floor/dirt/ploughed/flooded/wet = B.till_into_field(/turf/floor/dirt/ploughed/flooded)
+	digging_check(istype(wet) && wet.available_dirt == 1 && wet.soil_nutrition == 25 && wet.soil_recovery_deadline == world.time, "flooded tilling retains stocks and a recovery step already due")
+	digging_check(soil_recovery_pending.len == count && soil_recovery_pending[field.soil_recovery_index] == field && soil_recovery_pending[wet.soil_recovery_index] == wet, "flooded tilling does not remove its neighbour or double register")
+	var/turf/grass_tile = new /turf/floor/grass(locate(8,10,1))
+	var/turf/floor/dirt/ploughed/from_grass = grass_tile.till_into_field(/turf/floor/dirt/ploughed)
+	digging_check(istype(from_grass) && from_grass.available_dirt == initial(from_grass.available_dirt) && from_grass.soil_nutrition == initial(from_grass.soil_nutrition) && !from_grass.soil_recovery_index, "tilling grass still uses normal field defaults")
+
 /world/New()
 	OpenPort("none")
 	try
@@ -57,6 +78,7 @@ var/obj/item/digging_tool
 		map = new /obj/map_metadata/digging_probe
 		map.ordinal_age = 2
 		populate_material_list()
+		digging_tilling_checks()
 		var/mob/living/human/digging_probe/H = new(locate(4,5,1))
 		digging_other = new(locate(6,5,1))
 		H.a_intent = I_HELP

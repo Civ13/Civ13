@@ -3,8 +3,9 @@
 Restricted to two known conditional symbols. Not a general DM preprocessor.
 Whole-file disabled hashes bind master10d264e5 plus the explicit physical
 stationary-wait change, grass busy-admission guard and call-local mining work
-images. The helper/bridge/mechanics projections stay unchanged. Mining waits
-are unchanged; independent mining ore yields are now separately verified. These
+images. The shared wait tracks repeat-lock ownership and hands elapsed workload
+back to its caller for settlement, including mining error cleanup. Other bridge
+and mechanics projections stay unchanged. These
 are source, not native checks.
 """
 import hashlib
@@ -15,8 +16,8 @@ MARKER = "CIV13_GAMEPLAY_WAIT_GUARDS"
 PATHS = ("code/_helpers/mobs.dm", "code/game/turfs/floor_attackby.dm",
          "code/modules/gameplay_bridge/bridge.dm", "code/modules/gameplay_bridge/mechanics.dm")
 DISABLED_SHA256 = {
- PATHS[0]: "9edd583330f51096aeea1c3868fecd3e6dc1a16bb4f68ed82698cc2bc50a5347",
- PATHS[1]: "0e4dcb85f550c65a65deedd33324669e740519f32cf49d66f07b4a6379c9f201",
+ PATHS[0]: "a34ba95c48c2b2eacca7a64f0640f1339bdaab6a5509802ef6becebd41bf08a6",
+ PATHS[1]: "3c27d941db9742085ac64b0b1fb22045f5f7bcd9cd3d73a2721fe454ff5a4c5d",
  PATHS[2]: "03d24a6cfbdbce40b25d1d085f5eea5871970b64365579dc40d8dddad85ba37d",
  PATHS[3]: "0864eee5ae079c6d3f98bfc50fec6388e499168e21a0ec09a6b0df45edd7ea4b",
 }

@@ -20,7 +20,15 @@ def proc_body(text, header):
 class DryingRackTest(unittest.TestCase):
     def setUp(self):
         self.text = SOURCE.read_text(encoding='utf-8')
-        self.attack = proc_body(self.text, '/obj/structure/drying_rack/attackby(var/obj/item/stack/W as obj, var/mob/living/human/H as mob)')
+        self.attack = proc_body(self.text, '/obj/structure/drying_rack/attackby(var/obj/item/W as obj, var/mob/living/human/H as mob)')
+
+    def test_wrench_reaches_the_shared_fastening_action_even_when_loaded(self):
+        self.assertEqual(self.attack.splitlines()[:2], [
+            '\tif (is_tool(W, TOOL_WRENCH))',
+            '\t\treturn ..()',
+        ])
+        self.assertLess(self.attack.index('return ..()'), self.attack.index('filled >= max_capacity'))
+        self.assertLess(self.attack.index('return ..()'), self.attack.index('load_gelatin(container)'))
 
     def test_saved_ham_and_salami_resume_after_load(self):
         body = proc_body(self.text, '/obj/structure/drying_rack/after_load()')
@@ -45,7 +53,7 @@ class DryingRackTest(unittest.TestCase):
     def test_slices_are_not_cut_again(self):
         body = proc_body(self.text, '%s/salami/attackby(var/obj/item/W as obj, var/mob/living/human/user as mob)' % SAUSAGE)
         guard = body.index('istype(src, %s/salami/slice)' % SAUSAGE)
-        self.assertLess(guard, body.index('/salami/slice(user.loc)'))
+        self.assertLess(guard, body.index('/salami/slice/portion = new(user.loc)'))
         self.assertTrue(body[guard:].splitlines()[1].strip().startswith('return ..()'))
 
 

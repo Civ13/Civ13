@@ -45,7 +45,7 @@
 	return 1
 
 /mob/living/simple_animal/proc/can_handle_animal_tack(mob/living/human/user)
-	return !QDELETED(src) && !QDELETED(user) && ishuman(user) && !user.incapacitated() && user.Adjacent(src) && !src.ride && !src.rider && !src.buckled && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
+	return !QDELETED(src) && !QDELETED(user) && ishuman(user) && !user.incapacitated() && user.Adjacent(src) && !src.ride && !src.rider && !src.buckled && !src.hitched_cart && !src.hitched_train && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
 
 /mob/living/simple_animal/proc/fit_animal_tack(obj/item/animal_tack/T, mob/living/human/user)
 	if (!src.can_handle_animal_tack(user) || src.stat == DEAD || QDELETED(T) || !T.fits_animal(src) || T.loc != user || user.get_active_hand() != T)

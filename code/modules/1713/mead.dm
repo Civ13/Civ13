@@ -12,10 +12,10 @@
 // drinks in Chemistry-Reagents-Food-Drinks.dm and Chemistry-Recipes.dm.
 
 /obj/item/weapon/reagent_containers/glass/barrel
-	var/tmp/mead_working = FALSE
+	var/tmp/mead_timer
 
 /obj/item/weapon/reagent_containers/glass/barrel/persistence_runtime_var(key)
-	return key == "mead_working" || ..()
+	return key == "mead_timer" || ..()
 
 /obj/item/weapon/reagent_containers/glass/barrel/after_load()
 	..()
@@ -23,7 +23,9 @@
 
 /obj/item/weapon/reagent_containers/glass/barrel/attack_self(mob/user)
 	. = ..()
-	if (!is_open_container())
+	if (is_open_container())
+		mead_cancel()
+	else
 		mead_schedule()
 
 /obj/item/weapon/reagent_containers/glass/barrel/examine(mob/user)
@@ -32,16 +34,24 @@
 		to_chat(user, is_open_container() ? SPAN_NOTICE("Mead must sits in it. Put the lid on to let it ferment.") : SPAN_NOTICE("It gurgles faintly as the must inside ferments."))
 
 /obj/item/weapon/reagent_containers/glass/barrel/proc/mead_schedule()
-	if (mead_working || QDELETED(src) || is_open_container() || !reagents || reagents.get_reagent_amount("honey_must") <= 0)
+	if (mead_timer || QDELETED(src) || is_open_container() || !reagents || reagents.get_reagent_amount("honey_must") <= 0)
 		return
-	mead_working = TRUE
-	addtimer(CALLBACK(src, PROC_REF(mead_work)), MEAD_SPELL)
+	mead_timer = addtimer(CALLBACK(src, PROC_REF(mead_work)), MEAD_SPELL, TIMER_STOPPABLE)
+
+/obj/item/weapon/reagent_containers/glass/barrel/proc/mead_cancel()
+	if (mead_timer)
+		deltimer(mead_timer)
+		mead_timer = null
+
+/obj/item/weapon/reagent_containers/glass/barrel/Destroy()
+	mead_cancel()
+	return ..()
 
 // One fermenting spell of a closed barrel. Returns the units turned to mead.
 /obj/item/weapon/reagent_containers/glass/barrel/proc/mead_work()
 	if (QDELETED(src))
 		return 0
-	mead_working = FALSE
+	mead_timer = null
 	if (is_open_container() || !reagents)
 		return 0
 	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)

@@ -1,9 +1,11 @@
-"""Offline source contracts for handcuffs (#4229, #4230); these do not execute DM."""
+"""Offline source contracts for applying and removing restraints; these do not execute DM."""
 from pathlib import Path
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "code/game/objects/items/weapons/handcuffs.dm"
+STRIP = ROOT / "code/game/mob/living/carbon/human/stripping.dm"
+INVENTORY = ROOT / "code/game/mob/living/carbon/human/human.dm"
 
 
 def place_body(source):
@@ -72,6 +74,42 @@ class HandcuffsSource(unittest.TestCase):
         self.assertLess(equip, body.index('if (H.handcuffed != cuffs || cuffs.loc != H)'))
         self.assertLess(equip, body.index('has put [cuff_type] on'))
         self.assertIn('user.put_in_hands(cuffs)', body)
+
+    def test_both_completion_records_follow_equip_verification(self):
+        body = place_body(self.source)
+        equip_guard = body.index('if (H.handcuffed != cuffs || cuffs.loc != H)')
+        reject = body.index('return FALSE', equip_guard)
+        self.assertLess(body.index('admin_attack_log(user, H, "Attempted to handcuff'), equip_guard)
+        for record in ('H.append_attack_log(', 'user.append_attack_log('):
+            self.assertLess(reject, body.index(record))
+
+    def test_cuff_links_are_removal_only_and_never_drop_an_occupied_active_hand(self):
+        inventory = INVENTORY.read_text(encoding="utf-8")
+        self.assertIn('item=[slot_handcuffed]', inventory)
+        self.assertIn('item=[slot_legcuffed]', inventory)
+        self.assertIn('handle_strip(href_list["item"],usr)', inventory)
+        strip = STRIP.read_text(encoding="utf-8").split('// Empty out', 1)[0]
+        self.assertIn('var/cuff_slot = slot_id == slot_handcuffed || slot_id == slot_legcuffed', strip)
+        cuff_entry = strip[strip.index('if (cuff_slot)'):strip.index('switch(slot_to_strip)')]
+        self.assertIn('if (!istype(target_slot))\n\t\t\treturn', cuff_entry)
+        self.assertIn('if (user.get_active_hand())', cuff_entry)
+        self.assertIn('Switch to an empty hand', cuff_entry)
+        self.assertTrue(cuff_entry.rstrip().endswith('return'))
+
+    def test_cuff_removal_rechecks_actor_and_original_slot_after_wait(self):
+        strip = STRIP.read_text(encoding="utf-8").split('// Empty out', 1)[0]
+        wait = strip.rindex('do_mob(user,src,HUMAN_STRIP_DELAY,progress = FALSE)')
+        log = strip.index('admin_attack_log(user, src')
+        self.assertLess(log, strip.index('unEquip(target_slot)'))
+        guards = strip[wait:log]
+        self.assertIn('if (stripping)\n\t\tif (cuff_slot)', guards)
+        self.assertIn('!user.Adjacent(src)', guards)
+        self.assertIn('user.incapacitated()', guards)
+        self.assertIn('user.get_active_hand()', guards)
+        self.assertIn('offline_sleep_refuses(user)', guards)
+        self.assertIn('target_slot.loc != src', guards)
+        self.assertIn('get_equipped_item(slot_id) != target_slot', guards)
+        self.assertIn('!target_slot.canremove', guards)
 
     def test_concurrent_cuffing_keeps_first_pair(self):
         equipped, contents, lost = project_cuffing(self.source)

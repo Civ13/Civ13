@@ -39,6 +39,7 @@ internal sealed partial class LauncherWindow : Form {
     private readonly Label statusLabel = new() { AutoSize = true, ForeColor = HeaderMuted, Text = "Starting..." };
     private readonly Button signInButton = new() { Text = "BYOND sign in", AutoSize = true, Enabled = false, FlatStyle = FlatStyle.System };
     private readonly Button setupButton = new() { Text = "Set up BYOND", AutoSize = true, Visible = false, FlatStyle = FlatStyle.System };
+    private readonly CheckBox darkMode = new() { Text = "Dark mode", AutoSize = true, Anchor = AnchorStyles.Left, ForeColor = HeaderText };
     private readonly TabControl tabs = new() { Dock = DockStyle.Fill };
     private readonly RadioButton officialRadio = new() { Text = "Civ13.com", AutoSize = true, Enabled = false };
     private readonly RadioButton valRadio = new() { Text = "ValZarGaming.com", AutoSize = true, Enabled = false };
@@ -86,12 +87,12 @@ internal sealed partial class LauncherWindow : Form {
     // What an action waits for. Region: the chosen region is idle. All: nothing (the group script skips a
     // busy region itself). AllIdle: every region is idle. Server: host.json's own server is idle. A Rescue
     // action (force stop) stays offered while its target is busy, because that is when a hung world needs it.
-    private enum HostGate { Region, RegionRescue, All, AllIdle, Server, ServerRescue }
+    private enum HostGate { Region, RegionStartStop, RegionRescue, All, AllIdle, Server, ServerRescue }
     private readonly List<(Button Button, HostGate Gate)> hostActions = [];
     private readonly List<(ToolStripItem Item, HostGate Gate)> hostMenuActions = [];
     private System.Windows.Forms.Timer? hostPoll, hostIdlePoll;
     private bool hostControlBusy;
-    private bool groupScriptRunning;
+    private bool groupScriptRunning, groupDeployBuilding;
     private CancellationTokenSource? groupScriptCancel;
     private Button? hostScriptCancel;
     // Busy is tracked per region, so one region's start or save never locks the others' buttons.
@@ -148,6 +149,28 @@ internal sealed partial class LauncherWindow : Form {
         Controls.Add(body);
         Controls.Add(BuildFooter());
         Controls.Add(BuildHeader());
+        darkMode.Checked = LauncherSkin.Load(root);
+        LauncherSkin.Choose(darkMode.Checked);
+        LauncherSkin.Apply(this);
+        var effectiveDark = LauncherSkin.Dark;
+        void ReapplySkin() {
+            effectiveDark = LauncherSkin.Dark;
+            foreach (var form in Application.OpenForms.Cast<Form>().ToArray()) LauncherSkin.Apply(form);
+            RefreshPlayStatusColors();
+        }
+        // High Contrast changes the system colors at runtime. Reapply all open launcher
+        // forms on the UI thread without altering the player's stored preference.
+        SystemColorsChanged += (_, _) => { if (effectiveDark != LauncherSkin.Dark) ReapplySkin(); };
+        darkMode.CheckedChanged += (_, _) => {
+            LauncherSkin.Choose(darkMode.Checked);
+            ReapplySkin();
+            if (renderTo != null) return; // A visual review must never rewrite the launcher preference.
+            try { LauncherSkin.Save(root, darkMode.Checked); }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException) {
+                // The selected appearance still works for this session.
+                ReportError("Could not save launcher appearance", e);
+            }
+        };
         Load += (_, _) => {
             body.SplitterDistance = Math.Max(body.Panel1MinSize, body.Height - LogicalToDeviceUnits(120));
         };
@@ -170,6 +193,7 @@ internal sealed partial class LauncherWindow : Form {
         var buttons = new FlowLayoutPanel { AutoSize = true, WrapContents = false, Anchor = AnchorStyles.Right, Margin = new Padding(0) };
         signInButton.Click += (_, _) => { if (byond != null) Open(() => Program.StartByondPager(byond), "the BYOND Pager"); };
         setupButton.Click += async (_, _) => await SetUpByond();
+        buttons.Controls.Add(darkMode);
         buttons.Controls.Add(setupButton);
         buttons.Controls.Add(signInButton);
         header.Controls.Add(title, 0, 0);
@@ -251,7 +275,7 @@ internal sealed partial class LauncherWindow : Form {
         manageLink.LinkClicked += (_, _) => {
             if (hostPage != null) { tabs.SelectedTab = hostPage; return; }
             using var dialog = new ManagementDialog();
-            dialog.ShowDialog(this);
+            LauncherSkin.Show(dialog, this);
         };
         tools.Controls.Add(dataFolder);
         tools.Controls.Add(manageLink);
@@ -286,6 +310,7 @@ internal sealed partial class LauncherWindow : Form {
                 ("Update (stopped and asleep regions)", () => GroupAction("update", "Update"), HostGate.All),
                 ("Build update", () => GroupAction("stage", "Build update"), HostGate.All),
                 ("Run daily maintenance now", () => GroupAction("maintenance", "Run daily maintenance now"), HostGate.All),
+                ("Match mainland build…", () => GroupAction("match-mainland", "Match mainland build"), HostGate.All),
                 ("Restart host service", () => GroupAction("restart-host", "Restart host service"), HostGate.AllIdle),
                 ("Advance epoch…", AdvanceEpoch, HostGate.AllIdle),
                 ("-", null, null),
@@ -299,7 +324,7 @@ internal sealed partial class LauncherWindow : Form {
                     // Which region players join first, and every port of the group (GroupPorts, shard_group.py set-gate / ports).
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
                     using var dialog = new FrontDoorDialog(control, host?.Bot?.Profile, HostLine, host?.Bot != null ? RestartBotForFrontDoor : null);
-                    dialog.ShowDialog(this);
+                    LauncherSkin.Show(dialog, this);
                     return Task.CompletedTask;
                 }, null),
                 ("Hub names…", () => { ShowHubNames(); return Task.CompletedTask; }, null),
@@ -307,34 +332,34 @@ internal sealed partial class LauncherWindow : Form {
                     // One shared file for the whole group (MagicWhitelist, shard_group.py magic-whitelist): no host gate.
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
                     using var dialog = new MagicWhitelistDialog(control, HostLine);
-                    dialog.ShowDialog(this);
+                    LauncherSkin.Show(dialog, this);
                     return Task.CompletedTask;
                 }, null),
                 ("AI characters…", () => {
                     // Ada and other autopilot runs on this host (AgentRuns, shard_group.py agents): status, logs, stop and restart.
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
                     using var dialog = new AgentRunsDialog(control);
-                    dialog.ShowDialog(this);
+                    LauncherSkin.Show(dialog, this);
                     return Task.CompletedTask;
                 }, null),
                 ("Player activity…", () => {
                     // Read-only host report for the whole group (PlayerActivity, shard_group.py activity): no host gate.
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
                     using var dialog = new PlayerActivityDialog(control);
-                    dialog.ShowDialog(this);
+                    LauncherSkin.Show(dialog, this);
                     return Task.CompletedTask;
                 }, null),
                 ("Windows process check (experimental)…", () => {
                     // Is Windows' WMI service answering? Read-only check plus one-click repairs, each elevated only on a click (WmiHealth).
                     using var dialog = new WmiHealthDialog(root);
-                    dialog.ShowDialog(this);
+                    LauncherSkin.Show(dialog, this);
                     return Task.CompletedTask;
                 }, null),
                 ("Player records…", () => {
                     // Read-only shared notes, warnings, bans, watchlist and memos (PlayerRecords, shard_group.py records): no host gate.
                     if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
                     using var dialog = new PlayerRecordsDialog(control);
-                    dialog.ShowDialog(this);
+                    LauncherSkin.Show(dialog, this);
                     return Task.CompletedTask;
                 }, null),
                 ("-", null, null),
@@ -415,6 +440,7 @@ internal sealed partial class LauncherWindow : Form {
     // An item named "-" is a separator; an item with a gate is disabled while what it acts on is busy.
     private Button MoreButton(params (string Text, Func<Task>? Run, HostGate? Gate)[] items) {
         var menu = new ContextMenuStrip { ShowImageMargin = false };
+        menu.Opening += (_, _) => LauncherSkin.Apply(menu);
         foreach (var (text, run, gate) in items) {
             if (run == null) { menu.Items.Add(new ToolStripSeparator()); continue; }
             var item = new ToolStripMenuItem(text);
@@ -472,7 +498,8 @@ internal sealed partial class LauncherWindow : Form {
         row.Controls.Add(picker);
         foreach (var (text, action) in new[] { ("Start", "start"), ("Save and stop", "stop"), ("Restart", "restart"), ("Sleep now", "freeze"), ("Wake", "thaw"),
                 ("Save, update and restart", "deploy") })
-            row.Controls.Add(HostButton(text, () => GroupAction(action, text, Chosen()), HostGate.Region));
+            row.Controls.Add(HostButton(text, () => GroupAction(action, text, Chosen()),
+                action is "start" or "stop" ? HostGate.RegionStartStop : HostGate.Region));
         var menu = new List<(string, Func<Task>?, HostGate?)>();
         foreach (var (text, action) in new[] { ("Update", "update"), ("Build update", "stage"), ("Apply host settings", "config-apply"), ("Set up", "setup") })
             menu.Add((text, () => GroupAction(action, text, Chosen()), HostGate.Region));
@@ -481,7 +508,7 @@ internal sealed partial class LauncherWindow : Form {
             if (host?.Control is not { Group: not null } control) return Task.CompletedTask;
             var chosen = regions[Math.Max(0, picker.SelectedIndex)];
             using var dialog = new PlayersDialog(control, chosen.Id, chosen.Name, HostLine);
-            dialog.ShowDialog(this);
+            LauncherSkin.Show(dialog, this);
             return Task.CompletedTask;
         }, null));
         menu.Add(("Open its world log", () => { OpenWorldLog(Chosen()); return Task.CompletedTask; }, null));
@@ -677,6 +704,11 @@ internal sealed partial class LauncherWindow : Form {
         if (serverList.SelectedItems.Count == 0 && serverList.Items.Count == 1) serverList.Items[0].Selected = true;
         serverList.EndUpdate();
         UpdateJoinButton();
+    }
+
+    private void RefreshPlayStatusColors() {
+        foreach (ListViewItem item in serverList.Items)
+            item.SubItems[^1].ForeColor = PlayStatusColor(item.SubItems[^1].Text);
     }
 
     internal static Color PlayStatusColor(string status) =>
@@ -997,6 +1029,10 @@ internal sealed partial class LauncherWindow : Form {
             "stage" => $"Build the latest update beside {target} while the worlds keep running? Nobody is kicked. " +
                 "Save, update and restart then only has to hand each running region over; a region that is asleep or empty gets it on its own.",
             "restart-host" => "Restart the host service? The worlds keep running.",
+            "match-mainland" => "Bring the other regions up to the exact build the mainland is running now? " +
+                "The mainland and Gateway stay running. If a region is already newer, diverged, or cannot be verified, the match stops " +
+                "before making changes. Eligible builds are prepared first. Occupied regions get a warning before switching; stopped " +
+                "regions take the update without being started. This is a one-time sync, not a change to automatic updates.",
             "maintenance" => "Run the daily maintenance now? The latest master is prepared in the background while everyone keeps playing; " +
                 "if it cannot be prepared for any region, nothing changes anywhere. Players in every occupied region then see the same " +
                 "countdown, and each running region saves and switches to the update, one after another (its players are moved across " +
@@ -1036,6 +1072,11 @@ internal sealed partial class LauncherWindow : Form {
                 groupScriptRunning = false;
                 await RefreshHostState();
             }
+            return;
+        }
+        // The rollout might have reached handover while the confirmation was open.
+        if (region != null && (action is "start" or "stop") && groupScriptRunning && !PriorityControlsDuringDeploy(region)) {
+            HostLine(label + " was not sent: the deployment is no longer only building updates.");
             return;
         }
         // Only what this request acts on is locked while it is sent: the one region, or the All regions row.
@@ -1132,7 +1173,7 @@ internal sealed partial class LauncherWindow : Form {
         layout.Controls.Add(cancel);
         dialog.Controls.Add(layout);
         dialog.CancelButton = cancel;
-        if (dialog.ShowDialog(this) != DialogResult.OK || confirmation.Text != region) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK || confirmation.Text != region) return;
         if (!actingRegions.Add(region)) return;
         ApplyHostGates();
         try {
@@ -1180,7 +1221,7 @@ internal sealed partial class LauncherWindow : Form {
         layout.Controls.Add(cancel);
         dialog.Controls.Add(layout);
         dialog.CancelButton = cancel;
-        if (dialog.ShowDialog(this) != DialogResult.OK || confirmation.Text != id) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK || confirmation.Text != id) return;
         actingWhole++;
         ApplyHostGates();
         try {
@@ -1218,7 +1259,7 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.AcceptButton = go;
         dialog.CancelButton = cancel;
-        if (dialog.ShowDialog(this) != DialogResult.OK || picker.SelectedIndex < 0) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK || picker.SelectedIndex < 0) return;
         var ordinal = picker.SelectedIndex;
         actingWhole++;
         ApplyHostGates();
@@ -1237,7 +1278,7 @@ internal sealed partial class LauncherWindow : Form {
     private void ShowHostSettings() {
         if (host?.Control is not { } control || OverlayLocations() is not { } locations) return;
         using var dialog = new HostSettingsDialog(control, locations);
-        dialog.ShowDialog(this);
+        LauncherSkin.Show(dialog, this);
     }
 
     // How long players online are warned (chat countdown, Status tab and Discord) before Save and stop,
@@ -1272,7 +1313,7 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.AcceptButton = save;
         dialog.CancelButton = cancel;
-        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK) return;
         var seconds = (int)Math.Round(minutes.Value * 60);
         try {
             HostSettings.SetShutdownWarningSeconds(group, seconds);
@@ -1316,7 +1357,7 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.AcceptButton = save;
         dialog.CancelButton = cancel;
-        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK) return;
         try {
             var followed = HostSettings.SetUpdateWhenEmpty(group, enabled.Checked);
             HostLine(!enabled.Checked ? "Update when empty off: regions take updates only from Save, update and restart or Update offline regions."
@@ -1373,7 +1414,7 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.AcceptButton = save;
         dialog.CancelButton = cancel;
-        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK) return;
         var chosen = time.Value.ToString("HH:mm", System.Globalization.CultureInfo.InvariantCulture);
         try {
             HostSettings.SetDailyMaintenance(group, enabled.Checked, chosen, (int)warning.Value);
@@ -1415,7 +1456,7 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.AcceptButton = save;
         dialog.CancelButton = cancel;
-        if (dialog.ShowDialog(this) != DialogResult.OK || picker.SelectedIndex < 0 || picker.SelectedIndex >= start.Choices.Count) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK || picker.SelectedIndex < 0 || picker.SelectedIndex >= start.Choices.Count) return;
         var picked = start.Choices[picker.SelectedIndex];
         if (picked.Id == start.Current) return;
         try {
@@ -1473,7 +1514,7 @@ internal sealed partial class LauncherWindow : Form {
         dialog.Controls.Add(layout);
         dialog.AcceptButton = save;
         dialog.CancelButton = cancel;
-        if (dialog.ShowDialog(this) != DialogResult.OK) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK) return;
         var minutes = (int)coldAfter.Value;
         if (keepReady.Checked != ready.On || minutes != ready.ColdAfterMinutes) {
             try {
@@ -1500,7 +1541,7 @@ internal sealed partial class LauncherWindow : Form {
     private void ShowHubNames() {
         if (host?.Control is not { } control || OverlayLocations() is not { } locations) return;
         using var dialog = new HubNamesDialog(control, locations);
-        dialog.ShowDialog(this);
+        LauncherSkin.Show(dialog, this);
     }
 
     private IReadOnlyList<HostSettings.Location>? OverlayLocations() {
@@ -1572,7 +1613,7 @@ internal sealed partial class LauncherWindow : Form {
         go.Enabled = list.CheckedIndices.Count > 0;
         // ItemCheck fires before the box changes, so count the pending state.
         list.ItemCheck += (_, e) => go.Enabled = list.CheckedIndices.Count + (e.NewValue == CheckState.Checked ? 1 : 0) - (e.CurrentValue == CheckState.Checked ? 1 : 0) > 0;
-        if (dialog.ShowDialog(this) != DialogResult.OK || list.CheckedIndices.Count == 0) return;
+        if (LauncherSkin.Show(dialog, this) != DialogResult.OK || list.CheckedIndices.Count == 0) return;
         var chosen = list.CheckedIndices.Cast<int>().Select(index => regions[index].Id).ToList();
         // Every region ticked runs the whole group, so a region added to the config later is never skipped.
         // From the One region row the ids stay explicit, so a region added meanwhile is never pulled in.
@@ -1643,10 +1684,21 @@ internal sealed partial class LauncherWindow : Form {
         try {
             var exit = await Task.Run(() => LocalHosting.RunStreamed(LocalHosting.GroupScriptStep(control, script, resume, regions), text => {
                 lock (output) output.AppendLine(text);
-                try { BeginInvoke(() => HostLine(text)); } catch (InvalidOperationException) { } // the window closed
+                try { BeginInvoke(() => {
+                    HostLine(text);
+                    if (script == "deploy" && ReferenceEquals(groupScriptCancel, cancel) && !cancel.IsCancellationRequested) {
+                        var building = HostBoard.DeployBuilding(groupDeployBuilding, text);
+                        if (building != groupDeployBuilding) {
+                            groupDeployBuilding = building;
+                            ApplyHostGates();
+                        }
+                    }
+                }); } catch (InvalidOperationException) { } // the window closed
             }, cancel.Token));
             lock (output) return (exit, output.ToString());
         } catch (IOException e) when (e is LocalHosting.StepTimedOut or LocalHosting.StepCancelled) {
+            groupDeployBuilding = false;
+            ApplyHostGates();
             // Both scripts end the host service task before they start it again (deploy.bat in its last step).
             // Cut short between the two, the service would stay down until the next logon: start it, which
             // does nothing while it runs. This step has its own limit and is not tied to the cancelled one.
@@ -1662,6 +1714,8 @@ internal sealed partial class LauncherWindow : Form {
                 "wait for the board to settle, then run the action again." + service, e);
         } finally {
             groupScriptCancel = null;
+            groupDeployBuilding = false;
+            ApplyHostGates();
             ShowGroupScriptCancel();
         }
     }
@@ -1682,12 +1736,19 @@ internal sealed partial class LauncherWindow : Form {
         // It may have finished while the question was open.
         if (!ReferenceEquals(groupScriptCancel, cancel)) return;
         hostScriptCancel!.Enabled = false;
+        groupDeployBuilding = false;
+        ApplyHostGates();
         HostLine("Cancelling the running script...");
         try { cancel.Cancel(); } catch (ObjectDisposedException) { }
     }
 
+    private bool PriorityControlsDuringDeploy(string region) =>
+        groupDeployBuilding && actingWhole == 0 && !actingRegions.Contains(region) && !busyRegions.Contains(region)
+        && HostBoard.IsPriorityRegion(groupStatusOutput, region);
+
     // Enables each host action by what it acts on, from the last status and the requests being sent now.
-    // A deploy or host-service restart (groupScriptRunning) and a whole-group action still lock every row.
+    // Whole-group changes and actual handovers still lock conflicting actions. Only the two
+    // priority regions' Start/Stop controls are exempt while deploy is building beside them.
     private void ApplyHostGates() {
         var locked = groupScriptRunning || actingWhole > 0;
         var region = chosenRegion?.Invoke();
@@ -1695,7 +1756,9 @@ internal sealed partial class LauncherWindow : Form {
         var regionBusy = regionActing || (region != null && busyRegions.Contains(region));
         var ownBusy = serverBusy || actingServer;
         var anyBusy = locked || ownBusy || actingAll > 0 || actingRegions.Count > 0 || busyRegions.Count > 0;
-        bool Open(HostGate gate) => !locked && gate switch {
+        bool Open(HostGate gate) => gate == HostGate.RegionStartStop
+            ? !regionBusy && (!locked || (region != null && PriorityControlsDuringDeploy(region)))
+            : !locked && gate switch {
             HostGate.Region => !regionBusy,
             HostGate.RegionRescue => !regionActing,
             HostGate.All => actingAll == 0,

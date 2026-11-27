@@ -52,10 +52,6 @@ var/list/_client_preferences_by_type
 	description ="Show tips"
 	key = "CHAT_TIPS"
 
-/datum/client_preference/play_chat_tts
-	description ="Play chat TTS"
-	key = "CHAT_TTS"
-
 /datum/client_preference/play_admin_midis
 	description ="Play admin midis"
 	key = "SOUND_MIDI"

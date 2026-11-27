@@ -191,7 +191,9 @@ var/global/kept_hive_cycle_count = 0
 	var/points = 0
 	for (var/obj/structure/O in range(KEPT_HIVE_FORAGE_RANGE, A))
 		if (istype(O, /obj/structure/farming/plant))
-			points += 1
+			var/obj/structure/farming/plant/P = O
+			if (P.stage <= P.readyStageMax)
+				points += 1
 		else if (istype(O, /obj/structure/wild/tree) || istype(O, /obj/structure/wild/jungle) || istype(O, /obj/structure/wild/bush))
 			points += 0.5
 		if (points >= KEPT_HIVE_FORAGE_FULL)
@@ -214,8 +216,7 @@ var/global/kept_hive_cycle_count = 0
 			strength = min(strength + 4 * f, 100)
 		if (combs < max_combs && prob(strength * f * 0.5))
 			combs++
-		if (swarm_season && strength >= 80 && prob(8))
-			cast_swarm(src, 40)
+		if (swarm_season && strength >= 80 && prob(8) && cast_swarm(src, 40))
 			strength -= 40
 	else if (prob(strength * 0.1))
 		if (combs > 0)

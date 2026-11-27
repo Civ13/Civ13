@@ -77,7 +77,15 @@ All under the account's ckey in shared player records:
 | --- | --- | --- |
 | `character_slot` | `slot`, `points` | `md5("character_slot\|ckey\|slot")`, so a copy from another region pays once |
 | `character_switch` | `slot`, `from` | random; the latest (by `at`, a unix digit string) is the slot played |
-| `character_named` | `slot`, `name` | `md5("character_named\|ckey\|slot\|name")`, written from the minute tick once an account has two slots |
+| `character_named` | `slot`, `name` | random for each change; written when a Persistence character starts, and refreshed by the minute tick if the name changes |
+
+New Persistence characters must have a different name from the other existing
+characters on the same account, including those in slots staff locked. Case
+and spacing do not make a name different.
+Existing characters can still be reclaimed and are not renamed. A local living
+body supplies its current name; for a character in another land the check
+uses the latest shared name record. Records still propagate asynchronously
+and older remote bodies may not yet have a name record.
 
 Hosts: the launcher's Player records lookup (`shard_group.py records --ckey`)
 starts with the account's points and slots, and `shard_group.py accounts

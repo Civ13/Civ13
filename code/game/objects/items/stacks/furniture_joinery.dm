@@ -2,8 +2,13 @@
 // retain their behavior. JSON is shared with the Atlas/Help projector.
 var/global/list/furniture_joinery_specs
 
+// The dowel recipe has a plain player-facing label; its output still
+// identifies the guarded joinery route even if its configuration is missing.
+/proc/is_furniture_joinery_recipe(datum/stack_recipe/R)
+	return R && (R.result_type == /obj/item/stack/wooden_dowels || findtext(R.title, "joinery: ") == 1)
+
 /proc/furniture_joinery_spec(datum/stack_recipe/R)
-	if (!R || findtext(R.title, "joinery: ") != 1)
+	if (!is_furniture_joinery_recipe(R))
 		return null
 	if (!furniture_joinery_specs)
 		furniture_joinery_specs = json_decode(file2text("config/crafting/furniture_joinery.json"))
@@ -13,9 +18,8 @@ var/global/list/furniture_joinery_specs
 	name = "wooden dowel sets"
 	singular_name = "wooden dowel set"
 	desc = "Whittled wooden pegs for furniture joints, a frame's worth to a set. Hold the sets with the wood stock and keep a chisel and hammer or mallet equipped or at your feet."
-	icon = 'icons/obj/old_weapons.dmi'
-	icon_state = "sharpened_stick"
-	color = "#824B28"
+	icon = 'icons/obj/stone_age_traps.dmi'
+	icon_state = "weir_stakes"
 	max_amount = 50
 	w_class = ITEM_SIZE_SMALL
 	flammable = TRUE

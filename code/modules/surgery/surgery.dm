@@ -110,7 +110,8 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 	// Aiming an open drink at your own mouth always means drinking, never surgery.
 	if (M == user && zone == "mouth" && istype(tool, /obj/item/weapon/reagent_containers) && tool.is_open_container())
 		return FALSE
-	if (zone in M.op_stage.in_progress) //Can't operate on someone repeatedly.
+	var/datum/surgery_status/stage = M.op_stage
+	if (zone in stage.in_progress) //Can't operate on someone repeatedly.
 		to_chat(user, "<span class='warning'>You can't operate on this area while surgery is already in progress.</span>")
 		return TRUE
 	for (var/datum/surgery_step/S in surgery_steps)
@@ -120,19 +121,26 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 			continue
 		// Only steps that actually apply here may claim the click, so an ordinary
 		// use such as drinking from a bucket is not blocked by an unrelated step.
+		// Some steps yield for a choice. Reserve this zone before checking them.
+		stage.in_progress += zone
 		var/step_is_valid = S.can_use(user, M, zone, tool)
+		if (QDELETED(M) || QDELETED(user) || QDELETED(tool) || M.op_stage != stage)
+			stage?.release_zone(zone)
+			return TRUE
 		if (!step_is_valid || !S.is_valid_target(M))
+			stage.release_zone(zone)
 			continue
 		if (step_is_valid == SURGERY_FAILURE) // This is a failure that already has a message for failing.
+			stage.release_zone(zone)
 			return TRUE
 		if (quality <= 50)
+			stage.release_zone(zone)
 			to_chat(user, "You are not skilled enough to perform this surgery step with \the [tool].")
 			return TRUE
-		M.op_stage.in_progress += zone
 		S.begin_step(user, M, zone, tool)		//start on it
 		//We had proper tools! (or RNG smiled.) and user did not move or change hands.
 		if (prob(S.tool_quality(tool, user)))
-			if (do_after(user, rand(S.min_duration, S.max_duration) * surgery_node_time(user), M))//&& do_mob(user, M, rand(S.min_duration, S.max_duration), FALSE) && user.Adjacent(M))
+			if (do_after(user, rand(S.min_duration, S.max_duration) * surgery_node_time(user), M) && !QDELETED(M) && M.op_stage == stage)
 				S.end_step(user, M, zone, tool)		//finish successfully
 				note_field_work(user, "surgery")
 				if (ishuman(user))
@@ -141,10 +149,6 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 					if (user.religious_clergy == "Shamans")
 						mod = 2
 					H.adaptStat("medical", 1.5*mod, S.type)
-				M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
-			else
-				if (M)
-					M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
 		else
 			if (user.Adjacent(M) && (tool in user.contents))			//or
 				// better solution to combat surgery, nothing happens unless you were doing it for a while - Kachnov
@@ -162,11 +166,11 @@ proc/do_surgery(mob/living/human/M, mob/living/human/user, obj/item/tool)
 					to_chat(user, "<span class='warning'>Your hand slips!</span>")
 					if (prob(8))
 						S.fail_step(user, M, zone, tool)
-			M.op_stage.in_progress -= zone 									// Clear the in-progress flag.
 			if (ishuman(M))
 				var/mob/living/human/H = M
 				H.update_surgery()
-		return	TRUE	  												//don't want to do weapony things after surgery
+		stage?.release_zone(zone)
+		return TRUE // Don't do ordinary tool attacks after handling a surgery step.
 	return FALSE
 
 proc/sort_surgeries()
@@ -188,5 +192,10 @@ proc/sort_surgeries()
 /datum/surgery_status/
 	var/eyes	=	0
 	var/face	=	0
-	var/current_organ = "organ"
-	var/list/in_progress = list()
+	// Operation reservations and selected organ references belong to active actions.
+	var/tmp/list/in_progress = list()
+	var/tmp/list/selected_organs = list()
+
+/datum/surgery_status/proc/release_zone(zone)
+	selected_organs -= zone
+	in_progress -= zone

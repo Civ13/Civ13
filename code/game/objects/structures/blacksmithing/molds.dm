@@ -37,12 +37,19 @@
 				to_chat(user, "Has <b>[contents_materials[i]]</b> unit[contents_materials[i] > 1 ? "s" : ""] of [i] in it.")
 	if (max_capacity > 0)
 		to_chat(user, "Has a maximum capacity of <b>[max_capacity]</b> units.")
+// Raw charge and molten metal share the same space.
+/obj/item/weapon/clay/mold/proc/free_capacity()
+	var/used_capacity = capacity
+	for (var/metal in contents_materials)
+		used_capacity += contents_materials[metal]
+	return max(0, max_capacity - used_capacity)
+
 // TRUE when ML can pour into src right now: both fired, same or no target metal,
 // free space, metal in the source, and both still within the user's reach.
 /obj/item/weapon/clay/mold/proc/can_receive_pour(obj/item/weapon/clay/mold/ML, mob/user)
 	if (QDELETED(src) || QDELETED(ML) || QDELETED(user) || ML == src)
 		return FALSE
-	if (!fired || !ML.fired || ML.capacity <= 0 || !ML.current_material || capacity >= max_capacity)
+	if (!fired || !ML.fired || ML.capacity <= 0 || !ML.current_material || !free_capacity())
 		return FALSE
 	if (current_material && current_material != ML.current_material)
 		return FALSE
@@ -68,7 +75,7 @@
 			to_chat(user, "<span class='warning'>Finish the current pour first.</span>")
 			return
 		if (can_receive_pour(ML, user))
-			var/amt_to_transfer = min(max_capacity - capacity, ML.capacity)
+			var/amt_to_transfer = min(free_capacity(), ML.capacity)
 			pouring = TRUE
 			ML.pouring = TRUE
 			var/input = input(user, "Transfer", "How much of the [ML.current_material] do you want to transfer? Free capacity: [amt_to_transfer]", amt_to_transfer) as num
@@ -79,7 +86,7 @@
 			if (!can_receive_pour(ML, user))
 				to_chat(user, "<span class='warning'>You can't pour that now.</span>")
 				return
-			amt_to_transfer = min(input, max_capacity - capacity, ML.capacity)
+			amt_to_transfer = min(input, free_capacity(), ML.capacity)
 			user.visible_message("[user] pours [amt_to_transfer] unit[amt_to_transfer > 1 ? "s" : ""] of [ML.current_material] into \the [src].")
 			current_material = ML.current_material
 			capacity += amt_to_transfer
@@ -98,13 +105,11 @@
 			if (!vessel_accepts_metal(metal))
 				to_chat(user, "<span class='warning'>\The [O] can't be mixed with what is already in \the [src].</span>")
 				return
-			var/current_cap = capacity // molten metal already inside takes room too
-			for (var/i in contents_materials)
-				current_cap += contents_materials[i]
-			if (current_cap >= max_capacity)
+			var/room = free_capacity()
+			if (!room)
 				to_chat(user, "<span class='warning'>[src] is full!</span>")
 				return
-			var/cap_to_add = min(max_capacity - current_cap, O.amount)
+			var/cap_to_add = min(room, O.amount)
 			if (metal in contents_materials)
 				contents_materials[metal] += cap_to_add
 			else

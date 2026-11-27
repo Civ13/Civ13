@@ -459,6 +459,15 @@
 	qdel(other)
 	dressmaking_ci_clear(site)
 
+/proc/dressmaking_ci_retains_top_overlays(obj/item/clothing/G, list/top_layers)
+	if (length(G.overlays) != length(G.tailoring_overlays) + length(top_layers))
+		return FALSE
+	var/design_count = length(G.tailoring_overlays)
+	for (var/i in 1 to length(top_layers))
+		if (G.overlays[design_count + i] != top_layers[i])
+			return FALSE
+	return TRUE
+
 // Minor alterations: a few re-dyed or swapped parts, never a new garment.
 /proc/dressmaking_ci_alterations(mob/living/human/handle_ci/dress_ci/H, turf/site, datum/save_epoch)
 	dressmaking_ci_clear(site)
@@ -470,6 +479,19 @@
 	G.design_name = "Sunday best"
 	G.design_maker = "Ada"
 	G.tailoring_refresh()
+	var/obj/item/clothing/accessory/A = new(G)
+	A.has_suit = G
+	G.accessories += A
+	var/first_top_layer = length(G.overlays) + 1
+	G.overlays += A.get_inv_overlay()
+	G.blood_DNA = list("fixture" = "O+")
+	G.generate_blood_overlay()
+	G.overlays += G.blood_overlay
+	var/image/tag_art = image(G.icon, icon_state = G.icon_state)
+	tag_art.alpha = 95
+	G.overlays += tag_art
+	var/list/top_layers = G.overlays.Copy(first_top_layer)
+	dressmaking_ci_expect(length(top_layers) == 3, "the alteration fixture has three distinct top overlays")
 	var/plain = G.design_pieces
 	var/striped = tailoring_set_piece("made_tunic", plain, "Pattern", "Stripes")
 	var/sleeved = tailoring_set_piece("made_tunic", plain, "Sleeves", "Long")
@@ -498,6 +520,9 @@
 	dressmaking_ci_expect(P.sew_alteration(H, site, save_epoch, G, "#3e5a86", striped) && P.fabric == 1 && G.design_pieces == striped && copytext(G.design_colors, 1, 8) == "#3e5a86", "an alteration takes one sheet")
 	dressmaking_ci_expect(G.type == old_type && G.design_body == "made_tunic" && G.name == "Sunday best" && G.design_maker == "Ada" && G.design_fabric == "cloth" && G.body_parts_covered == covered && length(G.tailoring_overlays) == length(tailoring_layers("made_tunic", G.design_colors, FALSE, striped, "cloth")), "an altered garment keeps its body, name, designer and cover")
 	dressmaking_ci_expect(!P.sew_alteration(H, site, save_epoch, G, G.design_colors, striped) && P.fabric == 1, "no change costs nothing")
+	dressmaking_ci_expect(dressmaking_ci_retains_top_overlays(G, top_layers), "alteration keeps accessory, stain and unrelated art above the design in order")
+	dressmaking_ci_expect(P.sew_alteration(H, site, save_epoch, G, "#ffffff", striped) && P.fabric == 0, "a second alteration uses the remaining sheet")
+	dressmaking_ci_expect(dressmaking_ci_retains_top_overlays(G, top_layers), "second alteration replaces the design exactly once without rearranging the other art")
 	H.l_hand = null
 	H.r_hand = null
 	qdel(P)

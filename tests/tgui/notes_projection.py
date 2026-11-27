@@ -114,7 +114,7 @@ def view(mind,discovery_snapshot,parse=None,budget=None):
  # Every producer statement is checked; the shape/projection below only models
  # existing scalar interpolation and list reads, never native object lifetime.
  expected={
-  'var/datum/character_notes_budget/budget = new()','var/list/character_runs = character_notes_parse("[current.real_name]", budget)',
+  'var/datum/character_notes_budget/budget = new()','var/list/character_runs = character_notes_parse(character_heading, budget)',
   'if (isnull(character_runs))','return null','var/list/sections = list()','for (var/title in notes)',
   'if (budget.nodes_left <= 0)','budget.nodes_left--','var/list/title_runs = character_notes_parse("[title]", budget)',
   'if (isnull(title_runs))','var/list/entries = list()','var/list/notelist = notes[title]','if (!islist(notelist))',
@@ -124,7 +124,7 @@ def view(mind,discovery_snapshot,parse=None,budget=None):
   'var/list/discovery_runs = character_notes_parse(discovery_snapshot, budget)','if (isnull(memory_runs) || isnull(discovery_runs))',
   'return list("character" = character_runs, "sections" = sections, "memory" = memory_runs, "discoveries" = discovery_runs)',
  }
- statements={line.strip() for line in body(SOURCE,'/datum/mind/proc/character_notes_ui_data(discovery_snapshot)').splitlines() if line.strip() and not line.strip().startswith('//')}
+ statements={line.strip() for line in body(SOURCE,'/datum/mind/proc/character_notes_ui_data(discovery_snapshot, character_heading)').splitlines() if line.strip() and not line.strip().startswith('//')}
  if statements != expected:raise AssertionError('Producer projection changed: '+repr(statements ^ expected))
  character=parse(mind['character'],budget)
  if character is None:return None

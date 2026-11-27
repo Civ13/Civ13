@@ -107,13 +107,17 @@ class ManagementPriceTests(unittest.TestCase):
                 branch = branch.split('\n\tshow_manage_ui(user)', 1)[0]
             branch = '\n'.join(line[1:] if line.startswith('\t') else line
                                for line in branch.splitlines())
-            branch = branch.replace('if (unlocked)', 'if (pump.unlocked)')
+            branch = branch.replace('if (unlocked)', 'if (pump.unlocked)').replace('|| unlocked ||', '|| pump.unlocked ||')
+            branch = branch.replace('QDELETED(src)', 'QDELETED(pump)').replace('in_range(src, user)', 'in_range(pump, user)').replace('company_may_operate(user, owner)', 'company_may_operate(user, pump.owner)')
             run = adapter.project('/proc/projected()\n' + branch + '\n', '/proc/projected',
-                                  'pump, user, href_list, player_input, text2num, update_management_price, to_chat', {})
+                                  'pump, user, href_list, player_input, text2num, update_management_price, to_chat',
+                                  {'QDELETED': lambda pump: pump.removed,
+                                   'in_range': lambda pump, user: pump.in_range,
+                                   'company_may_operate': lambda user, owner: owner == 'authorized'})
             for unlocked in (False, True):
                 for value, expected in ((None, None), (-1, 0), (0, 0), (12.5, 12.5), (50, 50), (51, 50)):
                     with self.subTest(action=action, unlocked=unlocked, value=value):
-                        pump = SimpleNamespace(unlocked=unlocked, price=7)
+                        pump = SimpleNamespace(unlocked=unlocked, price=7, removed=False, in_range=True, owner="authorized")
                         user = object()
                         events = []
 
@@ -149,6 +153,118 @@ class ManagementPriceTests(unittest.TestCase):
                             wanted.extend((('description', expected), ('ui', user, expected)))
                         self.assertEqual(events, wanted)
                         self.assertEqual(pump.price, 7 if expected is None else expected)
+
+            for state in ({'owner': 'revoked'}, {'removed': True}, {'in_range': False}, {'unlocked': True}):
+                with self.subTest(state=state):
+                    pump = SimpleNamespace(unlocked=False, price=7, removed=False, in_range=True, owner='authorized')
+                    calls = []
+                    def prompt_then_change(*args):
+                        calls.append('prompt')
+                        vars(pump).update(state)
+                        return 25
+                    run(pump, object(), {}, prompt_then_change, None,
+                        lambda *args: calls.append('mutation'), lambda *args: calls.append('notice'))
+                    self.assertEqual(calls, ['prompt'])
+                    self.assertEqual(pump.price, 7)
+
+class PurchaseQuoteTests(unittest.TestCase):
+    def project(self, proc, args):
+        body = adapter.extract(SOURCE, "/obj/structure/fuelpump/proc/" + proc)
+        replacements = {
+            '\tif (unlocked)': '\tif (src.unlocked)',
+            'if (price != quote.unit_price || fueltype != quote.fuel': 'if (src.price != quote.unit_price || src.fueltype != quote.fuel',
+            '|| vol < quote.units': '|| src.vol < quote.units',
+            '\tstoredval += money': '\tsrc.storedval += [money]',
+            '\tunlockedvol = quote.units': '\tsrc.unlockedvol = quote.units',
+            '\tunlocked = TRUE': '\tsrc.unlocked = TRUE',
+        }
+        for old, new in replacements.items():
+            body = body.replace(old, new)
+        return adapter.project('/proc/receipt()\n' + body + '\n', '/proc/receipt', args, {
+            'istype': lambda value: value is not None,
+            'QDELETED': lambda value: value is None or value.deleted,
+            'SPAN_NOTICE': str,
+        })
+
+    def setup_payment(self):
+        user = SimpleNamespace()
+        user.l_hand = SimpleNamespace(amount=1, value=10, loc=user, deleted=False)
+        right = SimpleNamespace(amount=3, value=10, loc=user, deleted=False)
+        right.forceMove = lambda target: setattr(right, 'loc', target)
+        user.r_hand = right
+        user.item_is_in_hands = lambda item: item is user.l_hand or item is user.r_hand
+        pump = SimpleNamespace(unlocked=False, unlockedvol=0, price=2, vol=40,
+                               fueltype='diesel', storedval=[])
+        quote = SimpleNamespace(buyer=user, payment=right, payment_count=3, payment_value=10,
+                                unit_price=2, fuel='diesel', units=15)
+        moved = []
+
+        def transfer(item, target):
+            moved.append((item, target))
+            item.loc = target
+            user.r_hand = None
+            return True
+
+        user.transfer_held_item_to = transfer
+        return pump, user, quote, moved
+
+    def test_click_and_render_capture_one_window_owned_quote(self):
+        attack = adapter.extract(SOURCE, '/obj/structure/fuelpump/attackby')
+        self.assertIn('show_purchase_quote(user, W)', attack)
+        build = adapter.extract(SOURCE, '/obj/structure/fuelpump/proc/show_purchase_quote')
+        self.assertIn('new(user, money, price, fueltype)', build)
+        self.assertLess(build.index('close_user_uis(user, src, "buy")'), build.index('ui_interact(user, "buy"'))
+        data = adapter.extract(SOURCE, '/obj/structure/fuelpump/ui_interact')
+        self.assertIn('[quote.units] units of [quote.fuel]', data)
+        self.assertIn('state = quote', data)
+        action = adapter.extract(SOURCE, '/obj/structure/fuelpump/ui_act')
+        self.assertIn('ui.ui_key != "buy"', action)
+        self.assertLess(action.index('quote = ui.state'), action.index('ui.close()'))
+        self.assertIn('complete_purchase(buyer, quote)', action)
+        self.assertIn('else if (params["value"] == "buy_no")\n\t\tui.close()', action)
+        legacy = adapter.extract(SOURCE, '/obj/structure/fuelpump/Topic')
+        self.assertNotIn('complete_purchase', legacy)
+        self.assertIn('if (href_list["action"] in list("buy_yes", "buy_no"))\n\t\treturn', legacy)
+
+    def test_confirmation_takes_only_the_quoted_item_and_honors_the_quoted_units(self):
+        run = self.project('complete_purchase', 'src, user, quote, to_chat')
+        pump, user, quote, moved = self.setup_payment()
+        run(pump, user, quote, lambda *_: None)
+        self.assertEqual(len(moved), 1)
+        self.assertIs(moved[0][0], quote.payment)
+        self.assertIsNotNone(user.l_hand)
+        self.assertEqual(pump.storedval, [quote.payment])
+        self.assertEqual(pump.unlockedvol, quote.units)
+        self.assertTrue(pump.unlocked)
+
+    def test_stale_confirmation_or_failed_transfer_does_not_reserve_fuel(self):
+        run = self.project('complete_purchase', 'src, user, quote, to_chat')
+        for change in ('price', 'fuel', 'stock', 'count', 'value', 'moved', 'deleted',
+                       'locked', 'other buyer', 'no quote', 'transfer failed'):
+            with self.subTest(change=change):
+                pump, user, quote, moved = self.setup_payment()
+                edits = {
+                    'price': (pump, 'price', 3),
+                    'fuel': (pump, 'fueltype', 'gasoline'),
+                    'stock': (pump, 'vol', 14),
+                    'count': (quote.payment, 'amount', 2),
+                    'value': (quote.payment, 'value', 9),
+                    'moved': (user, 'r_hand', object()),
+                    'deleted': (quote.payment, 'deleted', True),
+                    'locked': (pump, 'unlocked', True),
+                    'other buyer': (quote, 'buyer', object()),
+                    'transfer failed': (user, 'transfer_held_item_to', lambda *_: False),
+                }
+                if change == 'no quote':
+                    quote = None
+                else:
+                    setattr(*edits[change])
+                run(pump, user, quote, lambda *_: None)
+                self.assertEqual(moved, [])
+                self.assertEqual(pump.storedval, [])
+                self.assertEqual(pump.unlockedvol, 0)
+                self.assertEqual(pump.unlocked, change == 'locked')
+
 
 
 if __name__ == '__main__':

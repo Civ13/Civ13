@@ -600,7 +600,7 @@
 					if (!T || T.weather_snow > 0)
 						return
 					if (istype(T, /turf/floor/dirt/flooded))
-						ChangeTurf(/turf/floor/dirt/ploughed/flooded)
+						T.till_into_field(/turf/floor/dirt/ploughed/flooded)
 						if (ishuman(user))
 							H.adaptStat("farming", 2)
 						return
@@ -608,7 +608,7 @@
 						to_chat(user, SPAN_DANGER("You can't plough this type of terrain."))
 						return
 					else
-						ChangeTurf(/turf/floor/dirt/ploughed)
+						T.till_into_field(/turf/floor/dirt/ploughed)
 						if (ishuman(user))
 							H.adaptStat("farming", 2)
 						return
@@ -795,6 +795,8 @@
 	var/claimed = FALSE
 	var/committed = FALSE
 	var/wait_started = FALSE
+	var/wait_workload = 0
+	var/wait_repeat_lock = FALSE
 	var/datum/progressbar/progressbar
 	var/datum/resource_work_animation/work_animation
 
@@ -816,8 +818,11 @@
 		progressbar = null
 	if (wait_started && actor && actor.pickaxe_mining_action == src)
 		wait_started = FALSE
-		actor.may_do_after = TRUE
-		actor.survival_action_finished()
+		if (wait_repeat_lock)
+			wait_repeat_lock = FALSE
+			actor.may_do_after = TRUE
+		actor.survival_action_finished(wait_workload)
+		wait_workload = 0
 	if (actor && actor.pickaxe_mining_action == src)
 		actor.pickaxe_mining_action = null
 	if (wall && wall.pickaxe_mining_owner == src)

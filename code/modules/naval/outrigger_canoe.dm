@@ -185,7 +185,9 @@
 	C.bilge = bilge
 	C.soak = soak
 	C.dressing = dressing
+	C.on_rollers = on_rollers
 	C.update_icon()
+	C.dress_rollers()
 	user.visible_message(SPAN_NOTICE("[user] finishes \a [C]."), SPAN_NOTICE("The lashings are tight: you have made \a [C]."))
 	note_craft_practice(user, "/obj/structure/dugout_log")
 	qdel(src)

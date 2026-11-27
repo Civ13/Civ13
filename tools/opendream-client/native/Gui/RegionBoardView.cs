@@ -53,6 +53,7 @@ internal sealed class RegionBoardView : ScrollableControl {
     public RegionBoardView() {
         SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint | ControlStyles.ResizeRedraw | ControlStyles.Selectable, true);
         BackColor = Color.White;
+        menu.Opening += (_, _) => LauncherSkin.Apply(menu);
         AutoScroll = true;
         TabStop = true;
         Dock = DockStyle.Fill;
@@ -168,7 +169,7 @@ internal sealed class RegionBoardView : ScrollableControl {
 
     private sealed class Banner {
         public int Top, Height;
-        public Color Back;
+        public bool Problem;
         public Block Block = new();
     }
 
@@ -301,7 +302,7 @@ internal sealed class RegionBoardView : ScrollableControl {
         void AddBanner(string owner, Tone tone, Glyph glyph, bool muted, bool red, string text, string? next, IReadOnlyList<Spec> specs) {
             var block = MakeBlock(g, to, owner, -1, glyph == Glyph.None ? Px(12) : Px(30), y + Px(6), width - Px(12), tone, glyph, muted, false, text, next, specs);
             var height = Math.Max(Px(28), block.Bottom - y + Px(7));
-            to.Banners.Add(new Banner { Top = y, Height = height, Back = red ? StatusPaint.ProblemBack : BackColor, Block = block });
+            to.Banners.Add(new Banner { Top = y, Height = height, Problem = red, Block = block });
             y += height;
         }
         if (message != null) {
@@ -729,8 +730,9 @@ internal sealed class RegionBoardView : ScrollableControl {
         g.DrawLine(line, 0, dy + at.Summary - 1, width, dy + at.Summary - 1);
 
         foreach (var banner in at.Banners) {
-            using (var back = new SolidBrush(banner.Back)) g.FillRectangle(back, 0, dy + banner.Top, width, banner.Height - 1);
-            PaintBlock(g, banner.Block, dy, banner.Back);
+            var color = banner.Problem ? StatusPaint.ProblemBack : BackColor;
+            using (var back = new SolidBrush(color)) g.FillRectangle(back, 0, dy + banner.Top, width, banner.Height - 1);
+            PaintBlock(g, banner.Block, dy, color);
             g.DrawLine(line, 0, dy + banner.Top + banner.Height - 1, width, dy + banner.Top + banner.Height - 1);
         }
 
@@ -833,7 +835,7 @@ internal sealed class RegionBoardView : ScrollableControl {
             TextRenderer.DrawText(g, button.Label, hot ? Underline : Font, bounds, down ? StatusPaint.Ink : StatusPaint.Fore(Tone.Info), Centered);
             return;
         }
-        var fill = !enabled ? StatusPaint.Band : down ? StatusPaint.Selected : hot ? StatusPaint.Hover : Color.White;
+        var fill = !enabled ? StatusPaint.Band : down ? StatusPaint.Selected : hot ? StatusPaint.Hover : BackColor;
         var edge = !enabled ? StatusPaint.Line : down || button.Primary ? StatusPaint.SelectedEdge : StatusPaint.ButtonEdge;
         var ink = !enabled ? StatusPaint.Disabled : button.Quiet ? StatusPaint.Muted : button.Primary ? StatusPaint.Fore(Tone.Info) : StatusPaint.Ink;
         var smoothing = g.SmoothingMode;

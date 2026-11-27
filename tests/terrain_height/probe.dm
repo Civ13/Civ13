@@ -46,6 +46,98 @@ var/terrain_height_probe_checks = 0
 /mob/living/human/terrain_height_probe_climber/New()
 	return
 
+/mob/living/human/terrain_height_probe_climber
+	var/bruises = 0
+	var/probe_impacts = 0
+	var/probe_knockdowns = 0
+
+/mob/living/human/terrain_height_probe_climber/adjustBruteLoss(amount)
+	bruises += amount
+
+/mob/living/human/terrain_height_probe_climber/Weaken(amount)
+	probe_knockdowns += amount
+	lying = TRUE
+
+/obj/structure/terrain_height_probe_obstacle
+	density = TRUE
+	anchored = TRUE
+
+/obj/structure/terrain_height_probe_obstacle/New()
+	return
+
+/obj/structure/terrain_height_probe_obstacle/hitby(atom/movable/AM, speed)
+	var/mob/living/human/terrain_height_probe_climber/C = AM
+	C.probe_impacts++
+
+/proc/terrain_height_probe_travel(datum/terrain_heights/fixture)
+	var/turf/start = locate(4, 3, 1)
+	var/turf/first = locate(5, 3, 1)
+	var/turf/last = locate(6, 4, 1)
+	var/mob/living/human/terrain_height_probe_climber/C = new(start)
+	// A shaped two-hop descent: east, then northeast. All other neighbours
+	// are uphill. Keep the area before and after this one purposefully flat.
+	for (var/tx in 3 to 7)
+		for (var/ty in 2 to 5)
+			fixture.set_level(tx, ty, 1, 12)
+	fixture.set_level(start.x, start.y, start.z, 11)
+	fixture.set_level(first.x, first.y, first.z, 7)
+	fixture.set_level(last.x, last.y, last.z, 3)
+	var/list/route = terrain_tumble_path(start)
+	terrain_height_probe_assert(route.len == 2 && route[1] == first && route[2] == last, "turning_tumble_selects_east_then_northeast")
+	terrain_height_probe_assert(terrain_tumble(C) && C.probe_knockdowns == 2 && C.bruises == 0, "tumble_knocks_down_but_does_not_charge_upfront")
+	var/list/flight = C.throw_flight_token
+	terrain_tumble_hop(C, flight)
+	terrain_height_probe_assert(C.loc == first && C.bruises == 2 && C.throw_flight_token == flight, "first_hop_charges_only_first_tile")
+	terrain_tumble_hop(C, flight)
+	terrain_height_probe_assert(C.loc == last && C.bruises == 4 && !C.throwing && !C.throw_flight_token, "diagonal_turn_reaches_last_tile_and_finishes")
+	C.lying = FALSE
+	C.loc = start
+	C.step_x = 0
+	C.step_y = 0
+	C.bruises = 0
+	var/obj/structure/terrain_height_probe_obstacle/blocker = new(first)
+	terrain_tumble(C)
+	terrain_tumble_hop(C, C.throw_flight_token)
+	terrain_height_probe_assert(C.loc == start && C.bruises == 0 && C.probe_impacts == 1 && !C.throwing, "first_hop_blocker_does_not_charge_path_damage")
+	blocker.loc = last
+	C.lying = FALSE
+	terrain_tumble(C)
+	flight = C.throw_flight_token
+	terrain_tumble_hop(C, flight)
+	terrain_tumble_hop(C, flight)
+	terrain_height_probe_assert(C.loc == first && C.bruises == 2 && C.probe_impacts == 2 && !C.throwing, "mid_route_blocker_charges_only_first_tile")
+	blocker.loc = null
+	C.lying = FALSE
+	C.loc = start
+	C.step_x = 0
+	C.step_y = 0
+	terrain_tumble(C)
+	flight = C.throw_flight_token
+	C.throw_at(locate(2, 3, 1), 2, 1)
+	var/list/replacement = C.throw_flight_token
+	terrain_tumble_hop(C, flight)
+	terrain_height_probe_assert(C.loc == start && C.bruises == 2 && C.throw_flight_token == replacement && C.throwing, "stale_hop_does_not_touch_replacement")
+	C.finished_throwing()
+	C.lying = FALSE
+	terrain_tumble(C)
+	flight = C.throw_flight_token
+	C.loc = locate(4, 2, 1)
+	terrain_tumble_hop(C, flight)
+	terrain_height_probe_assert(C.loc == locate(4, 2, 1) && C.bruises == 2 && !C.throwing, "old_path_cannot_follow_a_relocated_body")
+	C.lying = FALSE
+	C.loc = start
+	C.step_x = 0
+	C.step_y = 0
+	terrain_tumble(C)
+	flight = C.throw_flight_token
+	last = last.ChangeTurf(/turf/floor/beach/water/deep/saltwater)
+	terrain_tumble_hop(C, flight)
+	terrain_tumble_hop(C, flight)
+	terrain_height_probe_assert(C.loc == first && C.bruises == 4 && !C.throwing, "water_interrupts_downhill_route")
+	terrain_height_probe_assert(!terrain_tumble_arrival(C, start, 0, 0, null) && !C.throwing, "stale_arrival_does_not_trip_at_new_location")
+	qdel(blocker)
+	qdel(C)
+
 // Shading is an overlay; overlays hold appearances, so read them untyped.
 /proc/terrain_height_probe_shade(turf/T)
 	for (var/O in T.overlays)
@@ -140,7 +232,20 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1)) == 40, "momentum_and_tiredness_raise_trip")
 	C.m_intent = "walk"
 	terrain_height_probe_assert(!terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1)), "walking_never_trips")
+	terrain_height_probe_assert(terrain_trip_chance(C, locate(10, 7, 1), locate(10, 6, 1), 1, TRUE) == 40, "completed_tired_run_retains_trip_chance_after_intent_changes")
 	C.terrain_momentum = 0
+	var/turf/slope_low = locate(10, 6, 1)
+	var/turf/slope_high = locate(10, 7, 1)
+	C.stats["stamina"][1] = 50
+	terrain_height_probe_assert(!terrain_completed_step(C, slope_low, slope_high, 0, 0, NORTH, 1, 0) && C.stats["stamina"][1] == 50, "blocked_step_pays_no_climb_cost")
+	C.step_x = 8
+	terrain_height_probe_assert(!terrain_completed_step(C, slope_low, slope_high, 0, 0, NORTH, 1, 0) && C.stats["stamina"][1] == 50, "sideways_motion_pays_no_climb_cost")
+	C.step_x = 0
+	C.step_y = 8
+	terrain_height_probe_assert(terrain_completed_step(C, slope_low, slope_high, 0, 0, NORTH, 1, 0) && terrain_height_probe_close(C.stats["stamina"][1], 49.5), "partial_step_pays_one_quarter_cost")
+	C.loc = slope_high
+	C.step_y = 0
+	terrain_height_probe_assert(terrain_completed_step(C, slope_low, slope_high, 0, 0, NORTH, 1, 0) && terrain_height_probe_close(C.stats["stamina"][1], 47.5), "completed_step_pays_full_cost")
 	// A fall rolls down the steepest drop while it stays 2 levels a tile.
 	var/list/roll = terrain_tumble_path(locate(10, 7, 1))
 	terrain_height_probe_assert(roll.len == 1 && roll[1] == locate(10, 6, 1), "tumble_rolls_down_the_drop")
@@ -490,6 +595,7 @@ var/terrain_height_probe_checks = 0
 	terrain_height_probe_assert(lines_e.icon == 'icons/turf/terrain_terrace_n.dmi' && lines_e.icon_state == "02200" && lines_e.transform.b == 1 && lines_e.transform.d == -1, "terrace_lines_cardinal_set")
 	terrain_height_probe_assert(terrain_terrace_image("00202") == lines_nw, "terrace_images_shared")
 
+	terrain_height_probe_travel(fixture)
 	var/obj/map_metadata/terrain_height_probe/broken = new
 	broken.terrain_height_file = "tests/terrain_height/missing.txt"
 	map = broken

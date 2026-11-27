@@ -102,21 +102,37 @@ var/trace_runtime_error = FALSE
 		river.water_level = 60
 		trace_check(!P.valid_trace_site(), "panner rejects deep water")
 		river.water_level = 20
+		var/turf/floor/beach/water/other = new(locate(5,4,1))
+		other.salty = FALSE
+		other.water_level = 20
+		other.watertile = TRUE
+		// Discover actual scan order rather than depending on BYOND's range ordering.
+		var/turf/floor/beach/water/first = T.panning_water()
+		if (first == river)
+			river = other
+		first.salty = TRUE
+		trace_check(T.panning_water() == river, "only the later candidate is eligible when the cycle starts")
 		P.attack_hand(H)
-		trace_check(P.active && P.process_pending && C.currentflow == 150, "panner starts beside shallow freshwater")
+		trace_check(P.active && P.process_pending && P.trace_water == river && C.currentflow == 150, "panner starts and pins that shallow freshwater")
+		var/original_deadline = P.production_due
+		first.salty = FALSE
+		trace_check(T.panning_water() == first && T.valid_panning_water(river), "earlier freshwater now wins discovery without invalidating the pinned source")
+		sleep(21)
+		trace_check(P.active && P.process_pending && P.trace_water == river && C.currentflow == 150 && P.production_due == original_deadline && !(locate(/obj/item/stack) in T), "another eligible neighbor preserves the deadline, intake and cable demand")
 		P.next_spawn = 0
 		P.production_due = world.time
 		sleep(21)
 		output = locate() in T
-		trace_check(output && output.amount == 2 && (output.type in P.ore_types), "river output is a bounded allowed ore batch")
+		trace_check(output && output.amount == 2 && (output.type in P.ore_types), "the pinned source yields one bounded allowed ore batch")
 		river = new /turf/floor/beach/water(river)
 		river.salty = FALSE
 		river.water_level = 20
 		river.watertile = TRUE
 		sleep(21)
-		trace_check(!P.active && !P.process_pending && !P.trace_water && C.currentflow == 0, "freshwater replacement stops old panning identity")
+		trace_check(T.panning_water() == first && !P.active && !P.process_pending && !P.trace_water && C.currentflow == 0, "replacing the pinned freshwater stops rather than switching to an eligible neighbor")
 		P.attack_hand(H)
-		new /turf/floor/beach/sand(river)
+		trace_check(P.active && P.trace_water == first, "only an explicit restart can choose the alternate intake")
+		new /turf/floor/beach/sand(first)
 		sleep(21)
 		trace_check(!P.active && !P.process_pending && C.currentflow == 0, "removed river stops panning and releases demand")
 		P.active = TRUE

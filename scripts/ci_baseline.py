@@ -47,6 +47,8 @@ SUITES = {
     'hull_storm': {'files': ('tests/hull_storm/test_storm.py',), 'paths': ('tests/hull_storm/', 'code/modules/naval/hull_storm.dm')},
     'hull_waterlogging': {'files': ('tests/hull_waterlogging/test_sources.py',), 'paths': ('tests/hull_waterlogging/', 'code/modules/naval/hull_drives.dm')},
     'flight_save_risk': {'files': ('tests/flight_save_risk/test_sources.py',), 'paths': ('tests/flight_save_risk/', 'code/modules/naval/flight_save_risk.dm')},
+    'voyage_navigation': {'files': ('tests/voyage_navigation/test_source.py',),
+        'paths': ('tests/voyage_navigation/', 'code/game/objects/map_metadata/voyage.dm')},
     'voyage_storm': {'files': ('tests/voyage_storm/test_source.py',), 'paths': ('tests/voyage_storm/', 'code/modules/naval/voyage_provisions.dm')},
     'science_investigations': {'files': ('tests/science_investigations/test_source.py',),
         'paths': ('tests/science_investigations/', 'code/modules/research_tree/science_investigations.dm'),
@@ -317,6 +319,9 @@ SUITES = {
         'paths': ('tests/steam_engine_callbacks/', 'code/modules/1713/machinery/engines/external_combustion.dm')},
     'conveyor_sync': {'files': ('tests/conveyor_sync/test_sync.py',),
         'paths': ('tests/conveyor_sync/', 'code/modules/1713/machinery/conveyor2.dm', 'code/modules/1713/hydroponics.dm')},
+    'hydroponics_tray': {'files': ('tests/hydroponics_tray/test_reservoir_and_wrench.py',),
+        'paths': ('tests/hydroponics_tray/', 'code/modules/1713/hydroponics.dm'),
+        'shared_paths': ('code/modules/1713/production.dm',)},
     'medical_side_effects': {'files': ('tests/medical_side_effects/test_registration.py',),
         'paths': ('tests/medical_side_effects/', 'code/game/mob/living/carbon/human/MedicalSideEffects.dm')},
     'biofuel_feed': {'files': ('tests/biofuel_feed/test_feed.py',),
@@ -363,7 +368,7 @@ SUITES = {
     'open_air_view': {'files': ('tests/open_air_view/test_sources.py',), 'paths': ('tests/open_air_view/', 'code/modules/multiz/open_air_view.dm', 'code/modules/multiz/look_up.dm', 'code/processes/open_air_view.dm'), 'shared_paths': ('code/game/objects/building_levels.dm', 'code/modules/multiz/building_lighting.dm', 'code/game/mob/mob_movement.dm', 'code/_onclick/hud/updown_buttons.dm')},
     'burial': {'files': ('tests/burial/test_burial.py',), 'paths': ('tests/burial/', 'code/modules/1713/burial.dm', 'code/game/objects/structures/religious.dm'), 'shared_paths': ('code/game/mob/living/carbon/human/human_life.dm', 'code/game/mob/living/carbon/resist.dm')},
     'underground_excavation': {'files': ('tests/underground_excavation/test_underground_excavation.py',), 'paths': ('tests/underground_excavation/', 'code/modules/1713/underground_excavation.dm'), 'shared_paths': ('code/modules/multiz/structures.dm', 'code/modules/multiz/hole_ladder.dm', 'code/modules/1713/flood_cellars.dm')},
-    'work_speed': {'files': ('tests/work_speed/test_work_speed.py',), 'paths': ('tests/work_speed/', 'code/modules/materials/work_speed.dm', 'code/__defines/tools.dm', 'code/modules/1713/earthworking_tools.dm'), 'shared_paths': ('code/game/turfs/floor_attackby.dm', 'code/modules/1713/trench.dm', 'code/modules/1713/tools.dm', 'code/modules/1713/sewers.dm', 'code/modules/1713/underground_excavation.dm', 'code/modules/1713/dug_wells.dm', 'code/modules/1713/road_tamping.dm', 'code/modules/1713/stone_age_storage.dm', 'code/modules/1713/placer.dm', 'code/modules/1713/open_cave_roof.dm', 'code/modules/1713/mountain_seams.dm', 'code/modules/provinces/province_rich.dm', 'code/game/objects/structures/wild.dm', 'code/game/objects/covers_types/cover_roads.dm', 'code/modules/multiz/dug_underground.dm')},
+    'work_speed': {'files': ('tests/work_speed/test_work_speed.py', 'tests/work_speed/test_carry_load.py',), 'paths': ('tests/work_speed/', 'code/modules/materials/work_speed.dm', 'code/__defines/tools.dm', 'code/modules/1713/earthworking_tools.dm'), 'shared_paths': ('code/game/mob/mob_movement.dm', 'code/modules/1713/movement_check.dm', 'code/game/turfs/floor_attackby.dm', 'code/modules/1713/trench.dm', 'code/modules/1713/tools.dm', 'code/modules/1713/sewers.dm', 'code/modules/1713/underground_excavation.dm', 'code/modules/1713/dug_wells.dm', 'code/modules/1713/road_tamping.dm', 'code/modules/1713/stone_age_storage.dm', 'code/modules/1713/placer.dm', 'code/modules/1713/open_cave_roof.dm', 'code/modules/1713/mountain_seams.dm', 'code/modules/provinces/province_rich.dm', 'code/game/objects/structures/wild.dm', 'code/game/objects/covers_types/cover_roads.dm', 'code/modules/multiz/dug_underground.dm')},
     'earthworking': {'files': ('tests/earthworking/test_sources.py',), 'paths': ('tests/earthworking/', 'code/modules/1713/earthworking_heavy.dm', 'tests/sprites/create_earthworking_tools.py', 'icons/obj/earthworking_tools.dmi', 'icons/mob/items/lefthand_earthworking.dmi', 'icons/mob/items/righthand_earthworking.dmi'), 'shared_paths': ('code/modules/1713/earthworks.dm', 'code/modules/1713/road_tamping.dm', 'config/crafting/material_recipes_global.txt')},
     'open_cave_roof': {'files': ('tests/open_cave_roof/test_open_cave_roof.py',), 'paths': ('tests/open_cave_roof/', 'code/modules/1713/open_cave_roof.dm', 'docs/open-cave-roof.md'), 'shared_paths': ('code/game/turfs/floor_attackby.dm',)},
     'mine_floor_registry': {'files': ('tests/mine_floor_registry/test_mine_floor_registry.py',), 'paths': ('tests/mine_floor_registry/', 'code/modules/multiz/mine_floor_registry.dm', 'code/__defines/mine_registry.dm')},
@@ -380,7 +385,7 @@ SUITES = {
                          'code/game/objects/structures.dm')},
     'beekeeping_wait': {'files': ('tests/test_beekeeping_wait.py',),
         'paths': ('tests/test_beekeeping_wait.py', 'tests/beekeeping/',
-                  'code/modules/1713/beekeeping.dm'),
+                  'code/modules/1713/beekeeping.dm', 'code/modules/1713/kept_hives.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py', 'code/_helpers/mobs.dm',
                          'code/_onclick/adjacent.dm', 'code/processes/garbage.dm')},
     'light_fuel': {'files': ('tests/test_light_fuel.py',),
@@ -396,7 +401,10 @@ SUITES = {
                   'code/game/objects/structures/animalspawner/wolfcave.dm')},
     'shield_block': {'files': ('tests/shield_block/test_block.py',),
         'paths': ('tests/shield_block/', 'code/game/objects/items/weapons/shields.dm'),
-        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+        'shared_paths': ('code/game/mob/living/carbon/human/human_defense.dm',
+                         'code/modules/projectiles/__projectiles.dm',
+                         'code/modules/projectiles/projectile/arrows.dm',
+                         'tests/save_movement/source_adapter.py')},
     'shove': {'files': ('tests/shove/test_shove.py',), 'paths': ('tests/shove/',),
         'shared_paths': ('code/game/mob/living/carbon/human/human_attackhand.dm',
                          'code/game/mob/living/carbon/human/subtile_movement.dm',
@@ -451,6 +459,9 @@ SUITES = {
             'code/game/mob/groups/factions.dm', 'code/game/objects/structures/stool_bed_chair_nest/bed.dm', 'code/modules/research_tree/research_faction.dm',
             'code/modules/research_tree/_research_tree_defines.dm',
             'code/modules/research_tree/research_node.dm', 'code/game/objects/map_metadata/_map_metadata.dm')},
+    'item_pile_targeting': {'files': ('tests/item_piles/test_sources.py',),
+        'paths': ('tests/item_piles/', 'code/game/objects/items/item_piles.dm', 'code/_onclick/click.dm',
+                  'code/game/objects/items/paper/paper.dm')},
     'paper_bin_appearance': {'files': ('tests/paper_bin_appearance/test_appearance.py',),
         'paths': ('tests/paper_bin_appearance/', 'code/game/objects/items/bin.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -477,6 +488,10 @@ SUITES = {
     'ashtray_spill': {'files': ('tests/ashtray_spill/test_spill.py',),
         'paths': ('tests/ashtray_spill/', 'code/game/objects/items/weapons/material/ashtray.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'combat_kit_stock': {'files': ('tests/combat_kit_stock/test_stock.py',),
+        'paths': ('tests/combat_kit_stock/',),
+        'shared_paths': ('code/game/objects/items/weapons/storage/medkit.dm',
+                         'code/game/objects/items/weapons/storage/storage.dm',)},
     'outhouse_occupancy': {'files': ('tests/outhouse_occupancy/test_occupancy.py',),
         'paths': ('tests/outhouse_occupancy/', 'code/game/objects/structures/watercloset.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -667,7 +682,8 @@ SUITES = {
         'paths': ('tests/vehicle_offset/',), 'shared_paths': (
             'civ13.dme', 'code/modules/craft/vehicle_offset.dm',
             'code/modules/craft/vehicle_offset_ride.dm', 'code/modules/craft/vehicle_offset_frame.dm',
-            'code/modules/craft/vehicle_offset_ship.dm', 'tests/save_movement/source_adapter.py')},
+            'code/modules/craft/vehicle_offset_ship.dm', 'tests/save_movement/source_adapter.py',
+            'code/game/objects/structures/stool_bed_chair_nest/wheelchair.dm', 'code/game/turfs/turf.dm')},
     'vehicle_decks': {'files': ('tests/vehicle_decks/test_sources.py',),
         'paths': ('tests/vehicle_decks/', 'code/modules/1713/machinery/modular_vehicles/vehicle_decks.dm'), 'shared_paths': (
             'code/modules/visibility/los_terrain.dm',
@@ -918,6 +934,11 @@ SUITES = {
             'code/modules/1713/animal_harvest.dm', 'code/game/mob/living/living.dm',
             'code/modules/reagents/Chemistry-Reagents/Chemistry-Reagents-Medicine.dm')},
     # Complete monitor pipe rows with fake spatial/type boundaries; no native IO.
+    'factory_arm_custody': {'files': ('tests/factory_automation/test_arm_custody.py',),
+        'paths': ('tests/factory_automation/test_arm_custody.py',), 'shared_paths': (
+            'code/modules/1713/factory_arms.dm', 'code/modules/1713/factory_ports.dm',
+            'tests/save_movement/source_adapter.py', 'code/modules/1713/coin_mint.dm',
+            'code/modules/1713/fiatcurrency.dm')},
     'factory_monitor': {'files': ('tests/factory_automation/test_monitor_pipes.py',),
         'paths': ('tests/factory_automation/test_monitor_pipes.py',), 'shared_paths': (
             'code/modules/1713/factory_monitor.dm', 'code/modules/1713/factory_pipes.dm',
@@ -946,6 +967,7 @@ SUITES = {
         'paths': ('tests/boat_movement/',), 'shared_paths': (
             'code/modules/1713/machinery/modular_vehicles/movement.dm',
             'code/modules/1713/machinery/modular_vehicles/ships/movement.dm',
+            'code/modules/1713/machinery/modular_vehicles/ships/wheels.dm',
             'tests/save_movement/source_adapter.py')},
     # Explosion remains above the ground: production wiring and map level audit.
     'vehicle_hull_damage': {'files': ('tests/vehicle_hull_damage/test_contract.py',),
@@ -1030,6 +1052,11 @@ SUITES = {
                          'scripts/nomads-lifecycle/supervisor.py',
                          'scripts/nomads-lifecycle/canonical_update.py',
                          'scripts/nomads-lifecycle/bot_consumer.py', 'civ13.dme')},
+    'npc_vendor_checkout': {'files': ('tests/npc_vendor_checkout/test_checkout.py',),
+        'paths': ('tests/npc_vendor_checkout/',), 'shared_paths': (
+            'code/game/objects/structures/vending/npc_vendors.dm',
+            'code/game/objects/items/stacks/money.dm',
+            'code/game/objects/map_metadata/the_art_of_the_deal.dm')},
     'fuel_pump_variants': {'files': ('tests/fuel_pump/test_variants.py',),
         'paths': ('tests/fuel_pump/',), 'shared_paths': (
             'tests/save_movement/source_adapter.py',
@@ -1117,6 +1144,9 @@ SUITES = {
             'code/modules/persistence/saving.dm', 'code/modules/persistence/functions.dm',
             'tests/save_movement/source_adapter.py', 'civ13.dme')},
     # Company stock ledger, stock market and company stall guard projections.
+    'supply_order_payout': {'files': ('tests/supply_order_payout/test_checkout.py',),
+        'paths': ('tests/supply_order_payout/', 'code/game/objects/structures/vending/supplier.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'code/game/objects/items/stacks/money.dm')},
     'company_stock': {'files': ('tests/company_stock/test_company_stock.py',),
         'paths': ('tests/company_stock/', 'code/game/mob/groups/companies.dm',
                   'code/modules/1713/marketplace.dm'),
@@ -1183,6 +1213,11 @@ SUITES = {
             'code/game/turfs/floor_icon.dm',
             'code/game/turfs/floor.dm',
             'icons/turf/floors.dmi')},
+    'lanyards': {'files': ('tests/lanyards/test_lanyards.py',), 'paths': (
+        'tests/lanyards/', 'code/modules/1713/lanyards.dm',
+        'icons/obj/lanyards.dmi', 'icons/mob/lanyards.dmi'), 'shared_paths': (
+        'code/_onclick/inventory_drag.dm', 'code/game/objects/items.dm',
+        'code/modules/storage_window/storage_window.dm')},
     # Inventory drag-and-drop transfer source contracts; no BYOND runtime.
     'inventory_drag': {'files': ('tests/inventory_drag/test_inventory_drag.py',),
         'paths': ('tests/inventory_drag/',), 'shared_paths': (
@@ -1360,7 +1395,7 @@ SUITES = {
     'processing_recipes': {'files': ('tests/processing_recipes/test_processing_recipes.py',),
         'paths': ('tests/processing_recipes/', 'code/modules/1713/processing_recipes.dm'), 'shared_paths': (
             'code/modules/1713/herbalism.dm', 'code/modules/1713/flint_mining.dm', 'code/modules/1713/obsidian.dm',
-            'scripts/atlas/interactions.py')},
+            'code/modules/paintings/paintings.dm', 'tests/save_movement/source_adapter.py', 'scripts/atlas/interactions.py')},
     'resource_stock': {'files': ('tests/resource_stock/test_resource_stock.py',),
         'paths': ('tests/resource_stock/', 'code/_helpers/resource_stock.dm'), 'shared_paths': (
             'code/game/objects/structures/rocks.dm', 'code/modules/1713/obsidian.dm')},
@@ -1783,7 +1818,7 @@ SUITES = {
             'code/game/mob/groups/land_registry.dm', 'code/game/mob/groups/faction_treasury.dm',
             'code/game/mob/groups/faction_roster.dm')},
     # Faction treasury strongboxes, wages and dues (the native probe is tests/faction_treasury/probe.dm).
-    'faction_treasury': {'files': ('tests/faction_treasury/test_source.py',),
+    'faction_treasury': {'files': ('tests/faction_treasury/test_source.py', 'tests/faction_treasury/test_wages.py'),
         'paths': ('tests/faction_treasury/',), 'shared_paths': (
             'code/game/mob/groups/faction_treasury.dm', 'code/modules/1713/marketplace.dm',
             'code/game/mob/groups/faction_roster.dm')},
@@ -1811,9 +1846,10 @@ SUITES = {
             'code/modules/1713/aqueducts.dm', 'icons/obj/aqueducts.dmi', 'tests/sprites/create_aqueducts.py',
             'code/modules/1713/mechanical_power.dm')},
     # Siege engines and castle defences: source contracts (the native probe is tests/siege_engines/probe.dm).
-    'siege_engines': {'files': ('tests/siege_engines/test_source.py',),
+    'siege_engines': {'files': ('tests/siege_engines/test_source.py', 'tests/siege_engines/test_turret_autoload.py'),
         'paths': ('tests/siege_engines/',), 'shared_paths': (
             'code/modules/1713/siege/siege_engines.dm', 'code/modules/1713/siege/catapult.dm',
+            'code/modules/1713/siege/turret.dm',
             'code/modules/1713/siege/portcullis_runs.dm', 'code/game/objects/controls.dm',
             'icons/obj/doors/material_doors.dmi', 'icons/obj/siege_engines.dmi', 'icons/obj/trebuchet.dmi', 'icons/obj/siege_tower.dmi',
             'tests/sprites/create_siege_engines.py')},
@@ -1821,7 +1857,8 @@ SUITES = {
     'horse_breeding': {'files': ('tests/horse_breeding/test_source.py',),
         'paths': ('tests/horse_breeding/',), 'shared_paths': (
             'code/modules/1713/horse_breeding.dm', 'icons/mob/animal_64.dmi', 'icons/obj/horseshoes.dmi',
-            'code/game/mob/mob_movement.dm', 'code/modules/agent_control/agent_movement.dm')},
+            'code/game/mob/mob_movement.dm', 'code/modules/agent_control/agent_movement.dm',
+            'code/game/objects/structures/cart_hitch.dm')},
     # Mounted charges, braced spears and shield walls: source contracts (native probe tests/mounted_combat/probe.dm).
     'mounted_combat': {'files': ('tests/mounted_combat/test_source.py',),
         'paths': ('tests/mounted_combat/',), 'shared_paths': (
@@ -1936,6 +1973,13 @@ SUITES = {
     'agent_ci_digest': {'files': ('tests/agent_ci_digest/test_ci_digest.py',),
         'paths': ('tests/agent_ci_digest/', 'scripts/ci_digest.py'), 'shared_paths': (
             '.github/workflows/',)},
+    # Mead production changes keep their conservative all-suite fallback.
+    'mead_lid_timing': {'files': ('tests/bee_products/test_mead_lid_timing.py',),
+        'paths': ('tests/bee_products/test_mead_lid_timing.py',),
+        'shared_paths': ('code/modules/1713/mead.dm', 'code/modules/reagents/reagent_containers/glass.dm')},
+    'item_wash_source': {'files': ('tests/item_wash_source/test_completion.py',),
+        'paths': ('tests/item_wash_source/', 'code/game/objects/structures/watercloset.dm'),
+        'shared_paths': ('code/game/objects/items/stacks/sheets/leather.dm', 'code/modules/1713/dug_wells.dm')},
     # Water quality by kind, washing fixes and flea typhus; source checks only.
     'water_quality': {'files': ('tests/water_quality/test_water_quality.py',),
         'paths': ('tests/water_quality/', 'code/modules/1713/water_quality.dm'), 'shared_paths': (
@@ -2305,7 +2349,8 @@ SUITES = {
             'code/modules/1713/telegraph.dm', 'tests/save_movement/source_adapter.py')},
     'telephone_recipients': {'files': ('tests/telephone/test_recipients.py',),
         'paths': ('tests/telephone/',), 'shared_paths': (
-            'code/modules/1713/telephone.dm', 'tests/save_movement/source_adapter.py')},
+            'code/modules/1713/telephone.dm', 'code/game/objects/map_metadata/campaign_old.dm',
+            'tests/save_movement/source_adapter.py')},
 
     # Stdlib + reviewed source projection only; frozen DM is offline data.
     # No native runner, engine process, socket or network boundary is imported.
@@ -2353,6 +2398,7 @@ SUITES = {
     # adapters only. Tests replace every process boundary; no native execution.
     'harvest_inputs': {'files': ('tests/animal_harvest/test_input_accounting.py',),
         'paths': ('tests/animal_harvest/test_input_accounting.py',), 'shared_paths': (
+            'code/modules/1713/stone_age_arms.dm',
             'tests/animal_harvest/run.py', 'tests/animal_harvest/hide_recipe_probe.dm',
             'tests/flax_processing/run.py', 'tests/flax_processing/required-inputs.json',
             'code/names.dm', 'config/names/', 'scripts/native_fixture.py',
@@ -2579,6 +2625,7 @@ SUITES = {
     'furnace_manual': {'files': ('tests/furnace_manual/test_transaction.py',),
         'paths': ('tests/furnace_manual/',), 'shared_paths': (
             'tests/grinder/test_transaction.py',
+            'code/game/objects/structures.dm',
             'code/game/objects/structures/blacksmithing/refining.dm')},
     'grinder': {'files': ('tests/grinder/test_transaction.py',),
         'paths': ('tests/grinder/',), 'shared_paths': (
@@ -2647,6 +2694,9 @@ SUITES = {
         'code/processes/throwing.dm', 'code/modules/persistence/functions.dm'),
         'shared_paths': ('code/game/mob/living/carbon/human/human_defense.dm',
                          'code/game/mob/living/living_defense.dm')},
+    'terrain_tumble': {'files': ('tests/terrain_height/test_tumble.py',), 'paths': (
+        'tests/terrain_height/', 'code/modules/1713/terrain_height.dm'), 'shared_paths': (
+        'code/game/mob/mob_movement.dm', 'code/processes/throwing.dm')},
     'los_context': {'files': ('tests/los_context/test_offline.py',
                               'tests/los_context/test_production.py',
                               'tests/los_context/test_tile_motion.py',
@@ -2731,7 +2781,9 @@ SUITES = {
     # Source contracts only; this suite does not run DM.
     'road_garden': {'files': ('tests/road_garden/test_contract.py',), 'paths': ('tests/road_garden/',),
         'shared_paths': ('code/game/objects/covers_types/cover_roads.dm',
-                         'code/game/turfs/floor_attackby.dm', 'code/game/turfs/turf_changing.dm')},
+                         'code/game/turfs/floor_attackby.dm', 'code/game/turfs/turf_changing.dm',
+                         'code/game/turfs/flooring/flooring_premade.dm',
+                         'code/game/mob/living/simple_animal/friendly/farm_animals.dm')},
     'earthworks': {'files': ('tests/earthworks/test_contract.py',), 'paths': (
         'tests/earthworks/', 'code/modules/1713/earthworks.dm', 'config/craft_needs.json',
         'icons/obj/earthworks.dmi', 'tests/sprites/create_earthworks.py')},
@@ -2770,7 +2822,9 @@ SUITES = {
         'icons/obj/mercury.dmi', 'tests/sprites/create_mercury.py')},
     'placer': {'files': ('tests/placer/test_contract.py',), 'paths': (
         'tests/placer/', 'code/modules/1713/placer.dm', 'docs/placer.md',
-        'icons/obj/placer.dmi', 'tests/sprites/create_placer.py')},
+        'icons/obj/placer.dmi', 'tests/sprites/create_placer.py'),
+        'shared_paths': ('code/modules/1713/lode.dm', 'code/modules/1713/tatara.dm',
+                         'code/modules/1713/resource_sifting.dm', 'code/modules/1713/automated_sifting.dm')},
     'lode': {'files': ('tests/lode/test_contract.py',), 'paths': (
         'tests/lode/', 'code/modules/1713/lode.dm', 'docs/lode.md',
         'icons/obj/lode.dmi', 'tests/sprites/create_lode.py')},
@@ -2798,7 +2852,10 @@ SUITES = {
     'water_treatment': {'files': ('tests/stone_boiling/test_source.py',
                                   'tests/stone_kiln/test_source.py'), 'paths': (
         'tests/stone_boiling/', 'tests/stone_kiln/',
-        'code/modules/persistence/functions.dm')},
+        'code/modules/persistence/functions.dm'), 'shared_paths': (
+            'code/game/atoms_movable.dm', 'code/game/objects/structures.dm',
+            'code/game/objects/structures/blacksmithing/refining.dm',
+            'tests/save_movement/source_adapter.py')},
     'lipstick_restore': {'files': ('tests/lipstick_restore/test_restore.py',),
         'paths': ('tests/lipstick_restore/',), 'shared_paths': (
             'code/game/objects/items/weapons/cosmetics.dm',
@@ -2992,6 +3049,7 @@ SUITES = {
     'persistence_status': {'files': ('tests/persistence_status/test_status.py',),
         'paths': ('tests/persistence_status/',), 'shared_paths': (
             'code/modules/1713/battlereport_variables.dm', 'code/modules/admin/verbs/1713.dm',
+            'code/processes/battlereport.dm',
             'code/game/mob/groups/factions.dm', 'code/predefines.dm',
             'tests/save_movement/source_adapter.py')},
     # Status tab "Last save" wiring; native round trip via the berry_load fixture.
@@ -3045,8 +3103,14 @@ SUITES = {
             'code/game/mob/living/carbon/give.dm'),
         'shared_paths': ('scripts/fixture_source_projection.py', 'code/game/mob/groups/factions.dm', 'code/modules/1713/marketplace.dm',
             'code/modules/research_tree/research_faction.dm', 'civ13.dme')},
+    'item_give': {'files': ('tests/item_give/test_give.py',),
+        'paths': ('tests/item_give/', 'code/game/mob/living/carbon/give.dm'),
+        'shared_paths': ('code/game/mob/inventory.dm', 'tests/save_movement/source_adapter.py')},
     'handcuffs': {'files': ('tests/handcuffs/test_source.py',),
-        'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm')},
+        'paths': ('tests/handcuffs/', 'code/game/objects/items/weapons/handcuffs.dm'),
+        'shared_paths': ('code/game/mob/living/carbon/human/stripping.dm',
+                         'code/game/mob/living/carbon/human/human.dm',
+                         'code/game/mob/living/carbon/human/inventory.dm')},
     # Signal-smoke choices must not overwrite a grenade activated by another dialog.
     'signal_smoke_selection': {'files': ('tests/signal_smoke_selection/test_source.py',),
         'paths': ('tests/signal_smoke_selection/',),
@@ -3130,6 +3194,8 @@ SUITES = {
             'code/modules/naval/air_designer.dm', 'code/modules/craft/vehicle_designer.dm',
             'code/modules/1713/train_designer.dm', 'code/modules/space/station_designer.dm',
             'code/game/objects/house_designer.dm')},
+    'modern_bridges': {'files': ('tests/modern_bridges/test_sources.py',),
+        'paths': ('tests/modern_bridges/', 'code/modules/1713/bridges.dm', 'code/modules/1713/offshore_rig.dm')},
     'harbor_planner': {'files': ('tests/harbor_planner/test_source.py',),
         'paths': ('tests/harbor_planner/', 'code/modules/naval/harbor_planner.dm'),
         'shared_paths': ('code/modules/naval/slipway.dm', 'code/modules/naval/boathouse.dm',
@@ -3199,7 +3265,9 @@ SUITES = {
     'surgery_drinking': {'files': ('tests/surgery_drinking/test_source.py',),
         'paths': ('tests/surgery_drinking/', 'code/modules/surgery/surgery.dm')},
     'surgery_amputation_log': {'files': ('tests/surgery_amputation_log/test_source.py',),
-        'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm')},
+        'paths': ('tests/surgery_amputation_log/', 'code/modules/surgery/generic.dm',
+                  'code/modules/surgery/limb_reattach.dm', 'code/modules/organs/organ_external.dm',
+                  'code/modules/organs/wound.dm')},
     # A properly sleeping, logged-off character is safe off Gaia.
     'offline_sleep_protection': {'files': ('tests/offline_sleep_protection/test_source.py',),
         'paths': ('tests/offline_sleep_protection/', 'code/modules/persistence/offline_sleep_protection.dm',
@@ -3256,6 +3324,15 @@ SUITES = {
         'shared_paths': ('code/modules/1713/aqueducts.dm', 'code/modules/1713/sewers.dm',
             'code/game/objects/build_markers.dm', 'code/modules/naval/ship_draught.dm',
             'code/modules/naval/draught_kinds.dm', 'code/modules/paintings/design_codes.dm')},
+    'egg_roasting': {'files': ('tests/egg_roasting/test_sources.py',),
+        'paths': ('tests/egg_roasting/',),
+        'shared_paths': ('code/game/objects/structures/kitchen/oven.dm',
+                         'code/modules/reagents/reagent_containers/food/snacks.dm',
+                         'code/game/mob/living/simple_animal/friendly/birds.dm')},
+    'specialist_trader_quote': {'files': ('tests/specialist_traders/test_purchase_quote.py',),
+        'paths': ('tests/specialist_traders/test_purchase_quote.py',),
+        'shared_paths': ('code/game/objects/structures/vending/specialist_traders.dm',
+                         'tests/save_movement/source_adapter.py')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

@@ -1,3 +1,5 @@
+#include "load_transactions.dm"
+
 // Carriages (code/game/objects/structures/carriage.dm and
 // code/modules/craft/carriage_papers.dm): the team's pull and pace, the
 // footprint and team lane, boarding, harness and cargo seats, steps and what
@@ -110,8 +112,10 @@ var/carriage_owners_about = FALSE
 	carriage_check(C.seats[1] == bob && bob.buckled == C && bob.loc == C.loc && (bob in C.ontop), "Bob takes the first seat")
 	var/obj/structure/closet/crate/crate = new(locate(22, 30, 1))
 	carriage_check(C.can_load(crate) && !C.can_load(C) && !C.can_load(new /obj/structure/vehicle/carriage(locate(40, 50, 1))), "a crate can be loaded; a carriage cannot")
-	C.take_seat(crate, C.free_seat())
+	carriage_check(C.complete_load(crate, ann), "loose cargo loads into an available seat")
 	carriage_check(C.seats[2] == crate && crate.anchored && !crate.density && (crate in C.ontop_o) && crate.layer > C.layer, "the crate rides in a seat, anchored and drawn above the bed")
+
+	carriage_check_load_transactions(C, ann)
 
 	// ---- Harness ----
 	carriage_check(C.team_pull() == 0 && C.load_ratio() == INFINITY, "with no team it has no pull")
@@ -124,7 +128,13 @@ var/carriage_owners_about = FALSE
 	// 50 is the even cost these checks measure.
 	h1.stamina = 50
 	h2.stamina = 50
-	carriage_check(isnull(C.hitch_refusal(h1)) && C.can_fit_lane(1), "a horse can go in harness")
+	var/turf/second_lane_row = locate(C.x + 1, C.y - 2, C.z)
+	second_lane_row.ChangeTurf(/turf/wall, FALSE, FALSE)
+	carriage_check(C.lane_depth(ox) == 1 && C.can_fit_lane(ox), "an incoming ox only needs the clear first row")
+	carriage_check(C.lane_depth(h1) == 2 && !C.can_fit_lane(h1), "an incoming horse needs the blocked second row before it is hitched")
+	second_lane_row = locate(C.x + 1, C.y - 2, C.z)
+	second_lane_row.ChangeTurf(/turf/floor/plating/road, FALSE, FALSE)
+	carriage_check(isnull(C.hitch_refusal(h1)) && C.can_fit_lane(h1), "a horse can go in harness with both rows clear")
 	C.hitch(h1)
 	carriage_check(findtext(C.hitch_refusal(ox), "Horses and oxen"), "an ox is not put in with horses")
 	C.hitch(h2)
@@ -315,12 +325,22 @@ var/carriage_owners_about = FALSE
 	mare.forceMove(locate(9, 12, 1))
 	carriage_check(cart.loc == locate(9, 11, 1) && cart.dir == NORTH, "a step away pulls it after the horse")
 	carriage_check(!cart.Move(locate(10, 11, 1), EAST) && cart.loc == locate(9, 11, 1), "nobody can push or pull a hitched cart away")
+	var/mob/living/human/carriage_probe/rider = carriage_person(mare.x, mare.y, "Rider")
+	cart.unhitch()
+	carriage_check(mare.take_rider(rider) && !rider.ridden_handcart_drag(), "an unhitched mount keeps the rider's normal pace")
+	carriage_check(cart.hitch_to(mare), "cart can be hitched while the rider is mounted")
 	var/empty_drag = mare.hitch_drag()
 	carriage_check(empty_drag > 0 && empty_drag == cart.drag_delay(mare) / 2, "the cart slows the horse by its drag over the horse's pull ([empty_drag])")
+	carriage_check(rider.ridden_handcart_drag() == empty_drag, "the mounted movement budget includes the empty cart's drag")
 	for (var/i in 1 to 4)
 		var/obj/item/stack/material/wood/W = new(cart)
 		W.amount = 50
 	carriage_check(mare.hitch_drag() > empty_drag, "a loaded cart slows the horse more")
+	carriage_check(rider.ridden_handcart_drag() == mare.hitch_drag() && rider.ridden_handcart_drag() > empty_drag, "the mounted movement budget grows when the cart is loaded")
+	rider.riding = FALSE
+	carriage_check(!rider.ridden_handcart_drag(), "a stale mount reference cannot slow a dismounted rider")
+	// The remaining checks exercise unharnessed animals, not mounted riders.
+	qdel(rider)
 	var/obj/structure/closet/crate/cart/wooden/other = new(locate(8, 12, 1))
 	carriage_check(findtext(other.hitch_refusal(mare), "already pulls a cart"), "a horse pulls one cart at a time")
 	var/obj/structure/vehicle/carriage/far = new(locate(40, 10, 1))

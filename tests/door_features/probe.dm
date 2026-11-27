@@ -133,23 +133,52 @@ var/door_features_runtime = null
 	door_features_hands(inside, slot, driver)
 	D.attackby(slot, inside)
 	door_features_assert(D.door_has_feature(4), "mail_slot_fitted")
+	var/turf/mail_landing = locate(6, 5, 1)
 	var/obj/item/weapon/paper/letter = new
 	door_features_hands(outside, letter, null)
 	D.attackby(letter, outside)
-	door_features_assert(letter.loc == locate(6, 5, 1), "letter_posted")
+	door_features_assert(letter.loc == mail_landing, "letter_posted")
 	var/obj/item/weapon/paper/back = new
 	door_features_hands(inside, back, null)
 	D.attackby(back, inside)
 	door_features_assert(back.loc != locate(4, 5, 1), "no_posting_outwards")
 	var/obj/item/weapon/hammer/hammer = new
 	door_features_assert(!door_mail_postable(hammer) && door_mail_postable(letter), "only_flat_things")
-	var/obj/structure/closet/crate/box = new(locate(6, 5, 1))
+	letter.forceMove(locate(6, 6, 1))
+	var/obj/structure/closet/crate/box = new(mail_landing)
+	box.storagecap = 1
 	box.close()
 	var/obj/item/weapon/paper/letter2 = new
 	door_features_hands(outside, letter2, null)
 	D.attackby(letter2, outside)
 	door_features_assert(letter2.loc == box, "letter_into_crate")
+	var/obj/item/weapon/paper/overflow_letter = new
+	door_features_hands(outside, overflow_letter, null)
+	D.attackby(overflow_letter, outside)
+	door_features_assert(overflow_letter.loc == mail_landing && closet_item_count(box) == 1, "full_crate_leaves_letter_on_floor")
 	qdel(box)
+	overflow_letter.forceMove(locate(6, 6, 1))
+
+	var/obj/structure/closet/crate/wall_mailbox/wood_mailbox/mailbox = new(mail_landing)
+	mailbox.storagecap = 2
+	mailbox.close()
+	var/obj/item/weapon/paper/mail = new
+	door_features_hands(outside, mail, null)
+	D.attackby(mail, outside)
+	door_features_assert(mail.loc == mailbox && closet_item_count(mailbox) == 1, "door_delivery_counts_as_mail")
+	var/obj/item/weapon/paper/direct_mail = new
+	door_features_hands(inside, direct_mail, null)
+	mailbox.attackby(direct_mail, inside)
+	door_features_assert(direct_mail.loc == mailbox && closet_item_count(mailbox) == 2, "direct_mail_shares_capacity_with_door_delivery")
+	var/obj/item/weapon/paper/extra_mail = new
+	door_features_hands(inside, extra_mail, null)
+	mailbox.attackby(extra_mail, inside)
+	door_features_assert(extra_mail.loc == inside, "full_mailbox_rejects_direct_mail")
+	inside.drop_r_hand()
+	door_features_hands(outside, extra_mail, null)
+	D.attackby(extra_mail, outside)
+	door_features_assert(extra_mail.loc == mail_landing && closet_item_count(mailbox) == 2, "full_mailbox_leaves_letter_on_floor")
+	qdel(mailbox)
 
 	// A pet door lets small animals through the shut door, not people.
 	var/obj/item/door_feature/pet_door/flap = new

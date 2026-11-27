@@ -8,6 +8,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = (ROOT / 'code/game/objects/structures/blacksmithing/refining.dm').read_text(encoding='utf-8')
+STRUCTURE_SOURCE = (ROOT / 'code/game/objects/structures.dm').read_text(encoding='utf-8')
 HELPER = '/obj/structure/furnace/proc/accept_manual_stack'
 _spec = importlib.util.spec_from_file_location('grinder_projection', ROOT / 'tests/grinder/test_transaction.py')
 projection = importlib.util.module_from_spec(_spec)
@@ -123,10 +124,14 @@ class ToolProjection(projection.Projection):
 def tool_action(handler, kind, completed, anchored=True, source=SOURCE):
     # Parent fallback is an injected observation; all other logic comes from source.
     # The scalar projector cannot parse DM type paths with a trailing slash.
-    p = ToolProjection(source.replace('..()', 'parent()').replace('/obj/item/stack/)', '/obj/item/stack)'))
+    handler_source = source.replace('..()', 'parent()').replace('/obj/item/stack/)', '/obj/item/stack)')
+    p = ToolProjection(handler_source + '\n' + STRUCTURE_SOURCE)
     events = []
     furnace = projection.Record(anchored=anchored, gcDestroyed=False, loc='floor', I_HELP='help')
     furnace.wait = lambda: events.append('wait') or completed
+    furnace.QDELETED = lambda obj: obj.gcDestroyed
+    furnace.can_dismantle_with_hammer = lambda user: p.run(
+        '/obj/structure/proc/can_dismantle_with_hammer', furnace, user=user)
     furnace.empty = lambda: events.append('empty:' + handler)
     # Mirror of /obj/proc/timed_toggle_anchor (code/_helpers/tools.dm): wait, then toggle on success.
     furnace.timed_toggle_anchor = lambda actor: bool(furnace.wait()) and (setattr(furnace, 'anchored', not furnace.anchored) or True)

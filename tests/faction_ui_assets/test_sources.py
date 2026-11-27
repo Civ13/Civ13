@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import unittest
 
-from run import ASSETS, CREATION, OMISSION_FAILURES, PREFIX, ROOT, prepare, replace_once, sources, verify_result
+from run import ASSETS, CREATION, NATIVE_CHECK_COUNT, OMISSION_FAILURES, PREFIX, ROOT, prepare, replace_once, sources, verify_result
 
 
 class FactionAssets(unittest.TestCase):
@@ -95,11 +95,18 @@ class FactionAssets(unittest.TestCase):
         assets = positive[PREFIX + '_assets.dm']
         self.assertEqual(assets.replace('\t\tA.register()\n\t\treturn A\n', '\t\treturn A\n'), omission[PREFIX + '_assets.dm'])
         self.assertIn('/datum/asset/nanoui/register()\n\tfaction_ui_registrations++\n', assets)
+        self.assertIn('/datum/asset/simple/civ13_tgui/register()\n\tfaction_tgui_registrations++\n', assets)
         self.assertIn('fcopy_rsc(path + filename)', assets)
-        self.assertIn('/datum/nanoui/tgui/faction_assets_probe(user, src,', positive[PREFIX + '_creation.dm'])
+        self.assertIn('/datum/nanoui/tgui/faction_assets_probe(user, src,', positive[PREFIX + '_tgui.dm'])
         self.assertNotIn('.dmm"', positive[PREFIX + '.dme'])
         self.assertNotIn('CIV13_GAMEPLAY_BRIDGE', positive[PREFIX + '.dme'])
-        self.assertEqual(positive[PREFIX + '_creation.dm'], omission[PREFIX + '_creation.dm'])
+        constructor = 'new /datum/nanoui/tgui(user, src, ui_key, template, title, width, height, _state = state ? state : default_state)'
+        projected = positive[PREFIX + '_tgui.dm']
+        self.assertEqual(projected, omission[PREFIX + '_tgui.dm'])
+        self.assertIn('if (template == "faction_creation.tmpl")\n\t\tui = new /datum/nanoui/tgui/faction_assets_probe(', projected)
+        self.assertIn('else\n\t\tui = ' + constructor, projected)
+        self.assertIn('\tui.set_initial_data(data)\n\tui.open()\n', projected)
+        self.assertIn('#include "code\\game\\mob\\groups\\faction_creation.dm"', positive[PREFIX + '.dme'])
         for text in ('absent', 'duplicate duplicate'):
             with self.assertRaises(ValueError):
                 replace_once(text, 'duplicate', 'replacement')
@@ -115,9 +122,9 @@ class FactionAssets(unittest.TestCase):
                 prepare(destination)
 
     def test_controls_require_complete_exact_named_failures(self):
-        labels = sorted(OMISSION_FAILURES) + ['other-' + str(i) for i in range(13)]
+        labels = sorted(OMISSION_FAILURES) + ['other-' + str(i) for i in range(NATIVE_CHECK_COUNT - len(OMISSION_FAILURES))]
         checks = [dict(label=label, passed=True) for label in labels]
-        good = dict(port=0, check_count=18, checks=checks, failed_labels=[])
+        good = dict(port=0, check_count=NATIVE_CHECK_COUNT, checks=checks, failed_labels=[])
         verify_result(good, False)
         for changes in (dict(port=1234), dict(check_count=17), dict(checks=[]), dict(failed_labels=['unrelated'])):
             with self.assertRaises(ValueError):

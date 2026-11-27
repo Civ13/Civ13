@@ -361,10 +361,10 @@
 	if (M.ingested)
 		M.ingested.remove_reagent("sodiumchloride", 10)
 
-/proc/reagents_are_brine(var/datum/reagents/R, var/water_volume)
+/proc/reagents_are_brine(var/datum/reagents/R, var/water_volume, var/salt_roundoff = 0)
 	if (!R || water_volume <= 0)
 		return FALSE
-	return R.get_reagent_amount("sodiumchloride") >= water_volume * SALT_BRINE_RATIO
+	return R.get_reagent_amount("sodiumchloride") + salt_roundoff >= water_volume * SALT_BRINE_RATIO
 
 /datum/reagent/blackpepper
 	name = "Black Pepper"

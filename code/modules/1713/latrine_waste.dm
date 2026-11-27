@@ -91,7 +91,9 @@
 	if (!RC.reagents || RC.reagents.get_free_space() < 1)
 		to_chat(user, SPAN_NOTICE("\The [RC] is full."))
 		return
-	if (!do_after(user, 15, src) || stored_urine < 1)
+	if (!do_after(user, 15, src) || stored_urine < 1 || !latrine_reachable(user))
+		return
+	if (QDELETED(RC) || !RC.is_open_container() || !RC.reagents)
 		return
 	var/amount = round(min(stored_urine, RC.reagents.get_free_space()))
 	if (amount < 1)

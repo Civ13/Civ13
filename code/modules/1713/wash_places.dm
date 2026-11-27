@@ -95,7 +95,7 @@
 	if (!station_take_water(user))
 		return FALSE
 	update_icon()
-	return station_has_water()
+	return TRUE
 
 // ---- making a basin ---------------------------------------------------------
 

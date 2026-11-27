@@ -125,7 +125,7 @@
 // one-object vehicle, or standing on a moving frame vehicle.
 // Carried steps make no footstep sounds; the engine has its own.
 /mob/living/human/proc/carried_by_vehicle()
-	if (buckled || driver || driver_vehicle)
+	if (buckled || wheelchair_carrying || driver || driver_vehicle)
 		return TRUE
 	var/turf/T = loc
 	if (!istype(T))
@@ -231,7 +231,11 @@
 		var/ticks = vehicle_offset_ticks()
 		// The tile step inside the roll keeps its own schedule; the pixels are the pace now.
 		pedal_next_move = world.time
-		blocked = vehicle_offset_roll(vehicle_offset_speed(vehicle_m_delay) * ticks)
+		// After one tile commit the pedal deadline moves forward. A second
+		// commit in the same pulse would be misread as a collision.
+		// Reserve a pixel for the offset mover's fractional remainder.
+		var/pixels = min(vehicle_offset_speed(vehicle_m_delay) * ticks, vehicle_offset_speed(world.tick_lag) - 1)
+		blocked = vehicle_offset_roll(pixels)
 	catch (var/exception/E)
 		pedal_busy = FALSE
 		stopmovementloop()

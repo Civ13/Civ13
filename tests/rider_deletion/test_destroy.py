@@ -92,6 +92,11 @@ class Human:
     def snapshot(self):
         return (self.riding, label(self.riding_mob))
 
+    def close_faction_symbol_editor(self):
+        # A separate native emblem fixture covers editor revocation. This
+        # projection only observes the rider and mount teardown ordering.
+        pass
+
     def cancel_exercise(self):
         self.world.effect('exercise')
 
@@ -133,7 +138,7 @@ class Animal:
 
 def projected_layer(text, parent, world):
     body = extract(text, DECLARATION)
-    for field in ('riding_mob', 'riding', 'cancel_exercise', 'unregister_corpse_decay',
+    for field in ('riding_mob', 'riding', 'close_faction_symbol_editor', 'cancel_exercise', 'unregister_corpse_decay',
                   'organs', 'ingested', 'touching', 'internal_organs', 'stomach_contents'):
         body = re.sub(r'(?<![\w.])' + field + r'\b', 'src.' + field, body)
     for field in ('human_mob_list', 'human_clients_mob_list', 'faction_hud_users'):

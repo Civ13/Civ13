@@ -1,5 +1,5 @@
 // Native probe for pay dirt washing.
-// Run: python3 tests/ecology_spawning/run_linux.py . tests/placer/probe.dm
+// Run: python3 tests/ecology_spawning/run_linux.py . tests/placer/probe.dm 420
 /world
 	hub = ""
 	hub_password = ""
@@ -15,7 +15,10 @@
 	return FALSE
 /obj/map_metadata/placer_probe/New()
 	return
+/obj/structure/window/placer_probe/New()
+	return
 /mob/living/human/placer_probe/New()
+	icon_update = FALSE
 	return
 var/eco_failures = 0
 var/eco_runtime_error = FALSE
@@ -33,6 +36,9 @@ var/eco_runtime_error = FALSE
 		GLOB.moved_event = new
 		GLOB.dir_set_event = new
 		GLOB.destroyed_event = new
+		GLOB.global_listen_count = list()
+		GLOB.event_sources_count = list()
+		GLOB.event_listen_count = list()
 		movementMachine = new
 		initialize_chemical_reagents()
 		initialize_chemical_reactions()
@@ -83,3 +89,104 @@ var/eco_runtime_error = FALSE
 	eco_check(abs(SL.reagents.get_reagent_amount("mercury") - 1.95) < 0.001, "each load washes a little away")
 	var/obj/structure/placer_washer/rocker/R = new(locate(9, 9, 1))
 	eco_check(!R.anchored && R.water_capacity == 40 && !R.mercury_charged(), "the rocker is movable with its own tank")
+	var/turf/bank = locate(13, 14, 1)
+	bank = bank.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	var/turf/water = locate(14, 14, 1)
+	water = water.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	var/datum/resource_stock/stock = bank.pay_dirt_stock()
+	eco_check(bank.pay_dirt_bank() && bank.panning_water() == water, "ordinary shallow freshwater enables panning and digging")
+	var/obj/covers/roads/dirt/worked/road = new(bank)
+	eco_check(!bank.pay_dirt_bank() && bank.panning_water() == water && stock.available() == PAY_DIRT_LOADS, "a road cover on the same turf removes bank eligibility without touching stock")
+	qdel(road)
+	water = water.ChangeTurf(/turf/floor/beach/water/ice, FALSE, FALSE)
+	eco_check(!bank.panning_water() && !bank.pay_dirt_bank() && stock.available() == PAY_DIRT_LOADS, "ice is not panning water or a valid placer source")
+	water = water.ChangeTurf(/turf/floor/beach/water/shallowsaltwater, FALSE, FALSE)
+	eco_check(!bank.panning_water(), "liquid salt water still does not permit panning")
+	water = water.ChangeTurf(/turf/floor/beach/water/deep, FALSE, FALSE)
+	eco_check(!bank.panning_water(), "liquid deep fresh water still does not permit panning")
+
+	// Exercise the actual paid actions with the actor and tool stationary while the terrain changes.
+	var/turf/work_bank = locate(16, 16, 1)
+	work_bank = work_bank.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	var/turf/work_water = locate(17, 16, 1)
+	work_water = work_water.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	var/mob/living/human/placer_probe/H = new(work_bank)
+	H.hand = FALSE
+	H.r_hand = new /obj/item/weapon/material/shovel(H)
+	var/datum/resource_stock/work_stock = work_bank.pay_dirt_stock()
+	spawn(1)
+		new /obj/covers/roads/dirt/worked(work_bank)
+	H.dig_pay_dirt()
+	var/obj/covers/roads/dirt/worked/cover = locate() in work_bank
+	eco_check(cover && work_stock.available() == PAY_DIRT_LOADS && !(locate(/obj/item/stack/ore/pay_dirt) in work_bank), "a road built mid-dig does not consume stock or spawn gravel")
+	qdel(cover)
+
+	var/obj/item/kitchen/wood_bowl/bowl = new(H)
+	var/obj/item/stack/ore/pay_dirt/load = new(H)
+	load.amount = 2
+	H.r_hand = load
+	H.l_hand = bowl
+	spawn(1)
+		work_water.ChangeTurf(/turf/floor/beach/water/ice, FALSE, FALSE)
+	bowl.attackby(load, H)
+	work_water = locate(17, 16, 1)
+	eco_check(istype(work_water, /turf/floor/beach/water/ice) && load.amount == 2, "pay dirt is not consumed when the selected water freezes mid-pan")
+	work_water.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	bowl.attackby(load, H)
+	eco_check(load.amount == 1, "the same pan consumes exactly one load when the water stays liquid")
+	placer_bowl_custody_checks()
+
+/proc/placer_bowl_custody_checks()
+	map.ordinal_age = 1 // ordinary sand washing is gated on the Classical age
+	var/turf/bank = locate(10, 14, 1)
+	bank = bank.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	var/turf/water = locate(11, 14, 1)
+	water.ChangeTurf(/turf/floor/beach/water, FALSE, FALSE)
+	var/turf/adjacent_bank = locate(9, 14, 1)
+	adjacent_bank = adjacent_bank.ChangeTurf(/turf/floor/dirt, FALSE, FALSE)
+	var/mob/living/human/placer_probe/H = new(bank)
+	var/mob/living/human/placer_probe/other = new(bank)
+	var/obj/item/weapon/storage/backpack/bag = new(bank)
+	var/obj/item/kitchen/wood_bowl/bowl = new(H)
+	var/obj/structure/window/placer_probe/edge = new(bank)
+	H.hand = FALSE
+	for (var/feed in list(/obj/item/stack/ore/pay_dirt, /obj/item/stack/ore/crushed_ore/gold, /obj/item/stack/ore/glass))
+		var/obj/item/stack/load = new feed(H)
+		load.amount = 10
+		H.r_hand = load
+		bowl.loc = H
+		H.l_hand = bowl
+		spawn(1)
+			bowl.loc = other
+			other.l_hand = bowl
+		bowl.attackby(load, H)
+		eco_check(bowl.loc == other && load.amount == 10 && !(locate(/obj/item/stack) in bank), "[feed] refusal: recipient on the same tile is not the original holder (moved [bowl.loc == other], amount [load.amount])")
+		other.l_hand = null
+
+		bowl.loc = H
+		spawn(1)
+			bowl.loc = bag
+		bowl.attackby(load, H)
+		eco_check(bowl.loc == bag && load.amount == 10 && !(locate(/obj/item/stack) in bank), "[feed] refusal: a bag on the same tile is not the original location")
+
+		bowl.loc = adjacent_bank
+		H.l_hand = null
+		edge.dir = NORTH
+		spawn(1)
+			edge.dir = WEST
+		bowl.attackby(load, H)
+		eco_check(edge.dir == WEST && load.amount == 10 && !(locate(/obj/item/stack) in bank), "[feed] refusal: a newly blocked edge prevents panning even with the same ground location")
+		edge.dir = NORTH
+		bowl.attackby(load, H)
+		eco_check(QDELETED(load) || load.amount == 9, "[feed] control: a reachable ground bowl still pans (amount [load.amount])")
+		H.r_hand = null
+		qdel(load)
+		for (var/obj/item/stack/output in bank)
+			qdel(output)
+
+	var/obj/structure/kanna_channel/channel = new(bank)
+	var/obj/item/stack/ore/glass/sand = new(H)
+	sand.amount = 5
+	H.r_hand = sand
+	channel.attackby(sand, H)
+	eco_check(QDELETED(sand) && !channel.washing && locate(/obj/item/stack/ore/iron_sand) in bank, "the default washing channel still consumes sand, returns iron sand and releases its lock")
