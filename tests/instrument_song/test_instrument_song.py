@@ -2,9 +2,9 @@
 
 The piano, violin, shamisen and trumpet (/obj/item/trombone) each carried a
 copy of playsong, the song panel and its Topic handler. original_*.dm.txt
-freeze those copies; the instruments now call instrument_panel and
-instrument_topic in code/game/objects/items/devices/instrument_song.dm and
-keep only their own playnote sound tables.
+freeze those copies. The instruments share their panel and Topic handlers
+in code/game/objects/items/devices/instrument_song.dm and keep their own
+sound tables. Handheld instruments also share the panel admission checks.
 """
 from pathlib import Path
 import re
@@ -60,7 +60,11 @@ def errors(read):
         if f'{typ}/proc/playsong(' in source:
             found.append(f'{name} still has its own playsong')
         panel = proc_body(source, f'{typ}/{opener}(')
-        if panel is None or f'instrument_panel(src, user, "{title}", "{window}", {limit})' not in panel:
+        panel_args = f'(src, user, "{title}", "{window}", {limit})'
+        if opener == 'attack_self':
+            if panel is None or panel.strip() != 'instrument_open_held_panel' + panel_args:
+                found.append(f'{name} {opener} must call instrument_open_held_panel')
+        elif panel is None or 'instrument_panel' + panel_args not in panel:
             found.append(f'{name} {opener} must call instrument_panel')
         topic = proc_body(source, f'{typ}/Topic(href, href_list)')
         if topic is None or topic.strip() != f'instrument_topic(src, usr, href_list, "{title}", "{window}", {limit})':
@@ -91,6 +95,16 @@ class InstrumentSongTest(unittest.TestCase):
 
     def test_instruments_use_the_shared_player(self):
         self.assertEqual(errors(self.read), [])
+
+    def test_handheld_opening_checks_player_before_registering_and_opening(self):
+        opener = proc_body(self.read(SHARED), '/proc/instrument_open_held_panel(')
+        self.assertIsNotNone(opener)
+        self.assertEqual(opener.rstrip(), (
+            '\tif (!isliving(user) || user.stat || user.restrained() || user.lying)\n'
+            '\t\treturn\n'
+            '\tuser.set_using_object(instrument)\n'
+            '\tinstrument_panel(instrument, user, title, window, max_lines)'
+        ))
 
     def test_ready_rules_match_the_originals(self):
         ready = proc_body(self.read(SHARED), '/proc/instrument_ready(')

@@ -81,9 +81,7 @@
 	instrument_play_note(src, note, samples)
 
 /obj/item/trombone/attack_self(mob/user as mob)
-	if (!isliving(user) || user.stat || user.restrained() || user.lying)	return
-	user.set_using_object(src)
-	instrument_panel(src, user, "trombone", "trombone", MAX_CHARS_PER_LINE)
+	instrument_open_held_panel(src, user, "trombone", "trombone", MAX_CHARS_PER_LINE)
 
 /obj/item/trombone/Topic(href, href_list)
 	instrument_topic(src, usr, href_list, "trombone", "trombone", MAX_CHARS_PER_LINE)
