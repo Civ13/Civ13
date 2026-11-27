@@ -11,7 +11,7 @@
 	if(current.len != 20)
 		return null
 	var/list/result = list()
-	for(var/i = 1, i <= 20, i++)
+	for(var/i in 1 to 20)
 		if(!isnum(current[i]))
 			return null
 		result += current[i]
