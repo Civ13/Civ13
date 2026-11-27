@@ -29,6 +29,7 @@ class WindowLobContracts(unittest.TestCase):
         self.assertIn('get_step(here, direction) != target', hop)
         self.assertIn('window_lob_inside(H, here, opening, direction)', hop)
         self.assertIn('isnull(throw_flight_token)', hop)
+        self.assertIn('!advanced && throw_flight_token == flight', hop)
         for text in ('det_time', 'active =', 'activate(', 'prime(', 'sleep(', 'spawn('):
             self.assertNotIn(text, SOURCE)
 

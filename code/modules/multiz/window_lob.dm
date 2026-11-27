@@ -209,8 +209,8 @@
 		original_target = null // Never fall back to the generic XY flight on this hop.
 		// Cross-level forceMove clears the old token. Never finish a new
 		// flight that an Entered/Crossed callback has just started.
-		forceMove_nondenseturf(inside)
-		if (!QDELETED(src) && isnull(throw_flight_token))
+		var/advanced = forceMove_nondenseturf(inside)
+		if (!QDELETED(src) && (isnull(throw_flight_token) || (!advanced && throw_flight_token == flight)))
 			finished_throwing()
 	else
 		finished_throwing()

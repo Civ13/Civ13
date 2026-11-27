@@ -18,6 +18,11 @@
 
 /obj/item/weapon/grenade/window_lob_probe
 	var/turf/primed_at
+	var/turf/refuse_move_to
+/obj/item/weapon/grenade/window_lob_probe/forceMove(atom/destination, special_event)
+	if (destination == refuse_move_to)
+		return FALSE
+	return ..()
 /obj/item/weapon/grenade/window_lob_probe/prime()
 	primed_at = get_turf(src)
 
@@ -104,6 +109,18 @@ var/window_lob_runtime = FALSE
 		G.window_lob_hop(flight)
 		window_lob_check(G.loc == exterior && !G.throwing, "a window that closes midflight leaves the grenade outside")
 		C.state = TRUE
+		G.forceMove(ground)
+		G.start_window_lob(H, opening, EAST, path.Copy(), TRUE)
+		flight = G.throw_flight_token
+		flight["window_lob_next_tick"] = world.time
+		G.window_lob_hop(flight)
+		G.refuse_move_to = inside
+		flight["window_lob_next_tick"] = world.time
+		G.window_lob_hop(flight)
+		window_lob_check(G.loc == exterior && !G.throwing && !G.throw_flight_token && !(G in thrown_list), "a refused entry finishes outside without retrying after the save gate opens")
+		G.refuse_move_to = null
+		G.window_lob_hop(flight)
+		window_lob_check(G.loc == exterior, "cleared flight cannot enter after movement becomes allowed")
 		G.forceMove(ground)
 		G.det_time = 1
 		G.activate()
