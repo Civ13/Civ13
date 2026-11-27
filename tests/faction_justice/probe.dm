@@ -111,5 +111,24 @@ var/justice_p_runtime_error = FALSE
 	R["laws"] += 7
 	map.justice_normalize()
 	justice_p_check(!R["warrants"]["bad"] && !R["fines"]["zero"] && !(7 in R["laws"]), "malformed rows are dropped")
+	var/list/laws = R["laws"]
+	laws += list("Cancel", "Something else", "Cancel", "No theft")
+	var/list/offered = laws.Copy()
+	var/list/options = justice_law_choices(offered)
+	justice_p_check(!("Cancel" in options) && !("Something else" in options) && options["1. Cancel"] == 1 && options["2. Something else"] == 2 && options["3. Cancel"] == 3, "reserved words and duplicate laws have independent choice labels")
+	justice_p_check(isnull(justice_repeal_law_at(laws, offered, options["Cancel"])) && laws.len == 4, "the cancel control cannot repeal a law named Cancel")
+	justice_p_check(justice_repeal_law_at(laws, offered, options["3. Cancel"]) == "Cancel" && laws.len == 3 && laws[1] == "Cancel", "repealing one duplicate leaves the other intact")
+	justice_p_check(isnull(justice_repeal_law_at(laws, offered, options["2. Something else"])) && laws.len == 3 && laws[2] == "Something else", "a concurrent repeal invalidates a stale numbered choice")
+	var/list/reordered = offered.Copy()
+	reordered.Swap(1, 2)
+	justice_p_check(isnull(justice_repeal_law_at(reordered, offered, options["3. Cancel"])) && reordered.len == 4, "an equal-length concurrent reorder also invalidates the menu")
+	var/literal_warrant = offered[options["2. Something else"]]
+	map.justice_warrant("Eagles", "cymiller", "Cy Miller", literal_warrant, "Bo Tanner")
+	justice_p_check(R["warrants"]["cymiller"][2] == "Something else", "the warrant records the original law, not its numbered label or control")
+	var/literal_trial = offered[options["1. Cancel"]]
+	var/sentence = map.justice_sentence("Eagles", "cymiller", "Cy Miller", literal_trial, "Warning", 0, "Bo Tanner")
+	var/latest_record = record[record.len]
+	var/judgment = justice_judgment_text("Eagles", "Cy Miller", literal_trial, sentence, "Bo Tanner")
+	justice_p_check(findtext(latest_record, "guilty of Cancel:") && findtext(judgment, "Cancel") && !findtext(judgment, "1. Cancel"), "the trial log and paper keep the original Cancel law without its display label")
 	map.justice_rename("Eagles", "Hawks")
 	justice_p_check(islist(map.justice_state()["Hawks"]) && !map.justice_state()["Eagles"], "the court follows a faction rename")
