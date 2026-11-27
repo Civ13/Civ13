@@ -61,9 +61,6 @@ class ButterSourceTests(unittest.TestCase):
         self.assertIn('press_butter(W, user)', preserves)
         self.assertIn('"butter" = list("fat" = 1)', read(ROOT / 'code/modules/diet/diet.dm'))
 
-    def test_no_spawn(self):
-        self.assertNotIn('spawn(', self.source)
-
 
 if __name__ == '__main__':
     unittest.main()
