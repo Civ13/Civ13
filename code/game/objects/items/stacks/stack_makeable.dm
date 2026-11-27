@@ -23,6 +23,9 @@
 		return FALSE
 	if (recipe_skill_refusal(H, R))
 		return FALSE
+	// The main stack cannot also supply a declared secondary material.
+	if (craft_needs_refusal(H, R, 1, src))
+		return FALSE
 	if (stone_mold_type(R.result_type))
 		var/datum/stone_mold_carving/carving = new(src, H, R)
 		if (!carving.valid())

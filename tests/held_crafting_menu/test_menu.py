@@ -60,6 +60,24 @@ class HeldCraftingMenu(unittest.TestCase):
         self.assertIn("browse_rsc('code/js/stack_crafting.js'", MENU)
         self.assertIn("<!DOCTYPE html><html><head><meta http-equiv='X-UA-Compatible' content='IE=edge'>", MENU)
 
+    def test_normal_modern_window_lists_accessible_nearby_stacks(self):
+        self.assertIn('if (crafting_window_shown(user, reach = TRUE))', MENU)
+        stack_access = SOURCE.split('/obj/item/stack/proc/crafting_stack_accessible(', 1)[1].split('\n/', 1)[0]
+        self.assertIn('craft_nearby_loose_item(H, src)', stack_access)
+        window = (ROOT / 'code/game/objects/items/stacks/crafting_window.dm').read_text()
+        self.assertIn('viewer.crafting_stacks_within_reach()', window)
+        self.assertIn('craft_needs_refusal(viewer, R, 1, S)', window)
+        makeable = (ROOT / 'code/game/objects/items/stacks/stack_makeable.dm').read_text()
+        self.assertIn('if (craft_needs_refusal(H, R, 1, src))', makeable)
+
+    def test_nearby_stack_is_rechecked_before_payment(self):
+        craft = SOURCE.split('/obj/item/stack/proc/produce_recipe(', 1)[1].split('\n/obj/item/stack', 1)[0]
+        late = craft[craft.index('if (!do_after(user, buildtime, ship_craft = ship_craft)'):]
+        first_guard = late.index('if (recheck_source && !crafting_stack_accessible(H))')
+        self.assertLess(first_guard, late.index('drill_steel.use(20)'))
+        self.assertLess(late.rindex('if (recheck_source && !crafting_stack_accessible(H))'), late.index('if (use(required,'))
+        self.assertIn('secondary_refund(H)', late[first_guard:late.index('var/late_refusal')])
+
     def test_authoritative_topic_body_unchanged(self):
         topic = SOURCE.split('/obj/item/stack/Topic(href, href_list)', 1)[1].split('// The normal menu', 1)[0]
         # Narrow frozen contract, not a whole-file pin: the UI cannot replace
