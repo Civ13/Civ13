@@ -19,14 +19,16 @@
 
 // Sample the actual four-channel mask texture after applying its matrix. That
 // matrix must never be assigned directly to the unrelated RGB tree texture.
-/proc/root_light_rgb(turf/root, mob/viewer, allow_pending = FALSE)
+// A supplied sample is the validated matrix from this synchronous read.
+/proc/root_light_rgb(turf/root, mob/viewer, allow_pending = FALSE, list/sample = null)
 	if(!CIV13_ROOT_TREE_PRESENTATION || !root || !viewer)
 		return null
 	if(viewer.see_invisible >= INVISIBILITY_LEVEL_TWO)
 		return "#ffffff"
 	if(!root.lighting_overlay && root.needs_fullbright_coverage())
 		return "#ffffff"
-	var/list/sample = root_light_mask_snapshot(root, allow_pending)
+	if(isnull(sample))
+		sample = root_light_mask_snapshot(root, allow_pending)
 	if(!sample)
 		return null
 	var/atom/movable/lighting_overlay/L = root.lighting_overlay
