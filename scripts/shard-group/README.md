@@ -822,7 +822,9 @@ next to the group JSON. `regions` defaults to every region. The worker watches e
 private `SQL/player-help` folder independently. Requests, replies, limits,
 heartbeats, and knowledge for different game builds stay separate; identical
 knowledge indexes can share memory. `workers` limits total concurrent model
-requests for the group; ready regions take turns. Do not point different game
+requests for the group; ready regions take turns. If a question cannot start
+within about 30 seconds, it returns a busy message instead of using a model
+slot too late to deliver the answer. Do not point different game
 worlds at the same spool or share it between Persistence and TDM.
 
 Update the source checkout used by the host service and restart the **host

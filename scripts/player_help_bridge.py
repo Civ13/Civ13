@@ -20,6 +20,7 @@ import uuid
 MAX_RESPONSE = 65536
 DEFAULT_POLL_SECONDS = 0.25  # spool scan interval; the game polls responses every 2 s
 HEARTBEAT_SECONDS = 1.0  # health.json sequence refresh; the game wants a change within 10 s
+SHARED_QUEUE_WAIT_SECONDS = 30  # shed queued work before the fixed BYOND request deadline
 MAX_REQUEST_ID = 100
 HISTORY_BYTES = 4096
 HISTORY_PAIRS = 3
@@ -1581,16 +1582,34 @@ def entry_terms(entry):
 
 def acquire_worker_lock(lock):
     lock.parent.mkdir(parents=True, exist_ok=True)
-    try:
-        lock.mkdir()
-    except FileExistsError:
-        # A live or unreadable owner must never be dislodged.
-        if not stale_lock(lock):
+    # Do not unlink this guard, even when idle: all starters must lock the
+    # same file. Process death releases the advisory lock on both platforms.
+    guard = lock.with_name(lock.name + '.claim')
+    fd = os.open(guard, os.O_RDWR | os.O_CREAT | getattr(os, 'O_NOFOLLOW', 0), 0o600)
+    with os.fdopen(fd, 'r+b') as stream:
+        try:
+            if os.name == 'nt':
+                import msvcrt
+                msvcrt.locking(stream.fileno(), msvcrt.LK_NBLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(stream, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError as error:
+            raise FileExistsError('Another Player Help worker is claiming this spool') from error
+        try:
+            lock.mkdir()
+        except FileExistsError:
+            # The live/dead check and replacement are one guarded operation.
+            if not stale_lock(lock):
+                raise
+            (lock / 'pid').unlink(missing_ok=True)
+            lock.rmdir()
+            lock.mkdir()
+        try:
+            (lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
+        except OSError:
+            release_worker_lock(lock)
             raise
-        (lock / 'pid').unlink(missing_ok=True)
-        lock.rmdir()
-        lock.mkdir()
-    (lock / 'pid').write_text(str(os.getpid()), encoding='ascii')
 
 
 def release_worker_lock(lock):
@@ -1599,7 +1618,7 @@ def release_worker_lock(lock):
 
 
 class Bridge:
-    def __init__(self, root, config, corpus, transport=network, wiki_status=None, executor=None, queue_regions=1):
+    def __init__(self, root, config, corpus, transport=network, wiki_status=None, executor=None, queue_wait=None):
         self.root, self.config, self.corpus, self.transport = root, config, corpus, transport
         self.wiki_status = dict(wiki_status) if wiki_status is not None else None
         self._weights = None
@@ -1612,7 +1631,9 @@ class Bridge:
         acquire_worker_lock(self.lock)
         self.owns_executor = executor is None
         self.executor = ThreadPoolExecutor(max_workers=config.get('workers', 1)) if self.owns_executor else executor
-        self.queue_regions = queue_regions
+        self.queue_wait = queue_wait
+        self.queued = {}
+        self.queue_checked_at = None
 
     def term_weights(self):
         """1 (a word in every entry) to 4 (a word in one entry), computed once per corpus."""
@@ -1887,8 +1908,39 @@ class Bridge:
             return False
         self.heartbeat_at, self.heartbeat_enabled = now, enabled
         atomic_json(self.root / 'limits.json', self.limiter.limits)
-        atomic_json(self.root / 'health.json', {'enabled': enabled, 'sequence': uuid.uuid4().hex, 'conversation_protocol': 1, 'request_timeout_seconds': min(600, int(self.config.get('timeout_seconds', 45) * 8 * self.queue_regions / self.config.get('workers', 1)) + 15)})
+        timeout = self.config.get('timeout_seconds', 45)
+        budget = timeout * 8 / self.config.get('workers', 1) if self.queue_wait is None else timeout + self.queue_wait
+        atomic_json(self.root / 'health.json', {'enabled': enabled, 'sequence': uuid.uuid4().hex,
+                    'conversation_protocol': 1, 'request_timeout_seconds': min(600, max(60, math.ceil(budget) + 15))})
         return True
+
+    def expire_queued_requests(self, now):
+        # End excessive pool waits as busy rather than spending a late model call.
+        if self.queue_wait is None or not self.config['enabled']:
+            return
+        # A request is first seen within one poll (at most 5s), and expiry is
+        # observed within one more poll. The heartbeat advertises 15s of slack.
+        if self.queue_checked_at is not None and now - self.queue_checked_at < 1:
+            return
+        self.queue_checked_at = now
+        for slot in range(1, 9):
+            ready = self.root / f'{slot}.ready'
+            ready_id = read_ready_id(ready) if slot not in self.active and ready.is_file() else None
+            if ready_id is None:
+                self.queued.pop(slot, None)
+                continue
+            previous, since = self.queued.get(slot, (None, now))
+            if ready_id != previous:
+                self.queued[slot] = (ready_id, now)
+            elif since is not None and now - since >= self.queue_wait:
+                response = self.root / f'{slot}.response.json'
+                try:
+                    existing = bounded_json(response, 24000)
+                except (FileNotFoundError, ValueError):
+                    existing = None
+                if (not isinstance(existing, dict) or existing.get('id') != ready_id) and read_ready_id(ready) == ready_id:
+                    atomic_json(response, {'id': ready_id, 'status': 'busy', 'retry_seconds': 5})
+                self.queued[slot] = (ready_id, None)
 
     def tick(self, admit=True, dispatch=True, capacity=None):
         self.heartbeat(admit)
@@ -2029,10 +2081,11 @@ class GroupBridge:
 
         for region, bridge in list(self.bridges.items()):
             admit = region not in self.failed and region in desired and bridge.root == desired[region] / 'SQL/player-help'
-            bridge.queue_regions = max(1, len(desired))
             try:
                 if region not in self.failed:
                     bridge.tick(admit=admit, dispatch=False)
+                    if admit:
+                        bridge.expire_queued_requests(now)
             except Exception as error:
                 self.report_failure(region, now, error)
                 self.failed.add(region)
@@ -2057,7 +2110,7 @@ class GroupBridge:
                         if cached is not None:
                             corpus = cached.corpus
                         bridge = Bridge(root / 'SQL/player-help', self.config, corpus, self.transport,
-                                        wiki_status, executor=self.executor, queue_regions=max(1, len(desired)))
+                                        wiki_status, executor=self.executor, queue_wait=SHARED_QUEUE_WAIT_SECONDS)
                         bridge.corpus_fingerprint = fingerprint
                         if cached is not None:
                             bridge._weights = cached.term_weights()

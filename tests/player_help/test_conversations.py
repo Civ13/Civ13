@@ -118,7 +118,8 @@ class ConversationTests(unittest.TestCase):
                               {'message': {'content': 'Fresh'}})
         self.assertEqual(restarted.answer(self.request([]))['status'], 'ok')
         self.assertEqual(len(calls[0]), 2)
-        self.assertEqual(sorted(p.name for p in self.root.iterdir()), ['health.json', 'worker.lock'])
+        self.assertEqual(sorted(p.name for p in self.root.iterdir()), ['health.json', 'worker.lock', 'worker.lock.claim'])
+        self.assertEqual(b'', (self.root / 'worker.lock.claim').read_bytes(), 'the OS claim guard holds no conversation state')
 
     def test_failure_and_timeout_do_not_return_or_cache_dialogue(self):
         instance = self.make(mock.Mock(side_effect=TimeoutError('private details')))

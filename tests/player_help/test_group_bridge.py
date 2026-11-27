@@ -1,11 +1,14 @@
 """Shared bridge lifecycle and fairness using private spools and an offline model."""
+from concurrent.futures import ThreadPoolExecutor
 import importlib.util
 import json
+import os
 from pathlib import Path
 import tempfile
 import threading
 import time
 import unittest
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('group_test_bridge', ROOT / 'scripts/player_help_bridge.py')
@@ -108,6 +111,51 @@ class SharedBridgeTests(unittest.TestCase):
         (self.root / 'gaia.off').unlink()
         self.until(lambda: 'gaia' in self.service.bridges)
         self.assertFalse((self.spool('gaia') / '2.ready').exists())
+
+    def test_pool_wait_has_a_busy_deadline_before_the_game_timeout(self):
+        self.until(lambda: len(self.service.bridges) == 2)
+        self.release['Long model call'] = threading.Event()
+        self.question('gaia', 'Long model call')
+        self.until(lambda: self.calls == ['Long model call'])
+        self.question('deep', 'Question that cannot start in time')
+        now = time.monotonic() + 2
+        self.service.tick(now=now)
+        self.assertFalse(self.response('deep').exists())
+        now += help_bridge.SHARED_QUEUE_WAIT_SECONDS
+        self.service.tick(now=now)
+        self.assertEqual({'id': '10-20-1', 'status': 'busy', 'retry_seconds': 5},
+                         json.loads(self.response('deep').read_text()))
+        self.release['Long model call'].set()
+        self.until(lambda: self.response('gaia').exists())
+        self.assertEqual(['Long model call'], self.calls, 'expired queued work may not enter the model pool')
+        self.assertGreaterEqual(json.loads((self.spool('deep') / 'health.json').read_text())['request_timeout_seconds'],
+                                help_bridge.SHARED_QUEUE_WAIT_SECONDS + self.config['timeout_seconds'] + 15)
+
+    def test_two_starters_cannot_reclaim_the_same_stale_lock(self):
+        lock = self.root / 'stale' / 'worker.lock'
+        lock.mkdir(parents=True)
+        (lock / 'pid').write_text('999999')
+        claiming, proceed = threading.Event(), threading.Event()
+        def confirmed_stale(_):
+            claiming.set()
+            if not proceed.wait(5):
+                raise AssertionError('stale check was not released')
+            return True
+        with mock.patch.object(help_bridge, 'stale_lock', side_effect=confirmed_stale) as stale:
+            with ThreadPoolExecutor(max_workers=1) as jobs:
+                owner = jobs.submit(help_bridge.acquire_worker_lock, lock)
+                try:
+                    self.assertTrue(claiming.wait(3))
+                    with self.assertRaises(FileExistsError):
+                        help_bridge.acquire_worker_lock(lock)
+                    self.assertEqual(1, stale.call_count)
+                finally:
+                    proceed.set()
+                owner.result(timeout=4)
+        self.assertEqual(str(os.getpid()), (lock / 'pid').read_text())
+        with self.assertRaises(FileExistsError):
+            help_bridge.acquire_worker_lock(lock)
+        help_bridge.release_worker_lock(lock)
 
     def test_legacy_lock_is_preserved_and_a_bad_corpus_does_not_hold_other_regions(self):
         old = help_bridge.Bridge(self.spool('gaia'), self.config, [])

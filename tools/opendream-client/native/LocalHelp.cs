@@ -66,10 +66,13 @@ public static class LocalHelp {
             if (!LocalBot.Bool(json, "ok")) return "Player help: " + (LocalBot.Str(json, "refused") ?? LocalBot.Str(json, "error") ?? $"exit {exit}");
             if (action == "help-stop") {
                 var forced = Names(json, "forced");
+                var stopped = Names(json, "stopped");
                 var pending = Problems(json, "not_ended");
-                if (pending.Count > 0) return "Player help stop pending: " + string.Join("; ", pending) + ".";
-                return "Player help stopped" + (Names(json, "stopped") is { Count: > 0 } stopped ? " (" + string.Join(", ", stopped) + ")" : "") +
+                var outcome = "Player help stopped" + (stopped.Count > 0 ? " (" + string.Join(", ", stopped) + ")" : "") +
                     (forced.Count > 0 ? "; ended without finishing: " + string.Join(", ", forced) : "") + ".";
+                if (pending.Count == 0) return outcome;
+                var waiting = "Player help stop pending: " + string.Join("; ", pending) + ".";
+                return stopped.Count > 0 || forced.Count > 0 ? waiting + " " + outcome : waiting;
             }
             var errors = Problems(json, "errors");
             var started = Names(json, "started");
