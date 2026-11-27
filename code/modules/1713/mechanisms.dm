@@ -204,10 +204,7 @@
 		return FALSE // a lever thrown back neither rings nor drops
 	if (istype(A, /obj/structure/bell))
 		var/obj/structure/bell/B = A
-		if (world.time < B.next_ring)
-			return FALSE
-		B.ring(0)
-		return TRUE
+		return B.try_ring_alarm()
 	if (istype(A, /obj/structure/rock_drop))
 		var/obj/structure/rock_drop/R = A
 		return R.release()
