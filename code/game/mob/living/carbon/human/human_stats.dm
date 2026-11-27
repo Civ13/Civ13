@@ -136,7 +136,7 @@
 	if (statname == "magic" && multiplier > 0 && !magic_allowed())
 		return
 	if (multiplier > 0)
-		multiplier *= trait_skill_gain_mult(statname) * skill_variety_mult(statname, variety_key) * skill_master_mult(statname)
+		multiplier *= trait_skill_gain_mult(statname) * skill_variety_mult(statname, variety_key) * skill_master_mult(statname) * rested_learning_multiplier(statname)
 		var/gain_cap = skill_gain_cap(statname)
 		if (gain_cap)
 			multiplier = min(multiplier, gain_cap)

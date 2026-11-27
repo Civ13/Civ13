@@ -15,6 +15,10 @@
 	return FALSE
 /obj/map_metadata/ml_probe/New()
 	return
+/mob/living/human/ml_probe
+	var/rested_test_time
+/mob/living/human/ml_probe/rested_learning_now()
+	return isnull(rested_test_time) ? ..() : rested_test_time
 /mob/living/human/ml_probe/New()
 	return
 /mob/living/human/ml_probe/update_icons()
@@ -69,6 +73,7 @@ var/ml_runtime_error = FALSE
 		map = new /obj/map_metadata/ml_probe
 		map.nomads = TRUE
 		map.civilizations = TRUE
+		ml_rested_learning_checks()
 		ml_checks()
 	catch(var/exception/e)
 		ml_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -373,3 +378,49 @@ var/ml_runtime_error = FALSE
 	map.nomads = FALSE
 	map.civilizations = FALSE
 	ml_check(ml_rest(H) == 50, "a battle map ignores living conditions ([H.mood_rest] [json_encode(H.mood_rest_parts)])")
+
+// Exercise actual skill gains rather than checking the modifier or save-field names.
+/proc/ml_skill_progress(mob/living/human/H, statname, amount)
+	H.stats[statname] = list(100, 100)
+	H.adaptStat(statname, amount)
+	return H.getMaxStat(statname)
+
+/proc/ml_sleep_poll(mob/living/human/ml_probe/H, sleeping, now)
+	H.inducedSSD = sleeping
+	H.sleeping = sleeping ? 66 : 0
+	H.rested_test_time = now
+	H.refresh_mood_rest()
+
+/proc/ml_rested_learning_checks()
+	var/mob/living/human/ml_probe/H = ml_human(12, 12)
+	var/turf/T = get_turf(H)
+	var/now = 100000
+	var/obj/structure/bed/bedroll/ml_roll/R = new(T)
+	var/obj/item/weapon/bedsheet/ml_sheet/sheet = new(T)
+	var/normal = ml_skill_progress(H, "medical", 20)
+	var/normal_strength = ml_skill_progress(H, "strength", 20)
+	var/normal_loss = ml_skill_progress(H, "medical", -20)
+	ml_sleep_poll(H, TRUE, now - 12 MINUTES)
+	ml_sleep_poll(H, FALSE, now)
+	ml_check(ml_skill_progress(H, "medical", 20) == normal, "sleeping on a bedroll with a sheet does not boost skill gain")
+	R.loc = null
+	sheet.loc = null
+
+	var/obj/structure/bed/ml_bed/B = new(T)
+	ml_sleep_poll(H, TRUE, now + 1 MINUTES)
+	ml_sleep_poll(H, FALSE, now + 6 MINUTES)
+	ml_check(ml_skill_progress(H, "medical", 20) == normal, "a quick nap does not boost skill gain")
+	ml_sleep_poll(H, TRUE, now + 7 MINUTES)
+	ml_sleep_poll(H, FALSE, now + 17 MINUTES)
+	var/rested = ml_skill_progress(H, "medical", 20)
+	ml_check(abs((rested - 100) - (normal - 100) * 1.15) <= 0.15, "a full bed rest increases real skill gains by 15 percent (from [normal - 100] to [rested - 100])")
+	ml_check(ml_skill_progress(H, "strength", 20) == normal_strength && ml_skill_progress(H, "medical", -20) == normal_loss, "rest does not boost Strength or amplify skill loss")
+
+	ml_sleep_poll(H, TRUE, now + 18 MINUTES)
+	ml_sleep_poll(H, FALSE, now + 30 MINUTES)
+	ml_check(ml_skill_progress(H, "medical", 20) == rested, "another full rest refreshes, rather than stacking, the bonus")
+	ml_sleep_poll(H, FALSE, now + 74 MINUTES)
+	ml_check(ml_skill_progress(H, "medical", 20) == rested, "the full refreshed window grants skill progress")
+	ml_sleep_poll(H, FALSE, now + 75 MINUTES)
+	ml_check(ml_skill_progress(H, "medical", 20) == normal, "a past rested window no longer boosts gains")
+	B.loc = null

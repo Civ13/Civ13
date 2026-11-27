@@ -36,6 +36,53 @@
 // with the body, so a good bed still counts after the world restarts.
 /mob/living/human/var/sleep_comfort = 0
 
+#define RESTED_LEARNING_MIN_SLEEP (10 MINUTES)
+#define RESTED_LEARNING_WINDOW (45 MINUTES)
+#define RESTED_LEARNING_MULTIPLIER 1.15
+
+// Save real timestamps with the body. Restarting or reconnecting while awake
+// does not restart the window, and logged-off sleep still counts.
+/mob/living/human/var/rested_learning_sleep_started = 0
+/mob/living/human/var/rested_learning_until = 0
+
+/mob/living/human/proc/rested_learning_bed_here()
+	if (!isturf(loc))
+		return FALSE
+	for (var/obj/structure/bed/B in loc)
+		if (!QDELETED(B) && !istype(B, /obj/structure/bed/chair) && !istype(B, /obj/structure/bed/bedroll))
+			return TRUE
+	return FALSE
+
+/mob/living/human/proc/rested_learning_now()
+	return world.realtime
+
+/mob/living/human/proc/begin_rested_learning_sleep()
+	rested_learning_sleep_started = 0
+	if (inducedSSD && !droid && mood_needs_mode() && rested_learning_bed_here())
+		rested_learning_sleep_started = rested_learning_now()
+
+/mob/living/human/proc/finish_rested_learning_sleep()
+	var/now = rested_learning_now()
+	var/started = rested_learning_sleep_started
+	rested_learning_sleep_started = 0
+	if (!started || now - started < RESTED_LEARNING_MIN_SLEEP || stat == DEAD || droid || !mood_needs_mode() || !rested_learning_bed_here())
+		return FALSE
+	rested_learning_until = now + RESTED_LEARNING_WINDOW
+	to_chat(src, SPAN_NOTICE("You wake up refreshed. You'll learn skills faster for 45 minutes."))
+	return TRUE
+
+/mob/living/human/proc/rested_learning_multiplier(statname)
+	if (!rested_learning_until || rested_learning_now() >= rested_learning_until || inducedSSD || sleeping || stat != CONSCIOUS || droid || !mood_needs_mode())
+		return 1
+	switch (statname)
+		if ("strength", "stamina", "dexterity", "magic")
+			return 1
+	return RESTED_LEARNING_MULTIPLIER
+
+#undef RESTED_LEARNING_MIN_SLEEP
+#undef RESTED_LEARNING_WINDOW
+#undef RESTED_LEARNING_MULTIPLIER
+
 // The comfort of the place a sleeper lies in. Chairs and seats count for nothing.
 /mob/living/human/proc/sleeping_place_comfort()
 	. = 0
@@ -166,7 +213,13 @@
 	if (inducedSSD && sleeping)
 		sleep_comfort = sleeping_place_comfort()
 		home_comfort_sleep_tick()
+		if (!rested_learning_bed_here())
+			rested_learning_sleep_started = 0
+		else if (!rested_learning_sleep_started)
+			begin_rested_learning_sleep()
 		return
+	if (rested_learning_sleep_started)
+		finish_rested_learning_sleep()
 	home_comfort_wake()
 	..()
 
