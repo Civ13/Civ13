@@ -47,6 +47,32 @@ class SignIcons(unittest.TestCase):
         self.assertIn('S.sign_state = icon_state', removal)
         self.assertIn('S.icon_state = sign_state', replacement)
 
+    def test_refastening_a_signpost_keeps_its_direction_boards(self):
+        removal = proc('/obj/structure/sign/attackby(')
+        replacement = proc('/obj/item/sign/attackby(')
+        renderer = proc('/obj/structure/sign/signpost/update_icon()')
+        self.assertIn('S.desc = desc', removal)
+        self.assertRegex(
+            replacement,
+            r'if \(sign_state == "signpost_pole"\)\s+'
+            r'S = new /obj/structure/sign/signpost\(user.loc\)\s+'
+            r'else\s+S = new\(user.loc\)',
+        )
+        self.assertRegex(
+            replacement,
+            r'S.desc = desc\s+S.icon = icon\s+S.icon_state = sign_state\s+S.update_icon\(\)',
+        )
+        available = states('icons/obj/decals.dmi')
+        for direction in ('North', 'East', 'South', 'West'):
+            with self.subTest(direction=direction):
+                board = f'signpost_{direction.lower()}'
+                self.assertRegex(
+                    renderer,
+                    rf'if \(findtext\(desc, "<b>{direction}:</b>"\)\)\s+'
+                    rf'overlays \+= icon\(icon, "{board}"\)',
+                )
+                self.assertIn(board, available)
+
 
 class FlagMakerSteps(unittest.TestCase):
     """The flag maker is a table of steps (choice -> decals.dmi state) shared by
