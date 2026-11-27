@@ -9,6 +9,14 @@ VOYAGE = (ROOT / 'code/modules/naval/airship_voyage.dm').read_text()
 
 
 class VoyageSettlement(unittest.TestCase):
+    def test_hosted_probe_is_selected_and_admitted_by_the_native_runner(self):
+        probe = 'tests/airship_hull/voyage_probe.dm'
+        workflow = (ROOT / '.github/workflows/test.yml').read_text()
+        runner = (ROOT / 'tests/resource_extraction/run.ps1').read_text()
+        self.assertIn(f'-Probe {probe}', workflow)
+        allowlist = runner.split('[ValidateSet(', 1)[1].split(')]', 1)[0]
+        self.assertIn(f"'{probe}'", allowlist)
+
     def test_each_preparation_runs_after_status_requests_but_before_escrow(self):
         party = REGION.split('/obj/structure/region_gate/proc/depart_party(', 1)[1]
         prepare = party.index('departure_prepare_party(ready)')
