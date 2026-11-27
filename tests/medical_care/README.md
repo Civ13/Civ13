@@ -13,3 +13,9 @@ slots, including a slot filled during the wait. Run with the pinned BYOND bin:
 `python3 tests/medical_care/limb_probe.py --byond-bin <BYOND-bin>`. Add
 `--negative-control` to confirm that disabling limb identity makes it fail.
 The fixture uses DreamDaemon `-safe` on port 0; it does not exercise live play.
+
+The splint regression (`test_splints.py`) projects completion, removal and
+refund handling, including the old generic-refund negative control. For the
+actual timed application, native refunds and the disk-backed limb round trip,
+run `python3 tests/ecology_spawning/run_linux.py . tests/medical_care/splint_probe.dm 300`
+with the pinned BYOND compiler and daemon on PATH.

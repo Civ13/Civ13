@@ -342,7 +342,7 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 				return
 			user.visible_message(SPAN_NOTICE("[user] starts to apply \the [src] to their [limb]."), SPAN_DANGER("You start to apply \the [src] to your [limb]."), SPAN_DANGER("You hear something being wrapped."))
 		if (kneel_wait(user, M, 50))
-			if (!splint_still_needed(H, affecting, user))
+			if (QDELETED(src) || !can_use(1) || !splint_still_needed(H, affecting, user))
 				return
 			if (M != user)
 				user.visible_message(SPAN_NOTICE("[user] finishes applying \the [src] to [M]'s [limb]."), SPAN_DANGER("You finish applying \the [src] to [M]'s [limb]."), SPAN_DANGER("You hear something being wrapped."))
@@ -352,8 +352,10 @@ var/global/list/splintable_organs = list("chest", "head", "groin", "l_arm", "r_a
 				else
 					user.visible_message(SPAN_WARNING("[user] fumbles \the [src]."), SPAN_DANGER("You fumble \the [src]."), SPAN_DANGER("You hear something being wrapped."))
 					return
-			affecting.status |= ORGAN_SPLINTED
-			use(1)
+			var/applied_type = type
+			if (use(1))
+				affecting.splint_type = applied_type
+				affecting.status |= ORGAN_SPLINTED
 		return
 
 // do_mob() with the healer kneeling beside the patient for the wait.

@@ -44,7 +44,7 @@
 					affected.fracturetimer += W.damage
 			affected.fracturetimer = min(affected.fracturetimer, 90)
 			affected.status &= ~ORGAN_BROKEN
-			affected.status &= ~ORGAN_SPLINTED
+			affected.clear_splint()
 			affected.perma_injury = 0
 			affected.damage = 0
 			affected.stage = FALSE
@@ -88,7 +88,7 @@
 		user.visible_message("<span class = 'notice'>[user] sets [target]'s skull with \the [tool].</span>" , \
 			"<span class = 'notice'>You set [target]'s skull with \the [tool].</span>")
 		affected.status &= ~ORGAN_BROKEN
-		affected.status &= ~ORGAN_SPLINTED
+		affected.clear_splint()
 		affected.perma_injury = 0
 		affected.damage = 0
 		affected.stage = FALSE

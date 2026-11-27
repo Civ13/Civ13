@@ -116,8 +116,7 @@
 		for (var/organ in splintable_organs)
 			var/obj/item/organ/external/o = get_organ(organ)
 			if (o && o.status & ORGAN_SPLINTED)
-				var/obj/item/W = new /obj/item/stack/medical/splint(get_turf(src), TRUE)
-				o.status &= ~ORGAN_SPLINTED
+				var/obj/item/W = o.recover_splint(get_turf(src), /obj/item/stack/medical/splint)
 				W.add_fingerprint(user)
 				removed_splint = TRUE
 		if (removed_splint)
