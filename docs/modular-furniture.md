@@ -1,5 +1,9 @@
 # Modular furniture (draft)
 
+![Bare and upholstered chairs and beds in the three frame finishes](images/modular-furniture-preview.png)
+
+BYOND sprite render from existing Civ13 art. Not a connected-client screenshot.
+
 This first pass follows custom tailoring: choose a design, preview it, cut
 the pieces, then assemble. It adds a wooden chair and bed without replacing
 any existing furniture recipes.
