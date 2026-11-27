@@ -30,6 +30,8 @@ var/global/map_storage/map_storage = new
 	var/list/friends = list()
 	var/rider = null
 	var/following_mob = null
+	var/wild = TRUE
+/mob/living/simple_animal/pet/cat
 /mob/living/simple_animal/deer
 /mob/living/simple_animal/pigeon
 	var/pigeon_home_id
