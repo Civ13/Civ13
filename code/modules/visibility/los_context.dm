@@ -73,9 +73,7 @@ var/global/list/los_active_contexts
 	if (target_tile_x == blocker_tile_x && target_tile_y == blocker_tile_y)
 		return FALSE
 	if (opaque_target)
-		if (los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy))
-			return TRUE
-		return FALSE
+		return los_footprint_hits_cell(0, 0, tx, ty, 0, cx, cy)
 	return los_footprint_hits_cell(0, 0, tx, ty, 0.25, cx, cy)
 
 // BYOND's one-argument round is floor, including negative fractional values.
