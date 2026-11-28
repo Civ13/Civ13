@@ -130,7 +130,7 @@
 	lum_g += delta_g
 	lum_b += delta_b
 
-	for (var/i = 1, i <= 4, i++)
+	for (var/i in 1 to 4)
 		var/turf/T = master_turf(i)
 		if (!T)
 			continue
