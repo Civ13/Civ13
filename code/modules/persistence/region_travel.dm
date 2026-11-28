@@ -192,6 +192,12 @@ var/global/list/region_travel_carry_types = list(
 	var/list/P = list("v" = 1, "kind" = "character", "owner" = persistence_owner_ckey, "name" = real_name,
 		"gender" = gender, "age" = age, "look" = look, "skills" = skills,
 		"nutrition" = clamp(round(nutrition), 0, 1000), "water" = clamp(round(water), 0, 1000), "items" = carried)
+	// Cosmetic only: older peers ignore the optional field and display the stock cut.
+	if(hair_design && grooming_can_style(hair_design))
+		P["hair_design"] = hair_design.Copy()
+	var/list/patterns = grooming_patterns_clean(hair_patterns)
+	if (patterns.len)
+		P["hair_patterns"] = patterns
 	// Version 2 requires knowledge-aware peers. A legacy decoder rejects it
 	// rather than accepting a body while silently dropping its knowledge.
 	if(recipe_knowledge_initialized || length(known_recipe_nodes) || (map && map.recipe_knowledge_enabled()))
@@ -369,6 +375,15 @@ var/global/list/region_travel_carry_types = list(
 	if(!air_crossing_payload_ok(P) || !airship_voyage_payload_ok(P)) return null
 	if(!region_edge_payload_ok(P)) return null
 	if(!region_admin_send_payload_ok(P)) return null
+	// A region need not share the exact sprite roster to accept a character.
+	if (("hair_design" in P) && !grooming_design_valid(P["hair_design"]))
+		P -= "hair_design"
+	if ("hair_patterns" in P)
+		var/list/patterns = grooming_patterns_clean(P["hair_patterns"])
+		if (patterns.len)
+			P["hair_patterns"] = patterns
+		else
+			P -= "hair_patterns"
 	return P
 
 // Strict travel admission never silently drops IDs that a destination cannot
@@ -571,6 +586,10 @@ var/global/list/region_travel_carry_types = list(
 	H.fully_replace_character_name(H.real_name, P["name"])
 	for(var/name in P["look"])
 		H.vars[name] = P["look"][name]
+	if(H.grooming_can_style(P["hair_design"]))
+		H.hair_design = P["hair_design"].Copy()
+	if(islist(P["hair_patterns"]))
+		H.hair_patterns = grooming_patterns_clean(P["hair_patterns"])
 	for(var/stat in P["skills"])
 		var/list/pair = P["skills"][stat]
 		if(stat in H.stats)

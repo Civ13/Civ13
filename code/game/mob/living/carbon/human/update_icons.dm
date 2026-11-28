@@ -384,10 +384,12 @@ var/global/list/damage_icon_parts = list()
 var/global/list/human_face_icon_cache = list()
 #define HUMAN_FACE_ICON_CACHE_LIMIT 512
 
-/proc/cached_face_icon(list/parts)
+/proc/cached_face_icon(list/parts, list/design = null, colour = null)
 	var/key = ""
 	for (var/list/part in parts)
 		key += "[part[1]]|[part[2]]|[part[3]];"
+	if (design)
+		key += json_encode(design) + colour
 	var/icon/face = human_face_icon_cache[key]
 	if (face)
 		return face
@@ -397,6 +399,8 @@ var/global/list/human_face_icon_cache = list()
 		if (part[3])
 			layer.Blend(part[3], ICON_ADD)
 		face.Blend(layer, ICON_OVERLAY)
+	if (design)
+		face.Blend(grooming_design_icon(design, colour), ICON_OVERLAY)
 	if (human_face_icon_cache.len >= HUMAN_FACE_ICON_CACHE_LIMIT)
 		human_face_icon_cache.Cut()
 	human_face_icon_cache[key] = face
@@ -454,57 +458,18 @@ var/global/list/human_face_icon_cache = list()
 		if (facial_hair_style && facial_hair_style.species_allowed && (species.get_bodytype() in facial_hair_style.species_allowed))
 			face_parts[++face_parts.len] = list(facial_hair_style.icon, "[facial_hair_style.icon_state]_s", facial_hair_style.do_colouration ? rgb(r_facial, g_facial, b_facial) : null)
 
-	if (h_style && !(head && (head.flags_inv & BLOCKHEADHAIR && wear_suit)))
-		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/fur))
-			var/obj/item/clothing/suit/storage/coat/fur/C = wear_suit
-			if ( C.hood == FALSE)
-				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
-					face_parts[++face_parts.len] = list(hair_style.icon, "[hair_style.icon_state]_s", hair_style.do_colouration ? rgb(r_hair, g_hair, b_hair) : null)
-			else
-				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-				face_parts[++face_parts.len] = list(hair_style.icon, "bald_s", null)
-
-		else if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/monk_robes))
-			var/obj/item/clothing/suit/storage/coat/monk_robes/M = wear_suit
-			if (M.hood == FALSE)
-				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
-					face_parts[++face_parts.len] = list(hair_style.icon, "[hair_style.icon_state]_s", hair_style.do_colouration ? rgb(r_hair, g_hair, b_hair) : null)
-			else
-				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-				face_parts[++face_parts.len] = list(hair_style.icon, "bald_s", null)
-
-		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/arrogant_student_robes))
-			var/obj/item/clothing/suit/storage/coat/arrogant_student_robes/M = wear_suit
-			if (M.hood == FALSE)
-				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
-					face_parts[++face_parts.len] = list(hair_style.icon, "[hair_style.icon_state]_s", hair_style.do_colouration ? rgb(r_hair, g_hair, b_hair) : null)
-			else
-				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-				face_parts[++face_parts.len] = list(hair_style.icon, "bald_s", null)
-
-		if (istype(wear_suit, /obj/item/clothing/suit/storage/coat/wise_tutor_robes))
-			var/obj/item/clothing/suit/storage/coat/wise_tutor_robes/M = wear_suit
-			if (M.hood == FALSE)
-				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-				if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
-					face_parts[++face_parts.len] = list(hair_style.icon, "[hair_style.icon_state]_s", hair_style.do_colouration ? rgb(r_hair, g_hair, b_hair) : null)
-			else
-				var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-				face_parts[++face_parts.len] = list(hair_style.icon, "bald_s", null)
-
-		else
-			var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
-			if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
-				face_parts[++face_parts.len] = list(hair_style.icon, "[hair_style.icon_state]_s", hair_style.do_colouration ? rgb(r_hair, g_hair, b_hair) : null)
-	else if (h_style && !(head && (head.flags_inv & BLOCKHEADHAIR && !wear_suit)))
+	var/list/design
+	var/colour
+	if (h_style)
 		var/datum/sprite_accessory/hair_style = hair_styles_list[h_style]
 		if (hair_style && (species.get_bodytype() in hair_style.species_allowed))
-			face_parts[++face_parts.len] = list(hair_style.icon, "[hair_style.icon_state]_s", hair_style.do_colouration ? rgb(r_hair, g_hair, b_hair) : null)
+			colour = rgb(r_hair, g_hair, b_hair)
+			if (hair_design && grooming_can_style(hair_design))
+				design = hair_design
+			else
+				face_parts[++face_parts.len] = list(hair_style.icon, "[hair_style.icon_state]_s", hair_style.do_colouration ? colour : null)
 
-	overlays_standing[HAIR_LAYER]	= image(cached_face_icon(face_parts))
+	overlays_standing[HAIR_LAYER] = image(cached_face_icon(face_parts, design, colour))
 
 	if (update_icons)   update_icons()
 

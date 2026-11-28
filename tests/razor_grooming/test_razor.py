@@ -91,8 +91,8 @@ class RazorGrooming(unittest.TestCase):
                      'new_hair == subject.h_style && new_beard == subject.f_style'):
             self.assertLess(act.index(gate), start)
         self.assertLess(start, act.index('razor.groom_cut(subject, viewer, new_hair, new_beard)'))
-        self.assertIn('return list("cut", "cancel")', window)
-        self.assertIn('return action == "cut" ? list("beard") : null', window)
+        self.assertIn('return list("cut", "cancel", "style", "reset_style", "save_pattern", "delete_pattern")', window)
+        self.assertIn('if ("cut")\n\t\t\treturn list("beard")', window)
         valid = proc_body(window, '/datum/grooming_preview/proc/valid(')
         self.assertIn('viewer_client.mob == viewer', valid)
         self.assertIn('viewer_client.grooming_preview == src', valid)
