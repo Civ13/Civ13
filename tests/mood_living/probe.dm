@@ -415,6 +415,21 @@ var/ml_runtime_error = FALSE
 	ml_check(B.research_ticks("basic_tools") == 2, "a bedroll does not bank research points")
 	R.loc = null
 	var/obj/structure/bed/ml_bed/bed = new(T)
+	ml_bed_transition(H, TRUE, -25 MINUTES)
+	ml_bed_transition(H, FALSE, -10 MINUTES)
+	B.add_research_work("steelmaking", 1, FALSE, H)
+	ml_check(B.research_ticks("steelmaking") == 1, "an outdoor bed does not bank research points")
+
+	var/area/original_area = get_area(T)
+	var/area/ml_rested_room/room = new
+	room.contents += T
+	var/list/decor = list(new /obj/structure/bed/chair/ml_chair(T))
+	ml_bed_transition(H, TRUE, -10 MINUTES)
+	// Adding a table just before waking must not retroactively earn points.
+	decor += new /obj/structure/table/ml_table(T)
+	ml_bed_transition(H, FALSE, -1 MINUTES)
+	B.add_research_work("steelmaking", 1, FALSE, H)
+	ml_check(B.research_ticks("steelmaking") == 2, "a roofed room without its table at sleep entry earns nothing before it is furnished")
 
 	ml_bed_transition(H, TRUE, -30 SECONDS)
 	ml_bed_transition(H, FALSE, 30 SECONDS - 1)
@@ -441,33 +456,25 @@ var/ml_runtime_error = FALSE
 	ml_check(B.research_ticks("basic_tools") == 14, "spent points do not apply to a second contribution")
 
 	ml_bed_transition(H, TRUE, 6 MINUTES + 864000)
-	ml_bed_transition(H, FALSE, 12 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 15 MINUTES + 864000)
 	ml_bed_transition(H, TRUE, 17 MINUTES + 864000)
-	ml_bed_transition(H, FALSE, 23 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 26 MINUTES + 864000)
 	var/points = B.record_field_work("soil_science_harvests", H)
-	ml_check(points > 0 && B.research_ticks("soil_science") == points + 10, "field work uses the rested pool, capped at ten across multiple sleeps")
+	ml_check(points > 0 && B.research_ticks("soil_science") == points + 16, "field work uses the rested pool, capped at sixteen in a minimally furnished room")
 	B.add_research_work("basic_tools", 2, FALSE, H)
 	ml_check(B.research_ticks("basic_tools") == 16, "crediting field work spends points from the same pool")
 
 	ml_bed_transition(H, TRUE, 28 MINUTES + 864000)
-	ml_bed_transition(H, FALSE, 38 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 44 MINUTES + 864000)
 	var/obj/item/weapon/book/ml_book/near_cap = new(T)
 	near_cap.add_research_work("bronze_working", prototype.cost_ticks - 4)
 	near_cap.add_research_work("bronze_working", 1, FALSE, H)
 	ml_check(near_cap.research_ticks("bronze_working") == prototype.cost_ticks && !near_cap.has_research_chapter("bronze_working"), "the bonus respects the chapter cap and does not replace a required prototype")
 	B.add_research_work("basic_tools", 2, FALSE, H)
-	ml_check(B.research_ticks("basic_tools") == 25, "the seven points that do not fit are kept and go to the next contribution")
+	ml_check(B.research_ticks("basic_tools") == 31, "the thirteen points that do not fit are kept and go to the next contribution")
 	B.add_research_work("basic_tools", 2, FALSE, H)
-	ml_check(B.research_ticks("basic_tools") == 27, "the remainder is spent only once")
+	ml_check(B.research_ticks("basic_tools") == 33, "the remainder is spent only once")
 
-	var/area/original_area = get_area(T)
-	var/area/ml_rested_room/room = new
-	room.contents += T
-	ml_bed_transition(H, TRUE, 40 MINUTES + 864000)
-	ml_bed_transition(H, FALSE, 70 MINUTES + 864000)
-	B.add_research_work("steelmaking", 1, FALSE, H)
-	ml_check(B.research_ticks("steelmaking") == 15, "a clean, sound roofed room banks fourteen points instead of the outdoor ten")
-	var/list/decor = list()
 	decor += new /obj/structure/painting_frame/ml_painting(T)
 	decor += new /obj/structure/painting_frame/ml_painting(T)
 	decor += new /obj/structure/brazier/ml_fire(T)
@@ -481,7 +488,7 @@ var/ml_runtime_error = FALSE
 	ml_bed_transition(H, TRUE, 102 MINUTES + 864000)
 	ml_bed_transition(H, FALSE, 132 MINUTES + 864000)
 	B.add_research_work("steelmaking", 1, FALSE, H)
-	ml_check(B.research_ticks("steelmaking") == 34, "adding art and light raises the cap to eighteen, duplicate art does not, and outdoor rest does not erase the bank")
+	ml_check(B.research_ticks("steelmaking") == 23, "adding art and light raises the cap to twenty, duplicate art does not, and outdoor rest does not erase the bank")
 	for (var/obj/O in decor)
 		O.loc = null
 	original_area.contents += T

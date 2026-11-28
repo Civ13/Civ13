@@ -67,6 +67,9 @@
 
 /mob/living/human/proc/begin_rested_learning_sleep()
 	if (isnull(rested_learning_sleep_timeofday) && rested_research_points < rested_research_capacity(home_comfort_categories.len) && !droid && map?.book_research_enabled() && rested_learning_bed_here())
+		var/list/room = home_comfort_judge(get_turf(src))
+		if (!rested_research_room_capacity(room))
+			return
 		rested_learning_sleep_timeofday = rested_learning_timeofday()
 		rested_learning_sleep_realtime = rested_learning_realtime()
 
@@ -80,7 +83,7 @@
 	if (duration < RESTED_RESEARCH_POINT_INTERVAL || stat == DEAD || droid || !map?.book_research_enabled() || !rested_learning_bed_here())
 		return FALSE
 	var/list/room = home_comfort_judge(get_turf(src))
-	var/capacity = rested_research_capacity(room["points"])
+	var/capacity = rested_research_room_capacity(room)
 	// A less comfortable room cannot erase points already earned elsewhere.
 	var/earned = min(round(duration / RESTED_RESEARCH_POINT_INTERVAL), capacity - rested_research_points)
 	if (earned <= 0)
@@ -100,6 +103,13 @@
 
 /proc/rested_research_capacity(comfort_points = 0)
 	return RESTED_RESEARCH_BASE_CAP + RESTED_RESEARCH_PER_HOME_POINT * clamp(comfort_points, 0, home_comfort_categories.len)
+
+// A bed, seat and table must share the surveyed roofed room.
+/proc/rested_research_room_capacity(list/judged)
+	var/list/features = judged["have"]
+	if (!features["furniture"])
+		return 0
+	return rested_research_capacity(judged["points"])
 
 /proc/rested_research_points_valid(points)
 	return isnum(points) && points >= 0 && points <= rested_research_capacity(home_comfort_categories.len)

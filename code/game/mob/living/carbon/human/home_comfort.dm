@@ -349,8 +349,12 @@ var/list/home_comfort_categories = list(
 	if (missing.len)
 		text += "<br>It lacks [english_list(missing)]."
 	if (map?.book_research_enabled())
-		var/capacity = rested_research_capacity(judged["points"])
-		text += "<br>Sleeping here can fill your rested research bank to [capacity] points. You have [rested_research_points] banked."
+		var/capacity = rested_research_room_capacity(judged)
+		if (capacity)
+			text += "<br>Sleeping here can fill your rested research bank to [capacity] points."
+		else
+			text += "<br>Furnish this room with a proper bed, a seat and a table before sleeping here to earn rested research points."
+		text += " You have [rested_research_points] banked."
 	var/warmth = building_room_warmth_text(building_room_at(get_turf(src)))
 	if (warmth)
 		text += "<br>[warmth]"

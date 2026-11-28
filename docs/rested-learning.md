@@ -1,18 +1,19 @@
 # Rested research
 
 On worlds that use book research, each full real minute asleep in a
-proper bed earns **1 bonus research point**. They are credited when you
-wake. Time logged off while your character is asleep counts. Bedrolls
-and chairs do not qualify.
+proper bed in a furnished, roofed room earns **1 bonus research point**.
+The room needs a proper bed, a seat, and a table. Sleeping outside or
+in an unfurnished room earns nothing, and bedrolls and chairs do not
+qualify as beds. Points are credited when you wake in a qualifying room.
+Time logged off while your character is asleep counts.
 
-The bank starts with room for **10 points**, plus **2 for each home
-comfort point** in the room where you wake. The room uses the existing
-home comfort survey: art, lighting, finished walls and other categories
-each count once. An outdoor bed has the base capacity; a roofed room
-with 4 comfort points allows 18. **IC → Judge This Room** shows that
-room's capacity and your current balance. A room with a lower cap won't
-erase points you already earned; it just can't add more until you are
-under its cap.
+The cap in a qualifying room is **10 points**, plus **2 for each home
+comfort point**. Art, lighting, finished walls and other categories
+each count once. A furnished room with 3 comfort points holds 16;
+adding a comfort point raises the cap to 18. **IC → Judge This Room**
+shows whether the room qualifies, its cap, and your balance. Sleeping
+somewhere that has a lower cap or does not qualify never removes
+points you already earned.
 
 The points never expire. When you next add real progress to a research
 chapter, the game spends as much of your balance as that chapter can
