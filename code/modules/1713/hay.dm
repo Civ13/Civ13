@@ -135,7 +135,9 @@
 
 /obj/structure/hay_drying/proc/start_drying()
 	drying_epoch++
-	var/epoch = drying_epoch
+	return schedule_dry_step(drying_epoch)
+
+/obj/structure/hay_drying/proc/schedule_dry_step(epoch)
 	update_icon()
 	addtimer(CALLBACK(src, PROC_REF(dry_step), epoch), HAY_DRY_STEP_TIME)
 	return TRUE
@@ -157,9 +159,7 @@
 		dry_steps++
 	if (dry_steps >= HAY_DRY_STEPS)
 		return finish_drying()
-	update_icon()
-	addtimer(CALLBACK(src, PROC_REF(dry_step), epoch), HAY_DRY_STEP_TIME)
-	return TRUE
+	return schedule_dry_step(epoch)
 
 /obj/structure/hay_drying/proc/finish_drying()
 	var/turf/T = loc
