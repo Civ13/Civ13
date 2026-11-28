@@ -9,7 +9,7 @@ def main():
     p.add_argument('--baseline', action='store_true')
     p.add_argument('--size', type=int, default=20000)
     p.add_argument('--output', type=Path, required=True)
-    p.add_argument('--negative-control', choices=('skip','retain'))
+    p.add_argument('--negative-control', choices=('skip','retain','gc-state'))
     a = p.parse_args()
     root = Path(__file__).resolve().parents[2]
     with tempfile.TemporaryDirectory(prefix='civ13-lighting-') as tmp:
@@ -22,14 +22,17 @@ def main():
                 text = text.replace('current_list[batch_index++] = null', 'current_list[batch_index] = null\n\t\tbatch_index += 2')
             if a.negative_control == 'retain':
                 text = text.replace('current_list[batch_index++] = null','batch_index++')
+            if a.negative_control == 'gc-state' and name == 'overlays':
+                text = text.replace('if (L && !L.gcDestroyed)', 'if (L)')
             if a.negative_control and text != (root/rel).read_text(): mutated = True
             (out/f'{name}.dm').write_text(text)
         if a.negative_control and not mutated: raise RuntimeError('Mutation anchor changed')
         probe=(root/'tests/lighting_queues/probe.dm').read_text()
         if a.negative_control == 'skip': probe=probe.replace('if(active_process.current_list[i])','if(active_process.current_list[i] && world.params["retain_check"])')
         (out/'probe.dm').write_text(probe)
+        (out/'probe_gc_state.dm').write_bytes((root/'tests/lighting_queues/probe_gc_state.dm').read_bytes())
         # Production's absolute tick ceiling (code/processes/___defines.dm), used by the overlay queue.
-        (out/'probe.dme').write_text('#define PROCESS_TICK_CEILING max(40, min(80, 95 - world.map_cpu))\n#include "probe.dm"\n#include "overlays.dm"\n#include "sources.dm"\n')
+        (out/'probe.dme').write_text('#define PROCESS_TICK_CEILING max(40, min(80, 95 - world.map_cpu))\n#include "probe.dm"\n#include "probe_gc_state.dm"\n#include "overlays.dm"\n#include "sources.dm"\n')
         flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
         dm = a.byond_bin/('dm.exe' if os.name == 'nt' else 'DreamMaker')
         dd = a.byond_bin/('dd.exe' if os.name == 'nt' else 'DreamDaemon')
@@ -76,7 +79,11 @@ def main():
         log = (out/'runtime.log').read_text(errors='replace')
         failed = proc.returncode or 'PASS' not in log or any(s in log for s in ('FAIL','runtime error','Runtime in','Bad ref'))
         if a.negative_control:
-            expected='Missing or duplicate work' if a.negative_control=='skip' else 'Consumed reference retained'
+            expected = {
+                'skip': 'Missing or duplicate work',
+                'retain': 'Consumed reference retained',
+                'gc-state': 'Retired overlay was updated',
+            }[a.negative_control]
             if not failed or expected not in log: raise RuntimeError('Negative control failed wrong contract: '+log)
             print('PASS: negative control detected'); return
         if failed: raise RuntimeError(log)

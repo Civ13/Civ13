@@ -30,7 +30,7 @@
 	while (batch_index <= current_list.len)
 		var/atom/movable/lighting_overlay/L = current_list[batch_index]
 		current_list[batch_index++] = null
-		if (!isDeleted(L))
+		if (L && !L.gcDestroyed)
 			L.update_overlay()
 			L.needs_update = FALSE
 		if (priority != PROCESS_PRIORITY_VERY_HIGH && (world.tick_usage - run_time_tick_usage >= run_time_tick_usage_allowance || world.tick_usage >= PROCESS_TICK_CEILING))

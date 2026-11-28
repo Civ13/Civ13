@@ -51,8 +51,8 @@ var/check_reentry = FALSE
 /process/proc/onKill()
 /process/proc/catchBadType(datum/D)
 	return
-/proc/isDeleted(datum/D)
-	return !D
+#define isDeleted(D) (!D || D:gcDestroyed)
+/datum/var/gcDestroyed = 0
 /atom/movable/lighting_overlay
 	var/needs_update = TRUE
 	var/calls = 0
@@ -135,6 +135,7 @@ var/check_reentry = FALSE
 			for(var/datum/D in items)
 				del(D)
 			sleep(2)
+	check_overlay_gc_state()
 	world.log << "PASS"
 	beat_running = FALSE
 	del(world)
