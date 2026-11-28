@@ -29,7 +29,12 @@ events = ''.join(proc('code/modules/client/client_procs.dm', name) for name in [
 viewsize = proc('code/_helpers/view.dm', '/proc/getviewsize(')
 identity = proc('code/game/mob/living/carbon/human/human.dm', '/mob/living/human/proc/get_visible_name(')
 weakref = (repo / 'code/datums/weakref.dm').read_text()
-runtime = proc('code/modules/persistence/functions.dm', '/datum/proc/persistence_runtime_var(')
+runtime = ''.join(proc('code/modules/persistence/functions.dm', name) for name in (
+    '/datum/proc/persistence_runtime_var(',
+    'var/global/list/persistence_builtin_tmp_vars =',
+    '/proc/persistence_builtin_tmp_vars_table(',
+    '/proc/persistence_declared_tmp(',
+))
 
 def mutate(old, new):
     global widget
@@ -81,7 +86,10 @@ with tempfile.TemporaryDirectory(prefix='civ13-hover-name-') as temp:
     # The panel rectangles scale the production white icon state.
     (root / 'icons/effects').mkdir(parents=True)
     (root / 'icons/effects/effects.dmi').write_bytes((repo / 'icons/effects/effects.dmi').read_bytes())
-    (root / 'fixture.dm').write_text(Path(__file__).with_name('fixture.dm').read_text() + '\n' + Path(__file__).with_name('own_body_probe.dm').read_text())
+    fixture = '\n'.join(Path(__file__).with_name(name).read_text() for name in (
+        'fixture.dm', 'own_body_probe.dm', 'pointer_sample_probe.dm',
+    ))
+    (root / 'fixture.dm').write_text(fixture)
     (root / 'probe.dme').write_text('#include "fixture.dm"\n#include "production.dm"\n')
     compiler = args.byond_bin / ('dm.exe' if os.name == 'nt' else 'DreamMaker')
     daemon = args.byond_bin / ('dd.exe' if os.name == 'nt' else 'DreamDaemon')

@@ -119,6 +119,7 @@
 	del(world)
 /proc/run_hover_probe()
 	check(!world.port && !world.OpenPort(12345), "fixture port closed")
+	check_pointer_samples()
 	var/mob/living/human/viewer = new(locate(8,8,1))
 	var/datum/hover_client/C = new
 	C.mob = viewer

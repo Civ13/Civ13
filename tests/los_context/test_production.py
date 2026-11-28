@@ -422,8 +422,13 @@ class InventoryHoverName(unittest.TestCase):
                 return int(value)
             except (TypeError, ValueError):
                 return None
+        param_reads=[]
         class Params(dict):
             __missing__=lambda self,key:None
+
+            def __getitem__(self, key):
+                param_reads.append(key)
+                return super().__getitem__(key)
         env.update(params2list=lambda p:Params(parse_qsl(p, keep_blank_values=True)),
                    splittext=lambda t,d:Parts(t.split(d)), text2num=text2num, isnum=lambda n:isinstance(n,int))
         f=method(callbacks,'/client/proc/UpdateMouseScreenLoc','params',
@@ -437,7 +442,7 @@ class InventoryHoverName(unittest.TestCase):
             if item:
                 item.loc=body;item.screen_loc=S.screen_loc;C.screen.append(item);readable.add(item)
             body.slots[slot_id]=item;return S
-        return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,on_screen=on_screen,readable=readable,reads=read_calls,source=source,env=env)
+        return N(W=W,C=C,H=body,atom=atom,slot=slot,visible=world_visible,on_screen=on_screen,readable=readable,reads=read_calls,source=source,env=env,param_reads=param_reads)
 
     def test_mouse_callbacks_publish_only_complete_pointer_samples(self):
         m=self.model()
@@ -447,10 +452,19 @@ class InventoryHoverName(unittest.TestCase):
         self.assertEqual(state(), (14,3,20,5))
         m.C.MouseMove(None,None,"map","screen-loc=1:0,-2:8")
         self.assertEqual(state(), (1,-2,0,8))
+        m.C.MouseDrag(None,None,None,None,"map","map","screen-loc=mapwindow.map:-3:8,0:0")
+        self.assertEqual(state(), (-3,0,8,0))
         for invalid in ["screen-loc=9:6,bad:7","screen-loc=9:6,2:bad","screen-loc=9:6,2",
-                        "screen-loc=bad:8,2:7","icon-x=4"]:
+                        "screen-loc=bad:8,2:7","screen-loc=","screen-loc=0","icon-x=4"]:
             m.C.MouseMove(None,None,"map",invalid)
-            self.assertEqual(state(), (1,-2,0,8), invalid)
+            self.assertEqual(state(), (-3,0,8,0), invalid)
+
+    def test_mouse_callbacks_read_screen_loc_once_per_packet(self):
+        m = self.model()
+        m.C.MouseEntered(None, None, "map", "screen-loc=2:0,3:4")
+        m.C.MouseMove(None, None, "map", "screen-loc=4:5,6:7")
+        m.C.MouseDrag(None, None, None, None, "map", "map", "icon-x=4")
+        self.assertEqual(m.param_reads, ["screen-loc"] * 3)
 
     def test_hover_reads_tree_canopy_hidden_from_view(self):
         m=self.model();T=m.atom('/turf/grass',name='grass')

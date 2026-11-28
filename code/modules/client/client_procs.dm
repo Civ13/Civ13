@@ -312,10 +312,10 @@
 	//////////////
 
 /client/proc/UpdateMouseScreenLoc(var/params)
-	var/list/click_params = params2list(params)
+	var/screen_loc_param = params2list(params)["screen-loc"]
 
-	if (click_params["screen-loc"])
-		var/list/screen_loc_split = splittext(click_params["screen-loc"], ",")
+	if (screen_loc_param)
+		var/list/screen_loc_split = splittext(screen_loc_param, ",")
 		if (length(screen_loc_split) >= 2)
 			var/list/x_split = splittext(screen_loc_split[1], ":")
 			var/list/y_split = splittext(screen_loc_split[2], ":")
