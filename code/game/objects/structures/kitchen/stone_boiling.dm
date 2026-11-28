@@ -86,6 +86,13 @@
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood/proc/get_active_hand_owner(mob/living/human/H)
 	return loc == H && H.get_active_hand() == src
 
+/obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood/proc/stone_boil_candidate_stone(mob/living/human/H, obj/structure/candidate)
+	var/turf/T = get_turf(candidate)
+	var/obj/item/stack/material/stone/stone = locate(/obj/item/stack/material/stone) in T
+	if (candidate.loc == T && H.Adjacent(candidate) && candidate.stone_heat_ready() && !candidate.stone_heat_busy() && stone && stone.amount >= 1)
+		return stone
+	return null
+
 /obj/item/weapon/reagent_containers/food/drinks/drinkingglass/wood/verb/stone_boil_water()
 	set name = "Boil water with a hot stone"
 	set category = null
@@ -97,19 +104,15 @@
 	var/obj/structure/F
 	var/obj/item/stack/material/stone/S
 	for (var/obj/structure/oven/fireplace/candidate in range(1, H))
-		var/turf/T = get_turf(candidate)
-		var/obj/item/stack/material/stone/stone = locate(/obj/item/stack/material/stone) in T
-		if (candidate.loc == T && H.Adjacent(candidate) && candidate.stone_heat_ready() && !candidate.stone_heat_busy() && stone && stone.amount >= 1)
+		S = stone_boil_candidate_stone(H, candidate)
+		if (S)
 			F = candidate
-			S = stone
 			break
 	if (!F)
 		for (var/obj/structure/furnace/kiln/stone/campfire/candidate in range(1, H))
-			var/turf/T = get_turf(candidate)
-			var/obj/item/stack/material/stone/stone = locate(/obj/item/stack/material/stone) in T
-			if (candidate.loc == T && H.Adjacent(candidate) && candidate.stone_heat_ready() && !candidate.stone_heat_busy() && stone && stone.amount >= 1)
+			S = stone_boil_candidate_stone(H, candidate)
+			if (S)
 				F = candidate
-				S = stone
 				break
 	var/list/mixture = stone_boil_mixture()
 	if (!(istype(tool, /obj/item/weapon/branch) || istype(tool, /obj/item/weapon/material/handle)) || !F || !S || !mixture || stone_boil_busy || F.stone_heat_busy())

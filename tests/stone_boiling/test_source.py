@@ -142,12 +142,28 @@ class StoneBoilingSource(unittest.TestCase):
         self.oven = OVEN.read_text(encoding="utf-8")
         self.persistence = PERSISTENCE.read_text(encoding="utf-8")
 
-    def test_both_heat_source_searches_reject_unreachable_candidates(self):
+    def test_station_searches_share_eligibility_with_fireplace_first(self):
+        helper = self.source.split("/proc/stone_boil_candidate_stone(", 1)[1].split("\n/obj/", 1)[0]
+        self.assertIn("var/turf/T = get_turf(candidate)", helper)
+        self.assertIn("var/obj/item/stack/material/stone/stone = locate(/obj/item/stack/material/stone) in T", helper)
+        self.assertRegex(
+            helper,
+            r"if \(candidate\.loc == T && H\.Adjacent\(candidate\) && candidate\.stone_heat_ready\(\) "
+            r"&& !candidate\.stone_heat_busy\(\) && stone && stone\.amount >= 1\)\s+return stone\s+return null$",
+        )
         action = self.source.split("/verb/stone_boil_water()", 1)[1]
-        for path in ("oven/fireplace", "furnace/kiln/stone/campfire"):
+        first, fallback = action.split("\n\tif (!F)\n", 1)
+        for path, section, indent in (
+            ("oven/fireplace", first, "\t"),
+            ("furnace/kiln/stone/campfire", fallback, "\t\t"),
+        ):
             with self.subTest(path=path):
-                loop = action.split(f"/obj/structure/{path}/candidate in range(1, H))", 1)[1].split("break", 1)[0]
-                self.assertRegex(loop, r"if \(candidate\.loc == T && H\.Adjacent\(candidate\) && .*\)\s+F = candidate")
+                loop = f"{indent}for (var/obj/structure/{path}/candidate in range(1, H))\n"
+                self.assertIn(
+                    loop + f"{indent}\tS = stone_boil_candidate_stone(H, candidate)\n{indent}\tif (S)\n"
+                    f"{indent}\t\tF = candidate\n{indent}\t\tbreak\n",
+                    section + "\n",
+                )
 
     def test_topped_up_coffee_mixture_is_allowed_but_milk_is_not(self):
         mixture = self.source.split("/proc/stone_boil_mixture()", 1)[1].split("\n/obj/", 1)[0]
