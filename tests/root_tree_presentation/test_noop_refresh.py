@@ -244,6 +244,43 @@ class PendingLightPublication(unittest.TestCase):
         self.assertIn('root_light_mask_snapshot(root, TRUE)',cached)
         self.assertIn('root_light_rgb(root, context.body, TRUE, sample)',cached)
 
+    def test_corner_queues_each_available_master_in_order(self):
+        signature = '/datum/lighting_corner/proc/update_lumcount('
+        path = ROOT / 'code/modules/lighting/lighting_corner.dm'
+        corner = path.read_text(encoding='utf-8')
+        source = corner[corner.index(signature):]
+        # Project the queued branch, with root-tree notifications enabled.
+        source = '\n'.join(
+            line for line in source.splitlines()
+            if not line.lstrip().startswith(('#', '//')) and line.strip() != 'overlay.update_overlay()'
+        )
+        source = re.sub(r'\b(lum_[rgb]|master_turf)\b', r'self.\1', source).replace('if (', 'if(')
+
+        def trace(body):
+            lookups, notifications = [], []
+            masters = [None, N(slot=2, needs_update=True), N(slot=3, needs_update=False), N(slot=4, needs_update=False)]
+
+            def master_turf(index):
+                lookups.append(index)
+                overlay = masters[index - 1]
+                return N(slot=index, lighting_overlay=overlay) if overlay is not None else None
+
+            def changed(turf):
+                notifications.append((turf.slot, turf.lighting_overlay.needs_update))
+
+            env = dict(environment(), root_tree_light_changed=changed)
+            update = compile_proc(body, signature, 'self, delta_r, delta_g, delta_b, lighting_update_overlays', env)
+            queue = Values([])
+            state = N(master_turf=master_turf, lum_r=1, lum_g=2, lum_b=3)
+            update(state, 2, 0.5, -1, queue)
+            return lookups, notifications, [overlay.slot for overlay in queue], (
+                state.lum_r, state.lum_g, state.lum_b
+            )
+
+        self.assertEqual(trace(source), ([1, 2, 3, 4], [(3, False), (4, False)], [3, 4], (3, 2.5, 2)))
+        truncated = source.replace('1 to 4', '1 to 3', 1)
+        self.assertEqual(trace(truncated), ([1, 2, 3], [(3, False)], [3], (3, 2.5, 2)))
+
     def test_legacy_queue_rejects_same_committed_pending_mask_control(self):
         env,f,root=self.snapshot()
         old=_contract.SNAP.replace('(owner.needs_update && !allow_pending)','owner.needs_update')
