@@ -393,6 +393,7 @@ SUITES = {
                   'code/modules/1713/light_fuel.dm', 'code/game/objects/items/devices/flashlight.dm',
                   'code/game/objects/items/weapons/cigs_lighters.dm', 'code/modules/1713/telephone.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py', 'config/crafting/',
+                         'icons/obj/lighting.dmi', 'tools/dmi/__init__.py',
                          'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm')},
     'cave_dismantling': {'files': ('tests/cave_dismantling/test_dismantling.py',),

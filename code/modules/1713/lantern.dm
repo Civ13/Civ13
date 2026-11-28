@@ -128,7 +128,6 @@
 
 /obj/item/flashlight/lantern/on/anchored
 	on_state = "lantern-on"
-	off_state = "lantern_on"
 	icon_state = "lantern-on"
 	anchored = TRUE
 	unlimited = TRUE
