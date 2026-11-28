@@ -3,7 +3,7 @@
 	name = "Parent Computer"
 	desc = "A simplistic computer. This is the parent object."
 	icon = 'icons/obj/computers.dmi'
-	icon_state = "ibm_off"
+	icon_state = "ibm"
 	var/internals = list()
 	var/operatingsystem = "unga OS"
 	var/memory = list()
@@ -145,7 +145,7 @@
 	if (active)
 		icon_state = "ibm_on"
 	else
-		icon_state = "ibm_off"
+		icon_state = "ibm"
 
 // Only programs that poll (mail) keep a computer's one-minute check running.
 // Subtypes add their programs after New(), so the first pass from New() always
