@@ -1382,14 +1382,9 @@
 /obj/item/weapon/starterjar/proc/restore_from_icon_state()
 	if (fermenting==0 && icon_state<>"jar0")
 		switch(icon_state)
-			if ("jarF")
+			if ("jarF", "jarG")
 				fermenting = 1
-				fermenting_timer = world.time + 900 // 1/2 of normal, because not so important
-				fermenting_process()
-			if ("jarG")
-				fermenting = 1
-				fermenting_timer = world.time + 1200 // 1/2 of normal, because not so important
-				fermenting_process()
+				restart_fermentation_wait()
 			else
 				fermenting = 2
 				fermenting_contents = text2num(copytext(icon_state,4,5))
@@ -1403,10 +1398,13 @@
 // whichever loop the saved state needs, with a fresh fermentation wait.
 /obj/item/weapon/starterjar/proc/resume_fermentation()
 	if (fermenting == 1 && !ferment_loop)
-		fermenting_timer = world.time + (icon_state == "jarG" ? 1200 : 900)
-		fermenting_process()
+		restart_fermentation_wait()
 	else if (fermenting == 2)
 		yeast_growth()
+
+/obj/item/weapon/starterjar/proc/restart_fermentation_wait()
+	fermenting_timer = world.time + (icon_state == "jarG" ? 1200 : 900)
+	fermenting_process()
 
 /obj/item/weapon/starterjar/after_load()
 	. = ..()
