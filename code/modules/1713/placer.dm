@@ -263,8 +263,7 @@ var/global/list/pay_dirt_stock = list()
 	while (!QDELETED(P) && P.amount > 0 && P.loc == H && get_dist(H, src) <= 1)
 		if (!can_wash_load(H))
 			break
-		if (!station_has_water())
-			station_take_water(H)
+		if (!station_has_water(user = H))
 			break
 		if (!do_after(H, wash_time, src) || QDELETED(P) || P.amount < 1 || QDELETED(src))
 			break

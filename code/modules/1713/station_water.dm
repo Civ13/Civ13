@@ -71,8 +71,12 @@
 /obj/structure/proc/station_water_feed()
 	return water_capacity ? running_water_feed(src) : null
 
-/obj/structure/proc/station_has_water(amount = water_per_use)
-	return station_water_feed() || water_store >= amount
+// Checks availability without drawing from the tank. A user can receive the shortage warning.
+/obj/structure/proc/station_has_water(amount = water_per_use, mob/user = null)
+	var/has_water = station_water_feed() || water_store >= amount
+	if (user && !has_water)
+		station_warn_needs_water(user, amount)
+	return has_water
 
 // Takes the water for one use. TRUE when there was enough; otherwise tells
 // the user what to do and takes nothing.
@@ -82,9 +86,12 @@
 	if (water_store >= amount)
 		water_store -= amount
 		return TRUE
+	station_warn_needs_water(user, amount)
+	return FALSE
+
+/obj/structure/proc/station_warn_needs_water(mob/user, amount)
 	if (user)
 		to_chat(user, SPAN_WARNING("\The [src] needs water ([amount] units, it holds [round(water_store)]). Pour some in with a bucket, pipe it in, or set it beside running water."))
-	return FALSE
 
 // Pours the water from an open container into the tank. TRUE when handled.
 /obj/structure/proc/station_water_pour(obj/item/O, mob/user)
