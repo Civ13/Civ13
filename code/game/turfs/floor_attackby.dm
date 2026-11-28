@@ -838,8 +838,9 @@
 		if (valid(actor, wall))
 			actor.visible_message("<span class = 'notice'>[actor] starts to break the rock with \the [tool.name].</span>", "<span class = 'notice'>You start to break the rock with \the [tool.name].</span>")
 			playsound(wall, 'sound/effects/pickaxe.ogg', 100, 1)
-			work_animation = actor.prepare_resource_work_animation(tool, wall, work_delay(actor, 120, WORK_MINE, tool))
-			var/completed = do_after(actor, work_delay(actor, 120, WORK_MINE, tool), wall, needhand = FALSE, mining_context = src)
+			var/duration = actor.hair_dusty_work_delay(work_delay(actor, 120, WORK_MINE, tool))
+			work_animation = actor.prepare_resource_work_animation(tool, wall, duration)
+			var/completed = do_after(actor, duration, wall, needhand = FALSE, mining_context = src)
 			if (work_animation)
 				work_animation.stop()
 				work_animation = null

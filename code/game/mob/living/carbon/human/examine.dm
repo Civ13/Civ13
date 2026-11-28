@@ -451,6 +451,8 @@
 	for (var/v in TRUE to embedded.len)
 		msg += "<a href='?src=\ref[user];remove_embedded=[v]'>Remove [embedded[v]]</a>"
 
+	if (hair_can_tie_back() && (user == src || (!hair_has_work_cover() && hair_tied_back)))
+		msg += "<br><b>Hair:</b> [hair_tied_back ? "Tied back" : "Worn loose"]."
 	if (user == src)
 		msg += "<br><b>Wetness:</b> [get_wetness_description()]."
 	to_chat(user, msg)

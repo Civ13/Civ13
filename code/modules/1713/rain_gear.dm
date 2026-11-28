@@ -495,7 +495,8 @@
 /mob/living/human/proc/drying_rate(loc_temp_c)
 	if (life_near_drying_fire())
 		return FIRE_DRYING_RATE
-	return loc_temp_c >= 18 ? 0.01 : 0.002
+	var/rate = loc_temp_c >= 18 ? 0.01 : 0.002
+	return (map && map.civilizations && hair_unbound_long()) ? rate * 0.9 : rate
 
 // Open umbrellas shade the wearer from hot sun outdoors.
 /mob/living/human/proc/umbrella_shade_temperature(loc_temp_c)

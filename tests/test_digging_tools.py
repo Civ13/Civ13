@@ -132,7 +132,8 @@ class DiggingToolRules(unittest.TestCase):
         # Resource work now owns a visual companion. Keep the paid wait and
         # single committed output contract without freezing rendering scaffolding.
         mining = procedure(floor, '/datum/pickaxe_mining_action/proc/perform()')
-        self.assertIn('var/completed = do_after(actor, work_delay(actor, 120, WORK_MINE, tool), wall, needhand = FALSE, mining_context = src)', mining)
+        self.assertIn('var/duration = actor.hair_dusty_work_delay(work_delay(actor, 120, WORK_MINE, tool))', mining)
+        self.assertIn('var/completed = do_after(actor, duration, wall, needhand = FALSE, mining_context = src)', mining)
         self.assertIn('if (completed && valid(actor, wall))\n\t\t\t\tcommitted = TRUE', mining)
         self.assertLess(mining.index('committed = TRUE'), mining.index('wall.collapse_check()'))
         self.assertEqual(mining.count('wall.mining_proc(actor)'), 1)
