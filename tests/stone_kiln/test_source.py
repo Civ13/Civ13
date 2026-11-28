@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import re
+from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -209,6 +210,33 @@ class KilnSourceTests(unittest.TestCase):
         self.assertIn('key == "stone_kiln_reagent_identity"', pot)
         self.assertIn('key == "stone_kiln_owner"', pot)
         self.assertIn('stone_kiln_reagent_identity = new /datum', pot)
+
+    def test_firing_callback_clears_only_its_own_pot_reservation(self):
+        firing = adapter.extract(self.source, '/obj/structure/furnace/kiln/stone/campfire/attack_hand')
+        call = 'clear_stone_kiln_pot_reservation(P, cycle)'
+        self.assertEqual(firing.count(call), 3)
+        self.assertIn(f'if (QDELETED(src))\n\t\t\t{call}\n\t\t\treturn', firing)
+        self.assertIn('if (stone_kiln_cycle != cycle)\n\t\t\treturn', firing)
+        self.assertIn(f'update_icon()\n\t\t\t{call}\n\t\t\treturn\n\t\tprocess()', firing)
+        self.assertIn(f'\n\t\t{call}\n\t\tif (!QDELETED(src) && stone_kiln_cycle == cycle)', firing)
+
+        clear_reservation = adapter.project(
+            self.source, '/proc/clear_stone_kiln_pot_reservation', 'P, cycle',
+            {'QDELETED': lambda pot: pot is None or pot.deleted},
+        )
+        cycle = object()
+        clear_reservation(None, cycle)
+        for owner, deleted in ((cycle, False), (object(), False), (cycle, True), (None, False)):
+            with self.subTest(owns_reservation=owner is cycle, deleted=deleted):
+                identity = object()
+                pot = SimpleNamespace(stone_kiln_reagent_identity=identity, stone_kiln_owner=owner, deleted=deleted)
+                clear_reservation(pot, cycle)
+                if owner is cycle and not deleted:
+                    self.assertIsNone(pot.stone_kiln_reagent_identity)
+                    self.assertIsNone(pot.stone_kiln_owner)
+                else:
+                    self.assertIs(pot.stone_kiln_reagent_identity, identity)
+                    self.assertIs(pot.stone_kiln_owner, owner)
 
     def test_primitive_upgrade_does_not_unlock_kiln_metallurgy(self):
         admission = self.source.split('/proc/stone_kiln_upgrade_valid(', 1)[1].split('\n/obj/', 1)[0]

@@ -223,9 +223,7 @@
 	visible_message(SPAN_NOTICE("[H] lights the stone kiln."))
 	spawn(250)
 		if (QDELETED(src))
-			if (!QDELETED(P) && P.stone_kiln_owner == cycle)
-				P.stone_kiln_reagent_identity = null
-				P.stone_kiln_owner = null
+			clear_stone_kiln_pot_reservation(P, cycle)
 			return
 		if (stone_kiln_cycle != cycle)
 			return
@@ -233,9 +231,7 @@
 			on = FALSE
 			stone_kiln_cycle = null
 			update_icon()
-			if (!QDELETED(P) && P.stone_kiln_owner == cycle)
-				P.stone_kiln_reagent_identity = null
-				P.stone_kiln_owner = null
+			clear_stone_kiln_pot_reservation(P, cycle)
 			return
 		process()
 		if (!QDELETED(src) && stone_kiln_cycle == cycle && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required && persistence_admission_identity == save_identity && !QDELETED(P) && P.loc == src && P.stone_kiln_owner == cycle && !QDELETED(holder) && P.reagents == holder && P.stone_kiln_reagent_identity == identity && amounts)
@@ -249,10 +245,13 @@
 				holder.del_reagent("cholera")
 				holder.del_reagent("food_poisoning")
 				visible_message(SPAN_NOTICE("The pot finishes boiling. Salt remains."))
-		if (!QDELETED(P) && P.stone_kiln_owner == cycle)
-			P.stone_kiln_reagent_identity = null
-			P.stone_kiln_owner = null
+		clear_stone_kiln_pot_reservation(P, cycle)
 		if (!QDELETED(src) && stone_kiln_cycle == cycle)
 			on = FALSE
 			stone_kiln_cycle = null
 			update_icon()
+
+/proc/clear_stone_kiln_pot_reservation(obj/item/weapon/reagent_containers/glass/small_pot/P, datum/cycle)
+	if (!QDELETED(P) && P.stone_kiln_owner == cycle)
+		P.stone_kiln_reagent_identity = null
+		P.stone_kiln_owner = null
