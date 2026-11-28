@@ -69,6 +69,13 @@
 		if (D.id == "sodiumchloride")
 			salt_water = TRUE
 
+/obj/structure/pot/proc/discard_pot_liquid()
+	state = STATE_EMPTY
+	food_toxin_origin = null
+	reagents.clear_reagents()
+	salt_water = FALSE
+	fullness = 0
+
 /obj/structure/pot/attackby(var/obj/item/I, var/mob/living/human/H)
 	if (!istype(H))
 		return
@@ -172,15 +179,11 @@
 		--bowls
 
 		if (bowls <= 0)
-			state = STATE_EMPTY
-			food_toxin_origin = null
-			reagents.clear_reagents()
-			salt_water = FALSE
+			discard_pot_liquid()
 			stew_desc = ""
 			stew_nutriment_desc.Cut()
 			stew_nutriment = 0
 			stew_protein = 0
-			fullness = 0
 			update_icon()
 
 /obj/structure/pot/attack_hand(var/mob/living/human/H)
@@ -304,12 +307,7 @@
 	visible_message("<span class = 'warning'>[usr] starts to empty the pot...</span>")
 	if (do_after(usr, 100, src) && !meal_cooking)
 		visible_message("<span class = 'warning'>[usr] finishes emptying the pot.</span>")
-		state = STATE_EMPTY
-		food_toxin_origin = null
-		// Tipping the pot out pours away its water and anything dissolved in it.
-		reagents.clear_reagents()
-		salt_water = FALSE
-		fullness = 0
+		discard_pot_liquid()
 		if (meal_portions)
 			meal_portions = 0
 			meal_quality = 0
