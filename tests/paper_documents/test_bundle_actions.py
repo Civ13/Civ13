@@ -26,7 +26,8 @@ class BundleBrowserActions(unittest.TestCase):
     def test_insert_and_remove_gate_on_held_actor_and_same_live_page(self):
         gate = body("/proc/can_change_held_bundle", "/proc/held_bundle_page")
         for check in ("user.client?.mob == user", "!user.stat", "!user.restrained()",
-                      "user.can_use_hands()", "loc == user", "user.item_is_in_hands(src)"):
+                      "user.can_use_hands()", "loc == user", "user.item_is_in_hands(src)",
+                      "&& !persistence_admission_blocked()"):
             self.assertIn(check, gate)
         insert = body("/proc/browser_insert_page", "/proc/release_browser_page")
         remove = body("/proc/browser_remove_page", "/Topic(href")
