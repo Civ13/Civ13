@@ -141,7 +141,7 @@
 	return
 
 /obj/item/weapon/paper_bundle/proc/can_change_held_bundle(mob/living/human/user)
-	return istype(user) && !QDELETED(user) && !QDELETED(src) && (user.client?.mob == user || agent_character_for(user)) && !user.stat && !user.restrained() && !user.incapacitated() && user.can_use_hands() && loc == user && user.item_is_in_hands(src) && !persistence_save_in_progress && !persistence_active_operation && !persistence_load_recovery_required
+	return istype(user) && !QDELETED(user) && !QDELETED(src) && (user.client?.mob == user || agent_character_for(user)) && !user.stat && !user.restrained() && !user.incapacitated() && user.can_use_hands() && loc == user && user.item_is_in_hands(src) && !persistence_admission_blocked()
 
 /obj/item/weapon/paper_bundle/proc/held_bundle_page()
 	if (!isnum(page) || page < 1 || page > pages.len || page != round(page))
