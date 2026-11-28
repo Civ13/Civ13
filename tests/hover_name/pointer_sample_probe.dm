@@ -1,0 +1,12 @@
+/proc/check_pointer_samples()
+	var/datum/hover_client/C = new
+	C.MouseEntered(null, null, "map", "screen-loc=mapwindow.map:14:20,3:5")
+	check(C.mouse_screen_x == 14 && C.mouse_screen_pixel_x == 20 && C.mouse_screen_y == 3 && C.mouse_screen_pixel_y == 5, "enter parses a map-prefixed pointer position")
+	C.MouseMove(null, null, "map", "screen-loc=1:0,-2:8")
+	check(C.mouse_screen_x == 1 && C.mouse_screen_pixel_x == 0 && C.mouse_screen_y == -2 && C.mouse_screen_pixel_y == 8, "move parses a signed coordinate and zero pixel")
+	C.MouseDrag(null, null, null, null, "map", "map", "screen-loc=mapwindow.map:-3:8,0:0")
+	check(C.mouse_screen_x == -3 && C.mouse_screen_pixel_x == 8 && C.mouse_screen_y == 0 && C.mouse_screen_pixel_y == 0, "drag parses a complete pointer position")
+	for (var/packet in list("screen-loc=9:6,2:bad", "screen-loc=", "icon-x=4"))
+		C.MouseMove(null, null, "map", packet)
+		check(C.mouse_screen_x == -3 && C.mouse_screen_pixel_x == 8 && C.mouse_screen_y == 0 && C.mouse_screen_pixel_y == 0, "invalid pointer packet preserves both axes")
+	del(C)
