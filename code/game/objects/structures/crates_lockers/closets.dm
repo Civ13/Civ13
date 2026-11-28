@@ -107,6 +107,12 @@
 			M.client.perspective = MOB_PERSPECTIVE
 
 /obj/structure/closet/proc/open()
+	if (!try_open_lid())
+		return FALSE
+	density = FALSE
+	return TRUE
+
+/obj/structure/closet/proc/try_open_lid()
 	if (opened)
 		return FALSE
 
@@ -122,7 +128,6 @@
 	icon_state = icon_opened
 	opened = TRUE
 	playsound(loc, open_sound, 100, TRUE, -3)
-	density = FALSE
 	return TRUE
 
 /obj/structure/closet/proc/close()

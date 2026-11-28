@@ -107,18 +107,5 @@
 	powerneeded = 0
 
 /obj/structure/closet/fridge/icecreamcooler/open()
-	if (opened)
-		return FALSE
-
-	if (!can_open())
-		return FALSE
-
-	if (keep_items)
-		closet_release_all_but_items(src)
-	else
-		dump_contents()
-
-	icon_state = icon_opened
-	opened = TRUE
-	playsound(loc, open_sound, 100, TRUE, -3)
-	return TRUE
+	// The cooler keeps its density with the lid open.
+	return try_open_lid()
