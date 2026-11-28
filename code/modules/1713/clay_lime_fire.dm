@@ -151,8 +151,7 @@ var/global/list/brick_bench_batches = list(
 	visible_message(SPAN_NOTICE("[H] kicks \the [src] up to speed and centres the clay."))
 	var/made = 0
 	while (worker_ready(H, S) && S.amount >= cost[1])
-		if (!station_has_water())
-			station_take_water(H)
+		if (!station_has_water(user = H))
 			break
 		if (!do_after(H, driven_time(max(5, round(cost[2] / POTTERS_WHEEL_SPEED))), src))
 			break
@@ -255,8 +254,7 @@ var/global/list/brick_bench_batches = list(
 	visible_message(SPAN_NOTICE("[H] packs clay into \the [src]'s mould."))
 	var/batches = 0
 	while (worker_ready(H, S) && !batch_refusal(S, brick))
-		if (!station_has_water())
-			station_take_water(H)
+		if (!station_has_water(user = H))
 			break
 		if (!do_after(H, BRICK_BENCH_TIME, src))
 			break

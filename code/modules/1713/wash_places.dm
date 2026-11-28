@@ -61,8 +61,7 @@
 	if (busy)
 		to_chat(H, SPAN_WARNING("Someone is already washing at \the [src]."))
 		return
-	if (!station_has_water())
-		station_take_water(H)
+	if (!station_has_water(user = H))
 		update_icon()
 		return
 	busy = TRUE

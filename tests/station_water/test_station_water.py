@@ -5,9 +5,13 @@ keep the wiring in place without a compiler.
 """
 from pathlib import Path
 import json
+import sys
 import unittest
+from unittest.mock import Mock
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "tests/save_movement"))
+from source_adapter import extract, project
 
 
 def read(rel):
@@ -57,6 +61,43 @@ class StationWaterTest(unittest.TestCase):
         self.assertEqual(clay.count("!station_take_water(H)"), 2)
         self.assertEqual(clay.count("station_water_examine(user)"), 2)
         self.assertIn("/obj/structure/converter/retting_trough/attackby(obj/item/M, mob/user)", SOURCE)
+
+    def test_availability_checks_the_feed_once_and_warns_only_on_request(self):
+        user = object()
+        for store, fed, viewer, available in (
+            (2, False, user, False),
+            (2, False, None, False),
+            (5, False, user, True),
+            (0, True, user, True),
+        ):
+            with self.subTest(store=store, fed=fed, viewer=viewer is not None):
+                feed = Mock(return_value=fed)
+                warn = Mock()
+                env = {"water_store": store, "station_water_feed": feed,
+                       "station_warn_needs_water": warn}
+                check = project(SOURCE, "/obj/structure/proc/station_has_water", "amount, user", env)
+                self.assertEqual(check(5, viewer), available)
+                self.assertEqual(env["water_store"], store)
+                feed.assert_called_once_with()
+                if viewer and not available:
+                    warn.assert_called_once_with(viewer, 5)
+                else:
+                    warn.assert_not_called()
+
+    def test_station_actions_check_water_before_work_and_debit_afterward(self):
+        stations = (
+            ("clay_lime_fire", "/obj/structure/workshop_machine/potters_wheel/proc/throw_wares"),
+            ("clay_lime_fire", "/obj/structure/workshop_machine/brick_bench/proc/mould_bricks"),
+            ("placer", "/obj/structure/placer_washer/proc/wash"),
+            ("amalgam", "/obj/structure/stone_crusher/proc/work_arrastra"),
+            ("wash_places", "/obj/structure/washbasin/attack_hand"),
+        )
+        for file, proc in stations:
+            with self.subTest(proc=proc):
+                body = extract(read(f"code/modules/1713/{file}.dm"), proc)
+                self.assertEqual(body.count("station_take_water(H)"), 1)
+                self.assertLess(body.index("!station_has_water(user = H)"), body.index("do_after("))
+                self.assertLess(body.index("do_after("), body.index("station_take_water(H)"))
 
     def test_wash_places(self):
         wash = read("code/modules/1713/wash_places.dm")

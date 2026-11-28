@@ -303,8 +303,7 @@
 		if (arrastra_mercury() < AMALGAM_WET_MERCURY)
 			to_chat(H, SPAN_WARNING("The quicksilver in the trough is spent."))
 			break
-		if (!station_has_water())
-			station_take_water(H)
+		if (!station_has_water(user = H))
 			break
 		if (!do_after(H, arrastra_time(), src) || QDELETED(C) || C.amount < 1 || QDELETED(src))
 			break

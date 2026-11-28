@@ -2010,7 +2010,8 @@ SUITES = {
             'code/modules/1713/aqueducts.dm',
             'code/modules/1713/factory_plumbing.dm',
             'config/craft_needs.json',
-            'code/modules/1713/clay_lime_fire.dm')},
+            'code/modules/1713/clay_lime_fire.dm', 'code/modules/1713/placer.dm',
+            'code/modules/1713/amalgam.dm', 'tests/save_movement/source_adapter.py')},
     # Reviewed stdlib-only well-odor source projection; no BYOND runtime.
     'well_smell': {'files': ('tests/well_smell/test_well_smell.py',),
         'paths': ('tests/well_smell/',), 'shared_paths': (
