@@ -1,5 +1,6 @@
 """Replay the boiling-oil pot's pour and refill events from source, not BYOND."""
 from pathlib import Path
+from runpy import run_path
 import re
 import unittest
 
@@ -52,6 +53,19 @@ class BoilingOilSplashIconTest(unittest.TestCase):
 
     def test_negative_control_old_reset_overwrites_refill(self):
         self.assertEqual(replay(OLD_SPLASH, True), 'oil_pot0')
+
+
+    def test_spilled_oil_uses_existing_animated_sprite(self):
+        oil = self.source.split('/obj/effect/oil\n', 1)[1]
+        default, constructor = oil.split('/obj/effect/oil/New()', 1)
+        read_dmi = run_path(str(ROOT / 'tests/sprites/validate.py'))['dmi']
+        for block in (default, constructor):
+            icon = re.search(r"(?m)^\ticon = '([^']+)'$", block).group(1)
+            state = re.search(r'(?m)^\ticon_state = "([^"]+)"$', block).group(1)
+            with self.subTest(state=state):
+                states = read_dmi(ROOT / icon)[2]
+                self.assertIn(state, states)
+                self.assertGreater(states[state][2], 1)
 
 
 if __name__ == '__main__':
