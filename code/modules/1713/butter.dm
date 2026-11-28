@@ -93,7 +93,7 @@
 	if (!churn_batches())
 		to_chat(user, SPAN_WARNING("\The [src] needs at least [CHURN_MILK] milk or [CHURN_CREAM] cream to churn."))
 		return FALSE
-	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+	if (persistence_admission_blocked())
 		to_chat(user, SPAN_WARNING("You cannot do that during persistence operations."))
 		return FALSE
 	user.visible_message(SPAN_NOTICE("[user] works the dasher of \the [src] up and down."), SPAN_NOTICE("You start churning."))
@@ -188,7 +188,7 @@
 	if (!reagents || reagents.get_reagent_amount("butter") < 1)
 		to_chat(user, SPAN_WARNING("There is not enough butter left."))
 		return FALSE
-	if (persistence_save_in_progress || persistence_active_operation || persistence_load_recovery_required)
+	if (persistence_admission_blocked())
 		to_chat(user, SPAN_WARNING("You cannot do that during persistence operations."))
 		return FALSE
 	var/turf/T = get_turf(S)
