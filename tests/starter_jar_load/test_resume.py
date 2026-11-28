@@ -25,7 +25,7 @@ def resumes(source, fermenting):
         return False  # restore_from_icon_state() only acts when fermenting == 0
     resume = block(source, '/obj/item/weapon/starterjar/proc/resume_fermentation()')
     if fermenting == 1:
-        return 'fermenting == 1' in resume and 'fermenting_timer = world.time' in resume and 'fermenting_process()' in resume
+        return 'if (fermenting == 1 && !ferment_loop)\n\t\trestart_fermentation_wait()' in resume
     return 'fermenting == 2' in resume and 'yeast_growth()' in resume
 
 
@@ -36,6 +36,18 @@ class StarterJarResumeTest(unittest.TestCase):
     def test_fermenting_and_growing_jars_resume(self):
         self.assertTrue(resumes(self.source, 1))
         self.assertTrue(resumes(self.source, 2))
+
+    def test_icon_only_flour_and_grain_use_the_saved_wait(self):
+        restore = block(self.source, '/obj/item/weapon/starterjar/proc/restore_from_icon_state()')
+        self.assertIn(
+            'if ("jarF", "jarG")\n\t\t\t\tfermenting = 1\n\t\t\t\trestart_fermentation_wait()',
+            restore,
+        )
+        restart = block(self.source, '/obj/item/weapon/starterjar/proc/restart_fermentation_wait()')
+        self.assertIn(
+            'fermenting_timer = world.time + (icon_state == "jarG" ? 1200 : 900)\n\tfermenting_process()',
+            restart,
+        )
 
     def test_loops_are_single_and_runtime_only(self):
         ferment = block(self.source, '/obj/item/weapon/starterjar/proc/fermenting_process()')
