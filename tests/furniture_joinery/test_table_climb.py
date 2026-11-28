@@ -5,9 +5,15 @@ do_after, collision checks, or real gameplay.
 """
 from pathlib import Path
 import re
+import sys
+from types import SimpleNamespace
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tests' / 'primitive_woodworking'))
+sys.path.insert(0, str(ROOT))
+from source_adapter import block, compile_body
+from tools.dmi import Dmi
 SOURCE = (ROOT / 'code/game/objects/structures/table.dm').read_text()
 
 
@@ -86,6 +92,65 @@ class TableClimb(unittest.TestCase):
         self.assertEqual(simulate(False, 'front', move_allowed=False), ('front', False, False))
         self.assertEqual(simulate(False, 'front', glass=False), ('table', True, False))
         self.assertEqual(simulate(False, 'table'), ('table', False, False))
+
+
+
+class FancyTableAppearance(unittest.TestCase):
+    kind = '/obj/structure/table/fancy'
+    rack_source = (ROOT / 'code/game/objects/structures/table_rack.dm').read_text()
+
+    def test_flip_right_and_restore_select_visible_sprites(self):
+        declarations = self.rack_source.split(self.kind + '\n', 1)[1].split('\n/obj/', 1)[0]
+        upright_icon = re.search(r"\bicon = '([^']+)'", declarations)[1]
+        upright_state = re.search(r'\bicon_state = "([^"]+)"', declarations)[1]
+        flipped_state = re.search(r'\bflipped_icon = "([^"]+)"', declarations)
+        if flipped_state is None:
+            flipped_state = re.search(r'\bvar/flipped_icon = "([^"]+)"', SOURCE)
+
+        # The smoothing branch applies only to non-fixed table sprites.
+        base = '/obj/structure/table/update_icon'
+        parent = block(SOURCE, base + '(')
+        parent = (parent.split('\n\telse if', 1)[0] + '\n\telse\n'
+                  + parent.rsplit('\n\telse\n', 1)[1])
+        parent = parent.replace('"[initial(icon_state)]"', 'upright_state')
+        env = dict(upright_icon=upright_icon, upright_state=upright_state, SOUTH=2)
+        fields = ('icon', 'icon_state', 'flipped', 'flipped_icon', 'dir', 'layer')
+
+        def method(source, declaration):
+            source = re.sub(r"'([^']+\.dmi)'", r'"\1"', source)
+            projected, _ = compile_body(source, declaration + '(', 'self', env, fields)
+            return projected
+
+        env['parent_update'] = method(parent, base)
+        update = env['parent_update']
+        if self.kind + '/update_icon()' in self.rack_source:
+            update = method(
+                self.rack_source.replace('initial(icon)', 'upright_icon').replace('..()', 'parent_update(self)'),
+                self.kind + '/update_icon',
+            )
+
+        table = SimpleNamespace(icon=upright_icon, icon_state=upright_state,
+                                flipped=True, flipped_icon=flipped_state[1], dir=2, layer=2.8)
+        update(table)
+        cover = Dmi.from_file(ROOT / table.icon).get_state(table.icon_state)
+        self.assertEqual(cover.dirs, 4)
+        for direction_frame in range(4):
+            self.assertIsNotNone(cover.frames[direction_frame].convert('RGBA').getchannel('A').getbbox())
+        self.assertEqual(table.layer, 5)
+
+        table.flipped = False
+        update(table)
+        self.assertEqual((table.icon, table.icon_state), (upright_icon, upright_state))
+        env['parent_load'] = lambda src: None
+        env['update'] = update
+        restore = method(
+            self.rack_source.replace('..()', 'parent_load(self)').replace('update_icon()', 'update(self)'),
+            self.kind + '/after_load',
+        )
+        table.flipped, table.icon_state = True, 'table-flipped'
+        restore(table)
+        self.assertEqual((table.icon_state, table.layer), (flipped_state[1], 5))
+        self.assertEqual(Dmi.from_file(ROOT / table.icon).get_state(table.icon_state).dirs, 4)
 
 
 if __name__ == '__main__':
