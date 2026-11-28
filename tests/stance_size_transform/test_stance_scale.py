@@ -50,6 +50,17 @@ class StanceTransformTest(unittest.TestCase):
         self.assertEqual(len(re.findall(r'M\.Scale\(\s*size_multiplier\s*\)', body)), 2, body)
         self.assertEqual(len(STANCE.findall(body)), 2, body)
 
+    def test_identity_posture_skips_scale_and_translate(self):
+        body = helper_body(read(HELPER_FILE))
+        self.assertIn('\tvar/matrix/M = matrix()\n', body)
+        self.assertIn(
+            '\telse if (size_multiplier != 1)\n'
+            '\t\tM.Scale(size_multiplier)\n'
+            '\t\tM.Translate(0, 16*(size_multiplier-1))\n'
+            '\treturn M\n',
+            body,
+        )
+
     def test_prone_west_turn_matches_crawl(self):
         body = helper_body(read(HELPER_FILE))
         self.assertRegex(body, r'M\.Turn\(\(prone && !lying && dir == WEST\) \? -90 : 90\)')

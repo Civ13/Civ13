@@ -215,7 +215,7 @@ Please contact me on #coderbus IRC. ~Carn x
 		M.Turn((prone && !lying && dir == WEST) ? -90 : 90)
 		M.Scale(size_multiplier)
 		M.Translate(1,-6)
-	else
+	else if (size_multiplier != 1)
 		M.Scale(size_multiplier)
 		M.Translate(0, 16*(size_multiplier-1))
 	return M
