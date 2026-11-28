@@ -202,6 +202,7 @@
 	var/new_hstyle = WWinput(user, "Please select a hair style.", "Grooming", WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
 	if (new_hstyle && (new_hstyle in hairlist))
 		M.h_style = new_hstyle
+		M.hair_design = null
 		var/datum/sprite_accessory/S = hair_styles_list[new_hstyle]
 		if (S)
 			M.h_growth = S.growth
@@ -253,6 +254,7 @@
 		var/datum/sprite_accessory/S = hair_styles_list[new_hstyle]
 		M.h_style = new_hstyle
 		M.h_growth = S.growth
+		M.hair_design = null
 	if (new_fstyle != old_fstyle)
 		var/datum/sprite_accessory/F = facial_hair_styles_list[new_fstyle]
 		M.f_style = new_fstyle

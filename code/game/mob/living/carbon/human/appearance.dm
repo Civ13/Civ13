@@ -173,6 +173,16 @@
 
 	return valid_hairstyles
 
+/mob/living/human/proc/set_hair_design(list/design)
+	if (design && !grooming_can_style(design))
+		return FALSE
+	if (!hair_design && !design)
+		return FALSE
+	hair_design = design?.Copy()
+	update_hair()
+	update_body()
+	return TRUE
+
 /mob/living/human/proc/generate_valid_facial_hairstyles(var/growth = FALSE)
 	var/list/valid_facial_hairstyles = new()
 	for (var/facialhairstyle in facial_hair_styles_list)

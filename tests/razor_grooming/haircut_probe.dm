@@ -55,6 +55,73 @@ var/cut_runtime_error = FALSE
 	for (var/list/row in rows)
 		. += row["name"]
 
+/proc/grooming_design_checks(mob/living/human/H, obj/item/weapon/material/kitchen/utensil/knife/razorblade/R, datum/grooming_preview/P)
+	var/list/design = list("Mohawk", "Shoulder-length Hair", "Shoulder-length Hair")
+	var/list/choices = H.grooming_design_choices()
+	cut_check("Mohawk" in choices, "the design editor offers an eligible stock sprite")
+	cut_check(!("Long Hair" in choices), "the editor does not offer a style beyond the current length")
+	cut_check(!grooming_design_valid(list("Mohawk" = 1, "Shoulder-length Hair" = 1, "Bald" = 1)), "associative designs are rejected")
+	cut_check(!grooming_design_valid(list("No such", "Mohawk", "Mohawk")), "unknown donors cannot be applied")
+	var/before_colour = rgb(H.r_hair, H.g_hair, H.b_hair)
+	var/before_growth = H.h_growth
+	P.ui_act("style", list("value" = design[1], "sides" = design[2], "back" = design[3]), H, null)
+	cut_check(!H.hair_design, "an invalid preview cannot apply a custom design")
+	cut_check(H.set_hair_design(design) && H.grooming_can_style(H.hair_design), "a valid combination applies")
+	cut_check(H.h_style == "Shoulder-length Hair" && H.h_growth == before_growth && rgb(H.r_hair, H.g_hair, H.b_hair) == before_colour, "restyling leaves stock cut, growth and dye untouched")
+	var/list/patterns = list("Market day" = design)
+	H.hair_patterns = patterns
+	var/list/saved = H.get_saved_vars()
+	cut_check(("hair_design" in saved) && ("hair_patterns" in saved), "world saves include design and pattern book")
+	H.persistence_owner_ckey = "groomingprobe"
+	var/list/travel = region_travel_decode(H.region_travel_payload(list()))
+	cut_check(travel && travel["look"]["h_style"] == H.h_style && json_encode(travel["hair_design"]) == json_encode(design), "travel encodes the custom style without changing the legacy appearance contract")
+	cut_check(travel && json_encode(travel["hair_patterns"]) == json_encode(patterns), "named patterns survive transport")
+	if (travel)
+		travel["hair_design"] = list("Invalid", "Bald", "Bald")
+		var/list/fallback = region_travel_decode(json_encode(travel))
+		cut_check(fallback && !("hair_design" in fallback), "travel ignores an unavailable design without blocking the character")
+		travel -= "hair_design"
+		travel -= "hair_patterns"
+		cut_check(region_travel_decode(json_encode(travel)), "legacy payloads without a design still decode")
+	H.persistence_owner_ckey = null
+	H.head.flags_inv |= BLOCKHAIR
+	H.update_hair()
+	cut_check(!H.overlays_standing[15], "a blocking hat hides the applied design")
+	H.head.flags_inv &= ~BLOCKHAIR
+	H.update_hair()
+	cut_check(H.set_hair_design(null) && !H.hair_design && H.h_growth == before_growth, "restoring the cut removes only the styling")
+
+	// Every installed donor can reconstruct its original sprite in all directions.
+	// This also catches crop offsets, dropped facings and top/bottom mirroring.
+	var/checked = 0
+	var/list/failed = list()
+	var/colour = "#604020"
+	for (var/style in hair_styles_list)
+		if (!(grooming_sheet_rows["hair|[style]"] in grooming_design_sprite_rows))
+			continue
+		var/datum/sprite_accessory/S = hair_styles_list[style]
+		var/icon/combined = grooming_design_icon(list(style, style, style), colour)
+		checked++
+		for (var/direction in grooming_sheet_dirs())
+			var/icon/expected = icon(S.icon, "[S.icon_state]_s", direction)
+			if (S.do_colouration)
+				expected.Blend(colour, ICON_ADD)
+			var/icon/actual = icon(combined, dir = direction)
+			var/same = TRUE
+			for (var/x = 2 to 30 step 2)
+				for (var/y = 2 to 30 step 2)
+					if (expected.GetPixel(x, y) != actual.GetPixel(x, y))
+						same = FALSE
+						break
+				if (!same)
+					break
+			if (!same)
+				failed += "[style] ([direction])"
+	cut_check(checked == hair_styles_list.len && !failed.len, "[checked] of [hair_styles_list.len] stock styles have standing sprites and render in all four directions; mismatch: [english_list(failed)]")
+	// Leave a custom design for the stock-cut tests to replace.
+	H.set_hair_design(design)
+
+
 /proc/cut_checks()
 	map.persistence = FALSE
 	var/mob/living/human/H = new /mob/living/human(locate(5, 5, 1))
@@ -138,13 +205,15 @@ var/cut_runtime_error = FALSE
 		text2file(json_encode(list("sheet" = "civ13_haircut_styles.png", "body" = "haircut_body.png", "self" = 1, "name" = H.name, "hair" = H.h_style, "beard" = H.f_style,
 			"hair_color" = rgb(H.r_hair, H.g_hair, H.b_hair), "beard_color" = rgb(H.r_facial, H.g_facial, H.b_facial), "hair_styles" = hair, "beard_styles" = beard, "seconds" = 8)), "haircut_data.json")
 
+	grooming_design_checks(H, R, P)
+
 	// The timed cut: refused choices change nothing, a valid pair is applied.
 	cut_check(!R.groom_cut(H, H, "Shoulder-length Hair", "Full Beard"), "cutting to the same styles does nothing")
 	H.h_growth = 1
 	cut_check(!R.groom_cut(H, H, "Dreadlocks", "Full Beard") && H.h_style == "Shoulder-length Hair", "a style longer than the hair is refused after the wait")
 	H.h_growth = 3
 	cut_check(!R.groom_cut(H, H, "No Such Style", "Full Beard") && H.h_style == "Shoulder-length Hair", "an unknown style is refused")
-	cut_check(R.groom_cut(H, H, "Mohawk", "Full Beard") && H.h_style == "Mohawk" && H.f_style == "Full Beard", "hair is cut and the beard kept")
+	cut_check(R.groom_cut(H, H, "Mohawk", "Full Beard") && H.h_style == "Mohawk" && H.f_style == "Full Beard" && !H.hair_design, "a cut removes custom styling and keeps the beard")
 	cut_check(H.h_growth == hair_styles_list["Mohawk"].growth, "the cut sets the hair's length")
 	cut_check(R.groom_cut(H, H, "Mohawk", "Shaved") && H.f_style == "Shaved" && H.f_growth == 0, "the beard is cut and the hair kept")
 	cut_check(!R.groom_cut(W, H, "Bald", W.f_style) || W.h_style == "Bald", "a neighbour can be barbered")

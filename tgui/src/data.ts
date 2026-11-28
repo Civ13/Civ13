@@ -82,9 +82,13 @@ export type CharacterSetupData = {
 };
 // Haircut: eligible styles as rows of the shared style sheet, and the figure they are drawn on.
 export type HaircutStyle = { name?: string; length?: number; row?: number; tint?: Flag };
+export type HairZone = [number, number, number, number, number];
+export type HairDesign = [string, string, string];
 export type HaircutData = {
   sheet?: string; body?: string; self?: Flag; name?: string; hair?: string; beard?: string; hair_color?: string; beard_color?: string;
   hair_styles?: HaircutStyle[]; beard_styles?: HaircutStyle[]; seconds?: number;
+  design_styles?: HaircutStyle[]; design?: HairDesign; design_regions?: HairZone[][];
+  patterns?: { name: string; design: HairDesign }[];
 };
 // The storage window: hands, worn bags and pockets, storages nearby, the queue of moves.
 export type StorageItem = { id?: string; name?: string; size?: string; size_class?: number; cost?: number; image?: string; count?: number; queued?: Flag; moving?: Flag };

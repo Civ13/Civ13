@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Button, NoticeBox } from 'tgui-core/components';
-import type { HaircutData, HaircutStyle } from '../data';
+import type { HaircutData, HaircutStyle, HairDesign } from '../data';
 import type { ScreenProps } from '../types';
 import { list, str } from './common';
 
@@ -32,7 +32,7 @@ function usePicture(file: string) {
 
 // One cell of a sheet. A tinted cell has the hair colour added to it the way
 // the game colours hair, without reading pixels back.
-type Part = { picture: HTMLImageElement | null; row: number; tint?: string };
+type Part = { picture: HTMLImageElement | null; row: number; tint?: string; clip?: [number, number, number, number] };
 let scratch: HTMLCanvasElement | null = null;
 function paint(canvas: HTMLCanvasElement | null, parts: Part[], side: number, left: number, top: number) {
   // The test browser has no canvas and only complains when asked for one.
@@ -44,7 +44,11 @@ function paint(canvas: HTMLCanvasElement | null, parts: Part[], side: number, le
   for (const part of parts) {
     if (!part.picture) continue;
     const sx = side * CELL, sy = part.row * CELL;
-    if (!part.tint) { ctx.drawImage(part.picture, sx, sy, CELL, CELL, -left, -top, CELL, CELL); continue; }
+    const [x, y, w, h] = part.clip ?? [0, 0, CELL, CELL];
+    if (!part.tint) {
+      ctx.drawImage(part.picture, sx + x, sy + y, w, h, x - left, y - top, w, h);
+      continue;
+    }
     scratch ??= document.createElement('canvas');
     scratch.width = CELL; scratch.height = CELL;
     const tinted = scratch.getContext('2d');
@@ -56,12 +60,12 @@ function paint(canvas: HTMLCanvasElement | null, parts: Part[], side: number, le
     tinted.globalCompositeOperation = 'destination-in';
     tinted.drawImage(part.picture, sx, sy, CELL, CELL, 0, 0, CELL, CELL);
     tinted.globalCompositeOperation = 'source-over';
-    ctx.drawImage(scratch, -left, -top);
+    ctx.drawImage(scratch, x, y, w, h, x - left, y - top, w, h);
   }
 }
 function Figure({ parts, side, left = 0, top = 0, width = CELL, height = CELL, label }: { parts: Part[]; side: number; left?: number; top?: number; width?: number; height?: number; label?: string }) {
   const canvas = useRef<HTMLCanvasElement>(null);
-  const key = parts.map(part => `${part.picture ? 1 : 0}:${part.row}:${part.tint ?? ''}`).join('|');
+  const key = parts.map(part => `${part.picture ? 1 : 0}:${part.row}:${part.tint ?? ''}:${part.clip?.join(',') ?? ''}`).join('|');
   useEffect(() => paint(canvas.current, parts, side, left, top), [key, side, left, top]);
   return <canvas ref={canvas} width={width} height={height} role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : true} />;
 }
@@ -90,6 +94,18 @@ export function Haircut(ui: UI) {
   const [after, setAfter] = useState(true);
   const [length, setLength] = useState('all');
   const [find, setFind] = useState('');
+  const [designing, setDesigning] = useState(false);
+  const [designPick, setDesignPick] = useState<HairDesign | null>(null);
+  const [patternName, setPatternName] = useState('');
+  const [pattern, setPattern] = useState('');
+  const designOptions = list(data.design_styles);
+  const same = (a: HairDesign, b: HairDesign) => a.every((style, i) => style === b[i]);
+  const stock: HairDesign = [nowHair, nowHair, nowHair];
+  const design = designPick ?? data.design ?? stock;
+  const eligible = (value: HairDesign) => value.every(style => designOptions.some(option => option.name === style));
+  const canDesign = designOptions.length > 0 || !!data.design;
+  const savedPattern = list(data.patterns).find(entry => entry.name === pattern);
+  const params = { value: design[0], sides: design[1], back: design[2] };
   // A style that stopped being offered (the hair changed meanwhile) falls back to the current one.
   const hair = pickedHair !== null && hairStyles.some(style => style.name === pickedHair) ? pickedHair : nowHair;
   const beard = pickedBeard !== null && beardStyles.some(style => style.name === pickedBeard) ? pickedBeard : nowBeard;
@@ -100,8 +116,15 @@ export function Haircut(ui: UI) {
     return style ? [{ picture: sheet, row: Number(style.row ?? 0), tint: style.tint ? color : undefined }] : [];
   };
   const under: Part = { picture: body, row: 0 }, over: Part = { picture: body, row: 1 };
-  const shownHair = after ? hair : nowHair, shownBeard = after ? beard : nowBeard;
-  const whole = [under, ...part(beardStyles, shownBeard, beardColor), ...part(hairStyles, shownHair, hairColor), over];
+  const shownHair = after && !designing ? hair : nowHair, shownBeard = after ? beard : nowBeard;
+  const shownDesign = designing && after ? design : (!after || hair === nowHair ? data.design : undefined);
+  const regions = data.design_regions?.[side];
+  const scalp = shownDesign && eligible(shownDesign) && regions
+    ? regions.flatMap(([zone, x, y, w, h]) =>
+        part(designOptions, shownDesign[zone - 1], hairColor).map(layer => ({ ...layer, clip: [x, y, w, h] as Part['clip'] })))
+    : part(hairStyles, shownHair, hairColor);
+  const whole = [under, ...part(beardStyles, designing ? nowBeard : shownBeard, beardColor), ...scalp, over];
+  const afterLabel = designing ? 'Styled' : 'After the cut';
 
   const order = (styles: HaircutStyle[], current: string) => [...styles].sort((a, b) => Number(b.name === current) - Number(a.name === current));
   const bands = lengths.filter(([key]) => key === 'all' || hairStyles.some(style => band(style) === key));
@@ -114,10 +137,14 @@ export function Haircut(ui: UI) {
   </>;
 
   return <div className="cut">
-    <p className="cut-lead">{self ? 'Cutting your own hair.' : `Cutting ${name}'s hair.`} Pick a style to see it; nothing changes until you start the cut.</p>
+    <p className="cut-lead">{designing ? (self ? 'Styling your own hair.' : `Styling ${name}'s hair.`) : (self ? 'Cutting your own hair.' : `Cutting ${name}'s hair.`)} {designing ? 'Try a design before you apply it.' : 'Pick a style to see it; nothing changes until you start the cut.'}</p>
+    {canDesign && <div className="kit-choice" role="group" aria-label="Grooming mode">
+      <Button selected={!designing} onClick={() => { setDesigning(false); setAfter(true); }}>Cut Hair</Button>
+      <Button selected={designing} onClick={() => { setDesigning(true); setAfter(true); }}>Design Style</Button>
+    </div>}
     <div className="cut-columns">
       <div className="cut-side">
-        <div className="setup-stage cut-stage"><Figure parts={whole} side={side} label={`${self ? 'You' : name} from the ${sides[side]}, ${after ? 'after the cut' : 'as now'}`} /></div>
+        <div className="setup-stage cut-stage"><Figure parts={whole} side={side} label={`${self ? 'You' : name} from the ${sides[side]}, ${after ? afterLabel.toLowerCase() : 'as now'}`} /></div>
         <div className="setup-turn">
           <button type="button" className="setup-turn-button" aria-label="Turn left" onClick={() => setSide((side + 3) % 4)}>&#9664;</button>
           <span>{sides[side]}</span>
@@ -125,15 +152,55 @@ export function Haircut(ui: UI) {
         </div>
         <span className="kit-choice" role="group" aria-label="Which look to show">
           <Button selected={!after} onClick={() => setAfter(false)}>Now</Button>
-          <Button selected={after} onClick={() => setAfter(true)}>After the cut</Button>
+          <Button selected={after} onClick={() => setAfter(true)}>{afterLabel}</Button>
         </span>
         <dl className="cut-changes">
-          {change('Hair', nowHair, hair)}
-          {beardStyles.length > 1 && change('Facial hair', nowBeard, beard)}
+          {designing ? <><dt>Base cut</dt><dd>{nowHair}</dd></> : change('Hair', nowHair, hair)}
+          {!designing && beardStyles.length > 1 && change('Facial hair', nowBeard, beard)}
         </dl>
         <p className="kit-hint cut-foot">Shown without headwear.</p>
       </div>
       <div className="cut-main">
+        {designing ? <section className="cut-panel cut-design" aria-label="Design hairstyle">
+          <div className="cut-head"><h2>Design hairstyle</h2></div>
+          <div className="cut-design-fields">
+            <p className="kit-hint">Mix pieces from styles your current hair is long enough for. Styling does not cut, grow, or dye your hair.</p>
+            {['Crown and bangs', 'Sides', 'Back and nape'].map((label, zone) =>
+              <label key={label}>{label}
+                <select className="setup-field" disabled={!ui.interactive} value={design[zone]}
+                  onChange={event => {
+                    const next = [...design] as HairDesign;
+                    next[zone] = event.target.value;
+                    setDesignPick(next);
+                    setAfter(true);
+                  }}>
+                  {!designOptions.some(entry => entry.name === design[zone]) && <option value={design[zone]} disabled>{design[zone]} (not available)</option>}
+                  {designOptions.map(entry => <option key={entry.name} value={entry.name}>{entry.name}</option>)}
+                </select>
+              </label>)}
+            {list(data.patterns).length > 0 && <div className="cut-pattern">
+              <label>Saved patterns
+                <select className="setup-field" value={pattern} onChange={event => setPattern(event.target.value)} disabled={!ui.interactive}>
+                  <option value="">Select a pattern</option>
+                  {list(data.patterns).map(entry => <option key={entry.name}>{entry.name}</option>)}
+                </select>
+              </label>
+              <Button disabled={!ui.interactive || !savedPattern || !eligible(savedPattern.design)}
+                onClick={() => { if (savedPattern) { setDesignPick(savedPattern.design); setAfter(true); } }}>Preview</Button>
+              <Button disabled={!ui.interactive || !savedPattern} onClick={() => {
+                ui.act('delete_pattern', { value: pattern });
+                setPattern('');
+              }}>Remove</Button>
+              {savedPattern && !eligible(savedPattern.design) && <p className="kit-hint">This pattern needs different hair length or style eligibility.</p>}
+            </div>}
+            <div className="cut-pattern">
+              <label>Pattern name <input className="setup-field" maxLength={32} value={patternName} disabled={!ui.interactive}
+                onChange={event => setPatternName(event.target.value)} /></label>
+              <Button disabled={!ui.interactive || !patternName.trim() || !eligible(design)}
+                onClick={() => ui.act('save_pattern', { ...params, pattern_name: patternName.trim() })}>Save pattern</Button>
+            </div>
+          </div>
+        </section> : <>
         <section className="cut-panel cut-panel-hair" aria-label="Hair">
           <div className="cut-head">
             <h2>Hair</h2>
@@ -149,13 +216,20 @@ export function Haircut(ui: UI) {
           <Tiles styles={order(beardStyles, nowBeard)} current={nowBeard} chosen={beard} label="Facial hair styles" disabled={!ui.interactive}
             choose={picked => { setBeard(picked); setAfter(true); }} draw={style => [under, ...part(beardStyles, str(style.name), beardColor)]} />
         </section>}
+        </>}
       </div>
     </div>
-    {hairStyles.length <= 1 && beardStyles.length <= 1 && <NoticeBox>There is nothing shorter to cut to yet.</NoticeBox>}
+    {!designing && hairStyles.length <= 1 && beardStyles.length <= 1 && <NoticeBox>There is nothing shorter to cut to yet.</NoticeBox>}
     <div className="cut-actions">
-      <p className="kit-hint">A razor only cuts shorter; longer styles come back as hair grows. The cut takes about {Number(data.seconds ?? 8)} seconds{self ? '' : ' and you must stay beside them'}.</p>
+      <p className="kit-hint">{designing
+        ? 'Restore the base cut at any time. A real haircut replaces the design.'
+        : <>A razor only cuts shorter; longer styles come back as hair grows. The cut takes about {Number(data.seconds ?? 8)} seconds{self ? '' : ' and you must stay beside them'}.</>}</p>
       <Button className="cut-cancel" disabled={!ui.interactive} onClick={() => ui.act('cancel')}>Cancel</Button>
-      <Button className="cut-go" disabled={!ui.interactive || !changed} onClick={() => ui.act('cut', { value: hair, beard })}>Start cutting</Button>
+      {designing ? <>
+        {!!data.design && <Button disabled={!ui.interactive} onClick={() => ui.act('reset_style')}>Restore base cut</Button>}
+        <Button className="cut-go" disabled={!ui.interactive || !eligible(design) || same(design, data.design ?? stock)}
+          onClick={() => ui.act('style', params)}>Apply style</Button>
+      </> : <Button className="cut-go" disabled={!ui.interactive || !changed} onClick={() => ui.act('cut', { value: hair, beard })}>Start cutting</Button>}
     </div>
   </div>;
 }

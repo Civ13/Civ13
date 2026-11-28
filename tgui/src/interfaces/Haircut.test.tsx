@@ -104,3 +104,47 @@ describe('haircut window', () => {
     expect(ui.act).not.toHaveBeenCalled();
   });
 });
+
+describe('hair design editor', () => {
+  const current = 'Shoulder-length Hair';
+  const data: HaircutData = {
+    ...sample,
+    design_styles: sample.hair_styles,
+    patterns: [
+      { name: 'Market day', design: [current, 'Mohawk', current] },
+      { name: 'Too long', design: [current, 'Unavailable', current] },
+    ],
+  };
+  const editor = () => fireEvent.click(screen.getByText('Design Style'));
+
+  it('previews each zone locally and sends only the selected sources when applied', () => {
+    const ui = open(data);
+    editor();
+    expect(screen.getByText('Apply style').closest('.Button')!.className).toContain('Button--disabled');
+    fireEvent.change(screen.getByLabelText('Sides'), { target: { value: 'Mohawk' } });
+    fireEvent.click(screen.getByLabelText('Turn right'));
+    look('Now');
+    expect(ui.act).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText('Apply style'));
+    expect(ui.act).toHaveBeenLastCalledWith('style', { value: current, sides: 'Mohawk', back: current });
+  });
+
+  it('previews usable saved patterns, refuses unavailable ones, and saves and restores separately', () => {
+    const ui = open({ ...data, design: ['Mohawk', current, current] });
+    editor();
+    const patterns = screen.getByLabelText('Saved patterns');
+    fireEvent.change(patterns, { target: { value: 'Too long' } });
+    expect(screen.getByText('Preview').closest('.Button')!.className).toContain('Button--disabled');
+    fireEvent.change(patterns, { target: { value: 'Market day' } });
+    fireEvent.click(screen.getByText('Preview'));
+    expect((screen.getByLabelText('Sides') as HTMLSelectElement).value).toBe('Mohawk');
+    expect(ui.act).not.toHaveBeenCalled();
+    fireEvent.change(screen.getByLabelText('Pattern name'), { target: { value: 'Another day' } });
+    fireEvent.click(screen.getByText('Save pattern'));
+    expect(ui.act).toHaveBeenLastCalledWith('save_pattern', { value: current, sides: 'Mohawk', back: current, pattern_name: 'Another day' });
+    fireEvent.click(screen.getByText('Remove'));
+    expect(ui.act).toHaveBeenLastCalledWith('delete_pattern', { value: 'Market day' });
+    fireEvent.click(screen.getByText('Restore base cut'));
+    expect(ui.act).toHaveBeenLastCalledWith('reset_style');
+  });
+});

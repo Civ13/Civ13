@@ -6,6 +6,9 @@
 	var/b_hair = FALSE
 	var/h_style = "Bald"
 	var/h_growth = 0
+	// Cosmetic styling only; the stock cut and real growth remain underneath.
+	var/list/hair_design
+	var/list/hair_patterns
 
 	//Facial hair colour and style
 	var/r_facial = FALSE

@@ -297,7 +297,7 @@
 
 	rowsdualtail
 		name = "Rows Dual Tail"
-		icon_state = "hair_rowsdualtail"
+		icon_state = "hair_rowdualtail"
 		growth = 3
 
 	sargeant
