@@ -70,6 +70,7 @@
 				if (B.padding_material && !B.remove_padding())
 					to_chat(user, SPAN_NOTICE("The padding cannot be recovered intact."))
 					return
+				B.strip_modular_upholstery()
 				bed_notice_owner = B.persistence_bed_notice_recipient(user)
 			to_chat(user, SPAN_NOTICE("You dismantle \the [src]."))
 			// One unit of what it was built from, never more than it cost.

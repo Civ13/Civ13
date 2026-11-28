@@ -101,6 +101,7 @@
 
 // Reuse the cache/code from stools, todo maybe unify.
 /obj/structure/bed/update_icon()
+	if (render_modular_furniture()) return
 	if (!istype(src, /obj/structure/bed/custsofa))
 		// Prep icon.
 		icon_state = ""
@@ -226,6 +227,7 @@
 	update_icon()
 
 /obj/structure/bed/proc/dismantle()
+	strip_modular_upholstery()
 	if (map && map.ID == MAP_WIZARD_BOY && material && (material.name == "woodplank" || material.name == "hardwood" || material.name == "wood"))
 		new /obj/item/wand_part/mdf_board(loc)
 	else

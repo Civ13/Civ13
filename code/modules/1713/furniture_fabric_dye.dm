@@ -87,6 +87,8 @@
 	return TRUE
 
 /obj/structure/bed/attackby(obj/item/weapon/W, mob/user)
+	if (modular_upholstery_click(W, user))
+		return TRUE
 	if (fabric_dye_step(W, user))
 		return TRUE
 	var/had = padding_material
@@ -110,7 +112,12 @@
 
 /obj/structure/bed/after_load()
 	..()
-	if (padding_color)
+	// The first draft used the legacy one-piece cloth field.
+	if (modular_furniture_shape && !furniture_upholstery_a && padding_material?.name == "cloth")
+		furniture_upholstery_a = furniture_upholstery_record("cloth", padding_color)
+		padding_material = null
+		padding_color = null
+	if (padding_color || modular_furniture_shape)
 		update_icon()
 
 /obj/item/weapon/stool/after_load()

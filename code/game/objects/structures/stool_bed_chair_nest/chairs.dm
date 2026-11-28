@@ -16,6 +16,7 @@
 
 /obj/structure/bed/chair/update_icon()
 	..()
+	if (modular_furniture_shape) return
 
 /*
 	var/cache_key = "[base_icon]-[material.name]-over"

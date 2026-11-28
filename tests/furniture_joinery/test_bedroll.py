@@ -187,6 +187,7 @@ class BedrollContracts(unittest.TestCase):
                 f.env['qdel']=lambda obj:None
             bed=NS(type='/obj/structure/bed',loc='floor',contents=[],deleted=False,
                    padding_material=None,not_disassemblable=False,
+                   strip_modular_upholstery=lambda:None,
                    persistence_bed_notice_recipient=lambda user:'owner')
             hammer=NS(type='/obj/item/weapon/hammer')
             procedure('',f.env,hammer=True)(bed,NS(real_name='Character Name'),hammer)

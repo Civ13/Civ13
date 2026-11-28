@@ -179,6 +179,7 @@
 	recipe_ci_document_drawers()
 	recipe_ci_sofa_materials()
 	recipe_ci_canopy()
+	recipe_ci_modular_furniture()
 
 /proc/shelf_ci_clear()
 	for (var/obj/O in locate(2,1,1))
@@ -263,4 +264,101 @@
 			joinery_ci_expect(shelf_ci_count(/obj/item/stack/material/wood) == 2 && !shelf_ci_count(/obj/item/stack/rods), "wood furniture frame loses stock on recovery: [path]")
 			qdel(W)
 		shelf_ci_clear()
+	qdel(H)
+
+// Real modular placement/payment and persistence, with interruption injected
+// at the work-wait boundary. The client preview is not part of this fixture.
+/obj/item/furniture_project/joinery_ci
+	var/cancel_wait = FALSE
+
+/obj/item/furniture_project/joinery_ci/wait_for_furniture(mob/living/human/H, delay)
+	return !cancel_wait
+
+/proc/recipe_ci_modular_furniture()
+	var/turf/site = locate(2,1,1)
+	var/mob/living/human/handle_ci/joinery_ci/H = new(site)
+	H.civilization = "recipe_ci"
+	var/obj/item/furniture_project/joinery_ci/P = new(H)
+	var/obj/item/stack/material/cloth/C = new(H, 2, FALSE)
+	H.l_hand = P
+	H.r_hand = C
+	var/datum/save_epoch = persistence_admission_identity
+	var/obj/item/stack/material/woolcloth/W = new(H, 2, FALSE)
+	var/A = furniture_upholstery_record("cloth", "#7890a8")
+	var/B = furniture_upholstery_record("woolcloth", "#74805a")
+	joinery_ci_expect(P.fit_project_upholstery(C, site, 1, A) && P.fit_project_upholstery(W, site, 2, B) && C.amount == 1 && W.amount == 1, "modular project pays one matching sheet per slot")
+	joinery_ci_expect(!P.fit_project_upholstery(C, site, 2, B) && C.amount == 1 && P.design_part_b == B, "wrong material never consumes or changes the slot")
+	P.design_shape = "Chair"
+	P.design_finish = "Dark"
+	P.cancel_wait = TRUE
+	joinery_ci_expect(!P.cut_parts(H, site, save_epoch) && !P.cut, "cancelled cut leaves project editable")
+	P.cancel_wait = FALSE
+	joinery_ci_expect(P.cut_parts(H, site, save_epoch) && P.cut, "cut locks the chair design")
+	P.cancel_wait = TRUE
+	joinery_ci_expect(!P.assemble(H, site, save_epoch) && H.l_hand == P && P.design_part_a == A && P.design_part_b == B, "cancelled assembly retains paid parts")
+	P.cancel_wait = FALSE
+	var/obj/structure/bed/chair/modular/chair = P.assemble(H, site, save_epoch)
+	joinery_ci_expect(istype(chair) && chair.loc == site && chair.material.name == "wood" && chair.furniture_finish == "Dark" && chair.furniture_upholstery_a == A && chair.furniture_upholstery_b == B && !H.l_hand && QDELETED(P), "finished chair preserves materials, colours and hand cleanup")
+	if (chair)
+		var/savefile/F = new("modular-furniture.sav")
+		F["/format_version"] << 2
+		map_storage.clear_bookkeeping()
+		map_storage.saving_z = 1
+		var/ref = map_storage.BuildVarDirectory(F, chair, 1)
+		map_storage.clear_bookkeeping()
+		var/obj/structure/bed/chair/modular/restored = map_storage.Load_Entry(F, ref, starting_loc = site)
+		if (restored)
+			restored.after_load()
+		joinery_ci_expect(istype(restored) && restored.furniture_finish == "Dark" && restored.furniture_upholstery_a == A && restored.furniture_upholstery_b == B, "chair disk entry retains both finishes")
+		qdel(restored)
+		var/obj/item/stack/material/leather/L = new(H, 2, FALSE)
+		var/leather = furniture_upholstery_record("leather", "#7890a8")
+		joinery_ci_expect(isnull(furniture_upholstery_dye(leather)) && !chair.commit_modular_upholstery(L, site, 1, null, "leather", leather) && L.amount == 2, "stale refit cannot debit leather")
+		joinery_ci_expect(chair.commit_modular_upholstery(L, site, 1, A, "leather", leather) && L.amount == 1 && chair.furniture_upholstery_a == leather && chair.furniture_upholstery_b == B && (locate(/obj/item/stack/material/cloth) in site), "refit seat debits leather and returns only its old cloth")
+		var/obj/item/weapon/wirecutters/cutters = new(H)
+		joinery_ci_expect(chair.commit_modular_upholstery(cutters, site, 2, B, null, null) && !chair.furniture_upholstery_b && chair.furniture_upholstery_a == leather && (locate(/obj/item/stack/material/woolcloth) in site), "cutters recover only the back's wool")
+		chair.strip_modular_upholstery()
+		joinery_ci_expect(!chair.furniture_upholstery_a && !chair.furniture_upholstery_b && (locate(/obj/item/stack/material/leather) in site), "dismantling recovers the fitted leather once")
+		qdel(cutters)
+		qdel(L)
+		qdel(chair)
+	var/obj/item/furniture_project/joinery_ci/bed_project = new(H)
+	H.l_hand = bed_project
+	bed_project.design_shape = "Bed"
+	bed_project.design_finish = "Honey"
+	var/obj/structure/bed/wood/occupied = new(site)
+	joinery_ci_expect(bed_project.cut_parts(H, site, save_epoch) && !bed_project.assemble(H, site, save_epoch) && H.l_hand == bed_project, "occupied tile retains cut project")
+	qdel(occupied)
+	var/obj/structure/bed/wood/modular/bed = bed_project.assemble(H, site, save_epoch)
+	joinery_ci_expect(istype(bed) && bed.furniture_finish == "Honey" && !bed.padding_material && !H.l_hand, "bare bed comes from the same project without cloth")
+	qdel(bed)
+	var/obj/item/furniture_project/joinery_ci/bed_parts = new(H)
+	H.l_hand = bed_parts
+	bed_parts.design_shape = "Bed"
+	joinery_ci_expect(bed_parts.fit_project_upholstery(W, site, 1, B) && bed_parts.fit_project_upholstery(C, site, 2, A) && bed_parts.cut_parts(H, site, save_epoch), "both mattress and cover are paid before cutting")
+	var/obj/structure/bed/wood/modular/finished_bed = bed_parts.assemble(H, site, save_epoch)
+	joinery_ci_expect(istype(finished_bed) && finished_bed.furniture_upholstery_a == B && finished_bed.furniture_upholstery_b == A, "mattress and cover are preserved independently")
+	qdel(finished_bed)
+	var/obj/item/furniture_project/joinery_ci/stool_project = new(H)
+	H.l_hand = stool_project
+	stool_project.design_shape = "Stool"
+	stool_project.design_finish = "Honey"
+	var/obj/item/stack/material/leather/seat_stock = new(H, 2, FALSE)
+	var/seat_record = furniture_upholstery_record("leather")
+	joinery_ci_expect(!stool_project.fit_project_upholstery(seat_stock, site, 2, seat_record) && seat_stock.amount == 2, "stool rejects a second slot without charging")
+	joinery_ci_expect(stool_project.fit_project_upholstery(seat_stock, site, 1, seat_record) && seat_stock.amount == 1 && stool_project.cut_parts(H, site, save_epoch), "stool pays for its single seat")
+	var/obj/item/weapon/stool/wood/modular/stool = stool_project.assemble(H, site, save_epoch)
+	joinery_ci_expect(istype(stool) && stool.loc == site && stool.furniture_finish == "Honey" && stool.furniture_upholstery_a == seat_record, "assembled stool remains a portable item with its paid seat")
+	if (stool)
+		var/obj/item/weapon/wirecutters/seat_cutters = new(H)
+		joinery_ci_expect(stool.commit_modular_seat(seat_cutters, site, seat_record, null, null) && !stool.furniture_upholstery_a && !stool.commit_modular_seat(seat_cutters, site, seat_record, null, null), "stool seat is recoverable only once")
+		joinery_ci_expect(stool.commit_modular_seat(seat_stock, site, null, "leather", seat_record), "stool accepts a replacement seat from an exact sheet")
+		stool.dismantle()
+		joinery_ci_expect(QDELETED(stool), "modular stool retains ordinary dismantling")
+		qdel(seat_cutters)
+	qdel(seat_stock)
+	qdel(C)
+	qdel(W)
+	for (var/obj/item/stack/material/S in site)
+		qdel(S)
 	qdel(H)
