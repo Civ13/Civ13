@@ -278,6 +278,10 @@
 		corners |= T.get_corners()
 	END_FOR_DVIEW
 
+	#ifndef LIGHTING_INSTANT_UPDATES
+	var/falloff_range = max(1, light_range)
+	#endif
+
 	for (var/A in corners - effect_str) // New corners
 		if (!A)
 			continue
@@ -295,7 +299,12 @@
 		if (!C.affecting)
 			C.affecting = list()
 		C.affecting += src
+		#ifdef LIGHTING_INSTANT_UPDATES
+		// Immediate overlay callbacks can run before the next corner.
 		APPLY_CORNER(C, max(1, light_range))
+		#else
+		APPLY_CORNER(C, falloff_range)
+		#endif
 
 	for (var/A in effect_str - corners) // Old, now gone, corners.
 		if (!A)
