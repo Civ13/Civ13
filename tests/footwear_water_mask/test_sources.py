@@ -28,8 +28,9 @@ def composition_contract(text):
     assert 'apply_footwear_water_mask(get_water_mask_icon())' in shoes
     assert shoes.index('apply_footwear_water_mask(get_water_mask_icon())') < shoes.index('if (update_icons)')
     fire = procedure(text, 'update_fire')
-    assert 'apply_footwear_water_mask(mask_icon)' in fire
-    assert fire.index('apply_footwear_water_mask(mask_icon)') < fire.index('if (update_icons)')
+    assert '\tapply_water_mask()\n\tif (update_icons)' in fire
+    water_mask = procedure(text, 'proc/apply_water_mask')
+    assert '\tapply_footwear_water_mask(mask_icon)\n\tset_water_click_area(' in water_mask
 
 
 class FootwearMaskContracts(unittest.TestCase):
@@ -116,6 +117,7 @@ class FootwearMaskContracts(unittest.TestCase):
             ('footwear.appearance_flags |= KEEP_TOGETHER', '// missing composite'),
             ('apply_footwear_water_mask(get_water_mask_icon())', '// stale replacement'),
             ('apply_footwear_water_mask(mask_icon)', '// stale depth/exit'),
+            ('\tapply_water_mask()\n\tif (update_icons)', '\tif (update_icons)'),
             ('footwear.appearance_flags &= ~KEEP_TOGETHER', '// sticky grouping'),
             ('flags=MASK_INVERSE)', 'flags=0)'),
         ):
@@ -135,9 +137,10 @@ class FootwearMaskContracts(unittest.TestCase):
         selection = old[start:end]
         selection = re.sub(r'\t\t\telse\n[\s\S]*?\t\telse if \(drowning\)',
                            '\t\t\telse\n\t\t\t\treturn null\n\t\telse if (drowning)', selection)
-        current = procedure(source(SOURCE), 'proc/get_water_mask_icon')
-        self.assertIn(selection, current)
-        self.assertIn("return icon('icons/turf/beach.dmi', mask_state)", current)
+        current = source(SOURCE)
+        self.assertIn(selection, procedure(current, 'proc/water_mask_state'))
+        self.assertIn("return mask_state ? icon('icons/turf/beach.dmi', mask_state) : null",
+                      procedure(current, 'proc/get_water_mask_icon'))
 
     def test_mud_and_blood_share_worn_stain_but_dirtyness_is_text(self):
         shoes = procedure(source(SOURCE), 'update_inv_shoes')
@@ -166,7 +169,15 @@ class FootwearMaskContracts(unittest.TestCase):
         shoes = procedure(source(SOURCE), 'update_inv_shoes')
         addition = ('\t// Equipment/stain refreshes can replace this image between water updates.\n'
                     '\tapply_footwear_water_mask(get_water_mask_icon())\n')
-        self.assertEqual(shoes.replace(addition, ''), procedure(old, 'update_inv_shoes'))
+        deferred_redraw = '\tif (!update_icons)\n\t\tqueue_overlay_redraw()\n'
+        tailored_overlays = (
+            '\t\t// Tailored footwear (dressmaking.dm) draws its coloured design layers.\n'
+            '\t\tvar/obj/item/clothing/tailored_shoes = shoes\n'
+            '\t\tif (istype(tailored_shoes) && tailored_shoes.design_body)\n'
+            '\t\t\tstanding.overlays += tailored_shoes.worn_design_layers()\n'
+        )
+        unchanged = shoes.replace(addition, '').replace(deferred_redraw, '').replace(tailored_overlays, '')
+        self.assertEqual(unchanged, procedure(old, 'update_inv_shoes'))
 
     def test_prepared_packet_uses_exact_production_bodies_and_assets(self):
         with tempfile.TemporaryDirectory() as temp:
