@@ -379,7 +379,7 @@ recipe; --camera-prototype-negative-control restores its obsolete era cap in
 isolated runtime data and must detect exactly the lost recipe.
 
 <!-- 2026-10-12: finite digging completion -->
-Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters; `-DiggingBaseline` rejects immutable pre-fix source without changing the checkout.
+Loose snow/dirt/sand stock must be checked after the action wait, because another actor may consume the last unit. Underground pickaxe actions use one wait/completion path. `tests/resource_extraction/digging_probe.dm` runs production handlers with competing completion and cancellation adapters.
 
 <!-- 2026-10-31: abstract chip batches and equal oven fuel -->
 <!-- 2026-10-31: global grinder acquisition -->

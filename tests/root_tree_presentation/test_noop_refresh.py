@@ -3,6 +3,7 @@ from collections import defaultdict
 from types import SimpleNamespace as N
 import unittest
 import importlib.util
+import re
 from pathlib import Path
 _spec = importlib.util.spec_from_file_location('root_noop_contract', Path(__file__).with_name('test_contract.py'))
 _contract = importlib.util.module_from_spec(_spec)
@@ -82,7 +83,12 @@ class NoOpRefresh(unittest.TestCase):
     def commit_tail(self,old_invalidation=False, *, replace=None):
         source=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
         proc=P.fragment(source,'/atom/movable/lighting_overlay/proc/update_overlay(')
+        self.assertIn('var/list/L = color ? copylist(color) : list()', proc)
         tail=proc[proc.index('\t// Check against last values'):]
+        # Select the BYOND assignment before dropping the presentation guard.
+        tail, selections = re.subn(r'^\t#ifdef OPENDREAM\n[^\n]+\n\t#else\n([^\n]+)\n\t#endif$',
+                                   r'\1', tail, flags=re.MULTILINE)
+        self.assertEqual(selections, 1)
         tail='\n'.join(line for line in tail.splitlines() if not line.strip().startswith('#'))+'\n'
         if replace:
             self.assertIn(replace[0], tail)
@@ -100,8 +106,18 @@ class NoOpRefresh(unittest.TestCase):
         f,calls=self.commit_tail()
         old=Values([0.25]*20)
         self.assertIsNone(f(Values(old),True,True,old,True));self.assertEqual(calls,[])
-        result=f(Values([0.5]*20),True,True,old,True)
-        self.assertEqual(calls,['root']);self.assertEqual(result[3],[0.5]*20);self.assertTrue(result[1])
+        incoming = Values([0.5] * 20)
+        result = f(incoming, True, True, old, True)
+        self.assertEqual(calls, ['root'])
+        self.assertEqual(result[3], [0.5] * 20)
+        self.assertIs(result[3], incoming)
+        self.assertEqual(old, [0.25] * 20)
+        self.assertTrue(result[1])
+        copied, calls = self.commit_tail(replace=('color = L\n', 'color = L.Copy()\n'))
+        copied_result = copied(incoming, True, True, old, True)
+        self.assertEqual(copied_result, result)
+        self.assertIsNot(copied_result[3], incoming)
+        self.assertEqual(calls, ['root'])
         f,calls=self.commit_tail();f(Values(old),False,True,old,True)
         self.assertEqual(calls,['root'])
         # An overlay that has never committed (pool reset) always commits.
@@ -226,7 +242,44 @@ class PendingLightPublication(unittest.TestCase):
         self.assertIn('root_tree_light_changed(loc)',light)
         cached=P.fragment(TREE,'/datum/root_tree_presenter/proc/cached_light(')
         self.assertIn('root_light_mask_snapshot(root, TRUE)',cached)
-        self.assertIn('root_light_rgb(root, context.body, TRUE)',cached)
+        self.assertIn('root_light_rgb(root, context.body, TRUE, sample)',cached)
+
+    def test_corner_queues_each_available_master_in_order(self):
+        signature = '/datum/lighting_corner/proc/update_lumcount('
+        path = ROOT / 'code/modules/lighting/lighting_corner.dm'
+        corner = path.read_text(encoding='utf-8')
+        source = corner[corner.index(signature):]
+        # Project the queued branch, with root-tree notifications enabled.
+        source = '\n'.join(
+            line for line in source.splitlines()
+            if not line.lstrip().startswith(('#', '//')) and line.strip() != 'overlay.update_overlay()'
+        )
+        source = re.sub(r'\b(lum_[rgb]|master_turf)\b', r'self.\1', source).replace('if (', 'if(')
+
+        def trace(body):
+            lookups, notifications = [], []
+            masters = [None, N(slot=2, needs_update=True), N(slot=3, needs_update=False), N(slot=4, needs_update=False)]
+
+            def master_turf(index):
+                lookups.append(index)
+                overlay = masters[index - 1]
+                return N(slot=index, lighting_overlay=overlay) if overlay is not None else None
+
+            def changed(turf):
+                notifications.append((turf.slot, turf.lighting_overlay.needs_update))
+
+            env = dict(environment(), root_tree_light_changed=changed)
+            update = compile_proc(body, signature, 'self, delta_r, delta_g, delta_b, lighting_update_overlays', env)
+            queue = Values([])
+            state = N(master_turf=master_turf, lum_r=1, lum_g=2, lum_b=3)
+            update(state, 2, 0.5, -1, queue)
+            return lookups, notifications, [overlay.slot for overlay in queue], (
+                state.lum_r, state.lum_g, state.lum_b
+            )
+
+        self.assertEqual(trace(source), ([1, 2, 3, 4], [(3, False), (4, False)], [3, 4], (3, 2.5, 2)))
+        truncated = source.replace('1 to 4', '1 to 3', 1)
+        self.assertEqual(trace(truncated), ([1, 2, 3], [(3, False)], [3], (3, 2.5, 2)))
 
     def test_legacy_queue_rejects_same_committed_pending_mask_control(self):
         env,f,root=self.snapshot()
@@ -384,6 +437,36 @@ class ResourceStrikes(unittest.TestCase):
             change(T, A, P)
             self.assertIsNone(self.gate()(P, A))
             self.assertIsNotNone(self.gate(STRIKE_SOURCE.replace(deleted, '', 1))(P, A))
+
+    def test_empty_cleanup_skips_copy_and_preserves_other_images(self):
+        class CountingMap(self.Map):
+            copies = 0
+
+            def copy(self):
+                self.copies += 1
+                return super().copy()
+
+        root, _, _, presenter, env = self.subject()
+        presenter.work_images = CountingMap()
+        unrelated = self.Ref()
+        presenter.owner.images += unrelated
+        removals = []
+        env['remove_work_image'] = removals.append
+        signature = '/datum/root_tree_presenter/proc/clear_work_images('
+        clear = compile_proc(TREE, signature, 'self, T=None', env, True)
+        self.assertIsNone(clear(presenter, root))
+        self.assertIsNone(clear(presenter))
+        self.assertEqual(presenter.work_images.copies, 0)
+        self.assertEqual(removals, [])
+        self.assertEqual(presenter.owner.images, [unrelated])
+
+        original = TREE.replace('\tif(!work_images.len)\n\t\treturn\n', '', 1)
+        clear_original = compile_proc(original, signature, 'self, T=None', env, True)
+        self.assertIsNone(clear_original(presenter, root))
+        self.assertIsNone(clear_original(presenter))
+        self.assertEqual(presenter.work_images.copies, 2)
+        self.assertEqual(removals, [])
+        self.assertEqual(presenter.owner.images, [unrelated])
 
     def test_removal_is_scoped_idempotent_and_all_invalidation_paths_clear_fx(self):
         T, actor, A, P, env = self.subject()

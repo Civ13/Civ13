@@ -10,7 +10,9 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'tests' / 'save_movement'))
+sys.path.insert(0, str(ROOT))
 from source_adapter import extract, project, read
+from tools.dmi import Dmi
 
 PATH = 'code/game/objects/structures/window.dm'
 PARENT = '/obj/structure/window/proc/shatter'
@@ -82,6 +84,27 @@ class WindowFrames(unittest.TestCase):
     def test_generic_frame_remains_generic_when_glazed(self):
         self.assertEqual(self.glaze('/obj/structure/window_frame'),
                          ['/obj/structure/window/classic'])
+
+
+    def declared_sprite(self, kind, expected_state):
+        declaration = re.search(rf'^{re.escape(kind)}\n((?:\t[^\n]*\n)*)', self.source, re.M)
+        self.assertIsNotNone(declaration, kind)
+        state = re.search(r'^\ticon_state = "([^"]+)"$', declaration[1], re.M)
+        self.assertIsNotNone(state, kind)
+        self.assertEqual(state[1], expected_state)
+        return Dmi.from_file(ROOT / 'icons/obj/windows.dmi').get_state(state[1]).get_frame(0).convert('RGBA')
+
+    def test_red_sandstone_frame_has_open_panes(self):
+        frame = self.declared_sprite('/obj/structure/window_frame/redsandstone', 'redsandstonewindow_small')
+        for pane in ((8, 16), (23, 16)):
+            self.assertEqual(frame.getpixel(pane)[3], 0)
+
+    def test_red_sandstone_glazing_has_translucent_panes(self):
+        finished = self.glaze('/obj/structure/window_frame/redsandstone')
+        self.assertEqual(finished, ['/obj/structure/window/classic/redsandstone'])
+        window = self.declared_sprite(finished[0], 'redsandstonewindow_small_full')
+        for pane in ((8, 16), (23, 16)):
+            self.assertTrue(0 < window.getpixel(pane)[3] < 255)
 
 
 if __name__ == '__main__':

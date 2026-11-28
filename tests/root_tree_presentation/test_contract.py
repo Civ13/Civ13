@@ -1,5 +1,7 @@
 """Source-derived root admission/snapshot/ownership contracts; not client pixels."""
+from collections import defaultdict
 import importlib.util
+import json
 from pathlib import Path
 import re
 from types import SimpleNamespace as N
@@ -57,6 +59,10 @@ def compile_proc(text,signature,args,env,method=False):
         assignment=re.fullmatch(r'(\w+) = (.+) \? (.+) : (.+)',line)
         if assignment:line=assignment[1]+' = '+assignment[3]+' if '+assignment[2]+' else '+assignment[4]
         line=line.replace('arglist(sample)','*sample')
+        if name=='cached_light':
+            line=line.replace(r'"\ref[root]|[L.icon]|[L.icon_state]|[L.dir]|[json_encode(sample)]"',
+                              'f"{id(root)}|{L.icon}|{L.icon_state}|{L.dir}|{json_encode(sample)}"')
+            line=line.replace('"|[time_of_day]"', 'f"|{time_of_day}"').replace('rgb = rgb(', 'rgb = dm_rgb(')
         line=line.replace('"phase-[phase].ready.json"','f"phase-{phase}.ready.json"')
         line=re.sub(r'([\w.]+)\.len',r'len(\1)',line)
         line=line.replace('/turf/floor/plating',repr('/turf/floor/plating'))
@@ -127,6 +133,35 @@ class Snapshot(unittest.TestCase):
     def test_committed_update_is_read_fresh(self):
         self.overlay.color=Values([.3]*20);self.overlay.color_committed=True
         self.assertEqual(self.f(self.root),[.3]*20)
+    def test_snapshot_range_preserves_all_coefficient_positions(self):
+        coefficients = [0, -0.5, 0.25, 1, 0.25] * 4
+        coefficients[-1] = 0.75
+        self.overlay.color = Values(coefficients)
+        self.assertEqual(self.f(self.root), coefficients)
+
+        range_loop = 'for(var/i in 1 to 20)'
+        self.assertIn(range_loop, SNAP)
+        previous = compile_proc(
+            SNAP.replace(range_loop, 'for(var/i = 1, i <= 20, i++)', 1),
+            '/proc/root_light_mask_snapshot(', 'root, allow_pending=False', self.env,
+        )
+        self.assertEqual(previous(self.root), coefficients)
+
+        truncated = compile_proc(
+            SNAP.replace(range_loop, 'for(var/i in 1 to 19)', 1),
+            '/proc/root_light_mask_snapshot(', 'root, allow_pending=False', self.env,
+        )
+        self.assertEqual(truncated(self.root), coefficients[:-1])
+
+        for position, bad_coefficient in [(1, None), (11, "0.25"), (20, [])]:
+            with self.subTest(position=position):
+                invalid = coefficients.copy()
+                invalid[position - 1] = bad_coefficient
+                self.overlay.color = Values(invalid)
+                self.assertIsNone(self.f(self.root))
+                self.assertIsNone(previous(self.root))
+        self.assertEqual(truncated(self.root), coefficients[:-1])
+
     def test_missing_owner_check_control(self):
         f=compile_proc(SNAP.replace(' || owner.loc != root',''),'/proc/root_light_mask_snapshot(','root, allow_pending=False',self.env)
         self.overlay.loc=object();self.assertIsNotNone(f(self.root))
@@ -163,7 +198,7 @@ class LightPolicy(unittest.TestCase):
     def setUp(self):
         self.env=environment();self.env.update(INVISIBILITY_LEVEL_TWO=45,istext=lambda x:isinstance(x,str))
         compile_proc(SNAP,'/proc/root_light_mask_snapshot(','root, allow_pending=False',self.env)
-        self.f=compile_proc(SNAP,'/proc/root_light_rgb(','root, viewer, allow_pending=False',self.env)
+        self.f=compile_proc(SNAP,'/proc/root_light_rgb(','root, viewer, allow_pending=False, sample=None',self.env)
         self.root=N(lighting_overlay=None,needs_fullbright_coverage=lambda:False)
         self.viewer=N(see_invisible=25)
         self.env['icon']=lambda *a:(_ for _ in ()).throw(AssertionError('Unexpected icon read'))
@@ -187,6 +222,57 @@ class LightPolicy(unittest.TestCase):
         self.env['CIV13_ROOT_TREE_PRESENTATION']=True
         self.root.lighting_overlay=N(loc=self.root,needs_update=True)
         self.assertIsNone(self.f(self.root,self.viewer))
+
+    def test_cached_light_samples_once_per_request_and_maps_only_on_a_miss(self):
+        self.root.lighting_overlay=N(loc=self.root,needs_update=True,color=Values(range(20)),
+                                     color_committed=True,icon='mask',icon_state='',dir=2)
+        self.root.get_window_coeff=lambda:1
+        presenter=N(context=N(body=self.viewer),light_keys=defaultdict(lambda:None),
+                    light_values={})
+        # The cache keys are DM atom references. A fixture identity works here.
+        class Tree(N):
+            __hash__=object.__hash__
+        tree=Tree(loc=self.root)
+
+        snapshot=self.env['root_light_mask_snapshot']
+        snapshots=[]
+        def count_snapshot(root, allow_pending=False):
+            sample=snapshot(root,allow_pending)
+            snapshots.append(sample)
+            return sample
+
+        mapped=[]
+        mask=N(Width=lambda:32,Height=lambda:32,MapColors=lambda *args:mapped.append(args),
+               GetPixel=lambda x,y:'#194766ff')
+        self.env.update(root_light_mask_snapshot=count_snapshot,icon=lambda *args:mask,
+                        id=id,json_encode=json.dumps,daylight_on_client=lambda:False,
+                        time_of_day=70,round=round,min=min,
+                        daylight_lum=lambda coefficient:.2*coefficient,
+                        rgb2num=lambda rgb:Values(int(rgb[i:i+2],16) for i in (1,3,5)),
+                        dm_rgb=lambda r,g,b:f'#{r:02x}{g:02x}{b:02x}')
+        cached=compile_proc(TREE,'/datum/root_tree_presenter/proc/cached_light(',
+                            'self, T',self.env,True)
+
+        self.assertEqual(cached(presenter,tree),'#194766')
+        self.assertEqual(len(snapshots),1)
+        self.assertEqual(mapped,[tuple(range(20))])
+        self.assertEqual(cached(presenter,tree),'#194766')
+        self.assertEqual(len(snapshots),2)
+        self.assertEqual(len(mapped),1)
+
+        # Changing the daylight key or the committed matrix still remaps.
+        self.env['daylight_on_client']=lambda:True
+        self.assertEqual(cached(presenter,tree),'#4c7a99')
+        self.root.lighting_overlay.color=Values([.25]*20)
+        self.assertEqual(cached(presenter,tree),'#4c7a99')
+        self.assertEqual(mapped,[tuple(range(20)),tuple(range(20)),(.25,)*20])
+        self.assertEqual(len(snapshots),4)
+
+        # Reject an exact-sized matrix with a malformed final coefficient.
+        self.root.lighting_overlay.color[20]='bad'
+        self.assertIsNone(cached(presenter,tree))
+        self.assertIsNone(snapshots[-1])
+        self.assertEqual(len(mapped),3)
 
 class OwnershipAndComposition(unittest.TestCase):
     def model(self):
@@ -379,7 +465,8 @@ class OwnershipAndComposition(unittest.TestCase):
             ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.perspective = new_perspective'),
             ('code/game/mob/mob.dm','/mob/proc/reset_view(','client.eye = new_eye'),
             ('code/game/objects/structures/wild.dm','/obj/structure/wild/tree/live_tree/update_icon(','..()'),
-            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','color = L.Copy()')]:
+            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','\tcolor = L.Copy()\n'),
+            ('code/modules/lighting/lighting_overlay.dm','/atom/movable/lighting_overlay/proc/update_overlay(','\tcolor = L\n')]:
             source=(ROOT/path).read_text(encoding='utf-8');check(source,signature,write)
             mutant=source.replace('root_tree_invalidate(src)','removed_invalidation(src)').replace('root_tree_invalidate(loc)','removed_invalidation(loc)').replace('los_invalidate_movement(src)','removed_invalidation(src)').replace('root_tree_light_changed(loc)','removed_notification(loc)')
             with self.assertRaises(ValueError):check(mutant,signature,write)
@@ -403,6 +490,32 @@ class SceneFallback(unittest.TestCase):
         inherited=self.appearance(plane=-32767,layer=-1)
         self.assertTrue(self.foreground(inherited,1,10.1))
         self.assertTrue(self.foreground(self.appearance(icon=None),1,3,depth=8))
+    def test_foreground_audit_reads_each_appearance_field_once(self):
+        class TrackedAppearance(N):
+            def __getattribute__(self, name):
+                if name in ('plane', 'layer'):
+                    self.reads[name] += 1
+                return super().__getattribute__(name)
+
+        ordinary = TrackedAppearance(**vars(self.appearance()), reads={'plane': 0, 'layer': 0})
+        inherited = TrackedAppearance(**vars(self.appearance(plane=-32767, layer=-1)),
+                                      reads={'plane': 0, 'layer': 0})
+        self.assertFalse(self.foreground(ordinary, 1, 10.1))
+        self.assertTrue(self.foreground(inherited, 1, 10.1))
+        for appearance in (ordinary, inherited):
+            self.assertEqual(appearance.reads, {'plane': 1, 'layer': 1})
+
+        updated = ('\tvar/p = A:plane\n\tif(p == FLOAT_PLANE)\n\t\tp = inherited_plane\n'
+                   '\tvar/l = A:layer\n\tif(l < 0)\n\t\tl = inherited_layer\n')
+        repeated = ('\tvar/p = A:plane == FLOAT_PLANE ? inherited_plane : A:plane\n'
+                    '\tvar/l = A:layer < 0 ? inherited_layer : A:layer\n')
+        self.assertIn(updated, TREE)
+        original = compile_proc(TREE.replace(updated, repeated, 1), '/proc/root_tree_foreground_appearance(',
+                                'A, inherited_plane, inherited_layer, depth=0, budget=None', self.env)
+        ordinary.reads = {'plane': 0, 'layer': 0}
+        self.assertFalse(original(ordinary, 1, 10.1))
+        self.assertEqual(ordinary.reads, {'plane': 2, 'layer': 2})
+
     def test_omitted_nested_inspection_control(self):
         mutant=TREE.replace('root_tree_foreground_appearance(O, p, l, depth + 1, budget)','FALSE')
         env=environment();env.update(FLOAT_PLANE=-32767)

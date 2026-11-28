@@ -76,6 +76,15 @@ var/global/list/brick_bench_batches = list(
 		return TRUE
 	return FALSE
 
+/obj/structure/workshop_machine/proc/can_start_material_work(mob/living/human/H)
+	if (busy)
+		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
+		return FALSE
+	if (!anchored)
+		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+		return FALSE
+	return TRUE
+
 /obj/structure/workshop_machine/proc/dismantled()
 	return
 
@@ -119,11 +128,7 @@ var/global/list/brick_bench_batches = list(
 		return
 	if (!istype(I, /obj/item/stack/material/clay))
 		return ..()
-	if (busy)
-		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
-		return
-	if (!anchored)
-		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+	if (!can_start_material_work(H))
 		return
 	var/list/choices = potters_wheel_choices(H)
 	if (!choices.len)
@@ -218,11 +223,7 @@ var/global/list/brick_bench_batches = list(
 		return
 	if (!istype(I, /obj/item/stack/material/clay))
 		return ..()
-	if (busy)
-		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
-		return
-	if (!anchored)
-		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+	if (!can_start_material_work(H))
 		return
 	var/list/choices = brick_bench_choices(H)
 	if (!choices.len)

@@ -21,6 +21,10 @@
 #define BEACON_FUEL_CAP 120
 #define BEACON_TELL_GAP 3000
 
+// Count only the time since the last tick, up to the configured interval and two seconds.
+/proc/timekeeping_elapsed_seconds(configured_seconds, last_tick)
+	return min(2, max(0, configured_seconds), max(0, (world.time - last_tick) / 10))
+
 // "about 3 o'clock in the afternoon", from the current game time rounded to
 // step minutes (60 or 30).
 /proc/rough_clock(step = 60)
@@ -143,7 +147,7 @@
 	if (QDELETED(src) || water <= 0)
 		processing_objects -= src
 		return PROCESS_KILL
-	drip_seconds += min(2, max(0, configured_seconds), max(0, (world.time - last_tick) / 10))
+	drip_seconds += timekeeping_elapsed_seconds(configured_seconds, last_tick)
 	last_tick = world.time
 	if (alarm_hour >= 0)
 		var/h24 = mechanism_hour24()
@@ -273,7 +277,7 @@
 	if (QDELETED(src) || wound <= 0)
 		processing_objects -= src
 		return PROCESS_KILL
-	tick_seconds += min(2, max(0, configured_seconds), max(0, (world.time - last_tick) / 10))
+	tick_seconds += timekeeping_elapsed_seconds(configured_seconds, last_tick)
 	last_tick = world.time
 	if (tick_seconds >= 60)
 		tick_seconds -= 60
@@ -349,11 +353,17 @@
 	return key == "next_ring" || ..()
 
 /obj/structure/bell/attack_hand(mob/user)
+	try_ring_alarm(user)
+
+/obj/structure/bell/proc/try_ring_alarm(mob/user = null)
 	if (world.time < next_ring)
-		to_chat(user, SPAN_WARNING("The bell is still swinging."))
-		return
-	user.visible_message(SPAN_WARNING("[user] rings \the [src]!"), SPAN_NOTICE("You haul on the rope and ring \the [src]."))
+		if (user)
+			to_chat(user, SPAN_WARNING("The bell is still swinging."))
+		return FALSE
+	if (user)
+		user.visible_message(SPAN_WARNING("[user] rings \the [src]!"), SPAN_NOTICE("You haul on the rope and ring \the [src]."))
 	ring(0)
+	return TRUE
 
 /obj/structure/bell/proc/toll(hour)
 	ring(hour)
@@ -490,7 +500,7 @@
 /obj/structure/lighthouse_beacon/process_interval(configured_seconds = 2)
 	if (QDELETED(src) || !lit)
 		return PROCESS_KILL
-	burn_seconds += min(2, max(0, configured_seconds), max(0, (world.time - last_tick) / 10))
+	burn_seconds += timekeeping_elapsed_seconds(configured_seconds, last_tick)
 	last_tick = world.time
 	if (burn_seconds < 60)
 		return

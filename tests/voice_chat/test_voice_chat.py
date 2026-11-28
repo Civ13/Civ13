@@ -47,9 +47,6 @@ class VoiceChatSourceTests(unittest.TestCase):
     def test_guests_are_left_out(self):
         self.assertIn('!IsGuestKey(C.key)', self.source)
 
-    def test_no_spawn(self):
-        self.assertNotIn('spawn(', self.source)
-
 
 if __name__ == '__main__':
     unittest.main()

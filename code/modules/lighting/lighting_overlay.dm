@@ -239,6 +239,10 @@
 	#endif
 	// Update last values and apply changes
 	last_luminosity = new_luminosity
+	#ifdef OPENDREAM
 	color = L.Copy()
+	#else
+	color = L
+	#endif
 	color_committed = TRUE
 	luminosity = new_luminosity

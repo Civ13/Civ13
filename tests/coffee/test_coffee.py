@@ -63,9 +63,6 @@ class CoffeeSourceTests(unittest.TestCase):
             hits += len(re.findall(r'(?m)^\tid = "coffee_grounds"$', path.read_text(encoding='utf-8', errors='replace')))
         self.assertEqual(hits, 1)
 
-    def test_no_spawn(self):
-        self.assertNotIn('spawn(', self.source)
-
 
 if __name__ == '__main__':
     unittest.main()

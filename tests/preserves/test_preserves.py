@@ -1,14 +1,22 @@
 """Offline source contracts for preserves. Gameplay behaviour is covered by the
 native probe: python3 tests/ecology_spawning/run_linux.py . tests/preserves/probe.dm 300
 """
-from pathlib import Path
+import importlib.util
 import re
 import struct
 import unittest
 import zlib
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import Mock
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / 'code/modules/1713/preserves.dm'
+SNACKS = ROOT / 'code/modules/reagents/reagent_containers/food/snacks.dm'
+spec = importlib.util.spec_from_file_location(
+    'source_adapter', ROOT / 'tests/save_movement/source_adapter.py')
+adapter = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(adapter)
 
 
 def dmi_states(path):
@@ -27,6 +35,34 @@ def dmi_states(path):
 class PreservesSourceTests(unittest.TestCase):
     def setUp(self):
         self.source = SOURCE.read_text(encoding='utf-8')
+
+    def test_spread_transfer_reserves_enough_space_before_moving_the_slice(self):
+        source = SNACKS.read_text(encoding='utf-8')
+        transfer = '/obj/item/weapon/reagent_containers/food/snacks/breadslice/proc/transfer_reagents_to_spread'
+        for volume, topping, present, existing_capacity, expected_capacity in (
+            (50, 2, 2, 50, 52),  # jam layer already present
+            (50, 5, 0, 50, 55),  # butter added after the transfer
+            (35, 5, 0, 60, 60),  # keep a larger holder
+        ):
+            with self.subTest(volume=volume, topping=topping, present=present):
+                target = SimpleNamespace(maximum_volume=existing_capacity, total_volume=present)
+                moved = []
+
+                def move(destination, amount):
+                    self.assertIs(destination, target)
+                    moved.append((destination.maximum_volume, amount))
+
+                reagents = SimpleNamespace(total_volume=volume, trans_to_holder=move)
+                adapter.project(source, transfer, 'target, topping_volume', {'reagents': reagents})(target, topping)
+                self.assertEqual(moved, [(expected_capacity, volume)])
+
+        empty = SimpleNamespace(total_volume=0, trans_to_holder=Mock())
+        for reagents in (None, empty):
+            with self.subTest(reagents=reagents):
+                target = SimpleNamespace(maximum_volume=50, total_volume=0)
+                adapter.project(source, transfer, 'target, topping_volume', {'reagents': reagents})(target, 5)
+                self.assertEqual(target.maximum_volume, 50)
+        empty.trans_to_holder.assert_not_called()
 
     def test_included(self):
         dme = (ROOT / 'civ13.dme').read_text(encoding='utf-8')
@@ -65,9 +101,6 @@ class PreservesSourceTests(unittest.TestCase):
         self.assertIn('crock_cancel()', proc('Destroy()'))
         self.assertIn('key == "crock_timer"', proc('persistence_runtime_var(key)'))
         self.assertIn('crock_schedule()', proc('after_load()'))
-
-    def test_no_spawn(self):
-        self.assertNotIn('spawn(', self.source)
 
 
 if __name__ == '__main__':

@@ -1293,9 +1293,7 @@ class BlockingTreeSurface(unittest.TestCase):
         self.assertEqual(len(calls),count)
         root=CORE.parents[3]
         presenter=(root/'code/modules/visibility/root_tree_presenter.dm').read_text()
-        masks=(root/'code/modules/visibility/los_presenter.dm').read_text()
         self.assertIn('decision_snapshot(T, S, "visual_tree")',presenter)
-        self.assertIn('root_tree_family(A) && A.opacity ? "visual_tree" : "visual"',masks)
         self.assertIn('I.appearance_flags &= ~TILE_BOUND',presenter)
         decision_text=fragment(CORE.read_text(),'/datum/los_context/proc/decision(')
         self.assertIn('return decision_snapshot(target, capture(), "visual_tree")',decision_text)
@@ -1391,8 +1389,8 @@ def model(source=None):
         text=re.sub(r'\bsrc\b','self',text)
         for path in ['/obj/screen','/atom/movable/lighting_overlay','/atom/movable/lighting_fullbright']:
             text=text.replace(path,repr(path))
-        text=text.replace('root_tree_family(A) && A.opacity ? "visual_tree" : "visual"',
-                          '("visual_tree" if root_tree_family(A) and A.opacity else "visual")')
+        text=re.sub(r'= ([^\n]+) \? "visual_tree" : "visual"',
+                    r'= ("visual_tree" if \1 else "visual")',text)
         text=re.sub(r'for\(var/(c[xy]) = (.*), \1 <= (.*), \1\+\+\)',
                     r'for(var/\1 in inclusive_range(\2, \3))',text)
         return adapter.project(text,declaration,'self'+(', '+args if args else ''),env)
@@ -1413,10 +1411,39 @@ def model(source=None):
     context.decision_snapshot=lambda a,s,op:outcomes.get(a,1)
     def include(A):
         grid[(A.loc.x,A.loc.y,A.z)]=A.loc;A.loc.contents.append(A)
-    return N(P=presenter,C=owner,V=context,S=S,outcomes=outcomes,grid=grid,include=include,allocations=allocations)
+    return N(P=presenter,C=owner,V=context,S=S,outcomes=outcomes,grid=grid,include=include,allocations=allocations,env=env)
 
 
 class FallbackTreeSource(unittest.TestCase):
+    def test_refresh_classifies_only_opaque_movables_as_tree_candidates(self):
+        m = model()
+        transparent_tree = atom(12, 10, tree=True)
+        opaque_tree = atom(13, 10, tree=True, opaque=True)
+        clutter = atom(14, 10)
+        blocker = atom(15, 10, opaque=True)
+        for target in (transparent_tree, opaque_tree, clutter, blocker):
+            m.include(target)
+        classified = []
+        operations = {}
+        family = m.env['root_tree_family']
+
+        def classify(target):
+            classified.append(target)
+            return family(target)
+
+        def decide(target, snapshot, operation):
+            operations[target] = operation
+            return 1
+
+        m.env['root_tree_family'] = classify
+        m.V.decision_snapshot = decide
+        self.assertTrue(m.P.refresh(m.S))
+        self.assertEqual(operations[transparent_tree], 'visual')
+        self.assertEqual(operations[opaque_tree], 'visual_tree')
+        self.assertEqual(operations[clutter], 'visual')
+        self.assertEqual(operations[blocker], 'visual')
+        self.assertEqual(classified, [opaque_tree, blocker])
+
     def test_allowed_copy_identity_light_plane_offsets_and_deduplication(self):
         m=model();tree=atom(13,10,tree=True,opaque=True);m.include(tree)
         other=atom(13,11,turf=True);other.contents=[tree];m.grid[(13,11,1)]=other

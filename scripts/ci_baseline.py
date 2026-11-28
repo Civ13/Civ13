@@ -359,8 +359,8 @@ SUITES = {
         'paths': ('tests/barricade_projectile/', 'code/game/objects/structures/barricades.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'window_frames': {'files': ('tests/window_frames/test_window_frames.py',),
-        'paths': ('tests/window_frames/', 'code/game/objects/structures/window.dm'),
-        'shared_paths': ('tests/save_movement/source_adapter.py',)},
+        'paths': ('tests/window_frames/', 'code/game/objects/structures/window.dm', 'icons/obj/windows.dmi'),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'tools/dmi/')},
     'wood_ash_collection': {'files': ('tests/wood_ash_collection/test_collection.py',),
         'paths': ('tests/wood_ash_collection/', 'code/game/objects/items/misc.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py',)},
@@ -523,6 +523,9 @@ SUITES = {
         'tests/sign_icons/', 'code/game/objects/structures/signs.dm',
         'code/game/objects/structures/sign_flags.dm', 'icons/obj/decals.dmi',
         'icons/obj/decals_wide.dmi'), 'shared_paths': ('tests/save_movement/source_adapter.py',)},
+    'gib_icons': {'files': ('tests/gib_icons/test_gib_icons.py',), 'paths': (
+        'tests/gib_icons/', 'code/game/objects/effects/decals/Cleanable/humans.dm',
+        'icons/effects/blood.dmi'), 'shared_paths': ('tools/dmi/',)},
     'cremator_tray': {'files': ('tests/cremator_tray/test_retraction.py',), 'paths': (
         'tests/cremator_tray/', 'code/game/objects/structures/morgue.dm'), 'shared_paths': (
         'tests/save_movement/source_adapter.py',)},
@@ -1869,7 +1872,7 @@ SUITES = {
     'timekeeping': {'files': ('tests/timekeeping/test_source.py',),
         'paths': ('tests/timekeeping/',), 'shared_paths': (
             'code/modules/1713/timekeeping.dm', 'icons/obj/timekeeping.dmi', 'icons/obj/lighthouse.dmi',
-            'tests/sprites/create_timekeeping.py')},
+            'tests/sprites/create_timekeeping.py', 'tests/save_movement/source_adapter.py')},
     # Canals and pound locks: source contracts (native probe tests/canals/probe.dm).
     'canals': {'files': ('tests/canals/test_source.py',),
         'paths': ('tests/canals/',), 'shared_paths': (
@@ -2809,9 +2812,16 @@ SUITES = {
     'glass_stone_machines': {'files': ('tests/glass_stone_machines/test_contract.py',), 'paths': (
         'tests/glass_stone_machines/', 'code/modules/1713/glass_stone_machines.dm',
         'icons/obj/glass_stone_machines.dmi', 'tests/sprites/create_glass_stone.py')},
+    'clay_doorway_stucco': {'files': ('tests/wall_appearance/test_stucco_doorways.py',), 'paths': (
+        'tests/wall_appearance/test_stucco_doorways.py', 'code/game/objects/covers_types/covers_rendered.dm',
+        'code/game/objects/covers_types/covers_buildable.dm'),
+        'shared_paths': ('tests/save_movement/source_adapter.py',)},
     'clay_lime_fire': {'files': ('tests/clay_lime_fire/test_contract.py',), 'paths': (
         'tests/clay_lime_fire/', 'code/modules/1713/clay_lime_fire.dm',
-        'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py')},
+        'icons/obj/workshop_machines.dmi', 'tests/sprites/create_clay_lime_fire.py'),
+        'shared_paths': ('tests/save_movement/source_adapter.py', 'code/modules/1713/glass_stone_machines.dm',
+                         'code/modules/1713/rolling_mill.dm', 'code/modules/1713/wire_bench.dm',
+                         'code/modules/materials/lathes.dm')},
     'charcoal_clamp': {'files': ('tests/charcoal_clamp/test_contract.py',), 'paths': (
         'tests/charcoal_clamp/', 'code/modules/1713/charcoal_clamp.dm',
         'icons/obj/charcoal_clamp.dmi', 'tests/sprites/create_charcoal_clamp.py')},
@@ -2897,8 +2907,11 @@ SUITES = {
         'tests/furniture_joinery/', 'code/game/objects/items/stacks/furniture_joinery.dm',
         'config/crafting/furniture_joinery.json', 'scripts/audit-crafting-recipes.py',
         'code/modules/1713/cutting_board.dm', 'code/modules/1713/modular_furniture.dm',
-        'tests/primitive_woodworking/source_adapter.py',
-        'code/modules/persistence/functions.dm', 'code/modules/reagents/reagent_containers/food.dm')},
+        'code/modules/1713/furniture_upholstery.dm', 'code/modules/1713/furniture_fabric_dye.dm',
+        'icons/obj/furniture_upholstery.dmi', 'tests/primitive_woodworking/source_adapter.py',
+        'code/modules/persistence/functions.dm', 'code/modules/reagents/reagent_containers/food.dm'),
+        'shared_paths': ('code/game/objects/structures/table.dm', 'code/game/objects/structures/table_rack.dm',
+                         'icons/obj/objects.dmi', 'icons/obj/structures.dmi', 'tools/dmi/__init__.py')},
     'dictionary': {'files': ('tests/dictionary_era/test_sources.py',
                              'tests/dictionary_era/test_slang_content.py',
                              'tests/dictionary_era/test_corpus.py'), 'paths': (
@@ -3215,7 +3228,9 @@ SUITES = {
                   'code/modules/1713/herbalism.dm', 'icons/obj/herbalism.dmi', 'code/modules/1713/lantern.dm',
                   'code/modules/1713/light_fuel.dm')},
     'preserves': {'files': ('tests/preserves/test_preserves.py',),
-        'paths': ('tests/preserves/', 'code/modules/1713/preserves.dm', 'icons/obj/food/preserves.dmi')},
+        'paths': ('tests/preserves/', 'code/modules/1713/preserves.dm', 'icons/obj/food/preserves.dmi'),
+        'shared_paths': ('code/modules/reagents/reagent_containers/food/snacks.dm',
+                         'tests/save_movement/source_adapter.py')},
     'drug_preparations': {'files': ('tests/drug_preparations/test_drug_preparations.py',),
         'paths': ('tests/drug_preparations/', 'code/modules/1713/drug_preparations.dm', 'tests/sprites/create_drugs.py')},
     'drug_refining': {'files': ('tests/drug_refining/test_drug_refining.py',),

@@ -1,5 +1,4 @@
 param(
-    [switch]$DiggingBaseline,
     [Parameter(Mandatory)][string]$ByondBin,
     [ValidateSet('tests/resource_extraction/probe.dm','tests/medicine_items/probe.dm','tests/petroleum_lifecycle/probe.dm','tests/petroleum_lifecycle/offshore_probe.dm','tests/hydraulic_fracturing/probe.dm','tests/automated_sifting/probe.dm','tests/mining_yields/probe.dm','tests/resource_extraction/digging_probe.dm','tests/stone_crushing/probe.dm','tests/hydroponics/probe.dm','tests/elevation_climate/probe.dm','tests/weather_air/probe.dm','tests/weather_fronts/probe.dm','tests/weather_wind/probe.dm','tests/weather_precip/probe.dm','tests/weather_fog/probe.dm','tests/crop_frost/probe.dm','tests/feels_like/probe.dm','tests/weather_instruments/probe.dm','tests/world_calendar/probe.dm','tests/weather_shared/probe.dm','tests/factory_automation/probe.dm','tests/factory_automation/belts_probe.dm','tests/factory_automation/routing_probe.dm','tests/factory_automation/machines_probe.dm','tests/ecology_spawning/probe.dm','tests/ecology_spawning/freeze_probe.dm','tests/flora_regrowth/probe.dm','tests/jungle_hiding/probe.dm','tests/factory_automation/fabricators_probe.dm','tests/factory_automation/logistics_probe.dm','tests/factory_automation/chemistry_probe.dm','tests/factory_automation/pipes_probe.dm','tests/factory_automation/vessel_probe.dm','tests/factory_automation/packaging_probe.dm','tests/factory_automation/meter_probe.dm','tests/factory_automation/plating_probe.dm','tests/gilding_dish/probe.dm','tests/factory_automation/tanning_probe.dm','tests/liminal_mode/probe.dm','tests/space_settlement/probe.dm','tests/wildlife_spawner/probe.dm','tests/aircraft/probe.dm','tests/vehicle_storage/probe.dm','tests/party_freight/probe.dm','tests/specialist_traders/probe.dm','tests/safehouse_rooms/probe.dm','tests/submarine/probe.dm','tests/vehicle_breaches/probe.dm','tests/naval_carrier/probe.dm','tests/naval_carrier/second_deck_probe.dm','tests/naval_carrier/deck_lighting_probe.dm','tests/naval_carrier/berth_probe.dm','tests/naval_carrier/flight_deck_probe.dm','tests/naval_carrier/shipyard_probe.dm','tests/naval_carrier/damage_probe.dm','tests/naval_carrier/fitout_probe.dm','tests/naval_carrier/arming_probe.dm','tests/naval_carrier/slipway_probe.dm','tests/naval_carrier/boathouse_probe.dm','tests/naval_carrier/crossing_probe.dm','tests/naval_carrier/cargo_probe.dm','tests/naval_carrier/voyage_probe.dm','tests/naval_carrier/voyage_hold_probe.dm','tests/vehicle_projects/probe.dm','tests/harvest_skills/probe.dm','tests/naval_carrier/craft_probe.dm','tests/naval_carrier/papers_probe.dm','tests/naval_carrier/built_hull_probe.dm','tests/naval_carrier/hull_push_probe.dm','tests/naval_carrier/bilge_probe.dm','tests/naval_carrier/ports_probe.dm','tests/naval_carrier/upper_deck_probe.dm','tests/naval_carrier/hold_refit_probe.dm','tests/naval_carrier/draught_probe.dm','tests/naval_carrier/chart_probe.dm','tests/naval_carrier/ferry_probe.dm','tests/naval_carrier/freight_probe.dm','tests/naval_carrier/depot_jobs_probe.dm','tests/naval_carrier/open_sea_probe.dm','tests/orbit_world/spacecraft_probe.dm','tests/orbit_world/sites_probe.dm','tests/naval_carrier/mines_probe.dm','tests/naval_carrier/degaussing_probe.dm','tests/naval_carrier/sweeping_probe.dm','tests/naval_carrier/torpedo_probe.dm','tests/vehicle_tow/probe.dm','tests/vehicle_papers/probe.dm','tests/vehicle_papers/assembly_probe.dm','tests/vehicle_papers/sheet_probe.dm','tests/vehicle_papers/sheet_works_probe.dm','tests/airship_sheets/probe.dm','tests/airship_hull/voyage_probe.dm','tests/rocket_plans/probe.dm','tests/rocket_plans/works_probe.dm','tests/rocket_plans/reuse_probe.dm','tests/rocket_plans/missions_probe.dm','tests/train_draught/probe.dm','tests/vehicle_load/probe.dm','tests/aluminium/probe.dm','tests/draft_carriage/probe.dm','tests/foraging/probe.dm','tests/ore_extraction_kit/probe.dm','tests/rubber_tapping/probe.dm','tests/resin/probe.dm','tests/silk/probe.dm','tests/treated_cloth/probe.dm','tests/lacquer/probe.dm','tests/resin_laminate/probe.dm','tests/particle_board/probe.dm','tests/fiberglass/probe.dm')]
     [string]$Probe = 'tests/resource_extraction/probe.dm'
@@ -38,10 +37,6 @@ try {
     if ($Probe -eq 'tests/resource_extraction/digging_probe.dm') {
         # Adapt only action waits; execute the complete production attackby body.
         $digging = Get-Content -LiteralPath 'code/game/turfs/floor_attackby.dm' -Raw
-        if ($DiggingBaseline) {
-            $digging = (git show 'aa675de6dbade0f3740c516dc4b5945c5c9a43c7:code/game/turfs/floor_attackby.dm') -join "`n"
-            if ($LASTEXITCODE -ne 0) { throw 'Immutable digging baseline unavailable' }
-        }
         $digging = $digging.Replace('do_after(', 'digging_probe_wait(')
         [IO.File]::WriteAllText((Join-Path $repo ($prefix + '_mining.dm')), $digging)
         $source = $source.Replace('code\game\turfs\floor_attackby.dm', $prefix + '_mining.dm')
@@ -65,7 +60,7 @@ try {
     if ($LASTEXITCODE -ne 0 -or ($build -join "`n") -notmatch '0 errors, 0 warnings' -or ($build -join "`n") -notmatch "(?m)^DM compiler version $versionPattern\r?$") { throw 'Pinned probe compile failed' }
     foreach ($extension in @('.dmb','.rsc')) { Copy-Item -LiteralPath ($prefix + $extension) -Destination (Join-Path $temporary ('probe' + $extension)) }
     Copy-Item -LiteralPath 'config' -Destination $temporary -Recurse
-    [IO.File]::WriteAllText((Join-Path $temporary 'source-state.txt'), "commit=$commit`ndirty=$dirty`ndigging_baseline=$DiggingBaseline")
+    [IO.File]::WriteAllText((Join-Path $temporary 'source-state.txt'), "commit=$commit`ndirty=$dirty")
     $runtime = Start-Process -FilePath (Join-Path $ByondBin $daemonName) -ArgumentList @('probe.dmb', '0', '-invisible', '-close', '-trusted', '-params', "tested_commit=$commit", '-log', 'runtime.log') -WorkingDirectory $temporary -PassThru @options
     # 60 s: the mining-yields matrix (13 ore rolls, every era) runs close to 30 s on hosted runners.
     $timedOut = !$runtime.WaitForExit(60000)
@@ -81,9 +76,7 @@ try {
     $runtimeLog = Get-Content -LiteralPath (Join-Path $temporary 'runtime.log') -Raw
     Write-Output $runtimeLog
     $result | ConvertTo-Json -Compress
-    $failuresUnexpected = if ($DiggingBaseline) { $result.failures -eq 0 } else { $result.failures -ne 0 }
-    if ($DiggingBaseline -and $Probe -ne 'tests/resource_extraction/digging_probe.dm') { throw 'Baseline is only supported for digging probe' }
-    if ($runtime.ExitCode -ne 0 -or $failuresUnexpected -or $result.runtime_error -or $runtimeLog -match 'runtime error' -or $result.commit -ne $commit -or $result.byond_version -ne [int]$versionParts[0] -or $result.byond_build -ne [int]$versionParts[1]) { throw 'Production-path extraction probe failed' }
+    if ($runtime.ExitCode -ne 0 -or ($result.failures -ne 0) -or $result.runtime_error -or $runtimeLog -match 'runtime error' -or $result.commit -ne $commit -or $result.byond_version -ne [int]$versionParts[0] -or $result.byond_build -ne [int]$versionParts[1]) { throw 'Production-path extraction probe failed' }
 } finally {
     if ($runtime -and !$runtime.HasExited) { Stop-Process -Id $runtime.Id; $runtime.WaitForExit() }
     foreach ($extension in @('.dme','_world.dm','_globals.dm','_mining.dm','.dmb','.rsc')) {

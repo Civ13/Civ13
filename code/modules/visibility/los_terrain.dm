@@ -244,7 +244,7 @@ var/global/los_eye_offsets_paused = FALSE
 		var/top_row = 2 * k
 		var/left_col = 4 * k + 1
 		var/right_col = 6 * k
-		for (var/c = 0, c < 8 * k, c++)
+		for (var/c in 0 to 8 * k - 1)
 			// Walk the ring: bottom row, top row, left column, right column.
 			var/i
 			var/j

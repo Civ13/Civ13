@@ -1774,6 +1774,13 @@ var/const/debug_snacks = FALSE //if you want to see new food creating logs set i
 	decay = 17*600
 	satisfaction = 2
 
+/obj/item/weapon/reagent_containers/food/snacks/breadslice/proc/transfer_reagents_to_spread(datum/reagents/target, topping_volume)
+	if (!reagents || reagents.total_volume <= 0)
+		return
+	// Include the topping whether it is already present or added after the transfer.
+	target.maximum_volume = max(target.maximum_volume, reagents.total_volume + topping_volume)
+	reagents.trans_to_holder(target, reagents.total_volume)
+
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/creamcheesebread
 	name = "cream Cheese Bread"
 	desc = "Yum yum yum!"

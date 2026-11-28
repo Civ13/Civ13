@@ -323,6 +323,8 @@ var/global/list/root_tree_presenters
 	work_images -= I
 
 /datum/root_tree_presenter/proc/clear_work_images(atom/T)
+	if(!work_images.len)
+		return
 	for(var/image/I in work_images.Copy())
 		if(T && work_images[I] != T)
 			continue
@@ -347,7 +349,7 @@ var/global/list/root_tree_presenters
 		key += "|[time_of_day]"
 	if(light_keys[T] == key)
 		return light_values[T]
-	var/rgb = root_light_rgb(root, context.body, TRUE)
+	var/rgb = root_light_rgb(root, context.body, TRUE, sample)
 	if(rgb && client_daylight && rgb != "#ffffff")
 		var/list/channels = rgb2num(rgb)
 		var/add = round(255 * daylight_lum(root.get_window_coeff()))
@@ -403,8 +405,12 @@ var/global/list/root_tree_presenters
 	budget[1]--
 	if(depth >= 8)
 		return TRUE
-	var/p = A:plane == FLOAT_PLANE ? inherited_plane : A:plane
-	var/l = A:layer < 0 ? inherited_layer : A:layer
+	var/p = A:plane
+	if(p == FLOAT_PLANE)
+		p = inherited_plane
+	var/l = A:layer
+	if(l < 0)
+		l = inherited_layer
 	if(p == GAME_PLANE && l >= 5.11 && (A:icon || A:maptext || A:render_source))
 		return TRUE
 	for(var/O in A:overlays)

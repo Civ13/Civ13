@@ -75,11 +75,7 @@ var/global/list/masons_saw_cuts = list(
 		return
 	if (I.type != /obj/item/stack/material/glass)
 		return ..()
-	if (busy)
-		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
-		return
-	if (!anchored)
-		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+	if (!can_start_material_work(H))
 		return
 	var/datum/admission = persistence_admission_identity
 	if (!glass_worker_ready(H, I, admission))
@@ -148,11 +144,7 @@ var/global/list/masons_saw_cuts = list(
 		return
 	if (!(I.type in masons_saw_cuts))
 		return ..()
-	if (busy)
-		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
-		return
-	if (!anchored)
-		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+	if (!can_start_material_work(H))
 		return
 	saw_blocks(H, I)
 

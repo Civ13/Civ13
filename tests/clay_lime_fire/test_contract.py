@@ -15,6 +15,9 @@ import zlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tests/save_movement'))
+from source_adapter import extract, project
+
 SOURCE = (ROOT / 'code/modules/1713/clay_lime_fire.dm').read_text(encoding='utf-8')
 RECIPES = (ROOT / 'config/crafting/material_recipes_global.txt').read_text(encoding='utf-8')
 NODES = (ROOT / 'code/modules/research_tree/research_node.dm').read_text(encoding='utf-8')
@@ -111,6 +114,42 @@ class ClayLimeFire(unittest.TestCase):
             self.assertIn('busy = FALSE', body)
         self.assertIn('crafting_recipe_allowed(H, "[ware]")', proc_body('/proc/potters_wheel_choices('))
         self.assertIn('crafting_recipe_allowed(H, "[brick]")', proc_body('/proc/brick_bench_choices('))
+
+    def test_material_start_warns_about_busy_before_fastening(self):
+        worker = object()
+        warnings = []
+
+        def to_chat(target, message):
+            warnings.append((target, message))
+
+        can_start = project(SOURCE, '/obj/structure/workshop_machine/proc/can_start_material_work',
+                            'H, busy, anchored', {'to_chat': to_chat, 'SPAN_WARNING': lambda text: text})
+        for busy, anchored, warning in (
+                (False, True, None),
+                (False, False, r'Fasten \the [src] down first.'),
+                (True, True, r'Someone is already at \the [src].'),
+                (True, False, r'Someone is already at \the [src].')):
+            with self.subTest(busy=busy, anchored=anchored):
+                warnings.clear()
+                self.assertIs(can_start(worker, busy, anchored), warning is None)
+                self.assertEqual(warnings, [] if warning is None else [(worker, warning)])
+
+    def test_material_routes_check_start_after_tool_and_input_dispatch(self):
+        stations = {
+            '1713/clay_lime_fire.dm': ('potters_wheel', 'brick_bench'),
+            '1713/glass_stone_machines.dm': ('glass_bench', 'masons_saw'),
+            '1713/rolling_mill.dm': ('rolling_mill',),
+            '1713/wire_bench.dm': ('wire_bench',),
+            'materials/lathes.dm': ('lathe',),
+        }
+        guard = '\t\treturn ..()\n\tif (!can_start_material_work(H))\n\t\treturn'
+        for path, machine_types in stations.items():
+            source = (ROOT / 'code/modules' / path).read_text(encoding='utf-8')
+            for machine_type in machine_types:
+                with self.subTest(machine=machine_type):
+                    body = extract(source, f'/obj/structure/workshop_machine/{machine_type}/attackby')
+                    self.assertIn(guard, body)
+                    self.assertLess(body.index('handle_machine_tool(I, H)'), body.index(guard))
 
     def test_work_stops_for_saves(self):
         ready = proc_body('/obj/structure/workshop_machine/proc/worker_ready(')

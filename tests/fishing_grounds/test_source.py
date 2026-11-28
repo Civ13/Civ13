@@ -118,6 +118,20 @@ class FishingGrounds(unittest.TestCase):
         self.assertLess(guard, troll.index('fish_land('))
         self.assertIn('return', troll[guard:troll.index('line.bait_uses--')])
 
+    def test_trolling_rechecks_open_water_outside_the_hull(self):
+        search = self.source.split('/proc/fish_water_beside(', 1)[1].split('\n/proc/', 1)[0]
+        self.assertIn(
+            '\tfor (var/turf/T in orange(2, H))\n'
+            '\t\tif (!fish_water_kind(T) || !fish_cast_water_open(T))\n\t\t\tcontinue\n'
+            '\t\tif (ship && ship.body && ship.body.contains(T))\n\t\t\tcontinue\n'
+            '\t\treturn T\n\treturn null\n',
+            search,
+        )
+        troll = self.source.split('/proc/fish_troll(', 1)[1].split('\n/proc/', 1)[0]
+        before, after = troll.split('do_after(', 1)
+        self.assertIn('if (!fish_water_beside(H, ship))', before)
+        self.assertIn('var/turf/water = fish_water_beside(H, ship)', after)
+
     def test_a_ship_under_way_trolls_and_sonar_reads_the_fish(self):
         cast = self.source[self.source.index('/turf/floor/beach/water/proc/fish_cast('):]
         self.assertLess(cast.index('fish_troll(W, H, ship, profile)'), cast.index('do_after('))

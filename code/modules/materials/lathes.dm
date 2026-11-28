@@ -68,11 +68,7 @@ var/global/list/engine_lathe_materials = list("copper", "bronze", "brass", "iron
 	var/obj/item/machine_part/P = I
 	if (!istype(S) && !istype(P))
 		return ..()
-	if (busy)
-		to_chat(H, SPAN_WARNING("Someone is already at \the [src]."))
-		return
-	if (!anchored)
-		to_chat(H, SPAN_WARNING("Fasten \the [src] down first."))
+	if (!can_start_material_work(H))
 		return
 	if (!crafting_recipe_allowed(H, "[type]"))
 		return

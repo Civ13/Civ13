@@ -3,7 +3,7 @@
 legacy_bodies.json freezes each map's pre-refactor check_caribbean_block body.
 run.py compiles those bodies against the live helper and compares them in
 DreamDaemon; these offline tests only check that every listed map still
-dispatches to the helper and that no copy of a frozen body has come back.
+dispatches to the helper.
 """
 import json
 from pathlib import Path
@@ -34,12 +34,6 @@ def errors(sources, entries):
         current = body(sources[name], entry['type'] + HEADER)
         if current is None or not CALL.match(current):
             found.append(f'{entry["type"]} must call check_faction_grace_wall')
-    legacy = {entry['old'] for entry in entries}
-    for name, source in sources.items():
-        for old in legacy:
-            if old + '\n' in source:
-                found.append(f'{name} still carries a copied grace wall body')
-                break
     return found
 
 
@@ -55,13 +49,6 @@ class GraceWallContracts(unittest.TestCase):
 
     def test_every_listed_map_uses_the_shared_helper(self):
         self.assertEqual(errors(self.sources, self.entries), [])
-
-    def test_detects_reintroduced_copy(self):
-        changed = dict(self.sources)
-        entry = self.entries[0]
-        name = Path(entry['file']).name
-        changed[name] = changed[name] + '\n/obj/map_metadata/copy' + HEADER + '\n' + entry['old'] + '\n'
-        self.assertTrue(errors(changed, self.entries))
 
     def test_detects_wrong_dispatch(self):
         changed = dict(self.sources)

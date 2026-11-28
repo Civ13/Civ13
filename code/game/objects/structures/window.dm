@@ -642,7 +642,7 @@
 	stucco_window = FALSE
 
 /obj/structure/window_frame/redsandstone
-	icon_state = "redsandstone_windownew_frame"
+	icon_state = "redsandstonewindow_small"
 	name = "red sandstone window frame"
 	desc = "Red sandstone carved to support some glass.."
 	health = 250
@@ -963,7 +963,7 @@
 	flammable = FALSE
 
 /obj/structure/window/classic/redsandstone
-	icon_state = "redsandstone_windownew"
+	icon_state = "redsandstonewindow_small_full"
 	name = "redsandstone window"
 	desc = "Red sandstone with glass windows."
 	maximal_heat = T0C + 1600

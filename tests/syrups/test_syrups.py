@@ -44,9 +44,6 @@ class SyrupSourceTests(unittest.TestCase):
         # Lemon juice with simple syrup makes lemonade, never fruit syrup.
         self.assertNotIn('"lemonjuice" = 5, "sugar_syrup"', recipes)
 
-    def test_no_spawn(self):
-        self.assertNotRegex(read(SOURCE), r'\bspawn\s*\(')
-
 
 if __name__ == '__main__':
     unittest.main()

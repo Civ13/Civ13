@@ -53,7 +53,7 @@ class WireBench(unittest.TestCase):
     def test_only_listed_metal_on_a_fastened_bench(self):
         hand = proc_body(BENCH + '/attackby(')
         self.assertIn('if (!I || !(I.type in wire_bench_coils))\n\t\treturn ..()', hand)
-        self.assertIn('if (!anchored)', hand)
+        self.assertIn('if (!can_start_material_work(H))\n\t\treturn\n\tdraw_wire(H, I)', hand)
         self.assertLess(hand.index('handle_machine_tool(I, H)'), hand.index('wire_bench_coils'))
 
     def test_metal_is_taken_after_each_wait_and_yields_more_than_by_hand(self):
