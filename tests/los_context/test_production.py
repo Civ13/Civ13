@@ -272,6 +272,26 @@ class ProductionGeometry(unittest.TestCase):
             self.assertIn(prefix + '.tile_x = cx - S.eye_x', capture)
             self.assertIn(prefix + '.tile_y = cy - S.eye_y', capture)
 
+    def test_opaque_target_checks_center_and_transparent_target_checks_footprint(self):
+        source = CORE.read_text()
+        # The footprint touches the blocker, but the center ray passes below it.
+        witness = (4, .75, 2, 1, 4, 1, 2, 1)
+
+        def blocked(core, opaque):
+            return _offline.project(
+                core, '/proc/los_target_blocked(', projected_geometry(core),
+            )(*witness, opaque)
+
+        self.assertFalse(blocked(source, True))
+        self.assertTrue(blocked(source, False))
+        for opaque, original, changed in [(True, '0', '0.25'), (False, '0.25', '0')]:
+            mutated = source.replace(
+                f'los_footprint_hits_cell(0, 0, tx, ty, {original}, cx, cy)',
+                f'los_footprint_hits_cell(0, 0, tx, ty, {changed}, cx, cy)',
+                1,
+            )
+            self.assertEqual(blocked(mutated, opaque), opaque)
+
     def test_save_allows_read_only_capture_but_load_suspends(self):
         from types import SimpleNamespace
         import re
