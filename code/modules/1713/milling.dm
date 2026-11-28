@@ -55,6 +55,17 @@
 	mill_stop_reason = "it has run out of water"
 	return FALSE
 
+// Check the water supply before placing tailings, then debit it on a successful deposit.
+/obj/structure/drill/stamp_mill/water/mill/proc/deposit_mill_tailings(tailings_type)
+	if (!mill_water(TRUE))
+		return null
+	var/turf/T = get_turf(src)
+	if (!T.deposit_small_resource(tailings_type, 1, output_stack_limit))
+		return null
+	if (!mill_water())
+		return null
+	return T
+
 // One unit of hopper feed, used up.
 /obj/structure/drill/stamp_mill/water/mill/proc/take_feed()
 	var/obj/item/stack/S = loaded_stone()
@@ -150,12 +161,8 @@
 	if (reagents.get_reagent_amount("mercury") < AMALGAM_WET_MERCURY + spend)
 		mill_stop_reason = "its quicksilver is spent"
 		return FALSE
-	if (!mill_water(TRUE))
-		return FALSE
-	var/turf/T = get_turf(src)
-	if (!T.deposit_small_resource(/obj/item/stack/ore/tailings/amalgam, 1, output_stack_limit))
-		return FALSE
-	if (!mill_water())
+	var/turf/T = deposit_mill_tailings(/obj/item/stack/ore/tailings/amalgam)
+	if (!T)
 		return FALSE
 	var/metal = C.metal_type
 	take_feed()
@@ -188,12 +195,8 @@
 	var/obj/item/stack/ore/crushed_ore/C = loaded_stone()
 	if (!C)
 		return FALSE
-	if (!mill_water(TRUE))
-		return FALSE
-	var/turf/T = get_turf(src)
-	if (!T.deposit_small_resource(/obj/item/stack/ore/tailings, 1, output_stack_limit))
-		return FALSE
-	if (!mill_water())
+	var/turf/T = deposit_mill_tailings(/obj/item/stack/ore/tailings)
+	if (!T)
 		return FALSE
 	var/metal = C.metal_type
 	take_feed()

@@ -93,19 +93,30 @@ class Accounting(unittest.TestCase):
         )
 
     def test_mills_admit_water_then_tailings_then_spend(self):
-        for variant in ("drum", "table"):
+        helper = SOURCE.split("/proc/deposit_mill_tailings(", 1)[1].split("\n\n", 1)[0]
+        self.assertIn(
+            "\tif (!mill_water(TRUE))\n\t\treturn null\n"
+            "\tvar/turf/T = get_turf(src)\n"
+            "\tif (!T.deposit_small_resource(tailings_type, 1, output_stack_limit))\n"
+            "\t\treturn null\n"
+            "\tif (!mill_water())\n\t\treturn null\n"
+            "\treturn T",
+            helper,
+        )
+        self.assertIn("check_only ? station_has_water() : station_take_water(null)", SOURCE)
+
+        for variant, tailings in (("drum", "tailings/amalgam"), ("table", "tailings")):
             with self.subTest(variant=variant):
                 body = SOURCE.split(f"/{variant}/stamp_one_stone(", 1)[1].split("\n/", 1)[0]
-                steps = (
-                    "if (!mill_water(TRUE))",
-                    "if (!T.deposit_small_resource(",
-                    "if (!mill_water())",
-                    "take_feed()",
+                self.assertIn(
+                    f"\tvar/turf/T = deposit_mill_tailings(/obj/item/stack/ore/{tailings})\n"
+                    "\tif (!T)\n\t\treturn FALSE\n"
+                    "\tvar/metal = C.metal_type\n"
+                    "\ttake_feed()",
+                    body,
                 )
-                for step in steps:
-                    self.assertIn(step, body)
-                self.assertEqual(sorted(map(body.index, steps)), list(map(body.index, steps)))
-        self.assertIn("check_only ? station_has_water() : station_take_water(null)", SOURCE)
+                self.assertNotIn("mill_water(", body)
+                self.assertNotIn("deposit_small_resource(", body)
 
     def test_trommel_checks_sluice_discharge_before_consuming_inputs(self):
         body = SOURCE.split("/trommel/stamp_one_stone(", 1)[1].split("\n/", 1)[0]
