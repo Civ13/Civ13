@@ -53,10 +53,13 @@
 
 
 /obj/structure/curtain/Destroy()
+	var/turf/former_turf = get_turf(src)
 	for (var/atom/movable/lighting_overlay/L in view(7*3, src))
 		L.update_overlay()
 	..()
-	refresh_nearby_roofs(FALSE)
+	if (former_turf)
+		for (var/obj/roof/R in range(1, former_turf))
+			R.update_transparency(TRUE, recheck_openings = TRUE)
 
 /obj/structure/curtain/black
 	name = "black curtain"
