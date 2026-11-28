@@ -18855,6 +18855,31 @@
       "map_notes": "Availability depends on the selected map; placements and construction reachability were not executed.",
       "status": "source-reviewed conditional route; gameplay/map reachability unverified",
       "source_commit": "aef497fa"
+    },
+    {
+      "name": "Upgrade campfire to stone kiln",
+      "file": "code/game/objects/structures/kitchen/stone_kiln_upgrade.dm",
+      "line": 17,
+      "source_commit": "d9f234bd0e5ae33b5d565a5adf8cbd101221ea9e",
+      "inputs": [
+        "/obj/structure/oven/fireplace",
+        "/obj/item/stack/material/stone"
+      ],
+      "outputs": [
+        "/obj/structure/furnace/kiln/stone/campfire"
+      ],
+      "related_resources": [
+        "/obj/structure/oven/fireplace"
+      ],
+      "steps": [
+        "Extinguish and empty an ordinary campfire and remove its installed pot, if any.",
+        "Hold a stack of at least 10 stone blocks in your active hand and use it on the adjacent campfire.",
+        "After 15 seconds, the campfire becomes a stone kiln. Its existing fuel and ash carry over."
+      ],
+      "conditions": "Requires Pottery & Cookware. Use 10 stone blocks on an adjacent, extinguished, empty ordinary campfire with no pot installed. Takes 15 seconds and preserves fuel and ash.",
+      "era": "Pottery & Cookware research.",
+      "research_node": "pottery_storage",
+      "status": "Source-reviewed"
     }
   ],
   "mechanism_overview": [
