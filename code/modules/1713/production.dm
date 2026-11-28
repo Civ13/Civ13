@@ -2405,13 +2405,7 @@
 	if (current>=10)
 		to_chat(H, "<span class='warning'>The compost bin is full!</span>")
 		return
-	var/list/allow_types = list(/obj/item/weapon/reagent_containers/food, /obj/item/stack/material/leaf, /obj/item/stack/farming/seeds,
-		/obj/item/stack/material/poppy, /obj/item/stack/material/tobacco, /obj/item/stack/material/tobacco_green, /obj/item/stack/material/coca,
-		/obj/item/stack/material/cannabis_fresh, /obj/item/stack/material/cannabis,
-		/obj/item/stack/material/flax, /obj/item/stack/material/hemp, /obj/item/stack/material/rettedfabric,
-		/obj/item/stack/dung
-	)
-	if (is_type_in_list(W, allow_types))
+	if (istype(W, /obj/item/weapon/reagent_containers/food) || istype(W, /obj/item/stack/dung) || compost_stack_units_per_credit(W))
 		H.drop_item(src.loc)
 		auto_load(H)
 		return TRUE
@@ -2446,17 +2440,20 @@
 		if (istype(W, /obj/item/weapon/reagent_containers/food))
 			add(W, H, 0.5)
 			continue
-		if (istype(W, /obj/item/stack/material/leaf))
-			add_compost_stack(W, H, 18)
-			continue
-		if (istype(W, /obj/item/stack/farming/seeds))
-			add_compost_stack(W, H, 10)
-			continue
-		if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco_green) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca) || istype(W, /obj/item/stack/material/cannabis_fresh) || istype(W, /obj/item/stack/material/cannabis))
-			add_compost_stack(W, H, 4)
-			continue
-		if (istype(W, /obj/item/stack/material/flax) || istype(W, /obj/item/stack/material/hemp) || istype(W, /obj/item/stack/material/rettedfabric))
-			add_compost_stack(W, H, 4)
+		var/units_per_compost = compost_stack_units_per_credit(W)
+		if (units_per_compost)
+			add_compost_stack(W, H, units_per_compost)
+
+/obj/structure/compost/proc/compost_stack_units_per_credit(obj/item/W)
+	if (istype(W, /obj/item/stack/material/leaf))
+		return 18
+	if (istype(W, /obj/item/stack/farming/seeds))
+		return 10
+	if (istype(W, /obj/item/stack/material/poppy) || istype(W, /obj/item/stack/material/tobacco_green) || istype(W, /obj/item/stack/material/tobacco) || istype(W, /obj/item/stack/material/coca) || istype(W, /obj/item/stack/material/cannabis_fresh) || istype(W, /obj/item/stack/material/cannabis))
+		return 4
+	if (istype(W, /obj/item/stack/material/flax) || istype(W, /obj/item/stack/material/hemp) || istype(W, /obj/item/stack/material/rettedfabric))
+		return 4
+	return 0
 
 /obj/structure/compost/proc/compost()
 	if (nitrary_mode)
