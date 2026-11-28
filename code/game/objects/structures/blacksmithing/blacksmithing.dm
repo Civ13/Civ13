@@ -222,67 +222,37 @@
 						update_icon()
 						if (do_after(user,10*ML.capacity,src,can_move=FALSE))
 							if (ML && ML.capacity)
+								var/stack_path
 								switch(ML.current_material)
 									if ("copper")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/copper, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/copper
 									if ("bronze")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/bronze, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/bronze
 									if ("tin")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/tin, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/tin
 									if ("brass")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/brass, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/brass
 									if ("zinc")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/zinc, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/zinc
 									if ("gold")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/gold, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/gold
 									if ("silver")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/silver, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/silver
 									if ("lead")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/lead, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/lead
 									if ("iron")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/iron, loc, tamt)
-										to_chat(user, "You finish crafting the ingot.")
+										stack_path = /obj/item/stack/material/iron
 									if ("steel")
-										var/tamt = ML.capacity
-										ML.capacity = 0
-										ML.current_material = null
-										spawn_stack(/obj/item/stack/material/steel, loc, tamt)
+										stack_path = /obj/item/stack/material/steel
+								if (stack_path)
+									var/tamt = ML.capacity
+									ML.capacity = 0
+									ML.current_material = null
+									spawn_stack(stack_path, loc, tamt)
+									if (stack_path == /obj/item/stack/material/steel)
 										to_chat(user, "You finish crafting the steel sheet.")
+									else
+										to_chat(user, "You finish crafting the ingot.")
 								ML.update_icon()
 
 							in_use = FALSE
