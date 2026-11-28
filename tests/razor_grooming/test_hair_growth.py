@@ -51,5 +51,30 @@ class HairGrowthTravels(unittest.TestCase):
             self.assertIn(name, line)
 
 
+class HairTieIntegration(unittest.TestCase):
+    def test_dusty_actions_use_the_same_adjusted_timer_as_the_animation(self):
+        calls = (
+            ('code/game/turfs/floor_attackby.dm', 'duration', 'wall', 'actor'),
+            ('code/modules/1713/mountain_seams.dm', 'time', 'T', 'H'),
+            ('code/modules/provinces/province_rich.dm', 'time', 'T', 'H'),
+        )
+        for path, timer, target, actor in calls:
+            with self.subTest(path=path):
+                source = (ROOT / path).read_text(encoding='utf-8-sig')
+                start = source.index(f'var/{timer} = {actor}.hair_dusty_work_delay')
+                action = source[start:].split('\n\n', 1)[0]
+                self.assertRegex(action, rf'prepare_resource_work_animation\([^\n]+, {target}, {timer}\)')
+                self.assertIn(f'do_after({actor}, {timer}, {target}', action)
+        ice = (ROOT / 'code/modules/1713/ice_breaking.dm').read_text()
+        self.assertNotIn('hair_dusty_work_delay', ice)
+
+    def test_changing_only_the_beard_does_not_untie_scalp_hair(self):
+        src = (ROOT / 'code/game/objects/items/weapons/material/kitchen.dm').read_text()
+        cut = src[src.index('if (new_hstyle != old_hstyle)\n'):]
+        cut = cut[:cut.index('M.update_hair()')]
+        self.assertRegex(cut, r'if \(new_hstyle != old_hstyle\)\n(?:\t{2}[^\n]+\n)*?\t{2}M.hair_tied_back = FALSE')
+        self.assertNotIn('hair_tied_back', cut.split('if (new_fstyle != old_fstyle)', 1)[1])
+
+
 if __name__ == '__main__':
     unittest.main()

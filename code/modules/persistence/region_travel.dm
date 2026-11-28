@@ -201,6 +201,9 @@ var/global/list/region_travel_carry_types = list(
 	for(var/list/entry in carried)
 		if(copytext(entry[2], 1, 6) == "node:" || copytext(entry[2], 1, 12) == "compendium:")
 			P["v"] = max(P["v"], 2)
+	// Optional and harmless to drop on older peers; keep it out of strict look keys.
+	if(hair_tied_back && hair_can_tie_back())
+		P["hair_tied_back"] = 1
 	// Version 3 adds scholarship (scholarship.dm). A peer without it refuses
 	// the trip rather than taking the body and dropping the skill.
 	var/list/learned = clean_scholarship(scholarship)
@@ -626,6 +629,7 @@ var/global/list/region_travel_carry_types = list(
 	H.restore_role_verbs()
 	region_raid_note_origin(H, P)
 	H.region_arrival_pending = TRUE
+	H.hair_tied_back = isnum(P["hair_tied_back"]) && P["hair_tied_back"] == 1 && H.hair_can_tie_back()
 	H.update_hair(FALSE)
 	H.update_body(FALSE)
 	H.regenerate_icons()

@@ -234,7 +234,7 @@ var/global/mountain_seam_marked = FALSE
 	mountain_seam_busy[tile_key] = TRUE
 	mountain_seam_busy[worker_key] = TRUE
 	. = FALSE
-	var/time = work_delay_per_speed(H, MOUNTAIN_SEAM_WORK, WORK_MINE, P)
+	var/time = H.hair_dusty_work_delay(work_delay_per_speed(H, MOUNTAIN_SEAM_WORK, WORK_MINE, P))
 	H.visible_message(SPAN_NOTICE("[H] starts to work the old mountain floor with \the [P]."), SPAN_NOTICE("You start to work the old mountain floor with \the [P]."))
 	playsound(T, 'sound/effects/pickaxe.ogg', 100, TRUE)
 	var/datum/resource_work_animation/work_animation = H.prepare_resource_work_animation(P, T, time)

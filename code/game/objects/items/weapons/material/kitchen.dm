@@ -201,10 +201,13 @@
 	var/list/hairlist = M.generate_valid_hairstyles(1,1)
 	var/new_hstyle = WWinput(user, "Please select a hair style.", "Grooming", WWinput_first_choice(hairlist), WWinput_list_or_null(hairlist))
 	if (new_hstyle && (new_hstyle in hairlist))
+		var/changed_hair = new_hstyle != M.h_style
 		M.h_style = new_hstyle
 		var/datum/sprite_accessory/S = hair_styles_list[new_hstyle]
 		if (S)
 			M.h_growth = S.growth
+		if (changed_hair || !M.hair_can_tie_back())
+			M.hair_tied_back = FALSE
 	if (M.gender == MALE)
 		var/list/fhairlist = M.generate_valid_facial_hairstyles(1)
 		var/new_fstyle = WWinput(user, "Please select a facial hair style.", "Grooming", WWinput_first_choice(fhairlist), WWinput_list_or_null(fhairlist))
@@ -250,6 +253,7 @@
 	if (new_fstyle != old_fstyle && !(new_fstyle in grooming_beard_choices(M)))
 		return FALSE
 	if (new_hstyle != old_hstyle)
+		M.hair_tied_back = FALSE
 		var/datum/sprite_accessory/S = hair_styles_list[new_hstyle]
 		M.h_style = new_hstyle
 		M.h_growth = S.growth

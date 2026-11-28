@@ -2165,6 +2165,8 @@ SUITES = {
             'config/crafting/material_recipes_global.txt',
             'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm',
+            'code/game/turfs/floor_attackby.dm', 'code/modules/1713/rain_gear.dm',
+            'code/modules/1713/mountain_seams.dm', 'code/modules/provinces/province_rich.dm',
             'code/game/mob/living/carbon/human/human_life.dm',
             'code/modules/persistence/region_travel.dm')},
 

@@ -1,5 +1,16 @@
 # Razor grooming
 
+The physical tie and environment rules have a separate native probe:
+
+```sh
+python3 tests/ecology_spawning/run_linux.py . tests/razor_grooming/hair_tie_probe.dm 300
+```
+
+It checks the length threshold, cover, drying and warmth, reversible styling
+state, save-field selection and region arrival. The offline suite checks
+that real stone-work entry points use the adjusted wait.
+
+
 Offline source checks, run by the `razor_grooming` suite in `scripts/ci_baseline.py`:
 
     python3 -m unittest discover -s tests/razor_grooming

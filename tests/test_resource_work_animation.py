@@ -186,7 +186,8 @@ class ResourceWorkAnimationTests(unittest.TestCase):
     def test_callers_preserve_paid_waits_outputs_and_synchronous_cleanup(self):
         mining = (ROOT/'code/game/turfs/floor_attackby.dm').read_text()
         perform = proc(mining, '/datum/pickaxe_mining_action/proc/perform()')
-        self.assertIn('var/completed = do_after(actor, work_delay(actor, 120, WORK_MINE, tool), wall, needhand = FALSE, mining_context = src)', perform)
+        self.assertIn('var/duration = actor.hair_dusty_work_delay(work_delay(actor, 120, WORK_MINE, tool))', perform)
+        self.assertIn('var/completed = do_after(actor, duration, wall, needhand = FALSE, mining_context = src)', perform)
         self.assertLess(perform.index('work_animation.stop()'), perform.index('if (completed && valid(actor, wall))'))
         self.assertEqual(perform.count('wall.mining_proc(actor)'), 1)
         release = proc(mining, '/datum/pickaxe_mining_action/proc/release()')

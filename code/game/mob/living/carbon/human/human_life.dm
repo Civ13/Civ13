@@ -419,6 +419,50 @@
 	//Update our name based on whether our face is obscured/disfigured
 	name = get_visible_name()
 
+// Physical grooming state. The chosen cut, cosmetic design and dye stay separate.
+/mob/living/human/var/hair_tied_back = FALSE
+
+/mob/living/human/proc/hair_can_tie_back()
+	if (h_growth < 3 || !body_build || body_build.nohair)
+		return FALSE
+	var/obj/item/organ/external/head/scalp = get_organ("head")
+	return scalp && !scalp.is_stump()
+
+/mob/living/human/proc/hair_unbound_long()
+	return !hair_tied_back && hair_can_tie_back()
+
+// Clothing must actually cover the head; glasses and a scarf over the mouth
+// do not restrain loose hair. Raised hoods already set HEAD coverage.
+/mob/living/human/proc/hair_has_work_cover()
+	var/obj/item/clothing/hat = head
+	var/obj/item/clothing/coat = wear_suit
+	var/obj/item/clothing/mask = wear_mask
+	return (istype(hat) && (hat.body_parts_covered & HEAD)) || (istype(coat) && (coat.body_parts_covered & HEAD)) || (istype(mask) && (mask.body_parts_covered & HEAD))
+
+// Used only by dusty rock work, not all WORK_MINE tools (e.g. ice breaking).
+/mob/living/human/proc/hair_dusty_work_delay(delay)
+	if (!map || !map.civilizations || !hair_unbound_long() || hair_has_work_cover())
+		return delay
+	return round(delay * 1.05, 1)
+
+/mob/living/human/proc/toggle_hair_tie()
+	if (!hair_can_tie_back() || incapacitated())
+		return FALSE
+	hair_tied_back = !hair_tied_back
+	return TRUE
+
+/mob/living/human/verb/tie_or_let_down_hair()
+	set name = "Tie / Let Down Hair"
+	set category = "IC"
+	if (!toggle_hair_tie())
+		if (!incapacitated())
+			to_chat(src, SPAN_NOTICE("Your hair must reach your shoulders before you can tie it back."))
+		return
+	if (hair_tied_back)
+		to_chat(src, SPAN_NOTICE("You tie back your hair. It stays out of the way while working stone."))
+	else
+		to_chat(src, SPAN_NOTICE("You let your hair down."))
+
 /mob/living/human/var/tmp/last_hair_key
 
 // Everything update_hair() reads. Growth runs every Life tick on civilization
@@ -467,6 +511,7 @@
 		if (f_growth < 4)
 			f_growth = min(4, f_growth + hair_growth_step(FACIAL_HAIR_HOURS_PER_STEP, elapsed))
 		if (has_baldness)
+			hair_tied_back = FALSE
 			h_growth = 0
 			h_style = "Bald"
 		else

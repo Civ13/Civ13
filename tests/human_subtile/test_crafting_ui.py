@@ -177,8 +177,9 @@ def restore_crafting_projection(path, source):
             ('\tvar/datum/progressbar/progressbar\n\tvar/datum/resource_work_animation/work_animation\n', '\tvar/datum/progressbar/progressbar\n'),
             ('/datum/pickaxe_mining_action/proc/release()\n\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '/datum/pickaxe_mining_action/proc/release()\n'),
             # Labour speed (work_speed.dm): the rock wall wait comes from work_delay.
-            ('\t\t\twork_animation = actor.prepare_resource_work_animation(tool, wall, work_delay(actor, 120, WORK_MINE, tool))\n'
-             + '\t\t\tvar/completed = do_after(actor, work_delay(actor, 120, WORK_MINE, tool), wall, needhand = FALSE, mining_context = src)\n'
+            ('\t\t\tvar/duration = actor.hair_dusty_work_delay(work_delay(actor, 120, WORK_MINE, tool))\n'
+             + '\t\t\twork_animation = actor.prepare_resource_work_animation(tool, wall, duration)\n'
+             + '\t\t\tvar/completed = do_after(actor, duration, wall, needhand = FALSE, mining_context = src)\n'
              + '\t\t\tif (work_animation)\n\t\t\t\twork_animation.stop()\n\t\t\t\twork_animation = null\n'
              + '\t\t\tif (completed && valid(actor, wall))', '\t\t\tif (' + wait + ' && valid(actor, wall))'),
             # #888: shared-turf stock and tunnel-entrance rechecks after the wait.
@@ -423,7 +424,8 @@ class CraftingMovementContracts(unittest.TestCase):
             ('\tvar/datum/resource_work_animation/work_animation\n', ''),
             ('\tif (work_animation)\n\t\twork_animation.stop()\n\t\twork_animation = null\n', '\tif (work_animation)\n\t\twork_animation = null\n'),
             ('prepare_resource_work_animation(tool, wall,', 'prepare_resource_work_animation(null, wall,'),
-            ('var/completed = do_after(actor, work_delay(actor, 120,', 'var/completed = do_after(actor, work_delay(actor, 60,'),
+            ('var/duration = actor.hair_dusty_work_delay(work_delay(actor, 120, WORK_MINE, tool))', 'var/duration = actor.hair_dusty_work_delay(work_delay(actor, 60, WORK_MINE, tool))'),
+            ('var/completed = do_after(actor, duration, wall, needhand = FALSE, mining_context = src)', 'var/completed = do_after(actor, 1, wall, needhand = FALSE, mining_context = src)'),
             ('wall.mining_proc(actor)', 'wall.mining_proc(null)'),
             ('var/iron_chance = map.ordinal_age >= 1 ? 32 : 0', 'var/iron_chance = 32'),
             ('var/geology_allowed = prob(100 * legacy_remaining / no_ore_chance)', 'var/geology_allowed = TRUE'),
