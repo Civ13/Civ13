@@ -88,6 +88,63 @@ class PreservesSourceTests(unittest.TestCase):
                 hits += len(re.findall(rf'(?m)^\tid = "{rid}"$', path.read_text(encoding='utf-8', errors='replace')))
             self.assertEqual(hits, 2 if rid == 'jam' else 1, rid)  # jam: reagent and reaction
 
+    def test_crock_sours_one_alcohol_per_cycle_in_priority_order(self):
+        volumes = {'mead': 1, 'beer': 2, 'cider': 3, 'wine': 8, 'water': 4, 'vinegar': 0}
+
+        def remove_reagent(reagent, amount):
+            volumes[reagent] -= amount
+
+        def add_reagent(reagent, amount):
+            volumes[reagent] += amount
+
+        reagents = SimpleNamespace(
+            get_reagent_amount=lambda reagent: volumes.get(reagent, 0),
+            remove_reagent=remove_reagent,
+            add_reagent=add_reagent,
+        )
+        state = SimpleNamespace(open=True)
+        env = {
+            'reagents': reagents, 'list': lambda *ids: ids,
+            'is_open_container': lambda: state.open,
+            'QDELETED': lambda crock: False,
+            'persistence_active_operation': False,
+            'persistence_save_in_progress': False,
+            'persistence_load_recovery_required': False,
+            'unpickled_food': lambda: SimpleNamespace(len=0),
+            'unpotted_food': lambda: SimpleNamespace(len=0),
+            'has_brine_for': lambda count: False,
+            'has_seal_for': lambda count: False,
+            'crock_pot_work': lambda: False,
+            'crock_cancel': Mock(), 'crock_schedule': Mock(),
+            'CROCK_SOUR_STEP': int(re.search(r'^#define CROCK_SOUR_STEP (\d+)$', self.source, re.M)[1]),
+        }
+        prefix = '/obj/item/weapon/reagent_containers/glass/crock/proc/'
+        env['crock_souring_source'] = adapter.project(self.source, prefix + 'crock_souring_source', '', env)
+        has_work = adapter.project(self.source, prefix + 'crock_has_work', '', env)
+        work = adapter.project(self.source, prefix + 'crock_work', 'src', env)
+        self.assertFalse(has_work())
+        work(state)
+        self.assertEqual(volumes['wine'], 8)
+        self.assertEqual(volumes['vinegar'], 0)
+
+        state.open = False
+        for expected in (
+            (2, 3, 2, 1, 6),
+            (0, 3, 2, 1, 8),
+            (0, 0, 2, 1, 11),
+            (0, 0, 0, 1, 13),
+            (0, 0, 0, 0, 14),
+        ):
+            with self.subTest(expected=expected):
+                self.assertTrue(has_work())
+                work(state)
+                self.assertEqual(tuple(volumes[reagent] for reagent in ('wine', 'cider', 'beer', 'mead', 'vinegar')),
+                                 expected)
+        self.assertFalse(has_work())
+        work(state)
+        self.assertEqual(volumes['water'], 4)
+        self.assertEqual(volumes['vinegar'], 14)
+
     def test_lid_cancels_unfinished_work_and_reseals_with_a_stoppable_timer(self):
         def proc(suffix):
             marker = f'/obj/item/weapon/reagent_containers/glass/crock/{suffix}'
