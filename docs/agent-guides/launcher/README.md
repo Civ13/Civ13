@@ -11,6 +11,16 @@ activation still apply to those actions. Missing native, graphical or
 save/load evidence belongs in the report and never blocks a source fix.
 Do not turn an evidence limitation into a new approval requirement.
 
+<!-- 2026-11-28: Launcher timestamps and running commit -->
+Launcher 1.5.50 timestamps its shared window log (including streamed host-script output)
+and the Windows process check log. Each nonblank line uses local wall time with its UTC
+offset, captured before posting to the window. Service log tails and CLI output stay as-is.
+The Host server board shows the answering world's short Git revision and commit age in
+Details; hover for the full SHA. The host reads commit time only from the matching
+`config/server-build.json` record. Never substitute the checkout, a staged build, or the
+deploy timestamp. The running revision is hidden during handover and if the region identity
+check fails.
+
 <!-- 2026-11-22: Launcher and host audit -->
 Launcher 1.5.41 (audit): a flag or count that started in a world is read with `Flag`/`Count` in LocalHosting.cs, never
 `Bool`/`GetInt32` (DM writes TRUE as 1, and a float count threw). Group config writes go through

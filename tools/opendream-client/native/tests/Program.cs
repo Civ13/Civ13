@@ -48,6 +48,7 @@ try {
         return 0;
     }
     if (args.SequenceEqual(new[] { "--hosting-only" })) {
+        Console.WriteLine("PASS launcher log: " + LauncherLogWriterTests.Run() + " assertions.");
         LocalHostingTests.Run(root);
         LocalBotTests.Run(root);
         ProcessSafetyTests.Run(root);
@@ -76,6 +77,7 @@ try {
     assertions += await ServerDiscoveryTests.Run(root);
     assertions += await HostStatusTests.Run(root);
     assertions += await TopicPacingTests.Run(root);
+    assertions += LauncherLogWriterTests.Run();
     assertions += LocalHostingTests.Run(root);
     assertions += LocalBotTests.Run(root);
     assertions += ProcessSafetyTests.Run(root);

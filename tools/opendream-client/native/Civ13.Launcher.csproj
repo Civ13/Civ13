@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>Civ13</AssemblyName>
-    <Version>1.5.49</Version>
+    <Version>1.5.50</Version>
     <Company>Civ13</Company>
     <Product>Civ13 Launcher</Product>
     <Description>Portable Civ13 launcher with verified client and launcher updates</Description>
@@ -35,6 +35,7 @@
     <Compile Include="LocalDreamDaemon.cs" />
 
     <Compile Include="LocalHosting.cs" />
+    <Compile Include="LauncherLogWriter.cs" />
     <Compile Include="RegionPlayers.cs" />
     <Compile Include="MagicWhitelist.cs" />
     <Compile Include="GroupPorts.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="../../server-management/Core/*.cs" />
     <!-- Offline fixtures construct clock-bound proofs without DNS or sockets. -->
     <InternalsVisibleTo Include="Civ13.Launcher.SocialContracts" />
+    <InternalsVisibleTo Include="Launcher.Tests" />
     <EmbeddedResource Include="../../byond/version.json" LogicalName="byond.json" />
   </ItemGroup>
 </Project>

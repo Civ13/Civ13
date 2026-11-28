@@ -60,7 +60,7 @@ internal sealed class WmiHealthDialog : Form {
         Shown += async (_, _) => await Check();
     }
 
-    private void Line(string text) => log.AppendText($"[{DateTime.Now:T}] {text}{Environment.NewLine}");
+    private void Line(string text) => new LauncherLogWriter(line => log.AppendText(line + Environment.NewLine)).WriteLine(text);
 
     private void Busy(bool busy) {
         check.Enabled = !busy;

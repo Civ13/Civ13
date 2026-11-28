@@ -77,7 +77,7 @@ internal sealed partial class LauncherWindow {
     private async Task RenderTabsTo(string output) {
         var console = Console.Out;
         try {
-            Console.SetOut(new LogWriter(log));
+            Console.SetOut(ConsoleBridge.LogWriter(log));
             host = LocalHosting.Load(root) ?? throw new InvalidDataException("No host.json in " + root + ".");
             AddHostTabs(host);
             startupDone = true;

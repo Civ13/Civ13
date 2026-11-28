@@ -18,6 +18,9 @@ public sealed record RegionCard(string Id, string Name, bool Mainland, RegionRun
     // The region's local time on the shared world calendar, or null when it does not report one.
     public RegionClock? Clock { get; init; }
 
+    // The responding world's commit, independently of the update/staged-build badge.
+    public RunningRevision? Revision { get; init; }
+
     // Each problem of Problem on its own, with what to do about it (BoardAdvice). Problem joins their texts.
     public IReadOnlyList<RegionProblem> Problems { get; init; } = [];
 
@@ -28,8 +31,29 @@ public sealed record RegionCard(string Id, string Name, bool Mainland, RegionRun
         if (Players is { } players) text += ", " + (players == 1 ? "1 player" : players + " players");
         if (Clock != null) text += ", " + Clock.Describe();
         text += ", build " + BuildText.ToLowerInvariant();
+        if (Revision != null) text += ", " + Revision.Describe(DateTimeOffset.UtcNow, full: true);
         if (Notes.Length > 0) text += ", " + Notes;
         return Problem == null ? text + "." : text + ". " + Problem;
+    }
+}
+
+public sealed record RunningRevision(string Sha, DateTimeOffset? Committed) {
+    internal static RunningRevision? From(JsonElement world) {
+        if (!world.TryGetProperty("revision", out var value) || value.ValueKind != JsonValueKind.String ||
+                value.GetString() is not { Length: 40 } sha || !sha.All(char.IsAsciiHexDigitLower)) return null;
+        DateTimeOffset? committed = world.TryGetProperty("committed", out var stamp) && stamp.ValueKind == JsonValueKind.Number &&
+            stamp.TryGetInt64(out var unix) && unix is > 0 and <= 253402300799 ? DateTimeOffset.FromUnixTimeSeconds(unix) : null;
+        return new(sha, committed);
+    }
+
+    public string Describe(DateTimeOffset now, bool full = false) {
+        var text = "commit " + (full ? Sha : Sha[..7]);
+        if (Committed is not { } committed || committed > now) return text + " (age unknown)";
+        var age = now - committed;
+        if (age.TotalMinutes < 1) return text + " (less than a minute ago)";
+        var (amount, unit) = age.TotalDays >= 1 ? ((int)age.TotalDays, "day")
+            : age.TotalHours >= 1 ? ((int)age.TotalHours, "hour") : ((int)age.TotalMinutes, "minute");
+        return $"{text} ({amount} {unit}{(amount == 1 ? "" : "s")} ago)";
     }
 }
 
@@ -296,8 +320,10 @@ public static class HostBoard {
         var notes = new List<string>();
         int? players = null;
         var loading = false;
+        RunningRevision? revision = null;
         if (entry.TryGetProperty("world", out var world) && world.ValueKind == JsonValueKind.Object) {
             if (world.TryGetProperty("clients", out var clients) && clients.ValueKind == JsonValueKind.Number && clients.TryGetInt32(out var count)) players = count;
+            if (listening && state == "awake") revision = RunningRevision.From(world);
             if (Str(world, "error") is { Length: > 0 } worldError) problems.Add(BoardAdvice.WorldError("World error: " + Short(worldError), worldError));
             // gaia_host.py reports ready as 1/0 or true/false.
             loading = world.TryGetProperty("ready", out var ready) && (ready.ValueKind == JsonValueKind.False
@@ -316,6 +342,8 @@ public static class HostBoard {
         } else if (Bool(entry, "busy")) working = "an action is running";
         if (entry.TryGetProperty("standby", out var standby) && standby.ValueKind == JsonValueKind.Object) {
             working ??= "handing over";
+            // The public port can switch before the shared lifecycle revision file is replaced.
+            revision = null;
             notes.Add(Bool(standby, "listening") ? "new build running beside it" : "new build starting beside it");
         }
 
@@ -336,7 +364,10 @@ public static class HostBoard {
         }
         RegionClock? clock = null;
         if (entry.TryGetProperty("region_view", out var view) && view.ValueKind == JsonValueKind.Object) {
-            if (Str(view, "error") != null) problems.Add(BoardAdvice.WrongRegion("Not answering as this region"));
+            if (Str(view, "error") != null) {
+                revision = null;
+                problems.Add(BoardAdvice.WrongRegion("Not answering as this region"));
+            }
             else {
                 if (view.TryGetProperty("epoch", out var epoch) && epoch.ValueKind == JsonValueKind.Object && epoch.TryGetProperty("ordinal", out var ordinal)
                         && ordinal.ValueKind == JsonValueKind.Number && ordinal.TryGetInt32(out var index) && index >= 0 && index < LocalHosting.EpochNames.Length)
@@ -366,7 +397,7 @@ public static class HostBoard {
         if (run == RegionRun.Unknown && problems.Count == 0) problems.Add(BoardAdvice.Unknown("State unknown"));
         if (id == "server") problems = problems.Select(BoardAdvice.ForServer).ToList();
         return new RegionCard(id, name, mainland, run, runText, players, build, buildText, working, string.Join(", ", notes),
-            problems.Count == 0 ? null : string.Join(". ", problems.Select(problem => problem.Text)) + ".") { Clock = clock, Problems = problems };
+            problems.Count == 0 ? null : string.Join(". ", problems.Select(problem => problem.Text)) + ".") { Clock = clock, Problems = problems, Revision = revision };
     }
 
     // The staged build wins over the commit count: it is what the operator acts on next.

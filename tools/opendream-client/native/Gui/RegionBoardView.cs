@@ -750,6 +750,7 @@ internal sealed class RegionBoardView : ScrollableControl {
             g.DrawLine(line, 0, y + headerHeight - 1, width, y + headerHeight - 1);
 
             var sunSize = Px(11);
+            var now = DateTimeOffset.UtcNow;
             for (var index = 0; index < cards.Count; index++) {
                 var card = cards[index];
                 var row = at.Rows[index];
@@ -798,7 +799,10 @@ internal sealed class RegionBoardView : ScrollableControl {
                     notesLeft += span + Px(10);
                 }
                 // Dismissed problems leave a quiet count first, where the ellipsis cannot take it.
-                var notes = row.Hidden == 0 ? card.Notes : row.Hidden + " dismissed" + (card.Notes.Length > 0 ? ", " + card.Notes : "");
+                var details = card.Revision is { } revision
+                    ? revision.Describe(now) + (card.Notes.Length > 0 ? ", " + card.Notes : "")
+                    : card.Notes;
+                var notes = row.Hidden == 0 ? details : row.Hidden + " dismissed" + (details.Length > 0 ? ", " + details : "");
                 if (width - notesLeft - Px(8) > Px(20))
                     TextRenderer.DrawText(g, notes, Font, new Rectangle(notesLeft, y, width - notesLeft - Px(8), first), StatusPaint.Muted, OneLine);
 
