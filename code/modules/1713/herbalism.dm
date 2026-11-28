@@ -59,13 +59,16 @@
 		return FALSE
 	if (!can_grind(W, user))
 		return FALSE
-	grinding = TRUE
-	user.visible_message(SPAN_NOTICE("[user] starts grinding \the [W] in \the [src]."), SPAN_NOTICE("You start grinding \the [W] in \the [src]."))
-	var/completed = do_after(user, MORTAR_GRIND_TIME, src)
-	grinding = FALSE
-	if (!completed || QDELETED(src) || QDELETED(W))
+	if (!wait_for_grinding(W, user, "You start grinding \the [W] in \the [src]."))
 		return FALSE
 	return finish_grinding(W, user)
+
+/obj/item/weapon/reagent_containers/glass/mortar/proc/wait_for_grinding(obj/item/W, mob/user, start_message)
+	grinding = TRUE
+	user.visible_message(SPAN_NOTICE("[user] starts grinding \the [W] in \the [src]."), SPAN_NOTICE(start_message))
+	var/completed = do_after(user, MORTAR_GRIND_TIME, src)
+	grinding = FALSE
+	return completed && !QDELETED(src) && !QDELETED(W)
 
 // Same access as the inventory and adjacent floor-storage item click branches.
 // do_after() watches src.loc, which does not change when a carrier takes a bag.

@@ -95,7 +95,7 @@ class ProcessingRecipeTest(unittest.TestCase):
 
 
 class MortarGrindContract(unittest.TestCase):
-    """Execute both grind bodies and the shared access check with fake engine boundaries."""
+    """Execute both grind routes and their shared steps with fake engine boundaries."""
 
     def setUp(self):
         from types import SimpleNamespace
@@ -110,6 +110,7 @@ class MortarGrindContract(unittest.TestCase):
         self.noop = lambda: None
         self.on_wait = self.noop
         self.waits = 0
+        self.grind_delay = None
         self.messages = []
         self.flour = []
         self.pigments = []
@@ -149,6 +150,8 @@ class MortarGrindContract(unittest.TestCase):
 
         def wait(user, delay, target):
             self.waits += 1
+            self.grind_delay = delay
+            self.assertTrue(self.state.grinding)
             original_location = target.loc
             self.on_wait()
             return target.loc is original_location  # no check of carrier or lid here
@@ -166,12 +169,12 @@ class MortarGrindContract(unittest.TestCase):
             'parent_attack': lambda item, user: None,
             'is_stack': lambda item: item.kind == 'clay', 'qdel': lambda item: setattr(item, 'deleted', True),
             'persistence_save_in_progress': False, 'persistence_active_operation': False,
-            'persistence_load_recovery_required': False, 'MORTAR_GRIND_TIME': 30,
-            'PAINT_GRIND_TIME': 20, 'mortar': self.state,
+            'persistence_load_recovery_required': False, 'mortar': self.state,
         }
         # Replace only the unsupported engine syntax, not conditions or their order.
         herbs = read('code/modules/1713/herbalism.dm')
         paint = read('code/modules/paintings/paintings.dm')
+        env['MORTAR_GRIND_TIME'] = int(re.search(r'^#define MORTAR_GRIND_TIME (\d+)$', herbs, re.M)[1])
         prefix = '/obj/item/weapon/reagent_containers/glass/mortar'
 
         def projected(source, name, arguments):
@@ -183,6 +186,8 @@ class MortarGrindContract(unittest.TestCase):
             return action_adapter.project(source, prefix + name, arguments, env)
 
         env['grind_access'] = lambda actor: projected(herbs, '/proc/grind_access', 'src, user')(self.state, actor)
+        shared_wait = projected(herbs, '/proc/wait_for_grinding', 'src, W, user, start_message')
+        env['wait_for_grinding'] = lambda item, actor, message: shared_wait(self.state, item, actor, message)
         for func in ('can_grind', 'finish_grinding', 'start_grinding'):
             env[func] = self.bound(projected(herbs, '/proc/' + func, 'src, W, user'))
         env['grind_pigment'] = self.bound(projected(paint, '/proc/grind_pigment', 'src, W, user'))
@@ -223,6 +228,14 @@ class MortarGrindContract(unittest.TestCase):
                 self.assertEqual(self.waits, 1)
                 self.assertIn("Open the lid before grinding.", self.messages)
 
+    def test_both_routes_release_busy_state_without_payment_when_the_wait_is_interrupted(self):
+        for kind in ('wheat', 'clay'):
+            with self.subTest(kind=kind):
+                self.setUp()
+                self.on_wait = lambda: setattr(self.state, 'loc', self.user)
+                self.assert_unspent(self.grind(kind))
+                self.assertEqual(self.waits, 1)
+
     def test_both_routes_recheck_floor_bag_reach_with_unchanged_bowl_loc(self):
         for kind in ('wheat', 'clay'):
             for destination in ('carried', 'far'):
@@ -248,6 +261,7 @@ class MortarGrindContract(unittest.TestCase):
                             self.bag.loc = self.user
                     item = self.grind(kind)
                     self.assertEqual(self.waits, 1)
+                    self.assertEqual(self.grind_delay, 30)
                     self.assertEqual((item.deleted, item.remaining), (True, 2) if kind == 'wheat' else (False, 1))
                     self.assertEqual(self.flour, [('flour', 5)] if kind == 'wheat' else [])
                     self.assertEqual(self.pigments, ['ochre'] if kind == 'clay' else [])
