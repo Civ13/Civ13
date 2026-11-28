@@ -236,7 +236,7 @@ class NoOpRefresh(unittest.TestCase):
         truncated, notifications = self.commit_tail(replace=('1 to L.len', '1 to L.len - 1'))
         self.assertIsNone(truncated(changed_tail, True, True, displayed, True))
         self.assertEqual(notifications, [])
-        ignored_length, notifications = self.commit_tail(replace=('L.len != last_color.len', 'FALSE'))
+        ignored_length, notifications = self.commit_tail(replace=('L.len == last_color.len', 'TRUE'))
         self.assertIsNone(ignored_length(MatrixValues([0.25] * 19), True, True, displayed, True))
         self.assertEqual(notifications, [])
 

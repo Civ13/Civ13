@@ -228,15 +228,12 @@
 
 	// Check against last values for early return (the committed matrix in color)
 	var/list/last_color = color_committed ? color : null
-	if (last_color && islist(last_color) && last_luminosity == new_luminosity)
+	if (last_color && islist(last_color) && last_luminosity == new_luminosity && L.len == last_color.len)
 		var/identical = TRUE
-		if (L.len != last_color.len)
-			identical = FALSE
-		else
-			for (var/i in 1 to L.len)
-				if (L[i] != last_color[i])
-					identical = FALSE
-					break
+		for (var/i in 1 to L.len)
+			if (L[i] != last_color[i])
+				identical = FALSE
+				break
 		if (identical)
 			return
 
