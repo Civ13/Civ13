@@ -150,3 +150,81 @@ var/cut_runtime_error = FALSE
 	cut_check(!R.groom_cut(W, H, "Bald", W.f_style) || W.h_style == "Bald", "a neighbour can be barbered")
 	H.drop_from_inventory(R)
 	cut_check(!R.groom_cut(H, H, "Bald", "Shaved") && H.h_style == "Mohawk", "no cut without the razor in hand")
+
+	// Use the live item-click route; substitute only the client colour prompt.
+	build_research_tree()
+	map.persistence = TRUE
+	H.a_intent = I_HELP
+	H.targeted_organ = "head"
+	H.h_style = "Mohawk"
+	H.f_style = "Full Beard"
+	var/hair_length = H.h_growth
+	var/beard_length = H.f_growth
+	var/original_beard = hair_dye_current(H, TRUE)
+	H.known_recipe_nodes = list("weaving")
+	var/obj/item/stack/material/cloth/dye_probe/C = new(H, 4, FALSE)
+	H.put_in_active_hand(C)
+	C.answer = "#3e5a86"
+	C.resolve_attackby(H, H)
+	cut_check(C.amount == 4 && hair_dye_current(H, FALSE) != "#3e5a86", "a locked tailoring dye does not charge or change hair")
+	C.answer = "#6e4c30"
+	C.resolve_attackby(H, H)
+	cut_check(C.amount == 3 && hair_dye_current(H, FALSE) == "#6e4c30" && hair_dye_current(H, TRUE) == original_beard, "self-click dyes scalp hair only and consumes one sheet")
+	C.resolve_attackby(H, H)
+	cut_check(C.amount == 3, "choosing the current colour costs nothing")
+	H.targeted_organ = "mouth"
+	H.known_recipe_nodes = list("weaving", "textile_mills")
+	C.answer = "#be46aa"
+	C.resolve_attackby(H, H)
+	cut_check(C.amount == 2 && hair_dye_current(H, TRUE) == "#be46aa" && hair_dye_current(H, FALSE) == "#6e4c30", "Textile Mills allows a mixed beard colour without touching scalp hair")
+	cut_check(H.h_style == "Mohawk" && H.f_style == "Full Beard" && H.h_growth == hair_length && H.f_growth == beard_length, "dye preserves style and growth")
+	C.answer = null
+	C.resolve_attackby(H, H)
+	cut_check(C.amount == 2, "cancelling costs nothing")
+	C.answer = "#987xyz"
+	C.resolve_attackby(H, H)
+	cut_check(C.amount == 2 && hair_dye_current(H, TRUE) == "#be46aa", "invalid RGB cannot change hair")
+	C.answer = "#e36622"
+	var/other_colour = hair_dye_current(W, FALSE)
+	C.resolve_attackby(W, H)
+	cut_check(C.amount == 2 && hair_dye_current(W, FALSE) == other_colour, "another player cannot apply dye to the recipient")
+	H.f_style = "Shaved"
+	C.resolve_attackby(H, H)
+	cut_check(C.amount == 2, "a shaved face does not take dye")
+	H.f_style = "Full Beard"
+	spawn(5)
+		H.drop_from_inventory(C)
+	C.resolve_attackby(H, H)
+	cut_check(C.amount == 2 && hair_dye_current(H, TRUE) == "#be46aa", "dropping the sheet during application does not pay or recolour")
+
+	// Optional render output uses the same BYOND blend and existing character sprites.
+	if (world.params["dump"])
+		H.h_style = "Shoulder-length Hair"
+		H.f_style = "Full Beard"
+		hair_dye_sample(H, "#6e4c30", "#6e4c30", "walnut")
+		hair_dye_sample(H, "#3e5a86", "#2a2826", "woad")
+		hair_dye_sample(H, "#a8342c", "#6e4c30", "madder")
+		hair_dye_sample(H, "#be46aa", "#3a8a80", "custom")
+
+/proc/hair_dye_sample(mob/living/human/H, scalp, beard, label)
+	var/datum/sprite_accessory/S = hair_styles_list[H.h_style]
+	var/datum/sprite_accessory/F = facial_hair_styles_list[H.f_style]
+	var/list/parts = list(list(F.icon, "[F.icon_state]_s", beard), list(S.icon, "[S.icon_state]_s", scalp))
+	var/icon/face = cached_face_icon(parts)
+	var/icon/body = H.grooming_body_sheet()
+	var/list/dirs = grooming_sheet_dirs()
+	for (var/d in list(1, 2))
+		var/x = (d - 1) * 32 + 1
+		var/icon/card = icon(body)
+		card.Crop(x, 33, x + 31, 64)
+		card.Blend(icon(face, dir = dirs[d]), ICON_OVERLAY)
+		var/icon/top = icon(body)
+		top.Crop(x, 1, x + 31, 32)
+		card.Blend(top, ICON_OVERLAY)
+		fcopy(card, "hair-dye-[label]-[d].png")
+
+/obj/item/stack/material/cloth/dye_probe
+	var/answer
+
+/obj/item/stack/material/cloth/dye_probe/choose_hair_dye(mob/living/human/H, part, previous)
+	return answer
