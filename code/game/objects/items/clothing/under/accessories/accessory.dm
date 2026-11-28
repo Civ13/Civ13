@@ -5,7 +5,7 @@
 	name = "tie"
 	desc = "A neosilk clip-on tie."
 	icon = 'icons/obj/clothing/ties.dmi'
-	icon_state = "bluetie"
+	icon_state = "blue_tie"
 	item_state = ""	//no inhands
 	slot_flags = SLOT_ACCESSORY
 	w_class = ITEM_SIZE_SMALL
