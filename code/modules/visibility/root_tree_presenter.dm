@@ -369,7 +369,7 @@ var/global/list/root_tree_presenters
 	var/list/channels = rgb2num(rgb)
 	if(!islist(channels) || channels.len < 3)
 		return rgb
-	for(var/i = 1, i <= 3, i++)
+	for(var/i in 1 to 3)
 		channels[i] = min(255, round(channels[i] / 8 + 0.5) * 8)
 	return rgb(channels[1], channels[2], channels[3])
 

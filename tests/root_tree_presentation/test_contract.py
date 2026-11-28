@@ -2,6 +2,7 @@
 from collections import defaultdict
 import importlib.util
 import json
+from math import floor
 from pathlib import Path
 import re
 from types import SimpleNamespace as N
@@ -59,6 +60,8 @@ def compile_proc(text,signature,args,env,method=False):
         assignment=re.fullmatch(r'(\w+) = (.+) \? (.+) : (.+)',line)
         if assignment:line=assignment[1]+' = '+assignment[3]+' if '+assignment[2]+' else '+assignment[4]
         line=line.replace('arglist(sample)','*sample')
+        if line.startswith('return rgb('):
+            line = 'return dm_rgb(' + line[len('return rgb('):]
         if name=='cached_light':
             line=line.replace(r'"\ref[root]|[L.icon]|[L.icon_state]|[L.dir]|[json_encode(sample)]"',
                               'f"{id(root)}|{L.icon}|{L.icon_state}|{L.dir}|{json_encode(sample)}"')
@@ -73,10 +76,11 @@ def compile_proc(text,signature,args,env,method=False):
             for field in ['root_trees','owner','images','owned_images','work_images','retired','context','frames','frame_keys','frame_appearances','frame_lights','frame_dirs','published_frames','source_appearances','light_keys','light_values','screens','leased_planes','lease_targets','game_plane','original_filters','scene_plane','scene_active','fallback_reason','fallback_count','release_owned_scene','foreground_verdicts']:
                 line=re.sub(r'(?<![.\w])'+field+r'\b','self.'+field,line)
         numeric_range = re.fullmatch(r'for\s*\(var/(\w+) in 1 to (.+)\)', line)
+        counting_loop = re.fullmatch(r'for\(var/(\w+) = 1, \1 <= (\d+), \1\+\+\)', line)
         if numeric_range:
             line = f'for {numeric_range[1]} in range(1, ({numeric_range[2]}) + 1):'
-        elif line == 'for(var/i = 1, i <= 20, i++)':
-            line = 'for i in range(1,21):'
+        elif counting_loop:
+            line = f'for {counting_loop[1]} in range(1, {int(counting_loop[2]) + 1}):'
         else:
             loop=re.fullmatch(r'for\(var/(?:\w+/)*(\w+) in (.+)\)',line)
             if loop:line='for '+loop[1]+' in '+loop[2]+':'
@@ -111,6 +115,67 @@ def tree():
       loc=N(type='/turf/floor/plating'),anchored=True,opacity=True,step_x=0,step_y=0,pixel_x=-16,pixel_y=0,
       bound_x=0,bound_y=0,bound_width=32,bound_height=32,plane=1,layer=5.11,pixel_w=0,pixel_z=0,appearance_flags=0,transform=identity(),filters=[],overlays=[],underlays=[],
       vis_contents=[],render_source=None,render_target=None,maptext='',icon='icons/obj/flora/bigtrees.dmi',mouse_opacity=1,alpha=255)
+
+class TreeTint(unittest.TestCase):
+    def setUp(self):
+        self.parsed = []
+        self.env = {
+            '__builtins__': {},
+            'istext': lambda value: isinstance(value, str),
+            'length': len,
+            'rgb2num': self.parse,
+            'islist': lambda value: isinstance(value, list),
+            'len': len,
+            'range': range,
+            'min': min,
+            'round': floor,
+            'dm_rgb': self.rgb,
+        }
+
+    @staticmethod
+    def rgb(red, green, blue):
+        return f'#{red:02x}{green:02x}{blue:02x}'
+
+    def parse(self, value):
+        self.parsed.append(value)
+        if value == '#zzzzzz':
+            return None
+        if value == '#badbad':
+            return Values([4, 12])
+        return Values(int(value[i:i + 2], 16) for i in (1, 3, 5))
+
+    def project(self, source):
+        return compile_proc(source, '/proc/root_tree_quantize_rgb(', 'rgb', self.env)
+
+    def test_rounds_every_channel_and_keeps_blue(self):
+        range_loop = 'for(var/i in 1 to 3)\n\t\tchannels[i]'
+        self.assertIn(range_loop, TREE)
+        current = self.project(TREE)
+        previous = self.project(TREE.replace(
+            range_loop, 'for(var/i = 1, i <= 3, i++)\n\t\tchannels[i]', 1,
+        ))
+        for channel in range(3):
+            for value in range(256):
+                channels = [4, 12, 252]
+                channels[channel] = value
+                original = self.rgb(*channels)
+                expected = self.rgb(*(min(255, (item + 4) // 8 * 8) for item in channels))
+                self.assertEqual(current(original), expected, (channel, value))
+                self.assertEqual(previous(original), expected, (channel, value))
+        self.assertEqual(current('#040cfc'), '#0810ff')
+
+        skipped_blue = self.project(TREE.replace(
+            range_loop, 'for(var/i in 1 to 2)\n\t\tchannels[i]', 1,
+        ))
+        self.assertEqual(skipped_blue('#040cfc'), '#0810fc')
+
+    def test_preserves_passthroughs(self):
+        current = self.project(TREE)
+        for value in (None, 42, '#abc', '#ffffff', '#zzzzzz', '#badbad'):
+            with self.subTest(value=value):
+                self.assertEqual(current(value), value)
+        self.assertEqual(self.parsed, ['#zzzzzz', '#badbad'])
+
 
 class Snapshot(unittest.TestCase):
     def setUp(self):
