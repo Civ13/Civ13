@@ -56,6 +56,9 @@
 	hand_wrap_type = /obj/item/clothing/gloves/hand_wraps/leather
 
 /obj/item/stack/material/attack(mob/living/M, mob/living/user, target_zone)
+	if (M == user && user.a_intent == I_HELP && (target_zone == "head" || target_zone == "mouth") && ishuman(user) && is_cloth_sheet(src))
+		dye_own_hair(user, target_zone == "mouth")
+		return TRUE
 	if (hand_wrap_type && M == user && user.a_intent == I_GRAB && (target_zone in list("l_hand", "r_hand")) && ishuman(user))
 		wrap_hands(user)
 		return TRUE

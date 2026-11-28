@@ -36,3 +36,7 @@ neighbour, turn the figure, compare Now with After the cut, close without
 cutting, then cut and check both completion and interruption by putting the
 razor away. Offline checks do not exercise BYOND browser delivery or the
 window's drawing in the game client.
+
+The same native probe clicks the character with held cloth on Help intent.
+It substitutes the colour prompt only and checks colour knowledge, independent
+scalp and facial RGB, material cost and cancellations, including dropping the cloth.
