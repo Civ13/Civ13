@@ -217,7 +217,7 @@
 					continue
 
 				var/datum/lighting_corner/C = A
-				if (effect_str.Find(C))
+				if (C in effect_str)
 					continue
 
 				if (!C.active)
