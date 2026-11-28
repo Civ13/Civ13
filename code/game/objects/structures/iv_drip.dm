@@ -43,7 +43,7 @@
 			overlays += filling
 
 /obj/structure/iv_drip/MouseDrop(over_object, src_location, over_location)
-	if (!usr || !isturf(usr.loc))
+	if (!is_at_floor_level(usr))
 		return
 
 	..()
@@ -65,6 +65,8 @@
 
 /obj/structure/iv_drip/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	if (istype(W, /obj/item/weapon/reagent_containers))
+		if (!is_at_floor_level(user))
+			return
 		if (!isnull(beaker))
 			to_chat(user, "There is already a reagent container loaded!")
 			return
@@ -78,8 +80,12 @@
 	else
 		return ..()
 
+/obj/structure/iv_drip/proc/is_at_floor_level(mob/person)
+	// Climbers and roof riders are above their underlying turfs.
+	return person && isturf(person.loc) && !los_up_tree(person) && !los_on_vehicle_deck(person)
+
 /obj/structure/iv_drip/proc/can_reach_patient(mob/living/human/patient)
-	return isturf(patient.loc) && Adjacent(patient)
+	return is_at_floor_level(patient) && Adjacent(patient)
 
 /obj/structure/iv_drip/process()
 
@@ -143,6 +149,8 @@
 
 /obj/structure/iv_drip/attack_hand(mob/user as mob)
 	if (beaker)
+		if (!is_at_floor_level(user))
+			return
 		beaker.loc = get_turf(src)
 		beaker = null
 		update_icon()
@@ -159,7 +167,7 @@
 		to_chat(usr, "<span class='warning'>You can't do that.</span>")
 		return
 
-	if (usr.stat || !isturf(usr.loc) || !Adjacent(usr))
+	if (usr.stat || !is_at_floor_level(usr) || !Adjacent(usr))
 		return
 
 	mode = !mode
