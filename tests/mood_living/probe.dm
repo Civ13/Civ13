@@ -13,6 +13,8 @@
 	if (port == "none")
 		return ..()
 	return FALSE
+/area/ml_rested_room
+	location = AREA_INSIDE
 /obj/map_metadata/ml_probe/New()
 	return
 /mob/living/human/ml_probe
@@ -457,5 +459,32 @@ var/ml_runtime_error = FALSE
 	ml_check(B.research_ticks("basic_tools") == 25, "the seven points that do not fit are kept and go to the next contribution")
 	B.add_research_work("basic_tools", 2, FALSE, H)
 	ml_check(B.research_ticks("basic_tools") == 27, "the remainder is spent only once")
+
+	var/area/original_area = get_area(T)
+	var/area/ml_rested_room/room = new
+	room.contents += T
+	ml_bed_transition(H, TRUE, 40 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 70 MINUTES + 864000)
+	B.add_research_work("steelmaking", 1, FALSE, H)
+	ml_check(B.research_ticks("steelmaking") == 15, "a clean, sound roofed room banks fourteen points instead of the outdoor ten")
+	var/list/decor = list()
+	decor += new /obj/structure/painting_frame/ml_painting(T)
+	decor += new /obj/structure/painting_frame/ml_painting(T)
+	decor += new /obj/structure/brazier/ml_fire(T)
+	ml_bed_transition(H, TRUE, 71 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 101 MINUTES + 864000)
+
+	// Move from the decorated room to an outdoor bed before spending the bank.
+	var/turf/outdoor = locate(14, 12, 1)
+	var/obj/structure/bed/ml_bed/outdoor_bed = new(outdoor)
+	H.loc = outdoor
+	ml_bed_transition(H, TRUE, 102 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 132 MINUTES + 864000)
+	B.add_research_work("steelmaking", 1, FALSE, H)
+	ml_check(B.research_ticks("steelmaking") == 34, "adding art and light raises the cap to eighteen, duplicate art does not, and outdoor rest does not erase the bank")
+	for (var/obj/O in decor)
+		O.loc = null
+	original_area.contents += T
 	bed.loc = null
+	outdoor_bed.loc = null
 	map.persistence = FALSE

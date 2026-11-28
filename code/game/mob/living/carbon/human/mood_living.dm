@@ -37,7 +37,8 @@
 /mob/living/human/var/sleep_comfort = 0
 
 #define RESTED_RESEARCH_POINT_INTERVAL (1 MINUTE)
-#define RESTED_RESEARCH_POINT_CAP 10
+#define RESTED_RESEARCH_BASE_CAP 10
+#define RESTED_RESEARCH_PER_HOME_POINT 2
 
 // Save the wall-clock pair with the body so offline time and restarts count.
 // Realtime is too coarse for the sleep threshold; use it only for day wraps.
@@ -65,7 +66,7 @@
 	rested_learning_sleep_realtime = null
 
 /mob/living/human/proc/begin_rested_learning_sleep()
-	if (isnull(rested_learning_sleep_timeofday) && rested_research_points < RESTED_RESEARCH_POINT_CAP && !droid && map?.book_research_enabled() && rested_learning_bed_here())
+	if (isnull(rested_learning_sleep_timeofday) && rested_research_points < rested_research_capacity(home_comfort_categories.len) && !droid && map?.book_research_enabled() && rested_learning_bed_here())
 		rested_learning_sleep_timeofday = rested_learning_timeofday()
 		rested_learning_sleep_realtime = rested_learning_realtime()
 
@@ -78,11 +79,14 @@
 	clear_rested_learning_sleep()
 	if (duration < RESTED_RESEARCH_POINT_INTERVAL || stat == DEAD || droid || !map?.book_research_enabled() || !rested_learning_bed_here())
 		return FALSE
-	var/earned = min(round(duration / RESTED_RESEARCH_POINT_INTERVAL), RESTED_RESEARCH_POINT_CAP - rested_research_points)
+	var/list/room = home_comfort_judge(get_turf(src))
+	var/capacity = rested_research_capacity(room["points"])
+	// A less comfortable room cannot erase points already earned elsewhere.
+	var/earned = min(round(duration / RESTED_RESEARCH_POINT_INTERVAL), capacity - rested_research_points)
 	if (earned <= 0)
 		return FALSE
 	rested_research_points += earned
-	to_chat(src, SPAN_NOTICE("You wake up refreshed. You have [rested_research_points] of [RESTED_RESEARCH_POINT_CAP] rested research points banked."))
+	to_chat(src, SPAN_NOTICE("You wake up refreshed. You have [rested_research_points] of [capacity] rested research points banked."))
 	return TRUE
 
 // Called only after a positive contribution with room left on the chapter.
@@ -94,11 +98,15 @@
 	to_chat(src, SPAN_NOTICE("Being well rested adds [points] extra research point[points == 1 ? "" : "s"] ([rested_research_points] banked)."))
 	return points
 
+/proc/rested_research_capacity(comfort_points = 0)
+	return RESTED_RESEARCH_BASE_CAP + RESTED_RESEARCH_PER_HOME_POINT * clamp(comfort_points, 0, home_comfort_categories.len)
+
 /proc/rested_research_points_valid(points)
-	return isnum(points) && points >= 0 && points <= RESTED_RESEARCH_POINT_CAP
+	return isnum(points) && points >= 0 && points <= rested_research_capacity(home_comfort_categories.len)
 
 #undef RESTED_RESEARCH_POINT_INTERVAL
-#undef RESTED_RESEARCH_POINT_CAP
+#undef RESTED_RESEARCH_BASE_CAP
+#undef RESTED_RESEARCH_PER_HOME_POINT
 
 // The comfort of the place a sleeper lies in. Chairs and seats count for nothing.
 /mob/living/human/proc/sleeping_place_comfort()
