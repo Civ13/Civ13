@@ -11,7 +11,6 @@
 	var/icon_base = "tape"
 
 var/list/image/hazard_overlays
-var/list/tape_roll_applications = list()
 
 /obj/item/taperoll/no_tape
 	name = "tape roll"
@@ -216,18 +215,21 @@ var/list/tape_roll_applications = list()
 		initialize_hazard_overlays()
 		var/turf/F = A
 		var/direction = user.loc == F ? user.dir : turn(user.dir, 180)
-		var/icon/hazard_overlay = hazard_overlays["[direction]"]
-		if(tape_roll_applications[F] == null)
-			tape_roll_applications[F] = 0
+		var/image/hazard_overlay = hazard_overlays["[direction]"]
+		if (!hazard_overlay)
+			return
 
-		if(tape_roll_applications[F] & direction) // hazard_overlay in F.overlays wouldn't work.
+		// Floor appearance refreshes rebuild the visible overlays from decals.
+		if (F.decals && (hazard_overlay in F.decals))
 			user.visible_message("\The [user] uses the adhesive of \the [src] to remove area markings from \the [F].", "You use the adhesive of \the [src] to remove area markings from \the [F].")
+			F.decals -= hazard_overlay
 			F.overlays -= hazard_overlay
-			tape_roll_applications[F] &= ~direction
 		else
 			user.visible_message("\The [user] applied \the [src] on \the [F] to create area markings.", "You apply \the [src] on \the [F] to create area markings.")
+			if (!F.decals)
+				F.decals = list()
+			F.decals |= hazard_overlay
 			F.overlays |= hazard_overlay
-			tape_roll_applications[F] |= direction
 		return
 
 /obj/item/tape/proc/crumple()
