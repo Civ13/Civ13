@@ -900,6 +900,14 @@ class Host:
         if world:
             report['world'] = {key: world.get(key) for key in
                                ('ready', 'busy', 'clients', 'map', 'generation', 'revision', 'error')}
+            # A staged build or a checkout can be newer than the process answering here.
+            # Use only commit metadata matching the answering world's lifecycle revision.
+            revision = world.get('revision')
+            if isinstance(revision, str) and HEX40.fullmatch(revision):
+                record = self.read_json(self.repo / 'config' / 'server-build.json') or {}
+                committed = record.get('committed')
+                if record.get('schema') == 1 and record.get('revision') == revision and type(committed) is int and 0 < committed <= 253402300799:
+                    report['world']['committed'] = committed
         return report
 
     # -- requests from callers ---------------------------------------------

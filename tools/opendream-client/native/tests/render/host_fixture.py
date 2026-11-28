@@ -19,7 +19,7 @@ NEW = '9be03aa' + '1' * 33
 
 REGIONS = [
     ('gaia', 'Gaia', 1714, 1814, {
-        'state': 'awake', 'listening': True, 'busy': False, 'world': {'ready': 1, 'clients': 7},
+        'state': 'awake', 'listening': True, 'busy': False, 'world': {'ready': 1, 'clients': 7, 'revision': '123456789abcdef0123456789abcdef012345678', 'committed': 1795831200},
         'operation': {'action': 'start', 'phase': 'done', 'error': None},
         'stage': {'phase': 'ready', 'pending': True}, 'transfer_agent': True,
         'region_view': {'epoch': {'ordinal': 3}, 'calendar': {

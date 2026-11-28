@@ -198,6 +198,23 @@ class GaiaHostTests(unittest.TestCase):
         self.machine.up = True
         self.assertEqual(self.host.status()['world']['clients'], 2)
 
+    def test_status_reports_commit_time_only_for_the_answering_revision(self):
+        self.give_token()
+        self.machine.up = True
+        build = self.repo / 'config' / 'server-build.json'
+        committed = 1795831200
+        build.write_text(json.dumps({'schema': 1, 'revision': REVISION, 'committed': committed,
+                                     'deployed': committed + 600}), encoding='utf-8')
+        self.assertEqual(self.host.status()['world']['committed'], committed)
+        for changes in ({'revision': 'd' * 40}, {'committed': True}, {'committed': 10**20}, {'schema': 2}):
+            record = {'schema': 1, 'revision': REVISION, 'committed': committed}
+            build.write_text(json.dumps(record | changes), encoding='utf-8')
+            world = self.host.status()['world']
+            self.assertEqual(world['revision'], REVISION)
+            self.assertNotIn('committed', world)
+        self.machine.hung = True
+        self.assertNotIn('world', self.host.status())
+
     def test_start_fresh_world_writes_revision_and_runs_the_task(self):
         operation = self.accept('start')
         self.host.work('start', operation)

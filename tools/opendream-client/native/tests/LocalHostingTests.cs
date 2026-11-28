@@ -602,6 +602,29 @@ static class LocalHostingTests {
             + "\"sea\": {\"name\": \"Open Sea\", \"state\": \"awake\", \"world\": {\"ready\": 1, \"clients\": 1}, \"busy\": true, \"operation\": {\"action\": \"handover\", \"phase\": \"loading the standby\"}, \"standby\": {\"port\": 1728, \"listening\": true}, "
             + "\"stage\": {\"phase\": \"ready\", \"pending\": true, \"install\": \"not installed: the region started while its update was building\"}}, "
             + "\"lost\": {\"state\": \"unknown\", \"error\": \"config unreadable\"}}, \"coordinator\": false, \"ok\": true}";
+        const string liveSha = "123456789abcdef0123456789abcdef012345678";
+        const string stagedSha = "fedcba9876543210fedcba9876543210fedcba98";
+        var buildReport = $$$"""{"state":"awake","listening":true,"world":{"revision":"{{{liveSha}}}","committed":1795831200},"stage":{"phase":"ready","pending":true,"revision":"{{{stagedSha}}}"}}""";
+        RegionCard BuildCard(string report) {
+            using var document = JsonDocument.Parse(report);
+            return HostBoard.Card("gaia", "Gaia", true, document.RootElement, 3);
+        }
+        var revisionCard = BuildCard(buildReport);
+        var commitTime = DateTimeOffset.FromUnixTimeSeconds(1795831200);
+        Require(revisionCard.Build == RegionBuild.Built && revisionCard.Revision?.Sha == liveSha
+            && revisionCard.Revision.Describe(commitTime.AddHours(3)) == "commit 1234567 (3 hours ago)",
+            "the running commit uses commit time rather than the staged revision or its deployment time");
+        Require(revisionCard.Describe().Contains(liveSha) && !revisionCard.Describe().Contains(stagedSha),
+            "the board tooltip exposes the full running SHA only");
+        Require(BuildCard(buildReport.Replace("1795831200", "null")).Revision?.Describe(commitTime) == "commit 1234567 (age unknown)"
+            && revisionCard.Revision?.Describe(commitTime.AddSeconds(-1)) == "commit 1234567 (age unknown)",
+            "older host scripts and clock skew must not invent an age");
+        Require(BuildCard(buildReport.Replace(liveSha, "not a valid SHA")).Revision == null
+            && BuildCard(buildReport.Replace("awake", "asleep")).Revision == null
+            && BuildCard(buildReport.Insert(1, "\"standby\":{\"listening\":true},")).Revision == null
+            && BuildCard(buildReport.Insert(1, "\"region_view\":{\"error\":\"wrong region\"},")).Revision == null,
+            "the board must not label an unverified or transitioning world as running a commit");
+
         var behindNow = HostBoard.RegionsBehind("{\"component\": \"server\", \"behind\": 3, \"regions\": {\"gaia\": {\"behind\": 3}, \"railyard\": {\"behind\": 0}, \"barren\": {\"behind\": 3}, \"moon\": {\"behind\": -1}, \"orbit\": \"x\"}, \"ok\": true}");
         Require(behindNow.Count == 3 && behindNow["gaia"] == 3 && behindNow["railyard"] == 0, "regions behind: " + behindNow.Count);
         Require(HostBoard.RegionsBehind("{\"ok\": false, \"regions\": {\"gaia\": {\"behind\": 3}}}").Count == 0 && HostBoard.RegionsBehind("Traceback").Count == 0, "a refused check counted");

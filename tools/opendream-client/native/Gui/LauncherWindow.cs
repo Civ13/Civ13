@@ -520,7 +520,7 @@ internal sealed partial class LauncherWindow : Form {
     }
 
     private async Task Startup() {
-        Console.SetOut(new LogWriter(log));
+        Console.SetOut(ConsoleBridge.LogWriter(log));
         Console.SetError(Console.Out);
         FileStream? owner = null;
         try {
@@ -1682,8 +1682,8 @@ internal sealed partial class LauncherWindow : Form {
         try {
             var exit = await Task.Run(() => LocalHosting.RunStreamed(LocalHosting.GroupScriptStep(control, script, resume, regions), text => {
                 lock (output) output.AppendLine(text);
+                HostLine(text);
                 try { BeginInvoke(() => {
-                    HostLine(text);
                     if (script == "deploy" && ReferenceEquals(groupScriptCancel, cancel) && !cancel.IsCancellationRequested) {
                         var building = HostBoard.DeployBuilding(groupDeployBuilding, text);
                         if (building != groupDeployBuilding) {
