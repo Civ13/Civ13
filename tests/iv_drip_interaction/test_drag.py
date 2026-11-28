@@ -13,17 +13,16 @@ import source_adapter
 class IVDragTests(unittest.TestCase):
     def setUp(self):
         source = (ROOT / 'code/game/objects/structures/iv_drip.dm').read_text()
-        source = source.replace('/obj/structure/iv_drip/MouseDrop(over_object, src_location, over_location)\n\t..()',
-                                '/obj/structure/iv_drip/MouseDrop(over_object, src_location, over_location)\n\tparent_drop()')
         # Messages do not affect the attachment state under test.
         lines = source.splitlines()
         for i, line in enumerate(lines):
             if line.lstrip().startswith('visible_message('):
                 lines[i] = line[:len(line) - len(line.lstrip('\t'))] + 'notice()'
         source = '\n'.join(lines) + '\n'
-        self.actor = SimpleNamespace(distance=1, z=1, stat=0, patient_in_touch=True,
-                                     drip_in_touch=True, incapacitated=lambda flags: False)
         self.floor = object()
+        self.actor = SimpleNamespace(distance=1, z=1, stat=0, loc=self.floor,
+                                     patient_in_touch=True, drip_in_touch=True,
+                                     incapacitated=lambda flags: False)
         self.patient = SimpleNamespace(distance=1, actor_distance=1, z=1, loc=self.floor,
                                        drip_in_touch=True)
         self.patient.Adjacent = lambda actor: (
@@ -48,9 +47,12 @@ class IVDragTests(unittest.TestCase):
             )
             self.reach = source_adapter.project(source, '/obj/structure/iv_drip/proc/can_reach_patient',
                                                 'src, patient', env, method=True)
-            self.drag = source_adapter.project(source, '/obj/structure/iv_drip/MouseDrop',
-                                               'src, over_object, src_location, over_location',
-                                               env, method=True)
+            drag = '/obj/structure/iv_drip/MouseDrop'
+            drag_source = source_adapter.extract(source, drag).replace('\t..()\n', '\tparent_drop()\n')
+            self.drag = source_adapter.project(
+                drag + '(over_object, src_location, over_location)\n' + drag_source + '\n',
+                drag, 'src, over_object, src_location, over_location', env, method=True,
+            )
             # Assume BYOND has offered the visible verb. Simulate its messages and type check.
             toggle = '/obj/structure/iv_drip/verb/toggle_mode'
             toggle_source = source_adapter.extract(source, toggle)
@@ -80,6 +82,28 @@ class IVDragTests(unittest.TestCase):
         )
         drip.CanMouseDrop = lambda over: self.can_drop(drip, over, self.actor)
         return drip
+
+    def test_contained_operator_cannot_attach(self):
+        self.actor.loc = SimpleNamespace(loc=self.floor)
+        drip = self.make_drip()
+        # The common adjacency check resolves the closet to its floor tile.
+        self.assertTrue(drip.CanMouseDrop(self.patient))
+        self.drag(drip, self.patient, None, None)
+        self.assertIsNone(drip.attached)
+
+    def test_contained_operator_cannot_detach(self):
+        self.actor.loc = SimpleNamespace(loc=self.floor)
+        drip = self.make_drip(self.patient)
+        self.assertTrue(drip.CanMouseDrop(drip))
+        self.drag(drip, self.patient, None, None)
+        self.assertIs(drip.attached, self.patient)
+
+    def test_contained_operator_cannot_toggle_mode(self):
+        self.actor.loc = SimpleNamespace(loc=self.floor)
+        drip = self.make_drip()
+        self.assertTrue(drip.Adjacent(self.actor))
+        self.toggle_mode(drip)
+        self.assertTrue(drip.mode)
 
     def test_remote_drag_cannot_detach_patient(self):
         drip = self.make_drip(self.patient)

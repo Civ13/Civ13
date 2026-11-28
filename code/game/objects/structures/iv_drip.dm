@@ -43,6 +43,9 @@
 			overlays += filling
 
 /obj/structure/iv_drip/MouseDrop(over_object, src_location, over_location)
+	if (!usr || !isturf(usr.loc))
+		return
+
 	..()
 
 	if (attached)
@@ -156,7 +159,7 @@
 		to_chat(usr, "<span class='warning'>You can't do that.</span>")
 		return
 
-	if (usr.stat || !Adjacent(usr))
+	if (usr.stat || !isturf(usr.loc) || !Adjacent(usr))
 		return
 
 	mode = !mode
