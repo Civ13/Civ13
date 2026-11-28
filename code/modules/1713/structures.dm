@@ -613,7 +613,7 @@
 /obj/structure/props/djtable
 	name = "DJ table"
 	desc = "A DJ table."
-	icon = 'icons/obj/junk.dmi'
+	icon = 'icons/obj/structures.dmi'
 	icon_state = "djtable"
 	flammable = TRUE
 	not_movable = TRUE
@@ -981,7 +981,7 @@
 /obj/structure/props/dj
 	name = "DJ table"
 	desc = "A DJ setup for makin' sick beats."
-	icon = 'icons/obj/junk.dmi'
+	icon = 'icons/obj/structures.dmi'
 	icon_state = "djtable"
 	flammable = FALSE
 	not_movable = TRUE
