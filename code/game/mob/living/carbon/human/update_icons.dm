@@ -342,10 +342,8 @@ var/global/list/damage_icon_parts = list()
 	if (update_icons)	update_icons()
 
 /mob/living/human/proc/reload_cached_icons(var/icon_key, var/forced)
-	var/icon/base_icon
-	if (human_icon_cache[icon_key] && !forced)
-		base_icon = human_icon_cache[icon_key]
-	else
+	var/icon/base_icon = human_icon_cache[icon_key]
+	if (!base_icon || forced)
 		//BEGIN CACHED ICON GENERATION.
 		base_icon = new('icons/mob/human.dmi',"blank")
 
