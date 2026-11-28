@@ -1528,12 +1528,14 @@ var/global/list/human_face_icon_cache = list()
 	var/icon/mask_icon = get_water_mask_icon()
 	if (mask_icon)
 		filters = null
-		filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
+		// Each owner receives its own copy of the unattached filter.
+		var/mask_filter = filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
+		filters += mask_filter
 		for(var/over in overlays_standing)
 			var/image/img = over
 			if(img)
 				img.filters = null
-				img.filters += filter(type="alpha", icon=mask_icon, flags=MASK_INVERSE)
+				img.filters += mask_filter
 	else
 		filters = null
 		clear_overlay_filters()
