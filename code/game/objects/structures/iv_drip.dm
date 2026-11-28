@@ -76,8 +76,7 @@
 		return ..()
 
 /obj/structure/iv_drip/proc/can_reach_patient(mob/living/human/patient)
-	// get_dist() also counts adjacent levels as one tile apart.
-	return patient.z == z && isturf(patient.loc) && get_dist(src, patient) <= 1
+	return isturf(patient.loc) && Adjacent(patient)
 
 /obj/structure/iv_drip/process()
 
