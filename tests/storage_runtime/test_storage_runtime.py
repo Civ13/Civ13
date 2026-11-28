@@ -4,6 +4,7 @@ from pathlib import Path
 import re
 import unittest
 from types import SimpleNamespace
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location('storage_source_adapter', ROOT/'tests/save_movement/source_adapter.py')
@@ -325,6 +326,61 @@ class StorageRuntime(unittest.TestCase):
         self.assertLess(saved.index('inducedSSD = TRUE'),saved.index('s_active.close(src)'))
         self.assertLess(saved.index('s_active.close(src)'),saved.index('sleep_update()'))
         self.assertLess(LOGIN.index('s_active.close(src)'),LOGIN.index('client.screen = null'))
+
+class ClosetOpening(unittest.TestCase):
+    def test_opening_releases_contents_before_sound_and_preserves_cooler_density(self):
+        root = ROOT / 'code/game/objects/structures/crates_lockers'
+        closets = (root / 'closets.dm').read_text(encoding='utf8')
+        fridges = (root / 'closets/fridge.dm').read_text(encoding='utf8')
+        events = []
+
+        def record(closet, action, *sound_args):
+            events.append((action, closet.opened, closet.icon_state, closet.density, *sound_args))
+
+        with patch.object(A, 'FIELDS', A.FIELDS + (
+            'try_open_lid', 'opened', 'can_open', 'keep_items', 'dump_contents',
+            'icon_opened', 'open_sound', 'density',
+        )):
+            open_lid = A.project(closets, '/obj/structure/closet/proc/try_open_lid', 'src', {
+                'closet_release_all_but_items': lambda closet: record(closet, 'release occupants'),
+                'playsound': lambda closet, *args: record(closet, 'sound', *args),
+            }, method=True)
+            open_closet = A.project(closets, '/obj/structure/closet/proc/open', 'src', {}, method=True)
+            open_cooler = A.project(fridges, '/obj/structure/closet/fridge/icecreamcooler/open', 'src', {}, method=True)
+
+        for open_container, remains_dense in ((open_closet, False), (open_cooler, True)):
+            for initially_open, can_open, keep_items in (
+                (True, True, False), (False, False, True),
+                (False, True, False), (False, True, True),
+            ):
+                with self.subTest(cooler=remains_dense, opened=initially_open,
+                                  can_open=can_open, keep_items=keep_items):
+                    events.clear()
+                    initial_icon = 'open' if initially_open else 'closed'
+                    closet = SimpleNamespace(
+                        opened=initially_open, density=True, icon_state=initial_icon,
+                        icon_opened='open', open_sound='lid', keep_items=keep_items,
+                        can_open=lambda: can_open,
+                    )
+                    closet.loc = closet
+                    closet.dump_contents = lambda: record(closet, 'dump contents')
+                    closet.try_open_lid = lambda: open_lid(closet)
+
+                    if initially_open or not can_open:
+                        self.assertFalse(open_container(closet))
+                        self.assertEqual(events, [])
+                        self.assertEqual((closet.opened, closet.icon_state, closet.density),
+                                         (initially_open, initial_icon, True))
+                    else:
+                        self.assertTrue(open_container(closet))
+                        release = 'release occupants' if keep_items else 'dump contents'
+                        self.assertEqual(events, [
+                            (release, False, 'closed', True),
+                            ('sound', True, 'open', True, 'lid', 100, True, -3),
+                        ])
+                        self.assertEqual((closet.opened, closet.icon_state, closet.density),
+                                         (True, 'open', remains_dense))
+
 
 class ClassicCrateClose(unittest.TestCase):
     def test_close_only_sweeps_remaining_cargo(self):

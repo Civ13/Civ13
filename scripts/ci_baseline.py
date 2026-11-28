@@ -2065,6 +2065,8 @@ SUITES = {
     'storage_runtime': {'files': ('tests/storage_runtime/test_storage_runtime.py',),
         'paths': ('tests/storage_runtime/',), 'shared_paths': (
             'code/game/objects/items/weapons/storage/storage.dm',
+            'code/game/objects/structures/crates_lockers/closets.dm',
+            'code/game/objects/structures/crates_lockers/closets/fridge.dm',
             'code/game/mob/login.dm', 'code/game/mob/living/carbon/human/human_helpers.dm',
             'code/modules/persistence/bed_return.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm',
