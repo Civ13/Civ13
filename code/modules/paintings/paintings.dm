@@ -3,7 +3,6 @@
 // painting_editor.dm and the admin list in painting_admin.dm.
 
 // Paintings per world: code/__defines/paintings.dm
-#define PAINT_GRIND_TIME 30
 #define PAINT_PIXELS_PER_USE 256 // painted pixels one use of a pigment covers
 #define PAINT_LOCKET_LEFT 12 // the locket's 8x8 window in icons/mob/paintings.dmi, SOUTH
 #define PAINT_LOCKET_TOP 14
@@ -112,11 +111,7 @@
 		return FALSE
 	if (!grind_access(user))
 		return FALSE
-	grinding = TRUE
-	user.visible_message(SPAN_NOTICE("[user] starts grinding \the [W] in \the [src]."), SPAN_NOTICE("You start grinding \the [W] into pigment."))
-	var/completed = do_after(user, PAINT_GRIND_TIME, src)
-	grinding = FALSE
-	if (!completed || QDELETED(src) || QDELETED(W))
+	if (!wait_for_grinding(W, user, "You start grinding \the [W] into pigment."))
 		return FALSE
 	if (!grind_access(user))
 		return FALSE
@@ -784,5 +779,3 @@
 		to_chat(user, "It holds a miniature locket, [M.painting_name_text()].")
 		if (get_dist(user, src) <= 1)
 			painting_show_full(user, M)
-
-#undef PAINT_GRIND_TIME
