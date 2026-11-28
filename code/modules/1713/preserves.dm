@@ -20,9 +20,6 @@
 #define PICKLE_SALT 2
 #define JAM_PER_TOAST 5
 
-/proc/crock_souring_reagents()
-	return list("wine", "cider", "beer", "mead")
-
 /obj/item/weapon/clay/crock
 	name = "unfired clay crock"
 	desc = "A squat clay crock waiting for the kiln."
@@ -172,12 +169,18 @@
 /obj/item/weapon/reagent_containers/glass/crock/proc/has_brine_for(count)
 	return count > 0 && reagents.get_reagent_amount("vinegar") >= PICKLE_VINEGAR * count && reagents.get_reagent_amount("sodiumchloride") >= PICKLE_SALT * count
 
+// Return the first alcohol the closed crock can turn into vinegar.
+/obj/item/weapon/reagent_containers/glass/crock/proc/crock_souring_source()
+	for (var/id in list("wine", "cider", "beer", "mead"))
+		if (reagents.get_reagent_amount(id) > 0)
+			return id
+	return null
+
 /obj/item/weapon/reagent_containers/glass/crock/proc/crock_has_work()
 	if (is_open_container() || !reagents)
 		return FALSE
-	for (var/id in crock_souring_reagents())
-		if (reagents.get_reagent_amount(id) > 0)
-			return TRUE
+	if (crock_souring_source())
+		return TRUE
 	var/list/food = unpickled_food()
 	var/list/to_pot = unpotted_food()
 	return has_brine_for(food.len) || has_seal_for(to_pot.len)
@@ -203,13 +206,12 @@
 		crock_schedule()
 		return FALSE
 	. = FALSE
-	for (var/id in crock_souring_reagents())
+	var/id = crock_souring_source()
+	if (id)
 		var/amount = min(reagents.get_reagent_amount(id), CROCK_SOUR_STEP)
-		if (amount > 0)
-			reagents.remove_reagent(id, amount)
-			reagents.add_reagent("vinegar", amount)
-			. = TRUE
-			break
+		reagents.remove_reagent(id, amount)
+		reagents.add_reagent("vinegar", amount)
+		. = TRUE
 	var/list/food = unpickled_food()
 	if (has_brine_for(food.len))
 		pickle_progress++
