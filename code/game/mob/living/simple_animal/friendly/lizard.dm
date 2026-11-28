@@ -146,7 +146,7 @@
 /mob/living/simple_animal/ianthasaurus
 	name = "ianthasaurus"
 	desc = "A cute tiny ianthasaurus."
-	icon = 'icons/mob/critter.dmi'
+	icon = 'icons/mob/animal.dmi'
 	icon_state = "ianthasaurus"
 	icon_living = "ianthasaurus"
 	icon_dead = "ianthasaurus_dead"

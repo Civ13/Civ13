@@ -129,6 +129,13 @@ class DeadStateTest(unittest.TestCase):
     def setUpClass(cls):
         cls.defaults, cls.procs = collect()
 
+    def test_ianthasaurus_initial_and_dead_sprites_exist(self):
+        values = self.defaults[BASE + '/ianthasaurus']
+        states = dmi_states(ROOT / ast.literal_eval(values['icon']))
+        for key in ('icon_state', 'icon_dead'):
+            with self.subTest(key=key):
+                self.assertIn(ast.literal_eval(values[key]), states)
+
     def test_found_the_animals(self):
         for path in ('/mob/living/simple_animal/sheep', '/mob/living/simple_animal/camel',
                      '/mob/living/simple_animal/cattle/cow'):
