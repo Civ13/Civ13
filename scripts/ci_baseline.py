@@ -3364,6 +3364,11 @@ SUITES = {
         'paths': ('tests/medicine_items/',),
         'shared_paths': ('code/modules/reagents/reagent_containers/syringe.dm',
                          'icons/obj/syringe.dmi')},
+    'roller_bed_collapse': {'files': ('tests/roller_bed/test_collapse.py',), 'paths': (
+        'tests/roller_bed/',), 'shared_paths': (
+        'code/game/objects/structures/stool_bed_chair_nest/bed.dm',
+        'code/_onclick/drag_drop.dm', 'code/_onclick/adjacent.dm',
+        'tests/save_movement/source_adapter.py')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')
