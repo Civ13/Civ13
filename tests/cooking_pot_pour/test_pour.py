@@ -91,17 +91,26 @@ class PotKeepsDissolvedReagentsTest(PotSourceTest):
 
     def test_empty_and_last_bowl_clear_the_pot(self):
         empty = self.body(self.pot, '/obj/structure/pot/verb/empty()')
-        self.assertIn('reagents.clear_reagents()\n\t\tsalt_water = FALSE\n\t\tfullness = 0\n\t\tif (meal_portions)', empty)
-        self.assertIn('food_toxin_origin = null\n\t\t\treagents.clear_reagents()', self.pot)
+        attack = self.body(self.pot, '/obj/structure/pot/attackby(')
+        discard = self.body(self.pot, '/obj/structure/pot/proc/discard_pot_liquid()')
+        self.assertEqual(discard.strip().splitlines()[1:], [
+            '\tstate = STATE_EMPTY',
+            '\tfood_toxin_origin = null',
+            '\treagents.clear_reagents()',
+            '\tsalt_water = FALSE',
+            '\tfullness = 0',
+        ])
+        self.assertIn('\n\t\tdiscard_pot_liquid()\n\t\tif (meal_portions)', empty)
+        self.assertIn('if (bowls <= 0)\n\t\t\tdiscard_pot_liquid()', attack)
 
     def test_seawater_meal_is_not_seasoned(self):
         recipe = self.body(self.meals, '/obj/structure/pot/proc/meal_recipe()')
         self.assertIn('!salt_water && !reagents_are_brine(reagents, fullness)', recipe)
         take = self.body(self.pot, '/obj/structure/pot/proc/take_dissolved(')
         self.assertIn('if (D.id == "sodiumchloride")\n\t\t\tsalt_water = TRUE', take)
-        # Every way the pot empties forgets the salt water.
-        self.assertEqual(self.pot.count('salt_water = FALSE'), 3)  # var, last bowl, Empty
-        self.assertIn('salt_water = FALSE', self.body(self.meals, '/obj/structure/pot/proc/serve_meal('))
+        # Prepared meals clear the saltwater marker after serving the final portion.
+        meal = self.body(self.meals, '/obj/structure/pot/proc/serve_meal(')
+        self.assertIn('if (!meal_portions)\n\t\tstate = STATE_EMPTY\n\t\tfood_toxin_origin = null\n\t\tsalt_water = FALSE', meal)
         # Seawater is 4% salt; brine starts at 3%, a seasoning pinch (0.5) is below it.
         self.assertGreater(0.04 * 100, 0.03 * 100)
         self.assertLess(0.5, 0.03 * 100)
@@ -115,13 +124,11 @@ class PotLiquidLifecycleTest(PotSourceTest):
         empty = self.body(self.pot, '/obj/structure/pot/verb/empty()')
         self.assertIn('if (meal_cooking || (state == STATE_EMPTY && fullness <= 0 && reagents.total_volume <= 0))', empty)
         wait = empty.index('if (do_after(usr, 100, src) && !meal_cooking)')
-        for reset in ('state = STATE_EMPTY', 'reagents.clear_reagents()', 'salt_water = FALSE', 'fullness = 0'):
-            self.assertGreater(empty.index(reset), wait)
+        self.assertGreater(empty.index('discard_pot_liquid()'), wait)
         # A 30-unit partial saltwater fill can be emptied, then refilled with
         # 30 fresh units without retaining its water level or brine markers.
         partial, _ = water_top_up(self.pot, 0, 30)
         self.assertEqual(partial, 30)
-        self.assertIn('salt_water = FALSE\n\t\tfullness = 0', empty)
         self.assertEqual(water_top_up(self.pot, 0, 30), (30, 30))
 
     def test_glass_and_drinks_share_additive_path_after_full_water(self):
@@ -144,7 +151,7 @@ class PotLiquidLifecycleTest(PotSourceTest):
         self.assertIn('w_stew.reagents.add_reagent(R.id, R.volume)', serve)
         self.assertNotIn('ceil(', serve)
         self.assertNotIn('initial_bowls', serve)
-        self.assertLess(serve.index('--bowls'), serve.index('reagents.clear_reagents()'))
+        self.assertLess(serve.index('--bowls'), serve.index('discard_pot_liquid()'))
         for added, expected in ((18, 6), (0.75, 0.25)):
             stored = added / 3
             self.assertEqual([stored] * 3, [expected] * 3)
@@ -155,6 +162,7 @@ class PotLiquidLifecycleTest(PotSourceTest):
         self.assertLess(attack.index('serve_meal(I, H)'), attack.index('I.reagents.get_master_reagent()'))
         meal = self.body(self.meals, '/obj/structure/pot/proc/serve_meal(')
         self.assertIn('reagents.trans_to_holder(M.reagents, reagents.total_volume / meal_portions)', meal)
+        self.assertNotIn('discard_pot_liquid()', meal)
 
 
 if __name__ == '__main__':
