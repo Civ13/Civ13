@@ -158,9 +158,17 @@
 	var/TOD_lum = client_tint ? 0 : daylight_lum(T.get_window_coeff())
 	// Daylight takes the sun's colour (sun_shadows.dm) on maps with a sun.
 	var/list/sun_tint = sun_daylight_tint()
-	var/TOD_r = sun_tint ? TOD_lum * sun_tint[1] : TOD_lum
-	var/TOD_g = sun_tint ? TOD_lum * sun_tint[2] : TOD_lum
-	var/TOD_b = sun_tint ? TOD_lum * sun_tint[3] : TOD_lum
+	var/TOD_r
+	var/TOD_g
+	var/TOD_b
+	if (sun_tint)
+		TOD_r = TOD_lum * sun_tint[1]
+		TOD_g = TOD_lum * sun_tint[2]
+		TOD_b = TOD_lum * sun_tint[3]
+	else
+		TOD_r = TOD_lum
+		TOD_g = TOD_lum
+		TOD_b = TOD_lum
 	#ifdef OPENDREAM
 	blend_mode = BLEND_ADD
 	#endif
