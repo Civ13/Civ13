@@ -113,6 +113,35 @@ class InstrumentSongTest(unittest.TestCase):
         self.assertIn('!isliving(loc)', self.read(HERE / 'original_violin.dm.txt'))
         self.assertIn('!anchored', self.read(HERE / 'original_piano.dm.txt'))
 
+    def test_single_line_edits_share_the_prompt_and_keep_distinct_guards(self):
+        shared = self.read(SHARED)
+        prompt = proc_body(shared, '/proc/instrument_prompt_for_line(')
+        self.assertIsNotNone(prompt)
+        self.assertIn(
+            'html_encode(player_input(user, "Enter your line: ", title, default_line, "text", null, TRUE))',
+            prompt,
+        )
+        self.assertIn(
+            'if (line && length(line) > MAX_CHARS_PER_LINE)\n'
+            '\t\tline = copytext(line, TRUE, MAX_CHARS_PER_LINE)\n\treturn line',
+            prompt,
+        )
+        topic = proc_body(shared, '/proc/instrument_topic(')
+        self.assertIn(
+            'var/newline = instrument_prompt_for_line(user, title, null)\n'
+            '\t\t\tif (!newline)\n\t\t\t\treturn\n'
+            '\t\t\tif (song.lines.len > max_lines)\n\t\t\t\treturn\n'
+            '\t\t\tsong.lines.Add(newline)',
+            topic,
+        )
+        self.assertIn(
+            'var/content = instrument_prompt_for_line(user, title, song.lines[num])\n'
+            '\t\t\tif (!content)\n\t\t\t\treturn\n'
+            '\t\t\tif (num > song.lines.len || num < 1)\n\t\t\t\treturn\n'
+            '\t\t\tsong.lines[num] = content',
+            topic,
+        )
+
     def test_import_respects_the_instrument_line_limit(self):
         topic = proc_body(self.read(SHARED), '/proc/instrument_topic(')
         self.assertIn('if (lines.len > max_lines)', topic)

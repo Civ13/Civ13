@@ -188,6 +188,12 @@ var/global/list/instrument_note_accidentals = list("b" = -1, "n" = 0, "#" = 1)
 	show_browse(user, dat, "window=[window];size=700x300")
 	onclose(user, window)
 
+/proc/instrument_prompt_for_line(mob/user, title, default_line)
+	var/line = html_encode(player_input(user, "Enter your line: ", title, default_line, "text", null, TRUE))
+	if (line && length(line) > MAX_CHARS_PER_LINE)
+		line = copytext(line, TRUE, MAX_CHARS_PER_LINE)
+	return line
+
 /proc/instrument_topic(obj/I, mob/user, list/href_list, title, window, max_lines)
 	if (!in_range(I, user) || !instrument_ready(I, user) || !user.canmove || user.restrained())
 		show_browse(user, null, "window=[window];size=700x300")
@@ -212,13 +218,11 @@ var/global/list/instrument_note_accidentals = list("b" = -1, "n" = 0, "#" = 1)
 			spawn() instrument_playsong(I)
 
 		else if (href_list["newline"])
-			var/newline = html_encode(player_input(user, "Enter your line: ", title, null, "text", null, TRUE))
+			var/newline = instrument_prompt_for_line(user, title, null)
 			if (!newline)
 				return
 			if (song.lines.len > max_lines)
 				return
-			if (length(newline) > MAX_CHARS_PER_LINE)
-				newline = copytext(newline, TRUE, MAX_CHARS_PER_LINE)
 			song.lines.Add(newline)
 
 		else if (href_list["deleteline"])
@@ -229,11 +233,9 @@ var/global/list/instrument_note_accidentals = list("b" = -1, "n" = 0, "#" = 1)
 
 		else if (href_list["modifyline"])
 			var/num = round(text2num(href_list["modifyline"]),1)
-			var/content = html_encode(player_input(user, "Enter your line: ", title, song.lines[num], "text", null, TRUE))
+			var/content = instrument_prompt_for_line(user, title, song.lines[num])
 			if (!content)
 				return
-			if (length(content) > MAX_CHARS_PER_LINE)
-				content = copytext(content, TRUE, MAX_CHARS_PER_LINE)
 			if (num > song.lines.len || num < 1)
 				return
 			song.lines[num] = content
