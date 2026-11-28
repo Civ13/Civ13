@@ -1024,7 +1024,7 @@
 	name = "celery"
 	desc = "A celery plant."
 	icon = 'icons/farming/vegetables.dmi'
-	icon_state = "celery_grow1"
+	icon_state = "celery-grow1"
 	plant = "celery"
 	biomes = list("temperate", "semiarid", "sea", "jungle")
 	max_water = 45
@@ -1033,7 +1033,7 @@
 	name = "liquorice"
 	desc = "A liquorice plant."
 	icon = 'icons/farming/plants.dmi'
-	icon_state = "liquorice_grow1"
+	icon_state = "liquorice-grow1"
 	plant = "liquorice"
 	biomes = list("temperate", "semiarid", "sea", "desert")
 	max_water = 38
@@ -1060,7 +1060,7 @@
 	name = "cocoa"
 	desc = "A cocoa tree."
 	icon = 'icons/farming/fruits.dmi'
-	icon_state = "coco-grow1"
+	icon_state = "cocoa-grow1"
 	plant = "cocoa"
 	biomes = list("temperate", "jungle")
 	max_water = 100

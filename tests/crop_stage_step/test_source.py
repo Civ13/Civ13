@@ -11,6 +11,7 @@ import itertools
 import json
 from pathlib import Path
 import re
+from runpy import run_path
 from types import MethodType, SimpleNamespace as State
 import unittest
 
@@ -36,6 +37,18 @@ def block(source, signature):
     end = re.search(r'^/[^/*]', source[start + len(signature) + 1:], re.M)
     finish = start + len(signature) + 1 + end.start() if end else len(source)
     return source[start:finish].rstrip()
+
+
+class InitialCropSpriteTest(unittest.TestCase):
+    def test_initial_states_exist_and_match_the_crop(self):
+        read_dmi = run_path(str(ROOT / 'tests/sprites/validate.py'))['dmi']
+        for crop in ('celery', 'liquorice', 'cocoa'):
+            with self.subTest(crop=crop):
+                definition = block(SOURCE, BASE + crop)
+                icon = re.search(r"(?m)^	icon = '([^']+)'$", definition).group(1)
+                state = re.search(r'(?m)^	icon_state = "([^"]+)"$', definition).group(1)
+                self.assertEqual(state, crop + '-grow1')
+                self.assertIn(state, read_dmi(ROOT / icon)[2])
 
 
 def callback(growth):
