@@ -288,9 +288,7 @@
 	var/obj/item/weapon/reagent_containers/food/snacks/jelliedtoast/J = new(T)
 	// The toast keeps whatever was in the slice (bread left after bites, anything
 	// added with a dropper) on top of its own jam layer (#6283).
-	if (B.reagents && B.reagents.total_volume > 0)
-		J.reagents.maximum_volume = max(J.reagents.maximum_volume, J.reagents.total_volume + B.reagents.total_volume)
-		B.reagents.trans_to_holder(J.reagents, B.reagents.total_volume)
+	B.transfer_reagents_to_spread(J.reagents, J.reagents.total_volume)
 	qdel(B)
 	if (held)
 		user.put_in_hands(J)
