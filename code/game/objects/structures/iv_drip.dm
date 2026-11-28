@@ -44,16 +44,17 @@
 
 /obj/structure/iv_drip/MouseDrop(over_object, src_location, over_location)
 	..()
-	if (!in_range(src, usr))
-		return
 
 	if (attached)
+		// Disconnecting only requires reaching the drip.
+		if (!CanMouseDrop(src))
+			return
 		visible_message("[attached] is detached from \the [src].")
 		attached = null
 		update_icon()
 		return
 
-	if (ishuman(over_object) && can_reach_patient(over_object))
+	if (ishuman(over_object) && CanMouseDrop(over_object) && can_reach_patient(over_object))
 		visible_message("[usr] attaches \the [src] to \the [over_object].")
 		attached = over_object
 		update_icon()
