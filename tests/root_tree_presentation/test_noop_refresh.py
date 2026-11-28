@@ -131,6 +131,33 @@ class NoOpRefresh(unittest.TestCase):
         self.assertEqual(trace(swapped, tint),
                          ([0.75, 0.5, 0.75], daylight_calls + [('channel', 3)] + channel_reads[1:]))
 
+    def test_overlay_writes_rgb_into_each_corner_matrix_slot(self):
+        source = (ROOT / 'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
+        proc = P.fragment(source, '/atom/movable/lighting_overlay/proc/update_overlay(')
+        writes = proc[proc.index('\n\t\tL[i'):proc.index('\n\tif (L.len')]
+        writes = '\n'.join(line[1:] for line in writes.strip('\n').splitlines())
+        writes = writes.replace('* .', '* factor')
+
+        def project(block):
+            code = '/proc/write_rgb()\n' + block + '\n'
+            return compile_proc(code, '/proc/write_rgb(', 'L, i, adjusted_r, adjusted_g, adjusted_b, factor',
+                                environment())
+
+        write = project(writes)
+        for index in (1, 5, 9, 13):
+            for factor in (1, 0.25):
+                with self.subTest(index=index, factor=factor):
+                    matrix = Values([0] * 20)
+                    write(matrix, index, 1, 2, 4, factor)
+                    expected = [0] * 20
+                    expected[index - 1:index + 2] = [factor, 2 * factor, 4 * factor]
+                    self.assertEqual(matrix, expected)
+
+        shifted = re.sub(r'L\[[^\n\]]+\]', 'L[i + 1]', writes, count=1)
+        matrix = Values([0] * 20)
+        project(shifted)(matrix, 5, 1, 2, 4, 0.25)
+        self.assertEqual(list(matrix)[4:7], [0, 0.5, 1])
+
     def commit_tail(self,old_invalidation=False, *, replace=None):
         source=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
         proc=P.fragment(source,'/atom/movable/lighting_overlay/proc/update_overlay(')

@@ -214,7 +214,7 @@
 		if (mx > 1)
 			. = 1.0 / mx
 
-		L[i + 0]   = adjusted_r * .
+		L[i]   = adjusted_r * .
 		L[i + 1]   = adjusted_g * .
 		L[i + 2]   = adjusted_b * .
 
