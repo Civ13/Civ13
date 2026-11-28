@@ -608,20 +608,6 @@ var/global/list/human_face_icon_cache = list()
 /mob/living/human/update_inv_w_uniform(var/update_icons=1)
 	if (!update_icons)
 		queue_overlay_redraw()
-	var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
-	var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
-	var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_belt")
-	var/image/buckle = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_buckle")
-	var/image/buttons = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_button")
-	var/image/epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_epaulettes")
-	var/image/brown = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l1")
-	var/image/green = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l2")
-	var/image/black = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l3")
-	var/image/beltm = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_objs")
-	var/image/top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_top")
-	var/image/underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_under")
-	var/image/over = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_over")
-
 	if (w_uniform && istype(w_uniform, /obj/item/clothing/under))
 		w_uniform.screen_loc = find_inv_position(slot_w_uniform)
 
@@ -652,20 +638,20 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/customuniform))
 			var/obj/item/clothing/under/customuniform/CU = w_uniform
 			if (!CU.uncolored)
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "[CU.base_icon]_pants")
+				var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "[CU.base_icon]_pants")
 				pants.color = CU.pantscolor
-				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "[CU.base_icon]_shirt")
+				var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "[CU.base_icon]_shirt")
 				shirt.color = CU.shirtcolor
-				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custom_belt")
+				var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custom_belt")
 				standing.overlays += pants
 				standing.overlays += shirt
 				standing.overlays += belt
 		else if (istype(w_uniform, /obj/item/clothing/under/football/custom))
 			var/obj/item/clothing/under/football/custom/CU = w_uniform
 			if (!CU.uncolored)
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shorts")
+				var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shorts")
 				pants.color = CU.shorts_color
-				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt")
+				var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt")
 				shirt.color = CU.shirt_color
 				var/image/shirt_sleeves = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_shirt_sleeves")
 				var/image/shorts_sides = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "football_custom_short_sides")
@@ -703,22 +689,22 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/customtribalrobe))
 			var/obj/item/clothing/under/customtribalrobe/CU = w_uniform
 			if (!CU.uncolored)
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_decoration")
+				var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_decoration")
 				pants.color = CU.pantscolor
-				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_robe")
+				var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_robe")
 				shirt.color = CU.shirtcolor
-				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_robebelt")
+				var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "tribalrobe_robebelt")
 				standing.overlays += pants
 				standing.overlays += shirt
 				standing.overlays += belt
 		else if (istype(w_uniform, /obj/item/clothing/under/crinoline_dress))
 			var/obj/item/clothing/under/crinoline_dress/CU = w_uniform
 			if (!CU.uncolored)
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_dress")
+				var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_dress")
 				pants.color = CU.topcolor
-				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_under")
+				var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_under")
 				shirt.color = CU.undercolor
-				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_lining")
+				var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "crinoline_dress_lining")
 				standing.overlays += pants
 				standing.overlays += shirt
 				standing.overlays += belt
@@ -726,11 +712,11 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/customtrackpants))
 			var/obj/item/clothing/under/customtrackpants/CU = w_uniform
 			if (!CU.uncolored)
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_pants")
+				var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_pants")
 				pants.color = CU.pantscolor
-				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_sides")
+				var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_sides")
 				belt.color = CU.sidescolor
-				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_shirt")
+				var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "trackpants_custom_shirt")
 				shirt.color = CU.shirtcolor
 				standing.overlays += pants
 				standing.overlays += belt
@@ -739,15 +725,15 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/customvicuniform))
 			var/obj/item/clothing/under/customvicuniform/CU = w_uniform
 			if (!CU.uncolored)
-				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
+				var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_shirt")
 				shirt.color = CU.shirtcolor
-				buttons = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_buttons")
+				var/image/buttons = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_buttons")
 				buttons.color = CU.buttonscolor
-				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_belt")
+				var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_belt")
 				belt.color = CU.beltcolor
-				buckle = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_buckle")
+				var/image/buckle = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_buckle")
 				buckle.color = CU.bucklecolor
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
+				var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customuni_pants")
 				pants.color = CU.pantscolor
 				standing.overlays += shirt
 				standing.overlays += buttons
@@ -757,9 +743,9 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/customdress))
 			var/obj/item/clothing/under/customdress/CD = w_uniform
 			if (!CD.uncolored)
-				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_top")
-				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_under")
-				over = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_over")
+				var/image/top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_top")
+				var/image/underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_under")
+				var/image/over = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customdress_over")
 				top.color = CD.topcolor
 				underc.color = CD.undercolor
 				over.color = CD.overcolor
@@ -770,8 +756,8 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/customdress2))
 			var/obj/item/clothing/under/customdress/CD = w_uniform
 			if (!CD.uncolored)
-				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custombuttonup_bottom")
-				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custombuttonup_lines")
+				var/image/top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custombuttonup_bottom")
+				var/image/underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custombuttonup_lines")
 				top.color = CD.topcolor
 				underc.color = CD.undercolor
 				standing.overlays += top
@@ -780,8 +766,8 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/customren))
 			var/obj/item/clothing/under/customren/CD = w_uniform
 			if (!CD.uncolored)
-				top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customren_top")
-				underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customren_lining")
+				var/image/top = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customren_top")
+				var/image/underc = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "customren_lining")
 				top.color = CD.topcolor
 				underc.color = CD.undercolor
 				standing.overlays += top
@@ -789,13 +775,13 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/customuniform_modern))
 			var/obj/item/clothing/under/customuniform_modern/CU = w_uniform
 			if (!CU.uncolored)
-				brown = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l1")
+				var/image/brown = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l1")
 				brown.color = CU.browncolor
-				green = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l2")
+				var/image/green = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l2")
 				green.color = CU.greencolor
-				black = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l3")
+				var/image/black = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_l3")
 				black.color = CU.blackcolor
-				beltm = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_objs")
+				var/image/beltm = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "modern_camo_custom_objs")
 				standing.overlays += brown
 				standing.overlays += green
 				standing.overlays += black
@@ -803,21 +789,21 @@ var/global/list/human_face_icon_cache = list()
 		else if (istype(w_uniform, /obj/item/clothing/under/custompyjamas))
 			var/obj/item/clothing/under/custompyjamas/CU = w_uniform
 			if (!CU.uncolored)
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompyjamas_base")
-				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompyjamas_stripes")
+				var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompyjamas_base")
+				var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompyjamas_stripes")
 				shirt.color = CU.stripescolor
 				standing.overlays += pants
 				standing.overlays += shirt
 		else if (istype(w_uniform, /obj/item/clothing/under/custompontifical))
 			var/obj/item/clothing/under/custompontifical/CU = w_uniform
 			if (!CU.uncolored)
-				pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_leggings")
+				var/image/pants = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_leggings")
 				pants.color = CU.undercolor
-				shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_decore")
+				var/image/shirt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_decore")
 				shirt.color = CU.topcolor
-				belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_handdecore")
+				var/image/belt = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_handdecore")
 				belt.color = CU.handcolor
-				epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_mclines")
+				var/image/epaulettes = image("icon" = 'icons/mob/uniform.dmi', "icon_state" = "custompont_mclines")
 				epaulettes.color = CU.linescolor
 				standing.overlays += pants
 				standing.overlays += shirt
