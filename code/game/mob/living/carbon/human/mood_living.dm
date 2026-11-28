@@ -36,6 +36,88 @@
 // with the body, so a good bed still counts after the world restarts.
 /mob/living/human/var/sleep_comfort = 0
 
+#define RESTED_RESEARCH_POINT_INTERVAL (1 MINUTE)
+#define RESTED_RESEARCH_BASE_CAP 10
+#define RESTED_RESEARCH_PER_HOME_POINT 2
+
+// Save the wall-clock pair with the body so offline time and restarts count.
+// Realtime is too coarse for the sleep threshold; use it only for day wraps.
+/mob/living/human/var/rested_learning_sleep_timeofday
+/mob/living/human/var/rested_learning_sleep_realtime
+// Rested research points are saved with the body and never expire.
+/mob/living/human/var/rested_research_points = 0
+
+/mob/living/human/proc/rested_learning_bed_here()
+	if (!isturf(loc))
+		return FALSE
+	for (var/obj/structure/bed/B in loc)
+		if (!QDELETED(B) && !istype(B, /obj/structure/bed/chair) && !istype(B, /obj/structure/bed/bedroll))
+			return TRUE
+	return FALSE
+
+/mob/living/human/proc/rested_learning_timeofday()
+	return world.timeofday
+
+/mob/living/human/proc/rested_learning_realtime()
+	return world.realtime
+
+/mob/living/human/proc/clear_rested_learning_sleep()
+	rested_learning_sleep_timeofday = null
+	rested_learning_sleep_realtime = null
+
+/mob/living/human/proc/begin_rested_learning_sleep()
+	if (isnull(rested_learning_sleep_timeofday) && rested_research_points < rested_research_capacity(home_comfort_categories.len) && !droid && map?.book_research_enabled() && rested_learning_bed_here())
+		var/list/room = home_comfort_judge(get_turf(src))
+		if (!rested_research_room_capacity(room))
+			return
+		rested_learning_sleep_timeofday = rested_learning_timeofday()
+		rested_learning_sleep_realtime = rested_learning_realtime()
+
+/mob/living/human/proc/finish_rested_learning_sleep()
+	if (isnull(rested_learning_sleep_timeofday))
+		return FALSE
+	var/now_timeofday = rested_learning_timeofday()
+	var/now_realtime = rested_learning_realtime()
+	var/duration = wall_clock_elapsed(rested_learning_sleep_timeofday, rested_learning_sleep_realtime, now_timeofday, now_realtime)
+	clear_rested_learning_sleep()
+	if (duration < RESTED_RESEARCH_POINT_INTERVAL || stat == DEAD || droid || !map?.book_research_enabled() || !rested_learning_bed_here())
+		return FALSE
+	var/list/room = home_comfort_judge(get_turf(src))
+	var/capacity = rested_research_room_capacity(room)
+	// A less comfortable room cannot erase points already earned elsewhere.
+	var/earned = min(round(duration / RESTED_RESEARCH_POINT_INTERVAL), capacity - rested_research_points)
+	if (earned <= 0)
+		return FALSE
+	rested_research_points += earned
+	to_chat(src, SPAN_NOTICE("You wake up refreshed. You have [rested_research_points] of [capacity] rested research points banked."))
+	return TRUE
+
+// Called only after a positive contribution with room left on the chapter.
+/mob/living/human/proc/use_rested_research_bonus(room)
+	if (rested_research_points <= 0 || room <= 0 || inducedSSD || sleeping || stat != CONSCIOUS || droid || !map?.book_research_enabled())
+		return 0
+	var/points = min(room, rested_research_points)
+	rested_research_points -= points
+	to_chat(src, SPAN_NOTICE("Being well rested adds [points] extra research point[points == 1 ? "" : "s"] ([rested_research_points] banked)."))
+	return points
+
+/proc/rested_research_capacity(comfort_points = 0)
+	return RESTED_RESEARCH_BASE_CAP + RESTED_RESEARCH_PER_HOME_POINT * clamp(comfort_points, 0, home_comfort_categories.len)
+
+// A bed, seat and table must share the surveyed roofed room.
+/proc/rested_research_room_capacity(list/judged)
+	var/list/features = judged["have"]
+	if (!features["furniture"])
+		return 0
+	return rested_research_capacity(judged["points"])
+
+/proc/rested_research_points_valid(points)
+	return isnum(points) && points >= 0 && points <= rested_research_capacity(home_comfort_categories.len)
+
+#undef RESTED_RESEARCH_POINT_INTERVAL
+#undef RESTED_RESEARCH_BASE_CAP
+#undef RESTED_RESEARCH_PER_HOME_POINT
+
 // The comfort of the place a sleeper lies in. Chairs and seats count for nothing.
 /mob/living/human/proc/sleeping_place_comfort()
 	. = 0
@@ -166,7 +248,10 @@
 	if (inducedSSD && sleeping)
 		sleep_comfort = sleeping_place_comfort()
 		home_comfort_sleep_tick()
+		if (!isnull(rested_learning_sleep_timeofday) && !rested_learning_bed_here())
+			clear_rested_learning_sleep()
 		return
+	clear_rested_learning_sleep()
 	home_comfort_wake()
 	..()
 

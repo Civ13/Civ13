@@ -103,8 +103,9 @@
 
 // Adds ticks (and optionally marks the prototype installed). Finishes the
 // chapter when both the study and, for prototype nodes, the prototype are in.
-// Returns TRUE when the chapter was finished by this call.
-/obj/item/weapon/book/proc/add_research_work(node_id, amount, prototype = FALSE, mob/living/human/writer = null)
+// Returns TRUE when the chapter was finished by this call. Field reports can
+// credit a contributor without changing who is recorded as chapter author.
+/obj/item/weapon/book/proc/add_research_work(node_id, amount, prototype = FALSE, mob/living/human/writer = null, mob/living/human/contributor = writer)
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || has_research_chapter(node_id))
 		return FALSE
@@ -112,7 +113,10 @@
 	var/list/entry = progress[node_id]
 	if (!entry)
 		entry = list(0, 0)
-	entry[1] = min(N.cost_ticks, entry[1] + max(0, amount))
+	var/total = min(N.cost_ticks, entry[1] + max(0, amount))
+	if (amount > 0 && total < N.cost_ticks && contributor)
+		total += contributor.use_rested_research_bonus(N.cost_ticks - total)
+	entry[1] = total
 	if (prototype)
 		entry[2] = 1
 	progress[node_id] = entry

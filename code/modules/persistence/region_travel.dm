@@ -219,6 +219,8 @@ var/global/list/region_travel_carry_types = list(
 	if(P["v"] >= 2 && !("known_recipe_nodes" in P))
 		P["known_recipe_nodes"] = list()
 		P["recipe_knowledge_initialized"] = !!recipe_knowledge_initialized
+	if(rested_research_points > 0 && rested_research_points_valid(rested_research_points))
+		P["rested_research_points"] = rested_research_points
 	// Chosen traits and the field-of-study state travel too (study_fields.dm).
 	var/list/carried_traits = region_travel_traits(traits)
 	if(carried_traits.len)
@@ -315,6 +317,7 @@ var/global/list/region_travel_carry_types = list(
 		if(!region_travel_scholarship_valid(P["scholarship"])) return null
 	else if("scholarship" in P)
 		return null
+	if(("rested_research_points" in P) && !rested_research_points_valid(P["rested_research_points"])) return null
 	if(("science_investigations" in P) && (P["v"] != 3 || !science_investigations_valid(P["science_investigations"]))) return null
 	if(("tongues" in P) && !region_travel_tongues_valid(P["tongues"])) return null
 	if(("traits" in P) && !region_travel_traits_valid(P["traits"])) return null
@@ -540,6 +543,8 @@ var/global/list/region_travel_carry_types = list(
 	H.scholarship = P["v"] == 3 ? clean_scholarship(P["scholarship"]) : list()
 	H.science_investigations = clean_science_investigations(P["science_investigations"])
 	H.study_progress = clean_study_progress(P["reading"])
+	if(rested_research_points_valid(P["rested_research_points"]))
+		H.rested_research_points = P["rested_research_points"]
 	H.region_travel_restore_tongues(P["tongues"])
 	if(islist(P["traits"]))
 		H.traits = P["traits"].Copy()

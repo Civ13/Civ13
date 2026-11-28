@@ -13,11 +13,22 @@
 	if (port == "none")
 		return ..()
 	return FALSE
+/area/ml_rested_room
+	location = AREA_INSIDE
 /obj/map_metadata/ml_probe/New()
 	return
+/mob/living/human/ml_probe
+	var/rested_test_time
+// A November 2026 midnight, with BYOND's native float rounding for realtime.
+/mob/living/human/ml_probe/rested_learning_realtime()
+	return isnull(rested_test_time) ? ..() : 8490528000 + rested_test_time
+/mob/living/human/ml_probe/rested_learning_timeofday()
+	return isnull(rested_test_time) ? ..() : rested_test_time - round(rested_test_time / 864000) * 864000
 /mob/living/human/ml_probe/New()
 	return
 /mob/living/human/ml_probe/update_icons()
+	return
+/obj/item/weapon/book/ml_book/New()
 	return
 /obj/structure/bed/ml_bed/New()
 	return
@@ -69,6 +80,7 @@ var/ml_runtime_error = FALSE
 		map = new /obj/map_metadata/ml_probe
 		map.nomads = TRUE
 		map.civilizations = TRUE
+		ml_rested_research_checks()
 		ml_checks()
 	catch(var/exception/e)
 		ml_check(FALSE, "exception [e] [e.file]:[e.line]")
@@ -373,3 +385,113 @@ var/ml_runtime_error = FALSE
 	map.nomads = FALSE
 	map.civilizations = FALSE
 	ml_check(ml_rest(H) == 50, "a battle map ignores living conditions ([H.mood_rest] [json_encode(H.mood_rest_parts)])")
+
+// Exercise actual skill gains rather than checking the modifier or save-field names.
+/proc/ml_skill_progress(mob/living/human/H, statname, amount)
+	H.stats[statname] = list(100, 100)
+	H.adaptStat(statname, amount)
+	return H.getMaxStat(statname)
+
+// Use real entry and exit procs without a connected client. The character picker
+// delegates to finish_wake_up() after its own confirmation and wait.
+/proc/ml_bed_transition(mob/living/human/ml_probe/H, sleep, now)
+	H.rested_test_time = now
+	var/succeeded = sleep ? H.enter_bed_sleep() : H.finish_wake_up()
+	if (!succeeded)
+		CRASH("Rested learning probe could not [sleep ? "enter bed sleep" : "wake up"]")
+
+/proc/ml_rested_research_checks()
+	map.persistence = TRUE
+	build_research_tree()
+	var/mob/living/human/ml_probe/H = ml_human(12, 12)
+	var/mob/living/human/ml_probe/other = ml_human(13, 12)
+	var/turf/T = get_turf(H)
+	var/obj/structure/bed/bedroll/ml_roll/R = new(T)
+	var/obj/item/weapon/book/ml_book/B = new(T)
+	var/normal = ml_skill_progress(H, "medical", 20)
+	ml_bed_transition(H, TRUE, -20 MINUTES)
+	ml_bed_transition(H, FALSE, -8 MINUTES)
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 2, "a bedroll does not bank research points")
+	R.loc = null
+	var/obj/structure/bed/ml_bed/bed = new(T)
+	ml_bed_transition(H, TRUE, -25 MINUTES)
+	ml_bed_transition(H, FALSE, -10 MINUTES)
+	B.add_research_work("steelmaking", 1, FALSE, H)
+	ml_check(B.research_ticks("steelmaking") == 1, "an outdoor bed does not bank research points")
+
+	var/area/original_area = get_area(T)
+	var/area/ml_rested_room/room = new
+	room.contents += T
+	var/list/decor = list(new /obj/structure/bed/chair/ml_chair(T))
+	ml_bed_transition(H, TRUE, -10 MINUTES)
+	// Adding a table just before waking must not retroactively earn points.
+	decor += new /obj/structure/table/ml_table(T)
+	ml_bed_transition(H, FALSE, -1 MINUTES)
+	B.add_research_work("steelmaking", 1, FALSE, H)
+	ml_check(B.research_ticks("steelmaking") == 2, "a roofed room without its table at sleep entry earns nothing before it is furnished")
+
+	ml_bed_transition(H, TRUE, -30 SECONDS)
+	ml_bed_transition(H, FALSE, 30 SECONDS - 1)
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 4, "one decisecond short of a minute across midnight earns no points")
+
+	ml_bed_transition(H, TRUE, -30 SECONDS)
+	H.rested_test_time = 0
+	H.sleep_update() // Also called on reconnect; it must preserve the start.
+	ml_bed_transition(H, FALSE, 150 SECONDS)
+	ml_check(ml_skill_progress(H, "medical", 20) == normal, "bed rest no longer changes ordinary skill gains")
+	// A full prototype study waiting for its installation, anonymous work, and
+	// a second researcher's points must not spend H's rested bonus.
+	var/datum/research_node/prototype = get_research_node("bronze_working")
+	B.add_research_work("bronze_working", prototype.cost_ticks, FALSE, H)
+	B.add_research_work("bronze_working", 0, FALSE, H)
+	B.add_research_work("basic_tools", 1)
+	B.add_research_work("basic_tools", 2, FALSE, other)
+	ml_check(B.research_ticks("basic_tools") == 7, "unattributed and other researchers' work gets no bonus")
+	H.rested_test_time = 150 SECONDS + 864000
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 12, "three minutes banks three points indefinitely, even after zero-point and capped work")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 14, "spent points do not apply to a second contribution")
+
+	ml_bed_transition(H, TRUE, 6 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 15 MINUTES + 864000)
+	ml_bed_transition(H, TRUE, 17 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 26 MINUTES + 864000)
+	var/points = B.record_field_work("soil_science_harvests", H)
+	ml_check(points > 0 && B.research_ticks("soil_science") == points + 16, "field work uses the rested pool, capped at sixteen in a minimally furnished room")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 16, "crediting field work spends points from the same pool")
+
+	ml_bed_transition(H, TRUE, 28 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 44 MINUTES + 864000)
+	var/obj/item/weapon/book/ml_book/near_cap = new(T)
+	near_cap.add_research_work("bronze_working", prototype.cost_ticks - 4)
+	near_cap.add_research_work("bronze_working", 1, FALSE, H)
+	ml_check(near_cap.research_ticks("bronze_working") == prototype.cost_ticks && !near_cap.has_research_chapter("bronze_working"), "the bonus respects the chapter cap and does not replace a required prototype")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 31, "the thirteen points that do not fit are kept and go to the next contribution")
+	B.add_research_work("basic_tools", 2, FALSE, H)
+	ml_check(B.research_ticks("basic_tools") == 33, "the remainder is spent only once")
+
+	decor += new /obj/structure/painting_frame/ml_painting(T)
+	decor += new /obj/structure/painting_frame/ml_painting(T)
+	decor += new /obj/structure/brazier/ml_fire(T)
+	ml_bed_transition(H, TRUE, 71 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 101 MINUTES + 864000)
+
+	// Move from the decorated room to an outdoor bed before spending the bank.
+	var/turf/outdoor = locate(14, 12, 1)
+	var/obj/structure/bed/ml_bed/outdoor_bed = new(outdoor)
+	H.loc = outdoor
+	ml_bed_transition(H, TRUE, 102 MINUTES + 864000)
+	ml_bed_transition(H, FALSE, 132 MINUTES + 864000)
+	B.add_research_work("steelmaking", 1, FALSE, H)
+	ml_check(B.research_ticks("steelmaking") == 23, "adding art and light raises the cap to twenty, duplicate art does not, and outdoor rest does not erase the bank")
+	for (var/obj/O in decor)
+		O.loc = null
+	original_area.contents += T
+	bed.loc = null
+	outdoor_bed.loc = null
+	map.persistence = FALSE

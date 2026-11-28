@@ -151,6 +151,7 @@
 	// would refuse forever; the player is evidently awake, so clear it.
 	if (inducedSSD)
 		inducedSSD = FALSE
+		clear_rested_learning_sleep()
 	var/turf/sleep_turf = get_turf(src)
 	var/found = FALSE
 	for (var/obj/structure/bed/B in sleep_turf)
@@ -265,6 +266,7 @@
 					to_chat(src, SPAN_WARNING("You wake up somewhere strange. Ask an administrator to move you back."))
 			sleeping = 0
 			inducedSSD = FALSE
+			finish_rested_learning_sleep()
 			divine_rested()
 
 // The end of Wake Up after its 30 seconds, for agent characters, which have no
@@ -284,6 +286,7 @@
 			to_chat(src, SPAN_WARNING("You wake up somewhere strange. Ask an administrator to move you back."))
 	sleeping = 0
 	inducedSSD = FALSE
+	finish_rested_learning_sleep()
 	divine_rested()
 	return TRUE
 
@@ -316,6 +319,9 @@
 /mob/living/human/proc/sleep_update()
 	if (!inducedSSD)
 		return
+	// Both bed admission paths call this immediately. Reconnects and refreshes
+	// preserve the original sample; older saves can start counting here.
+	begin_rested_learning_sleep()
 	sleeping = 66
 	if (sleep_update_queued)
 		return

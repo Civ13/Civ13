@@ -476,7 +476,7 @@
 	return valid_recipe_node_id(node_id) && !has_research_chapter(node_id) && !has_field_study(node_id, kind) && field_study_count(node_id) < FIELD_STUDY_MAX
 
 // Writes one study into the book. Returns the points added, or 0.
-/obj/item/weapon/book/proc/record_field_study(node_id, kind)
+/obj/item/weapon/book/proc/record_field_study(node_id, kind, mob/living/human/contributor = null)
 	var/datum/research_node/N = get_research_node(node_id)
 	if (!N || !can_take_field_study(node_id, kind))
 		return 0
@@ -484,7 +484,7 @@
 	done += "[node_id]>[kind]"
 	research_fieldstudies = jointext(done, ";")
 	var/points = max(1, round(N.cost_ticks * FIELD_STUDY_POINTS))
-	add_research_work(node_id, points)
+	add_research_work(node_id, points, FALSE, null, contributor)
 	return points
 
 // The subject a thing teaches about, for someone who could research it now.
@@ -534,7 +534,7 @@
 		P.update_icon()
 		return 1
 	var/obj/item/weapon/book/B = carrier
-	. = B.record_field_study(node_id, kind)
+	. = B.record_field_study(node_id, kind, H)
 	H.gain_active_scholarship(node_id, ., "study:[node_id]:[kind]")
 
 /mob/living/human/proc/study_in_field(obj/item/carrier)
@@ -617,7 +617,7 @@
 		return TRUE
 	var/kind = P.field_study_type
 	qdel(P)
-	var/points = B.record_field_study(N.id, kind)
+	var/points = B.record_field_study(N.id, kind, user)
 	user.gain_active_scholarship(N.id, points, "study:[N.id]:[kind]")
 	to_chat(user, SPAN_NOTICE("You copy the field notes into [B]: <b>[N.name]</b> advances by [points] points[B.has_research_chapter(N.id) ? " and the chapter is finished" : ""]."))
 	book_refresh_ui()
