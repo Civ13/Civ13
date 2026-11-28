@@ -162,13 +162,28 @@
 	flammable = FALSE
 	icon_state = "mayan_dm"
 
-/obj/roof/proc/update_transparency(var/on = TRUE) //to see through windows and stuff
-	roof_overlay.alpha = 255
+/obj/roof/proc/is_window_opening(obj/structure/S)
+	return istype(S, /obj/structure/window_frame) || (istype(S, /obj/structure/window) && !(istype(S, /obj/structure/window/barrier) || istype(S, /obj/structure/window/barrier/snowwall)))
+
+/obj/roof/proc/has_visible_opening()
+	for (var/obj/structure/S in range(1, src))
+		if (istype(S, /obj/structure/simple_door) || istype(S, /obj/structure/curtain) || is_window_opening(S))
+			var/turf/T = get_turf(S)
+			T.recalc_atom_opacity()
+			if (!T.has_opaque_atom)
+				return TRUE
+	return FALSE
+
+/obj/roof/proc/update_transparency(var/on = TRUE, var/recheck_openings = FALSE) //to see through windows and stuff
+	if (!recheck_openings)
+		roof_overlay.alpha = 255
 	spawn(1)
 		if (on)
 			var/turf/T = get_turf(src)
+			if (!T)
+				return
 			T.recalc_atom_opacity()
-			if (T.has_opaque_atom)
+			if (T.has_opaque_atom || (recheck_openings && !has_visible_opening()))
 				roof_overlay.alpha = 255
 			else
 				roof_overlay.alpha = 127
@@ -252,7 +267,7 @@
 					update_transparency(0)
 				else
 					update_transparency(1)
-			else if ((istype(S, /obj/structure/window) && !(istype(S, /obj/structure/window/barrier) || istype(S, /obj/structure/window/barrier/snowwall)))  || istype(S, /obj/structure/window_frame))
+			else if (is_window_opening(S))
 				var/found = FALSE
 				for(var/obj/structure/SS in S.loc)
 					if (istype(SS, /obj/structure/simple_door) || istype(SS, /obj/structure/curtain))

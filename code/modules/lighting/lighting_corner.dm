@@ -115,7 +115,7 @@
 	if (startup_request && !created_lighting_corners_and_overlays)
 		return
 	active = FALSE
-	for (var/i = 1, i <= 4, i++)
+	for (var/i in 1 to 4)
 		var/turf/T = master_turf(i)
 		if (!T)
 			continue

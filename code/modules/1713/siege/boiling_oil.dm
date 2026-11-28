@@ -213,7 +213,7 @@ obj/structure/boiling_oil/south
 
 /obj/effect/oil
 	icon = 'icons/effects/effects.dmi'
-	icon_state = "foam-dissolve"
+	icon_state = "foam-disolve"
 	layer = TURF_LAYER+2.2
 	anchored = TRUE
 	density = FALSE
@@ -221,6 +221,6 @@ obj/structure/boiling_oil/south
 /obj/effect/oil/New()
 	..()
 	icon = 'icons/effects/effects.dmi'
-	icon_state = "foam-dissolve"
+	icon_state = "foam-disolve"
 	spawn(110)
 		qdel(src)

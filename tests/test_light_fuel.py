@@ -6,9 +6,13 @@ lights finite fuel and a refill route, and that make torches from tool handles.
 from pathlib import Path
 import importlib.util
 import re
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from tools.dmi import Dmi
+
 LANTERN = 'code/modules/1713/lantern.dm'
 FUEL = 'code/modules/1713/light_fuel.dm'
 LIGHTERS = 'code/game/objects/items/weapons/cigs_lighters.dm'
@@ -77,6 +81,24 @@ class LightFuelTests(unittest.TestCase):
         exercise(body)
         with self.assertRaises(AssertionError):
             exercise(body.replace('\t\tupdate_icon()\n', '', 1))
+
+    def test_map_lantern_has_visible_sprites_when_switched_off_and_relit(self):
+        text = source(LANTERN)
+        base = '/obj/item/flashlight/lantern'
+        definitions = '\n'.join(type_block(text, base + suffix)
+                                for suffix in ('', '/on', '/on/anchored'))
+        selected = dict(re.findall(r'^\t(on_state|off_state) = "([^"]+)"$', definitions, re.M))
+
+        flashlight = type_block(source(FLASHLIGHT), '/obj/item/flashlight')
+        icon = re.search(r"^\ticon = '([^']+)'$", flashlight, re.M)[1]
+        sheet = Dmi.from_file(ROOT / icon)
+        states = {state.name: state for state in sheet.states}
+        self.assertNotEqual(selected['off_state'], selected['on_state'])
+        for transition, state in selected.items():
+            with self.subTest(transition=transition):
+                self.assertTrue(state in states, f'{icon} has no {state} sprite')
+                for frame in states[state].frames:
+                    self.assertIsNotNone(frame.getchannel('A').getbbox(), f'{state} is transparent')
 
     def test_military_lens_cycles_keep_both_sprite_families_and_effect_order(self):
         text = source(LANTERN)

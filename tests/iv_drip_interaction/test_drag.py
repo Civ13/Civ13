@@ -21,9 +21,14 @@ class IVDragTests(unittest.TestCase):
             if line.lstrip().startswith('visible_message('):
                 lines[i] = line[:len(line) - len(line.lstrip('\t'))] + 'notice()'
         source = '\n'.join(lines) + '\n'
-        self.actor = SimpleNamespace(distance=1)
+        self.actor = SimpleNamespace(distance=1, z=1, patient_in_touch=True,
+                                     incapacitated=lambda flags: False)
         self.floor = object()
-        self.patient = SimpleNamespace(distance=1, z=1, loc=self.floor)
+        self.patient = SimpleNamespace(distance=1, actor_distance=1, z=1, loc=self.floor,
+                                       drip_in_touch=True)
+        self.patient.Adjacent = lambda actor: (
+            self.patient.z == actor.z and self.patient.actor_distance <= 1 and actor.patient_in_touch
+        )
         self.transfers = []
         env = {'usr': self.actor, 'parent_drop': lambda: None, 'notice': lambda: None,
                'in_range': lambda drip, actor: actor.distance <= 1,
@@ -33,7 +38,12 @@ class IVDragTests(unittest.TestCase):
                'transfer': lambda: self.transfers.append(self.patient)}
         old = source_adapter.FIELDS
         try:
-            source_adapter.FIELDS += ('attached', 'update_icon', 'can_reach_patient', 'beaker')
+            source_adapter.FIELDS += ('attached', 'update_icon', 'can_reach_patient', 'beaker',
+                                      'CanMouseDrop', 'Adjacent')
+            self.can_drop = source_adapter.project(
+                (ROOT / 'code/_onclick/drag_drop.dm').read_text(), '/atom/proc/CanMouseDrop',
+                'src, over, user, incapacitation_flags=None', env,
+            )
             self.reach = source_adapter.project(source, '/obj/structure/iv_drip/proc/can_reach_patient',
                                                 'src, patient', env, method=True)
             self.drag = source_adapter.project(source, '/obj/structure/iv_drip/MouseDrop',
@@ -52,6 +62,11 @@ class IVDragTests(unittest.TestCase):
     def make_drip(self, attached=None):
         drip = SimpleNamespace(attached=attached, z=1, beaker=object(), update_icon=lambda: None)
         drip.can_reach_patient = lambda patient: self.reach(drip, patient)
+        drip.Adjacent = lambda other: (
+            drip.z == other.z and other.distance <= 1
+            and (other is not self.patient or self.patient.drip_in_touch)
+        )
+        drip.CanMouseDrop = lambda over: self.can_drop(drip, over, self.actor)
         return drip
 
     def test_remote_drag_cannot_detach_patient(self):
@@ -77,6 +92,34 @@ class IVDragTests(unittest.TestCase):
         self.drag(drip, self.patient, None, None)
         self.assertIsNone(drip.attached)
 
+    def test_operator_on_adjacent_floor_cannot_attach(self):
+        self.actor.z += 1
+        drip = self.make_drip()
+        self.drag(drip, self.patient, None, None)
+        self.assertIsNone(drip.attached)
+
+    def test_operator_on_adjacent_floor_cannot_detach(self):
+        self.actor.z += 1
+        drip = self.make_drip(self.patient)
+        self.drag(drip, self.patient, None, None)
+        self.assertIs(drip.attached, self.patient)
+
+    def test_operator_cannot_attach_to_patient_two_tiles_away(self):
+        drip = self.make_drip()
+        self.patient.actor_distance = 2
+        self.drag(drip, self.patient, None, None)
+        self.assertIsNone(drip.attached)
+
+    def test_blocked_patient_touch_prevents_attachment_but_allows_local_detachment(self):
+        self.actor.patient_in_touch = False
+        drip = self.make_drip()
+        self.drag(drip, self.patient, None, None)
+        self.assertIsNone(drip.attached)
+
+        drip = self.make_drip(self.patient)
+        self.drag(drip, self.patient, None, None)
+        self.assertIsNone(drip.attached)
+
     def test_patient_changing_floors_detaches_before_transfer(self):
         drip = self.make_drip(self.patient)
         self.process(drip)
@@ -84,6 +127,24 @@ class IVDragTests(unittest.TestCase):
 
         # Model BYOND reporting distance one on the adjoining floor as well.
         self.patient.z += 1
+        self.process(drip)
+        self.assertIsNone(drip.attached)
+        self.assertEqual(self.transfers, [self.patient])
+
+    def test_border_between_drip_and_patient_prevents_attachment(self):
+        # The operator can touch each endpoint from the side of the window.
+        self.patient.drip_in_touch = False
+        drip = self.make_drip()
+        self.assertTrue(drip.CanMouseDrop(self.patient))
+        self.drag(drip, self.patient, None, None)
+        self.assertIsNone(drip.attached)
+
+    def test_patient_moving_behind_border_detaches_before_transfer(self):
+        drip = self.make_drip(self.patient)
+        self.process(drip)
+        self.assertEqual(self.transfers, [self.patient])
+
+        self.patient.drip_in_touch = False
         self.process(drip)
         self.assertIsNone(drip.attached)
         self.assertEqual(self.transfers, [self.patient])

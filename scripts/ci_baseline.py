@@ -393,6 +393,7 @@ SUITES = {
                   'code/modules/1713/light_fuel.dm', 'code/game/objects/items/devices/flashlight.dm',
                   'code/game/objects/items/weapons/cigs_lighters.dm', 'code/modules/1713/telephone.dm'),
         'shared_paths': ('tests/save_movement/source_adapter.py', 'config/crafting/',
+                         'icons/obj/lighting.dmi', 'tools/dmi/__init__.py',
                          'code/modules/research_tree/research_node.dm',
             'code/modules/research_tree/book_pages.dm')},
     'cave_dismantling': {'files': ('tests/cave_dismantling/test_dismantling.py',),
@@ -2064,6 +2065,8 @@ SUITES = {
     'storage_runtime': {'files': ('tests/storage_runtime/test_storage_runtime.py',),
         'paths': ('tests/storage_runtime/',), 'shared_paths': (
             'code/game/objects/items/weapons/storage/storage.dm',
+            'code/game/objects/structures/crates_lockers/closets.dm',
+            'code/game/objects/structures/crates_lockers/closets/fridge.dm',
             'code/game/mob/login.dm', 'code/game/mob/living/carbon/human/human_helpers.dm',
             'code/modules/persistence/bed_return.dm', 'code/modules/persistence/functions.dm',
             'code/modules/persistence/saving.dm', 'code/modules/persistence/loading.dm',
@@ -3359,6 +3362,10 @@ SUITES = {
     'k6_3_visor': {'files': ('tests/k6_3_visor/test_initial_sprite.py',),
         'paths': ('tests/k6_3_visor/',),
         'shared_paths': ('code/modules/1713/apparel_modern.dm',)},
+    'medicine_items': {'files': ('tests/medicine_items/test_syringe_source.py',),
+        'paths': ('tests/medicine_items/',),
+        'shared_paths': ('code/modules/reagents/reagent_containers/syringe.dm',
+                         'icons/obj/syringe.dmi')},
 }
 CI_PATHS = ('scripts/select-ci.py', 'scripts/ci_baseline.py', 'scripts/ci_skill_prose.py',
             '.github/workflows/ci-selection.yml', '.github/workflows/test.yml')

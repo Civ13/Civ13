@@ -80,6 +80,84 @@ class NoOpRefresh(unittest.TestCase):
             self.assertIn(field+' -= old',refresh)
             self.assertIn(field+'.Cut()',P.fragment(TREE,'/datum/root_tree_presenter/proc/release_owned_scene('))
 
+    def test_overlay_daylight_tint_preserves_channels_and_lookup_order(self):
+        source = (ROOT / 'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
+        proc = P.fragment(source, '/atom/movable/lighting_overlay/proc/update_overlay(')
+        start = proc.index('\tvar/client_tint =')
+        end = proc.index('\n\t#ifdef OPENDREAM', start)
+        body = proc[start:end].replace('if (', 'if(')
+        # Give the source projector explicit initializers for the DM locals.
+        body = re.sub(r'^(\tvar/TOD_[rgb])$', r'\1 = null', body, flags=re.M)
+
+        def trace(block, tint, *, client_tint=False):
+            calls = []
+
+            class Tint(Values):
+                def __getitem__(self, index):
+                    calls.append(('channel', index))
+                    return super().__getitem__(index)
+
+            def window_coeff():
+                calls.append('window')
+                return 0.75
+
+            def daylight_lum(coefficient):
+                calls.append(('daylight', coefficient))
+                return 0.5
+
+            def sun_daylight_tint():
+                calls.append('tint')
+                return Tint(tint) if tint is not None else None
+
+            env = environment()
+            env.update(daylight_on_client=lambda: client_tint, daylight_lum=daylight_lum,
+                       sun_daylight_tint=sun_daylight_tint)
+            code = '/proc/project_overlay_daylight()\n' + block + '\n\treturn list(TOD_r, TOD_g, TOD_b)\n'
+            project = compile_proc(code, '/proc/project_overlay_daylight(', 'T', env)
+            return project(N(get_window_coeff=window_coeff)), calls
+
+        daylight_calls = ['window', ('daylight', 0.75), 'tint']
+        channel_reads = [('channel', 1), ('channel', 2), ('channel', 3)]
+        tint = [0.5, 1, 1.5]
+        self.assertEqual(trace(body, None), ([0.5, 0.5, 0.5], daylight_calls))
+        self.assertEqual(trace(body, tint), ([0.25, 0.5, 0.75], daylight_calls + channel_reads))
+        self.assertEqual(trace(body, tint[::-1]), ([0.75, 0.5, 0.25], daylight_calls + channel_reads))
+        self.assertEqual(trace(body, tint, client_tint=True), ([0, 0, 0], ['tint'] + channel_reads))
+        self.assertEqual(trace(body, None, client_tint=True), ([0, 0, 0], ['tint']))
+
+        red = 'sun_tint[1]'
+        self.assertIn(red, body)
+        swapped = body.replace(red, 'sun_tint[3]', 1)
+        self.assertEqual(trace(swapped, tint),
+                         ([0.75, 0.5, 0.75], daylight_calls + [('channel', 3)] + channel_reads[1:]))
+
+    def test_overlay_writes_rgb_into_each_corner_matrix_slot(self):
+        source = (ROOT / 'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
+        proc = P.fragment(source, '/atom/movable/lighting_overlay/proc/update_overlay(')
+        writes = proc[proc.index('\n\t\tL[i'):proc.index('\n\tif (L.len')]
+        writes = '\n'.join(line[1:] for line in writes.strip('\n').splitlines())
+        writes = writes.replace('* .', '* factor')
+
+        def project(block):
+            code = '/proc/write_rgb()\n' + block + '\n'
+            return compile_proc(code, '/proc/write_rgb(', 'L, i, adjusted_r, adjusted_g, adjusted_b, factor',
+                                environment())
+
+        write = project(writes)
+        for index in (1, 5, 9, 13):
+            for factor in (1, 0.25):
+                with self.subTest(index=index, factor=factor):
+                    matrix = Values([0] * 20)
+                    write(matrix, index, 1, 2, 4, factor)
+                    expected = [0] * 20
+                    expected[index - 1:index + 2] = [factor, 2 * factor, 4 * factor]
+                    self.assertEqual(matrix, expected)
+
+        shifted = re.sub(r'L\[[^\n\]]+\]', 'L[i + 1]', writes, count=1)
+        matrix = Values([0] * 20)
+        project(shifted)(matrix, 5, 1, 2, 4, 0.25)
+        self.assertEqual(list(matrix)[4:7], [0, 0.5, 1])
+
     def commit_tail(self,old_invalidation=False, *, replace=None):
         source=(ROOT/'code/modules/lighting/lighting_overlay.dm').read_text(encoding='utf-8')
         proc=P.fragment(source,'/atom/movable/lighting_overlay/proc/update_overlay(')
@@ -158,7 +236,7 @@ class NoOpRefresh(unittest.TestCase):
         truncated, notifications = self.commit_tail(replace=('1 to L.len', '1 to L.len - 1'))
         self.assertIsNone(truncated(changed_tail, True, True, displayed, True))
         self.assertEqual(notifications, [])
-        ignored_length, notifications = self.commit_tail(replace=('L.len != last_color.len', 'FALSE'))
+        ignored_length, notifications = self.commit_tail(replace=('L.len == last_color.len', 'TRUE'))
         self.assertIsNone(ignored_length(MatrixValues([0.25] * 19), True, True, displayed, True))
         self.assertEqual(notifications, [])
 
