@@ -17,7 +17,10 @@ under its cap.
 The points never expire. When you next add real progress to a research
 chapter, the game spends as much of your balance as that chapter can
 use after your normal contribution. Any excess stays banked for your
-next contribution. A failed attempt or a chapter already at its study
-cap does not spend any. The points do not replace prototypes, materials,
-or other research requirements, and they do not change ordinary skill
-gains or scholarship.
+next contribution. An attempt that adds no chapter progress spends
+nothing. A failed prototype trial that teaches a lesson can still use
+banked points. Rushing research can still cost chapter progress after
+those points have been spent.
+
+Rested points do not replace prototypes, materials, or other research
+requirements, and they do not change ordinary skill gains or scholarship.
