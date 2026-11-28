@@ -186,7 +186,7 @@
 	name = "defibrillator paddles"
 	desc = "A pair of plastic-gripped paddles with flat metal surfaces that are used to deliver powerful electric shocks."
 	icon = 'icons/obj/defibrillator.dmi'
-	icon_state = "defibpaddles"
+	icon_state = "defibpaddles0"
 	item_state = "defibpaddles"
 	gender = PLURAL
 	force = 2

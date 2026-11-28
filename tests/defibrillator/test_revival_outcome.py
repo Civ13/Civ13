@@ -1,5 +1,7 @@
 """Offline source checks for the shock outcome in do_revive (#6225); no BYOND runtime."""
 from pathlib import Path
+from runpy import run_path
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -14,6 +16,14 @@ def do_revive():
 
 
 class RevivalOutcome(unittest.TestCase):
+    def test_new_paddles_use_the_ready_unwielded_sprite(self):
+        definition = SOURCE.split('/obj/item/weapon/shockpaddles\n', 1)[1].split('\n/obj/', 1)[0]
+        icon = re.search(r"(?m)^	icon = '([^']+)'$", definition).group(1)
+        state = re.search(r'(?m)^	icon_state = "([^"]+)"$', definition).group(1)
+        read_dmi = run_path(str(ROOT / 'tests/sprites/validate.py'))['dmi']
+        self.assertIn(state, read_dmi(ROOT / icon)[2])
+        self.assertEqual(state, 'defibpaddles0')
+
     def test_success_is_announced_only_after_the_restart_works(self):
         body = do_revive()
         burn = body.index('H.apply_damage(burn_damage_amt, BURN, "chest")')
