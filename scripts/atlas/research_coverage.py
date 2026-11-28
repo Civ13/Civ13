@@ -37,11 +37,11 @@ def annotate_research(records, files, canon):
         kind, path = recipe['kind'], recipe['file']
         outputs = [x['id'] for x in recipe['outputs']]
         exclusion = None
-        # The curated acquisition category stays open. These four extra acquisition
-        # records were historically filed under tanning/flintlock preparation.
+        # Curated acquisition is normally ungated unless the reviewed route
+        # declares an explicit gate enforced by its handler.
         if kind == 'Chemistry':
             exclusion = 'Generic chemistry reactions remain ungated; apparatus and explicit production are gated.'
-        elif kind == 'Acquisition / processing':
+        elif kind == 'Acquisition / processing' and 'acquisition_research_node' not in recipe:
             exclusion = 'Acquisition, gathering, mining and butchering remain ungated.'
         elif kind == 'Leather tanning' and path == 'code/modules/1713/animal_harvest.dm':
             exclusion = 'Corpse hide harvesting is acquisition, not tanning.'
@@ -59,6 +59,9 @@ def annotate_research(records, files, canon):
             result = fields[2].strip()
             basic = result in basics
             required = [mappings[result]] if not basic and result in mappings else []
+        elif kind == 'Acquisition / processing':
+            required = [recipe.pop('acquisition_research_node')]
+            recipe['research_gate'] = 'node_known'
         elif kind == 'Factory fabricator':
             required = [recipe['raw'].split('|')[-1].strip()]
         elif kind == 'Foundry casting':

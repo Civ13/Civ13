@@ -22,7 +22,7 @@ class AtlasAdapterContract(unittest.TestCase):
   self.assertIn('recipe["research_status"] != "gated"',hint)
   self.assertIn('recipe["research_nodes"]',hint)
   self.assertNotIn('outputs',hint)
-  self.assertNotRegex(hint,r'recipe\[[^\n]+\]\s*=')
+  self.assertNotRegex(hint,r'recipe\[[^\]\n]+\]\s*(?:=(?!=)|[+*/%-]=|\+\+|--)')
   helper=ADAPTER.split('/proc/crafting_node_manual_hint(',1)[1].split('/proc/crafting_recipe_manual_hint',1)[0]
   for guard in ('map.recipe_knowledge_enabled()', '!ishuman(viewer)', 'H.knows_recipe_node(node_id)', 'get_research_node(node_id)'):
    self.assertIn(guard,helper)

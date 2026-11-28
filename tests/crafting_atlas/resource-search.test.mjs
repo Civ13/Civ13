@@ -77,6 +77,28 @@ sand.run('resource("/obj/item/stack/ore/glass")');
 assert(text(sand.get('obtain')).includes('How to obtain sand'));
 assert(text(sand.get('obtain')).includes('Shovel sand'));
 assert.notEqual('/turf/floor/beach/sand','/obj/item/stack/ore/glass');
+const kiln=boot(catalog);
+const campfire='/obj/structure/oven/fireplace';
+const rebuiltKiln='/obj/structure/furnace/kiln/stone/campfire';
+const standaloneKiln='/obj/structure/furnace/kiln/stone';
+const upgrade='Upgrade campfire to stone kiln';
+for(const [query,resourceId] of [['campfire',campfire],['stone kiln',rebuiltKiln]]){
+  kiln.filter('search',query);
+  assert(kiln.rows('recipe').some(n=>n.textContent===upgrade),query+' finds the direct upgrade');
+  const resourceRow=kiln.rows('resource').find(n=>text(n).includes('Resource · '+resourceId+' '));
+  assert(resourceRow,query+' finds the resource for the upgrade route');
+  resourceRow.onclick();
+  const routeText=text(kiln.get('obtain'));
+  for(const phrase of [upgrade,'10 stone blocks','Pottery & Cookware','15 seconds','fuel and ash'])
+    assert(routeText.includes(phrase),query+' shows '+phrase);
+}
+kiln.filter('search','stone kiln');
+assert(kiln.rows('recipe').some(n=>n.textContent==='stone kiln'),'standalone recipe is still separately listed');
+assert(catalog.recipes.some(r=>r.name==='stone kiln'&&r.outputs.some(o=>o.id===standaloneKiln)));
+const upgradeRecipe=catalog.recipes.find(r=>r.name===upgrade&&r.outputs.some(o=>o.id===rebuiltKiln));
+assert.deepEqual(upgradeRecipe.research_nodes,['pottery_storage']);
+assert.equal(upgradeRecipe.research_status,'gated');
+assert.equal(upgradeRecipe.research_gate,'node_known');
 const resourceOmission=template.replace('rr.slice(0,150)','rr.slice(0,0)');
 assert.notEqual(resourceOmission,template);
 assert.throws(()=>realContract(resourceOmission),/direct resource result/);

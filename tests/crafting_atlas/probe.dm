@@ -8,10 +8,13 @@ var/atlas_failed = FALSE
 	icon_state = "paper"
 /proc/to_chat(mob/viewer, message)
 	return
-// Production helpers the atlas calls (agent_prompts.dm, player_tutorial.dm).
+// Production helpers the atlas calls, isolated from game services.
 /proc/player_input(target, message, title, default, kind = "text", list/choices = null, can_cancel = FALSE)
 	return input(target, message, title, default) as null|text
 /client/proc/tutorial_event(id)
+	return
+var/global/datum/atlas_fixture_activity/player_activity = new
+/datum/atlas_fixture_activity/proc/feature_used(who, feature)
 	return
 /proc/check_atlas(condition, message)
 	if (!condition)

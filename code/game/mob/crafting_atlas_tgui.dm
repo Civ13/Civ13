@@ -194,11 +194,14 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		var/datum/research_node/N = get_research_node(node_id)
 		var/state = ""
 		if (istype(H) && map && N)
-			var/key = "[recipe["manual_free"] ? "free" : "node"]:[node_id]"
+			var/known_only = recipe["research_gate"] == "node_known"
+			var/key = "[known_only ? "known" : (recipe["manual_free"] ? "free" : "node")]:[node_id]"
 			state = known[key]
 			if (!state)
 				var/done
-				if (!recipe["manual_free"])
+				if (known_only)
+					done = research_node_known(H, node_id)
+				else if (!recipe["manual_free"])
 					done = crafting_node_allowed(H, node_id)
 				else if (map.book_research_enabled())
 					done = H.knows_recipe_node(node_id) || H.knows_research_prereqs(node_id)
@@ -741,8 +744,8 @@ var/global/datum/crafting_atlas_presenter/tgui/crafting_atlas_tgui_presenter = n
 		stack.list_recipes(src)
 
 /datum/crafting_atlas_presenter/tgui/manual_hint(mob/viewer, list/recipe)
-	// Route metadata explicitly excludes reactions/acquisition and true basics.
-	if (recipe["research_status"] != "gated")
+	// A node-known interaction has no additional crafting manual requirement.
+	if (recipe["research_status"] != "gated" || recipe["research_gate"] == "node_known")
 		return ""
 	// Research benches, desks and node prototypes never need a manual.
 	if (recipe["manual_free"])
