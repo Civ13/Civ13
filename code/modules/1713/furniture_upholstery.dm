@@ -128,7 +128,7 @@
 /obj/structure/bed/proc/modular_upholstery_click(obj/item/W, mob/user)
 	if (!modular_furniture_shape) return FALSE
 	var/kind = furniture_upholstery_material(W)
-	var/removing = istype(W, /obj/item/weapon/wirecutters)
+	var/removing = is_tool(W, TOOL_WIRECUTTER)
 	if (!kind && !removing)
 		if (!istype(W, /obj/item/stack)) return FALSE
 		to_chat(user, SPAN_WARNING("Use cloth, woolcloth or leather for these upholstery parts."))
@@ -184,7 +184,7 @@
 	if (kind)
 		var/obj/item/stack/S = W
 		return furniture_upholstery_material(S) == kind && furniture_upholstery_kind(record) == kind && S.use(1)
-	return !record && previous && istype(W, /obj/item/weapon/wirecutters)
+	return !record && previous && is_tool(W, TOOL_WIRECUTTER)
 
 /obj/item/weapon/stool/wood/modular
 	name = "crafted stool"
@@ -214,7 +214,7 @@
 
 /obj/item/weapon/stool/wood/modular/attackby(obj/item/weapon/W, mob/user)
 	var/kind = furniture_upholstery_material(W)
-	if (!kind && !istype(W, /obj/item/weapon/wirecutters))
+	if (!kind && !is_tool(W, TOOL_WIRECUTTER))
 		if (istype(W, /obj/item/stack))
 			to_chat(user, SPAN_WARNING("Use cloth, woolcloth or leather to cover the seat."))
 			return TRUE
