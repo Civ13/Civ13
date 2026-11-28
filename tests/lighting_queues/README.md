@@ -1,6 +1,6 @@
 # Lighting queue verification
 
-Pinned engine: BYOND 516.1681. All tests use temporary offline storage, close the
+Pinned engine: see `tools/byond/version.json`. All tests use temporary offline storage, close the
 daemon port at startup and reject reopening. No ordinary game startup or maps run.
 
 `run.py --byond-bin <bin> --size 500 --output <json>` compiles unchanged production
@@ -21,8 +21,11 @@ bytes. Memory and CPU measurements are observations, not assertions about OOM,
 whole-server latency, client rendering or long-runtime stability.
 
 `--negative-control skip` must fail the missing/duplicate callback contract.
-`--negative-control retain` must fail consumed-reference release. Both mutate only
-generated source and require the expected diagnostic, not any arbitrary failure.
+`--negative-control retain` must fail consumed-reference release.
+`--negative-control gc-state` must detect an update to a garbage-marked overlay.
+The probe also checks that a null entry and a retired overlay are consumed across
+budget returns before a live overlay completes. Controls mutate generated source
+and require the expected diagnostic.
 
 `run_native.py --byond-bin <bin> --baseline --output <baseline.json>` compiles full
 production sources with ordinary startup and maps disabled. Then run without
