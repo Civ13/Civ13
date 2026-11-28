@@ -156,7 +156,7 @@
 		to_chat(usr, "<span class='warning'>You can't do that.</span>")
 		return
 
-	if (usr.stat)
+	if (usr.stat || !Adjacent(usr))
 		return
 
 	mode = !mode

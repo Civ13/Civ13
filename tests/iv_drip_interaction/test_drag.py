@@ -21,8 +21,8 @@ class IVDragTests(unittest.TestCase):
             if line.lstrip().startswith('visible_message('):
                 lines[i] = line[:len(line) - len(line.lstrip('\t'))] + 'notice()'
         source = '\n'.join(lines) + '\n'
-        self.actor = SimpleNamespace(distance=1, z=1, patient_in_touch=True,
-                                     incapacitated=lambda flags: False)
+        self.actor = SimpleNamespace(distance=1, z=1, stat=0, patient_in_touch=True,
+                                     drip_in_touch=True, incapacitated=lambda flags: False)
         self.floor = object()
         self.patient = SimpleNamespace(distance=1, actor_distance=1, z=1, loc=self.floor,
                                        drip_in_touch=True)
@@ -33,13 +33,15 @@ class IVDragTests(unittest.TestCase):
         env = {'usr': self.actor, 'parent_drop': lambda: None, 'notice': lambda: None,
                'in_range': lambda drip, actor: actor.distance <= 1,
                'ishuman': lambda obj: obj is self.patient,
+               'istype': lambda obj, kind: obj is self.actor and kind == '/mob/living',
+               'to_chat': lambda user, message: None,
                'get_dist': lambda first, second: self.patient.distance,
                'isturf': lambda loc: loc is self.floor,
                'transfer': lambda: self.transfers.append(self.patient)}
         old = source_adapter.FIELDS
         try:
             source_adapter.FIELDS += ('attached', 'update_icon', 'can_reach_patient', 'beaker',
-                                      'CanMouseDrop', 'Adjacent')
+                                      'CanMouseDrop', 'Adjacent', 'mode')
             self.can_drop = source_adapter.project(
                 (ROOT / 'code/_onclick/drag_drop.dm').read_text(), '/atom/proc/CanMouseDrop',
                 'src, over, user, incapacitation_flags=None', env,
@@ -49,6 +51,15 @@ class IVDragTests(unittest.TestCase):
             self.drag = source_adapter.project(source, '/obj/structure/iv_drip/MouseDrop',
                                                'src, over_object, src_location, over_location',
                                                env, method=True)
+            # Assume BYOND has offered the visible verb. Simulate its messages and type check.
+            toggle = '/obj/structure/iv_drip/verb/toggle_mode'
+            toggle_source = source_adapter.extract(source, toggle)
+            toggle_source = toggle_source.replace('\tset src in view(1)\n', '')
+            toggle_source = toggle_source.replace('istype(usr, /mob/living)', 'istype(usr, "/mob/living")')
+            toggle_source = re.sub(r'(?m)^(\t+)to_chat\(usr, .*$', r'\1to_chat(usr, "")', toggle_source)
+            self.toggle_mode = source_adapter.project(
+                toggle + '()\n' + toggle_source + '\n', toggle, 'src', env, method=True,
+            )
             # Keep the real detachment code and replace the reagent effects after its guard.
             process = '/obj/structure/iv_drip/process'
             transfer_guard = '\n\tif (attached && beaker)\n'
@@ -60,11 +71,12 @@ class IVDragTests(unittest.TestCase):
             source_adapter.FIELDS = old
 
     def make_drip(self, attached=None):
-        drip = SimpleNamespace(attached=attached, z=1, beaker=object(), update_icon=lambda: None)
+        drip = SimpleNamespace(attached=attached, z=1, beaker=object(), mode=True,
+                               update_icon=lambda: None)
         drip.can_reach_patient = lambda patient: self.reach(drip, patient)
         drip.Adjacent = lambda other: (
             drip.z == other.z and other.distance <= 1
-            and (other is not self.patient or self.patient.drip_in_touch)
+            and other.drip_in_touch
         )
         drip.CanMouseDrop = lambda over: self.can_drop(drip, over, self.actor)
         return drip
@@ -138,6 +150,16 @@ class IVDragTests(unittest.TestCase):
         self.assertTrue(drip.CanMouseDrop(self.patient))
         self.drag(drip, self.patient, None, None)
         self.assertIsNone(drip.attached)
+
+    def test_mode_toggle_requires_touch_even_when_drip_is_visible(self):
+        drip = self.make_drip()
+        self.actor.drip_in_touch = False
+        self.toggle_mode(drip)
+        self.assertTrue(drip.mode)
+
+        self.actor.drip_in_touch = True
+        self.toggle_mode(drip)
+        self.assertFalse(drip.mode)
 
     def test_patient_moving_behind_border_detaches_before_transfer(self):
         drip = self.make_drip(self.patient)
